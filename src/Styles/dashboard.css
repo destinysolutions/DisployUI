@@ -1,0 +1,34 @@
+.usertable tr:nth-child(even) {
+  background: #edf3ff;
+}
+.usertable tr:nth-child(even) {
+  background: #edf3ff;
+}
+.sc-eqUAAy.gocYik.rdt_TableHeadRow {
+  background: #e4e6ff;
+  color: #41479b;
+  font-size: 16px;
+  font-weight: 600;
+}
+.hbgCLW:nth-child(even) {
+  background: #edf3ff;
+}
+.ikexHN {
+  font-size: 14px;
+}
+.block.w-full.relative.bg-transparent.overflow-hidden {
+  background: #fff;
+  box-shadow: 15px 2px 20px #cccccc63;
+  padding: 20px 0;
+  border-radius: 10px;
+}
+.actionpopup:before {
+  content: "";
+  position: absolute;
+  border-bottom: solid 10px #bdbbbb;
+  border-top: solid 10px transparent;
+  border-left: solid 10px transparent;
+  border-right: solid 10px transparent;
+  top: -20px;
+  left: 66%;
+}

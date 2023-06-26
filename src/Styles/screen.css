@@ -1,0 +1,42 @@
+.screenIcon {
+  border: 1px solid #00072e;
+  margin: 5px;
+  border-radius: 45px;
+  font-size: 25px;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.asset-btn:hover svg {
+  background: #fff;
+  border-radius: 5px;
+  fill: #000;
+}
+div#tooltip-bottom {
+  font-size: 12px;
+  padding: 5px;
+  text-wrap: nowrap;
+  z-index: 99;
+}
+div#tooltip-bottom:before {
+  content: "";
+  position: absolute;
+  border-top: 10px solid transparent;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #000;
+  top: -18px;
+  left: 50%;
+  transform: translate(-50%, 0px);
+}
+.select-all-screen {
+  text-wrap: wrap !important;
+}
+@media (max-width: 767px) {
+  .sm\:mt-3 {
+    margin-top: 0.75rem !important;
+  }
+}
