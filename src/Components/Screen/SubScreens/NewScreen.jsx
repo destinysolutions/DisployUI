@@ -5,4 +5,3 @@ const NewScreen = () => {
 };
 
 export default NewScreen;
-
