@@ -63,19 +63,23 @@
   padding: 6px 0px 6px 0px;
 }
 
-.link-items:before {
+.link-items:before,
+li.relative.py-2:before {
   content: "";
   position: absolute;
   left: -13px;
   top: 4px;
   width: 2px;
-  height: 80%;
+  height:90%;
   background: transparent;
   border-radius: 50px;
 }
-.link-items:hover::before {
+.link-items:hover::before ,
+li.relative.py-2:hover:before{
   background: #fff;
+  transition: 2s  all;
 }
+
 .nav-text a {
   color: #8e94a9;
   font-size: 14px;

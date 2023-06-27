@@ -190,7 +190,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                   {activeSubmenu === index && item.subMenus && (
                     <ul className="ml-6 mt-3">
                       {item.subMenus.map((submenu, subIndex) => (
-                        <li key={subIndex} className="py-2">
+                        <li key={subIndex} className="py-2 relative">
                           <Link to={submenu.path}>
                             {submenu.icon}
                             <span>{submenu.title}</span>
