@@ -9,7 +9,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       title: "Dashboard",
       cName: "nav-text link-items",
       path: "/dashboard",
-      icon: <img src="/MenuIcons/dashboard_icon.svg" alt="Dashboard" />,
+      icon: (
+        <img
+          src="/MenuIcons/dashboard_icon.svg"
+          alt="Dashboard"
+          className="fill-white"
+        />
+      ),
     },
     {
       title: "Screens",
@@ -127,9 +133,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
+  const [MITooltipVisible, setMITooltipVisible] = useState(false);
+
   const handleTooltipToggle = (index) => {
     setActiveIcon(index);
-    setTooltipVisible(!tooltipVisible);
+    setTooltipVisible(true);
+  };
+  const handleMITooltipToggle = (MIindex) => {
+    setActiveIcon(MIindex);
+    setMITooltipVisible(true);
   };
   return (
     <>
@@ -162,7 +174,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     <Link to={item.path}>
                       <div
                         onMouseEnter={() => handleTooltipToggle(index)}
-                        onMouseLeave={handleTooltipToggle}
+                        onMouseLeave={() => setTooltipVisible(false)}
                       >
                         {item.icon}
                       </div>
@@ -170,14 +182,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                         tooltipVisible &&
                         activeIcon === index && (
                           <div
-                            id="tooltip-bottom"
+                            id="tooltip-right"
                             role="tooltip"
-                            className="absolute z-10 visible inline-block px-3 py-2 text-sm font-medium text-white bg-primary rounded-lg shadow-sm opacity-100 tooltip bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full dark:bg-gray-700"
+                            className=" absolute z-10 visible inline-block px-2 py-1 text-sm font-medium text-white bg-SlateBlue rounded-sm shadow-sm opacity-100 tooltip  left-[30px]  dark:bg-gray-700"
                           >
                             <span
                               className={`${
                                 !sidebarOpen && !tooltipVisible && "hidden"
-                              } ml-5 `}
+                              } ml-0 text-sm `}
                             >
                               {item.title}
                             </span>
@@ -230,11 +242,37 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
             <li>
               <div className="dotline my-4"></div>
             </li>
-            {MenuIcons.map((item, index) => {
+            {MenuIcons.map((item, MIindex) => {
               return (
-                <li key={index} className={item.cName}>
+                <li key={MIindex} className={item.cName}>
                   <Link to={item.path}>
-                    {item.icon}
+                    <div
+                      onMouseEnter={() => handleMITooltipToggle(MIindex)}
+                      onMouseLeave={() => setMITooltipVisible(false)}
+                    >
+                      {item.icon}
+                    </div>
+                    {!sidebarOpen &&
+                      MITooltipVisible &&
+                      activeIcon === MIindex && (
+                        <div
+                          id="tooltip-right"
+                          role="tooltip"
+                          className=" absolute z-10 visible inline-block px-2 py-1 text-sm font-medium text-white bg-SlateBlue rounded-sm shadow-sm opacity-100 tooltip  left-[30px]  dark:bg-gray-700"
+                        >
+                          <span
+                            className={`${
+                              !sidebarOpen && !MITooltipVisible && "hidden"
+                            } ml-0  `}
+                          >
+                            {item.title}
+                          </span>
+                          <div
+                            className="tooltip-arrow"
+                            data-popper-arrow
+                          ></div>
+                        </div>
+                      )}
                     <span className={`${!sidebarOpen && "hidden"} ml-5 `}>
                       {item.title}
                     </span>

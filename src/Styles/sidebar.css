@@ -62,7 +62,26 @@ img.cursor-pointer.profilePopup {
   background: #fff !important;
   padding: 0;
 }
-/* sidebar */
+.topbar img {
+  background: #e4e6ff;
+  padding: 5px;
+  border-radius: 5px;
+  width: 30px;
+  height: 30px;
+}
+
+.topbar img.profile {
+  background-color: transparent;
+  border-radius: 16px;
+  width: 40px;
+  height: 40px;
+}
+.topbar img.profileBox {
+  background-color: transparent;
+  border-radius: 16px;
+  width: 46px;
+  height: 46px;
+}
 
 @media (max-width: 767px) {
   .sm\:rounded-tr-\[30px\] {
@@ -77,4 +96,15 @@ img.cursor-pointer.profilePopup {
   ul.space-y-1.font-medium {
     margin-left: 4px;
   }
+}
+div#tooltip-bottom:before {
+  content: "";
+  position: absolute;
+  border-top: 10px solid transparent;
+  border-left: 10px solid transparent;
+  border-right: 10px solid #fff;
+  border-bottom: 10px solid transparent;
+  top: 50%;
+  left: -14%;
+  transform: translate(-54%, -11px);
 }

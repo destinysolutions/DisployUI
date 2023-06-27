@@ -9,7 +9,6 @@ import {
 } from "@material-tailwind/react";
 import Users from "./TabingData/Users";
 import Screens from "./TabingData/Screens";
-import Header from "../Header";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 
@@ -33,23 +32,41 @@ const Dashboard = () => {
       desc: <Screens />,
     },
   ];
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  // const [sidebarOverlap, setsidebarOverlap] = useState(true);
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 780) {
-        setSidebarOpen(false);
-      } else {
-        setSidebarOpen(true);
-      }
-    };
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    const storedSidebarOpen = localStorage.getItem("sidebarOpen");
+    return storedSidebarOpen !== null ? JSON.parse(storedSidebarOpen) : true;
+  });
 
+  const handleResize = () => {
+    if (window.innerWidth < 780) {
+      setSidebarOpen(false);
+    } else if (!sidebarOpen) {
+      setSidebarOpen(true);
+    }
+  };
+
+  useEffect(() => {
     window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("sidebarOpen", JSON.stringify(sidebarOpen));
+  }, [sidebarOpen]);
+
+  useEffect(() => {
+    handleResize(); // Handle initial resize
+
+    // Handle resize after page refresh
+    window.addEventListener("load", handleResize);
+    return () => {
+      window.removeEventListener("load", handleResize);
+    };
+  }, []);
+
   return (
     <>
       <div className="flex border-b border-gray py-3">
