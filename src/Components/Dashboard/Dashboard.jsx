@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Business from "./TabingData/Business";
 import {
   Tabs,
@@ -10,9 +10,11 @@ import {
 import Users from "./TabingData/Users";
 import Screens from "./TabingData/Screens";
 import Header from "../Header";
+import Sidebar from "../Sidebar";
+import Navbar from "../Navbar";
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = React.useState("business");
+  const [activeTab, setActiveTab] = useState("business");
   const data = [
     {
       label: "Business",
@@ -31,11 +33,31 @@ const Dashboard = () => {
       desc: <Screens />,
     },
   ];
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // const [sidebarOverlap, setsidebarOverlap] = useState(true);
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 780) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
 
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   return (
     <>
-          <Header/>
-          <div className="pt-6 px-5">
+      <div className="flex border-b border-gray py-3">
+        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <Navbar />
+      </div>
+      <div className="pt-6 px-5">
+        <div className={`${sidebarOpen ? "ml-56" : "ml-20"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737]">
               Overview dashboard
@@ -85,7 +107,7 @@ const Dashboard = () => {
             </Tabs>
           </div>
         </div>
-      {/* </div> */}
+      </div>
     </>
   );
 };

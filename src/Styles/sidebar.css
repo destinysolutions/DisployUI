@@ -26,37 +26,6 @@
   z-index: 9;
   border-radius: 50%;
 }
-.navbar {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.menu-bars {
-  margin-left: 1rem;
-  font-size: 2rem;
-  background: none;
-}
-
-.nav-menu {
-  background-color: #060b26;
-  width: 235px;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  position: fixed;
-  top: 0;
-  left: -100%;
-  transition: 850ms;
-  border-top-right-radius: 50px;
-  z-index: 9999;
-}
-
-.nav-menu.active {
-  left: 0;
-  transition: 350ms;
-}
-
 .nav-text {
   position: relative;
   cursor: pointer;
@@ -70,16 +39,15 @@ li.relative.py-2:before {
   left: -13px;
   top: 4px;
   width: 2px;
-  height:90%;
+  height: 90%;
   background: transparent;
   border-radius: 50px;
 }
-.link-items:hover::before ,
-li.relative.py-2:hover:before{
+.link-items:hover::before,
+li.relative.py-2:hover:before {
   background: #fff;
-  transition: 2s  all;
+  transition: 2s all;
 }
-
 .nav-text a {
   color: #8e94a9;
   font-size: 14px;
@@ -87,35 +55,6 @@ li.relative.py-2:hover:before{
   align-items: center;
   border-radius: 8px;
 }
-.navbar-toggle {
-  height: 70px;
-  display: flex;
-  align-items: center;
-}
-span {
-  margin-left: 16px;
-}
-.topbar img {
-  background: #e4e6ff;
-  padding: 5px;
-  border-radius: 5px;
-  width: 30px;
-  height: 30px;
-}
-
-.topbar img.profile {
-  background-color: transparent;
-  border-radius: 16px;
-  width: 40px;
-  height: 40px;
-}
-.topbar img.profileBox {
-  background-color: transparent;
-  border-radius: 16px;
-  width: 46px;
-  height: 46px;
-}
-
 img.cursor-pointer.profilePopup {
   margin: 0;
   width: 17px;
@@ -123,6 +62,19 @@ img.cursor-pointer.profilePopup {
   background: #fff !important;
   padding: 0;
 }
-.brand {
-  max-width: 140px;
+/* sidebar */
+
+@media (max-width: 767px) {
+  .sm\:rounded-tr-\[30px\] {
+    border-top-right-radius: 30px;
+  }
+  .sm\:pb-3 {
+    padding-bottom: 0.75rem;
+  }
+  .sm\:pt-6 {
+    padding-top: 1.5rem;
+  }
+  ul.space-y-1.font-medium {
+    margin-left: 4px;
+  }
 }
