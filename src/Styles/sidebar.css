@@ -26,6 +26,7 @@
   z-index: 9;
   border-radius: 50%;
 }
+
 .nav-text {
   position: relative;
   cursor: pointer;
@@ -43,11 +44,13 @@ li.relative.py-2:before {
   background: transparent;
   border-radius: 50px;
 }
+
 .link-items:hover::before,
 li.relative.py-2:hover:before {
   background: #fff;
   transition: 2s all;
 }
+
 .nav-text a {
   color: #8e94a9;
   font-size: 14px;
@@ -55,6 +58,7 @@ li.relative.py-2:hover:before {
   align-items: center;
   border-radius: 8px;
 }
+
 img.cursor-pointer.profilePopup {
   margin: 0;
   width: 17px;
@@ -62,6 +66,7 @@ img.cursor-pointer.profilePopup {
   background: #fff !important;
   padding: 0;
 }
+
 .topbar img {
   background: #e4e6ff;
   padding: 5px;
@@ -76,6 +81,7 @@ img.cursor-pointer.profilePopup {
   width: 40px;
   height: 40px;
 }
+
 .topbar img.profileBox {
   background-color: transparent;
   border-radius: 16px;
@@ -83,20 +89,24 @@ img.cursor-pointer.profilePopup {
   height: 46px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 780px) {
   .sm\:rounded-tr-\[30px\] {
     border-top-right-radius: 30px;
   }
+
   .sm\:pb-3 {
     padding-bottom: 0.75rem;
   }
+
   .sm\:pt-6 {
     padding-top: 1.5rem;
   }
+
   ul.space-y-1.font-medium {
     margin-left: 4px;
   }
 }
+
 div#tooltip-bottom:before {
   content: "";
   position: absolute;

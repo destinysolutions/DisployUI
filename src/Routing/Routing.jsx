@@ -9,7 +9,7 @@ import ErrorPage from "../Pages/ErrorPage";
 import NewScreen from "../Components/Screen/SubScreens/NewScreen";
 import ConnectScreen from "../Components/Screen/SubScreens/ConnectScreen";
 import NewScreenGroup from "../Components/Screen/SubScreens/NewScreenGroup";
-
+import Screensplayer from "../Components/Screen/SubScreens/Screensplayer";
 const Routing = () => {
   return (
     <Routes>
@@ -22,6 +22,7 @@ const Routing = () => {
       <Route path="/newscreen" element={<NewScreen />} />
       <Route path="/connectscreen" element={<ConnectScreen />} />
       <Route path="/newscreengroup" element={<NewScreenGroup />} />
+      <Route path="/screensplayer" element={<Screensplayer />} />
       <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
