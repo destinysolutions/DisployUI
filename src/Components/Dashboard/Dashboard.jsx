@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Business from "./TabingData/Business";
+import { BsLightningCharge } from 'react-icons/bs'
+import { MdOutlineSlowMotionVideo } from 'react-icons/md'
 import {
   Tabs,
   TabsHeader,
@@ -12,7 +14,7 @@ import Screens from "./TabingData/Screens";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 
-const Dashboard = () => {
+const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
   const [activeTab, setActiveTab] = useState("business");
   const data = [
     {
@@ -32,40 +34,6 @@ const Dashboard = () => {
       desc: <Screens />,
     },
   ];
-  const [sidebarOpen, setSidebarOpen] = useState(() => {
-    const storedSidebarOpen = localStorage.getItem("sidebarOpen");
-    return storedSidebarOpen !== null ? JSON.parse(storedSidebarOpen) : true;
-  });
-
-  const handleResize = () => {
-    if (window.innerWidth < 780) {
-      setSidebarOpen(false);
-    } else if (!sidebarOpen) {
-      setSidebarOpen(true);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("sidebarOpen", JSON.stringify(sidebarOpen));
-  }, [sidebarOpen]);
-
-  useEffect(() => {
-    handleResize(); // Handle initial resize
-
-    // Handle resize after page refresh
-    window.addEventListener("load", handleResize);
-    return () => {
-      window.removeEventListener("load", handleResize);
-    };
-  }, []);
 
   return (
     <>
@@ -76,45 +44,38 @@ const Dashboard = () => {
       <div className="pt-6 px-5">
         <div className={`${sidebarOpen ? "ml-56" : "ml-20"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
-            <h1 className="not-italic font-medium text-2xl text-[#001737]">
+            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4">
               Overview dashboard
             </h1>
             <div className="lg:flex md:flex sm:block">
-              <button className=" dashboard-btn  flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-5 sm-mt-2 py-2 sm:mt-2  text-base mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                <img
-                  src="/DisployImg/channel.svg"
-                  className="mr-2 hover:fill-white"
-                />
+              <button className=" dashboard-btn  flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-5 sm-mt-2 py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                <BsLightningCharge className="text-lg mr-1" />
                 Book a Demo
               </button>
-              <button className=" dashboard-btn flex align-middle items-center text-primary rounded-full  text-base border border-primary lg:px-6 sm:px-5 sm:mt-2 py-2 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                <img
-                  src="/DisployImg/Group.svg"
-                  className="mr-2 p-1 hover:fill-white"
-                />
+              <button className=" dashboard-btn flex align-middle items-center text-primary rounded-full  text-base border border-primary lg:px-6 sm:px-5 sm:mt-3 py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                <MdOutlineSlowMotionVideo className="text-lg mr-1" />
                 Watch Video
               </button>
             </div>
           </div>
           <div className="mt-5">
-            <Tabs value={activeTab}>
-              <TabsHeader className="border-b rounded-none border-blue-gray-50 p-0 mb-5 text-[#A7AFB7] ">
+            <Tabs value={activeTab} >
+              <TabsHeader className="border-b rounded-none border-blue-gray-50 p-0 mb-5 text-[#A7AFB7]  ">
                 {data.map(({ label, value }) => (
                   <Tab
                     key={value}
                     value={value}
                     onClick={() => setActiveTab(value)}
-                    className={`${
-                      activeTab === value
-                        ? "text-SlateBlue border-b-2  border-SlateBlue "
-                        : ""
-                    } p-2 pb-2 w-auto font-semibold`}
+                    className={`${activeTab === value
+                      ? "text-SlateBlue border-b-2 border-SlateBlue  "
+                      : ""
+                      } p-2 pb-2 w-auto font-semibold `}
                   >
                     {label}
                   </Tab>
                 ))}
               </TabsHeader>
-              <TabsBody>
+              <TabsBody className="p-0">
                 {data.map(({ value, desc }) => (
                   <TabPanel key={value} value={value}>
                     {desc}
@@ -124,7 +85,12 @@ const Dashboard = () => {
             </Tabs>
           </div>
         </div>
+
+
+
       </div>
+
+
     </>
   );
 };

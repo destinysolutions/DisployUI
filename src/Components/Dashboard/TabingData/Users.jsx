@@ -144,12 +144,12 @@ const Users = () => {
 
   return (
     <div>
-      <div className="text-right mb-5 mr-5 flex items-end justify-end relative">
-        <AiOutlineSearch className="absolute top-[14px] right-[230px] z-10 text-gray" />
+      <div className="text-right mb-5 mr-5 flex items-end justify-end relative sm:mr-0">
+        <AiOutlineSearch className="absolute top-[14px] right-[230px] z-10 text-gray searchicon" />
         <input
           type="text"
           placeholder=" Search Users "
-          className="border border-gray rounded-full px-7 py-2"
+          className="border border-gray rounded-full px-7 py-2 search-user"
           onChange={handleFilter}
         />
       </div>

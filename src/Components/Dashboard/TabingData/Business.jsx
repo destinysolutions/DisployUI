@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import GoogleMapReact from "google-map-react";
 import ReactApexChart from "react-apexcharts";
-
+import { Link } from "react-router-dom";
 const AnyReactComponent = ({ text }) => <div>{text}</div>;
 const optionsBar = {
   colors: ["#3C50E0", "#80CAEE"],
@@ -147,9 +147,9 @@ const Business = () => {
           </GoogleMapReact>
         </div>
       </div>
-      <div className="bg-white shadow-md rounded-lg p-4 mt-4 ">
+      <div className=" mt-5 ">
         <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-9 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark ">
+          <div className="lg:col-span-9  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
             <div className="mb-4 justify-between gap-4 sm:flex mt-3">
               <div>
                 <h4 className="text-xl font-semibold text-black dark:text-white ml-3">
@@ -201,7 +201,7 @@ const Business = () => {
               </div>
             </div>
           </div>
-          <div className="col-span-3 dark:border-strokedark dark:bg-boxdark border border-stroke">
+          <div className="lg:col-span-3 md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
             <div id="chart">
               <ReactApexChart
                 options={optionsRadialBar}
@@ -213,10 +213,10 @@ const Business = () => {
           </div>
         </div>
       </div>
-      <div className="bg-white  p-4 mt-4 ">
+      <div className="mt-5 mb-5">
         <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-3 ">
-            <div className="shadow-md rounded text-center">
+          <div className="lg:col-span-3 md:col-span-6 sm:col-span-12 ">
+            <div className="shadow-md  bg-white rounded-lg text-center py-10">
               <img
                 src="/AppsImg/app1.png"
                 alt="Logo"
@@ -225,8 +225,8 @@ const Business = () => {
               <h4 className="text-size-md font-semibold py-5">Grafana</h4>
             </div>
           </div>
-          <div className="col-span-3">
-            <div className="shadow-md rounded text-center">
+          <div className="lg:col-span-3 md:col-span-6 sm:col-span-12">
+            <div className="shadow-md  bg-white rounded-lg text-center py-10">
               <img
                 src="/AppsImg/app2.png"
                 alt="Logo"
@@ -235,18 +235,18 @@ const Business = () => {
               <h4 className="text-size-md font-semibold py-5">Tableau</h4>
             </div>
           </div>
-          <div className="col-span-3">
-            <div className="shadow-md rounded text-center">
+          <div className="lg:col-span-3 md:col-span-6 sm:col-span-12">
+            <div className="shadow-md  bg-white rounded-lg text-center py-10">
               <img
                 src="/AppsImg/app3.png"
                 alt="Logo"
-                className="cursor-pointer mx-auto h-16 w-16"
+                className="cursor-pointer mx-auto h-[64px] w-[64px]"
               />
               <h4 className="text-size-md font-semibold py-5">Tableau</h4>
             </div>
           </div>
-          <div className="col-span-3">
-            <div className="shadow-md rounded text-center">
+          <div className="lg:col-span-3 md:col-span-6 sm:col-span-12">
+            <div className="shadow-md  bg-white rounded-lg text-center py-10">
               <img
                 src="/AppsImg/app4.png"
                 alt="Logo"
@@ -256,6 +256,11 @@ const Business = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="dashboard-footer text-center lg:text-base md:text-base  z-10 my-4 sm:text-sm  py-2 ">
+        <h6 className="font-medium">Securely display dashboards from any application</h6>
+        <p>Find out more at  <Link to="/">disploy.com</Link></p>
       </div>
     </>
   );
