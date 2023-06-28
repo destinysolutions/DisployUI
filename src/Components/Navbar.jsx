@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
@@ -32,7 +32,7 @@ const Navbar = () => {
 
   return (
     <div className="w-full topbar">
-      <div className="bg-white">
+      <div className="">
         <div className="flex-col flex">
           <div className="w-full">
             <div className=" justify-end items-center mx-auto px-4 flex">
