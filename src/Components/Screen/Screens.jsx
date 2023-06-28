@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "../../Styles/screen.css";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import { MdOutlineModeEdit } from "react-icons/md";
+import { Link } from "react-router-dom";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-import { MdOutlineModeEdit } from 'react-icons/md'
-import Screensplayer from "./SubScreens/Screensplayer";
-import { Link } from "react-router-dom";
 
-const Screens = () => {
+const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [connectScreenTooltipVisible, setConnectScreenTooltipVisible] =
     useState(false);
   const [newScreenTooltipVisible, setNewScreenTooltipVisible] = useState(false);
@@ -22,42 +21,6 @@ const Screens = () => {
   const [showOTPVerifyModal, setShowOTPVerifyModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
 
-  const [sidebarOpen, setSidebarOpen] = useState(() => {
-    const storedSidebarOpen = localStorage.getItem("sidebarOpen");
-    return storedSidebarOpen !== null ? JSON.parse(storedSidebarOpen) : true;
-  });
-
-  const handleResize = () => {
-    if (window.innerWidth < 780) {
-      setSidebarOpen(false);
-    } else if (!sidebarOpen) {
-      setSidebarOpen(true);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("sidebarOpen", JSON.stringify(sidebarOpen));
-  }, [sidebarOpen]);
-
-  useEffect(() => {
-    handleResize(); // Handle initial resize
-
-    // Handle resize after page refresh
-    window.addEventListener("load", handleResize);
-    return () => {
-      window.removeEventListener("load", handleResize);
-    };
-  }, []);
-
-
   return (
     <>
       <div className="flex border-b border-gray py-3">
@@ -65,7 +28,7 @@ const Screens = () => {
         <Navbar />
       </div>
       <div className="pt-6 px-5">
-        <div className={`${sidebarOpen ? "ml-56" : "ml-20"}`}>
+        <div className={`${sidebarOpen ? "ml-52" : "ml-16"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
               Screens
@@ -629,9 +592,11 @@ const Screens = () => {
               <tbody>
                 <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
                   <td className="flex items-center ">
-                  <input type="checkbox" className="mr-3" />  <Link to='/screensplayer'>
-                    My Screen 1
-                  </Link>  <button><MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" /></button>
+                    <input type="checkbox" className="mr-3" />{" "}
+                    <Link to="/screensplayer">My Screen 1</Link>{" "}
+                    <button>
+                      <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
+                    </button>
                   </td>
                   <td className="p-2">
                     <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white  hover:bg-primary">
@@ -785,9 +750,11 @@ const Screens = () => {
                 </tr>
                 <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm flex  justify-between items-center px-5 py-2">
                   <td className="flex items-center">
-                  <input type="checkbox" className="mr-3" />  <Link to='/screensplayer'>
-                    My Screen 2
-                  </Link>  <button><MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" /></button>
+                    <input type="checkbox" className="mr-3" />{" "}
+                    <Link to="/screensplayer">My Screen 2</Link>{" "}
+                    <button>
+                      <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
+                    </button>
                   </td>
                   <td className="p-2">
                     <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
