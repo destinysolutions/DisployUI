@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import "../Styles/sidebar.css";
 import { Link } from "react-router-dom";
 import * as FiIcons from "react-icons/fi";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 
-const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
+const Sidebar = ({ sidebarOpen }) => {
+  const [showOTPModal, setShowOTPModal] = useState(false);
   const Menus = [
     {
       title: "Dashboard",
@@ -30,15 +32,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       ),
       subMenus: [
         {
-          title: "Connect Screen",
-          path: "/connectscreen",
-          icon: (
-            <img src="/MenuIcons/connect_screen.svg" alt="Connect Screen" />
+          title: (
+            <button onClick={() => setShowOTPModal(true)}> New Screen</button>
           ),
-        },
-        {
-          title: " New Screen",
-          path: "/newscreen",
           icon: <img src="/MenuIcons/new_screen.svg" alt=" New Screen" />,
         },
         {
@@ -47,6 +43,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           icon: (
             <img src="/MenuIcons/new_screen_group.svg" alt="New Screen Group" />
           ),
+        },
+        {
+          title: "Merge Screens",
+          path: "/mergescreen",
+          icon: <img src="/MenuIcons/merge_screen.svg" alt="Merge Screen" />,
         },
       ],
     },
@@ -135,6 +136,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [MITooltipVisible, setMITooltipVisible] = useState(false);
 
+  const [SMTooltipVisible, setSMTooltipVisible] = useState(false);
+
   const handleTooltipToggle = (index) => {
     setActiveIcon(index);
     setTooltipVisible(true);
@@ -143,8 +146,120 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     setActiveIcon(MIindex);
     setMITooltipVisible(true);
   };
+  const handleSMTooltipToggle = (subIndex) => {
+    setActiveIcon(subIndex);
+    setSMTooltipVisible(true);
+  };
   return (
     <>
+      {showOTPModal ? (
+        <>
+          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+            <div className="relative w-auto my-6 mx-auto max-w-3xl">
+              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                <div className="flex items-start justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
+                  <h3 className="text-xl font-medium">New Screen</h3>
+                  <button
+                    className="p-1 text-xl"
+                    onClick={() => setShowOTPModal(false)}
+                  >
+                    <AiOutlineCloseCircle />
+                  </button>
+                </div>
+
+                <div className="relative p-6 flex-auto">
+                  <div className="flex items-center justify-center">
+                    <img src="/DisployImg/BlackLogo.svg" />
+                  </div>
+                  <div className="bg-white rounded-[20px] shadow-md p-5">
+                    <div className="container mx-auto">
+                      <div className="max-w-sm mx-auto md:max-w-lg">
+                        <div className="w-full">
+                          <div className="bg-white h-64 py-3 rounded text-center">
+                            <div className="flex flex-col mt-4">
+                              <div className="font-normal text-lg text-[#000000]">
+                                Enter the 6-character pairing code?
+                              </div>
+                            </div>
+
+                            <div
+                              id="otp"
+                              className="flex flex-row justify-center text-center px-2 mt-5"
+                            >
+                              <input
+                                className="m-2 border h-10 w-10 text-center form-control rounded"
+                                type="text"
+                                id="first"
+                                maxLength="1"
+                              />
+                              <input
+                                className="m-2 border h-10 w-10 text-center form-control rounded"
+                                type="text"
+                                id="second"
+                                maxLength="1"
+                              />
+                              <input
+                                className="m-2 border h-10 w-10 text-center form-control rounded"
+                                type="text"
+                                id="third"
+                                maxLength="1"
+                              />
+                              <input
+                                className="m-2 border h-10 w-10 text-center form-control rounded"
+                                type="text"
+                                id="fourth"
+                                maxLength="1"
+                              />
+                              <input
+                                className="m-2 border h-10 w-10 text-center form-control rounded"
+                                type="text"
+                                id="fifth"
+                                maxLength="1"
+                              />
+                              <input
+                                className="m-2 border h-10 w-10 text-center form-control rounded"
+                                type="text"
+                                id="sixth"
+                                maxLength="1"
+                              />
+                            </div>
+
+                            <div className="flex justify-center text-center mt-5">
+                              <input type="checkbox" />
+                              <p className="ml-2 text-[#515151] text-[13px] ">
+                                Start screen in Preview Mode
+                              </p>
+                            </div>
+                            <div className="flex justify-center text-center mt-5">
+                              <p className="text-[#515151] text-[13px]">
+                                To get pair code, please install Disploy app on
+                                your Players (Android, LG, Samsung, FireStick,
+                                Raspberry Pi, etc.)
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-center pb-7">
+                  <Link to="/newscreendetail">
+                    <button
+                      className="text-white bg-[#00072E] font-semibold  px-6 py-2 text-sm rounded-[45px]"
+                      type="button"
+                    >
+                      Continue
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+        </>
+      ) : null}
       <div className="flex">
         <div
           className={`${
@@ -204,13 +319,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                       </span>
                     </Link>
                     {item.subMenus && (
-                      <div className="ml-5">
+                      <div className={`${!sidebarOpen ? "ml-[1px]" : "ml-5"}`}>
                         <FiIcons.FiChevronDown
                           className={`${
                             activeSubmenu === index
                               ? "transform rotate-180"
                               : ""
-                          } transition-transform duration-300 text-white text-[25px]`}
+                          } transition-transform duration-300 text-white ${
+                            sidebarOpen ? "text-[25px]" : "text-[18px]"
+                          }`}
                           onClick={() =>
                             setActiveSubmenu(
                               activeSubmenu === index ? null : index
@@ -221,11 +338,41 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                     )}
                   </div>
                   {activeSubmenu === index && item.subMenus && (
-                    <ul className="ml-6 mt-3">
+                    <ul className={`${!sidebarOpen ? "ml-2" : "ml-6"} mt-3`}>
                       {item.subMenus.map((submenu, subIndex) => (
                         <li key={subIndex} className="py-2 relative">
                           <Link to={submenu.path}>
-                            {submenu.icon}
+                            <div
+                              onMouseEnter={() =>
+                                handleSMTooltipToggle(subIndex)
+                              }
+                              onMouseLeave={() => setSMTooltipVisible(false)}
+                            >
+                              {submenu.icon}
+                            </div>
+                            {!sidebarOpen &&
+                              SMTooltipVisible &&
+                              activeIcon === subIndex && (
+                                <div
+                                  id="tooltip-right"
+                                  role="tooltip"
+                                  className=" absolute z-10 visible inline-block px-2 py-1 text-sm font-medium text-white bg-SlateBlue rounded-sm shadow-sm opacity-100 tooltip  left-[30px]  dark:bg-gray-700"
+                                >
+                                  <span
+                                    className={`${
+                                      !sidebarOpen &&
+                                      !SMTooltipVisible &&
+                                      "hidden"
+                                    } ml-0 text-sm `}
+                                  >
+                                    {submenu.title}
+                                  </span>
+                                  <div
+                                    className="tooltip-arrow"
+                                    data-popper-arrow
+                                  ></div>
+                                </div>
+                              )}
                             <span
                               className={`${!sidebarOpen && "hidden"} ml-5 `}
                             >
