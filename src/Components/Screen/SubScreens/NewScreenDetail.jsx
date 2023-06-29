@@ -104,7 +104,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       size: "25 kb",
       type: "Image",
     },
-    
   ];
   const [records, setRecords] = useState(data);
   return (
@@ -309,7 +308,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     <>
                       <tr>
                         <td></td>
-                        <td>
+                        <td className="relative">
                           <div className="flex">
                             <div className=" px-2 py-2 border-[1px] border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
                               Assets
@@ -328,6 +327,26 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               />
                             </div>
                           </div>
+
+                          <div className="absolute left-[10%] bottom-[-3px]  text-[35px]  z-20">
+                            <img
+                              src="/DisployImg/Polygon.svg"
+                              alt="notification"
+                              className="cursor-pointer assestPopup"
+                            />
+                          </div>
+                          <div className="absolute left-[2%] bottom-[-74px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10  pr-16">
+                            <div
+                              className="text-sm mb-1 mt-2 ml-3 cursor-pointer"
+                              onClick={() => setShowAssestModal(true)}
+                            >
+                              Browse
+                            </div>
+
+                            <div className="text-sm mb-3 mt-3 ml-3 cursor-pointer">
+                              Default Assets
+                            </div>
+                          </div>
                         </td>
                       </tr>
                       <tr>
@@ -340,6 +359,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         <td></td>
                       </tr>
                       <tr>
+                        <td></td>
+                      </tr>
+                      {/* <tr>
                         <td></td>
 
                         <td>
@@ -365,7 +387,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                           </>
                         </td>
-                      </tr>
+                      </tr> */}
                     </>
                   )}
                   {showAssestModal ? (
@@ -469,7 +491,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                             />
                                           </div>
                                           <button className="flex align-middle border-primary items-center border rounded-full px-8 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                                          Upload
+                                            Upload
                                           </button>
                                         </div>
                                         <DataTable
