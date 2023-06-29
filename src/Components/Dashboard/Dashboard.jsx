@@ -42,9 +42,9 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       <div className="pt-6 px-5">
-        <div className={`${sidebarOpen ? "ml-56" : "ml-16"}`}>
+        <div className={`${sidebarOpen ? "ml-[13rem]" : "ml-16"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
-            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4">
+            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
               Overview dashboard
             </h1>
             <div className="lg:flex md:flex sm:block">
