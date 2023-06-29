@@ -3,7 +3,8 @@ import "../Styles/sidebar.css";
 import { Link } from "react-router-dom";
 import * as FiIcons from "react-icons/fi";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-
+import { MdOutlineAddToQueue } from "react-icons/md";
+import { HiOutlineRectangleGroup } from "react-icons/hi2";
 const Sidebar = ({ sidebarOpen }) => {
   const [showOTPModal, setShowOTPModal] = useState(false);
   const Menus = [
@@ -15,7 +16,7 @@ const Sidebar = ({ sidebarOpen }) => {
         <img
           src="/MenuIcons/dashboard_icon.svg"
           alt="Dashboard"
-          className="fill-white"
+          className="fill-white w-4"
         />
       ),
     },
@@ -27,7 +28,7 @@ const Sidebar = ({ sidebarOpen }) => {
         <img
           src="/MenuIcons/screens_icon.svg"
           alt="Screens"
-          className="max-w-sm"
+          className="w-4"
         />
       ),
       subMenus: [
@@ -35,13 +36,13 @@ const Sidebar = ({ sidebarOpen }) => {
           title: (
             <button onClick={() => setShowOTPModal(true)}> New Screen</button>
           ),
-          icon: <img src="/MenuIcons/new_screen.svg" alt=" New Screen" />,
+          icon: <MdOutlineAddToQueue className=" text-gray text-lg opacity-60 " />
         },
         {
           title: "New Screen Group",
           path: "/newscreengroup",
           icon: (
-            <img src="/MenuIcons/new_screen_group.svg" alt="New Screen Group" />
+            <HiOutlineRectangleGroup className=" text-gray text-xl opacity-60 " />
           ),
         },
         {
@@ -55,41 +56,41 @@ const Sidebar = ({ sidebarOpen }) => {
       title: "Assets",
       cName: "nav-text link-items",
       path: "/assets",
-      icon: <img src="/MenuIcons/assets_icon.svg" alt="Assets" />,
+      icon: <img src="/MenuIcons/assets_icon.svg" alt="Assets" className=" w-4" />,
     },
     {
       title: "Playlist ",
       cName: "nav-text link-items",
       path: "/playlist",
-      icon: <img src="/MenuIcons/playlist_icon.svg" alt="Playlist" />,
+      icon: <img src="/MenuIcons/playlist_icon.svg" alt="Playlist" className=" w-4" />,
     },
     {
       title: "Disploy Studio",
       cName: "nav-text link-items",
       path: "/studio",
       icon: (
-        <img src="/MenuIcons/disploy_studio_icon.svg" alt="Disploy_Studio" />
+        <img src="/MenuIcons/disploy_studio_icon.svg" alt="Disploy_Studio" className=" w-4" />
       ),
     },
     {
       title: "My Schedule",
       cName: "nav-text link-items",
       path: "/myplan",
-      icon: <img src="/MenuIcons/schedule_icon.svg" alt="My_Plan" />,
+      icon: <img src="/MenuIcons/schedule_icon.svg" alt="My_Plan" className=" w-4" />,
     },
     {
       title: "Apps",
       cName: "nav-text link-items",
       path: "/apps",
-      icon: <img src="/MenuIcons/apps_icon.svg" alt="Apps" />,
+      icon: <img src="/MenuIcons/apps_icon.svg" alt="Apps" className=" w-4" />,
     },
     {
       title: "Reports",
       cName: "nav-text link-items",
       path: "/reports",
-      icon: <img src="/MenuIcons/reports_icon.svg" alt="Reports" />,
+      icon: <img src="/MenuIcons/reports_icon.svg" alt="Reports" className=" w-4" />,
     },
-    
+
   ];
   const MenuIcons = [
     {
@@ -257,9 +258,8 @@ const Sidebar = ({ sidebarOpen }) => {
       ) : null}
       <div className="flex">
         <div
-          className={`${
-            sidebarOpen ? "w-52" : "w-16"
-          } fixed top-0 md:left-0 lg:left-0  z-40 px-4 h-screen lg:rounded-tr-[50px] md:rounded-tr-[50px] sm:rounded-tr-[30px] bg-primary `}
+          className={`${sidebarOpen ? "w-52" : "w-16"
+            } fixed top-0 md:left-0 lg:left-0  z-40 px-4 h-screen lg:rounded-tr-[50px] md:rounded-tr-[50px] sm:rounded-tr-[30px] bg-primary `}
         >
           <div className="flex items-center lg:py-6 md:py-6 sm:pt-6 sm:pb-3 pt">
             {sidebarOpen ? (
@@ -297,9 +297,8 @@ const Sidebar = ({ sidebarOpen }) => {
                             className=" absolute z-10 visible inline-block px-2 py-1 text-sm font-medium text-white bg-SlateBlue rounded-sm shadow-sm opacity-100 tooltip  left-[30px]  dark:bg-gray-700"
                           >
                             <span
-                              className={`${
-                                !sidebarOpen && !tooltipVisible && "hidden"
-                              } ml-0 text-sm `}
+                              className={`${!sidebarOpen && !tooltipVisible && "hidden"
+                                } ml-0 text-sm `}
                             >
                               {item.title}
                             </span>
@@ -314,15 +313,13 @@ const Sidebar = ({ sidebarOpen }) => {
                       </span>
                     </Link>
                     {item.subMenus && (
-                      <div className={`${!sidebarOpen ? "ml-[1px]" : "ml-5"}`}>
+                      <div className={`${!sidebarOpen ? "right-[-13px] absolute" : "ml-5 absolute right-0"}`}>
                         <FiIcons.FiChevronDown
-                          className={`${
-                            activeSubmenu === index
-                              ? "transform rotate-180"
-                              : ""
-                          } transition-transform duration-300 text-white ${
-                            sidebarOpen ? "text-[25px]" : "text-[18px]"
-                          }`}
+                          className={`${activeSubmenu === index
+                            ? "transform rotate-180"
+                            : ""
+                            } transition-transform duration-300 text-white ${sidebarOpen ? "text-lg" : "text-lg"
+                            }`}
                           onClick={() =>
                             setActiveSubmenu(
                               activeSubmenu === index ? null : index
@@ -333,9 +330,9 @@ const Sidebar = ({ sidebarOpen }) => {
                     )}
                   </div>
                   {activeSubmenu === index && item.subMenus && (
-                    <ul className={`${!sidebarOpen ? "ml-2" : "ml-6"} mt-3`}>
+                    <ul className={`${!sidebarOpen ? "ml-0" : "ml-4"} mt-3`}>
                       {item.subMenus.map((submenu, subIndex) => (
-                        <li key={subIndex} className="py-2 relative">
+                        <li key={subIndex} className="p-2 relative submenu">
                           <Link to={submenu.path}>
                             <div
                               onMouseEnter={() =>
@@ -354,11 +351,10 @@ const Sidebar = ({ sidebarOpen }) => {
                                   className=" absolute z-10 visible inline-block px-2 py-1 text-sm font-medium text-white bg-SlateBlue rounded-sm shadow-sm opacity-100 tooltip  left-[30px]  dark:bg-gray-700"
                                 >
                                   <span
-                                    className={`${
-                                      !sidebarOpen &&
+                                    className={`${!sidebarOpen &&
                                       !SMTooltipVisible &&
                                       "hidden"
-                                    } ml-0 text-sm `}
+                                      } ml-0 text-sm `}
                                   >
                                     {submenu.title}
                                   </span>
@@ -403,9 +399,8 @@ const Sidebar = ({ sidebarOpen }) => {
                           className=" absolute z-10 visible inline-block px-2 py-1 text-sm font-medium text-white bg-SlateBlue rounded-sm shadow-sm opacity-100 tooltip  left-[30px]  dark:bg-gray-700"
                         >
                           <span
-                            className={`${
-                              !sidebarOpen && !MITooltipVisible && "hidden"
-                            } ml-0  `}
+                            className={`${!sidebarOpen && !MITooltipVisible && "hidden"
+                              } ml-0  `}
                           >
                             {item.title}
                           </span>
