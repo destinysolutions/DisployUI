@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "../../../Styles/sidebar.css";
-import { GrRefresh } from "react-icons/gr";
+import { IoMdRefresh } from 'react-icons/io'
+import { VscVmConnect } from 'react-icons/vsc'
+import { BiExitFullscreen } from 'react-icons/bi'
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
 import { TbUpload } from "react-icons/tb";
 import { RiDeleteBin5Line } from "react-icons/ri";
@@ -37,27 +39,24 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <div className="pt-6 px-5">
         <div className={`${sidebarOpen ? "ml-52" : "ml-16"}`}>
-          <div className="justify-between flex items-center">
+          <div className="justify-between lg:flex md:flex items-center sm:block">
             <div className="section-title">
               <h1 className="not-italic font-medium text-2xl text-[#001737]">
                 Merged Screens
               </h1>
             </div>
-            <div className="icons flex  items-center">
-              <div className="px-2">
-                <button className="border rounded-full ">
-                  <GrRefresh className="text-3xl p-1" />
+            <div className="icons flex  items-center sm:mt-3">
+              <div>
+                <button className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue ">
+                  <IoMdRefresh className="p-1 text-3xl text-SlateBlue hover:text-white " />
                 </button>
               </div>
-              <div className="px-1">
-                <button className="border rounded-full ">
-                  <img
-                    src="/ScreenImg/connect_screen.svg"
-                    className="w-[30px] h-[28px] p-1"
-                  />
+              <div>
+                <button type="button" className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue">
+                  <VscVmConnect className="p-1 text-3xl text-SlateBlue hover:text-white" />
                 </button>
               </div>
-              <div className="px-2">
+              <div>
                 <button>
                   {" "}
                   <input type="checkbox" className=" w-6 h-6" />
@@ -67,14 +66,18 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
 
           <div className="accordions mt-5">
-            <div className="section shadow-md p-5 rounded-md bg-white flex items-center justify-between">
+            <div className="section shadow-md p-5 rounded-md bg-white  lg:flex md:flex  sm:block items-center justify-between">
               <h1 className="text-lg">Merged Screen Name1</h1>
               <div className="flex items-center">
                 {isHovering && (
-                  <div className="flex items-center">
+                  <div className="flex items-center flex-wrap">
                     <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
                       Preview
                     </button>
+                    <button className="rounded-full mx-1 border hover:bg-SlateBlue">
+                      <BiExitFullscreen className="text-2xl p-1 hover:text-white" />
+                    </button>
+
                     <button className="rounded-full mx-1 border hover:bg-SlateBlue">
                       <TbUpload className="text-2xl p-1 hover:text-white" />
                     </button>
@@ -95,6 +98,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                       <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
                         Preview
                       </button>{" "}
+                      <button className="rounded-full mx-1 border hover:bg-SlateBlue">
+                        <BiExitFullscreen className="text-2xl p-1 hover:text-white" />
+                      </button>
                       <button className="rounded-full mx-1 border hover:bg-SlateBlue">
                         <TbUpload className="text-2xl p-1 hover:text-white" />
                       </button>
@@ -426,20 +432,24 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
 
           <div className="accordions mt-5">
-            <div className="section shadow-md p-5 rounded-md bg-white flex items-center justify-between">
+            <div className="section shadow-md p-5 rounded-md bg-white  lg:flex md:flex  sm:block items-center justify-between">
               <h1 className="text-lg">Merged Screen Name1</h1>
-              <div className="flex items-center">
+              <div className="flex items-center ">
                 {isHovering2 && (
-                  <div className="flex items-center">
-                    <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
-                      Preview
+                  <div className="flex items-center flex-wrap">
+                    <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white"> Preview</button>
+                    <button className="rounded-full mx-1 border hover:bg-SlateBlue">
+                      <BiExitFullscreen className="text-2xl p-1 hover:text-white" />
                     </button>
                     <button className="rounded-full mx-1 border hover:bg-SlateBlue">
                       <TbUpload className="text-2xl p-1 hover:text-white" />
                     </button>
+
                     <button className="rounded-full mx-1 border hover:bg-red hover:border-red">
                       <RiDeleteBin5Line className="text-2xl p-1 hover:text-white" />
                     </button>
+
+
                     <button>
                       {" "}
                       <input type="checkbox" className=" mx-1 w-6 h-5 mt-2" />
@@ -447,13 +457,16 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 )}
 
-                <div className=" flex items-center">
+                <div className=" flex items-center flex-wrap">
                   {showdata2 && !isHovering2 && (
                     <>
                       {" "}
                       <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
                         Preview
                       </button>{" "}
+                      <button className="rounded-full mx-1 border hover:bg-SlateBlue">
+                        <BiExitFullscreen className="text-2xl p-1 hover:text-white" />
+                      </button>
                       <button className="rounded-full mx-1 border hover:bg-SlateBlue">
                         <TbUpload className="text-2xl p-1 hover:text-white" />
                       </button>

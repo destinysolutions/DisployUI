@@ -72,10 +72,10 @@ const Sidebar = ({ sidebarOpen }) => {
       ),
     },
     {
-      title: "Publish",
+      title: "My Schedule",
       cName: "nav-text link-items",
-      path: "/publish",
-      icon: <img src="/MenuIcons/publish_icon.svg" alt="Publish" />,
+      path: "/myplan",
+      icon: <img src="/MenuIcons/schedule_icon.svg" alt="My_Plan" />,
     },
     {
       title: "Apps",
@@ -89,12 +89,7 @@ const Sidebar = ({ sidebarOpen }) => {
       path: "/reports",
       icon: <img src="/MenuIcons/reports_icon.svg" alt="Reports" />,
     },
-    {
-      title: "My Plan",
-      cName: "nav-text link-items",
-      path: "/myplan",
-      icon: <img src="/MenuIcons/my_plan_icon.svg" alt="My_Plan" />,
-    },
+    
   ];
   const MenuIcons = [
     {
