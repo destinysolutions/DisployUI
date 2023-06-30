@@ -1,0 +1,33 @@
+.fileUploadIcon {
+  background-color: #d5e3ff;
+  color: SlateBlue;
+  padding: 12px;
+  border-radius: 45px;
+}
+.progress-continue,.progress-success ,.progress-error {
+    width: 100%;
+    height: 10px;
+   
+  }
+  .progress-continue::-webkit-progress-value {
+    background-color: #41479B; 
+    border-radius: 5px; 
+  }
+  .progress-continue::-webkit-progress-bar {
+    background-color:#ECEDFF;
+    border-radius: 5px; 
+  }
+
+  .progress-success::-webkit-progress-value {
+    background-color: #73B172; 
+    border-radius: 5px; 
+  }
+  .progress-success::-webkit-progress-bar {
+    background-color:#ECEDFF;
+    border-radius: 5px; 
+  }
+
+  .progress-error::-webkit-progress-bar {
+    background-color:#ECEDFF;
+    border-radius: 5px; 
+  }

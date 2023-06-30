@@ -11,6 +11,8 @@ import Screensplayer from "../Components/Screen/SubScreens/Screensplayer";
 import { useState, useEffect } from "react";
 import MergeScreen from "../Components/Screen/SubScreens/MergeScreen";
 import NewScreenDetail from "../Components/Screen/SubScreens/NewScreenDetail";
+import FileUpload from "../Components/Assests/fileUpload";
+import Assets from "../Components/Assests/Assets";
 
 const Routing = () => {
   const [sidebarOpen, setSidebarOpen] = useState();
@@ -106,9 +108,27 @@ const Routing = () => {
           }
         />
         <Route
+          path="/fileupload"
+          element={
+            <FileUpload
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
+        <Route
           path="/newscreendetail"
           element={
             <NewScreenDetail
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
+        <Route
+          path="/assets"
+          element={
+            <Assets
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
             />

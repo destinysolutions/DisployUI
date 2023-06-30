@@ -44,11 +44,11 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="pt-6 px-5">
         <div className={`${sidebarOpen ? "ml-[13rem]" : "ml-16"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
-            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
+            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4">
               Overview dashboard
             </h1>
             <div className="lg:flex md:flex sm:block">
-              <button className=" dashboard-btn  flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-5 sm-mt-2 py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className=" dashboard-btn  flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-5 py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <BsLightningCharge className="text-lg mr-1" />
                 Book a Demo
               </button>
