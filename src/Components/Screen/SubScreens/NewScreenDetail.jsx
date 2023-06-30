@@ -411,10 +411,10 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               {/* <div className="flex items-center justify-center">
                                 <img src="/DisployImg/BlackLogo.svg" />
                               </div> */}
-                              <div className="bg-white rounded-[20px] shadow-md p-5">
+                              <div className="bg-white rounded-[30px]">
                                 <div className="container mx-auto">
-                                  <div className="flex flex-wrap">
-                                    <div className="border-r border-gray-200 dark:border-gray-700">
+                                  <div className="flex flex-wrap items-center">
+                                    <div>
                                       <nav
                                         className="flex flex-col space-y-2"
                                         aria-label="Tabs"
@@ -423,9 +423,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                       >
                                         <button
                                           type="button"
-                                          className={`hs-tab-active:border-blue-500 hs-tab-active:text-blue-600 dark:hs-tab-active:text-blue-600 py-1 pr-4 inline-flex items-center gap-2 border-r-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 ${
-                                            activeTab === 1 ? "active" : ""
-                                          }`}
+                                          className={`   inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 1 ? "active" : ""
+                                            }`}
                                           onClick={() => handleTabClick(1)}
                                         >
                                           <span className="bg-[#D5E3FF] p-2 rounded">
@@ -435,9 +434,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                         </button>
                                         <button
                                           type="button"
-                                          className={`hs-tab-active:border-blue-500 hs-tab-active:text-blue-600 dark:hs-tab-active:text-blue-600 py-1 pr-4 inline-flex items-center gap-2 border-r-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 dark:hover:text-gray-300 ${
-                                            activeTab === 2 ? "active" : ""
-                                          }`}
+                                          className={`   inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 2 ? "active" : ""
+                                            }`}
                                           onClick={() => handleTabClick(2)}
                                         >
                                           <span className="bg-[#D5E3FF] p-2 rounded">
@@ -447,9 +445,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                         </button>
                                         <button
                                           type="button"
-                                          className={`hs-tab-active:border-blue-500 hs-tab-active:text-blue-600 dark:hs-tab-active:text-blue-600 py-1 pr-4 inline-flex items-center gap-2 border-r-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 dark:hover:text-gray-300 ${
-                                            activeTab === 3 ? "active" : ""
-                                          }`}
+                                          className={`  inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 3 ? "active" : ""
+                                            }`}
                                           onClick={() => handleTabClick(3)}
                                         >
                                           <span className="bg-[#D5E3FF] p-2 rounded">
@@ -459,9 +456,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                         </button>
                                         <button
                                           type="button"
-                                          className={`hs-tab-active:border-blue-500 hs-tab-active:text-blue-600 dark:hs-tab-active:text-blue-600 py-1 pr-4 inline-flex items-center gap-2 border-r-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 dark:hover:text-gray-300 ${
-                                            activeTab === 3 ? "active" : ""
-                                          }`}
+                                          className={`  inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 4 ? "active" : ""
+                                            }`}
                                           onClick={() => handleTabClick(4)}
                                         >
                                           <span className="bg-[#D5E3FF] p-2 rounded">
@@ -472,7 +468,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                       </nav>
                                     </div>
 
-                                    <div className="ml-3">
+                                    <div className="p-5 drop-shadow-2xl bg-white rounded-3xl">
                                       <div
                                         id="vertical-tab-with-border-1"
                                         role="tabpanel"

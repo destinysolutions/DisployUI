@@ -47,7 +47,8 @@ img.cursor-pointer.tagPopup {
   background: #fff !important;
   padding: 0;
 }
-img.cursor-pointer.assestPopup{
+
+img.cursor-pointer.assestPopup {
   margin: 0;
   width: 17px;
   height: 13px;
@@ -136,4 +137,28 @@ button.tabshow.tabactive {
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
   width: 120px;
+}
+
+.synctab {
+  background: #D9D9D9;
+  color: #001737;
+  font-size: 16px;
+  padding: 5px 20px;
+  border-radius: 20px;
+  margin: 0 10px;
+
+}
+
+.mediactivetab {
+  padding: 5px 5px 5px 15px;
+}
+
+.mediactivetab.active {
+  background: #fff;
+  box-shadow: 0px 6px 39px 20px #cacbe180;
+
+  border-top-left-radius: 22px;
+
+  border-bottom-left-radius: 22px;
+  z-index: 9;
 }
