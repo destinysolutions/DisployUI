@@ -13,6 +13,7 @@ import MergeScreen from "../Components/Screen/SubScreens/MergeScreen";
 import NewScreenDetail from "../Components/Screen/SubScreens/NewScreenDetail";
 import FileUpload from "../Components/Assests/fileUpload";
 import Assets from "../Components/Assests/Assets";
+import MyPlaylist from "../Components/PlayList/MyPlaylist";
 
 const Routing = () => {
   const [sidebarOpen, setSidebarOpen] = useState();
@@ -129,6 +130,15 @@ const Routing = () => {
           path="/assets"
           element={
             <Assets
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
+         <Route
+          path="/myplaylist"
+          element={
+            <MyPlaylist
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
             />

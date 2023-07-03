@@ -10,9 +10,17 @@ import { FaUnsplash } from "react-icons/fa";
 import { FiUploadCloud } from "react-icons/fi";
 import "../../Styles/assest.css";
 import { AiFillFile } from "react-icons/ai";
+import { RxCross2 } from "react-icons/rx";
+import { IoMdRefresh } from "react-icons/io";
+import { Link } from "react-router-dom";
+import { FiCheckCircle } from "react-icons/fi";
+import { BiError } from "react-icons/bi";
 
 const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   const [browseFiles, setbrowseFiles] = useState(false);
+  const [fileSuccessModal, setfileSuccessModal] = useState(false);
+  const [fileErrorModal, setfileErrorModal] = useState(false);
+
   return (
     <>
       <div className="flex border-b border-gray py-3">
@@ -26,9 +34,11 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
               Media Upload
             </h1>
             <div className="lg:flex md:flex sm:block">
-              <button className="flex align-middle border-primary items-center border rounded-full px-8 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                Cancel
-              </button>
+              <Link to="/assets">
+                <button className="flex align-middle border-primary items-center border rounded-full px-8 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  Cancel
+                </button>
+              </Link>
             </div>
           </div>
           <div className="lg:flex lg:justify-between sm:block items-center mt-7">
@@ -129,15 +139,29 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
                     <AiFillFile className="text-[#AC96E4] text-4xl bg-[#E9E3F7] p-2 rounded-sm" />
                   </span>
                   <div className="flex flex-col ml-4 w-full">
-                    <h6 className="text-sm">Scann_158.pdf</h6>
-                    <span className="text-sm">30 MB / 74 MB</span>
+                    <div className="flex justify-between">
+                      <div>
+                        <h6 className="text-sm">Scann_158.pdf</h6>
+                        <span className="text-sm">30 MB / 74 MB</span>
+                      </div>
+                      <div>
+                        <RxCross2 className="text-SlateBlue" />
+                      </div>
+                    </div>
                     <div className="flex justify-between items-center mt-2">
-                    <progress className="progress-continue" max={100} value={46}/>
-                    <span className="">46%</span>
+                      <progress
+                        className="progress-continue"
+                        max={100}
+                        value={46}
+                      />
+                      <span className="ml-3 text-[#9892A6]">46%</span>
                     </div>
                   </div>
                 </div>
-                <div className="p-3 bg-white flex items-center mt-5">
+                <div
+                  className="p-3 bg-white flex items-center mt-5"
+                  onClick={() => setfileSuccessModal(true)}
+                >
                   <span>
                     <AiFillFile className="text-[#73B172] text-4xl bg-[#DAF2D9] p-2 rounded-sm" />
                   </span>
@@ -145,29 +169,95 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
                     <h6 className="text-sm">Scann_158.pdf</h6>
                     <span className="text-sm">30 MB / 74 MB</span>
                     <div className="flex justify-between items-center mt-2">
-                    <progress className="progress-success" max={100} value={100}/>
-                    <span className="">100%</span>
+                      <progress
+                        className="progress-success"
+                        max={100}
+                        value={100}
+                      />
+                      <span className="ml-3 text-[#309B2E]">100%</span>
                     </div>
+                    <button></button>
                   </div>
                 </div>
-                <div className="p-3 bg-white flex items-center my-5">
+
+                <div
+                  className="p-3 bg-white flex items-center my-5"
+                  onClick={() => setfileErrorModal(true)}
+                >
                   <span>
                     <AiFillFile className="text-[#E36363] text-4xl bg-[#F2D9D9] p-2 rounded-sm" />
                   </span>
                   <div className="flex flex-col ml-4 w-full">
-                    <h6 className="text-sm">Scann_158.pdf</h6>
-                    <span className="text-sm">30 MB / 74 MB</span>
-                    <div className="flex justify-between items-center mt-2">
-                    <progress className="progress-error" max={100}/>
-                    <span className="">error</span>
+                    <div className="flex justify-between">
+                      <div>
+                        <h6 className="text-sm">Scann_158.pdf</h6>
+                        <span className="text-sm">30 MB / 74 MB</span>
+                      </div>
+                      <div>
+                        <IoMdRefresh className="text-SlateBlue" />
+                      </div>
                     </div>
-                   
-         
+                    <div className="flex justify-between items-center mt-2">
+                      <progress className="progress-error" max={100} />
+                      <span className="ml-3 text-[#E36363]">error</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </>
           )}
+          {fileSuccessModal ? (
+            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+              <div className="relative w-full max-w-xl max-h-full">
+                <div className="relative bg-white rounded-lg shadow">
+                  <div className="p-6 text-center">
+                    <FiCheckCircle className="mx-auto mb-4 text-[#20AE5C] w-14 h-14" />
+                    <h3 className="mb-5 text-2xl font-bold text-[#20AE5C]">
+                      SUCCESS!
+                    </h3>
+                    <p>Thank you for your request.</p>
+                    <p>
+                      We are working hard to find the best service and deals for
+                      you.
+                    </p>
+                    <p className="mb-7 text-[#9892A6] mt-1">
+                      Kindly check your media gallery for confirmation.
+                    </p>
+                    <Link to="/assets">
+                      <button className="text-white bg-[#20AE5C] rounded text-lg font-bold px-7 py-2.5">
+                        Continue
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+          {fileErrorModal ? (
+            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+              <div className="relative w-full max-w-xl max-h-full">
+                <div className="relative bg-white rounded-lg shadow">
+                  <div className="p-6 text-center">
+                    <BiError className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
+                    <h3 className="mb-5 text-2xl font-bold text-[#F21E1E]">
+                      ERROR!
+                    </h3>
+                    <p>Thank you for your request.</p>
+                    <p>We are unable to continue the process.</p>
+                    <p className="mb-7 text-[#9892A6] mt-1">
+                      Please try again to complete the request.
+                    </p>
+                    <button
+                      className="text-white bg-[#F21E1E] rounded text-lg font-bold px-7 py-2.5"
+                      onClick={() => setfileErrorModal(false)}
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
     </>
