@@ -486,7 +486,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                 <AiOutlineSearch className="absolute top-[14px] right-[230px] z-10 text-gray searchicon" />
                                                 <input
                                                   type="text"
-                                                  placeholder=" Search Users "
+                                                  placeholder=" Search Playlists... "
                                                   className="border border-primary rounded-full px-7 py-2 search-user"
                                                 />
                                               </div>
