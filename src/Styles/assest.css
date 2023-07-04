@@ -1,0 +1,130 @@
+.fileUploadIcon {
+  background-color: #d5e3ff;
+  color: SlateBlue;
+  padding: 12px;
+  border-radius: 45px;
+}
+
+.progress-continue,
+.progress-success,
+.progress-error {
+  width: 100%;
+  height: 10px;
+
+}
+
+.progress-continue::-webkit-progress-value {
+  background-color: #41479B;
+  border-radius: 5px;
+}
+
+.progress-continue::-webkit-progress-bar {
+  background-color: #ECEDFF;
+  border-radius: 5px;
+}
+
+.progress-success::-webkit-progress-value {
+  background-color: #73B172;
+  border-radius: 5px;
+}
+
+.progress-success::-webkit-progress-bar {
+  background-color: #ECEDFF;
+  border-radius: 5px;
+}
+
+.progress-error::-webkit-progress-bar {
+  background-color: #ECEDFF;
+  border-radius: 5px;
+}
+
+/* assest page */
+
+.tabicon {
+  transform: translate(-50%, -50%);
+}
+
+.tabactivebtn {
+  background-color: #00072e;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 30px;
+  min-width: 120px;
+  text-align: center;
+  position: relative;
+
+}
+
+.tabactivebtn:before {
+  content: '';
+  position: absolute;
+
+  bottom: -20px;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #00072e;
+  border-bottom: 10px solid transparent;
+}
+
+
+.tabbtn {
+  background: #E4E6FF;
+  padding: 12px 20px;
+  border-radius: 30px;
+  box-shadow: 0px 10px 20px #cccccc26;
+  margin: 0 10px;
+  min-width: 120px;
+  text-align: center;
+}
+
+.assetsdw {
+  position: absolute;
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 10px 20px #ccc;
+  font-size: 16px;
+  width: 166px;
+  border: 1px solid #ccc;
+
+  transform: translate(1%, 0px);
+  right: 6px;
+  top: 30px;
+}
+
+.assetsdw:before {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  transform: rotate(45deg);
+  top: -8px;
+  right: 14px;
+}
+
+.show-togglecontent {
+  display: block;
+}
+
+.togglecontent {
+  display: none;
+}
+
+button.tabshow.tabassactive.px-5 {
+  background: #E4E4E4;
+  padding: 10px 15px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+button.tabshow.tabassactive.pr-5 {
+  background: #E4E4E4;
+  padding: 10px 10px 10px 5px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+}

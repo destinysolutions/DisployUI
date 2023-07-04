@@ -491,7 +491,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               <tbody>
                 <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
                   <td className="flex items-center ">
-                    <input type="checkbox" className="" />{" "}
+                    <input type="checkbox" className="mr-3" />{" "}
                     <Link to="/screensplayer">My Screen 1</Link>{" "}
                     <button>
                       <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />

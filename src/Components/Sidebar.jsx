@@ -61,7 +61,7 @@ const Sidebar = ({ sidebarOpen }) => {
     {
       title: "Playlist ",
       cName: "nav-text link-items",
-      path: "/playlist",
+      path: "/myplaylist",
       icon: <img src="/MenuIcons/playlist_icon.svg" alt="Playlist" className=" w-4" />,
     },
     {
