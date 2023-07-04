@@ -115,16 +115,49 @@
   display: none;
 }
 
-button.tabshow.tabassactive.px-5 {
+.asstab {
+  padding: 10px 15px;
+}
+
+button.tabshow.tabassactive {
   background: #E4E4E4;
   padding: 10px 15px;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
 }
 
-button.tabshow.tabassactive.pr-5 {
+button.tabshow.tabassactive.right {
   background: #E4E4E4;
-  padding: 10px 10px 10px 5px;
+  padding: 10px 15px;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.vdetails {
+  padding: 20px;
+  position: relative;
+  top: -134px;
+  background: #00072ead;
+  color: #fff;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  margin-top: 150px;
+  z-index: -1;
+}
+
+td .assetsdw {
+  right: 18px;
+  top: inherit;
+  bottom: -80px;
+  z-index: 9;
+}
+
+td .tabicon svg {
+  font-size: 10px !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
+  padding: 5px !important;
+  border: 2px solid #fff !important;
 }

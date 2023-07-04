@@ -6,19 +6,32 @@ const AssetsAPI = [
         id: 1,
         Image: '../../../public/Assets/video1.png',
         icon: <HiOutlineVideoCamera className='bg-primary text-white text-3xl p-3 rounded-full min-w-[60px] min-h-[60px] border-4 border-white border-solid shadow-primary  hover:bg-SlateBlue cursor-pointer' />,
-        category: 'video'
+        category: 'video',
+        size: '1280*832',
+        storage: '155KB',
+        vtitle: 'Ships From Warehouse',
+        vdetails: 'Uploaded by  Johan Jun 5, 2023, 8:01 PM Video',
     },
     {
         id: 2,
         Image: '../../../public/Assets/video2.png',
         icon: <HiOutlineVideoCamera className='bg-primary text-white text-3xl p-3 rounded-full min-w-[60px] min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
-        category: 'video'
+        category: 'video',
+        size: '1280*832',
+        storage: '155KB',
+        vtitle: 'Ships From Warehouse',
+        vdetails: 'Uploaded by  Johan Jun 5, 2023, 8:01 PM Video',
+
     },
     {
         id: 3,
         Image: '../../../public/Assets/video3.png',
         icon: <HiOutlineVideoCamera className='bg-primary text-white text-3xl p-3 rounded-full min-w-[60px] min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
-        category: 'video'
+        category: 'video',
+        size: '1280*832',
+        storage: '155KB',
+        vtitle: 'Ships From Warehouse',
+        vdetails: 'Uploaded by  Johan Jun 5, 2023, 8:01 PM Video',
     },
     {
         id: 4,
@@ -26,7 +39,11 @@ const AssetsAPI = [
         icon: <RiGalleryFill className='bg-primary text-white text-3xl p-3 rounded-full min-w-[60px] min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
         title: 'Purchase Securely',
         subtitle: 'Image',
-        category: 'image'
+        category: 'image',
+        size: '1280*832',
+        storage: '155KB',
+        vtitle: 'Ships From Warehouse',
+        vdetails: 'Uploaded by  Johan Jun 5, 2023, 8:01 PM Video',
     },
     {
         id: 5,
@@ -34,7 +51,11 @@ const AssetsAPI = [
         icon: <RiGalleryFill className='bg-primary text-white text-3xl p-3 rounded-full min-w-[60px] min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
         title: 'Purchase Securely',
         subtitle: 'Image',
-        category: 'image'
+        category: 'image',
+        size: '1280*832',
+        storage: '155KB',
+        vtitle: 'Ships From Warehouse',
+        vdetails: 'Uploaded by  Johan Jun 5, 2023, 8:01 PM Video',
     },
     {
         id: 6,
@@ -42,7 +63,11 @@ const AssetsAPI = [
         icon: <RiGalleryFill className='bg-primary text-white text-3xl p-3 rounded-full min-w-[60px] min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
         title: 'Purchase Securely',
         subtitle: 'Image',
-        category: 'image'
+        category: 'image',
+        size: '1280*832',
+        storage: '155KB',
+        vtitle: 'Ships From Warehouse',
+        vdetails: 'Uploaded by  Johan Jun 5, 2023, 8:01 PM Video',
     },
 ]
 export default AssetsAPI
