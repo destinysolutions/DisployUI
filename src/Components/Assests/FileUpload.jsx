@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { AiOutlineDropbox } from "react-icons/ai";
@@ -15,8 +15,13 @@ import { IoMdRefresh } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { FiCheckCircle } from "react-icons/fi";
 import { BiError } from "react-icons/bi";
+import PropTypes from "prop-types";
 
 const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
+  FileUpload.propTypes = {
+    sidebarOpen: PropTypes.bool.isRequired,
+    setSidebarOpen: PropTypes.func.isRequired,
+  };
   const [browseFiles, setbrowseFiles] = useState(false);
   const [fileSuccessModal, setfileSuccessModal] = useState(false);
   const [fileErrorModal, setfileErrorModal] = useState(false);

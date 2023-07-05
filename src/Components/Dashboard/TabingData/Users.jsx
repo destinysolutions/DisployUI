@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import DataTable from "react-data-table-component";
 import "../../../Styles/dashboard.css";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -138,7 +138,7 @@ const Users = () => {
   }
 
   const [showActionBox, setShowActionBox] = useState(false);
-  const handleActionClick = (e) => {
+  const handleActionClick = () => {
     setShowActionBox(!showActionBox);
   };
 

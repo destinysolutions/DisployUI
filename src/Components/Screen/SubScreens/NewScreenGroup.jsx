@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "../../../Styles/sidebar.css";
 import "../../../Styles/screen.css";
-
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
 import { TbUpload } from "react-icons/tb";
 import { RiDeleteBin5Line } from "react-icons/ri";
@@ -10,10 +9,17 @@ import { TbArrowBarRight } from "react-icons/tb";
 import { MdOutlineModeEdit } from "react-icons/md";
 import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
-import { HiOutlineRectangleGroup } from 'react-icons/hi2'
-import { IoMdRefresh } from 'react-icons/io'
-import { BiExitFullscreen } from 'react-icons/bi'
+import { HiOutlineRectangleGroup } from "react-icons/hi2";
+import { IoMdRefresh } from "react-icons/io";
+import { BiExitFullscreen } from "react-icons/bi";
+import PropTypes from "prop-types";
+
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
+  NewScreenGroup.propTypes = {
+    sidebarOpen: PropTypes.bool.isRequired,
+    setSidebarOpen: PropTypes.func.isRequired,
+  };
+
   const [showdata, setShowdata] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const handleMouseOver = () => {

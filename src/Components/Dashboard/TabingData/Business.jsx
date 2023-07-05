@@ -1,8 +1,8 @@
-import React, { useState } from "react";
 import GoogleMapReact from "google-map-react";
 import ReactApexChart from "react-apexcharts";
 import { Link } from "react-router-dom";
-const AnyReactComponent = ({ text }) => <div>{text}</div>;
+
+const AnyReactComponent = () => <div></div>;
 const optionsBar = {
   colors: ["#3C50E0", "#80CAEE"],
   chart: {
@@ -117,7 +117,7 @@ const Business = () => {
     zoom: 11,
   };
 
-  const [state, setState] = useState({
+  const stateVlaue = {
     series: [
       {
         name: "Sales",
@@ -128,7 +128,7 @@ const Business = () => {
         data: [13, 23, 20, 8, 13, 27, 15],
       },
     ],
-  });
+  };
 
   return (
     <>
@@ -194,7 +194,7 @@ const Business = () => {
               <div id="chartTwo" className="ml-5 mb-5">
                 <ReactApexChart
                   options={optionsBar}
-                  series={state.series}
+                  series={stateVlaue.series}
                   type="bar"
                   height="300px"
                 />
@@ -259,8 +259,12 @@ const Business = () => {
       </div>
 
       <div className="dashboard-footer text-center lg:text-base md:text-base  z-10 my-4 sm:text-sm  py-2 ">
-        <h6 className="font-medium">Securely display dashboards from any application</h6>
-        <p>Find out more at  <Link to="/">disploy.com</Link></p>
+        <h6 className="font-medium">
+          Securely display dashboards from any application
+        </h6>
+        <p>
+          Find out more at <Link to="/">disploy.com</Link>
+        </p>
       </div>
     </>
   );
