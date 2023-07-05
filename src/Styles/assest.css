@@ -148,7 +148,7 @@ button.tabshow.tabassactive.right {
 }
 
 td .assetsdw {
-  right: 18px;
+  right: 7px;
   top: inherit;
   bottom: -80px;
   z-index: 9;
@@ -160,4 +160,27 @@ td .tabicon svg {
   min-height: 30px !important;
   padding: 5px !important;
   border: 2px solid #fff !important;
+}
+
+.newfolder td .assetsdw {
+  bottom: -115px;
+}
+
+@media(max-width:992px) {
+  .assetstable {
+    overflow-x: auto;
+  }
+
+  .tabbtn {
+    margin-top: 25px;
+  }
+}
+
+@media(max-width:767px) {
+  .sm\:grid-cols-12 {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+
+  }
+
+
 }
