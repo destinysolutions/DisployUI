@@ -139,12 +139,25 @@ button.tabshow.tabassactive.right {
   padding: 20px;
   position: relative;
   top: -134px;
-  background: #00072ead;
+
   color: #fff;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
   margin-top: 150px;
   z-index: -1;
+}
+
+.vdetails:before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #00072dab;
+  left: 0;
+  z-index: -1;
+  bottom: 13px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 td .assetsdw {
@@ -166,12 +179,17 @@ td .tabicon svg {
   bottom: -115px;
 }
 
+.clickdetail p {
+  min-height: 50px;
+}
+
 @media(max-width:992px) {
   .assetstable {
     overflow-x: auto;
   }
 
-  .tabbtn {
+  .tabbtn,
+  .tabactivebtn {
     margin-top: 25px;
   }
 }
@@ -182,5 +200,22 @@ td .tabicon svg {
 
   }
 
+  .tabbtn,
+  .tabactivebtn {
+    width: 100% !important;
+    font-size: 14px !important;
+    padding: 10px !important;
+    margin: 0 !important;
+    margin-top: 5px !important;
+  }
 
+  .asstab,
+  button.tabshow.tabassactive {
+    padding: 10px 12px !important;
+
+  }
+
+  .media-icon span {
+    margin: 3px;
+  }
 }

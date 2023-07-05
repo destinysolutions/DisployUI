@@ -8,7 +8,7 @@ import { FaFacebookF } from "react-icons/fa";
 const Login = () => {
   return (
     <>
-      <div className="main">
+      <div className="main login">
         <div className="bg-cover bg-no-repeat h-screen flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center px-6 mx-auto md:h-screen lg:py-0">
             <div className="flex items-center pb-5">
