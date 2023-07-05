@@ -1,0 +1,26 @@
+.appdw {
+    position: absolute;
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 10px 20px #ccc;
+    font-size: 16px;
+    width: 166px;
+    border: 1px solid #ccc;
+    transform: translate(1%, 0px);
+    right: -7px;
+    top: 30px;
+  }
+  
+  .appdw:before {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: #fff;
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    transform: rotate(45deg);
+    top: -8px;
+    right: 14px;
+  }

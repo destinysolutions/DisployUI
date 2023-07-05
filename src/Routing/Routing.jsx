@@ -14,6 +14,7 @@ import NewScreenDetail from "../Components/Screen/SubScreens/NewScreenDetail";
 import FileUpload from "../Components/Assests/fileUpload";
 import Assets from "../Components/Assests/Assets";
 import MyPlaylist from "../Components/PlayList/MyPlaylist";
+import Apps from "../Components/Apps/Apps";
 
 const Routing = () => {
   const [sidebarOpen, setSidebarOpen] = useState();
@@ -24,19 +25,19 @@ const Routing = () => {
       setSidebarOpen(true);
     }
   }, [sidebarOpen]);
-  
+
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-  
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [handleResize, sidebarOpen]);
-  
+
   useEffect(() => {
     handleResize();
     window.addEventListener("load", handleResize);
-  
+
     return () => {
       window.removeEventListener("load", handleResize);
     };
@@ -132,6 +133,12 @@ const Routing = () => {
           path="/assets"
           element={
             <Assets sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          }
+        />
+        <Route
+          path="/apps"
+          element={
+            <Apps sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           }
         />
         <Route
