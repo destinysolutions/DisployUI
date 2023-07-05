@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import Sidebar from "../Sidebar"
 import Navbar from "../Navbar";
 import { TiFolderOpen } from 'react-icons/ti'
@@ -14,7 +14,16 @@ import { RiDeleteBin5Line } from 'react-icons/ri'
 import { CgMoveRight } from 'react-icons/cg'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { SlFolderAlt } from 'react-icons/sl'
+import { Link } from "react-router-dom";
+import FileUpload from './FileUpload'
+import PropTypes from "prop-types";
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
+
+    Assets.propTypes = {
+        sidebarOpen: PropTypes.bool.isRequired,
+        setSidebarOpen: PropTypes.func.isRequired,
+    };
+
     const [tabitems, setTabitems] = useState(AssetsAPI)
     const [activetab, setActivetab] = useState(1)
     const filterItems = (catgitem) => {
@@ -28,22 +37,47 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     const handleActiveBtnClick = (btnNumber) => {
         setActivetab(btnNumber)
     }
-    const [assetsdw, setassetsdw] = useState(false)
+    {/* video btn */ }
     const [asstab, setTogglebtn] = useState(1);
-    const [vbtn, setVbtnclick] = useState(false)
+    const [vbtn, setVbtnclick] = useState(null)
     const updatetoggle = (id) => {
 
 
         setTogglebtn(id);
     }
     const updatevbtntoggle = (id) => {
-        setVbtnclick(id);
+
+        if (vbtn === id) {
+            setVbtnclick(null);
+        } else {
+            setVbtnclick(id);
+        }
+
     }
+    {/* tab1 threedot dwopdown */ }
+    const [assetsdw, setassetsdw] = useState(null)
+
+
     const updateassetsdw = (id) => {
-        setassetsdw(id);
+        if (assetsdw === id) {
+            setassetsdw(null);
+        } else {
+            setassetsdw(id);
+        }
+
+    }
+    {/* tab2 threedot dwopdown */ }
+    const [assetsdw2, setassetsdw2] = useState(null)
+    const updateassetsdw2 = (id) => {
+        if (assetsdw2 === id) {
+            setassetsdw2(null);
+        } else {
+            setassetsdw2(id);
+        }
+
     }
 
-
+    {/*New Folder */ }
     const [newFolderName, setNewFolderName] = useState("");
     const [tableRows, setTableRows] = useState([]);
 
@@ -56,8 +90,25 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         setTableRows([...tableRows, newFolder]);
         setNewFolderName("");
     };
+    {/*newfolder threedot dwopdown */ }
+    const [assetsdw3, setassetsdw3] = useState(null)
+    const updateassetsdw3 = (id) => {
+        if (assetsdw3 === id) {
+            setassetsdw3(null);
+        } else {
+            setassetsdw3(id);
+        }
+    }
+    {/*checkedbox */ }
+    const [selectedItems, setSelectedItems] = useState([]);
 
-
+    const handleCheckboxChange = (itemId) => {
+        if (selectedItems.includes(itemId)) {
+            setSelectedItems(selectedItems.filter((id) => id !== itemId));
+        } else {
+            setSelectedItems([...selectedItems, itemId]);
+        }
+    };
     return (
         <>
             <div className="flex border-b border-gray py-3">
@@ -80,7 +131,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
                             <button className=" dashboard-btn flex align-middle items-center text-primary rounded-full  text-base border border-primary lg:px-9 sm:px-5  mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                                 <AiOutlineCloudUpload className="text-2xl rounded-full mr-1 bg-primary text-white p-1" />
-                                Upload
+                                <Link to={'/FileUpload'}> Upload </Link>
                             </button>
 
                             <ul className="flex items-center  mr-3  rounded-full  border border-primary">
@@ -104,34 +155,38 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
 
                     <div className={asstab === 1 ? 'show-togglecontent active w-full tab-details mt-10' : 'togglecontent'}>
-                        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-12 gap-4">
+                        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-12 gap-8">
 
                             {
                                 tabitems.map((elem) => {
-                                    const { id, Image, icon, title, subtitle, size, storage, vtitle, vdetails } = elem;
+                                    const { id, Image, icon, size, storage, vtitle, vdetails } = elem;
                                     return (
                                         <>
 
                                             <div key={id} className="relative">
-                                                <div className="imagebox relative">
+                                                <div className={`imagebox relative ${selectedItems.includes(id) ? 'active opacity-1' : 'opacity-50'}`}>
                                                     <img src={Image} className="w-full rounded-2xl" />
                                                     <div className="checkbox flex justify-between absolute top-5 px-4 w-full">
-                                                        <input type="checkbox" className="w-[20px] h-[20px]" />
+                                                        <input type="checkbox" className="w-[20px] h-[20px]" checked={selectedItems.includes(id)}
+                                                            onChange={() => handleCheckboxChange(id)} />
                                                         <button onClick={() => updateassetsdw(id)}><BsThreeDots className="text-2xl" /></button>
                                                         {
                                                             assetsdw === id &&
+                                                            selectedItems.includes(id) && (
 
-                                                            <div className="assetsdw">
-                                                                <ul>
-                                                                    <li className="flex text-sm items-center"><FiUpload className="mr-2 text-lg" />Set to Screen</li>
-                                                                    <li className="flex text-sm items-center" ><MdPlaylistPlay className="mr-2 text-lg" />Add to Playlist</li>
-                                                                    <li className="flex text-sm items-center" ><FiDownload className="mr-2 text-lg" />Download</li>
-                                                                    <li className="flex text-sm items-center" ><CgMoveRight className="mr-2 text-lg" />Move to</li>
-                                                                    <li className="flex text-sm items-center" ><RiDeleteBin5Line className="mr-2 text-lg" />Move to Trast</li>
-                                                                </ul>
-                                                            </div>
-
+                                                                <div className="assetsdw">
+                                                                    <ul>
+                                                                        <li className="flex text-sm items-center"><FiUpload className="mr-2 text-lg" />Set to Screen</li>
+                                                                        <li className="flex text-sm items-center" ><MdPlaylistPlay className="mr-2 text-lg" />Add to Playlist</li>
+                                                                        <li className="flex text-sm items-center" ><FiDownload className="mr-2 text-lg" />Download</li>
+                                                                        <li className="flex text-sm items-center" ><CgMoveRight className="mr-2 text-lg" />Move to</li>
+                                                                        <li className="flex text-sm items-center" ><RiDeleteBin5Line className="mr-2 text-lg" />Move to Trast</li>
+                                                                    </ul>
+                                                                </div>
+                                                            )
                                                         }
+
+
 
                                                     </div>
                                                 </div>
@@ -155,10 +210,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                         </div>
                                                     }
                                                 </div>
-                                                <div className="title text-center relative mt-5">
+                                                {/* <div className="title text-center relative mt-5">
                                                     <h2 className="text-base mb-1 font-semibold">{title}</h2>
                                                     <h2 className="text-md font-light">{subtitle}</h2>
-                                                </div>
+                                                </div>*/}
                                             </div>
 
 
@@ -171,7 +226,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
 
                     <div className={asstab === 2 ? 'show-togglecontent active w-full tab-details mt-10' : 'togglecontent'}>
-                        <div className="">
+                        <div className="assetstable">
 
 
 
@@ -190,9 +245,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     <tr><div className="mb-2"></div></tr>
                                 </thead>
                                 <tbody>
-                                    {tableRows.map((folder) => (
+
+
+                                    {tableRows.map((folder, id) => (
                                         <>
-                                            <tr key={folder.id} className=" bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] shadow-sm ">
+                                            <tr key={folder.id} className=" bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] shadow-sm newfolder">
                                                 <td className="flex items-center relative ">
                                                     <div>
                                                         <SlFolderAlt className=" text-5xl font-medium text-primary " />
@@ -207,22 +264,24 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                 <td>Video</td>
                                                 <td>155KB</td>
                                                 <td> <input type="checkbox" className="w-[20px] h-[20px]" /></td>
-                                                <td className="relative w-[10%]">
-                                                    <button onClick={() => setassetsdw(!assetsdw)}><BsThreeDotsVertical className="text-2xl" /></button>
+                                                <td className="relative w-[40px]">
+                                                    <button onClick={() => updateassetsdw3(id)}><BsThreeDotsVertical className="text-2xl relative" /></button>
                                                     {
-                                                        assetsdw &&
+                                                        assetsdw3 === id &&
+                                                        (
 
-                                                        <div className="assetsdw">
-                                                            <ul>
-                                                                <li className="flex text-sm items-center"><FiUpload className="mr-2 text-lg" />Set to Screen</li>
-                                                                <li className="flex text-sm items-center" ><MdPlaylistPlay className="mr-2 text-lg" />Add to Playlist</li>
-                                                                <li className="flex text-sm items-center" ><FiDownload className="mr-2 text-lg" />Download</li>
-                                                                <li className="flex text-sm items-center" ><CgMoveRight className="mr-2 text-lg" />Move to</li>
-                                                                <li className="flex text-sm items-center" ><RiDeleteBin5Line className="mr-2 text-lg" />Move to Trast</li>
-                                                            </ul>
-                                                        </div>
-
+                                                            <div className="assetsdw">
+                                                                <ul>
+                                                                    <li className="flex text-sm items-center"><FiUpload className="mr-2 text-lg" />Set to Screen</li>
+                                                                    <li className="flex text-sm items-center" ><MdPlaylistPlay className="mr-2 text-lg" />Add to Playlist</li>
+                                                                    <li className="flex text-sm items-center" ><FiDownload className="mr-2 text-lg" />Download</li>
+                                                                    <li className="flex text-sm items-center" ><CgMoveRight className="mr-2 text-lg" />Move to</li>
+                                                                    <li className="flex text-sm items-center" ><RiDeleteBin5Line className="mr-2 text-lg" />Move to Trast</li>
+                                                                </ul>
+                                                            </div>
+                                                        )
                                                     }
+
                                                 </td>
                                             </tr>
 
@@ -233,7 +292,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     ))}
                                     {
                                         tabitems.map((elem) => {
-                                            const { Image, icon, size, storage, vtitle, vdetails, category } = elem;
+                                            const { id, Image, icon, size, storage, vtitle, vdetails, category } = elem;
                                             return (
                                                 <>
 
@@ -259,22 +318,23 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
                                                         <td>{storage}</td>
                                                         <td> <input type="checkbox" className="w-[20px] h-[20px]" /></td>
-                                                        <td className="relative w-[10%]">
-                                                            <button onClick={() => setassetsdw(!assetsdw)}><BsThreeDotsVertical className="text-2xl" /></button>
+                                                        <td className="relative w-[40px]" >
+                                                            <button onClick={() => updateassetsdw2(id)}><BsThreeDotsVertical className="text-2xl relative" /></button>
                                                             {
-                                                                assetsdw &&
+                                                                assetsdw2 === id && (
 
-                                                                <div className="assetsdw">
-                                                                    <ul>
-                                                                        <li className="flex text-sm items-center"><FiUpload className="mr-2 text-lg" />Set to Screen</li>
-                                                                        <li className="flex text-sm items-center" ><MdPlaylistPlay className="mr-2 text-lg" />Add to Playlist</li>
-                                                                        <li className="flex text-sm items-center" ><FiDownload className="mr-2 text-lg" />Download</li>
-                                                                        <li className="flex text-sm items-center" ><CgMoveRight className="mr-2 text-lg" />Move to</li>
-                                                                        <li className="flex text-sm items-center" ><RiDeleteBin5Line className="mr-2 text-lg" />Move to Trast</li>
-                                                                    </ul>
-                                                                </div>
-
+                                                                    <div className="assetsdw">
+                                                                        <ul>
+                                                                            <li className="flex text-sm items-center"><FiUpload className="mr-2 text-lg" />Set to Screen</li>
+                                                                            <li className="flex text-sm items-center" ><MdPlaylistPlay className="mr-2 text-lg" />Add to Playlist</li>
+                                                                            <li className="flex text-sm items-center" ><FiDownload className="mr-2 text-lg" />Download</li>
+                                                                            <li className="flex text-sm items-center" ><CgMoveRight className="mr-2 text-lg" />Move to</li>
+                                                                            <li className="flex text-sm items-center" ><RiDeleteBin5Line className="mr-2 text-lg" />Move to Trast</li>
+                                                                        </ul>
+                                                                    </div>
+                                                                )
                                                             }
+
                                                         </td>
                                                     </tr>
                                                     <tr><div className="my-2"></div></tr>
