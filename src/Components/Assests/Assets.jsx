@@ -15,7 +15,6 @@ import { CgMoveRight } from 'react-icons/cg'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { SlFolderAlt } from 'react-icons/sl'
 import { Link } from "react-router-dom";
-import FileUpload from './FileUpload'
 import PropTypes from "prop-types";
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
@@ -121,20 +120,20 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
                             Assets
                         </h1>
-                        <div className="lg:flex md:flex sm:block lg:mt-0 md:mt-0 sm:mt-3">
-                            <button className=" dashboard-btn  flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-5  py-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50" onClick={handleNewFolder}>
+                        <div className=" flex-wrap flex  lg:mt-0 md:mt-0 sm:mt-3">
+                            <button className=" dashboard-btn  flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50" onClick={handleNewFolder}>
                                 <TiFolderOpen className="text-2xl rounded-full mr-1 bg-primary text-white p-1" />
                                 New Folder
                             </button>
 
 
 
-                            <button className=" dashboard-btn flex align-middle items-center text-primary rounded-full  text-base border border-primary lg:px-9 sm:px-5  mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                            <button className=" dashboard-btn flex align-middle items-center text-primary rounded-full  text-base border border-primary lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                                 <AiOutlineCloudUpload className="text-2xl rounded-full mr-1 bg-primary text-white p-1" />
                                 <Link to={'/FileUpload'}> Upload </Link>
                             </button>
 
-                            <ul className="flex items-center  mr-3  rounded-full  border border-primary">
+                            <ul className="flex items-center xs:mt-2 sm:mt-0 md:mt-0  lg:mt-0  xs:mr-1  mr-3  rounded-full  border border-primary">
                                 <li className="flex items-center "><button className={asstab === 1 ? 'tabshow tabassactive ' : 'asstab '} onClick={() => updatetoggle(1)}><RxDashboard className="text-primary text-lg" /></button></li>
                                 <li className="flex items-center "><button className={asstab === 2 ? 'tabshow tabassactive right ' : 'asstab '} onClick={() => updatetoggle(2)}><AiOutlineUnorderedList /></button></li>
 
@@ -145,7 +144,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                     </div>
 
-                    <div className="tabs mt-5">
+                    <div className="tabs lg:mt-5 md:mt-5  sm:mt-5 xs:mt-0 ">
 
                         <button className={activetab === 1 ? 'tabactivebtn ' : 'tabbtn'} onClick={() => { setTabitems(AssetsAPI); handleActiveBtnClick(1) }}>All</button>
                         <button className={activetab === 2 ? 'tabactivebtn ' : 'tabbtn'} onClick={() => { filterItems('image'); handleActiveBtnClick(2) }}>Images</button>
@@ -203,8 +202,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                                     <span className="bg-white text-primary rounded-sm p-1 text-sm">{storage}</span>
                                                                 </div>
                                                             </div>
-                                                            <div className="text-center">
-                                                                <h3 className="text-base mb-1">{vtitle}</h3>
+                                                            <div className="text-center clickdetail">
+                                                                <h3 className="text-sm md:text-sm lg:text-base  mb-1">{vtitle}</h3>
                                                                 <p className="text-sm font-light">{vdetails}</p>
                                                             </div>
                                                         </div>

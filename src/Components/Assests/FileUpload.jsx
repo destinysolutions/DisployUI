@@ -34,40 +34,40 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <div className="pt-6 px-5">
         <div className={`${sidebarOpen ? "ml-52" : "ml-16"}`}>
-          <div className="lg:flex lg:justify-between sm:block items-center">
+          <div className="lg:flex lg:justify-between md:justify-between sm:justify-between sm:flex flex-wrap items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4">
               Media Upload
             </h1>
             <div className="lg:flex md:flex sm:block">
               <Link to="/assets">
-                <button className="flex align-middle border-primary items-center border rounded-full px-8 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                <button className="flex align-middle border-primary items-center border rounded-full lg:px-8 md:px-8 sm:px-4 xs:px-4 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                   Cancel
                 </button>
               </Link>
             </div>
           </div>
-          <div className="lg:flex lg:justify-between sm:block items-center mt-7">
+          <div className="flex lg:justify-between md:justify-between flex-wrap sm:justify-start xs:justify-start items-center lg:mt-7 md:mt-7 sm:mt-5 xs:mt-5 media-icon">
             <span
               className="fileUploadIcon"
-              //   onClick={handleIconClick}
+            //   onClick={handleIconClick}
             >
               <AiOutlineDropbox size={30} />
             </span>
             <span
               className="fileUploadIcon"
-              //   onClick={handleIconClick}
+            //   onClick={handleIconClick}
             >
               <RiDriveFill size={30} />
             </span>
             <span
               className="fileUploadIcon"
-              //   onClick={handleIconClick}
+            //   onClick={handleIconClick}
             >
               <FaCloudUploadAlt size={30} />
             </span>
             <span
               className="bg-[#D5E3FF] text-SlateBlue py-4 px-3 rounded-[45px] "
-              //   onClick={handleIconClick}
+            //   onClick={handleIconClick}
             >
               <svg
                 width="25"
@@ -86,25 +86,25 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
             </span>
             <span
               className="fileUploadIcon"
-              //   onClick={handleIconClick}
+            //   onClick={handleIconClick}
             >
               <FiCamera size={30} />
             </span>
             <span
               className="fileUploadIcon"
-              //   onClick={handleIconClick}
+            //   onClick={handleIconClick}
             >
               <AiOutlineVideoCamera size={30} />
             </span>
             <span
               className="fileUploadIcon"
-              //   onClick={handleIconClick}
+            //   onClick={handleIconClick}
             >
               <FaUnsplash size={30} />
             </span>
             <span
               className="bg-[#D5E3FF] text-SlateBlue py-4 px-4 rounded-[45px]"
-              //   onClick={handleIconClick}
+            //   onClick={handleIconClick}
             >
               <svg
                 width="20"
@@ -123,10 +123,10 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
             </span>
           </div>
           <div className="flex w-full flex-col gap-4"></div>
-          <div className="flex flex-col items-center justify-center min-h-full p-40 bg-[#E4E6FF] mt-14 border-2 rounded-[20px] border-SlateBlue border-dashed">
-            <FiUploadCloud className="text-SlateBlue mb-7" size={150} />
-            <span className="text-SlateBlue">Select Files to Upload</span>
-            <p className="text-sm font-normal">
+          <div className="flex flex-col items-center justify-center min-h-full lg:p-40 md:p-20 sm:p-10 xs:p-4 bg-[#E4E6FF] lg:mt-14 md:mt-14 sm:mt-5 xs:mt-5  border-2 rounded-[20px] border-SlateBlue border-dashed">
+            <FiUploadCloud className="text-SlateBlue md:mb-7 sm:mb-3 xs:mb-2 lg:text-[150px] md:text-[100px] sm:text-[80px] xs:text-[45px]" />
+            <span className="text-SlateBlue text-center">Select Files to Upload</span>
+            <p className="text-sm font-normal text-center">
               Drop your first video, photo or document here
             </p>
             <button

@@ -90,6 +90,7 @@ img.cursor-pointer.profilePopup {
   border-radius: 16px;
   width: 46px;
   height: 46px;
+  padding: 0 !important;
 }
 
 @media (max-width: 780px) {
@@ -120,4 +121,54 @@ div#tooltip-bottom:before {
   top: 50%;
   left: -14%;
   transform: translate(-54%, -11px);
+}
+
+/* navbar */
+.loginpopup {
+  min-width: 250px;
+}
+
+.notificationpopup {
+  min-width: 500px;
+}
+
+.loginpopup:before,
+.notificationpopup:before {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: #fff;
+  border-top: 1px solid #8E94A9;
+  border-left: 1px solid #8E94A9;
+  transform: rotate(45deg);
+  top: -8px;
+  right: 14px;
+}
+
+@media(max-width:740px) {
+  .notificationpopup {
+    min-width: 200px;
+  }
+}
+
+@media(max-width:375px) {
+
+  .loginpopup {
+    min-width: 190px;
+  }
+
+
+}
+
+/* new screen popup */
+.newscreenpopup {
+  box-shadow: 0px 0px 30px 3px #ccc;
+}
+
+@media(max-width:767px) {
+  div#otp input {
+    width: 25px;
+    height: 25px;
+  }
 }

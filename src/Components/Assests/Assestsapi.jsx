@@ -5,7 +5,7 @@ const AssetsAPI = [
     {
         id: 1,
         Image: '../../../Assets/video1.png',
-        icon: <HiOutlineVideoCamera className='bg-primary text-white text-3xl p-3 rounded-full min-w-[60px] min-h-[60px] border-4 border-white border-solid shadow-primary  hover:bg-SlateBlue cursor-pointer' />,
+        icon: <HiOutlineVideoCamera className='bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
         category: 'video',
         size: '1280*832',
         storage: '155KB',
@@ -15,7 +15,7 @@ const AssetsAPI = [
     {
         id: 2,
         Image: '../../../Assets/video2.png',
-        icon: <HiOutlineVideoCamera className='bg-primary text-white text-3xl p-3 rounded-full min-w-[60px] min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
+        icon: <HiOutlineVideoCamera className='bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
         category: 'video',
         size: '1280*832',
         storage: '155KB',
@@ -26,7 +26,7 @@ const AssetsAPI = [
     {
         id: 3,
         Image: '../../../Assets/video3.png',
-        icon: <HiOutlineVideoCamera className='bg-primary text-white text-3xl p-3 rounded-full min-w-[60px] min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
+        icon: <HiOutlineVideoCamera className='bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
         category: 'video',
         size: '1280*832',
         storage: '155KB',
@@ -36,7 +36,7 @@ const AssetsAPI = [
     {
         id: 4,
         Image: '../../../Assets/image83.png',
-        icon: <RiGalleryFill className='bg-primary text-white text-3xl p-3 rounded-full min-w-[60px] min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
+        icon: <RiGalleryFill className='bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
         // title: 'Purchase Securely',
         // subtitle: 'Image',
         category: 'image',
@@ -48,7 +48,7 @@ const AssetsAPI = [
     {
         id: 5,
         Image: '../../../Assets/image84.png',
-        icon: <RiGalleryFill className='bg-primary text-white text-3xl p-3 rounded-full min-w-[60px] min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
+        icon: <RiGalleryFill className='bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
         // title: 'Purchase Securely',
         // subtitle: 'Image',
         category: 'image',
@@ -60,7 +60,7 @@ const AssetsAPI = [
     {
         id: 6,
         Image: '../../../Assets/image86.png',
-        icon: <RiGalleryFill className='bg-primary text-white text-3xl p-3 rounded-full min-w-[60px] min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
+        icon: <RiGalleryFill className='bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer ' />,
         // title: 'Purchase Securely',
         // subtitle: 'Image',
         category: 'image',

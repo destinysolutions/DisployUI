@@ -174,7 +174,7 @@ const Sidebar = ({ sidebarOpen }) => {
       {showOTPModal ? (
         <>
           <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative w-auto my-6 mx-auto max-w-3xl">
+            <div className="relative w-auto my-6 mx-auto lg:max-w-3xl md:max-w-3xl sm:max-w-sm xs:max-w-[17rem]">
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 <div className="flex items-start justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
                   <h3 className="text-xl font-medium">New Screen</h3>
@@ -186,17 +186,19 @@ const Sidebar = ({ sidebarOpen }) => {
                   </button>
                 </div>
 
-                <div className="relative p-6 flex-auto">
-                  <div className="flex items-center justify-center">
+                <div className="relative lg:p-10 md:p-10 sm:p-5 xs:p-3 flex-auto">
+                  <div className="flex items-center justify-center mb-4">
                     <img src="/DisployImg/BlackLogo.svg" />
                   </div>
-                  <div className="bg-white rounded-[20px] shadow-md p-5">
+
+
+                  <div className="bg-white rounded-[20px] newscreenpopup  lg:p-5 md:p-5 sm:p-5 xs:p-2">
                     <div className="container mx-auto">
                       <div className="max-w-sm mx-auto md:max-w-lg">
                         <div className="w-full">
-                          <div className="bg-white h-64 py-3 rounded text-center">
-                            <div className="flex flex-col mt-4">
-                              <div className="font-normal text-lg text-[#000000]">
+                          <div className="bg-white   rounded text-center">
+                            <div className="flex flex-col">
+                              <div className="font-normal lg:text-lg md:text-lg sm:text-base xs:text-sm text-[#000000]">
                                 Enter the 6-character pairing code?
                               </div>
                             </div>
@@ -250,7 +252,7 @@ const Sidebar = ({ sidebarOpen }) => {
                               </p>
                             </div>
                             <div className="flex justify-center text-center mt-5">
-                              <p className="text-[#515151] text-[13px]">
+                              <p className="text-[#515151] text-[12px] max-w-[400px]">
                                 To get pair code, please install Disploy app on
                                 your Players (Android, LG, Samsung, FireStick,
                                 Raspberry Pi, etc.)
@@ -281,9 +283,8 @@ const Sidebar = ({ sidebarOpen }) => {
       ) : null}
       <div className="flex">
         <div
-          className={`${
-            sidebarOpen ? "w-52" : "w-16"
-          } fixed top-0 md:left-0 lg:left-0  z-40 px-4 h-screen lg:rounded-tr-[50px] md:rounded-tr-[50px] sm:rounded-tr-[30px] bg-primary `}
+          className={`${sidebarOpen ? "w-52" : "w-16"
+            } fixed top-0 md:left-0 lg:left-0  z-40 px-4 h-screen lg:rounded-tr-[50px] md:rounded-tr-[50px] sm:rounded-tr-[30px] bg-primary `}
         >
           <div className="flex items-center lg:py-6 md:py-6 sm:pt-6 sm:pb-3 pt">
             {sidebarOpen ? (
@@ -321,9 +322,8 @@ const Sidebar = ({ sidebarOpen }) => {
                             className=" absolute z-10 visible inline-block px-2 py-1 text-sm font-medium text-white bg-SlateBlue rounded-sm shadow-sm opacity-100 tooltip  left-[30px]  dark:bg-gray-700"
                           >
                             <span
-                              className={`${
-                                !sidebarOpen && !tooltipVisible && "hidden"
-                              } ml-0 text-sm `}
+                              className={`${!sidebarOpen && !tooltipVisible && "hidden"
+                                } ml-0 text-sm `}
                             >
                               {item.title}
                             </span>
@@ -339,20 +339,17 @@ const Sidebar = ({ sidebarOpen }) => {
                     </Link>
                     {item.subMenus && (
                       <div
-                        className={`${
-                          !sidebarOpen
-                            ? "right-[-13px] absolute"
-                            : "ml-5 absolute right-0"
-                        }`}
+                        className={`${!sidebarOpen
+                          ? "right-[-13px] absolute"
+                          : "ml-5 absolute right-0"
+                          }`}
                       >
                         <FiIcons.FiChevronDown
-                          className={`${
-                            activeSubmenu === index
-                              ? "transform rotate-180"
-                              : ""
-                          } transition-transform duration-300 text-white ${
-                            sidebarOpen ? "text-lg" : "text-lg"
-                          }`}
+                          className={`${activeSubmenu === index
+                            ? "transform rotate-180"
+                            : ""
+                            } transition-transform duration-300 text-white ${sidebarOpen ? "text-lg" : "text-lg"
+                            }`}
                           onClick={() =>
                             setActiveSubmenu(
                               activeSubmenu === index ? null : index
@@ -384,11 +381,10 @@ const Sidebar = ({ sidebarOpen }) => {
                                   className=" absolute z-10 visible inline-block px-2 py-1 text-sm font-medium text-white bg-SlateBlue rounded-sm shadow-sm opacity-100 tooltip  left-[30px]  dark:bg-gray-700"
                                 >
                                   <span
-                                    className={`${
-                                      !sidebarOpen &&
+                                    className={`${!sidebarOpen &&
                                       !SMTooltipVisible &&
                                       "hidden"
-                                    } ml-0 text-sm `}
+                                      } ml-0 text-sm `}
                                   >
                                     {submenu.title}
                                   </span>
@@ -433,9 +429,8 @@ const Sidebar = ({ sidebarOpen }) => {
                           className=" absolute z-10 visible inline-block px-2 py-1 text-sm font-medium text-white bg-SlateBlue rounded-sm shadow-sm opacity-100 tooltip  left-[30px]  dark:bg-gray-700"
                         >
                           <span
-                            className={`${
-                              !sidebarOpen && !MITooltipVisible && "hidden"
-                            } ml-0  `}
+                            className={`${!sidebarOpen && !MITooltipVisible && "hidden"
+                              } ml-0  `}
                           >
                             {item.title}
                           </span>
