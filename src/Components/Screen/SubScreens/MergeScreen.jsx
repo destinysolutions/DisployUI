@@ -1,16 +1,21 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "../../../Styles/sidebar.css";
-import { IoMdRefresh } from 'react-icons/io'
-import { VscVmConnect } from 'react-icons/vsc'
-import { BiExitFullscreen } from 'react-icons/bi'
+import { IoMdRefresh } from "react-icons/io";
+import { VscVmConnect } from "react-icons/vsc";
+import { BiExitFullscreen } from "react-icons/bi";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
 import { TbUpload } from "react-icons/tb";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import "../../../Styles/screen.css";
 import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
+import PropTypes from "prop-types";
 
 const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
+  MergeScreen.propTypes = {
+    sidebarOpen: PropTypes.bool.isRequired,
+    setSidebarOpen: PropTypes.func.isRequired,
+  };
   const [showdata, setShowdata] = useState(false);
   const [showdata2, setShowdata2] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
@@ -52,7 +57,10 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                 </button>
               </div>
               <div>
-                <button type="button" className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue">
+                <button
+                  type="button"
+                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
+                >
                   <VscVmConnect className="p-1 text-3xl text-SlateBlue hover:text-white" />
                 </button>
               </div>
@@ -437,7 +445,10 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="flex items-center ">
                 {isHovering2 && (
                   <div className="flex items-center flex-wrap">
-                    <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white"> Preview</button>
+                    <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
+                      {" "}
+                      Preview
+                    </button>
                     <button className="rounded-full mx-1 border hover:bg-SlateBlue">
                       <BiExitFullscreen className="text-2xl p-1 hover:text-white" />
                     </button>
@@ -448,7 +459,6 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                     <button className="rounded-full mx-1 border hover:bg-red hover:border-red">
                       <RiDeleteBin5Line className="text-2xl p-1 hover:text-white" />
                     </button>
-
 
                     <button>
                       {" "}

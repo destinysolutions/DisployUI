@@ -1,10 +1,10 @@
-import "../Styles/register.css";
+import "../Styles/loginRegister.css";
 import { BsFillEyeFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
-import { BsMicrosoft } from 'react-icons/bs'
-import { BsApple } from 'react-icons/bs'
-import { BsGoogle } from 'react-icons/bs'
-import { FaFacebookF } from 'react-icons/fa'
+import { BsMicrosoft } from "react-icons/bs";
+import { BsApple } from "react-icons/bs";
+import { BsGoogle } from "react-icons/bs";
+import { FaFacebookF } from "react-icons/fa";
 const Login = () => {
   return (
     <>
@@ -76,7 +76,7 @@ const Login = () => {
                           Lost password?
                         </p>
                       </Link>
-                    </div>{" "}
+                    </div>
                   </div>
                   <Link to="/dashboard">
                     <button
@@ -101,16 +101,24 @@ const Login = () => {
             </div>
             <div className="flex items-center justify-center mt-4">
               <div className="socialIcon socialIcon1">
-                <button><BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" /></button>{" "}
+                <button>
+                  <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
+                </button>
               </div>
               <div className="socialIcon socialIcon2">
-                <button><FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" /></button>
+                <button>
+                  <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
+                </button>
               </div>
               <div className="socialIcon socialIcon3">
-                <button><BsApple className="text-2xl text-white bg-primary rounded-full p-1" /></button>
+                <button>
+                  <BsApple className="text-2xl text-white bg-primary rounded-full p-1" />
+                </button>
               </div>
               <div className="socialIcon socialIcon4">
-                <button><BsMicrosoft className="text-lg text-primary" /></button>
+                <button>
+                  <BsMicrosoft className="text-lg text-primary" />
+                </button>
               </div>
             </div>
           </div>

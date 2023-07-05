@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
 import "../../../Styles/screen.css";
@@ -11,8 +11,13 @@ import { BiAnchor } from "react-icons/bi";
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
 import { AiOutlineSearch } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
+  NewScreenDetail.propTypes = {
+    sidebarOpen: PropTypes.bool.isRequired,
+    setSidebarOpen: PropTypes.func.isRequired,
+  };
   const [selectedValue, setSelectedValue] = useState("");
 
   const handleRadioChange = (event) => {
@@ -672,7 +677,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                               <em className="font-semibold text-gray-800 dark:text-gray-200">
                                                 third
                                               </em>
-                                              item's tab body.
+                                              item&apos;s tab body.
                                             </p>
                                           </div>
                                         </div>

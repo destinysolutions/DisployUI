@@ -16,8 +16,11 @@ export default {
       red: '#e16969'
     },
     screens: {
-      'sm': '280px',
-      // => @media (min-width: 640px) { ... }
+      'xs': '280px',
+      // => @media (min-width: 280px) { ... }
+
+      'sm': '400px',
+      // => @media (min-width: 400px) { ... }
 
       'md': '768px',
       // => @media (min-width: 768px) { ... }

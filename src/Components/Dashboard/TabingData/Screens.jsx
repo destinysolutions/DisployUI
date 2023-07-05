@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import DataTable from "react-data-table-component";
 import { AiOutlineSearch } from "react-icons/ai";
 import "../../../Styles/dashboard.css";

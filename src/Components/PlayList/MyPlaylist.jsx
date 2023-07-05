@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -19,8 +19,14 @@ import { IoFastFoodOutline } from "react-icons/io5";
 import { MdArrowForwardIos } from "react-icons/md";
 import { AiOutlinePlus } from "react-icons/ai";
 import { SlArrowDown } from "react-icons/sl";
+import PropTypes from "prop-types";
 
 const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
+  MyPlaylist.propTypes = {
+    sidebarOpen: PropTypes.bool.isRequired,
+    setSidebarOpen: PropTypes.func.isRequired,
+  };
+
   const [toggle, setToggle] = useState(1);
   function updatetoggle(toggleTab) {
     setToggle(toggleTab);
@@ -32,7 +38,6 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const [playlistDropdown, setplaylistDropdown] = useState(false);
-  const [playlist, setplaylist] = useState(false);
   const [showAppTabContent, setShowAppTabContent] = useState(false);
   const [showYoutubeContent, setShowYoutubeContent] = useState(false);
   const [showTagAdded, setShowTagAdded] = useState(false);
@@ -49,26 +54,26 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
               My Playlists
             </h1>
-            <div className="flex md:mt-5 lg:mt-0">
-              <button className="flex align-middle border-primary items-center border-2 rounded-full p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+            <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap">
+              <button className="flex align-middle border-primary items-center border-2 rounded-full xs:p-0.5 sm:p-1 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <TbBoxMultiple />
               </button>
-              <button className="ml-2 flex align-middle border-primary items-center border-2 rounded-full p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full xs:p-0.5 sm:p-1 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <FiUpload />
               </button>
-              <button className="ml-2 flex align-middle border-primary items-center border-2 rounded-full px-6 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full xs:px-1 sm:px-3 md:px-6 md:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 Preview
               </button>
-              <button className="ml-2 flex align-middle border-primary items-center border-2 rounded-full px-6 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="sm:ml-2 xs:ml-1  flex align-middle border-primary items-center border-2 rounded-full xs:px-1 sm:px-3 md:px-6 md:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 Save
               </button>
-              <button className="ml-2 flex align-middle border-primary items-center border-2 rounded-full p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="sm:ml-2 xs:ml-1  flex align-middle border-primary items-center border-2 rounded-full xs:p-0.5 sm:p-1 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <RiDeleteBinLine />
               </button>
             </div>
           </div>
           <div className="grid grid-cols-12 gap-4 mt-8">
-            <div className="lg:col-span-3 flex justify-start md:col-span-6 sm:col-span-12">
+            <div className="lg:col-span-3 flex justify-start md:col-span-6 sm:col-span-12 xs:col-span-12">
               <div className="bg-white shadow-2xl rounded-lg w-full">
                 <div className="relative p-4">
                   <span className="absolute inset-y-0 left-0 flex items-center pl-8 pointer-events-none">
@@ -147,7 +152,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className="border-b-[1px] border-[#D5E3FF]"></div>
               </div>
             </div>
-            <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 flex justify-start">
+            <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 flex justify-start xs:col-span-12">
               <div className="bg-white shadow-2xl rounded-lg w-full">
                 <div className="md:flex md:justify-between sm:block p-4">
                   <div className="flex items-center">
@@ -181,7 +186,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className="border-b-[1px] border-[#D5E3FF]"></div>
               </div>
             </div>
-            <div className="lg:col-span-3 flex justify-start md:col-span-12 sm:col-span-12">
+            <div className="lg:col-span-3 flex justify-start md:col-span-12 sm:col-span-12 xs:col-span-12">
               <div className="bg-white shadow-2xl rounded-lg w-full">
                 <ul className="flex">
                   <li className="text-lg  min-w-[50%]">

@@ -5,11 +5,18 @@ import { MdOutlineModeEdit } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-import { MdOutlineAddToQueue } from 'react-icons/md'
-import { HiOutlineRectangleGroup } from 'react-icons/hi2'
-import { VscVmActive } from 'react-icons/vsc'
-import { VscVmConnect } from 'react-icons/vsc'
+import { MdOutlineAddToQueue } from "react-icons/md";
+import { HiOutlineRectangleGroup } from "react-icons/hi2";
+import { VscVmActive } from "react-icons/vsc";
+import { VscVmConnect } from "react-icons/vsc";
+import PropTypes from "prop-types";
+
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
+  Screens.propTypes = {
+    sidebarOpen: PropTypes.bool.isRequired,
+    setSidebarOpen: PropTypes.func.isRequired,
+  };
+
   const [connectScreenTooltipVisible, setConnectScreenTooltipVisible] =
     useState(false);
   const [newScreenTooltipVisible, setNewScreenTooltipVisible] = useState(false);
@@ -38,9 +45,15 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             </h1>
 
             <div className="flex items-center sm:mt-3">
-              <div className="relative" onMouseEnter={() => setConnectScreenTooltipVisible(true)}
-                onMouseLeave={() => setConnectScreenTooltipVisible(false)}>
-                <button type="button" className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue">
+              <div
+                className="relative"
+                onMouseEnter={() => setConnectScreenTooltipVisible(true)}
+                onMouseLeave={() => setConnectScreenTooltipVisible(false)}
+              >
+                <button
+                  type="button"
+                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
+                >
                   <VscVmConnect className="p-1 text-3xl text-SlateBlue hover:text-white" />
                 </button>
                 {connectScreenTooltipVisible && (
@@ -54,11 +67,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 )}
               </div>
-              <div className="relative" onMouseEnter={() => setNewScreenTooltipVisible(true)}
-                onMouseLeave={() => setNewScreenTooltipVisible(false)}>
+              <div
+                className="relative"
+                onMouseEnter={() => setNewScreenTooltipVisible(true)}
+                onMouseLeave={() => setNewScreenTooltipVisible(false)}
+              >
                 <button
-                  type="button" className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
-
+                  type="button"
+                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
                   onClick={() => setShowOTPModal(true)}
                 >
                   <MdOutlineAddToQueue className="p-1 text-3xl hover:text-white text-SlateBlue" />
@@ -255,11 +271,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   </>
                 ) : null}
               </div>
-              <div className="relative" onMouseEnter={() => setScreenGroupTooltipVisible(true)}
-                onMouseLeave={() => setScreenGroupTooltipVisible(false)}>
+              <div
+                className="relative"
+                onMouseEnter={() => setScreenGroupTooltipVisible(true)}
+                onMouseLeave={() => setScreenGroupTooltipVisible(false)}
+              >
                 <button
-                  type="button" className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
-
+                  type="button"
+                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
                 >
                   <HiOutlineRectangleGroup className="p-1 text-3xl hover:text-white text-SlateBlue" />
                 </button>
@@ -274,11 +293,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 )}
               </div>
 
-              <div className="relative" onMouseEnter={() => setselectActiveTooltipVisible(true)}
-                onMouseLeave={() => setselectActiveTooltipVisible(false)}>
+              <div
+                className="relative"
+                onMouseEnter={() => setselectActiveTooltipVisible(true)}
+                onMouseLeave={() => setselectActiveTooltipVisible(false)}
+              >
                 <button
-                  type="button" className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
-
+                  type="button"
+                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
                 >
                   <VscVmActive className="p-1 text-3xl hover:text-white text-SlateBlue" />
                 </button>
@@ -292,12 +314,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 )}
               </div>
-              <div className="flex items-center mt-1 relative" onMouseEnter={() => setselectAllTooltipVisible(true)}
-                onMouseLeave={() => setselectAllTooltipVisible(false)}>
-                <button
-                  type="button"
-
-                >
+              <div
+                className="flex items-center mt-1 relative"
+                onMouseEnter={() => setselectAllTooltipVisible(true)}
+                onMouseLeave={() => setselectAllTooltipVisible(false)}
+              >
+                <button type="button">
                   <input type="checkbox" className="h-7 w-7 " />
                 </button>
                 {selectAllTooltipVisible && (

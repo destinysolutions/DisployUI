@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Business from "./TabingData/Business";
-import { BsLightningCharge } from 'react-icons/bs'
-import { MdOutlineSlowMotionVideo } from 'react-icons/md'
+import { BsLightningCharge } from "react-icons/bs";
+import { MdOutlineSlowMotionVideo } from "react-icons/md";
 import {
   Tabs,
   TabsHeader,
@@ -13,8 +13,13 @@ import Users from "./TabingData/Users";
 import Screens from "./TabingData/Screens";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
+import PropTypes from "prop-types";
 
 const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
+  Dashboard.propTypes = {
+    sidebarOpen: PropTypes.bool.isRequired,
+    setSidebarOpen: PropTypes.func.isRequired,
+  };
   const [activeTab, setActiveTab] = useState("business");
   const data = [
     {
@@ -59,17 +64,18 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
           <div className="mt-5">
-            <Tabs value={activeTab} >
+            <Tabs value={activeTab}>
               <TabsHeader className="border-b rounded-none border-blue-gray-50 p-0 mb-5 text-[#A7AFB7]  ">
                 {data.map(({ label, value }) => (
                   <Tab
                     key={value}
                     value={value}
                     onClick={() => setActiveTab(value)}
-                    className={`${activeTab === value
-                      ? "text-SlateBlue border-b-2 border-SlateBlue  "
-                      : ""
-                      } p-2 pb-2 w-auto font-semibold `}
+                    className={`${
+                      activeTab === value
+                        ? "text-SlateBlue border-b-2 border-SlateBlue  "
+                        : ""
+                    } p-2 pb-2 w-auto font-semibold `}
                   >
                     {label}
                   </Tab>
@@ -85,12 +91,7 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
             </Tabs>
           </div>
         </div>
-
-
-
       </div>
-
-
     </>
   );
 };

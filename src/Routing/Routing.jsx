@@ -8,7 +8,7 @@ import Screens from "../Components/Screen/Screens";
 import ErrorPage from "../Pages/ErrorPage";
 import NewScreenGroup from "../Components/Screen/SubScreens/NewScreenGroup";
 import Screensplayer from "../Components/Screen/SubScreens/Screensplayer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import MergeScreen from "../Components/Screen/SubScreens/MergeScreen";
 import NewScreenDetail from "../Components/Screen/SubScreens/NewScreenDetail";
 import FileUpload from "../Components/Assests/fileUpload";
@@ -17,29 +17,31 @@ import MyPlaylist from "../Components/PlayList/MyPlaylist";
 
 const Routing = () => {
   const [sidebarOpen, setSidebarOpen] = useState();
-  const handleResize = () => {
+  const handleResize = useCallback(() => {
     if (window.innerWidth < 780) {
       setSidebarOpen(false);
     } else if (!sidebarOpen) {
       setSidebarOpen(true);
     }
-  };
-
+  }, [sidebarOpen]);
+  
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-
+  
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
-
+  }, [handleResize, sidebarOpen]);
+  
   useEffect(() => {
     handleResize();
     window.addEventListener("load", handleResize);
+  
     return () => {
       window.removeEventListener("load", handleResize);
     };
-  }, []);
+  }, [handleResize]);
+
   return (
     <>
       <Routes>
@@ -129,13 +131,10 @@ const Routing = () => {
         <Route
           path="/assets"
           element={
-            <Assets
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
+            <Assets sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           }
         />
-         <Route
+        <Route
           path="/myplaylist"
           element={
             <MyPlaylist
