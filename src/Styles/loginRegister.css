@@ -166,11 +166,7 @@
   }
 }
 
-/* @media (min-width:320px) and (max-width:559px) {
-  .h-screen {
-    height: auto !important;
-  }
-} */
+
 @media (max-device-width:1300px) and (max-device-height:800px) {
 
   .registration .md\:h-screen,
@@ -188,5 +184,19 @@
 @media (max-device-width:700px) and (max-device-height:850px) {
   .registration .h-screen {
     height: auto !important;
+  }
+}
+
+input#email::placeholder,
+input#password::placeholder {
+  font-size: 16px !important;
+}
+
+@media (max-width:350px) {
+
+  input#email::placeholder,
+  input#password::placeholder,
+  .formInput::placeholder {
+    font-size: 13px !important;
   }
 }
