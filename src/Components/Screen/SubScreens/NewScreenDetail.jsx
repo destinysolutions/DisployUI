@@ -377,7 +377,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                               className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
                                                 activeTab === 3 ? "active" : ""
                                               }`}
-                                              onClick={() => handleTabClick(3)}
+                                              //onClick={() => handleTabClick(3)}
                                             >
                                               <span
                                                 className={`p-1 rounded ${
@@ -395,7 +395,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                               className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
                                                 activeTab === 4 ? "active" : ""
                                               }`}
-                                              onClick={() => handleTabClick(4)}
+                                              //onClick={() => handleTabClick(4)}
                                             >
                                               <span
                                                 className={`p-1 rounded ${

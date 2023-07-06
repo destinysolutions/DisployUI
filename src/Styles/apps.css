@@ -1,26 +1,56 @@
 .appdw {
-    position: absolute;
-    background: #fff;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0px 10px 20px #ccc;
-    font-size: 16px;
-    width: 166px;
-    border: 1px solid #ccc;
-    transform: translate(1%, 0px);
-    right: -7px;
-    top: 30px;
+  position: absolute;
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 10px 20px #ccc;
+  font-size: 16px;
+  width: 166px;
+  border: 1px solid #ccc;
+  transform: translate(1%, 0px);
+  right: -7px;
+  top: 30px;
+}
+
+.appdw:before {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  transform: rotate(45deg);
+  top: -8px;
+  right: 14px;
+}
+/* youtube popup */
+.youtubetable input {
+  border: 1px solid #d5e3ff;
+  padding: 10px 20px;
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0px 2px 10px #cccccc26;
+}
+.youtubetable input::placeholder {
+  font-size: 16px;
+}
+@media (max-width: 1024px) {
+  .mutebtn {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
   }
-  
-  .appdw:before {
-    content: '';
-    position: absolute;
-    width: 15px;
-    height: 15px;
-    background: #fff;
-    border-top: 1px solid #ccc;
-    border-left: 1px solid #ccc;
-    transform: rotate(45deg);
-    top: -8px;
-    right: 14px;
+  .youtubetable tr,
+  .youtubetable td {
+    display: block;
   }
+}
+
+@media (max-width: 767px) {
+  .youtubebtnpopup button {
+    margin-top: 10px;
+  }
+}
