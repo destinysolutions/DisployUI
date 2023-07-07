@@ -53,7 +53,7 @@
 }
 
 
-@media(max-width:800px) {
+@media (max-width: 800px) {
   .roundedbtn {
     border-radius: 0px !important;
   }
@@ -62,23 +62,9 @@
     font-size: 14px !important;
   }
 
-  .myplaylist-popup-details {
-
-    margin: 10px !important;
-  }
-
-
 }
 
-@media (max-device-width:640px) and (max-device-height:400px) {
-  .addmediapopup {
-    height: 100vh;
-    overflow-y: auto;
-    margin: 10px;
-  }
-}
-
-@media(max-width:412px) {
+@media (max-width: 412px) {
   .playlistbtn button {
     margin-top: 10px;
   }
@@ -88,14 +74,3 @@
     overflow-y: auto;
   }
 
-  .myplaylist-popup-details {
-
-    margin: 10px !important;
-  }
-}
-
-@media(max-width:350px) {
-  .myplaylist-popup-details {
-    min-width: 250px;
-  }
-}

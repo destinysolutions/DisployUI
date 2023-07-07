@@ -370,9 +370,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                             </button>
                                             <button
                                               type="button"
-                                              className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 3 ? "active" : ""
-                                                }`}
-                                              onClick={() => handleTabClick(3)}
+
                                             >
                                               <span
                                                 className={`p-1 rounded ${activeTab === 3
@@ -386,9 +384,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                             </button>
                                             <button
                                               type="button"
-                                              className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 4 ? "active" : ""
-                                                }`}
-                                              onClick={() => handleTabClick(4)}
+
                                             >
                                               <span
                                                 className={`p-1 rounded ${activeTab === 4
