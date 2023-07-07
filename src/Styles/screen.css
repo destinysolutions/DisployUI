@@ -6,7 +6,7 @@ select:focus-visible,
 
 textarea:focus,
 textarea:focus-visible {
-  box-shadow: 0px 3px 18px 1px #41479b80;
+  /* box-shadow: 0px 3px 18px 1px #41479b80; */
   border: 1px solid #41479b78 !important;
   outline: none !important;
 
@@ -108,7 +108,10 @@ input::placeholder {
     display: none !important;
   }
 
+
 }
+
+
 
 /* screen player page */
 .screen-palyer-img {
@@ -256,7 +259,21 @@ button.tabsyncshow.tabsyncactive {
   .sm\:w-full {
     width: 100%;
   }
+
+  .responsive-table table,
+
+  .responsive-table td {
+    display: block;
+  }
+
+  .responsive-table input::placeholder,
+  .responsive-table select,
+  .screen-details input::placeholder,
+  .screen-details select {
+    font-size: 13px !important;
+  }
 }
+
 
 @media(max-width:350px) {
   .xs-block {
@@ -267,6 +284,10 @@ button.tabsyncshow.tabsyncactive {
   button.tab {
     width: 80px;
     padding: 5px 10px;
+  }
+
+  .xs\:max-w-xs {
+    max-width: 17rem !important;
   }
 }
 

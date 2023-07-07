@@ -73,7 +73,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                 <tbody>
                   <tr>
                     <td>
-                      <label className="text-[#001737] font-medium text-lg mb-1 md:mb-0">
+                      <label className="text-[#001737] lg:text-lg md:text-lg font-medium sm:font-base xs:font-base mb-1 md:mb-0">
                         Screen Name:
                       </label>
                     </td>
@@ -87,7 +87,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                   </tr>
                   <tr>
                     <td>
-                      <label className=" text-[#001737] font-medium text-lg  mb-1 md:mb-0">
+                      <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
                         Google Location:
                       </label>
                     </td>
@@ -101,7 +101,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                   </tr>
                   <tr>
                     <td>
-                      <label className=" text-[#001737] font-medium text-lg  mb-1 md:mb-0">
+                      <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
                         Time Zone:
                       </label>
                     </td>
@@ -142,7 +142,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                   </tr>
                   <tr>
                     <td>
-                      <label className=" text-[#001737] font-medium text-lg  mb-1 md:mb-0">
+                      <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
                         Screen Orientation:
                       </label>
                     </td>
@@ -154,7 +154,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           checked={selectedValue === "0"}
                           onChange={handleRadioChange}
                         />
-                        <label className="ml-1">0</label>
+                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">0</label>
 
                         <input
                           type="radio"
@@ -163,7 +163,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           onChange={handleRadioChange}
                           className="ml-4"
                         />
-                        <label className="ml-1">90</label>
+                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">90</label>
 
                         <input
                           type="radio"
@@ -172,7 +172,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           onChange={handleRadioChange}
                           className="ml-4"
                         />
-                        <label className="ml-1">180</label>
+                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">180</label>
 
                         <input
                           type="radio"
@@ -181,13 +181,13 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           onChange={handleRadioChange}
                           className="ml-4"
                         />
-                        <label className="ml-1">270</label>
+                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">270</label>
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <label className=" text-[#001737] font-medium text-lg  mb-1 md:mb-0">
+                      <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
                         Screen Resolution:
                       </label>
                     </td>
@@ -199,7 +199,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           checked={selectedValue === "Fit to Screen"}
                           onChange={handleRadioChange}
                         />
-                        <label className="ml-1 text-base  font-normal">
+                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs  font-normal">
                           Fit to Screen
                         </label>
 
@@ -210,7 +210,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           onChange={handleRadioChange}
                           className="ml-4"
                         />
-                        <label className="ml-1 text-base font-normal">
+                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs font-normal">
                           Actual Size
                         </label>
 
@@ -221,7 +221,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           onChange={handleRadioChange}
                           className="ml-4"
                         />
-                        <label className="ml-1 text-base  font-normal">
+                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs  font-normal">
                           Zoom Screen
                         </label>
                       </div>
@@ -229,7 +229,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                   </tr>
                   <tr>
                     <td>
-                      <label className=" text-[#001737] font-medium text-lg  mb-1 md:mb-0">
+                      <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
                         Type:
                       </label>
                     </td>
@@ -338,17 +338,15 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                           >
                                             <button
                                               type="button"
-                                              className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                                activeTab === 1 ? "active" : ""
-                                              }`}
+                                              className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 1 ? "active" : ""
+                                                }`}
                                               onClick={() => handleTabClick(1)}
                                             >
                                               <span
-                                                className={`p-1 rounded ${
-                                                  activeTab === 1
-                                                    ? "bg-primary text-white"
-                                                    : "bg-[#D5E3FF]"
-                                                } `}
+                                                className={`p-1 rounded ${activeTab === 1
+                                                  ? "bg-primary text-white"
+                                                  : "bg-[#D5E3FF]"
+                                                  } `}
                                               >
                                                 <IoBarChartSharp size={15} />
                                               </span>
@@ -356,17 +354,15 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                             </button>
                                             <button
                                               type="button"
-                                              className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                                activeTab === 2 ? "active" : ""
-                                              }`}
+                                              className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 2 ? "active" : ""
+                                                }`}
                                               onClick={() => handleTabClick(2)}
                                             >
                                               <span
-                                                className={`p-1 rounded ${
-                                                  activeTab === 2
-                                                    ? "bg-primary text-white"
-                                                    : "bg-[#D5E3FF]"
-                                                } `}
+                                                className={`p-1 rounded ${activeTab === 2
+                                                  ? "bg-primary text-white"
+                                                  : "bg-[#D5E3FF]"
+                                                  } `}
                                               >
                                                 <RiPlayListFill size={15} />
                                               </span>
@@ -374,17 +370,15 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                             </button>
                                             <button
                                               type="button"
-                                              className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                                activeTab === 3 ? "active" : ""
-                                              }`}
+                                              className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 3 ? "active" : ""
+                                                }`}
                                               onClick={() => handleTabClick(3)}
                                             >
                                               <span
-                                                className={`p-1 rounded ${
-                                                  activeTab === 3
-                                                    ? "bg-primary text-white"
-                                                    : "bg-[#D5E3FF]"
-                                                } `}
+                                                className={`p-1 rounded ${activeTab === 3
+                                                  ? "bg-primary text-white"
+                                                  : "bg-[#D5E3FF]"
+                                                  } `}
                                               >
                                                 <BiAnchor size={15} />
                                               </span>
@@ -392,17 +386,15 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                             </button>
                                             <button
                                               type="button"
-                                              className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                                activeTab === 4 ? "active" : ""
-                                              }`}
+                                              className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 4 ? "active" : ""
+                                                }`}
                                               onClick={() => handleTabClick(4)}
                                             >
                                               <span
-                                                className={`p-1 rounded ${
-                                                  activeTab === 4
-                                                    ? "bg-primary text-white"
-                                                    : "bg-[#D5E3FF]"
-                                                } `}
+                                                className={`p-1 rounded ${activeTab === 4
+                                                  ? "bg-primary text-white"
+                                                  : "bg-[#D5E3FF]"
+                                                  } `}
                                               >
                                                 <AiOutlineAppstoreAdd
                                                   size={15}
@@ -782,7 +774,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
                   <tr>
                     <td>
-                      <label className=" text-[#001737] font-medium text-lg  mb-1 md:mb-0">
+                      <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
                         Tags:
                       </label>
                     </td>

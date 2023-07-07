@@ -259,11 +259,11 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             {showPlaylistModal ? (
               <>
-                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                  <div className="relative w-auto my-6 mx-auto">
+                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                  <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
                     <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none  addmediapopup">
-                      <div className="flex items-start justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
-                        <h3 className="text-xl font-medium">
+                      <div className="flex items-start justify-between p-5  xs:px-10 border-b border-[#A7AFB7] border-slate-200 rounded-t">
+                        <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
                           Set Content to Add Media
                         </h3>
                         <button
@@ -274,9 +274,9 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </div>
 
-                      <div className="relative p-6 flex-auto">
+                      <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
                         <div className="bg-white rounded-[30px]">
-                          <div className="container mx-auto">
+                          <div className="">
                             <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
                               <div>
                                 <nav
@@ -305,7 +305,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                                     type="button"
                                     className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 2 ? "active" : ""
                                       }`}
-                                    //onClick={() => handleTabClick(2)}
+                                  //onClick={() => handleTabClick(2)}
                                   >
                                     <span
                                       className={`p-1 rounded ${popupActiveTab === 2

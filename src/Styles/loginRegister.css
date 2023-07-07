@@ -133,6 +133,23 @@
 }
 
 
+input#email::placeholder,
+input#password::placeholder {
+  font-size: 16px !important;
+}
+
+@media (max-width:450px) {
+
+  input#email::placeholder,
+  input#password::placeholder,
+  .formInput::placeholder {
+    font-size: 13px !important;
+  }
+
+  .formInput {
+    padding: 10px;
+  }
+}
 
 @media (max-width: 330px) {
   .socialIcon {
@@ -142,34 +159,18 @@
   }
 }
 
-@media (max-width: 285px) {
-  .py-6 {
-    padding: 1rem !important;
-  }
 
-  .text-\[24px\] {
-    font-size: 20px !important;
-  }
-
-  .text-\[16px\] {
-    font-size: 14px !important;
-    margin-bottom: 15px !important;
-  }
-
-  .formInput {
-    padding: 10px;
-  }
-
-  .lg\:flex.ml-3.text-sm.sm\:block,
-  .lg\:flex.lg\:ml-3.text-sm.sm\:block {
-    font-size: 12px;
-  }
-}
 
 
 @media (max-device-width:1300px) and (max-device-height:800px) {
 
   .registration .md\:h-screen,
+  .registration .h-screen {
+    height: auto !important;
+  }
+}
+
+@media (max-device-width:700px) and (max-device-height:850px) {
   .registration .h-screen {
     height: auto !important;
   }
@@ -181,22 +182,8 @@
   }
 }
 
-@media (max-device-width:700px) and (max-device-height:850px) {
-  .registration .h-screen {
+@media (max-device-width:360px) and (max-device-height:640px) {
+  .login .h-screen {
     height: auto !important;
-  }
-}
-
-input#email::placeholder,
-input#password::placeholder {
-  font-size: 16px !important;
-}
-
-@media (max-width:350px) {
-
-  input#email::placeholder,
-  input#password::placeholder,
-  .formInput::placeholder {
-    font-size: 13px !important;
   }
 }

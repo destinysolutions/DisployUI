@@ -65,7 +65,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className="relative bg-white shadow-lg rounded-e-md">
+            <div className="relative bg-white shadow-lg rounded-e-md screenplayer-section">
               <div className="screen-palyer-img ">
                 <img
                   src="./../../../../ScreenImg/dragon.svg"
@@ -146,7 +146,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       <tbody>
                         <tr className="border-b border-[#D5E3FF]">
                           <td className="text-right lg:w-2/4 md:w-2/4 sm:w-full">
-                            <p className="text-primary text-lg font-medium">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Screen Status:
                             </p>
                           </td>
@@ -158,102 +158,102 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </tr>
                         <tr className="border-b border-[#D5E3FF]">
                           <td className="text-right">
-                            <p className="text-primary text-lg font-medium">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Screen Details:
                             </p>
                           </td>
                           <td className="text-left">
-                            <p className="text-base text-[#515151]">
+                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
                               Sony, S01-5000035, 5120 x 2880, (Ultrawide 5K)
                             </p>
                           </td>
                         </tr>
                         <tr className="border-b border-[#D5E3FF]">
                           <td className="text-right">
-                            <p className="text-primary text-lg font-medium">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Mac ID:
                             </p>
                           </td>
                           <td className="text-left">
-                            <p className="text-base text-[#515151]">
+                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
                               4C : 7C : 5F : 0B : 54 : 05
                             </p>
                           </td>
                         </tr>
                         <tr className="border-b border-[#D5E3FF]">
                           <td className="text-right">
-                            <p className="text-primary text-lg font-medium">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Operating System:
                             </p>
                           </td>
                           <td className="text-left">
-                            <p className="text-base text-[#515151]">Apple TV</p>
+                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">Apple TV</p>
                           </td>
                         </tr>
                         <tr className="border-b border-[#D5E3FF]">
                           <td className="text-right">
-                            <p className="text-primary text-lg font-medium">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Google Location:
                             </p>
                           </td>
                           <td className="text-left">
-                            <p className="text-base text-[#515151]">
+                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
                               132, My Street, Kingston, New York 12401.
                             </p>
                           </td>
                         </tr>
                         <tr className="border-b border-[#D5E3FF]">
                           <td className="text-right">
-                            <p className="text-primary text-lg font-medium">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Time Zone:
                             </p>
                           </td>
                           <td className="text-left">
-                            <p className="text-base text-[#515151]">
+                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
                               Asia/Calcutta
                             </p>
                           </td>
                         </tr>
                         <tr className="border-b border-[#D5E3FF]">
                           <td className="text-right">
-                            <p className="text-primary text-lg font-medium">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Tags:
                             </p>
                           </td>
                           <td className="text-left">
-                            <p className="text-base text-[#515151]">Marketing</p>
+                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">Marketing</p>
                           </td>
                         </tr>
                         <tr className="border-b border-[#D5E3FF]">
                           <td className="text-right">
-                            <p className="text-primary text-lg font-medium">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Connected Since:
                             </p>
                           </td>
                           <td className="text-left">
-                            <p className="text-base text-[#515151]">
+                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
                               Jun 5, 2023, 8:16 PM
                             </p>
                           </td>
                         </tr>
                         <tr className="border-b border-[#D5E3FF]">
                           <td className="text-right">
-                            <p className="text-primary text-lg font-medium">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Connected By:
                             </p>
                           </td>
                           <td className="text-left">
-                            <p className="text-base text-[#515151]">User Name</p>
+                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">User Name</p>
                           </td>
                         </tr>
                         <tr className="border-b border-[#D5E3FF]">
                           <td className="text-right">
-                            <p className="text-primary text-lg font-medium">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Operating Hours:
                             </p>
                           </td>
                           <td className="text-left">
-                            <p className="text-base text-[#515151]">Always on</p>
+                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">Always on</p>
                           </td>
                         </tr>
                       </tbody></table>
@@ -273,17 +273,17 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   >
                     <table
                       cellPadding={10}
-                      className="w-full border-[#D5E3FF] border rounded-xl "
+                      className="w-full border-[#D5E3FF] border rounded-xl synctable responsive-table"
                     >
                       <tbody>
                         <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-right lg:w-2/4  md:w-2/4 sm:w-full">
-                            <p className="text-primary text-lg font-medium">
+                          <td className="lg:text-right md:text-right sm:text-left xs:text-left lg:w-2/4  md:w-2/4 sm:w-full">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Orientation:
                             </p>
                           </td>
                           <td className="text-left">
-                            <div className="flex justify-center">
+                            <div className="flex lg:justify-center md:justify-start sm:justify-start xs:justify-start lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
                               <div className="mb-[0.125rem] mr-4 inline-block min-h-[1.5rem] pl-[1.5rem]">
                                 <input
                                   className="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-SlateBlue checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-SlateBlue checked:after:bg-SlateBlue checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-SlateBlue checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-SlateBlue dark:checked:after:bg-SlateBlue dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
@@ -351,20 +351,20 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           </td>
                         </tr>
                         <tr>
-                          <td className="text-right pb-0">
-                            <p className="text-primary text-lg font-medium">
+                          <td className="lg:text-right md:text-right sm:text-left xs:text-left pb-0">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Playback Mode:
                             </p>
                           </td>
                           <td className="text-left pb-0">
-                            <ul className="inline-flex items-center justify-center  my-4 ">
+                            <ul className="inline-flex items-center justify-center  my-4 lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
                               <li className="text-sm">
                                 {" "}
                                 <button
                                   className={
                                     sync === 1
-                                      ? "tabsyncshow tabsyncactive "
-                                      : "synctab"
+                                      ? "tabsyncshow tabsyncactive lg:my-0 md:my-0 sm:mt-0 xs:my-2"
+                                      : "synctab lg:my-0 md:my-0 sm:mt-0 xs:my-2"
                                   }
                                   onClick={() => updatesynctoggle(1)}
                                 >
@@ -376,8 +376,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 <button
                                   className={
                                     sync === 2
-                                      ? "tabsyncshow tabsyncactive"
-                                      : "synctab"
+                                      ? "tabsyncshow tabsyncactive lg:my-0 md:my-0 sm:mt-0 xs:my-2"
+                                      : "synctab lg:my-0 md:my-0 sm:mt-0 xs:my-2"
                                   }
                                   onClick={() => updatesynctoggle(2)}
                                 >
@@ -395,7 +395,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           }
                         >
                           <td colSpan={2}>
-                            <table cellPadding={10} className="sync-table w-full">
+                            <table cellPadding={10} className="sync-table w-full responsive-table">
                               <tbody>
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-center pt-0" colSpan={2}>
@@ -407,7 +407,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 </tr>
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
-                                    <p className="text-primary text-lg font-medium">
+                                    <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                       Google Location:
                                     </p>
                                   </td>
@@ -421,7 +421,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
-                                    <p className="text-primary text-lg font-medium">
+                                    <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                       Overwrite Time Zone:
                                     </p>
                                   </td>
@@ -435,7 +435,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
-                                    <p className="text-primary text-lg font-medium">
+                                    <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                       Screen Group:
                                     </p>
                                   </td>
@@ -449,7 +449,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
-                                    <p className="text-primary text-lg font-medium">
+                                    <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                       Tags
                                     </p>
                                   </td>
@@ -462,7 +462,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
-                                    <p className="text-primary text-lg font-medium">
+                                    <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                       Operating Hours:
                                     </p>
                                   </td>
@@ -491,7 +491,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           }
                         >
                           <td colSpan={2}>
-                            <table cellPadding={10} className="sync-table w-full">
+                            <table cellPadding={10} className="sync-table  w-full responsive-table">
                               <tr className="border-b border-[#D5E3FF]">
                                 <td className="text-center pt-0" colSpan={2}>
                                   <p className="text-primary text-sm font-medium">
@@ -503,7 +503,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               </tr>
                               <tr className="border-b border-[#D5E3FF]">
                                 <td className="text-right">
-                                  <p className="text-primary text-lg font-medium">
+                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                     Google Location
                                   </p>
                                 </td>
@@ -517,7 +517,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
                               <tr className="border-b border-[#D5E3FF]">
                                 <td className="text-right">
-                                  <p className="text-primary text-lg font-medium">
+                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                     Select Time Zone
                                   </p>
                                 </td>
@@ -531,7 +531,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
                               <tr className="border-b border-[#D5E3FF]">
                                 <td className="text-right">
-                                  <p className="text-primary text-lg font-medium">
+                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                     Screen Group
                                   </p>
                                 </td>
@@ -545,7 +545,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
                               <tr className="border-b border-[#D5E3FF]">
                                 <td className="text-right">
-                                  <p className="text-primary text-lg font-medium">
+                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                     Tags
                                   </p>
                                 </td>
@@ -558,7 +558,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
                               <tr className="border-b border-[#D5E3FF]">
                                 <td className="text-right">
-                                  <p className="text-primary text-lg font-medium">
+                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                     Operating Hours:
                                   </p>
                                 </td>

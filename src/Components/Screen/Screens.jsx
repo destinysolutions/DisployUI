@@ -91,10 +91,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 {showOTPModal ? (
                   <>
                     <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                      <div className="relative w-auto my-6 mx-auto max-w-3xl">
+                      <div className="relative w-auto my-6 mx-auto max-w-3xl ">
                         <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                           <div className="flex items-start justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
-                            <h3 className="text-xl font-medium">New Screen</h3>
+                            <h3 className="text-xl  font-medium">New Screen</h3>
                             <button
                               className="p-1 text-xl"
                               onClick={() => setShowOTPModal(false)}
@@ -112,7 +112,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="max-w-sm mx-auto md:max-w-lg">
                                   <div className="w-full">
                                     <div className="bg-white h-64 py-3 rounded text-center">
-                                      <div className="flex flex-col mt-4">
+                                      <div className="flex flex-col  lg:mt-4 md:mt-4 sm:mt-2 xs:mt-2">
                                         <div className="font-normal text-lg text-[#000000]">
                                           Enter the 6-character pairing code?
                                         </div>
@@ -160,7 +160,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         />
                                       </div>
 
-                                      <div className="flex justify-center text-center mt-5">
+                                      <div className="flex justify-center text-center lg:mt-5 md:mt-5 sm:mt-2 xs:mt-1 ">
                                         <input type="checkbox" />
                                         <p className="ml-2 text-[#515151] text-[13px] ">
                                           Start screen in Preview Mode
@@ -555,10 +555,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     {showAssetModal ? (
                       <>
                         <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                          <div className="relative w-auto my-6 mx-auto max-w-3xl">
+                          <div className="relative w-auto my-6 mx-auto lg:max-w-3xl md:max-w-3xl sm:max-w-xl xs:max-w-xs">
                             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                               <div className="flex items-start justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
-                                <h3 className="text-xl font-medium">
+                                <h3 className="lg:text-xl md:text-lg  sm:text-base xs:text-base font-medium">
                                   Set Content to Add Media
                                 </h3>
                                 <button
@@ -569,11 +569,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 </button>
                               </div>
 
-                              <div className="relative p-6 flex-auto">
+                              <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-2 flex-auto">
                                 <div className="flex items-center justify-center">
                                   <img src="/DisployImg/BlackLogo.svg" />
                                 </div>
-                                <div className="bg-white rounded-[20px] shadow-md p-5">
+                                <div className="bg-white rounded-[20px] shadow-md lg:p-5 md:p-5 sm:p-2 xs:p-2">
                                   <div className="container mx-auto">
                                     <div className="max-w-sm mx-auto md:max-w-lg">
                                       <div className="w-full">
@@ -627,13 +627,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                             />
                                           </div>
 
-                                          <div className="flex justify-center text-center mt-5">
+                                          <div className="flex justify-center text-center lg:mt-5 md:mt-5 sm:mt-2 xs:mt-1">
                                             <input type="checkbox" />
                                             <p className="ml-2 text-[#515151] text-[13px] ">
                                               Start screen in Preview Mode
                                             </p>
                                           </div>
-                                          <div className="flex justify-center text-center mt-5">
+                                          <div className="flex justify-center text-center lg:mt-5 md:mt-5 sm:mt-2 xs:mt-1">
                                             <p className="text-[#515151] text-[13px]">
                                               To get pair code, please install
                                               Disploy app on your Players
