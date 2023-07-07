@@ -145,7 +145,7 @@ const Users = () => {
   return (
     <div>
       <div className="text-right mb-5 mr-5 flex items-end justify-end relative sm:mr-0">
-        <AiOutlineSearch className="absolute top-[14px] right-[230px] z-10 text-gray searchicon" />
+        <AiOutlineSearch className="absolute top-[13px] right-[220px] z-10 text-gray searchicon" />
         <input
           type="text"
           placeholder=" Search Users "
