@@ -10,6 +10,11 @@ import { HiOutlineRectangleGroup } from "react-icons/hi2";
 import { VscVmActive } from "react-icons/vsc";
 import { VscVmConnect } from "react-icons/vsc";
 import PropTypes from "prop-types";
+import { IoBarChartSharp } from "react-icons/io5";
+import { RiPlayListFill } from "react-icons/ri";
+import { BiAnchor } from "react-icons/bi";
+import { AiOutlineAppstoreAdd } from "react-icons/ai";
+import { AiOutlineSearch } from "react-icons/ai";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -30,6 +35,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [showOTPVerifyModal, setShowOTPVerifyModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
+  const [popupActiveTab, setPopupActiveTab] = useState(1);
+
+  const handleTabClick = (tabNumber) => {
+    setPopupActiveTab(tabNumber);
+  };
 
   return (
     <>
@@ -91,10 +101,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 {showOTPModal ? (
                   <>
                     <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                      <div className="relative w-auto my-6 mx-auto max-w-3xl ">
+                      <div className="relative w-auto my-6 mx-auto lg:max-w-3xl md:max-w-3xl sm:max-w-sm xs:max-w-[17rem]">
                         <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                           <div className="flex items-start justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
-                            <h3 className="text-xl  font-medium">New Screen</h3>
+                            <h3 className="text-xl font-medium">New Screen</h3>
                             <button
                               className="p-1 text-xl"
                               onClick={() => setShowOTPModal(false)}
@@ -103,17 +113,18 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             </button>
                           </div>
 
-                          <div className="relative p-6 flex-auto">
-                            <div className="flex items-center justify-center">
+                          <div className="relative lg:p-10 md:p-10 sm:p-5 xs:p-3 flex-auto">
+                            <div className="flex items-center justify-center mb-4">
                               <img src="/DisployImg/BlackLogo.svg" />
                             </div>
-                            <div className="bg-white rounded-[20px] shadow-md p-5">
+
+                            <div className="bg-white rounded-[20px] newscreenpopup  lg:p-5 md:p-5 sm:p-5 xs:p-2">
                               <div className="container mx-auto">
                                 <div className="max-w-sm mx-auto md:max-w-lg">
                                   <div className="w-full">
-                                    <div className="bg-white h-64 py-3 rounded text-center">
-                                      <div className="flex flex-col  lg:mt-4 md:mt-4 sm:mt-2 xs:mt-2">
-                                        <div className="font-normal text-lg text-[#000000]">
+                                    <div className="bg-white   rounded text-center">
+                                      <div className="flex flex-col">
+                                        <div className="font-normal lg:text-lg md:text-lg sm:text-base xs:text-sm text-[#000000]">
                                           Enter the 6-character pairing code?
                                         </div>
                                       </div>
@@ -123,51 +134,51 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="flex flex-row justify-center text-center px-2 mt-5"
                                       >
                                         <input
-                                          className="m-2 border h-10 w-10 text-center form-control rounded"
+                                          className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
                                           type="text"
                                           id="first"
                                           maxLength="1"
                                         />
                                         <input
-                                          className="m-2 border h-10 w-10 text-center form-control rounded"
+                                          className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
                                           type="text"
                                           id="second"
                                           maxLength="1"
                                         />
                                         <input
-                                          className="m-2 border h-10 w-10 text-center form-control rounded"
+                                          className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
                                           type="text"
                                           id="third"
                                           maxLength="1"
                                         />
                                         <input
-                                          className="m-2 border h-10 w-10 text-center form-control rounded"
+                                          className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
                                           type="text"
                                           id="fourth"
                                           maxLength="1"
                                         />
                                         <input
-                                          className="m-2 border h-10 w-10 text-center form-control rounded"
+                                          className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
                                           type="text"
                                           id="fifth"
                                           maxLength="1"
                                         />
                                         <input
-                                          className="m-2 border h-10 w-10 text-center form-control rounded"
+                                          className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
                                           type="text"
                                           id="sixth"
                                           maxLength="1"
                                         />
                                       </div>
 
-                                      <div className="flex justify-center text-center lg:mt-5 md:mt-5 sm:mt-2 xs:mt-1 ">
+                                      <div className="flex justify-center text-center mt-5">
                                         <input type="checkbox" />
                                         <p className="ml-2 text-[#515151] text-[13px] ">
                                           Start screen in Preview Mode
                                         </p>
                                       </div>
                                       <div className="flex justify-center text-center mt-5">
-                                        <p className="text-[#515151] text-[13px]">
+                                        <p className="text-[#515151] text-[12px] max-w-[400px]">
                                           To get pair code, please install
                                           Disploy app on your Players (Android,
                                           LG, Samsung, FireStick, Raspberry Pi,
@@ -182,13 +193,15 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
 
                           <div className="flex items-center justify-center pb-7">
-                            <button
-                              className="text-white bg-[#00072E] font-semibold  px-6 py-2 text-sm rounded-[45px]"
-                              type="button"
-                              onClick={() => setShowOTPVerifyModal(true)}
-                            >
-                              Continue
-                            </button>
+                            <Link to="/newscreendetail">
+                              <button
+                                className="text-white bg-[#00072E] font-semibold  px-6 py-2 text-sm rounded-[45px]"
+                                type="button"
+                                //onClick={() => setShowOTPVerifyModal(true)}
+                              >
+                                Continue
+                              </button>
+                            </Link>
                           </div>
                         </div>
                       </div>
@@ -554,92 +567,183 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     </button>
                     {showAssetModal ? (
                       <>
-                        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                          <div className="relative w-auto my-6 mx-auto lg:max-w-3xl md:max-w-3xl sm:max-w-xl xs:max-w-xs">
-                            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                              <div className="flex items-start justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
-                                <h3 className="lg:text-xl md:text-lg  sm:text-base xs:text-base font-medium">
+                        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                          <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
+                            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none  addmediapopup">
+                              <div className="flex items-start justify-between p-5  xs:px-10 border-b border-[#A7AFB7] border-slate-200 rounded-t">
+                                <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
                                   Set Content to Add Media
                                 </h3>
                                 <button
                                   className="p-1 text-xl"
-                                  onClick={() => setShowOTPModal(false)}
+                                  onClick={() => setShowAssetModal(false)}
                                 >
                                   <AiOutlineCloseCircle />
                                 </button>
                               </div>
 
-                              <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-2 flex-auto">
-                                <div className="flex items-center justify-center">
-                                  <img src="/DisployImg/BlackLogo.svg" />
-                                </div>
-                                <div className="bg-white rounded-[20px] shadow-md lg:p-5 md:p-5 sm:p-2 xs:p-2">
-                                  <div className="container mx-auto">
-                                    <div className="max-w-sm mx-auto md:max-w-lg">
-                                      <div className="w-full">
-                                        <div className="bg-white h-64 py-3 rounded text-center">
-                                          <div className="flex flex-col mt-4">
-                                            <div className="font-normal text-lg text-[#000000]">
-                                              Enter the 6-character pairing
-                                              code?
-                                            </div>
-                                          </div>
-
-                                          <div
-                                            id="otp"
-                                            className="flex flex-row justify-center text-center px-2 mt-5"
+                              <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
+                                <div className="bg-white rounded-[30px]">
+                                  <div className="">
+                                    <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
+                                      <div>
+                                        <nav
+                                          className="flex flex-col space-y-2 "
+                                          aria-label="Tabs"
+                                          role="tablist"
+                                          data-hs-tabs-vertical="true"
+                                        >
+                                          <button
+                                            type="button"
+                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                              popupActiveTab === 1
+                                                ? "active"
+                                                : ""
+                                            }`}
+                                            // onClick={() => handleTabClick(1)}
                                           >
-                                            <input
-                                              className="m-2 border h-10 w-10 text-center form-control rounded"
-                                              type="text"
-                                              id="first"
-                                              maxLength="1"
-                                            />
-                                            <input
-                                              className="m-2 border h-10 w-10 text-center form-control rounded"
-                                              type="text"
-                                              id="second"
-                                              maxLength="1"
-                                            />
-                                            <input
-                                              className="m-2 border h-10 w-10 text-center form-control rounded"
-                                              type="text"
-                                              id="third"
-                                              maxLength="1"
-                                            />
-                                            <input
-                                              className="m-2 border h-10 w-10 text-center form-control rounded"
-                                              type="text"
-                                              id="fourth"
-                                              maxLength="1"
-                                            />
-                                            <input
-                                              className="m-2 border h-10 w-10 text-center form-control rounded"
-                                              type="text"
-                                              id="fifth"
-                                              maxLength="1"
-                                            />
-                                            <input
-                                              className="m-2 border h-10 w-10 text-center form-control rounded"
-                                              type="text"
-                                              id="sixth"
-                                              maxLength="1"
-                                            />
-                                          </div>
+                                            <span
+                                              className={`p-1 rounded ${
+                                                popupActiveTab === 1
+                                                  ? "bg-primary text-white"
+                                                  : "bg-[#D5E3FF]"
+                                              } `}
+                                            >
+                                              <IoBarChartSharp size={15} />
+                                            </span>
+                                            Assets
+                                          </button>
+                                          <button
+                                            type="button"
+                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                              popupActiveTab === 2
+                                                ? "active"
+                                                : ""
+                                            }`}
+                                            //onClick={() => handleTabClick(2)}
+                                          >
+                                            <span
+                                              className={`p-1 rounded ${
+                                                popupActiveTab === 2
+                                                  ? "bg-primary text-white"
+                                                  : "bg-[#D5E3FF]"
+                                              } `}
+                                            >
+                                              <RiPlayListFill size={15} />
+                                            </span>
+                                            Playlist
+                                          </button>
+                                          <button
+                                            type="button"
+                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                              popupActiveTab === 3
+                                                ? "active"
+                                                : ""
+                                            }`}
+                                            // onClick={() => handleTabClick(3)}
+                                          >
+                                            <span
+                                              className={`p-1 rounded ${
+                                                popupActiveTab === 3
+                                                  ? "bg-primary text-white"
+                                                  : "bg-[#D5E3FF]"
+                                              } `}
+                                            >
+                                              <BiAnchor size={15} />
+                                            </span>
+                                            Disploy Studio
+                                          </button>
+                                          <button
+                                            type="button"
+                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                              popupActiveTab === 4
+                                                ? "active"
+                                                : ""
+                                            }`}
+                                            // onClick={() => handleTabClick(4)}
+                                          >
+                                            <span
+                                              className={`p-1 rounded ${
+                                                popupActiveTab === 4
+                                                  ? "bg-primary text-white"
+                                                  : "bg-[#D5E3FF]"
+                                              } `}
+                                            >
+                                              <AiOutlineAppstoreAdd size={15} />
+                                            </span>
+                                            Apps
+                                          </button>
+                                        </nav>
+                                      </div>
 
-                                          <div className="flex justify-center text-center lg:mt-5 md:mt-5 sm:mt-2 xs:mt-1">
-                                            <input type="checkbox" />
-                                            <p className="ml-2 text-[#515151] text-[13px] ">
-                                              Start screen in Preview Mode
-                                            </p>
+                                      <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
+                                        <div
+                                          className={
+                                            popupActiveTab === 1 ? "" : "hidden"
+                                          }
+                                        >
+                                          <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                                            <div className="text-right mb-5 mr-5 flex items-end justify-end relative sm:mr-0">
+                                              <AiOutlineSearch className="absolute top-[13px] right-[207px] z-10 text-gray searchicon" />
+                                              <input
+                                                type="text"
+                                                placeholder=" Search Users "
+                                                className="border border-primary rounded-full px-7 py-2 search-user"
+                                              />
+                                            </div>
+                                            <Link to="/fileupload">
+                                              <button className="flex align-middle border-primary items-center border rounded-full px-8 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                                                Upload
+                                              </button>
+                                            </Link>
                                           </div>
-                                          <div className="flex justify-center text-center lg:mt-5 md:mt-5 sm:mt-2 xs:mt-1">
-                                            <p className="text-[#515151] text-[13px]">
-                                              To get pair code, please install
-                                              Disploy app on your Players
-                                              (Android, LG, Samsung, FireStick,
-                                              Raspberry Pi, etc.)
-                                            </p>
+                                          <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto">
+                                            <table
+                                              style={{
+                                                borderCollapse: "separate",
+                                                borderSpacing: " 0 10px",
+                                              }}
+                                            >
+                                              <thead>
+                                                <tr className="bg-[#E4E6FF]">
+                                                  <th className="p-3 w-80 text-left">
+                                                    Media Name
+                                                  </th>
+                                                  <th className="">
+                                                    Date Added
+                                                  </th>
+                                                  <th className="p-3">Size</th>
+                                                  <th className="p-3">Type</th>
+                                                </tr>
+                                              </thead>
+
+                                              <tbody>
+                                                <tr className="bg-[#F8F8F8]">
+                                                  <td className="p-3">Name</td>
+                                                  <td className="p-3">
+                                                    25 May 2023
+                                                  </td>
+                                                  <td className="p-3">25 kb</td>
+                                                  <td className="p-3">Image</td>
+                                                </tr>
+                                                <tr className="bg-[#F8F8F8]">
+                                                  <td className="p-3">Name</td>
+                                                  <td className="p-3">
+                                                    25 May 2023
+                                                  </td>
+                                                  <td className="p-3">25 kb</td>
+                                                  <td className="p-3">Image</td>
+                                                </tr>
+                                                <tr className="bg-[#F8F8F8]">
+                                                  <td className="p-3">Name</td>
+                                                  <td className="p-3">
+                                                    25 May 2023
+                                                  </td>
+                                                  <td className="p-3">25 kb</td>
+                                                  <td className="p-3">Image</td>
+                                                </tr>
+                                              </tbody>
+                                            </table>
                                           </div>
                                         </div>
                                       </div>
@@ -647,20 +751,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div>
                                 </div>
                               </div>
-
-                              <div className="flex items-center justify-center pb-7">
-                                <button
-                                  className="text-white bg-[#00072E] font-semibold  px-6 py-2 text-sm rounded-[45px]"
-                                  type="button"
-                                  onClick={() => setShowOTPVerifyModal(true)}
-                                >
-                                  Continue
-                                </button>
-                              </div>
                             </div>
                           </div>
                         </div>
-                        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
                       </>
                     ) : null}
                   </td>
