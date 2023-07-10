@@ -1,63 +1,54 @@
 import "../Styles/loginRegister.css";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { BsMicrosoft } from "react-icons/bs";
 import { BsApple } from "react-icons/bs";
 import { BsGoogle } from "react-icons/bs";
 import { FaFacebookF } from "react-icons/fa";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { useCookies } from "react-cookie";
+import { Alert } from "@material-tailwind/react";
 const Login = () => {
-  const [emailID, setEmailID] = useState("");
-  const [password, setPassword] = useState("");
-  //const [registeredUsers, setRegisteredUsers] = useState([]);
-  const [showPassword, setShowPassword] = useState(false);
-
-  const [isLoggedIn, setLoggedIn] = useState(false);
   const history = useNavigate();
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    console.log(token); // Check the token value in the console
-    if (token) {
-      setLoggedIn(true);
-    }
-  }, []);
+  const location = useLocation();
+  const message = location?.state?.message || null;
+  const [EmailID, setEmailID] = useState("");
+  const [Password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [cookies, setCookie] = useCookies(["token"]);
+  //const [data, setData] = useState([]);
 
-  const handleLogin = async (credentials) => {
-    try {
-      const response = await fetch("http://192.168.1.219/api/Register/Login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    axios
+      .post(
+        "http://192.168.1.219/api/Register/Login",
+        {
+          Password: Password,
+          EmailID: EmailID,
         },
-        body: JSON.stringify(credentials),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        const token = response.data.data.token;
+        setCookie("token", token, { path: "/" });
+        // setData(response.data);
+        // if (response.status === 401) {
+        //   alert("Invalid credentials. Please try again.");
+        // } else {
+        history("/dashboard");
+        // }
+      })
+      .catch((error) => {
+        console.log(error);
       });
-
-      console.log(response); // Check the response object in the console
-
-      if (response.ok) {
-        const { token } = await response.json();
-        localStorage.setItem("token", token);
-        setLoggedIn(true);
-      } else {
-        // Handle authentication error
-      }
-    } catch (error) {
-      console.log(error);
-    }
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleLogin({ emailID, password });
-  };
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      history("/dashboard");
-    } else {
-      history("/");
-    }
-  }, []);
+  //console.log(data);
   return (
     <>
       <div className="main login">
@@ -70,6 +61,7 @@ const Login = () => {
                 alt="title"
               />
             </div>
+            {message != null && <Alert>{message}</Alert>}
             <div className="w-full bg-white rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
               <div className="p-6 sm:px-6 py-6">
                 <div className="mb-2 font-inter not-italic font-medium text-[24px] text-black">
@@ -88,20 +80,20 @@ const Login = () => {
                       className="formInput"
                       placeholder="Enter Your Email Address"
                       required=""
-                      value={emailID}
+                      value={EmailID}
                       onChange={(e) => setEmailID(e.target.value)}
                     />
                   </div>
                   <div className="relative">
                     <label className="formLabel">Password</label>
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       name="password"
                       id="password"
                       placeholder="Enter Your Password"
                       className="formInput"
                       required=""
-                      value={password}
+                      value={Password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
                     <div className="icon">
@@ -142,15 +134,15 @@ const Login = () => {
                       </Link>
                     </div>
                   </div>
-                  <Link to="/dashboard">
-                    <button
-                      type="submit"
-                      className="w-full text-[#FFFFFF] bg-[#002359] not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4"
-                      //onClick={handleSubmit}
-                    >
-                      Sign in
-                    </button>
-                  </Link>
+                  {/* <Link to="/dashboard"> */}
+                  <button
+                    type="submit"
+                    className="w-full text-[#FFFFFF] bg-[#002359] not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4"
+                    onClick={handleSubmit}
+                  >
+                    Sign in
+                  </button>
+                  {/* </Link> */}
                   <div className="lg:flex lg:ml-3 text-sm sm:block">
                     <label className="not-italic text-[#808080] font-medium">
                       Don’t have an account, yet?

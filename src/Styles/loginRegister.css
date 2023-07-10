@@ -50,6 +50,10 @@
   justify-content: center;
 }
 
+.error {
+  color: red;
+  font-size: 14px;
+}
 .socialIcon.socialIcon1:hover,
 .socialIcon.socialIcon1:hover svg {
   /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#cc0000+0,cc0000+100;Red+Flat */

@@ -7,48 +7,56 @@ import { BsGoogle } from "react-icons/bs";
 import { FaFacebookF } from "react-icons/fa";
 import { useState } from "react";
 import axios from "axios";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { Alert } from "@material-tailwind/react";
 
 const Registration = () => {
-  const [registerData, setRegisterData] = useState([]);
-  const [companyName, setCompanyName] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [emailID, setEmailID] = useState("");
-  const [googleLocation, setGoogleLocation] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState("");
   const history = useNavigate();
 
-  const createUser = (event) => {
-    event.preventDefault();
-    axios
-      .post(
-        "http://192.168.1.219/api/Register/AddRegister",
-        {
-          companyName: companyName,
-          password: password,
-          name: name,
-          emailID: emailID,
-          googleLocation: googleLocation,
-          phoneNumber: phoneNumber,
+  const validationSchema = Yup.object().shape({
+    companyName: Yup.string().required("Company Name is required"),
+    password: Yup.string().required("Password is required"),
+    name: Yup.string().required("Name is required"),
+    emailID: Yup.string().required("Email is required"),
+    phoneNumber: Yup.string().required("Phone Number is required"),
+    googleLocation: Yup.string().required("Google Location is required"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      companyName: "",
+      password: "",
+      name: "",
+      emailID: "",
+      googleLocation: "",
+      phoneNumber: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      axios
+        .post("http://192.168.1.219/api/Register/AddRegister", {
+          companyName: values.companyName,
+          password: values.password,
+          name: values.name,
+          emailID: values.emailID,
+          googleLocation: values.googleLocation,
+          phoneNumber: values.phoneNumber,
           operation: "Insert",
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .catch((error) => {
-        console.log(error);
-      })
-      .then((response) => {
-        console.log(response.data);
-        setRegisterData(response.data);
-        history("/");
-      });
-  };
-  console.log(registerData);
+        })
+        .then((response) => {
+          console.log(response.data);
+          history("/", { state: { message: "Registration successful!!" } });
+        })
+        .catch((error) => {
+          console.log(error);
+          setMessage("Registration failed.");
+        });
+    },
+  });
+
   return (
     <>
       <div className="main registration">
@@ -61,6 +69,9 @@ const Registration = () => {
                 alt="title"
               />
             </div>
+            <Alert variant="filled" severity="success">
+              {message}
+            </Alert>
             <div className="w-full bg-white rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
               <div className="p-5 sm:px-8 py-1">
                 <div className="my-1 font-inter not-italic font-medium text-[24px] text-black mt-4">
@@ -69,30 +80,45 @@ const Registration = () => {
                 <div className="mb-8 font-['Poppins'] not-italic font-normal text-[16px] text-black">
                   Fill in the fields below to sign up for an account.
                 </div>
-                <form className="space-y-3 md:space-y-5">
+                <form
+                  onSubmit={formik.handleSubmit}
+                  className="space-y-3 md:space-y-5"
+                >
                   <div className="relative">
                     <label className="formLabel">Company Name</label>
                     <input
                       type="text"
-                      name="name"
+                      name="companyName"
                       id="companyName"
                       placeholder="Enter Company Name"
                       className="formInput"
-                      required=""
-                      onChange={(e) => setCompanyName(e.target.value)}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.companyName}
                     />
+                    {formik.errors.companyName &&
+                      formik.touched.companyName && (
+                        <div className="error">{formik.errors.companyName}</div>
+                      )}
                   </div>
                   <div className="relative">
                     <label className="formLabel">Google Location</label>
                     <input
                       type="text"
-                      name="name"
+                      name="googleLocation"
                       id="googleLocation"
                       placeholder="Enter Your Google Location"
                       className="formInput"
-                      required=""
-                      onChange={(e) => setGoogleLocation(e.target.value)}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.googleLocation}
                     />
+                    {formik.errors.googleLocation &&
+                      formik.touched.googleLocation && (
+                        <div className="error">
+                          {formik.errors.googleLocation}
+                        </div>
+                      )}
                   </div>
                   <div className="relative">
                     <label className="formLabel">Name</label>
@@ -102,45 +128,62 @@ const Registration = () => {
                       id="name"
                       placeholder="Enter Your Name"
                       className="formInput"
-                      required=""
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.name}
                     />
+                    {formik.errors.name && formik.touched.name && (
+                      <div className="error">{formik.errors.name}</div>
+                    )}
                   </div>
                   <div className="relative">
                     <label className="formLabel">Phone Number</label>
                     <input
                       type="number"
-                      name="phoneNo"
-                      id="phoneNo"
+                      name="phoneNumber"
+                      id="phoneNumber"
                       placeholder="Enter Phone Number"
                       className="formInput"
-                      required=""
-                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.phoneNumber}
                     />
+                    {formik.errors.phoneNumber &&
+                      formik.touched.phoneNumber && (
+                        <div className="error">{formik.errors.phoneNumber}</div>
+                      )}
                   </div>
                   <div className="relative">
                     <label className="formLabel">Email address</label>
                     <input
                       type="email"
-                      name="email"
-                      id="email"
+                      name="emailID"
+                      id="emailID"
                       className="formInput"
                       placeholder="Enter Your Email Address"
-                      required=""
-                      onChange={(e) => setEmailID(e.target.value)}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.emailID}
                     />
+                    {formik.errors.emailID && formik.touched.emailID && (
+                      <div className="error">{formik.errors.emailID}</div>
+                    )}
                   </div>
                   <div className="relative">
                     <label className="formLabel">Password</label>
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       name="password"
                       id="password"
                       placeholder="Enter Your Password"
                       className="formInput"
-                      required=""
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.password}
                     />
+                    {formik.errors.password && formik.touched.password && (
+                      <div className="error">{formik.errors.password}</div>
+                    )}
                     <div className="icon">
                       {showPassword ? (
                         <BsFillEyeFill
@@ -157,10 +200,8 @@ const Registration = () => {
                     <div className="flex items-center h-5">
                       <input
                         id="terms"
-                        aria-describedby="terms"
                         type="checkbox"
                         className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                        required=""
                       />
                     </div>
                     <div className="lg:flex ml-3 text-sm sm:block">
@@ -177,7 +218,6 @@ const Registration = () => {
                   <button
                     type="submit"
                     className="w-full text-[#FFFFFF] bg-[#002359] not-italic font-medium rounded-lg py-3 text-center text-base"
-                    onClick={createUser}
                   >
                     Create Your account
                   </button>
