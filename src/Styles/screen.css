@@ -3,13 +3,11 @@ input:focus,
 input:focus-visible,
 select:focus,
 select:focus-visible,
-
 textarea:focus,
 textarea:focus-visible {
   /* box-shadow: 0px 3px 18px 1px #41479b80; */
   border: 1px solid #41479b78 !important;
   outline: none !important;
-
 }
 
 .screenIcon {
@@ -44,7 +42,7 @@ div#tooltip-bottom:before {
   border-top: 10px solid transparent;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid #41479B;
+  border-bottom: 10px solid #41479b;
   top: -18px;
   left: 50%;
   transform: translate(-50%, 0px);
@@ -96,8 +94,7 @@ input::placeholder {
   font-size: 16px !important;
 }
 
-@media(max-width:767px) {
-
+@media (max-width: 767px) {
   .screen-details,
   .screen-details tr,
   .screen-details td {
@@ -107,10 +104,6 @@ input::placeholder {
   .sm\:hidden {
     display: none !important;
   }
-
-
-}
-
 
 
 /* screen player page */
@@ -159,41 +152,36 @@ button.tabshow.tabactive {
 
 .synctab {
   background: #fff;
-  color: #D9D9D9;
+  color: #d9d9d9;
   font-size: 16px;
   padding: 5px 20px;
   border-radius: 20px;
   margin: 0 5px;
-  border: 1px solid #D9D9D9;
-
+  border: 1px solid #d9d9d9;
 }
 
 button.tabsyncshow.tabsyncactive {
-  background: #D9D9D9;
+  background: #d9d9d9;
   color: #001737;
   font-size: 16px;
   padding: 5px 20px;
   border-radius: 20px;
   margin: 0 5px;
-  border: 1px solid #D9D9D9;
-
-
+  border: 1px solid #d9d9d9;
 }
 
 .sync-table input,
 .sync-table select {
-  border: 1px solid #D5E3FF;
+  border: 1px solid #d5e3ff;
   border-radius: 30px;
   padding: 10px 20px;
   width: 100%;
   font-size: 16px;
-
 }
 
 .sync-table input::placeholder,
 .sync-table select::placeholder {
   color: #515151;
-
 }
 
 .mediadw {
@@ -211,7 +199,7 @@ button.tabsyncshow.tabsyncactive {
 }
 
 .mediadw:before {
-  content: '';
+  content: "";
   position: absolute;
   width: 15px;
   height: 15px;
@@ -223,8 +211,7 @@ button.tabsyncshow.tabsyncactive {
   left: 48%;
 }
 
-@media(max-width:767px) {
-
+@media (max-width: 767px) {
   table.sync-table.w-full,
   table.sync-table.w-full tr,
   table.sync-table.w-full td,
@@ -261,7 +248,6 @@ button.tabsyncshow.tabsyncactive {
   }
 
   .responsive-table table,
-
   .responsive-table td {
     display: block;
   }
@@ -275,7 +261,9 @@ button.tabsyncshow.tabsyncactive {
 }
 
 
+
 @media(max-width:350px) {
+
   .xs-block {
     display: block !important;
   }

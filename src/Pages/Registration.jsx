@@ -1,11 +1,54 @@
 import "../Styles/loginRegister.css";
-import { BsFillEyeFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
+import { Link, useNavigate } from "react-router-dom";
 import { BsMicrosoft } from "react-icons/bs";
 import { BsApple } from "react-icons/bs";
 import { BsGoogle } from "react-icons/bs";
 import { FaFacebookF } from "react-icons/fa";
+import { useState } from "react";
+import axios from "axios";
+
 const Registration = () => {
+  const [registerData, setRegisterData] = useState([]);
+  const [companyName, setCompanyName] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [emailID, setEmailID] = useState("");
+  const [googleLocation, setGoogleLocation] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const history = useNavigate();
+
+  const createUser = (event) => {
+    event.preventDefault();
+    axios
+      .post(
+        "http://192.168.1.219/api/Register/AddRegister",
+        {
+          companyName: companyName,
+          password: password,
+          name: name,
+          emailID: emailID,
+          googleLocation: googleLocation,
+          phoneNumber: phoneNumber,
+          operation: "Insert",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .catch((error) => {
+        console.log(error);
+      })
+      .then((response) => {
+        console.log(response.data);
+        setRegisterData(response.data);
+        history("/");
+      });
+  };
+  console.log(registerData);
   return (
     <>
       <div className="main registration">
@@ -36,6 +79,7 @@ const Registration = () => {
                       placeholder="Enter Company Name"
                       className="formInput"
                       required=""
+                      onChange={(e) => setCompanyName(e.target.value)}
                     />
                   </div>
                   <div className="relative">
@@ -47,6 +91,7 @@ const Registration = () => {
                       placeholder="Enter Your Google Location"
                       className="formInput"
                       required=""
+                      onChange={(e) => setGoogleLocation(e.target.value)}
                     />
                   </div>
                   <div className="relative">
@@ -58,17 +103,19 @@ const Registration = () => {
                       placeholder="Enter Your Name"
                       className="formInput"
                       required=""
+                      onChange={(e) => setName(e.target.value)}
                     />
                   </div>
                   <div className="relative">
                     <label className="formLabel">Phone Number</label>
                     <input
                       type="number"
-                      name="name"
+                      name="phoneNo"
                       id="phoneNo"
                       placeholder="Enter Phone Number"
                       className="formInput"
                       required=""
+                      onChange={(e) => setPhoneNumber(e.target.value)}
                     />
                   </div>
                   <div className="relative">
@@ -80,6 +127,7 @@ const Registration = () => {
                       className="formInput"
                       placeholder="Enter Your Email Address"
                       required=""
+                      onChange={(e) => setEmailID(e.target.value)}
                     />
                   </div>
                   <div className="relative">
@@ -91,9 +139,18 @@ const Registration = () => {
                       placeholder="Enter Your Password"
                       className="formInput"
                       required=""
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                     <div className="icon">
-                      <BsFillEyeFill />
+                      {showPassword ? (
+                        <BsFillEyeFill
+                          onClick={() => setShowPassword(!showPassword)}
+                        />
+                      ) : (
+                        <BsFillEyeSlashFill
+                          onClick={() => setShowPassword(!showPassword)}
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="flex items-start">
@@ -120,6 +177,7 @@ const Registration = () => {
                   <button
                     type="submit"
                     className="w-full text-[#FFFFFF] bg-[#002359] not-italic font-medium rounded-lg py-3 text-center text-base"
+                    onClick={createUser}
                   >
                     Create Your account
                   </button>

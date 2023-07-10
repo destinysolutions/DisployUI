@@ -1,11 +1,63 @@
 import "../Styles/loginRegister.css";
-import { BsFillEyeFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
+import { Link, useNavigate } from "react-router-dom";
 import { BsMicrosoft } from "react-icons/bs";
 import { BsApple } from "react-icons/bs";
 import { BsGoogle } from "react-icons/bs";
 import { FaFacebookF } from "react-icons/fa";
+import { useEffect, useState } from "react";
 const Login = () => {
+  const [emailID, setEmailID] = useState("");
+  const [password, setPassword] = useState("");
+  //const [registeredUsers, setRegisteredUsers] = useState([]);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  const history = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    console.log(token); // Check the token value in the console
+    if (token) {
+      setLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogin = async (credentials) => {
+    try {
+      const response = await fetch("http://192.168.1.219/api/Register/Login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      console.log(response); // Check the response object in the console
+
+      if (response.ok) {
+        const { token } = await response.json();
+        localStorage.setItem("token", token);
+        setLoggedIn(true);
+      } else {
+        // Handle authentication error
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleLogin({ emailID, password });
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      history("/dashboard");
+    } else {
+      history("/");
+    }
+  }, []);
   return (
     <>
       <div className="main login">
@@ -36,6 +88,8 @@ const Login = () => {
                       className="formInput"
                       placeholder="Enter Your Email Address"
                       required=""
+                      value={emailID}
+                      onChange={(e) => setEmailID(e.target.value)}
                     />
                   </div>
                   <div className="relative">
@@ -47,9 +101,19 @@ const Login = () => {
                       placeholder="Enter Your Password"
                       className="formInput"
                       required=""
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                     <div className="icon">
-                      <BsFillEyeFill />
+                      {showPassword ? (
+                        <BsFillEyeFill
+                          onClick={() => setShowPassword(!showPassword)}
+                        />
+                      ) : (
+                        <BsFillEyeSlashFill
+                          onClick={() => setShowPassword(!showPassword)}
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="flex items-start">
@@ -82,6 +146,7 @@ const Login = () => {
                     <button
                       type="submit"
                       className="w-full text-[#FFFFFF] bg-[#002359] not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4"
+                      //onClick={handleSubmit}
                     >
                       Sign in
                     </button>

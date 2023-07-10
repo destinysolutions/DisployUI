@@ -125,8 +125,9 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div className="border-b-[1px] border-[#D5E3FF]"></div>
                 <div
-                  className={`flex items-center justify-between p-4 ${playlistChange == 1 ? "bg-[#D5E3FF]" : "bg-white"
-                    }`}
+                  className={`flex items-center justify-between p-4 ${
+                    playlistChange == 1 ? "bg-[#D5E3FF]" : "bg-white"
+                  }`}
                   onClick={() => handlePlaylistChange(1)}
                 >
                   <div className="flex items-center">
@@ -134,9 +135,15 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                       <RiPlayList2Line className="text-white text-2xl" />
                     </div>
                     <div className="ml-3 text-[16px]">
-                      <h4 className="text-[#8E94A9] text-base">Playlist Name 1</h4>
-                      <p className="text-sm">Saved <span className="bg-[#E4E6FF] rounded-md text-sm p-1">01:10:00</span></p>
-
+                      <h4 className="text-[#8E94A9] text-base">
+                        Playlist Name 1
+                      </h4>
+                      <p className="text-sm">
+                        Saved{" "}
+                        <span className="bg-[#E4E6FF] rounded-md text-sm p-1">
+                          01:10:00
+                        </span>
+                      </p>
                     </div>
                   </div>
 
@@ -169,8 +176,9 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div className="border-b-[1px] border-[#D5E3FF]"></div>
                 <div
-                  className={`flex items-center justify-between p-4 ${playlistChange == 2 ? "bg-[#D5E3FF]" : "bg-white"
-                    }`}
+                  className={`flex items-center justify-between p-4 ${
+                    playlistChange == 2 ? "bg-[#D5E3FF]" : "bg-white"
+                  }`}
                   onClick={() => handlePlaylistChange(2)}
                 >
                   <div className="flex items-center">
@@ -178,8 +186,15 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                       <RiPlayList2Line className="text-white text-2xl" />
                     </div>
                     <div className="ml-3 text-[16px]">
-                      <h4 className="text-[#8E94A9] text-base">Playlist Name2</h4>
-                      <p className="text-sm">Saved <span className="bg-[#E4E6FF] rounded-md text-sm p-1">01:10:00</span></p>
+                      <h4 className="text-[#8E94A9] text-base">
+                        Playlist Name2
+                      </h4>
+                      <p className="text-sm">
+                        Saved{" "}
+                        <span className="bg-[#E4E6FF] rounded-md text-sm p-1">
+                          01:10:00
+                        </span>
+                      </p>
                     </div>
                   </div>
                   <div>
@@ -191,10 +206,11 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                   <>
                     <div
                       key={index}
-                      className={`flex items-center justify-between p-4 ${playlistChange == index + 3
-                        ? "bg-[#D5E3FF]"
-                        : "bg-white"
-                        }`}
+                      className={`flex items-center justify-between p-4 ${
+                        playlistChange == index + 3
+                          ? "bg-[#D5E3FF]"
+                          : "bg-white"
+                      }`}
                       onClick={() => handlePlaylistChange(index + 3)}
                     >
                       <div className="flex items-center">
@@ -202,10 +218,14 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                           <RiPlayList2Line className="text-white text-2xl" />
                         </div>
                         <div className="ml-3 text-[16px]">
-                          <div className="text-[#8E94A9] text-base">{playlist.name}</div>
+                          <div className="text-[#8E94A9] text-base">
+                            {playlist.name}
+                          </div>
                           <div className="flex">
                             <p className="text-sm">Saved</p>
-                            <div className="ml-1 bg-[#E4E6FF] rounded-md text-sm p-1">{playlist.savedTime}</div>
+                            <div className="ml-1 bg-[#E4E6FF] rounded-md text-sm p-1">
+                              {playlist.savedTime}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -287,15 +307,17 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                                 >
                                   <button
                                     type="button"
-                                    className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 1 ? "active" : ""
-                                      }`}
-                                  // onClick={() => handleTabClick(1)}
+                                    className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                      popupActiveTab === 1 ? "active" : ""
+                                    }`}
+                                    // onClick={() => handleTabClick(1)}
                                   >
                                     <span
-                                      className={`p-1 rounded ${popupActiveTab === 1
-                                        ? "bg-primary text-white"
-                                        : "bg-[#D5E3FF]"
-                                        } `}
+                                      className={`p-1 rounded ${
+                                        popupActiveTab === 1
+                                          ? "bg-primary text-white"
+                                          : "bg-[#D5E3FF]"
+                                      } `}
                                     >
                                       <IoBarChartSharp size={15} />
                                     </span>
@@ -303,15 +325,17 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                                   </button>
                                   <button
                                     type="button"
-                                    className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 2 ? "active" : ""
-                                      }`}
-                                  //onClick={() => handleTabClick(2)}
+                                    className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                      popupActiveTab === 2 ? "active" : ""
+                                    }`}
+                                    //onClick={() => handleTabClick(2)}
                                   >
                                     <span
-                                      className={`p-1 rounded ${popupActiveTab === 2
-                                        ? "bg-primary text-white"
-                                        : "bg-[#D5E3FF]"
-                                        } `}
+                                      className={`p-1 rounded ${
+                                        popupActiveTab === 2
+                                          ? "bg-primary text-white"
+                                          : "bg-[#D5E3FF]"
+                                      } `}
                                     >
                                       <RiPlayListFill size={15} />
                                     </span>
@@ -319,15 +343,17 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                                   </button>
                                   <button
                                     type="button"
-                                    className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 3 ? "active" : ""
-                                      }`}
-                                  // onClick={() => handleTabClick(3)}
+                                    className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                      popupActiveTab === 3 ? "active" : ""
+                                    }`}
+                                    // onClick={() => handleTabClick(3)}
                                   >
                                     <span
-                                      className={`p-1 rounded ${popupActiveTab === 3
-                                        ? "bg-primary text-white"
-                                        : "bg-[#D5E3FF]"
-                                        } `}
+                                      className={`p-1 rounded ${
+                                        popupActiveTab === 3
+                                          ? "bg-primary text-white"
+                                          : "bg-[#D5E3FF]"
+                                      } `}
                                     >
                                       <BiAnchor size={15} />
                                     </span>
@@ -335,15 +361,17 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                                   </button>
                                   <button
                                     type="button"
-                                    className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 4 ? "active" : ""
-                                      }`}
-                                  // onClick={() => handleTabClick(4)}
+                                    className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                      popupActiveTab === 4 ? "active" : ""
+                                    }`}
+                                    // onClick={() => handleTabClick(4)}
                                   >
                                     <span
-                                      className={`p-1 rounded ${popupActiveTab === 4
-                                        ? "bg-primary text-white"
-                                        : "bg-[#D5E3FF]"
-                                        } `}
+                                      className={`p-1 rounded ${
+                                        popupActiveTab === 4
+                                          ? "bg-primary text-white"
+                                          : "bg-[#D5E3FF]"
+                                      } `}
                                     >
                                       <AiOutlineAppstoreAdd size={15} />
                                     </span>
@@ -354,7 +382,9 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
 
                               <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
                                 <div
-                                  className={popupActiveTab === 2 ? "" : "hidden"}
+                                  className={
+                                    popupActiveTab === 2 ? "" : "hidden"
+                                  }
                                 >
                                   <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                                     <div className="text-right mb-5 mr-5 flex items-end justify-end relative sm:mr-0">
@@ -532,7 +562,9 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div>
                                 </div>
                                 <div
-                                  className={popupActiveTab === 3 ? "" : "hidden"}
+                                  className={
+                                    popupActiveTab === 3 ? "" : "hidden"
+                                  }
                                 >
                                   <p className="text-gray-500 dark:text-gray-400">
                                     This is the
@@ -586,37 +618,41 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                     <div className="mt-5">
                       <div className="lg:flex md:flex sm:block items-center justify-between rounded-full px-2">
                         <div
-                          className={`w-full py-2 flex justify-center cursor-pointer rounded-tl-full rounded-bl-full font-light roundedbtn text-sm ${activeTab === 1
-                            ? "bg-SlateBlue text-white"
-                            : "border border-[#D5E3FF]"
-                            } `}
+                          className={`w-full py-2 flex justify-center cursor-pointer rounded-tl-full rounded-bl-full font-light roundedbtn text-sm ${
+                            activeTab === 1
+                              ? "bg-SlateBlue text-white"
+                              : "border border-[#D5E3FF]"
+                          } `}
                           onClick={() => handleTabClick(1)}
                         >
                           All
                         </div>
                         <div
-                          className={`w-full py-2 flex justify-center cursor-pointer font-light text-sm ${activeTab === 2
-                            ? "bg-SlateBlue text-white"
-                            : "border border-[#D5E3FF]"
-                            }`}
+                          className={`w-full py-2 flex justify-center cursor-pointer font-light text-sm ${
+                            activeTab === 2
+                              ? "bg-SlateBlue text-white"
+                              : "border border-[#D5E3FF]"
+                          }`}
                           onClick={() => handleTabClick(2)}
                         >
                           Assets
                         </div>
                         <div
-                          className={`w-full py-2 flex justify-center cursor-pointer font-light text-sm ${activeTab === 3
-                            ? "bg-SlateBlue text-white "
-                            : "border border-[#D5E3FF]"
-                            }`}
+                          className={`w-full py-2 flex justify-center cursor-pointer font-light text-sm ${
+                            activeTab === 3
+                              ? "bg-SlateBlue text-white "
+                              : "border border-[#D5E3FF]"
+                          }`}
                           onClick={() => handleTabClick(3)}
                         >
                           Studio
                         </div>
                         <div
-                          className={`w-full py-2 flex justify-center cursor-pointer font-light text-sm ${activeTab === 4
-                            ? "bg-SlateBlue text-white"
-                            : "border border-[#D5E3FF]"
-                            }`}
+                          className={`w-full py-2 flex justify-center cursor-pointer font-light text-sm ${
+                            activeTab === 4
+                              ? "bg-SlateBlue text-white"
+                              : "border border-[#D5E3FF]"
+                          }`}
                           onClick={() => {
                             handleTabClick(4);
                             setShowAppTabContent(true);
@@ -625,10 +661,11 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                           Apps
                         </div>
                         <div
-                          className={`w-full py-2 flex justify-center cursor-pointer font-light text-sm rounded-tr-full roundedbtn rounded-br-full ${activeTab === 5
-                            ? "bg-SlateBlue text-white"
-                            : "border border-[#D5E3FF]"
-                            }`}
+                          className={`w-full py-2 flex justify-center cursor-pointer font-light text-sm rounded-tr-full roundedbtn rounded-br-full ${
+                            activeTab === 5
+                              ? "bg-SlateBlue text-white"
+                              : "border border-[#D5E3FF]"
+                          }`}
                           onClick={() => handleTabClick(5)}
                         >
                           Links
@@ -653,7 +690,9 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                               <BsCameraVideo className="text-white text-2xl" />
                             </div>
                             <div className="ml-3">
-                              <h4 className=" text-base font-medium">Media Name1</h4>
+                              <h4 className=" text-base font-medium">
+                                Media Name1
+                              </h4>
                               <p className=" text-sm font-normal">Video</p>
                             </div>
                           </div>
@@ -663,7 +702,9 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                               <IoImageOutline className="text-white text-2xl" />
                             </div>
                             <div className="ml-3">
-                              <h4 className=" text-base font-medium">Media Name1</h4>
+                              <h4 className=" text-base font-medium">
+                                Media Name1
+                              </h4>
                               <p className=" text-sm font-normal">Image</p>
                             </div>
                           </div>
@@ -673,7 +714,9 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                               <BsCameraVideo className="text-white text-2xl" />
                             </div>
                             <div className="ml-3">
-                              <h4 className=" text-base font-medium">Media Name1</h4>
+                              <h4 className=" text-base font-medium">
+                                Media Name1
+                              </h4>
                               <p className=" text-sm font-normal">Video</p>
                             </div>
                           </div>
@@ -683,7 +726,9 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                               <IoImageOutline className="text-white text-2xl" />
                             </div>
                             <div className="ml-3">
-                              <h4 className=" text-base font-medium">Media Name1</h4>
+                              <h4 className=" text-base font-medium">
+                                Media Name1
+                              </h4>
                               <p className=" text-sm font-normal">Image</p>
                             </div>
                           </div>
@@ -915,37 +960,41 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                     <div className="mt-5">
                       <div className="lg:flex md:flex sm:block xs:block items-center justify-between rounded-full px-2">
                         <div
-                          className={`w-full py-2 flex justify-center cursor-pointer rounded-tl-full rounded-bl-full font-light roundedbtn text-sm ${activeTab === 1
-                            ? "bg-SlateBlue text-white"
-                            : "border border-[#D5E3FF]"
-                            } `}
+                          className={`w-full py-2 flex justify-center cursor-pointer rounded-tl-full rounded-bl-full font-light roundedbtn text-sm ${
+                            activeTab === 1
+                              ? "bg-SlateBlue text-white"
+                              : "border border-[#D5E3FF]"
+                          } `}
                           onClick={() => handleTabClick(1)}
                         >
                           All
                         </div>
                         <div
-                          className={`w-full py-2 flex justify-center cursor-pointer font-light text-sm ${activeTab === 2
-                            ? "bg-SlateBlue text-white"
-                            : "border border-[#D5E3FF]"
-                            }`}
+                          className={`w-full py-2 flex justify-center cursor-pointer font-light text-sm ${
+                            activeTab === 2
+                              ? "bg-SlateBlue text-white"
+                              : "border border-[#D5E3FF]"
+                          }`}
                           onClick={() => handleTabClick(2)}
                         >
                           Assets
                         </div>
                         <div
-                          className={`w-full py-2 flex justify-center cursor-pointer font-light text-sm ${activeTab === 3
-                            ? "bg-SlateBlue text-white "
-                            : "border border-[#D5E3FF]"
-                            }`}
+                          className={`w-full py-2 flex justify-center cursor-pointer font-light text-sm ${
+                            activeTab === 3
+                              ? "bg-SlateBlue text-white "
+                              : "border border-[#D5E3FF]"
+                          }`}
                           onClick={() => handleTabClick(3)}
                         >
                           Studio
                         </div>
                         <div
-                          className={`w-full py-2 flex justify-center cursor-pointer font-light  text-sm ${activeTab === 4
-                            ? "bg-SlateBlue text-white"
-                            : "border border-[#D5E3FF]"
-                            }`}
+                          className={`w-full py-2 flex justify-center cursor-pointer font-light  text-sm ${
+                            activeTab === 4
+                              ? "bg-SlateBlue text-white"
+                              : "border border-[#D5E3FF]"
+                          }`}
                           onClick={() => {
                             handleTabClick(4);
                             setShowAppTabContent(true);
@@ -954,10 +1003,11 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                           Apps
                         </div>
                         <div
-                          className={`w-full py-2 flex justify-center cursor-pointer font-light text-sm rounded-tr-full roundedbtn rounded-br-full ${activeTab === 5
-                            ? "bg-SlateBlue text-white"
-                            : "border border-[#D5E3FF]"
-                            }`}
+                          className={`w-full py-2 flex justify-center cursor-pointer font-light text-sm rounded-tr-full roundedbtn rounded-br-full ${
+                            activeTab === 5
+                              ? "bg-SlateBlue text-white"
+                              : "border border-[#D5E3FF]"
+                          }`}
                           onClick={() => handleTabClick(5)}
                         >
                           Links
@@ -1059,7 +1109,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
         </div>
-      </div >
+      </div>
     </>
   );
 };
