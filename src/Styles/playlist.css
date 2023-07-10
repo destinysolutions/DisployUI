@@ -62,7 +62,10 @@
     font-size: 14px !important;
   }
 
-}
+  .myplaylist-popup-details {
+
+    margin: 10px !important;
+  }
 
 
 }
@@ -75,7 +78,7 @@
   }
 }
 
-@media (max-width: 412px) {
+@media(max-width:412px) {
   .playlistbtn button {
     margin-top: 10px;
   }
@@ -91,7 +94,7 @@
   }
 }
 
-@media (max-width: 350px) {
+@media(max-width:350px) {
   .myplaylist-popup-details {
     min-width: 250px;
   }
