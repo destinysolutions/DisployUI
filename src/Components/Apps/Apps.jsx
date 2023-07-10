@@ -6,7 +6,7 @@ import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useState } from "react";
 import { FiUpload } from "react-icons/fi";
 import { MdPlaylistPlay } from "react-icons/md";
-import { TbBoxMultiple } from "react-icons/tb";
+import { MdOutlineWidgets } from "react-icons/md";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import "../../Styles/apps.css";
 import { Link } from "react-router-dom";
@@ -163,7 +163,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
               Apps
             </h1>
             <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-5 py-2 xs:mt-2 sm:mt-0 text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-              <TbAppsFilled className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
+              <MdOutlineWidgets className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
               New Instance
             </button>
           </div>

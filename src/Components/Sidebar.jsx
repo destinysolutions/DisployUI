@@ -79,7 +79,7 @@ const Sidebar = ({ sidebarOpen }) => {
     {
       title: "Disploy Studio",
       cName: "nav-text link-items",
-      path: "/studio",
+      path: "/disploystudio",
       icon: (
         <img
           src="/MenuIcons/disploy_studio_icon.svg"
