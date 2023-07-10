@@ -104,7 +104,7 @@ input::placeholder {
   .sm\:hidden {
     display: none !important;
   }
-}
+
 
 /* screen player page */
 .screen-palyer-img {
@@ -260,7 +260,10 @@ button.tabsyncshow.tabsyncactive {
   }
 }
 
-@media (max-width: 350px) {
+
+
+@media(max-width:350px) {
+
   .xs-block {
     display: block !important;
   }

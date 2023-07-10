@@ -155,9 +155,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           checked={selectedValue === "0"}
                           onChange={handleRadioChange}
                         />
-                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                          0
-                        </label>
+                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">0</label>
 
                         <input
                           type="radio"
@@ -166,9 +164,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           onChange={handleRadioChange}
                           className="ml-4"
                         />
-                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                          90
-                        </label>
+                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">90</label>
 
                         <input
                           type="radio"
@@ -177,10 +173,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           onChange={handleRadioChange}
                           className="ml-4"
                         />
-                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                          180
-                        </label>
-
+                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">180</label>
                         <input
                           type="radio"
                           value="270"
@@ -188,9 +181,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           onChange={handleRadioChange}
                           className="ml-4"
                         />
-                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                          270
-                        </label>
+                        <label className="ml-1 lg:text-base md:text-base sm:text-xs xs:text-xs">270</label>
                       </div>
                     </td>
                   </tr>
@@ -374,6 +365,80 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                 ? "bg-primary text-white"
                                                 : "bg-[#D5E3FF]"
                                             } `}
+                                            <button
+                                              type="button"
+                                              className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 1 ? "active" : ""
+                                                }`}
+                                              onClick={() => handleTabClick(1)}
+                                            >
+                                              <span
+                                                className={`p-1 rounded ${activeTab === 1
+                                                  ? "bg-primary text-white"
+                                                  : "bg-[#D5E3FF]"
+                                                  } `}
+                                              >
+                                                <IoBarChartSharp size={15} />
+                                              </span>
+                                              Assets
+                                            </button>
+                                            <button
+                                              type="button"
+                                              className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 2 ? "active" : ""
+                                                }`}
+                                              onClick={() => handleTabClick(2)}
+                                            >
+                                              <span
+                                                className={`p-1 rounded ${activeTab === 2
+                                                  ? "bg-primary text-white"
+                                                  : "bg-[#D5E3FF]"
+                                                  } `}
+                                              >
+                                                <RiPlayListFill size={15} />
+                                              </span>
+                                              Playlist
+                                            </button>
+                                            <button
+                                              type="button"
+                                              className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 3 ? "active" : ""
+                                                }`}
+                                              onClick={() => handleTabClick(3)}
+                                            >
+                                              <span
+                                                className={`p-1 rounded ${activeTab === 3
+                                                  ? "bg-primary text-white"
+                                                  : "bg-[#D5E3FF]"
+                                                  } `}
+                                              >
+                                                <BiAnchor size={15} />
+                                              </span>
+                                              Disploy Studio
+                                            </button>
+                                            <button
+                                              type="button"
+                                              className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 4 ? "active" : ""
+                                                }`}
+                                              onClick={() => handleTabClick(4)}
+                                            >
+                                              <span
+                                                className={`p-1 rounded ${activeTab === 4
+                                                  ? "bg-primary text-white"
+                                                  : "bg-[#D5E3FF]"
+                                                  } `}
+                                              >
+                                                <AiOutlineAppstoreAdd
+                                                  size={15}
+                                                />
+                                              </span>
+                                              Apps
+                                            </button>
+                                          </nav>
+                                        </div>
+
+                                        <div className="p-10 drop-shadow-2xl bg-white rounded-3xl">
+                                          <div
+                                            className={
+                                              activeTab === 1 ? "" : "hidden"
+                                            }
                                           >
                                             <RiPlayListFill size={15} />
                                           </span>

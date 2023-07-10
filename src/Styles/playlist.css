@@ -52,7 +52,8 @@
   left: 50%;
 }
 
-@media (max-width: 800px) {
+
+@media(max-width:800px) {
   .roundedbtn {
     border-radius: 0px !important;
   }
@@ -61,12 +62,12 @@
     font-size: 14px !important;
   }
 
-  .myplaylist-popup-details {
-    margin: 10px !important;
-  }
 }
 
-@media (max-device-width: 640px) and (max-device-height: 400px) {
+
+}
+
+@media (max-device-width:640px) and (max-device-height:400px) {
   .addmediapopup {
     height: 100vh;
     overflow-y: auto;
@@ -85,6 +86,7 @@
   }
 
   .myplaylist-popup-details {
+
     margin: 10px !important;
   }
 }
