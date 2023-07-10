@@ -15,6 +15,8 @@ import FileUpload from "../Components/Assests/fileUpload";
 import Assets from "../Components/Assests/Assets";
 import MyPlaylist from "../Components/PlayList/MyPlaylist";
 import Apps from "../Components/Apps/Apps";
+import AppDetail from "../Components/Apps/AppDetail";
+import AppInstance from "../Components/Apps/AppInstance";
 
 const Routing = () => {
   const [sidebarOpen, setSidebarOpen] = useState();
@@ -139,6 +141,24 @@ const Routing = () => {
           path="/apps"
           element={
             <Apps sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          }
+        />
+        <Route
+          path="/appdetail"
+          element={
+            <AppDetail
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
+        <Route
+          path="/appinstance"
+          element={
+            <AppInstance
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
           }
         />
         <Route

@@ -60,7 +60,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
       id: 3,
       Image: "../../../AppsImg/coffee-tea.svg",
       appName: "Coffee Tea",
-    }
+    },
   ];
 
   const FeatuardApps = [
@@ -90,55 +90,55 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
       appName: "Noticeboard",
     },
     {
-        id: 6,
-        Image: "../../../AppsImg/slack.svg",
-        appName: "Slack",
-      },
-      {
-        id: 7,
-        Image: "../../../AppsImg/slack.svg",
-        appName: "Weather",
-      },
-      {
-        id: 8,
-        Image: "../../../AppsImg/slack.svg",
-        appName: "Coffee Tea",
-      },
-      {
-        id: 9,
-        Image: "../../../AppsImg/slack.svg",
-        appName: "Foods",
-      },
-      {
-        id: 10,
-        Image: "../../../AppsImg/slack.svg",
-        appName: "Noticeboard",
-      },
-      {
-        id: 11,
-        Image: "../../../AppsImg/slack.svg",
-        appName: "Slack",
-      },
-      {
-        id: 12,
-        Image: "../../../AppsImg/slack.svg",
-        appName: "Weather",
-      },
-      {
-        id: 13,
-        Image: "../../../AppsImg/slack.svg",
-        appName: "Coffee Tea",
-      },
-      {
-        id: 14,
-        Image: "../../../AppsImg/slack.svg",
-        appName: "Foods",
-      },
-      {
-        id: 15,
-        Image: "../../../AppsImg/slack.svg",
-        appName: "Noticeboard",
-      },
+      id: 6,
+      Image: "../../../AppsImg/slack.svg",
+      appName: "Slack",
+    },
+    {
+      id: 7,
+      Image: "../../../AppsImg/slack.svg",
+      appName: "Weather",
+    },
+    {
+      id: 8,
+      Image: "../../../AppsImg/slack.svg",
+      appName: "Coffee Tea",
+    },
+    {
+      id: 9,
+      Image: "../../../AppsImg/slack.svg",
+      appName: "Foods",
+    },
+    {
+      id: 10,
+      Image: "../../../AppsImg/slack.svg",
+      appName: "Noticeboard",
+    },
+    {
+      id: 11,
+      Image: "../../../AppsImg/slack.svg",
+      appName: "Slack",
+    },
+    {
+      id: 12,
+      Image: "../../../AppsImg/slack.svg",
+      appName: "Weather",
+    },
+    {
+      id: 13,
+      Image: "../../../AppsImg/slack.svg",
+      appName: "Coffee Tea",
+    },
+    {
+      id: 14,
+      Image: "../../../AppsImg/slack.svg",
+      appName: "Foods",
+    },
+    {
+      id: 15,
+      Image: "../../../AppsImg/slack.svg",
+      appName: "Noticeboard",
+    },
   ];
 
   const [appDropDown, setAppDropDown] = useState(null);
@@ -149,6 +149,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
       setAppDropDown(id);
     }
   };
+
   return (
     <>
       <div className="flex border-b border-gray py-3">
@@ -157,11 +158,11 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <div className="pt-6 px-5">
         <div className={`${sidebarOpen ? "ml-52" : "ml-16"}`}>
-          <div className="lg:flex lg:justify-between sm:block  items-center">
+          <div className="lg:flex lg:justify-between sm:flex sm:justify-between xs:block items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
               Apps
             </h1>
-            <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-5 py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+            <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-5 py-2 xs:mt-2 sm:mt-0 text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
               <TbAppsFilled className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
               New Instance
             </button>
@@ -170,10 +171,10 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
             <div className="grid grid-cols-10 gap-4">
               {AddedApps.map((app, id) => (
                 <div
-                  className="lg:col-span-2 md:col-span-5 sm:col-span-10 "
+                  className="lg:col-span-2 md:col-span-5 sm:col-span-10 xs:col-span-10 "
                   key={id}
                 >
-                  <div className="shadow-md  bg-white rounded-lg p-3">
+                  <div className="shadow-md bg-white rounded-lg p-3">
                     <div className="relative">
                       <button className="float-right">
                         <BiDotsHorizontalRounded
@@ -204,25 +205,27 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       )}
                     </div>
-                    <div className="text-center clear-both">
-                      <img
-                        src={app.Image}
-                        alt="Logo"
-                        className="cursor-pointer mx-auto h-20 w-20"
-                      />
-                      <h4 className="text-lg font-medium mt-3">
-                        {app.appName}
-                      </h4>
-                      <h4 className="text-sm font-normal ">Added</h4>
-                    </div>
+                    <Link to="/appdetail">
+                      <div className="text-center clear-both">
+                        <img
+                          src={app.Image}
+                          alt="Logo"
+                          className="cursor-pointer mx-auto h-20 w-20"
+                        />
+                        <h4 className="text-lg font-medium mt-3">
+                          {app.appName}
+                        </h4>
+                        <h4 className="text-sm font-normal ">Added</h4>
+                      </div>
+                    </Link>
                   </div>
                 </div>
               ))}
             </div>
           </div>
           <div className="mt-5 mb-5">
-          <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] mb-4 ">
-          Featured Apps
+            <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] mb-4 ">
+              Featured Apps
             </h1>
             <div className="grid grid-cols-12 gap-4">
               {FeatuardApps.map((featuardApp, id) => (
@@ -231,18 +234,20 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
                   key={id}
                 >
                   <div className="shadow-md  bg-white rounded-lg p-5">
-                    <div className="flex">
-                    <img
+                    <div className="lg:flex md:flex sm:flex xs:block ">
+                      <img
                         src={featuardApp.Image}
                         alt="Logo"
                         className="cursor-pointer h-20 w-20"
                       />
-                     <div className="ml-5">
-                     <h4 className="text-lg font-medium mt-3">
-                        {featuardApp.appName}
-                      </h4>
-                      <h4 className="text-sm font-normal ">Internal Communications</h4>
-                        </div>
+                      <div className="lg:ml-5 sm:ml-5 xs:mt-6 sm:mt-0">
+                        <h4 className="text-lg font-medium mt-3">
+                          {featuardApp.appName}
+                        </h4>
+                        <h4 className="text-sm font-normal ">
+                          Internal Communications
+                        </h4>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -250,8 +255,8 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
           <div className="mt-5 mb-5">
-          <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] mb-4 ">
-          Most Popular Apps
+            <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] mb-4 ">
+              Most Popular Apps
             </h1>
             <div className="grid grid-cols-12 gap-4">
               {MostPopularApps.map((mostpopularApp, id) => (
@@ -260,18 +265,20 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
                   key={id}
                 >
                   <div className="shadow-md  bg-white rounded-lg p-5">
-                    <div className="flex">
-                    <img
+                    <div className="lg:flex md:flex sm:flex xs:block">
+                      <img
                         src={mostpopularApp.Image}
                         alt="Logo"
                         className="cursor-pointer h-20 w-20"
                       />
-                     <div className="ml-5">
-                     <h4 className="text-lg font-medium mt-3">
-                        {mostpopularApp.appName}
-                      </h4>
-                      <h4 className="text-sm font-normal ">Internal Communications</h4>
-                        </div>
+                      <div className="lg:ml-5 sm:ml-5 xs:mt-6 sm:mt-0">
+                        <h4 className="text-lg font-medium mt-3">
+                          {mostpopularApp.appName}
+                        </h4>
+                        <h4 className="text-sm font-normal ">
+                          Internal Communications
+                        </h4>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -279,13 +286,13 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
           <div className="dashboard-footer text-center lg:text-base md:text-base  z-10 my-4 sm:text-sm  py-2 ">
-        <h6 className="font-medium">
-          Securely display dashboards from any application
-        </h6>
-        <p>
-          Find out more at <Link to="/">disploy.com</Link>
-        </p>
-      </div>
+            <h6 className="font-medium">
+              Securely display dashboards from any application
+            </h6>
+            <p>
+              Find out more at <Link to="/">disploy.com</Link>
+            </p>
+          </div>
         </div>
       </div>
     </>
