@@ -17,7 +17,8 @@ import MyPlaylist from "../Components/PlayList/MyPlaylist";
 import Apps from "../Components/Apps/Apps";
 import AppDetail from "../Components/Apps/AppDetail";
 import AppInstance from "../Components/Apps/AppInstance";
-
+import DisployStudio from '../Components/DisployStudio/DisployStudio'
+import Report from '../Components/Reports/Report'
 const Routing = () => {
   const [sidebarOpen, setSidebarOpen] = useState();
   const handleResize = useCallback(() => {
@@ -165,6 +166,24 @@ const Routing = () => {
           path="/myplaylist"
           element={
             <MyPlaylist
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
+        <Route
+          path="/disploystudio"
+          element={
+            <DisployStudio
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
+        <Route
+          path="/reports"
+          element={
+            <Report
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
             />
