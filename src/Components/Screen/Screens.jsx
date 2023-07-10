@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "../../Styles/screen.css";
-import { AiOutlineCloseCircle, AiOutlineCloudUpload } from "react-icons/ai";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Sidebar from "../Sidebar";
@@ -10,12 +10,6 @@ import { HiOutlineRectangleGroup } from "react-icons/hi2";
 import { VscVmActive } from "react-icons/vsc";
 import { VscVmConnect } from "react-icons/vsc";
 import PropTypes from "prop-types";
-import { IoBarChartSharp } from "react-icons/io5";
-import { RiPlayListFill } from "react-icons/ri";
-import { BiAnchor } from "react-icons/bi";
-import { AiOutlineAppstoreAdd } from "react-icons/ai";
-import { AiOutlineSearch } from "react-icons/ai";
-import "../../Styles/playlist.css";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -36,11 +30,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [showOTPVerifyModal, setShowOTPVerifyModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
-  const [activeTab, setActiveTab] = useState(1);
-
-  const handleTabClick = (tabNumber) => {
-    setActiveTab(tabNumber);
-  };
 
   return (
     <>
@@ -193,15 +182,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
 
                           <div className="flex items-center justify-center pb-7">
-                            <Link to="/newscreendetail">
-                              <button
-                                className="text-white bg-[#00072E] font-semibold  px-6 py-2 text-sm rounded-[45px]"
-                                type="button"
-                                //onClick={() => setShowOTPVerifyModal(true)}
-                              >
-                                Continue
-                              </button>
-                            </Link>
+                            <button
+                              className="text-white bg-[#00072E] font-semibold  px-6 py-2 text-sm rounded-[45px]"
+                              type="button"
+                              onClick={() => setShowOTPVerifyModal(true)}
+                            >
+                              Continue
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -541,44 +528,47 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   <td className="p-2">
                     <button
                       onClick={() => setShowAssetModal(true)}
-                      className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm   hover:bg-primary hover:text-white"
+                      className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm   hover:bg-primary hover:text-white asset-btn"
                     >
                       Asset Name
-                      <AiOutlineCloudUpload className="ml-2 text-lg" />
+                      <svg
+                        className="ml-2"
+                        width="15"
+                        height="11"
+                        viewBox="0 0 15 11"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g clipPath="url(#clip0_1057_2578)">
+                          <path
+                            d="M10.5275 3.65207C10.1303 3.84835 9.77432 4.10207 9.43155 4.38156L8.8418 3.70685C9.27569 3.30431 9.78164 2.98937 10.3254 2.75792C9.225 0.80851 6.56368 0.298745 4.80879 1.66164C4.17159 2.15499 3.6879 2.89328 3.50186 3.87121L3.44327 4.17677L3.13858 4.23068C2.84004 4.28283 2.57344 4.3549 2.33965 4.4463C0.880669 5.01085 0.471098 6.63478 1.36377 7.86789C1.74581 8.39259 2.23272 8.92755 2.87168 9.01662H3.76495C3.75879 9.10451 3.75557 9.19298 3.75557 9.28234C3.75557 9.49738 3.77373 9.70802 3.80889 9.9131H2.85733L2.80108 9.90812C1.90665 9.79445 1.17159 9.12853 0.640434 8.39289C-0.597944 6.68781 0.0117235 4.38947 2.01944 3.61076C2.22891 3.52902 2.45303 3.46076 2.68916 3.40597C2.95723 2.34132 3.52852 1.5216 4.26299 0.952651C6.52442 -0.799595 9.91934 -0.0528178 11.2146 2.52179C11.4094 2.49103 11.6045 2.4755 11.7981 2.47785C14.6956 2.49923 15.8414 6.20441 14.3379 8.20041C13.7353 8.99992 12.8109 9.68019 11.8591 9.90109L11.7592 9.9131H11.1788C11.2292 9.6171 11.244 9.31613 11.2228 9.01662H11.7094C12.4169 8.8464 13.1716 8.26427 13.6204 7.66427C14.6886 6.24162 13.9304 3.38546 11.792 3.37199C11.3742 3.36847 10.9392 3.46955 10.5275 3.65207ZM6.87686 10.6909H8.12374C8.41524 10.6909 8.6543 10.4519 8.6543 10.1604V8.4424H9.56368C9.75528 8.4342 9.89122 8.37091 9.97002 8.25138C10.183 7.93175 9.89209 7.61623 9.69024 7.39386C9.11749 6.76515 8.13106 5.83439 7.84834 5.50158C7.63389 5.26486 7.3292 5.26486 7.11475 5.50158C6.82266 5.84259 5.80108 6.84249 5.25645 7.45392C5.06748 7.66691 4.83399 7.95695 5.03028 8.25138C5.11114 8.37091 5.24561 8.4342 5.43721 8.4424H6.34659V10.1604C6.34659 10.4486 6.58536 10.6909 6.87686 10.6909Z"
+                            fill="black"
+                          />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_1057_2578">
+                            <rect width="15" height="10.691" fill="white" />
+                          </clipPath>
+                        </defs>
+                      </svg>
                     </button>
                     {showAssetModal ? (
                       <>
-                        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
-                          <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
-                            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none  addmediapopup">
-                              <div className="flex items-start justify-between p-5  xs:px-10 border-b border-[#A7AFB7] border-slate-200 rounded-t">
-                                <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                          <div className="relative w-auto my-6 mx-auto lg:max-w-3xl md:max-w-3xl sm:max-w-xl xs:max-w-xs">
+                            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                              <div className="flex items-start justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
+                                <h3 className="lg:text-xl md:text-lg  sm:text-base xs:text-base font-medium">
                                   Set Content to Add Media
                                 </h3>
                                 <button
                                   className="p-1 text-xl"
-                                  onClick={() => setShowAssetModal(false)}
+                                  onClick={() => setShowOTPModal(false)}
                                 >
                                   <AiOutlineCloseCircle />
                                 </button>
                               </div>
-                              <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
-                                <div className="bg-white rounded-[30px]">
-                                  <div className="">
-                                    <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                      <div>
-                                        <nav
-                                          className="flex flex-col space-y-2 "
-                                          aria-label="Tabs"
-                                          role="tablist"
-                                          data-hs-tabs-vertical="true"
-                                        >
-                                          <button
-                                            type="button"
-                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                              activeTab === 1 ? "active" : ""
-                                            }`}
-                                            // onClick={() => handleTabClick(1)}
+
                               <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-2 flex-auto">
                                 <div className="flex items-center justify-center">
                                   <img src="/DisployImg/BlackLogo.svg" />
@@ -599,141 +589,44 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                             id="otp"
                                             className="flex flex-row justify-center text-center px-2 mt-5"
                                           >
-                                            <span
-                                              className={`p-1 rounded ${
-                                                activeTab === 1
-                                                  ? "bg-primary text-white"
-                                                  : "bg-[#D5E3FF]"
-                                              } `}
-                                            >
-                                              <IoBarChartSharp size={15} />
-                                            </span>
-                                            Assets
-                                          </button>
-                                          <button
-                                            type="button"
-                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                              activeTab === 2 ? "active" : ""
-                                            }`}
-                                            //onClick={() => handleTabClick(2)}
-                                          >
-                                            <span
-                                              className={`p-1 rounded ${
-                                                activeTab === 2
-                                                  ? "bg-primary text-white"
-                                                  : "bg-[#D5E3FF]"
-                                              } `}
-                                            >
-                                              <RiPlayListFill size={15} />
-                                            </span>
-                                            Playlist
-                                          </button>
-                                          <button
-                                            type="button"
-                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                              activeTab === 3 ? "active" : ""
-                                            }`}
-                                            // onClick={() => handleTabClick(3)}
-                                          >
-                                            <span
-                                              className={`p-1 rounded ${
-                                                activeTab === 3
-                                                  ? "bg-primary text-white"
-                                                  : "bg-[#D5E3FF]"
-                                              } `}
-                                            >
-                                              <BiAnchor size={15} />
-                                            </span>
-                                            Disploy Studio
-                                          </button>
-                                          <button
-                                            type="button"
-                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                              activeTab === 4 ? "active" : ""
-                                            }`}
-                                            // onClick={() => handleTabClick(4)}
-                                          >
-                                            <span
-                                              className={`p-1 rounded ${
-                                                activeTab === 4
-                                                  ? "bg-primary text-white"
-                                                  : "bg-[#D5E3FF]"
-                                              } `}
-                                            >
-                                              <AiOutlineAppstoreAdd size={15} />
-                                            </span>
-                                            Apps
-                                          </button>
-                                        </nav>
-                                      </div>
-                                      <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
-                                        <div
-                                          className={
-                                            activeTab === 1 ? "" : "hidden"
-                                          }
-                                        >
-                                          <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                                            <div className="text-right mb-5 mr-5 flex items-end justify-end relative sm:mr-0">
-                                              <AiOutlineSearch className="absolute top-[13px] right-[207px] z-10 text-gray searchicon" />
-                                              <input
-                                                type="text"
-                                                placeholder=" Search Users "
-                                                className="border border-primary rounded-full px-7 py-2 search-user"
-                                              />
-                                            </div>
-                                            <Link to="/fileupload">
-                                              <button className="flex align-middle border-primary items-center border rounded-full px-8 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                                                Upload
-                                              </button>
-                                            </Link>
+                                            <input
+                                              className="m-2 border h-10 w-10 text-center form-control rounded"
+                                              type="text"
+                                              id="first"
+                                              maxLength="1"
+                                            />
+                                            <input
+                                              className="m-2 border h-10 w-10 text-center form-control rounded"
+                                              type="text"
+                                              id="second"
+                                              maxLength="1"
+                                            />
+                                            <input
+                                              className="m-2 border h-10 w-10 text-center form-control rounded"
+                                              type="text"
+                                              id="third"
+                                              maxLength="1"
+                                            />
+                                            <input
+                                              className="m-2 border h-10 w-10 text-center form-control rounded"
+                                              type="text"
+                                              id="fourth"
+                                              maxLength="1"
+                                            />
+                                            <input
+                                              className="m-2 border h-10 w-10 text-center form-control rounded"
+                                              type="text"
+                                              id="fifth"
+                                              maxLength="1"
+                                            />
+                                            <input
+                                              className="m-2 border h-10 w-10 text-center form-control rounded"
+                                              type="text"
+                                              id="sixth"
+                                              maxLength="1"
+                                            />
                                           </div>
-                                          <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto">
-                                            <table
-                                              style={{
-                                                borderCollapse: "separate",
-                                                borderSpacing: " 0 10px",
-                                              }}
-                                            >
-                                              <thead>
-                                                <tr className="bg-[#E4E6FF]">
-                                                  <th className="p-3 w-80 text-left">
-                                                    Media Name
-                                                  </th>
-                                                  <th className="">
-                                                    Date Added
-                                                  </th>
-                                                  <th className="p-3">Size</th>
-                                                  <th className="p-3">Type</th>
-                                                </tr>
-                                              </thead>
 
-                                              <tbody>
-                                                <tr className="bg-[#F8F8F8]">
-                                                  <td className="p-3">Name</td>
-                                                  <td className="p-3">
-                                                    25 May 2023
-                                                  </td>
-                                                  <td className="p-3">25 kb</td>
-                                                  <td className="p-3">Image</td>
-                                                </tr>
-                                                <tr className="bg-[#F8F8F8]">
-                                                  <td className="p-3">Name</td>
-                                                  <td className="p-3">
-                                                    25 May 2023
-                                                  </td>
-                                                  <td className="p-3">25 kb</td>
-                                                  <td className="p-3">Image</td>
-                                                </tr>
-                                                <tr className="bg-[#F8F8F8]">
-                                                  <td className="p-3">Name</td>
-                                                  <td className="p-3">
-                                                    25 May 2023
-                                                  </td>
-                                                  <td className="p-3">25 kb</td>
-                                                  <td className="p-3">Image</td>
-                                                </tr>
-                                              </tbody>
-                                            </table>
                                           <div className="flex justify-center text-center lg:mt-5 md:mt-5 sm:mt-2 xs:mt-1">
                                             <input type="checkbox" />
                                             <p className="ml-2 text-[#515151] text-[13px] ">
@@ -749,27 +642,25 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                             </p>
                                           </div>
                                         </div>
-                                        <div
-                                          className={
-                                            activeTab === 3 ? "" : "hidden"
-                                          }
-                                        >
-                                          <p className="text-gray-500 dark:text-gray-400">
-                                            This is the
-                                            <em className="font-semibold text-gray-800 dark:text-gray-200">
-                                              third
-                                            </em>
-                                            item&apos;s tab body.
-                                          </p>
-                                        </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
+
+                              <div className="flex items-center justify-center pb-7">
+                                <button
+                                  className="text-white bg-[#00072E] font-semibold  px-6 py-2 text-sm rounded-[45px]"
+                                  type="button"
+                                  onClick={() => setShowOTPVerifyModal(true)}
+                                >
+                                  Continue
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
+                        <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
                       </>
                     ) : null}
                   </td>
@@ -793,9 +684,28 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   </td>
                   <td className="p-2">25 May 2023</td>
                   <td className="p-2">
-                    <button className="   flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2 text-sm   hover:bg-primary hover:text-white">
+                    <button className="   flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2 text-sm   hover:bg-primary hover:text-white asset-btn">
                       Asset Name
-                      <AiOutlineCloudUpload className="ml-2 text-lg" />
+                      <svg
+                        className="ml-2"
+                        width="15"
+                        height="11"
+                        viewBox="0 0 15 11"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <g clipPath="url(#clip0_1057_2578)">
+                          <path
+                            d="M10.5275 3.65207C10.1303 3.84835 9.77432 4.10207 9.43155 4.38156L8.8418 3.70685C9.27569 3.30431 9.78164 2.98937 10.3254 2.75792C9.225 0.80851 6.56368 0.298745 4.80879 1.66164C4.17159 2.15499 3.6879 2.89328 3.50186 3.87121L3.44327 4.17677L3.13858 4.23068C2.84004 4.28283 2.57344 4.3549 2.33965 4.4463C0.880669 5.01085 0.471098 6.63478 1.36377 7.86789C1.74581 8.39259 2.23272 8.92755 2.87168 9.01662H3.76495C3.75879 9.10451 3.75557 9.19298 3.75557 9.28234C3.75557 9.49738 3.77373 9.70802 3.80889 9.9131H2.85733L2.80108 9.90812C1.90665 9.79445 1.17159 9.12853 0.640434 8.39289C-0.597944 6.68781 0.0117235 4.38947 2.01944 3.61076C2.22891 3.52902 2.45303 3.46076 2.68916 3.40597C2.95723 2.34132 3.52852 1.5216 4.26299 0.952651C6.52442 -0.799595 9.91934 -0.0528178 11.2146 2.52179C11.4094 2.49103 11.6045 2.4755 11.7981 2.47785C14.6956 2.49923 15.8414 6.20441 14.3379 8.20041C13.7353 8.99992 12.8109 9.68019 11.8591 9.90109L11.7592 9.9131H11.1788C11.2292 9.6171 11.244 9.31613 11.2228 9.01662H11.7094C12.4169 8.8464 13.1716 8.26427 13.6204 7.66427C14.6886 6.24162 13.9304 3.38546 11.792 3.37199C11.3742 3.36847 10.9392 3.46955 10.5275 3.65207ZM6.87686 10.6909H8.12374C8.41524 10.6909 8.6543 10.4519 8.6543 10.1604V8.4424H9.56368C9.75528 8.4342 9.89122 8.37091 9.97002 8.25138C10.183 7.93175 9.89209 7.61623 9.69024 7.39386C9.11749 6.76515 8.13106 5.83439 7.84834 5.50158C7.63389 5.26486 7.3292 5.26486 7.11475 5.50158C6.82266 5.84259 5.80108 6.84249 5.25645 7.45392C5.06748 7.66691 4.83399 7.95695 5.03028 8.25138C5.11114 8.37091 5.24561 8.4342 5.43721 8.4424H6.34659V10.1604C6.34659 10.4486 6.58536 10.6909 6.87686 10.6909Z"
+                            fill="black"
+                          />
+                        </g>
+                        <defs>
+                          <clipPath id="clip0_1057_2578">
+                            <rect width="15" height="10.691" fill="white" />
+                          </clipPath>
+                        </defs>
+                      </svg>
                     </button>
                   </td>
                   <td className="break-words	w-[150px] p-2">Set Schedule</td>
