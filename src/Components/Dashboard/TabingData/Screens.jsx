@@ -1,9 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { AiOutlineSearch } from "react-icons/ai";
 import "../../../Styles/dashboard.css";
+import axios from "axios";
 
 const Screens = () => {
+  const [screenData, setScreenData] = useState([]);
+  useEffect(() => {
+    axios
+      .get("http://192.168.1.219/api/Screen/GetAllScreen")
+      .then((response) => {
+        const fetchedData = response.data.data;
+        setScreenData(fetchedData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   const column = [
     {
       name: "TV Model",
@@ -17,7 +31,7 @@ const Screens = () => {
     },
     {
       name: "IP Address",
-      selector: (row) => row.ipaddress,
+      selector: (row) => row.ipAddress,
       sortable: true,
     },
     {
@@ -27,110 +41,23 @@ const Screens = () => {
     },
     {
       name: "Lastseen",
-      selector: (row) => row.lastseen,
+      selector: (row) => {
+        const lastSeenDate = new Date(row.lastseen);
+        const formattedDate = lastSeenDate.toLocaleDateString();
+        const formattedTime = lastSeenDate.toLocaleTimeString();
+        return `${formattedDate} ${formattedTime}`;
+      },
       sortable: true,
     },
   ];
-  const data = [
-    {
-      id: 1,
-      tvmodel: "S01-5000035",
-      googlelocation: "132, My Street, Kingston, New York 12401.",
-      ipaddress: "192.168.1.1",
-      operatingsystem: "Android TV",
-      lastseen: "25 May 2023",
-    },
-    {
-      id: 2,
-      tvmodel: "S01-5000035",
-      googlelocation: "132, My Street, Kingston, New York 12401.",
-      ipaddress: "192.168.1.1",
-      operatingsystem: "Android TV",
-      lastseen: "25 May 2023",
-    },
-    {
-      id: 3,
-      tvmodel: "S01-5000035",
-      googlelocation: "132, My Street, Kingston, New York 12401.",
-      ipaddress: "192.168.1.1",
-      operatingsystem: "Android TV",
-      lastseen: "25 May 2023",
-    },
-    {
-      id: 4,
-      tvmodel: "S01-5000035",
-      googlelocation: "132, My Street, Kingston, New York 12401.",
-      ipaddress: "192.168.1.1",
-      operatingsystem: "Android TV",
-      lastseen: "25 May 2023",
-    },
-
-    {
-      id: 5,
-      tvmodel: "S01-5000035",
-      googlelocation: "132, My Street, Kingston, New York 12401.",
-      ipaddress: "192.168.1.1",
-      operatingsystem: "Android TV",
-      lastseen: "25 May 2023",
-    },
-    {
-      id: 6,
-      tvmodel: "S01-5000035",
-      googlelocation: "132, My Street, Kingston, New York 12401.",
-      ipaddress: "192.168.1.1",
-      operatingsystem: "Android TV",
-      lastseen: "25 May 2023",
-    },
-    {
-      id: 7,
-      tvmodel: "S01-5000035",
-      googlelocation: "132, My Street, Kingston, New York 12401.",
-      ipaddress: "192.168.1.1",
-      operatingsystem: "Android TV",
-      lastseen: "25 May 2023",
-    },
-    {
-      id: 8,
-      tvmodel: "S01-5000035",
-      googlelocation: "132, My Street, Kingston, New York 12401.",
-      ipaddress: "192.168.1.1",
-      operatingsystem: "Android TV",
-      lastseen: "25 May 2023",
-    },
-    {
-      id: 9,
-      tvmodel: "S01-5000035",
-      googlelocation: "132, My Street, Kingston, New York 12401.",
-      ipaddress: "192.168.1.1",
-      operatingsystem: "Android TV",
-      lastseen: "25 May 2023",
-    },
-    {
-      id: 10,
-      tvmodel: "S01-5000035",
-      googlelocation: "132, My Street, Kingston, New York 12401.",
-      ipaddress: "192.168.1.1",
-      operatingsystem: "Android TV",
-      lastseen: "25 May 2023",
-    },
-    {
-      id: 11,
-      tvmodel: "S01-5000036",
-      googlelocation: "136, My Street, Kingston, New York 12401.",
-      ipaddress: "192.168.1.1",
-      operatingsystem: "Android TV",
-      lastseen: "26 May 2023",
-    },
-  ];
-  const [records, setRecords] = useState(data);
 
   function handleFilter(event) {
-    const newData = data.filter((row) => {
+    const newData = screenData.filter((row) => {
       return row.tvmodel
         .toLowerCase()
         .includes(event.target.value.toLowerCase());
     });
-    setRecords(newData);
+    setScreenData(newData);
   }
   return (
     <div>
@@ -145,7 +72,7 @@ const Screens = () => {
       </div>
       <DataTable
         columns={column}
-        data={records}
+        data={screenData}
         fixedHeader
         pagination
         paginationPerPage={10}

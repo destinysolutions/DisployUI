@@ -9,18 +9,30 @@ import { useState } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import "react-toastify/dist/ReactToastify.css";
+import { useEffect } from "react";
 import { Alert } from "@material-tailwind/react";
+import { AiOutlineClose } from "react-icons/ai";
 
 const Registration = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState("");
+  const [errorMessge, setErrorMessge] = useState(false);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setErrorMessge(false);
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, [errorMessge]);
+
   const history = useNavigate();
 
   const validationSchema = Yup.object().shape({
     companyName: Yup.string().required("Company Name is required"),
     password: Yup.string().required("Password is required"),
     name: Yup.string().required("Name is required"),
-    emailID: Yup.string().required("Email is required"),
+    emailID: Yup.string()
+      .required("Email is required")
+      .email("E-mail must be a valid e-mail!"),
     phoneNumber: Yup.string().required("Phone Number is required"),
     googleLocation: Yup.string().required("Google Location is required"),
   });
@@ -46,17 +58,15 @@ const Registration = () => {
           phoneNumber: values.phoneNumber,
           operation: "Insert",
         })
-        .then((response) => {
-          console.log(response.data);
-          history("/", { state: { message: "Registration successful!!" } });
+        .then(() => {
+          history("/", { state: { message: "Registration successfull !!" } });
         })
         .catch((error) => {
           console.log(error);
-          setMessage("Registration failed.");
+          setErrorMessge("Registration failed.");
         });
     },
   });
-
   return (
     <>
       <div className="main registration">
@@ -69,9 +79,22 @@ const Registration = () => {
                 alt="title"
               />
             </div>
-            <Alert variant="filled" severity="success">
-              {message}
-            </Alert>
+            {errorMessge && (
+              <Alert
+                className="bg-red w-auto"
+                style={{ position: "fixed", top: "20px", right: "20px" }}
+              >
+                <div className="flex">
+                  {errorMessge}
+                  <button
+                    className="ml-10"
+                    onClick={() => setErrorMessge(false)}
+                  >
+                    <AiOutlineClose className="text-xl" />
+                  </button>
+                </div>
+              </Alert>
+            )}
             <div className="w-full bg-white rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
               <div className="p-5 sm:px-8 py-1">
                 <div className="my-1 font-inter not-italic font-medium text-[24px] text-black mt-4">

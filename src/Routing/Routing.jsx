@@ -17,8 +17,11 @@ import MyPlaylist from "../Components/PlayList/MyPlaylist";
 import Apps from "../Components/Apps/Apps";
 import AppDetail from "../Components/Apps/AppDetail";
 import AppInstance from "../Components/Apps/AppInstance";
-import DisployStudio from '../Components/DisployStudio/DisployStudio'
-import Report from '../Components/Reports/Report'
+import DisployStudio from "../Components/DisployStudio/DisployStudio";
+import Report from "../Components/Reports/Report";
+import EditUser from "../Pages/EditUser";
+import ViewUserProfile from "../Pages/ViewUserProfile";
+import Mediareport from "../Components/Reports/Mediareport";
 const Routing = () => {
   const [sidebarOpen, setSidebarOpen] = useState();
   const handleResize = useCallback(() => {
@@ -70,6 +73,15 @@ const Routing = () => {
           }
         />
         <Route
+          path="/mediareport"
+          element={
+            <Mediareport
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
+        <Route
           path="/dashboard"
           element={
             <Dashboard
@@ -82,6 +94,24 @@ const Routing = () => {
           path="/screens"
           element={
             <Screens
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
+        <Route
+          path="/edituser"
+          element={
+            <EditUser
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
+        <Route
+          path="/viewuserprofile"
+          element={
+            <ViewUserProfile
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
             />
@@ -183,10 +213,7 @@ const Routing = () => {
         <Route
           path="/reports"
           element={
-            <Report
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
+            <Report sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           }
         />
         <Route path="*" element={<ErrorPage />} />
