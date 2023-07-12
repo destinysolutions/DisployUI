@@ -8,18 +8,35 @@ import {
   TabsBody,
   Tab,
   TabPanel,
+  Alert,
 } from "@material-tailwind/react";
 import Users from "./TabingData/Users";
 import Screens from "./TabingData/Screens";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import PropTypes from "prop-types";
+import { useEffect } from "react";
+import "react-toastify/dist/ReactToastify.css";
+import { useLocation } from "react-router-dom";
+import { AiOutlineClose } from "react-icons/ai";
 
 const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
   Dashboard.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+  const location = useLocation();
+
+  const message = location?.state?.message || null;
+  const [messageVisible, setMessageVisible] = useState(true);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setMessageVisible(false);
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
   const [activeTab, setActiveTab] = useState("business");
   const data = [
     {
@@ -63,6 +80,23 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             </div>
           </div>
+          {message != null && messageVisible && (
+            <Alert
+              className="bg-[#5dbb63] w-auto"
+              style={{ position: "fixed", top: "20px", right: "20px" }}
+            >
+              <div className="flex">
+                {message}{" "}
+                <button
+                  className="ml-10"
+                  onClick={() => setMessageVisible(false)}
+                >
+                  <AiOutlineClose className="text-xl" />
+                </button>
+              </div>
+            </Alert>
+          )}
+
           <div className="mt-5">
             <Tabs value={activeTab}>
               <TabsHeader className="border-b rounded-none border-blue-gray-50 p-0 mb-5 text-[#A7AFB7]  ">

@@ -9,15 +9,25 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { Alert } from "@material-tailwind/react";
+import { AiOutlineClose } from "react-icons/ai";
+
 const Login = () => {
   const history = useNavigate();
-  const location = useLocation();
-  const message = location?.state?.message || null;
   const [EmailID, setEmailID] = useState("");
   const [Password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [cookies, setCookie] = useCookies(["token"]);
-  //const [data, setData] = useState([]);
+  const [errorMessge, setErrorMessge] = useState(false);
+  const location = useLocation();
+  const message = location?.state?.message || null;
+  const [messageVisible, setMessageVisible] = useState(true);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setMessageVisible(false);
+      setErrorMessge(false);
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, [errorMessge, messageVisible]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -37,18 +47,17 @@ const Login = () => {
       .then((response) => {
         const token = response.data.data.token;
         setCookie("token", token, { path: "/" });
-        // setData(response.data);
-        // if (response.status === 401) {
-        //   alert("Invalid credentials. Please try again.");
-        // } else {
-        history("/dashboard");
-        // }
+        if (response.data.status === 401) {
+          setErrorMessge(response.data.message);
+        } else {
+          history("/dashboard", { state: { message: response.data.message } });
+        }
       })
       .catch((error) => {
         console.log(error);
       });
   };
-  //console.log(data);
+
   return (
     <>
       <div className="main login">
@@ -61,7 +70,38 @@ const Login = () => {
                 alt="title"
               />
             </div>
-            {message != null && <Alert>{message}</Alert>}
+            {message != null && messageVisible && (
+              <Alert
+                className="bg-[#5dbb63] w-auto"
+                style={{ position: "fixed", top: "20px", right: "20px" }}
+              >
+                <div className="flex">
+                  {message}{" "}
+                  <button
+                    className="ml-10"
+                    onClick={() => setMessageVisible(false)}
+                  >
+                    <AiOutlineClose className="text-xl" />
+                  </button>
+                </div>
+              </Alert>
+            )}
+            {errorMessge && (
+              <Alert
+                className="bg-red w-auto"
+                style={{ position: "fixed", top: "20px", right: "20px" }}
+              >
+                <div className="flex">
+                  {errorMessge}
+                  <button
+                    className="ml-10"
+                    onClick={() => setErrorMessge(false)}
+                  >
+                    <AiOutlineClose className="text-xl" />
+                  </button>
+                </div>
+              </Alert>
+            )}
             <div className="w-full bg-white rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
               <div className="p-6 sm:px-6 py-6">
                 <div className="mb-2 font-inter not-italic font-medium text-[24px] text-black">

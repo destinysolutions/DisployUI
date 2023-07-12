@@ -1,11 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import "../../../Styles/dashboard.css";
 import { AiOutlineSearch } from "react-icons/ai";
 import { CiMenuKebab } from "react-icons/ci";
 import { NavLink } from "react-router-dom";
+import axios from "axios";
+import { AiOutlineClose } from "react-icons/ai";
+import { RiDeleteBin6Line } from "react-icons/ri";
+
 const Users = () => {
-  const column = [
+  const [userData, setUserData] = useState([]);
+  const [deletePopup, setdeletePopup] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get("http://192.168.1.219/api/Register/GetAllRegister")
+      .then((response) => {
+        const fetchedData = response.data.data;
+        setUserData(fetchedData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const handleDelete = (id) => {
+    axios
+      .post("http://192.168.1.219/api/Register/AddRegister", {
+        ID: id,
+        operation: "Delete",
+      })
+      .then(() => {
+        setUserData((prevData) => prevData.filter((user) => user.id !== id));
+      });
+  };
+
+  const columns = [
     {
       name: "Name",
       selector: (row) => row.name,
@@ -13,133 +43,99 @@ const Users = () => {
     },
     {
       name: "Email",
-      selector: (row) => row.email,
+      selector: (row) => row.emailID,
       sortable: true,
     },
     {
       name: "PhoneNo",
-      selector: (row) => row.phoneno,
+      selector: (row) => row.phoneNumber,
       sortable: true,
     },
     {
       name: "Brand",
-      selector: (row) => row.brand,
+      selector: (row) => row.companyName,
       sortable: true,
     },
     {
       name: "Action",
       cell: (row) => (
-        <button onClick={() => handleActionClick(row.name)}>
-          <CiMenuKebab />
-        </button>
+        <div className="relative">
+          <button onClick={() => handleActionClick(row.id)}>
+            <CiMenuKebab />
+          </button>
+          {showActionBox === row.id && (
+            <>
+              <div className="actionpopup z-10 ">
+                <button
+                  onClick={() => setShowActionBox(false)}
+                  className="bg-white absolute top-[-14px] left-[-8px] z-10  rounded-full drop-shadow-sm p-1"
+                >
+                  <AiOutlineClose />
+                </button>
+
+                <div className=" my-1">
+                  <NavLink to="/edituser">Edit</NavLink>
+                </div>
+                <div className=" mb-1">
+                  <NavLink to="/viewuserprofile">View Profile</NavLink>
+                </div>
+                <div className=" mb-2 text-[#007F00]">
+                  <NavLink to={""}>Active User</NavLink>
+                </div>
+                <div className="mb-1 border border-[#F2F0F9]"></div>
+                <div className=" mb-1 text-[#D30000]">
+                  <button onClick={() => setdeletePopup(true)}>Delete</button>
+                </div>
+              </div>
+              {deletePopup ? (
+                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                  <div className="relative w-full max-w-xl max-h-full">
+                    <div className="relative bg-white rounded-lg shadow">
+                      <div className="py-6 text-center">
+                        <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
+                        <h3 className="mb-5 text-xl text-primary">
+                          Are you sure you want to delete this User?
+                        </h3>
+                        <div className="flex justify-center items-center space-x-4">
+                          <button
+                            className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
+                            onClick={() => setdeletePopup(false)}
+                          >
+                            No, cancel
+                          </button>
+
+                          <button
+                            className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
+                            onClick={() => {
+                              handleDelete(row.id);
+                              setdeletePopup(false);
+                            }}
+                          >
+                            Yes, I'm sure
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </>
+          )}
+        </div>
       ),
     },
   ];
-  const data = [
-    {
-      id: 1,
-      name: "Dhara Patel",
-      email: "dharapatel123@gmail.com",
-      phoneno: "+91 9856325741",
-      brand: "ABC Brand",
-    },
-    {
-      id: 2,
-      name: "Hetal Prajapati",
-      email: "Hetal123@gmail.com",
-      phoneno: "+91 7556325741",
-      brand: "hetal Brand",
-    },
-    {
-      id: 3,
-      name: "Bhumi Patel",
-      email: "bhumi123@gmail.com",
-      phoneno: "+91 6356325741",
-      brand: "bhumi Brand",
-    },
-    {
-      id: 4,
-      name: "Bhavik Patel",
-      email: "bhavik123@gmail.com",
-      phoneno: "+91 9956325741",
-      brand: "XYZ Brand",
-    },
-    {
-      id: 5,
-      name: "Palash Patel",
-      email: "palash123@gmail.com",
-      phoneno: "+91 9556325741",
-      brand: "ABC Brand",
-    },
-    {
-      id: 6,
-      name: "Vishmay Patel",
-      email: "vishmay123@gmail.com",
-      phoneno: "+91 9356325741",
-      brand: "vish Brand",
-    },
-    {
-      id: 7,
-      name: "Vruksha Ballar",
-      email: "vru123@gmail.com",
-      phoneno: "+91 6326325741",
-      brand: "Vru Brand",
-    },
-    {
-      id: 8,
-      name: "Akshay Patel",
-      email: "Akshay123@gmail.com",
-      phoneno: "+91 9985325741",
-      brand: "Sundari Brand",
-    },
-    {
-      id: 9,
-      name: "Hely Thummar",
-      email: "hely123@gmail.com",
-      phoneno: "+91 9285325741",
-      brand: "Hely Brand",
-    },
-    {
-      id: 10,
-      name: "Henil Thummar",
-      email: "henil123@gmail.com",
-      phoneno: "+91 9285325141",
-      brand: "Hely Brand",
-    },
-    {
-      id: 11,
-      name: "Akshay Patel",
-      email: "Akshay123@gmail.com",
-      phoneno: "+91 9985325741",
-      brand: "Sundari Brand",
-    },
-    {
-      id: 12,
-      name: "Hely Thummar",
-      email: "hely123@gmail.com",
-      phoneno: "+91 9285325741",
-      brand: "Hely Brand",
-    },
-    {
-      id: 13,
-      name: "Henil Thummar",
-      email: "henil123@gmail.com",
-      phoneno: "+91 9285325141",
-      brand: "Hely Brand",
-    },
-  ];
-  const [records, setRecords] = useState(data);
 
   function handleFilter(event) {
-    const newData = data.filter((row) => {
+    const newData = userData.filter((row) => {
       return row.name.toLowerCase().includes(event.target.value.toLowerCase());
     });
-    setRecords(newData);
+    setUserData(newData);
   }
 
   const [showActionBox, setShowActionBox] = useState(false);
-  const handleActionClick = () => {
-    setShowActionBox(!showActionBox);
+  const handleActionClick = (rowId) => {
+    setShowActionBox(rowId);
   };
 
   return (
@@ -154,33 +150,12 @@ const Users = () => {
         />
       </div>
       <DataTable
-        columns={column}
-        data={records}
+        columns={columns}
+        data={userData}
         fixedHeader
-        fixedHeaderScrollHeight="500px"
         pagination
         paginationPerPage={10}
       ></DataTable>
-      {showActionBox && (
-        <>
-          <div className="absolute top-[27%] right-[18%]  bg-white rounded-lg shadow-2xl z-10">
-            <div className="block text-sm p-2 relative actionpopup">
-              <div className="w-full mb-1">
-                <NavLink to={""}>Edit</NavLink>
-              </div>
-              <div className="w-full mb-1">
-                <NavLink to={""}>View Profile</NavLink>
-              </div>
-              <div className="w-full mb-1 text-green">
-                <NavLink to={""}>Active User</NavLink>
-              </div>
-              <div className="w-full mb-1 text-red">
-                <NavLink to={""}>Delete</NavLink>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
     </div>
   );
 };
