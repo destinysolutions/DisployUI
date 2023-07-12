@@ -16,7 +16,7 @@ export default {
       red: '#e16969'
     },
     screens: {
-      'xs': '280px',
+      'xs': '200px',
       // => @media (min-width: 280px) { ... }
 
       'sm': '400px',

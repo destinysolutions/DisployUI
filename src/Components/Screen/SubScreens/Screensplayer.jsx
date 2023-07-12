@@ -10,6 +10,9 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { MdElectricBolt } from "react-icons/md";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import ReactPlayer from "react-player";
+import { FiPlus } from 'react-icons/fi'
+import { MdOutlineKeyboardArrowDown } from 'react-icons/md'
 
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
@@ -25,7 +28,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   function updatesynctoggle(id) {
     setsyncToggle(id);
   }
+  // swich on-off
+  const [enabled, setEnabled] = useState(false);
   const [mediadw, setMediadw] = useState(false);
+
+  { /*payment dw */ }
+
+  const [paymentpop, setPaymentpop] = useState(false);
   return (
     <>
       <div className="flex border-b border-gray py-3">
@@ -33,7 +42,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {
-        <div className="pt-6 px-5">
+        <div className="pt-6 lg:px-5 md:px-5 sm:px-2 xs:px-1">
           <div className={`${sidebarOpen ? "ml-[13rem]" : "ml-16"}`}>
             <div className="justify-between flex items-center xs-block">
               <div className="section-title">
@@ -67,10 +76,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
             <div className="relative bg-white shadow-lg rounded-e-md screenplayer-section">
               <div className="screen-palyer-img ">
-                <img
-                  src="./../../../../ScreenImg/dragon.svg"
-                  className="mx-auto"
-                />
+
+                <ReactPlayer url={[
+                  'https://www.youtube.com/watch?v=oUFJJNQGwhk',
+                  'https://www.youtube.com/watch?v=jNgP6d9HraI'
+
+                ]} className="max-w-full max-h-full reactplayer min-w-full" />
+
               </div>
 
               <div className="grid  grid-cols-12  screen-player-details pb-7 sm:pb-0 border-b border-[#D5E3FF]">
@@ -111,7 +123,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
 
               <div className="grid  grid-cols-12">
-                <div className="lg:col-start-4 lg:col-span-6 md:col-start-3 md:col-span-8  sm:col-start-1 sm:col-span-12 text-center">
+                <div className="lg:col-start-4 lg:col-span-6 md:col-start-1 md:col-span-12  sm:col-start-1 sm:col-span-12 text-center">
                   <ul className="inline-flex items-center justify-center border border-primary rounded-full my-4 shadow-xl">
                     <li className="text-sm firstli">
                       {" "}
@@ -256,6 +268,41 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">Always on</p>
                           </td>
                         </tr>
+                        <tr className="border-b border-[#D5E3FF]">
+                          <td className="text-right">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                              payment method:
+                            </p>
+                          </td>
+                          <td className="text-left">
+                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">**** **** **** 2222</p>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td colSpan={2}>
+
+                            <div className="flex items-center justify-center">  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base mr-2">Do you want to run the App at boot up time :</p>
+                              <label className="inline-flex relative items-center  cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  className="sr-only peer"
+                                  checked={enabled}
+                                  readOnly
+                                />
+                                <div
+                                  onClick={() => {
+                                    setEnabled(!enabled);
+                                  }}
+                                  className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled ? ' bg-gray text-left pl-2 text-white text-sm' : 'bg-gray text-right pr-2 text-white text-sm'
+                                    }`}
+                                >
+                                  {enabled ? 'On' : 'Off'}</div>
+                              </label></div>
+                          </td>
+                        </tr>
+
+
                       </tbody></table>
                     <div className="text-right my-5">
                       <button className="bg-primary text-base px-5 py-2 rounded-full text-white">
@@ -466,13 +513,66 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       Operating Hours:
                                     </p>
                                   </td>
-                                  <td>
-                                    <select>
+                                  <td >
+                                    <select className="relative">
                                       <option>Select</option>
                                       <option>Always On</option>
                                     </select>
+
                                   </td>
                                 </tr>
+
+                                <tr className="border-b border-[#D5E3FF]">
+                                  <td className="text-right">
+                                    <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                      Payment method:
+                                    </p>
+                                  </td>
+                                  <td className="relative">
+                                    <div className="paymentlabel relative">
+                                      <span className="flex justify-between" onClick={() => setPaymentpop(!paymentpop)}><label>Select Card</label><MdOutlineKeyboardArrowDown className=" text-xl font-black cursor-pointer" /></span>
+
+                                      {paymentpop && (
+                                        <div className="payment-dropdown">
+                                          <ul>
+                                            <li className="flex items-center justify-between my-3 p-2  border-2 rounded-md border-[#E4E6FF] "><label for="1" className="lg:flex md:flex sm:block xs:block items-center lg:text-base md:text-sm sm:text-sm xs:text-xs"><img src="../../../../ScreenImg/logos_mastercard.png" className="mr-3" />Axis Bank **** **** **** 8395</label><input type="radio" name="payment" id="1" /></li>
+                                            <li className="flex items-center justify-between my-3 p-2 border-2 rounded-md border-[#E4E6FF]"><label for="2" className="lg:flex md:flex sm:block xs:block items-center lg:text-base md:text-sm sm:text-sm xs:text-xs"><img src="../../../../ScreenImg/Vector(3).png" className="mr-3" />HDFC Bank **** **** **** 6246</label> <input type="radio" name="payment" id="2" /></li>
+                                            <li className="border-2 my-1 p-2 rounded-md border-[#E4E6FF]"><button className="flex items-center"><FiPlus className="bg-[#E4E6FF] text-SlateBlue text-2xl p-1 rounded-md mr-3" /><span className="lg:text-base md:text-sm sm:text-sm xs:text-xs">Add New Card</span></button></li>
+                                          </ul>
+                                        </div>
+                                      )}
+
+                                    </div>
+
+
+                                  </td>
+                                </tr>
+
+                                <tr>
+                                  <td colSpan={2}>
+
+                                    <div className="flex items-center justify-center">  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base mr-2">Do you want to run the App at boot up time :</p>
+                                      <label className="inline-flex relative items-center  cursor-pointer">
+                                        <input
+                                          type="checkbox"
+                                          className="sr-only peer"
+                                          checked={enabled}
+                                          readOnly
+                                        />
+                                        <div
+                                          onClick={() => {
+                                            setEnabled(!enabled);
+                                          }}
+                                          className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled ? ' bg-gray text-left pl-2 text-white text-sm' : 'bg-gray text-right pr-2 text-white text-sm'
+                                            }`}
+                                        >
+                                          {enabled ? 'On' : 'Off'}</div>
+                                      </label></div>
+                                  </td>
+                                </tr>
+
+
+
                               </tbody>
                             </table>
                             <div className="text-right my-5">
@@ -583,8 +683,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </div >
+        </div >
       }
     </>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "../../../Styles/sidebar.css";
 import "../../../Styles/screen.css";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
@@ -11,7 +11,7 @@ import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
 import { HiOutlineRectangleGroup } from "react-icons/hi2";
 import { IoMdRefresh } from "react-icons/io";
-import { BiExitFullscreen } from "react-icons/bi";
+import { TbScanEye } from "react-icons/tb";
 import PropTypes from "prop-types";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
@@ -22,11 +22,20 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [showdata, setShowdata] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
-  const handleMouseOver = () => {
-    setIsHovering(true);
-  };
 
+  const handleMouseOver = () => {
+    if (showdata === true) {
+      setIsHovering(false);
+    } else {
+      setIsHovering(true);
+    }
+
+  };
   const handleMouseOut = () => {
+    setIsHovering(false);
+  };
+  const handleDropupClick = () => {
+    setShowdata(!showdata);
     setIsHovering(false);
   };
 
@@ -64,19 +73,17 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="accordions mt-5">
-            <div className="section shadow-md  lg:p-5 md:p-5 sm:p-3 rounded-md bg-white  lg:flex md:flex  sm:block items-center justify-between">
+          <div className="accordions mt-5" >
+            <div className="section shadow-md  lg:p-5 md:p-5 sm:p-3 rounded-md bg-white  lg:flex md:flex  sm:block items-center justify-between" onMouseOver={handleMouseOver}
+              onMouseOut={handleMouseOut}>
               <h1 className="text-lg">Group Name1</h1>
 
               <div className="flex items-center">
                 {isHovering && (
                   <div className="flex items-center flex-wrap">
-                    <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white flex items-center">
-                      <LuMonitor className="text-sm mr-1" />
-                      03
-                    </button>
+
                     <button className="rounded-full mx-1 border hover:bg-SlateBlue">
-                      <BiExitFullscreen className="text-2xl p-1 hover:text-white" />
+                      <TbScanEye className="text-2xl p-1 hover:text-white" />
                     </button>
                     <button className="rounded-full mx-1 border hover:bg-SlateBlue">
                       <TbUpload className="text-2xl p-1 hover:text-white" />
@@ -95,16 +102,15 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                 )}
 
                 <div className=" flex items-center flex-wrap">
-                  {showdata && !isHovering && (
+                  {showdata && (
                     <>
                       {" "}
                       <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white flex items-center">
                         <LuMonitor className="text-sm mr-1" />
                         03
                       </button>
-                      <button className="rounded-full mx-1 border hover:bg-SlateBlue">
-                        <BiExitFullscreen className="text-2xl p-1 hover:text-white" />
-                      </button>
+                      <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white flex items-center">Preview</button>
+
                       <button className="rounded-full mx-1 border hover:bg-SlateBlue">
                         <TbUpload className="text-2xl p-1 hover:text-white" />
                       </button>
@@ -121,9 +127,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                     </>
                   )}
                   <button
-                    onClick={() => setShowdata(!showdata)}
-                    onMouseOver={handleMouseOver}
-                    onMouseOut={handleMouseOut}
+                    onClick={handleDropupClick}
+
                   >
                     {" "}
                     {showdata ? (

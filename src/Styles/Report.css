@@ -20,3 +20,25 @@
     z-index: 1;
 
 }
+
+/* mediareport */
+
+
+@media(max-width:650px) {
+    .radiobtn {
+        display: block !important;
+    }
+}
+
+@media(max-width:767px) {
+    .reportpopup {
+        padding: 20px;
+    }
+}
+
+@media (max-width:375px) {
+
+    .reportpopup {
+        padding: 10px;
+    }
+}
