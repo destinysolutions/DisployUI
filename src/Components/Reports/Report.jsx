@@ -2,13 +2,13 @@ import React from 'react'
 import { useState } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-
 import PropTypes from "prop-types";
 import { TbFileReport } from 'react-icons/tb'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import '../../Styles/Report.css'
 import { useDateSelect } from "react-ymd-date-select";
-
+import Mediareport from './Mediareport';
+import { Link } from 'react-router-dom';
 
 
 const Report = ({ sidebarOpen, setSidebarOpen }) => {
@@ -31,7 +31,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
 
         return (
             <>
-                <div className='grid grid-rows-4 grid-flow-row gap-4 ml-6'>
+                <div className='grid lg:grid-rows-4 md:grid-rows-4  sm:grid-rows-6 xs:lg:grid-rows-4  grid-flow-row lg:gap-4 md:gap-4 sm:gap-2 xs:gap-1 lg:ml-6 md:ml-6 sm:ml-0 xs:ml-0'>
                     <div className="col-span-12 ">
                         <label>Day </label><br />
                         <select value={dateSelect.dayValue} onChange={dateSelect.onDayChange} className=' w-full border border-[#D5E3FF] rounded-xl p-2 drop-shadow-sm'>
@@ -45,7 +45,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
 
                     </div>
 
-                    <div className="col-span-6">
+                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                         <label>
                             Month</label><br />
                         <select
@@ -61,7 +61,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
 
                     </div>
 
-                    <div className="col-span-6">
+                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                         <label>
                             Year</label><br />
                         <select value={dateSelect.yearValue} onChange={dateSelect.onYearChange} className=' w-full border border-[#D5E3FF] rounded-xl p-2 drop-shadow-sm'>
@@ -74,7 +74,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
 
 
                     </div>
-                    <div className="col-span-6">
+                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                         <input
                             type="date" placeholder='From Date'
                             value={dateSelect.dateValue || ""}
@@ -83,7 +83,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
                         />
                     </div>
 
-                    <div className="col-span-6">
+                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                         <input
                             type="date" placeholder='To Date'
                             value={dateSelect.dateValue || ""}
@@ -93,11 +93,15 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
 
                     <div className="col-span-3">
-                        <div class="my-1"><button class="bg-white border border-primary text-base px-5 py-2 rounded-full text-primary hover:bg-primary hover:text-white">Back</button></div>
+                        <div className="my-1"><button className="bg-white border border-primary text-base px-5 py-2 rounded-full text-primary hover:bg-primary hover:text-white">Back</button></div>
                     </div>
 
                     <div className="col-span-6">
-                        <div class="my-1"><button class="bg-primary border border-primary text-base px-5 py-2 rounded-full text-white hover:text-primary hover:bg-white ">Continue</button></div>
+                        <div className="my-1">
+                            <button className="bg-primary border border-primary text-base px-5 py-2 rounded-full text-white hover:text-primary hover:bg-white ">
+                                <Link to={'/Mediareport'}>  Continue </Link>
+                            </button>
+                        </div>
                     </div>
 
                 </div>
@@ -114,8 +118,8 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className='reportpopup'>
                     <h2 className="text-center mb-7 text-primary text-lg font-medium">How would you like to generate report?</h2>
                     <form>
-                        <div className='flex justify-center'>
-                            <div className='radiobtn mr-5'>
+                        <div className='lg:flex lg:justify-center md:flex md:justify-center sm:block xs:block'>
+                            <div className='radiobtn lg:mr-5 md:mr-5 sm:mr-0 xs:mr-0 xs:ml-[25px] lg:block md:block sm:flex xs:block sm:justify-around '>
                                 <div className="mb-5">
                                     <input type="radio" value="daily" name="time" className="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-SlateBlue checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-SlateBlue checked:after:bg-SlateBlue checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-SlateBlue checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-SlateBlue dark:checked:after:bg-SlateBlue dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]" />
                                     <label className="mt-px inline-block pl-[0.15rem] opacity-50 hover:cursor-pointer">Daily</label>

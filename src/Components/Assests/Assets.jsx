@@ -44,15 +44,35 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
         setTogglebtn(id);
     }
-    const updatevbtntoggle = (id) => {
+    // const updatevbtntoggle = (id) => {
 
+    //     if (vbtn === id) {
+    //         setVbtnclick(null);
+    //     } else {
+    //         setVbtnclick(id);
+    //     }
+
+    // }
+    const [hoveredTabIcon, setHoveredTabIcon] = useState(null);
+    const updatevbtntoggle = (id) => {
         if (vbtn === id) {
             setVbtnclick(null);
+            setHoveredTabIcon(null); // Reset the hoveredTabIcon state when the same tabicon is clicked again
         } else {
             setVbtnclick(id);
         }
+    };
+    { /* hover video button */ }
 
-    }
+    const handleMouseOver = () => {
+
+        setIsHovering(true);
+
+    };
+    const handleMouseOut = () => {
+        setIsHovering(false);
+    };
+
     {/* tab1 threedot dwopdown */ }
     const [assetsdw, setassetsdw] = useState(null)
 
@@ -158,13 +178,38 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
                             {
                                 tabitems.map((elem) => {
-                                    const { id, Image, icon, size, storage, vtitle, vdetails } = elem;
+                                    const { id, Image, icon, status, vtitle, vdetails } = elem;
                                     return (
                                         <>
 
-                                            <div key={id} className="relative">
-                                                <div className={`imagebox relative ${selectedItems.includes(id) ? 'active opacity-1' : 'opacity-50'}`}>
-                                                    <img src={Image} className="w-full rounded-2xl" />
+                                            <div key={id} className="relative assetsbox">
+                                                <div className="relative ">
+                                                    <img src={Image} className={`imagebox relative ${selectedItems.includes(id) ? 'active opacity-1 w-full rounded-2xl' : 'opacity-50 w-full rounded-2xl'}`} />
+
+
+
+                                                    <div className="tabicon text-center absolute left-2/4 bottom-[-50px] z-10" onMouseEnter={() => setHoveredTabIcon(id)}
+                                                        onMouseLeave={() => setHoveredTabIcon(null)}>{icon}</div>
+
+                                                    {hoveredTabIcon === id && (
+                                                        <div className="vdetails">
+                                                            <div className="flex justify-end">
+                                                                <div className="size mb-1">
+                                                                    <span className="bg-white text-primary rounded-sm p-1 text-sm">{status}</span>
+                                                                </div>
+                                                                {/* <div className="storage mb-1">
+                                                                        <span className="bg-white text-primary rounded-sm p-1 text-sm">{storage}</span>
+                                                        </div>*/}
+                                                            </div>
+                                                            <div className="text-center clickdetail">
+                                                                <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs  mb-1">{vtitle}</h3>
+                                                                <p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light">{vdetails}</p>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                    }
+
+
                                                     <div className="checkbox flex justify-between absolute top-5 px-4 w-full">
                                                         <input type="checkbox" className="w-[20px] h-[20px]" checked={selectedItems.includes(id)}
                                                             onChange={() => handleCheckboxChange(id)} />
@@ -189,30 +234,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
                                                     </div>
                                                 </div>
-                                                <div className="tabicon text-center absolute left-2/4 w-full">
-                                                    <div className="tabicon text-center absolute left-2/4"> <button onClick={() => updatevbtntoggle(id)}>{icon}</button></div>
 
-                                                    {vbtn === id &&
-                                                        <div className="vdetails">
-                                                            <div className="flex justify-between">
-                                                                <div className="size mb-1">
-                                                                    <span className="bg-white text-primary rounded-sm p-1 text-sm">{size}</span>
-                                                                </div>
-                                                                <div className="storage mb-1">
-                                                                    <span className="bg-white text-primary rounded-sm p-1 text-sm">{storage}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div className="text-center clickdetail">
-                                                                <h3 className="text-sm md:text-sm lg:text-base  mb-1">{vtitle}</h3>
-                                                                <p className="text-sm font-light">{vdetails}</p>
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                </div>
-                                                {/* <div className="title text-center relative mt-5">
-                                                    <h2 className="text-base mb-1 font-semibold">{title}</h2>
-                                                    <h2 className="text-md font-light">{subtitle}</h2>
-                                                </div>*/}
+
                                             </div>
 
 
@@ -301,8 +324,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                                 <div className="tabicon text-center absolute bottom-[4px] left-24"> {icon}</div>
                                                             </div>
                                                             <div className="ml-2">
-                                                                <h1 className="font-medium text-base">{vtitle}</h1>
-                                                                <p className="max-w-[250px]">{vdetails}</p>
+                                                                <h1 className="font-medium lg:text-base md:text-sm sm:text-sm xs:text-xs">{vtitle}</h1>
+                                                                <p className="max-w-[250px] lg:text-base md:text-sm sm:text-sm xs:text-xs">{vdetails}</p>
                                                             </div>
 
 

@@ -54,7 +54,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               Screens
             </h1>
 
-            <div className="flex items-center sm:mt-3">
+            <div className="flex items-center sm:mt-3 flex-wrap">
               <div
                 className="relative"
                 onMouseEnter={() => setConnectScreenTooltipVisible(true)}
@@ -197,7 +197,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               <button
                                 className="text-white bg-[#00072E] font-semibold  px-6 py-2 text-sm rounded-[45px]"
                                 type="button"
-                                //onClick={() => setShowOTPVerifyModal(true)}
+                              //onClick={() => setShowOTPVerifyModal(true)}
                               >
                                 Continue
                               </button>
@@ -595,19 +595,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         >
                                           <button
                                             type="button"
-                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                              popupActiveTab === 1
-                                                ? "active"
-                                                : ""
-                                            }`}
-                                            // onClick={() => handleTabClick(1)}
+                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 1
+                                              ? "active"
+                                              : ""
+                                              }`}
+                                          // onClick={() => handleTabClick(1)}
                                           >
                                             <span
-                                              className={`p-1 rounded ${
-                                                popupActiveTab === 1
-                                                  ? "bg-primary text-white"
-                                                  : "bg-[#D5E3FF]"
-                                              } `}
+                                              className={`p-1 rounded ${popupActiveTab === 1
+                                                ? "bg-primary text-white"
+                                                : "bg-[#D5E3FF]"
+                                                } `}
                                             >
                                               <IoBarChartSharp size={15} />
                                             </span>
@@ -615,19 +613,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                           </button>
                                           <button
                                             type="button"
-                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                              popupActiveTab === 2
-                                                ? "active"
-                                                : ""
-                                            }`}
-                                            //onClick={() => handleTabClick(2)}
+                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 2
+                                              ? "active"
+                                              : ""
+                                              }`}
+                                          //onClick={() => handleTabClick(2)}
                                           >
                                             <span
-                                              className={`p-1 rounded ${
-                                                popupActiveTab === 2
-                                                  ? "bg-primary text-white"
-                                                  : "bg-[#D5E3FF]"
-                                              } `}
+                                              className={`p-1 rounded ${popupActiveTab === 2
+                                                ? "bg-primary text-white"
+                                                : "bg-[#D5E3FF]"
+                                                } `}
                                             >
                                               <RiPlayListFill size={15} />
                                             </span>
@@ -635,19 +631,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                           </button>
                                           <button
                                             type="button"
-                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                              popupActiveTab === 3
-                                                ? "active"
-                                                : ""
-                                            }`}
-                                            // onClick={() => handleTabClick(3)}
+                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 3
+                                              ? "active"
+                                              : ""
+                                              }`}
+                                          // onClick={() => handleTabClick(3)}
                                           >
                                             <span
-                                              className={`p-1 rounded ${
-                                                popupActiveTab === 3
-                                                  ? "bg-primary text-white"
-                                                  : "bg-[#D5E3FF]"
-                                              } `}
+                                              className={`p-1 rounded ${popupActiveTab === 3
+                                                ? "bg-primary text-white"
+                                                : "bg-[#D5E3FF]"
+                                                } `}
                                             >
                                               <BiAnchor size={15} />
                                             </span>
@@ -655,19 +649,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                           </button>
                                           <button
                                             type="button"
-                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                              popupActiveTab === 4
-                                                ? "active"
-                                                : ""
-                                            }`}
-                                            // onClick={() => handleTabClick(4)}
+                                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 4
+                                              ? "active"
+                                              : ""
+                                              }`}
+                                          // onClick={() => handleTabClick(4)}
                                           >
                                             <span
-                                              className={`p-1 rounded ${
-                                                popupActiveTab === 4
-                                                  ? "bg-primary text-white"
-                                                  : "bg-[#D5E3FF]"
-                                              } `}
+                                              className={`p-1 rounded ${popupActiveTab === 4
+                                                ? "bg-primary text-white"
+                                                : "bg-[#D5E3FF]"
+                                                } `}
                                             >
                                               <AiOutlineAppstoreAdd size={15} />
                                             </span>
