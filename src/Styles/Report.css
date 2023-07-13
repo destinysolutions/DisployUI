@@ -28,6 +28,11 @@
     .radiobtn {
         display: block !important;
     }
+
+    .rightbtn ul,
+    .rightbtn div {
+        margin-bottom: 10px;
+    }
 }
 
 @media(max-width:767px) {

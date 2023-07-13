@@ -22,8 +22,9 @@ import Report from "../Components/Reports/Report";
 import EditUser from "../Pages/EditUser";
 import ViewUserProfile from "../Pages/ViewUserProfile";
 import Mediareport from "../Components/Reports/Mediareport";
+import Uptimereport from "../Components/Reports/Uptimereport";
 const Routing = () => {
-  const [sidebarOpen, setSidebarOpen] = useState();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const handleResize = useCallback(() => {
     if (window.innerWidth < 780) {
       setSidebarOpen(false);
@@ -210,12 +211,23 @@ const Routing = () => {
             />
           }
         />
+
         <Route
           path="/reports"
           element={
             <Report sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           }
         />
+        <Route
+          path="/uptimereport"
+          element={
+            <Uptimereport
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
+
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </>

@@ -7,25 +7,39 @@ import { TbFileReport } from 'react-icons/tb'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import '../../Styles/Report.css'
 import { useDateSelect } from "react-ymd-date-select";
-import Mediareport from './Mediareport';
-import { Link } from 'react-router-dom';
+
+import { useNavigate } from 'react-router-dom';
 
 
-const Report = ({ sidebarOpen, setSidebarOpen }) => {
-    Report.propTypes = {
-        sidebarOpen: PropTypes.bool.isRequired,
-        setSidebarOpen: PropTypes.func.isRequired,
+
+{ /*popup datepicker */ }
+const MyModel = ({ closeModel }) => {
+
+    const history = useNavigate();
+
+    const handleContinue = () => {
+        debugger;
+        // Navigate to the appropriate route based on the selected report
+        if (selectedReport === 'mediareport') {
+            history('/mediareport');
+        } else if (selectedReport === 'uptime') {
+            history('/uptimereport');
+        } else if (selectedReport === 'auditLogs') {
+            history('/auditLogsReport');
+        }
+
+        // Close the model
+        closeModel();
     };
 
-    { /*popup datepicker */ }
-
+    const [dateValue, setDateValue] = useState('');
 
     const CustomDateSelectProps = {
-        onChange: (value) => { },
-        value: "",
+        onChange: (value) => setDateValue(value),
+        value: dateValue,
     };
 
-
+    { /*date selected components */ }
     function CustomDateSelect(props) {
         const dateSelect = useDateSelect(props.value, props.onChange);
 
@@ -98,58 +112,76 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
 
                     <div className="col-span-6">
                         <div className="my-1">
-                            <button className="bg-primary border border-primary text-base px-5 py-2 rounded-full text-white hover:text-primary hover:bg-white ">
-                                <Link to={'/Mediareport'}>  Continue </Link>
+                            <button className="bg-primary border border-primary text-base px-5 py-2 rounded-full text-white hover:text-primary hover:bg-white " onClick={handleContinue}>
+                                Continue
                             </button>
                         </div>
                     </div>
 
-                </div>
+                </div >
             </>
         );
     }
 
-    const [showModel, setShowModel] = useState(false);
-    const closeModel = () => setShowModel(false)
-    const MyModel = () => {
-        return (
-            <>
-                <div className="popupbackdrop" onClick={() => closeModel()}></div>
-                <div className='reportpopup'>
-                    <h2 className="text-center mb-7 text-primary text-lg font-medium">How would you like to generate report?</h2>
-                    <form>
-                        <div className='lg:flex lg:justify-center md:flex md:justify-center sm:block xs:block'>
-                            <div className='radiobtn lg:mr-5 md:mr-5 sm:mr-0 xs:mr-0 xs:ml-[25px] lg:block md:block sm:flex xs:block sm:justify-around '>
-                                <div className="mb-5">
-                                    <input type="radio" value="daily" name="time" className="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-SlateBlue checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-SlateBlue checked:after:bg-SlateBlue checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-SlateBlue checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-SlateBlue dark:checked:after:bg-SlateBlue dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]" />
-                                    <label className="mt-px inline-block pl-[0.15rem] opacity-50 hover:cursor-pointer">Daily</label>
-                                </div>
 
-                                <div className="mb-5">
-                                    <input type="radio" value="monthly" name="time" className="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-SlateBlue checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-SlateBlue checked:after:bg-SlateBlue checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-SlateBlue checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-SlateBlue dark:checked:after:bg-SlateBlue dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]" />
-                                    <label className="mt-px inline-block pl-[0.15rem] opacity-50 hover:cursor-pointer">Monthly</label>
-                                </div>
-                                <div className="mb-5">
-                                    <input type="radio" value="custom" name="time" className="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-SlateBlue checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-SlateBlue checked:after:bg-SlateBlue checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-SlateBlue checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-SlateBlue dark:checked:after:bg-SlateBlue dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]" />
-                                    <label className="mt-px inline-block pl-[0.15rem] opacity-50 hover:cursor-pointer">Custom</label>
-                                </div>
+
+    return (
+        <>
+            <div className="popupbackdrop" onClick={() => closeModel()}></div>
+            <div className='reportpopup'>
+                <h2 className="text-center mb-7 text-primary text-lg font-medium">How would you like to generate report?</h2>
+                <form>
+                    <div className='lg:flex lg:justify-center md:flex md:justify-center sm:block xs:block'>
+                        <div className='radiobtn lg:mr-5 md:mr-5 sm:mr-0 xs:mr-0 xs:ml-[25px] lg:block md:block sm:flex xs:block sm:justify-around '>
+                            <div className="mb-5">
+                                <input type="radio" value="daily" name="time" className="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-SlateBlue checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-SlateBlue checked:after:bg-SlateBlue checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-SlateBlue checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-SlateBlue dark:checked:after:bg-SlateBlue dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]" />
+                                <label className="mt-px inline-block pl-[0.15rem] opacity-50 hover:cursor-pointer">Daily</label>
                             </div>
 
-                            <div>
-
-                                <CustomDateSelect />
-
+                            <div className="mb-5">
+                                <input type="radio" value="monthly" name="time" className="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-SlateBlue checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-SlateBlue checked:after:bg-SlateBlue checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-SlateBlue checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-SlateBlue dark:checked:after:bg-SlateBlue dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]" />
+                                <label className="mt-px inline-block pl-[0.15rem] opacity-50 hover:cursor-pointer">Monthly</label>
                             </div>
+                            <div className="mb-5">
+                                <input type="radio" value="custom" name="time" className="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-SlateBlue checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-SlateBlue checked:after:bg-SlateBlue checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-SlateBlue checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-SlateBlue dark:checked:after:bg-SlateBlue dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]" />
+                                <label className="mt-px inline-block pl-[0.15rem] opacity-50 hover:cursor-pointer">Custom</label>
+                            </div>
+                        </div>
+
+                        <div>
+
+                            <CustomDateSelect />
 
                         </div>
-                        <button onClick={() => { setShowModel(false) }} className="absolute right-[15px] top-[15px]"><AiOutlineCloseCircle className='text-3xl' /></button>
-                    </form>
 
-                </div>
+                    </div>
+                    <button onClick={() => { setShowModel(false) }} className="absolute right-[15px] top-[15px]"><AiOutlineCloseCircle className='text-3xl' /></button>
+                </form>
 
-            </>
-        )
-    }
+            </div>
+
+        </>
+    )
+}
+
+
+const Report = ({ sidebarOpen, setSidebarOpen }) => {
+    const [showModel, setShowModel] = useState(false);
+    const [selectedReport, setSelectedReport] = useState(null);
+
+    const closeModel = () => setShowModel(false);
+    const handleReportClick = (report) => {
+        setSelectedReport(report);
+        setShowModel(true);
+    };
+    Report.propTypes = {
+        sidebarOpen: PropTypes.bool.isRequired,
+        setSidebarOpen: PropTypes.func.isRequired,
+
+    };
+
+
+
 
     return (
         <>
@@ -165,33 +197,33 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
                         </h1>
                     </div>
 
-                    <div className="grid grid-rows-12 lg:grid-flow-col md:grid-flow-col sm:grid-flow-row xs:grid-flow-row  gap-4 mt-5">
-                        <div className='lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md' onClick={() => setShowModel(true)}>
-                            <div className='reportbox text-center bg-white rounded-xl p-5'>
+                    <div className="grid grid-cols-12 lg:grid-flow-col md:grid-flow-col sm:grid-flow-row xs:grid-flow-row  gap-4 mt-5">
+                        <div className='lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5' onClick={() => handleReportClick('mediareport')}>
+                            <div className='reportbox text-center '>
                                 <div className=''><TbFileReport className='lg:text-6xl md:text-6xl sm:text-5xl xs:text-6xl text-primary text-center mx-auto bg-white rounded-2xl lg:p-2 md:p-2 sm:p-2 xs:p-2 drop-shadow-xl  ' /></div>
                                 <div><h3 className='text-base font-medium  lg:mt-5 md:mt-5 sm:mt-3 xs:mt-3 mb-2'>Asset Report</h3></div>
-                                <div><p className='text-sm font-normal'>Shoes for how make
-                                    time asset file is playing.</p></div>
-                            </div>
-
-                        </div>
-                        {showModel && <MyModel closeModel={closeModel} />}
-                        <div className='lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md'>
-                            <div className='reportbox text-center bg-white rounded-xl p-5'>
-                                <div className=''><TbFileReport className='lg:text-6xl md:text-6xl sm:text-5xl xs:text-6xl text-primary text-center mx-auto bg-white rounded-2xl lg:p-2 md:p-2 sm:p-2 xs:p-2 drop-shadow-xl  ' /></div>
-                                <div><h3 className='text-base font-medium  lg:mt-5 md:mt-5 sm:mt-3 xs:mt-3 mb-2'>Asset Report</h3></div>
-                                <div><p className='text-sm font-normal'>Shoes for how make
+                                <div><p className='text-sm font-normal max-w-[250px] mx-auto'>Shoes for how make
                                     time asset file is playing.</p></div>
                             </div>
 
                         </div>
 
-                        <div className='lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md'>
-                            <div className='reportbox text-center bg-white rounded-xl p-5'>
+                        <div className='lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5' onClick={() => handleReportClick('uptime')}>
+                            <div className='reportbox text-center '>
+                                <div className=''><TbFileReport className='lg:text-6xl md:text-6xl sm:text-5xl xs:text-6xl text-primary text-center mx-auto bg-white rounded-2xl lg:p-2 md:p-2 sm:p-2 xs:p-2 drop-shadow-xl' /></div>
+                                <div><h3 className='text-base font-medium  lg:mt-5 md:mt-5 sm:mt-3 xs:mt-3 mb-2'>Up-time Report</h3></div>
+                                <div><p className='text-sm font-normal max-w-[250px] mx-auto'>Shoes for how make
+                                    shoes for how make time
+                                    screen is displaying content</p></div>
+                            </div>
+
+                        </div>
+
+                        <div className='lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5' onClick={() => handleReportClick('auditLogs')}>
+                            <div className='reportbox text-center '>
                                 <div className=''><TbFileReport className='lg:text-6xl md:text-6xl sm:text-5xl xs:text-6xl text-primary text-center mx-auto bg-white rounded-2xl lg:p-2 md:p-2 sm:p-2 xs:p-2 drop-shadow-xl  ' /></div>
-                                <div><h3 className='text-base font-medium  lg:mt-5 md:mt-5 sm:mt-3 xs:mt-3 mb-2'>Asset Report</h3></div>
-                                <div><p className='text-sm font-normal'>Shoes for how make
-                                    time asset file is playing.</p></div>
+                                <div><h3 className='text-base font-medium  lg:mt-5 md:mt-5 sm:mt-3 xs:mt-3 mb-2'>Audit Logs Reports</h3></div>
+                                <div><p className='text-sm font-normal max-w-[250px] mx-auto'>shows data about and their Action</p></div>
                             </div>
                         </div>
 
@@ -202,6 +234,14 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
 
                 </div>
             </div>
+            {/* Render MyModel component when selectedReport is truthy */}
+            {selectedReport && (
+                <MyModel
+                    closeModel={closeModel}
+                    selectedReport={selectedReport}
+                    setShowModel={setShowModel}
+                />
+            )}
         </>
     )
 }
