@@ -309,11 +309,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   onClick={() => {
                                     setEnabled(!enabled);
                                   }}
-                                  className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
-                                    enabled
-                                      ? " bg-gray text-left pl-2 text-white text-sm"
-                                      : "bg-gray text-right pr-2 text-white text-sm"
-                                  }`}
+                                  className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled
+                                    ? " bg-gray text-left pl-2 text-white text-sm"
+                                    : "bg-gray text-right pr-2 text-white text-sm"
+                                    }`}
                                 >
                                   {enabled ? "On" : "Off"}
                                 </div>
@@ -538,8 +537,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   </td>
                                   <td>
                                     <select className="relative">
-                                      <option>Select</option>
                                       <option>Always On</option>
+                                      <option>Custom</option>
                                     </select>
                                   </td>
                                 </tr>
@@ -633,11 +632,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                           onClick={() => {
                                             setEnabled(!enabled);
                                           }}
-                                          className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
-                                            enabled
-                                              ? " bg-gray text-left pl-2 text-white text-sm"
-                                              : "bg-gray text-right pr-2 text-white text-sm"
-                                          }`}
+                                          className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled
+                                            ? " bg-gray text-left pl-2 text-white text-sm"
+                                            : "bg-gray text-right pr-2 text-white text-sm"
+                                            }`}
                                         >
                                           {enabled ? "On" : "Off"}
                                         </div>
@@ -738,12 +736,56 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   </p>
                                 </td>
                                 <td>
-                                  <select>
-                                    <option>Select</option>
+                                  <select className="relative">
                                     <option>Always On</option>
+                                    <option>Custom</option>
                                   </select>
                                 </td>
                               </tr>
+
+                              <tr className="border-b border-[#D5E3FF]">
+                                <td className="text-right">
+                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                    payment method:
+                                  </p>
+                                </td>
+                                <td className="text-left">
+                                  <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                    **** **** **** 2222
+                                  </p>
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td colSpan={2}>
+                                  <div className="flex items-center justify-center">
+                                    {" "}
+                                    <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base mr-2">
+                                      Do you want to run the App at boot up time :
+                                    </p>
+                                    <label className="inline-flex relative items-center  cursor-pointer">
+                                      <input
+                                        type="checkbox"
+                                        className="sr-only peer"
+                                        checked={enabled}
+                                        readOnly
+                                      />
+                                      <div
+                                        onClick={() => {
+                                          setEnabled(!enabled);
+                                        }}
+                                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled
+                                          ? " bg-gray text-left pl-2 text-white text-sm"
+                                          : "bg-gray text-right pr-2 text-white text-sm"
+                                          }`}
+                                      >
+                                        {enabled ? "On" : "Off"}
+                                      </div>
+                                    </label>
+                                  </div>
+                                </td>
+                              </tr>
+
                             </table>
                             <div className="text-right my-5">
                               <button className="bg-primary text-base px-5 py-2 rounded-full text-white hover:bg-SlateBlue">
