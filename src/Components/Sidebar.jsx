@@ -9,12 +9,12 @@ import PropTypes from "prop-types";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 
-const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
+const Sidebar = ({ sidebarOpen }) => {
   Sidebar.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
   };
 
-  const [showOTPModal, setShowOTPModal] = useState(false);
+  //for menu list
   const Menus = [
     {
       title: "Dashboard",
@@ -150,8 +150,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     },
   ];
 
-  const [activeSubmenu, setActiveSubmenu] = useState(null);
+  //using for screen otp modal
+  const [showOTPModal, setShowOTPModal] = useState(false);
 
+  //using for display sub menu
+  const [activeSubmenu, setActiveSubmenu] = useState(false);
+
+  //using for mobile sidebar
   const [mobileSidebar, setMobileSidebar] = useState(false);
   const handleSidebarToggle = () => {
     setMobileSidebar(!mobileSidebar);
@@ -159,6 +164,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
+      {/* screen otp modal start */}
       {showOTPModal ? (
         <>
           <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -268,6 +274,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
       ) : null}
+      {/* screen otp modal end */}
+
+      {/* full screen sidebar start */}
       {sidebarOpen ? (
         <>
           <div className="flex">
@@ -292,21 +301,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                           <div className="ml-5 absolute right-0">
                             <FiIcons.FiChevronDown
                               className={`${
-                                activeSubmenu === index
-                                  ? "transform rotate-180"
-                                  : ""
+                                activeSubmenu ? "transform rotate-180" : ""
                               } transition-transform duration-300 text-white 
                             `}
-                              onClick={() =>
-                                setActiveSubmenu(
-                                  activeSubmenu === index ? null : index
-                                )
-                              }
+                              onClick={() => setActiveSubmenu(!activeSubmenu)}
                             />
                           </div>
                         )}
                       </div>
-                      {activeSubmenu === index && item.subMenus && (
+                      {activeSubmenu && item.subMenus && (
                         <ul className="ml-4 mt-3">
                           {item.subMenus.map((submenu, subIndex) => (
                             <li key={subIndex} className="p-2 relative submenu">
@@ -349,6 +352,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           />
         </div>
       )}
+      {/* full screen sidebar end */}
+
+      {/* mobile screen sidebar start */}
       {mobileSidebar && (
         <div className="flex">
           <div className="w-56 fixed top-0 left-0 z-40 px-4 h-screen rounded-tr-[50px] bg-primary">
@@ -378,21 +384,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className="ml-5 absolute right-0">
                           <FiIcons.FiChevronDown
                             className={`${
-                              activeSubmenu === index
-                                ? "transform rotate-180"
-                                : ""
+                              activeSubmenu ? "transform rotate-180" : ""
                             } transition-transform duration-300 text-white 
                           `}
-                            onClick={() =>
-                              setActiveSubmenu(
-                                activeSubmenu === index ? null : index
-                              )
-                            }
+                            onClick={() => setActiveSubmenu(!activeSubmenu)}
                           />
                         </div>
                       )}
                     </div>
-                    {activeSubmenu === index && item.subMenus && (
+                    {activeSubmenu && item.subMenus && (
                       <ul className="ml-4 mt-3">
                         {item.subMenus.map((submenu, subIndex) => (
                           <li key={subIndex} className="p-2 relative submenu">
@@ -425,6 +425,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       )}
+      {/* mobile screen sidebar end */}
     </>
   );
 };

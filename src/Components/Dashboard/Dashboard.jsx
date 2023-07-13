@@ -24,10 +24,21 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const location = useLocation();
 
+  //using for registration success messge
+  const location = useLocation();
   const message = location?.state?.message || null;
-  const [messageVisible, setMessageVisible] = useState(true);
+  const [messageVisible, setMessageVisible] = useState(false);
+
+  useEffect(() => {
+    const hasSeenMessage = localStorage.getItem("hasSeenMessage");
+
+    if (!hasSeenMessage && message != null) {
+      setMessageVisible(true);
+      localStorage.setItem("hasSeenMessage", "true");
+    }
+  }, [message]);
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setMessageVisible(false);
@@ -36,6 +47,7 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
     return () => clearTimeout(timeout);
   }, []);
 
+  //using for tab
   const [activeTab, setActiveTab] = useState("business");
   const data = [
     {
@@ -58,10 +70,30 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
+      {/* sidebar and navbar display start */}
       <div className="flex border-b border-gray py-3">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
+      {/* sidebar and navbar display end */}
+
+      {/* registration success meg show start */}
+      {message != null && messageVisible && (
+        <Alert
+          className="bg-[#5dbb63] w-auto"
+          style={{ position: "fixed", top: "20px", right: "20px" }}
+        >
+          <div className="flex">
+            {message}{" "}
+            <button className="ml-10" onClick={() => setMessageVisible(false)}>
+              <AiOutlineClose className="text-xl" />
+            </button>
+          </div>
+        </Alert>
+      )}
+      {/* registration success meg show end */}
+
+      {/* dashboard component start */}
       <div className="pt-6 px-5">
         <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
@@ -79,22 +111,6 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             </div>
           </div>
-          {message != null && messageVisible && (
-            <Alert
-              className="bg-[#5dbb63] w-auto"
-              style={{ position: "fixed", top: "20px", right: "20px" }}
-            >
-              <div className="flex">
-                {message}{" "}
-                <button
-                  className="ml-10"
-                  onClick={() => setMessageVisible(false)}
-                >
-                  <AiOutlineClose className="text-xl" />
-                </button>
-              </div>
-            </Alert>
-          )}
 
           <div className="mt-5">
             <Tabs value={activeTab}>
@@ -125,6 +141,7 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+      {/* dashboard component end */}
     </>
   );
 };

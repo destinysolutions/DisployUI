@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { MdOutlineNavigateNext } from 'react-icons/md'
-import { RiLogoutBoxRLine } from 'react-icons/ri'
-import '././../Styles/sidebar.css'
+import { useNavigate } from "react-router-dom";
+import { MdOutlineNavigateNext } from "react-icons/md";
+import { RiLogoutBoxRLine } from "react-icons/ri";
+import "././../Styles/sidebar.css";
 const Navbar = () => {
+  //show profile and notification box
   const [showProfileBox, setShowProfileBox] = useState(false);
   const [showNotificationBox, setShowNotificationBox] = useState(false);
 
@@ -32,7 +33,17 @@ const Navbar = () => {
     };
   }, []);
 
+  //used for apply navigation
+  const history = useNavigate();
+
+  //for signout
+  const handleSignOut = () => {
+    localStorage.removeItem("hasSeenMessage");
+    history("/");
+  };
+
   return (
+    // navbar component start
     <div className="w-full topbar">
       <div className="">
         <div className="flex-col flex">
@@ -43,6 +54,7 @@ const Navbar = () => {
                 alt="Union"
                 className="m-1 cursor-pointer"
               />
+              {/* Notification box start */}
               <div className="relative">
                 <img
                   src="/NavbarIcons/notification.svg"
@@ -52,7 +64,6 @@ const Navbar = () => {
                 />
                 {showNotificationBox && (
                   <>
-
                     <div className="absolute top-[50px] right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-10 notificationpopup">
                       <div className="lg:flex md:flex sm:block items-start">
                         <div className="p-3">
@@ -64,7 +75,9 @@ const Navbar = () => {
                           </p>
                         </div>
                         <div className="p-3">
-                          <h4 className="text-[#7C82A7] text-sm font-bold mb-1">Store</h4>
+                          <h4 className="text-[#7C82A7] text-sm font-bold mb-1">
+                            Store
+                          </h4>
                           <p className="font-medium text-sm text-[#ACB0C7]">
                             Store Name
                           </p>
@@ -78,7 +91,9 @@ const Navbar = () => {
                           </p>
                         </div>
                         <div className="p-3">
-                          <h4 className="text-[#7C82A7] text-sm font-bold mb-1">Status</h4>
+                          <h4 className="text-[#7C82A7] text-sm font-bold mb-1">
+                            Status
+                          </h4>
                           <p className="font-medium text-sm text-[#ACB0C7]">
                             Offline
                           </p>
@@ -88,17 +103,18 @@ const Navbar = () => {
                   </>
                 )}
               </div>
-
+              {/* Notification box end */}
+              {/* profile box start */}
               <div className="relative">
                 <img
                   src="/NavbarIcons/profile.svg"
                   alt="profile"
                   className="cursor-pointer profile"
-                  onClick={handleProfileClick} />
+                  onClick={handleProfileClick}
+                />
 
                 {showProfileBox && (
                   <>
-
                     <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-10 loginpopup">
                       <div className="flex items-center space-x-3 cursor-pointer p-2">
                         <img
@@ -118,34 +134,38 @@ const Navbar = () => {
                       </div>
                       <div className="border-b-[1px] border-[#8E94A9]"></div>
                       <div className="p-2">
-                        <div className="text-base font-medium mb-1 flex justify-between items-center">My Account <MdOutlineNavigateNext className="text-2xl text-gray" /></div>
-                        <div className="text-base font-medium mb-1 flex justify-between items-center">Profile settings <MdOutlineNavigateNext className="text-2xl text-gray" /></div>
+                        <div className="text-base font-medium mb-1 flex justify-between items-center">
+                          My Account{" "}
+                          <MdOutlineNavigateNext className="text-2xl text-gray" />
+                        </div>
+                        <div className="text-base font-medium mb-1 flex justify-between items-center">
+                          Profile settings{" "}
+                          <MdOutlineNavigateNext className="text-2xl text-gray" />
+                        </div>
                       </div>
                       <div className="border-b-[1px] border-[#8E94A9]"></div>
                       <div className="flex justify-center items-center p-2">
                         <div className="mr-2">
                           <RiLogoutBoxRLine className="text-xl" />
                         </div>
-                        <Link to="/">
-                          <button className="text-[#001737] font-bold text-base ">
-                            Sign out
-                          </button>
-                        </Link>
+                        <button
+                          className="text-[#001737] font-bold text-base "
+                          onClick={handleSignOut}
+                        >
+                          Sign out
+                        </button>
                       </div>
                     </div>
                   </>
                 )}
-
               </div>
-
+              {/* profile box end */}
             </div>
           </div>
         </div>
       </div>
-
-
-
     </div>
+    // navbar component end
   );
 };
 
