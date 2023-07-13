@@ -7,25 +7,23 @@ import { TbFileReport } from 'react-icons/tb'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 import '../../Styles/Report.css'
 import { useDateSelect } from "react-ymd-date-select";
-
 import { useNavigate } from 'react-router-dom';
 
 
 
 { /*popup datepicker */ }
-const MyModel = ({ closeModel }) => {
+const MyModel = ({ closeModel, selectedReport }) => {
 
     const history = useNavigate();
 
     const handleContinue = () => {
-        debugger;
-        // Navigate to the appropriate route based on the selected report
+
         if (selectedReport === 'mediareport') {
             history('/mediareport');
         } else if (selectedReport === 'uptime') {
             history('/uptimereport');
         } else if (selectedReport === 'auditLogs') {
-            history('/auditLogsReport');
+            history('/uptimereport');
         }
 
         // Close the model
@@ -155,7 +153,7 @@ const MyModel = ({ closeModel }) => {
                         </div>
 
                     </div>
-                    <button onClick={() => { setShowModel(false) }} className="absolute right-[15px] top-[15px]"><AiOutlineCloseCircle className='text-3xl' /></button>
+                    <button onClick={() => { setShowModel(false) }} className=" rounded-full absolute lg:right-[15px] md:right-[15px] sm:right-[-15px] xs:right-[-15px] lg:top-[15px] md:top-[15px] sm:top-[-15px] xs:top-[-15px] bg-white p-1"><AiOutlineCloseCircle className='text-3xl' /></button>
                 </form>
 
             </div>
@@ -231,7 +229,6 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
 
 
                     </div>
-
                 </div>
             </div>
             {/* Render MyModel component when selectedReport is truthy */}
