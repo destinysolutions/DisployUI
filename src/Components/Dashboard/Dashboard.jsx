@@ -16,7 +16,6 @@ import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
-import "react-toastify/dist/ReactToastify.css";
 import { useLocation } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
 
