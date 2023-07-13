@@ -10,13 +10,17 @@ import axios from "axios";
 import { useCookies } from "react-cookie";
 import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const Login = () => {
+  //using for routing
   const history = useNavigate();
-  const [EmailID, setEmailID] = useState("");
-  const [Password, setPassword] = useState("");
+
+  //using show or hide password field
   const [showPassword, setShowPassword] = useState(false);
-  const [cookies, setCookie] = useCookies(["token"]);
+
+  //using for login faild or success meg display
   const [errorMessge, setErrorMessge] = useState(false);
   const location = useLocation();
   const message = location?.state?.message || null;
@@ -29,37 +33,92 @@ const Login = () => {
     return () => clearTimeout(timeout);
   }, [errorMessge, messageVisible]);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    axios
-      .post(
-        "http://192.168.1.219/api/Register/Login",
-        {
-          Password: Password,
-          EmailID: EmailID,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+  //using for save token
+  const [cookies, setCookie] = useCookies(["token"]);
+
+  //using for validation and login api calling
+  const validationSchema = Yup.object().shape({
+    password: Yup.string().required("Password is required"),
+    emailID: Yup.string()
+      .required("Email is required")
+      .email("E-mail must be a valid e-mail!"),
+    terms: Yup.boolean()
+      .oneOf([true], "You must accept the terms and conditions")
+      .required("You must accept the terms and conditions"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      password: "",
+      emailID: "",
+      terms: false,
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      axios
+        .post(
+          "http://192.168.1.219/api/Register/Login",
+          {
+            password: values.password,
+            emailID: values.emailID,
           },
-        }
-      )
-      .then((response) => {
-        const token = response.data.data.token;
-        setCookie("token", token, { path: "/" });
-        if (response.data.status === 401) {
-          setErrorMessge(response.data.message);
-        } else {
-          history("/dashboard", { state: { message: response.data.message } });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          const token = response.data.data.token;
+          setCookie("token", token, { path: "/" });
+          if (response.data.status === 401) {
+            setErrorMessge(response.data.message);
+          } else {
+            history("/dashboard", {
+              state: { message: response.data.message },
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  });
 
   return (
     <>
+      {/* register success meg display start */}
+      {message != null && messageVisible && (
+        <Alert
+          className="bg-[#5dbb63] w-auto"
+          style={{ position: "fixed", top: "20px", right: "20px" }}
+        >
+          <div className="flex">
+            {message}
+            <button className="ml-10" onClick={() => setMessageVisible(false)}>
+              <AiOutlineClose className="text-xl" />
+            </button>
+          </div>
+        </Alert>
+      )}
+      {/* register success meg display end */}
+      {/* login faild error meg display start */}
+      {errorMessge && (
+        <Alert
+          className="bg-red w-auto"
+          style={{ position: "fixed", top: "20px", right: "20px" }}
+        >
+          <div className="flex">
+            {errorMessge}
+            <button className="ml-10" onClick={() => setErrorMessge(false)}>
+              <AiOutlineClose className="text-xl" />
+            </button>
+          </div>
+        </Alert>
+      )}
+      {/* login faild error meg display end */}
+
+      {/* Login form start*/}
       <div className="main login">
         <div className="bg-cover bg-no-repeat h-screen flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center px-6 mx-auto md:h-screen lg:py-0">
@@ -70,38 +129,6 @@ const Login = () => {
                 alt="title"
               />
             </div>
-            {message != null && messageVisible && (
-              <Alert
-                className="bg-[#5dbb63] w-auto"
-                style={{ position: "fixed", top: "20px", right: "20px" }}
-              >
-                <div className="flex">
-                  {message}{" "}
-                  <button
-                    className="ml-10"
-                    onClick={() => setMessageVisible(false)}
-                  >
-                    <AiOutlineClose className="text-xl" />
-                  </button>
-                </div>
-              </Alert>
-            )}
-            {errorMessge && (
-              <Alert
-                className="bg-red w-auto"
-                style={{ position: "fixed", top: "20px", right: "20px" }}
-              >
-                <div className="flex">
-                  {errorMessge}
-                  <button
-                    className="ml-10"
-                    onClick={() => setErrorMessge(false)}
-                  >
-                    <AiOutlineClose className="text-xl" />
-                  </button>
-                </div>
-              </Alert>
-            )}
             <div className="w-full bg-white rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
               <div className="p-6 sm:px-6 py-6">
                 <div className="mb-2 font-inter not-italic font-medium text-[24px] text-black">
@@ -110,19 +137,25 @@ const Login = () => {
                 <div className="mb-8 font-['Poppins'] not-italic font-normal text-[16px] text-black">
                   Fill in the fields below to sign into your account.
                 </div>
-                <form className="space-y-3 md:space-y-5">
+                <form
+                  className="space-y-3 md:space-y-5"
+                  onSubmit={formik.handleSubmit}
+                >
                   <div className="relative">
                     <label className="formLabel">Email address</label>
                     <input
                       type="email"
-                      name="email"
-                      id="email"
+                      name="emailID"
+                      id="emailID"
                       className="formInput"
                       placeholder="Enter Your Email Address"
-                      required=""
-                      value={EmailID}
-                      onChange={(e) => setEmailID(e.target.value)}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.emailID}
                     />
+                    {formik.errors.emailID && formik.touched.emailID && (
+                      <div className="error">{formik.errors.emailID}</div>
+                    )}
                   </div>
                   <div className="relative">
                     <label className="formLabel">Password</label>
@@ -132,10 +165,13 @@ const Login = () => {
                       id="password"
                       placeholder="Enter Your Password"
                       className="formInput"
-                      required=""
-                      value={Password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.password}
                     />
+                    {formik.errors.password && formik.touched.password && (
+                      <div className="error">{formik.errors.password}</div>
+                    )}
                     <div className="icon">
                       {showPassword ? (
                         <BsFillEyeFill
@@ -152,10 +188,12 @@ const Login = () => {
                     <div className="flex items-center h-5">
                       <input
                         id="terms"
-                        aria-describedby="terms"
+                        name="terms"
                         type="checkbox"
+                        checked={formik.values.terms}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                         className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                        required=""
                       />
                     </div>
                     <div className="lg:flex ml-3 text-sm sm:block">
@@ -167,22 +205,17 @@ const Login = () => {
                           terms and conditions
                         </p>
                       </Link>
-                      <Link to="/forgotpassword">
-                        <p className="lg:ml-6 not-italic text-[#3871E1] font-medium">
-                          Lost password?
-                        </p>
-                      </Link>
                     </div>
                   </div>
-                  {/* <Link to="/dashboard"> */}
+                  {formik.errors.terms && formik.touched.terms && (
+                    <div className="error">{formik.errors.terms}</div>
+                  )}
                   <button
                     type="submit"
                     className="w-full text-[#FFFFFF] bg-[#002359] not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4"
-                    onClick={handleSubmit}
                   >
                     Sign in
                   </button>
-                  {/* </Link> */}
                   <div className="lg:flex lg:ml-3 text-sm sm:block">
                     <label className="not-italic text-[#808080] font-medium">
                       Don’t have an account, yet?
@@ -221,6 +254,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+      {/* Login form end*/}
     </>
   );
 };

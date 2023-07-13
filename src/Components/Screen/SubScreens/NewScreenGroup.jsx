@@ -46,7 +46,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       <div className="pt-6 px-5">
-        <div className={`${sidebarOpen ? "ml-52" : "ml-16"}`}>
+        <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
           <div className="justify-between lg:flex md:flex items-center sm:block">
             <div className="section-title">
               <h1 className="not-italic font-medium text-2xl text-[#001737]">

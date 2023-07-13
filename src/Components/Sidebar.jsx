@@ -6,8 +6,10 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { MdOutlineAddToQueue } from "react-icons/md";
 import { HiOutlineRectangleGroup } from "react-icons/hi2";
 import PropTypes from "prop-types";
+import * as FaIcons from "react-icons/fa";
+import * as AiIcons from "react-icons/ai";
 
-const Sidebar = ({ sidebarOpen }) => {
+const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   Sidebar.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
   };
@@ -149,26 +151,12 @@ const Sidebar = ({ sidebarOpen }) => {
   ];
 
   const [activeSubmenu, setActiveSubmenu] = useState(null);
-  const [activeIcon, setActiveIcon] = useState(null);
 
-  const [tooltipVisible, setTooltipVisible] = useState(false);
-
-  const [MITooltipVisible, setMITooltipVisible] = useState(false);
-
-  const [SMTooltipVisible, setSMTooltipVisible] = useState(false);
-
-  const handleTooltipToggle = (index) => {
-    setActiveIcon(index);
-    setTooltipVisible(true);
+  const [mobileSidebar, setMobileSidebar] = useState(false);
+  const handleSidebarToggle = () => {
+    setMobileSidebar(!mobileSidebar);
   };
-  const handleMITooltipToggle = (MIindex) => {
-    setActiveIcon(MIindex);
-    setMITooltipVisible(true);
-  };
-  const handleSMTooltipToggle = (subIndex) => {
-    setActiveIcon(subIndex);
-    setSMTooltipVisible(true);
-  };
+
   return (
     <>
       {showOTPModal ? (
@@ -190,7 +178,6 @@ const Sidebar = ({ sidebarOpen }) => {
                   <div className="flex items-center justify-center mb-4">
                     <img src="/DisployImg/BlackLogo.svg" />
                   </div>
-
 
                   <div className="bg-white rounded-[20px] newscreenpopup  lg:p-5 md:p-5 sm:p-5 xs:p-2">
                     <div className="container mx-auto">
@@ -281,176 +268,163 @@ const Sidebar = ({ sidebarOpen }) => {
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
       ) : null}
-      <div className="flex">
-        <div
-          className={`${sidebarOpen ? "w-52" : "w-16"
-            } fixed top-0 md:left-0 lg:left-0  z-40 px-4 h-screen lg:rounded-tr-[50px] md:rounded-tr-[50px] sm:rounded-tr-[30px] bg-primary `}
-        >
-          <div className="flex items-center lg:py-6 md:py-6 sm:pt-6 sm:pb-3 pt">
-            {sidebarOpen ? (
+      {sidebarOpen ? (
+        <>
+          <div className="flex">
+            <div className="w-52 fixed top-0 md:left-0 lg:left-0  z-40 px-4 h-screen lg:rounded-tr-[50px] md:rounded-tr-[50px] sm:rounded-tr-[30px] bg-primary">
+              <div className="flex items-center lg:py-6 md:py-6 sm:pt-6 sm:pb-3 pt">
+                <img
+                  src="/DisployImg/logo.svg"
+                  alt="Logo"
+                  className="cursor-pointer duration-500"
+                />
+              </div>
+              <ul className="space-y-1 font-medium">
+                {Menus.map((item, index) => {
+                  return (
+                    <li key={index} className={item.cName}>
+                      <div className="flex items-center">
+                        <Link to={item.path}>
+                          <div>{item.icon}</div>
+                          <span className="ml-5">{item.title}</span>
+                        </Link>
+                        {item.subMenus && (
+                          <div className="ml-5 absolute right-0">
+                            <FiIcons.FiChevronDown
+                              className={`${
+                                activeSubmenu === index
+                                  ? "transform rotate-180"
+                                  : ""
+                              } transition-transform duration-300 text-white 
+                            `}
+                              onClick={() =>
+                                setActiveSubmenu(
+                                  activeSubmenu === index ? null : index
+                                )
+                              }
+                            />
+                          </div>
+                        )}
+                      </div>
+                      {activeSubmenu === index && item.subMenus && (
+                        <ul className="ml-4 mt-3">
+                          {item.subMenus.map((submenu, subIndex) => (
+                            <li key={subIndex} className="p-2 relative submenu">
+                              <Link to={submenu.path}>
+                                <div>{submenu.icon}</div>
+                                <span className="ml-5">{submenu.title}</span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  );
+                })}
+                <li>
+                  <div className="dotline my-4"></div>
+                </li>
+                {MenuIcons.map((item, MIindex) => {
+                  return (
+                    <li key={MIindex} className={item.cName}>
+                      <Link to={item.path}>
+                        <div>{item.icon}</div>
+                        <span className="ml-5">{item.title}</span>
+                      </Link>
+                      {Menus.title}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="menu-bars">
+          <FaIcons.FaBars
+            onClick={handleSidebarToggle}
+            className={`text-primary ${mobileSidebar && "hidden"} ${
+              mobileSidebar ? "ml-0" : "ml-5"
+            }`}
+          />
+        </div>
+      )}
+      {mobileSidebar && (
+        <div className="flex">
+          <div className="w-56 fixed top-0 left-0 z-40 px-4 h-screen rounded-tr-[50px] bg-primary">
+            <div className="flex items-center py-6">
               <img
                 src="/DisployImg/logo.svg"
                 alt="Logo"
-                className="cursor-pointer duration-500"
+                className="cursor-pointer duration-500 w-44"
               />
-            ) : (
-              <img
-                src="/DisployImg/logoIcon.svg"
-                alt="Logo"
-                className="cursor-pointer duration-500"
-              />
-            )}
-          </div>
-          <ul className="space-y-1 font-medium">
-            {Menus.map((item, index) => {
-              return (
-                <li key={index} className={item.cName}>
-                  <div className="flex items-center">
-                    <Link to={item.path}>
-                      <div
-                        onMouseEnter={() => handleTooltipToggle(index)}
-                        onMouseLeave={() => setTooltipVisible(false)}
-                      >
-                        {item.icon}
-                      </div>
-                      {!sidebarOpen &&
-                        tooltipVisible &&
-                        activeIcon === index && (
-                          <div
-                            id="tooltip-right"
-                            role="tooltip"
-                            className=" absolute z-10 visible inline-block px-2 py-1 text-sm font-medium text-white bg-SlateBlue rounded-sm shadow-sm opacity-100 tooltip  left-[30px]  dark:bg-gray-700"
-                          >
-                            <span
-                              className={`${!sidebarOpen && !tooltipVisible && "hidden"
-                                } ml-0 text-sm `}
-                            >
-                              {item.title}
-                            </span>
-                            <div
-                              className="tooltip-arrow"
-                              data-popper-arrow
-                            ></div>
-                          </div>
-                        )}
-                      <span className={`${!sidebarOpen && "hidden"} ml-5 `}>
-                        {item.title}
-                      </span>
-                    </Link>
-                    {item.subMenus && (
-                      <div
-                        className={`${!sidebarOpen
-                          ? "right-[-13px] absolute"
-                          : "ml-5 absolute right-0"
-                          }`}
-                      >
-                        <FiIcons.FiChevronDown
-                          className={`${activeSubmenu === index
-                            ? "transform rotate-180"
-                            : ""
-                            } transition-transform duration-300 text-white ${sidebarOpen ? "text-lg" : "text-lg"
-                            }`}
-                          onClick={() =>
-                            setActiveSubmenu(
-                              activeSubmenu === index ? null : index
-                            )
-                          }
-                        />
-                      </div>
-                    )}
-                  </div>
-                  {activeSubmenu === index && item.subMenus && (
-                    <ul className={`${!sidebarOpen ? "ml-0" : "ml-4"} mt-3`}>
-                      {item.subMenus.map((submenu, subIndex) => (
-                        <li key={subIndex} className="p-2 relative submenu">
-                          <Link to={submenu.path}>
-                            <div
-                              onMouseEnter={() =>
-                                handleSMTooltipToggle(subIndex)
-                              }
-                              onMouseLeave={() => setSMTooltipVisible(false)}
-                            >
-                              {submenu.icon}
-                            </div>
-                            {!sidebarOpen &&
-                              SMTooltipVisible &&
-                              activeIcon === subIndex && (
-                                <div
-                                  id="tooltip-right"
-                                  role="tooltip"
-                                  className=" absolute z-10 visible inline-block px-2 py-1 text-sm font-medium text-white bg-SlateBlue rounded-sm shadow-sm opacity-100 tooltip  left-[30px]  dark:bg-gray-700"
-                                >
-                                  <span
-                                    className={`${!sidebarOpen &&
-                                      !SMTooltipVisible &&
-                                      "hidden"
-                                      } ml-0 text-sm `}
-                                  >
-                                    {submenu.title}
-                                  </span>
-                                  <div
-                                    className="tooltip-arrow"
-                                    data-popper-arrow
-                                  ></div>
-                                </div>
-                              )}
-                            <span
-                              className={`${!sidebarOpen && "hidden"} ml-5 `}
-                            >
-                              {submenu.title}
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              );
-            })}
-            <li>
-              <div className="dotline my-4"></div>
-            </li>
-            {MenuIcons.map((item, MIindex) => {
-              return (
-                <li key={MIindex} className={item.cName}>
-                  <Link to={item.path}>
-                    <div
-                      onMouseEnter={() => handleMITooltipToggle(MIindex)}
-                      onMouseLeave={() => setMITooltipVisible(false)}
-                    >
-                      {item.icon}
-                    </div>
-                    {!sidebarOpen &&
-                      MITooltipVisible &&
-                      activeIcon === MIindex && (
-                        <div
-                          id="tooltip-right"
-                          role="tooltip"
-                          className=" absolute z-10 visible inline-block px-2 py-1 text-sm font-medium text-white bg-SlateBlue rounded-sm shadow-sm opacity-100 tooltip  left-[30px]  dark:bg-gray-700"
-                        >
-                          <span
-                            className={`${!sidebarOpen && !MITooltipVisible && "hidden"
-                              } ml-0  `}
-                          >
-                            {item.title}
-                          </span>
-                          <div
-                            className="tooltip-arrow"
-                            data-popper-arrow
-                          ></div>
+              <div className="ml-0 relative right-0 mt-1">
+                <AiIcons.AiOutlineCloseCircle
+                  className="text-white cursor-pointer text-2xl"
+                  onClick={() => setMobileSidebar(false)}
+                />
+              </div>
+            </div>
+            <ul className="space-y-1 font-medium">
+              {Menus.map((item, index) => {
+                return (
+                  <li key={index} className={item.cName}>
+                    <div className="flex items-center">
+                      <Link to={item.path}>
+                        <div>{item.icon}</div>
+                        <span className="ml-5">{item.title}</span>
+                      </Link>
+                      {item.subMenus && (
+                        <div className="ml-5 absolute right-0">
+                          <FiIcons.FiChevronDown
+                            className={`${
+                              activeSubmenu === index
+                                ? "transform rotate-180"
+                                : ""
+                            } transition-transform duration-300 text-white 
+                          `}
+                            onClick={() =>
+                              setActiveSubmenu(
+                                activeSubmenu === index ? null : index
+                              )
+                            }
+                          />
                         </div>
                       )}
-                    <span className={`${!sidebarOpen && "hidden"} ml-5 `}>
-                      {item.title}
-                    </span>
-                  </Link>
-                  {Menus.title}
-                </li>
-              );
-            })}
-          </ul>
+                    </div>
+                    {activeSubmenu === index && item.subMenus && (
+                      <ul className="ml-4 mt-3">
+                        {item.subMenus.map((submenu, subIndex) => (
+                          <li key={subIndex} className="p-2 relative submenu">
+                            <Link to={submenu.path}>
+                              <div>{submenu.icon}</div>
+                              <span className="ml-5">{submenu.title}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              })}
+              <li>
+                <div className="dotline my-4"></div>
+              </li>
+              {MenuIcons.map((item, MIindex) => {
+                return (
+                  <li key={MIindex} className={item.cName}>
+                    <Link to={item.path}>
+                      <div>{item.icon}</div>
+                      <span className="ml-5">{item.title}</span>
+                    </Link>
+                    {Menus.title}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 };

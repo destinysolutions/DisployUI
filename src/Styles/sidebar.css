@@ -84,7 +84,10 @@ img.cursor-pointer.profilePopup {
   width: 40px;
   height: 40px;
 }
-
+.menu-bars {
+  font-size: 2rem;
+  background: none;
+}
 .topbar img.profileBox {
   background-color: transparent;
   border-radius: 16px;
