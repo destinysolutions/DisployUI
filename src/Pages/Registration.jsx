@@ -9,7 +9,6 @@ import { useState } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
