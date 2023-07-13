@@ -12,9 +12,11 @@ import { useNavigate } from "react-router-dom";
 {
   /*popup datepicker */
 }
-const MyModel = ({ selectedReport }) => {
+const MyModel = ({ selectedReport, setModelVisible }) => {
   const history = useNavigate();
-
+  const handleCloseModel = () => {
+    setModelVisible(false);
+  };
   const handleContinue = () => {
     if (selectedReport === "mediareport") {
       history("/mediareport");
@@ -109,7 +111,10 @@ const MyModel = ({ selectedReport }) => {
 
           <div className="col-span-3">
             <div className="my-1">
-              <button className="bg-white border border-primary text-base px-5 py-2 rounded-full text-primary hover:bg-primary hover:text-white">
+              <button
+                className="bg-white border border-primary text-base px-5 py-2 rounded-full text-primary hover:bg-primary hover:text-white"
+                onClick={handleCloseModel}
+              >
                 Back
               </button>
             </div>
@@ -180,7 +185,10 @@ const MyModel = ({ selectedReport }) => {
               <CustomDateSelect {...CustomDateSelectProps} />
             </div>
           </div>
-          <button className=" rounded-full absolute lg:right-[15px] md:right-[15px] sm:right-[-15px] xs:right-[-15px] lg:top-[15px] md:top-[15px] sm:top-[-15px] xs:top-[-15px] bg-white p-1">
+          <button
+            onClick={handleCloseModel}
+            className=" rounded-full absolute lg:right-[15px] md:right-[15px] sm:right-[-15px] xs:right-[-15px] lg:top-[15px] md:top-[15px] sm:top-[-15px] xs:top-[-15px] bg-white p-1"
+          >
             <AiOutlineCloseCircle className="text-3xl" />
           </button>
         </form>
@@ -191,9 +199,10 @@ const MyModel = ({ selectedReport }) => {
 
 const Report = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedReport, setSelectedReport] = useState(null);
-
+  const [modelVisible, setModelVisible] = useState(false);
   const handleReportClick = (report) => {
     setSelectedReport(report);
+    setModelVisible(true);
   };
   Report.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -282,7 +291,12 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
       {/* Render MyModel component when selectedReport is truthy */}
-      {selectedReport && <MyModel selectedReport={selectedReport} />}
+      {modelVisible && (
+        <MyModel
+          selectedReport={selectedReport}
+          setModelVisible={setModelVisible}
+        />
+      )}
     </>
   );
 };
