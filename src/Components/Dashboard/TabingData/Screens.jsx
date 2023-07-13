@@ -3,12 +3,13 @@ import DataTable from "react-data-table-component";
 import { AiOutlineSearch } from "react-icons/ai";
 import "../../../Styles/dashboard.css";
 import axios from "axios";
+import { ALL_SCREEN_URL } from "../../../Pages/Api";
 
 const Screens = () => {
   const [screenData, setScreenData] = useState([]);
   useEffect(() => {
     axios
-      .get("http://192.168.1.219/api/Screen/GetAllScreen")
+      .get(ALL_SCREEN_URL)
       .then((response) => {
         const fetchedData = response.data.data;
         setScreenData(fetchedData);
