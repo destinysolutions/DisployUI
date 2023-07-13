@@ -12,6 +12,7 @@ import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { LOGIN_URL } from "./Api";
 
 const Login = () => {
   //using for routing
@@ -65,7 +66,7 @@ const Login = () => {
     onSubmit: (values) => {
       axios
         .post(
-          "http://192.168.1.219/api/Register/Login",
+          LOGIN_URL,
           {
             password: values.password,
             emailID: values.emailID,
@@ -172,30 +173,32 @@ const Login = () => {
                   </div>
                   <div className="relative">
                     <label className="formLabel">Password</label>
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      id="password"
-                      placeholder="Enter Your Password"
-                      className="formInput"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.password}
-                    />
+                    <div className="relative">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        id="password"
+                        placeholder="Enter Your Password"
+                        className="formInput"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.password}
+                      />
+                      <div className="icon">
+                        {showPassword ? (
+                          <BsFillEyeFill
+                            onClick={() => setShowPassword(!showPassword)}
+                          />
+                        ) : (
+                          <BsFillEyeSlashFill
+                            onClick={() => setShowPassword(!showPassword)}
+                          />
+                        )}
+                      </div>
+                    </div>
                     {formik.errors.password && formik.touched.password && (
                       <div className="error">{formik.errors.password}</div>
                     )}
-                    <div className="icon">
-                      {showPassword ? (
-                        <BsFillEyeFill
-                          onClick={() => setShowPassword(!showPassword)}
-                        />
-                      ) : (
-                        <BsFillEyeSlashFill
-                          onClick={() => setShowPassword(!showPassword)}
-                        />
-                      )}
-                    </div>
                   </div>
                   <div className="flex items-start">
                     <div className="flex items-center h-5">

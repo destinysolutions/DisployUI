@@ -7,6 +7,7 @@ import { NavLink } from "react-router-dom";
 import axios from "axios";
 import { AiOutlineClose } from "react-icons/ai";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { ADD_REGISTER_URL, All_REGISTER_URL } from "../../../Pages/Api";
 
 const Users = () => {
   const [userData, setUserData] = useState([]);
@@ -14,7 +15,7 @@ const Users = () => {
 
   useEffect(() => {
     axios
-      .get("http://192.168.1.219/api/Register/GetAllRegister")
+      .get(All_REGISTER_URL)
       .then((response) => {
         const fetchedData = response.data.data;
         setUserData(fetchedData);
@@ -26,7 +27,7 @@ const Users = () => {
 
   const handleDelete = (id) => {
     axios
-      .post("http://192.168.1.219/api/Register/AddRegister", {
+      .post(ADD_REGISTER_URL, {
         ID: id,
         operation: "Delete",
       })
