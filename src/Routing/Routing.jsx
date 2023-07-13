@@ -23,7 +23,9 @@ import EditUser from "../Pages/EditUser";
 import ViewUserProfile from "../Pages/ViewUserProfile";
 import Mediareport from "../Components/Reports/Mediareport";
 import Uptimereport from "../Components/Reports/Uptimereport";
+
 const Routing = () => {
+  //for screen resize sidebar open close
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const handleResize = useCallback(() => {
     if (window.innerWidth < 780) {
@@ -53,8 +55,11 @@ const Routing = () => {
   return (
     <>
       <Routes>
+        {/* login register route */}
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Registration />} />
+
+        {/* forgotpassword and termsconditions route */}
         <Route
           path="/forgotpassword"
           element={
@@ -73,15 +78,8 @@ const Routing = () => {
             />
           }
         />
-        <Route
-          path="/mediareport"
-          element={
-            <Mediareport
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
+
+        {/* Dashboard component route */}
         <Route
           path="/dashboard"
           element={
@@ -118,6 +116,8 @@ const Routing = () => {
             />
           }
         />
+
+        {/* screen component route */}
         <Route
           path="/mergescreen"
           element={
@@ -146,18 +146,20 @@ const Routing = () => {
           }
         />
         <Route
-          path="/fileupload"
+          path="/newscreendetail"
           element={
-            <FileUpload
+            <NewScreenDetail
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
             />
           }
         />
+
+        {/* Assests component route */}
         <Route
-          path="/newscreendetail"
+          path="/fileupload"
           element={
-            <NewScreenDetail
+            <FileUpload
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
             />
@@ -169,6 +171,8 @@ const Routing = () => {
             <Assets sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           }
         />
+
+        {/* Apps component route */}
         <Route
           path="/apps"
           element={
@@ -193,6 +197,8 @@ const Routing = () => {
             />
           }
         />
+
+        {/* Playlist component route */}
         <Route
           path="/myplaylist"
           element={
@@ -202,6 +208,8 @@ const Routing = () => {
             />
           }
         />
+
+        {/* DisployStudio component route */}
         <Route
           path="/disploystudio"
           element={
@@ -212,6 +220,7 @@ const Routing = () => {
           }
         />
 
+        {/* Reports component route */}
         <Route
           path="/reports"
           element={
@@ -227,7 +236,17 @@ const Routing = () => {
             />
           }
         />
+        <Route
+          path="/mediareport"
+          element={
+            <Mediareport
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
 
+        {/* error page route */}
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </>

@@ -24,7 +24,15 @@ const Login = () => {
   const [errorMessge, setErrorMessge] = useState(false);
   const location = useLocation();
   const message = location?.state?.message || null;
-  const [messageVisible, setMessageVisible] = useState(true);
+  const [messageVisible, setMessageVisible] = useState(false);
+  useEffect(() => {
+    const hasSeenMessage = localStorage.getItem("hasSeenMessage");
+
+    if (!hasSeenMessage && message != null) {
+      setMessageVisible(true);
+      localStorage.setItem("hasSeenMessage", "true");
+    }
+  }, [message]);
   useEffect(() => {
     const timeout = setTimeout(() => {
       setMessageVisible(false);
@@ -85,6 +93,11 @@ const Login = () => {
     },
   });
 
+  //for signup
+  const handleRegister = () => {
+    history("/register");
+    localStorage.removeItem("hasSeenMessage");
+  };
   return (
     <>
       {/* register success meg display start */}
@@ -94,7 +107,7 @@ const Login = () => {
           style={{ position: "fixed", top: "20px", right: "20px" }}
         >
           <div className="flex">
-            {message}
+            {message}{" "}
             <button className="ml-10" onClick={() => setMessageVisible(false)}>
               <AiOutlineClose className="text-xl" />
             </button>
@@ -220,11 +233,12 @@ const Login = () => {
                     <label className="not-italic text-[#808080] font-medium">
                       Don’t have an account, yet?
                     </label>
-                    <Link to="/register">
-                      <p className="lg:ml-1 not-italic text-[#3871E1] font-medium">
-                        Sign up here
-                      </p>
-                    </Link>
+                    <button
+                      className="lg:ml-1 not-italic text-[#3871E1] font-medium"
+                      onClick={handleRegister}
+                    >
+                      Sign up here
+                    </button>
                   </div>
                 </form>
               </div>
