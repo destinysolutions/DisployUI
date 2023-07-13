@@ -22,7 +22,7 @@ const Mediareport = (sidebarOpen, setSidebarOpen) => {
                 <Navbar />
             </div>
             <div className="pt-6 px-5">
-                <div className={`${sidebarOpen ? "ml-52" : "ml-16"}`}>
+                <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
                     <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
                         <div className='flex items-center'>
                             <MdKeyboardArrowLeft className='text-4xl text-primary' />

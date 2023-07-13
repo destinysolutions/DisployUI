@@ -14,7 +14,10 @@ import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 
 const Registration = () => {
+  //using show or hide password field
   const [showPassword, setShowPassword] = useState(false);
+
+  //using registration faild error msg display
   const [errorMessge, setErrorMessge] = useState(false);
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -23,17 +26,31 @@ const Registration = () => {
     return () => clearTimeout(timeout);
   }, [errorMessge]);
 
+  //using for routing
   const history = useNavigate();
 
+  //using for validation and register api calling
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
   const validationSchema = Yup.object().shape({
     companyName: Yup.string().required("Company Name is required"),
-    password: Yup.string().required("Password is required"),
-    name: Yup.string().required("Name is required"),
+    password: Yup.string()
+      .required("Password is required")
+      .matches(
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+      ),
+    name: Yup.string().required("Name is required").max(50),
     emailID: Yup.string()
       .required("Email is required")
       .email("E-mail must be a valid e-mail!"),
-    phoneNumber: Yup.string().required("Phone Number is required"),
+    phoneNumber: Yup.string()
+      .required("Phone Number is required")
+      .matches(phoneRegExp, "Phone number is not valid"),
     googleLocation: Yup.string().required("Google Location is required"),
+    terms: Yup.boolean()
+      .oneOf([true], "You must accept the terms and conditions")
+      .required("You must accept the terms and conditions"),
   });
 
   const formik = useFormik({
@@ -44,6 +61,7 @@ const Registration = () => {
       emailID: "",
       googleLocation: "",
       phoneNumber: "",
+      terms: false,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -66,8 +84,26 @@ const Registration = () => {
         });
     },
   });
+
   return (
     <>
+      {/* registration faild error msg display start*/}
+      {errorMessge && (
+        <Alert
+          className="bg-red w-auto"
+          style={{ position: "fixed", top: "20px", right: "20px" }}
+        >
+          <div className="flex">
+            {errorMessge}
+            <button className="ml-10" onClick={() => setErrorMessge(false)}>
+              <AiOutlineClose className="text-xl" />
+            </button>
+          </div>
+        </Alert>
+      )}
+      {/* registration faild error msg display end*/}
+
+      {/* registration form start*/}
       <div className="main registration">
         <div className="bg-cover bg-no-repeat h-screen flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center px-6 mx-auto md:h-screen lg:py-0">
@@ -78,22 +114,6 @@ const Registration = () => {
                 alt="title"
               />
             </div>
-            {errorMessge && (
-              <Alert
-                className="bg-red w-auto"
-                style={{ position: "fixed", top: "20px", right: "20px" }}
-              >
-                <div className="flex">
-                  {errorMessge}
-                  <button
-                    className="ml-10"
-                    onClick={() => setErrorMessge(false)}
-                  >
-                    <AiOutlineClose className="text-xl" />
-                  </button>
-                </div>
-              </Alert>
-            )}
             <div className="w-full bg-white rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
               <div className="p-5 sm:px-8 py-1">
                 <div className="my-1 font-inter not-italic font-medium text-[24px] text-black mt-4">
@@ -161,7 +181,7 @@ const Registration = () => {
                   <div className="relative">
                     <label className="formLabel">Phone Number</label>
                     <input
-                      type="number"
+                      type="tel"
                       name="phoneNumber"
                       id="phoneNumber"
                       placeholder="Enter Phone Number"
@@ -222,7 +242,11 @@ const Registration = () => {
                     <div className="flex items-center h-5">
                       <input
                         id="terms"
+                        name="terms"
                         type="checkbox"
+                        checked={formik.values.terms}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                         className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
                       />
                     </div>
@@ -235,8 +259,11 @@ const Registration = () => {
                           terms and conditions
                         </p>
                       </Link>
-                    </div>{" "}
+                    </div>
                   </div>
+                  {formik.errors.terms && formik.touched.terms && (
+                    <div className="error">{formik.errors.terms}</div>
+                  )}
                   <button
                     type="submit"
                     className="w-full text-[#FFFFFF] bg-[#002359] not-italic font-medium rounded-lg py-3 text-center text-base"
@@ -260,7 +287,7 @@ const Registration = () => {
               <div className="socialIcon socialIcon1">
                 <button>
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
-                </button>{" "}
+                </button>
               </div>
               <div className="socialIcon socialIcon2">
                 <button>
@@ -281,6 +308,7 @@ const Registration = () => {
           </div>
         </div>
       </div>
+      {/* registration form end*/}
     </>
   );
 };

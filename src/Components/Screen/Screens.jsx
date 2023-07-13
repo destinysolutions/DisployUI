@@ -48,7 +48,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       <div className="pt-6 px-5">
-        <div className={`${sidebarOpen ? "ml-52" : "ml-16"}`}>
+        <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
               Screens
