@@ -84,10 +84,11 @@ img.cursor-pointer.profilePopup {
   width: 40px;
   height: 40px;
 }
-.menu-bars {
+
+/* .menu-bars {
   font-size: 2rem;
   background: none;
-}
+} */
 .topbar img.profileBox {
   background-color: transparent;
   border-radius: 16px;
@@ -133,6 +134,7 @@ div#tooltip-bottom:before {
 
 .notificationpopup {
   min-width: 500px;
+  z-index: 99;
 }
 
 .loginpopup:before,

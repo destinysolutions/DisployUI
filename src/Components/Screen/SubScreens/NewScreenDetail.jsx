@@ -344,17 +344,15 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                       >
                                         <button
                                           type="button"
-                                          className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                            activeTab === 1 ? "active" : ""
-                                          }`}
-                                          // onClick={() => handleTabClick(1)}
+                                          className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 1 ? "active" : ""
+                                            }`}
+                                        // onClick={() => handleTabClick(1)}
                                         >
                                           <span
-                                            className={`p-1 rounded ${
-                                              activeTab === 1
-                                                ? "bg-primary text-white"
-                                                : "bg-[#D5E3FF]"
-                                            } `}
+                                            className={`p-1 rounded ${activeTab === 1
+                                              ? "bg-primary text-white"
+                                              : "bg-[#D5E3FF]"
+                                              } `}
                                           >
                                             <IoBarChartSharp size={15} />
                                           </span>
@@ -362,17 +360,15 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                         </button>
                                         <button
                                           type="button"
-                                          className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                            activeTab === 2 ? "active" : ""
-                                          }`}
-                                          //onClick={() => handleTabClick(2)}
+                                          className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 2 ? "active" : ""
+                                            }`}
+                                        //onClick={() => handleTabClick(2)}
                                         >
                                           <span
-                                            className={`p-1 rounded ${
-                                              activeTab === 2
-                                                ? "bg-primary text-white"
-                                                : "bg-[#D5E3FF]"
-                                            } `}
+                                            className={`p-1 rounded ${activeTab === 2
+                                              ? "bg-primary text-white"
+                                              : "bg-[#D5E3FF]"
+                                              } `}
                                           >
                                             <RiPlayListFill size={15} />
                                           </span>
@@ -380,17 +376,15 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                         </button>
                                         <button
                                           type="button"
-                                          className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                            activeTab === 3 ? "active" : ""
-                                          }`}
-                                          // onClick={() => handleTabClick(3)}
+                                          className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 3 ? "active" : ""
+                                            }`}
+                                        // onClick={() => handleTabClick(3)}
                                         >
                                           <span
-                                            className={`p-1 rounded ${
-                                              activeTab === 3
-                                                ? "bg-primary text-white"
-                                                : "bg-[#D5E3FF]"
-                                            } `}
+                                            className={`p-1 rounded ${activeTab === 3
+                                              ? "bg-primary text-white"
+                                              : "bg-[#D5E3FF]"
+                                              } `}
                                           >
                                             <BiAnchor size={15} />
                                           </span>
@@ -398,17 +392,15 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                         </button>
                                         <button
                                           type="button"
-                                          className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                            activeTab === 4 ? "active" : ""
-                                          }`}
-                                          // onClick={() => handleTabClick(4)}
+                                          className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${activeTab === 4 ? "active" : ""
+                                            }`}
+                                        // onClick={() => handleTabClick(4)}
                                         >
                                           <span
-                                            className={`p-1 rounded ${
-                                              activeTab === 4
-                                                ? "bg-primary text-white"
-                                                : "bg-[#D5E3FF]"
-                                            } `}
+                                            className={`p-1 rounded ${activeTab === 4
+                                              ? "bg-primary text-white"
+                                              : "bg-[#D5E3FF]"
+                                              } `}
                                           >
                                             <AiOutlineAppstoreAdd size={15} />
                                           </span>
@@ -610,14 +602,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           </button>
                           {showTagBox && (
                             <>
-                              <div className="absolute top-[28px] right-[9px]  text-[35px]  z-20">
-                                <img
-                                  src="/DisployImg/Polygon.svg"
-                                  alt="notification"
-                                  className="cursor-pointer tagPopup"
-                                />
-                              </div>
-                              <div className="absolute top-[42px] right-[-95px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10 max-w-[250px]">
+
+                              <div className=" tagname absolute top-[42px] lg:right-[0px] md:right-[0px] sm:lg:right-[0px] xs:lg:right-[0px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10 max-w-[250px]">
                                 <div className="lg:flex md:flex sm:block">
                                   <div className="p-2">
                                     <h6 className="text-center text-sm mb-1">

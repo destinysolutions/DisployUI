@@ -13,7 +13,8 @@ import PropTypes from "prop-types";
 import ReactPlayer from "react-player";
 import { FiPlus } from "react-icons/fi";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-
+import { AiOutlineCloseCircle } from 'react-icons/ai'
+import { select } from "@material-tailwind/react";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -35,7 +36,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   {
     /*payment dw */
   }
-
+  { /* custome operating hours popup*/ }
+  const [showhoursModal, setshowhoursModal] = useState(false);
+  const [hoursdw, setshowhoursdw] = useState(false)
   const [paymentpop, setPaymentpop] = useState(false);
   return (
     <>
@@ -97,19 +100,21 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
 
                   <div className="relative">
-                    <button
-                      className="bg-white p-1 rounded-md shadow mr-2 hover:bg-SlateBlue relative"
-                      onClick={() => setMediadw((prev) => !prev)}
-                    >
-                      <HiOutlineChevronDown className="text-primary text-lg hover:text-white" />
-                    </button>
-                    <button className="bg-white p-1 rounded-md shadow hover:bg-SlateBlue">
-                      <AiOutlineCloudUpload className="text-primary text-lg hover:text-white" />
-                    </button>
+                    <div className="relative">
+                      <button
+                        className="bg-white p-1 rounded-md shadow mr-2 hover:bg-SlateBlue relative"
+                        onClick={() => setMediadw((prev) => !prev)}
+                      >
+                        <HiOutlineChevronDown className="text-primary text-lg hover:text-white" />
+                      </button>
+                      <button className="bg-white p-1 rounded-md shadow hover:bg-SlateBlue">
+                        <AiOutlineCloudUpload className="text-primary text-lg hover:text-white" />
+                      </button>
+                    </div>
                     {mediadw && (
                       <div className="mediadw">
                         <ul>
-                          <li className="flex text-sm items-center">
+                          <li className="flex text-sm  items-center">
                             <MdElectricBolt className="mr-2 text-lg" />
                             Default Media
                           </li>
@@ -428,8 +433,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 <button
                                   className={
                                     sync === 1
-                                      ? "tabsyncshow tabsyncactive lg:my-0 md:my-0 sm:mt-0 xs:my-2"
-                                      : "synctab lg:my-0 md:my-0 sm:mt-0 xs:my-2"
+                                      ? "tabsyncshow tabsyncactive"
+                                      : "synctab "
                                   }
                                   onClick={() => updatesynctoggle(1)}
                                 >
@@ -441,8 +446,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 <button
                                   className={
                                     sync === 2
-                                      ? "tabsyncshow tabsyncactive lg:my-0 md:my-0 sm:mt-0 xs:my-2"
-                                      : "synctab lg:my-0 md:my-0 sm:mt-0 xs:my-2"
+                                      ? "tabsyncshow tabsyncactive"
+                                      : "synctab "
                                   }
                                   onClick={() => updatesynctoggle(2)}
                                 >
@@ -529,19 +534,95 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   </td>
                                 </tr>
 
-                                <tr className="border-b border-[#D5E3FF]">
+
+                                <tr className="border-b border-[#D5E3FF] relative">
                                   <td className="text-right">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                       Operating Hours:
                                     </p>
                                   </td>
                                   <td>
-                                    <select className="relative">
-                                      <option>Always On</option>
-                                      <option>Custom</option>
-                                    </select>
+                                    <div className="paymentlabel relative">
+                                      <span
+                                        className="flex justify-between"
+                                        onClick={() =>
+                                          setshowhoursdw(!hoursdw)
+                                        }
+                                      >
+                                        <label className=""> Operating Hours</label>
+                                        <MdOutlineKeyboardArrowDown className=" text-xl font-black cursor-pointer" />
+                                      </span>
+
+                                    </div>
+                                    {
+                                      hoursdw && (
+                                        <div className="hoursdw relative">
+                                          <ul className=" absolute top-0 left-0 bg-white rounded-xl w-full drop-shadow-xl z-10 border-[#ddd] border">
+                                            <li className="px-3 py-1 text-sm hover:rounded-tl-xl hover:rounded-tr-xl text-left">Always On</li>
+                                            <li className="px-3  py-1 text-sm  hover:rounded-bl-xl hover:rounded-br-xl text-left" onClick={() => setshowhoursModal(true)}><button >Custom</button></li>
+
+                                          </ul>
+                                        </div>
+                                      )
+                                    }
+
                                   </td>
                                 </tr>
+
+
+                                {showhoursModal && (
+                                  <>
+                                    <div className="backdrop">
+                                      <div className="hours-model">
+
+                                        <div className="hours-heading flex justify-between items-center p-5 border-b border-gray">
+                                          <h1>Custom Operating Hours</h1>
+                                          <AiOutlineCloseCircle onClick={() => setshowhoursModal(false)} />
+                                        </div>
+                                        <hr />
+                                        <div className="model-body p-5 ">
+                                          <div className="model-details drop-shadow-3xl p-3 text-left rounded-md border border-gray">
+                                            <lable className="text-base font-medium">Hours:</lable>
+                                            <div className="flex justify-between items-center mt-3">
+                                              <input type="time" placeholder="From Time" />
+                                              <lable className="px-3 text-base">To</lable>
+                                              <input type="time" placeholder="To Time" />
+                                            </div>
+                                          </div>
+
+                                          <div className="week-days relative mt-5">
+                                            <div className="formgroup relative flex items-center ">
+                                              <div className="relative mr-2"><input type="checkbox" placeholder="Su" name="monday" value="monday" className="relative appearance-none p-0  " /><label className="title absolute">Sun</label></div>
+                                              <div className="relative mr-2"><input type="checkbox" name="monday" value="monday" className="relative appearance-none p-0  " /><label className="title absolute">Mon</label></div>
+                                              <div className="relative mr-2"><input type="checkbox" name="monday" value="monday" className="relative appearance-none p-0  " /><label className="title absolute">Tue</label></div>
+                                              <div className="relative mr-2"><input type="checkbox" name="monday" value="monday" className="relative appearance-none p-0  " /><label className="title absolute">Wed</label></div>
+                                              <div className="relative mr-2"><input type="checkbox" name="monday" value="monday" className="relative appearance-none p-0  " /><label className="title absolute">Thu</label></div>
+                                              <div className="relative mr-2"><input type="checkbox" name="monday" value="monday" className="relative appearance-none p-0  " /><label className="title absolute">Fri</label></div>
+                                              <div className="relative mr-2"><input type="checkbox" name="monday" value="monday" className="relative appearance-none p-0  " /><label className="title absolute">sat</label></div>
+                                            </div>
+                                          </div>
+
+                                          <div className="formgroup flex justify-between items-center mt-5">
+                                            <label className="text-base font-medium mr-3">Action</label>
+                                            <select>
+                                              <option>Select Action</option>
+                                              <option>Shut Down</option>
+                                              <option>Sleep</option>
+                                            </select>
+                                          </div>
+
+
+
+
+                                        </div>
+                                        <button className="bg-primary  text-white px-5 py-2 text-base rounded-full mb-5">Apply</button>
+
+                                      </div>
+                                    </div>
+                                  </>
+                                )
+
+                                }
 
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
@@ -738,10 +819,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 <td>
                                   <select className="relative">
                                     <option>Always On</option>
-                                    <option>Custom</option>
+                                    <option> <button >Custom</button></option>
                                   </select>
                                 </td>
                               </tr>
+
 
                               <tr className="border-b border-[#D5E3FF]">
                                 <td className="text-right">

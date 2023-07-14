@@ -95,6 +95,8 @@ const MyModel = ({ selectedReport, setModelVisible }) => {
               placeholder="From Date"
               value={dateSelect.dateValue || ""}
               onChange={dateSelect.onDateChange}
+              onFocus={(e) => (e.currentTarget.type = "From Date")}
+              onBlur={(e) => (e.currentTarget.type = "From Date")}
               className=" w-full border border-[#D5E3FF] rounded-xl p-2 drop-shadow-sm"
             />
           </div>
@@ -105,6 +107,8 @@ const MyModel = ({ selectedReport, setModelVisible }) => {
               placeholder="To Date"
               value={dateSelect.dateValue || ""}
               onChange={dateSelect.onDateChange}
+              onFocus={(e) => (e.currentTarget.type = "To Date")}
+              onBlur={(e) => (e.currentTarget.type = "To Date")}
               className=" w-full border border-[#D5E3FF] rounded-xl p-2 drop-shadow-sm"
             />
           </div>

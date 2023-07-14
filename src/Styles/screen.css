@@ -4,10 +4,16 @@ input:focus-visible,
 select:focus,
 select:focus-visible,
 textarea:focus,
-textarea:focus-visible {
+textarea:focus-visible,
+input:active,
+input:focus-within,
+input:target,
+input:visited {
   /* box-shadow: 0px 3px 18px 1px #41479b80; */
   border: 1px solid #41479b78 !important;
   outline: none !important;
+  background-color: #fff !important;
+
 }
 
 .screenIcon {
@@ -33,7 +39,7 @@ div#tooltip-bottom {
   font-size: 12px;
   padding: 5px;
   white-space: nowrap;
-  z-index: 99;
+  z-index: 9;
 }
 
 div#tooltip-bottom:before {
@@ -189,7 +195,6 @@ button.tabsyncshow.tabsyncactive {
 
 .mediadw {
   position: absolute;
-
   background: #fff;
   padding: 15px;
   border-radius: 10px;
@@ -197,8 +202,8 @@ button.tabsyncshow.tabsyncactive {
   font-size: 16px;
   width: 166px;
   border: 1px solid #ccc;
-  left: 17%;
-  transform: translate(-50%, 11px);
+  left: 0%;
+  transform: translate(-44%, 11px);
 }
 
 .mediadw:before {
@@ -284,6 +289,19 @@ button.tabsyncshow.tabsyncactive {
 }
 
 /* newsacreen details */
+.tagname:before {
+  content: '';
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  background: #fff;
+  border-top: 1px solid #666666;
+  border-left: 1px solid #515151;
+  transform: rotate(45deg);
+  top: -7px;
+  right: 10px;
+}
+
 .mediactivetab {
   padding: 10px 8px 10px 15px;
 }
@@ -354,7 +372,85 @@ button.tabsyncshow.tabsyncactive {
     padding-top: 0px;
   }
 
+  .mediadw {
+    width: auto;
+    max-width: 200px;
+
+  }
+
   .payment-dropdown {
     padding: 0 5px;
   }
+}
+
+@media(max-width:349px) {
+  .mediadw {
+    font-size: 10px !important;
+    padding: 10px;
+    left: 0;
+    transform: translate(0, 11px);
+
+  }
+
+  .mediadw:before {
+    left: 10px;
+  }
+
+  button.synctab,
+  button.tabsyncshow.tabsyncactive {
+    margin: 5px 0;
+  }
+}
+
+.backdrop {
+  position: fixed;
+  background-color: #000;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 99;
+
+}
+
+.hoursdw li:hover {
+  background: #666666;
+  color: #fff;
+}
+
+.hours-model {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  background: #fff;
+  z-index: 99;
+  transform: translate(-50%, -50%);
+}
+
+input:checked~title {
+  background-color: #41479b;
+  color: #fff;
+
+}
+
+input:checked {
+  background-color: #41479b;
+  color: #fff;
+}
+
+.week-days input {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+
+  border-width: 2px;
+}
+
+.week-days .title {
+  left: 50%;
+  top: 50%;
+
+
+  transform: translate(-50%, -56%);
+
 }
