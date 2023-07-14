@@ -54,6 +54,7 @@
   color: red;
   font-size: 14px;
 }
+
 .socialIcon.socialIcon1:hover,
 .socialIcon.socialIcon1:hover svg {
   /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#cc0000+0,cc0000+100;Red+Flat */
@@ -89,35 +90,29 @@
   /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#4c4c4c+0,595959+51,666666+100,2c2c2c+100,131313+100,666666+101 */
   background: #4c4c4c;
   /* Old browsers */
-  background: -moz-linear-gradient(
-    left,
-    #4c4c4c 0%,
-    #595959 51%,
-    #666666 100%,
-    #2c2c2c 100%,
-    #131313 100%,
-    #666666 101%
-  );
+  background: -moz-linear-gradient(left,
+      #4c4c4c 0%,
+      #595959 51%,
+      #666666 100%,
+      #2c2c2c 100%,
+      #131313 100%,
+      #666666 101%);
   /* FF3.6-15 */
-  background: -webkit-linear-gradient(
-    left,
-    #4c4c4c 0%,
-    #595959 51%,
-    #666666 100%,
-    #2c2c2c 100%,
-    #131313 100%,
-    #666666 101%
-  );
+  background: -webkit-linear-gradient(left,
+      #4c4c4c 0%,
+      #595959 51%,
+      #666666 100%,
+      #2c2c2c 100%,
+      #131313 100%,
+      #666666 101%);
   /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(
-    to right,
-    #4c4c4c 0%,
-    #595959 51%,
-    #666666 100%,
-    #2c2c2c 100%,
-    #131313 100%,
-    #666666 101%
-  );
+  background: linear-gradient(to right,
+      #4c4c4c 0%,
+      #595959 51%,
+      #666666 100%,
+      #2c2c2c 100%,
+      #131313 100%,
+      #666666 101%);
   /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4c4c4c', endColorstr='#666666', GradientType=1);
   /* IE6-9 */
@@ -130,12 +125,10 @@
   /* Old browsers */
   background: -moz-linear-gradient(left, #1e5799 0%, #2989d8 50%, #7db9e8 100%);
   /* FF3.6-15 */
-  background: -webkit-linear-gradient(
-    left,
-    #1e5799 0%,
-    #2989d8 50%,
-    #7db9e8 100%
-  );
+  background: -webkit-linear-gradient(left,
+      #1e5799 0%,
+      #2989d8 50%,
+      #7db9e8 100%);
   /* Chrome10-25,Safari5.1-6 */
   background: linear-gradient(to right, #1e5799 0%, #2989d8 50%, #7db9e8 100%);
   /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
@@ -150,6 +143,7 @@ input#password::placeholder {
 }
 
 @media (max-width: 450px) {
+
   input#email::placeholder,
   input#password::placeholder,
   .formInput::placeholder {
@@ -166,30 +160,5 @@ input#password::placeholder {
     height: 30px;
     width: 30px;
     padding: 7px;
-  }
-}
-
-@media (max-device-width: 1300px) and (max-device-height: 800px) {
-  .registration .md\:h-screen,
-  .registration .h-screen {
-    height: auto !important;
-  }
-}
-
-@media (max-device-width: 700px) and (max-device-height: 850px) {
-  .registration .h-screen {
-    height: auto !important;
-  }
-}
-
-@media (max-device-width: 640px) and (max-device-height: 400px) {
-  .login .h-screen {
-    height: auto !important;
-  }
-}
-
-@media (max-device-width: 360px) and (max-device-height: 640px) {
-  .login .h-screen {
-    height: auto !important;
   }
 }
