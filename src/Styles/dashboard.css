@@ -52,6 +52,33 @@
   right: 14px;
 }
 
+/* business css */
+.statePopup {
+  position: absolute;
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0px 10px 20px #ccc;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  transform: translate(2%, 21px);
+  right: -150%;
+  top: 43%;
+  z-index: 9999;
+}
+
+.statePopup:before {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  transform: rotate(45deg);
+  top: -8px;
+  right: 50%;
+}
 body {
   background: #e4e6ff91;
 }

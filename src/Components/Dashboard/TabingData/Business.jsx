@@ -1,8 +1,12 @@
-import GoogleMapReact from "google-map-react";
 import ReactApexChart from "react-apexcharts";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { Link } from "react-router-dom";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import { useState } from "react";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { AiOutlineSearch } from "react-icons/ai";
 
-const AnyReactComponent = () => <div></div>;
 const optionsBar = {
   colors: ["#3C50E0", "#80CAEE"],
   chart: {
@@ -109,14 +113,6 @@ const optionsRadialBar = {
 };
 
 const Business = () => {
-  const defaultProps = {
-    center: {
-      lat: 10.99835602,
-      lng: 77.01502627,
-    },
-    zoom: 11,
-  };
-
   const stateVlaue = {
     series: [
       {
@@ -130,23 +126,98 @@ const Business = () => {
     ],
   };
 
+  const center = [20.5937, 78.9629];
+  const centerUSA = [37.0902, -95.7129];
+  const blueIcon = new L.Icon({
+    iconUrl:
+      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+  });
+  const [showStore, setShowStore] = useState(false);
+  const handleMarkerClick = () => {
+    setShowStore(true);
+  };
+  const markerEventHandlers = {
+    click: handleMarkerClick,
+  };
+  const [selectState, setSelectState] = useState(false);
   return (
     <>
       <div className="bg-white shadow-md rounded-lg">
         <div className="h-96 p-3">
-          <GoogleMapReact
-            bootstrapURLKeys={{ key: "" }}
-            defaultCenter={defaultProps.center}
-            defaultZoom={defaultProps.zoom}
+          <MapContainer
+            center={center}
+            zoom={2}
+            scrollWheelZoom={false}
+            style={{ width: "100%", height: "360px" }}
           >
-            <AnyReactComponent
-              lat={59.955413}
-              lng={30.337844}
-              text="My Marker"
+            <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
+
+            <Marker
+              position={center}
+              icon={blueIcon}
+              eventHandlers={markerEventHandlers}
             />
-          </GoogleMapReact>
+
+            <Marker position={centerUSA} icon={blueIcon} />
+          </MapContainer>
         </div>
       </div>
+      {showStore && (
+        <>
+          <div className="bg-white shadow-md rounded-lg mt-5 ">
+            <div className="p-3 flex justify-between">
+              <div className="flex items-center">
+                <img
+                  src="../../../../DisployImg/flag.png"
+                  className="h-10 w-10 rounded-full"
+                />
+                <div className="ml-2 font-semibold">India</div>
+              </div>
+              <div className="relative">
+                <div className="border border-primary rounded-full flex items-center px-5 py-1 mr-10 ">
+                  Select State
+                  <div className="relative">
+                    <button onClick={() => setSelectState(true)}>
+                      <MdOutlineKeyboardArrowDown className="ml-5 text-2xl mt-1" />
+                    </button>
+                    {selectState && (
+                      <div className="statePopup mt-4">
+                        <div className="text-right mb-5 mr-5 flex items-end justify-end relative sm:mr-0">
+                          <AiOutlineSearch className="absolute top-[13px] right-[220px] z-10 text-gray searchicon" />
+                          <input
+                            type="text"
+                            placeholder=" Search State "
+                            className="border border-gray rounded-full px-7 py-2"
+                            //onChange={handleFilter}
+                          />
+                        </div>
+                        <div className="px-2 flex justify-between items-center">
+                          <label>Maharashtra</label>
+                          <input type="checkbox" />
+                        </div>
+                        <div className="px-2 flex justify-between items-center">
+                          <label>Andhra Pradesh</label>
+                          <input type="checkbox" />
+                        </div>
+                        <div className="px-2 flex justify-between items-center">
+                          <label>Gujrat</label>
+                          <input type="checkbox" />
+                        </div>
+                        <div className="px-2 flex justify-between items-center">
+                          <label>Madhya Pradesh</label>
+                          <input type="checkbox" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
       <div className=" mt-5 ">
         <div className="grid grid-cols-12 gap-4">
           <div className="lg:col-span-9  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
