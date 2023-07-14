@@ -64,7 +64,7 @@ const Navbar = () => {
                 />
                 {showNotificationBox && (
                   <>
-                    <div className="absolute top-[50px] right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-10 notificationpopup">
+                    <div className="absolute top-[50px] right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg notificationpopup">
                       <div className="lg:flex md:flex sm:block items-start">
                         <div className="p-3">
                           <h4 className="text-[#7C82A7] text-sm font-bold mb-1">
