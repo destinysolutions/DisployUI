@@ -8,6 +8,8 @@ import { HiOutlineRectangleGroup } from "react-icons/hi2";
 import PropTypes from "prop-types";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
+import ScreenOTPModal from "./Screen/ScreenOTPModal";
+import { HiOutlineMenuAlt2 } from "react-icons/hi";
 
 const Sidebar = ({ sidebarOpen }) => {
   Sidebar.propTypes = {
@@ -167,111 +169,7 @@ const Sidebar = ({ sidebarOpen }) => {
       {/* screen otp modal start */}
       {showOTPModal ? (
         <>
-          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="relative w-auto my-6 mx-auto lg:max-w-3xl md:max-w-3xl sm:max-w-sm xs:max-w-[17rem]">
-              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                <div className="flex items-start justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
-                  <h3 className="text-xl font-medium">New Screen</h3>
-                  <button
-                    className="p-1 text-xl"
-                    onClick={() => setShowOTPModal(false)}
-                  >
-                    <AiOutlineCloseCircle />
-                  </button>
-                </div>
-
-                <div className="relative lg:p-10 md:p-10 sm:p-5 xs:p-3 flex-auto">
-                  <div className="flex items-center justify-center mb-4">
-                    <img src="/DisployImg/BlackLogo.svg" />
-                  </div>
-
-                  <div className="bg-white rounded-[20px] newscreenpopup  lg:p-5 md:p-5 sm:p-5 xs:p-2">
-                    <div className="container mx-auto">
-                      <div className="max-w-sm mx-auto md:max-w-lg">
-                        <div className="w-full">
-                          <div className="bg-white   rounded text-center">
-                            <div className="flex flex-col">
-                              <div className="font-normal lg:text-lg md:text-lg sm:text-base xs:text-sm text-[#000000]">
-                                Enter the 6-character pairing code?
-                              </div>
-                            </div>
-
-                            <div
-                              id="otp"
-                              className="flex flex-row justify-center text-center px-2 mt-5"
-                            >
-                              <input
-                                className="m-2 border h-10 w-10 text-center form-control rounded"
-                                type="text"
-                                id="first"
-                                maxLength="1"
-                              />
-                              <input
-                                className="m-2 border h-10 w-10 text-center form-control rounded"
-                                type="text"
-                                id="second"
-                                maxLength="1"
-                              />
-                              <input
-                                className="m-2 border h-10 w-10 text-center form-control rounded"
-                                type="text"
-                                id="third"
-                                maxLength="1"
-                              />
-                              <input
-                                className="m-2 border h-10 w-10 text-center form-control rounded"
-                                type="text"
-                                id="fourth"
-                                maxLength="1"
-                              />
-                              <input
-                                className="m-2 border h-10 w-10 text-center form-control rounded"
-                                type="text"
-                                id="fifth"
-                                maxLength="1"
-                              />
-                              <input
-                                className="m-2 border h-10 w-10 text-center form-control rounded"
-                                type="text"
-                                id="sixth"
-                                maxLength="1"
-                              />
-                            </div>
-
-                            <div className="flex justify-center text-center mt-5">
-                              <input type="checkbox" />
-                              <p className="ml-2 text-[#515151] text-[13px] ">
-                                Start screen in Preview Mode
-                              </p>
-                            </div>
-                            <div className="flex justify-center text-center mt-5">
-                              <p className="text-[#515151] text-[12px] max-w-[400px]">
-                                To get pair code, please install Disploy app on
-                                your Players (Android, LG, Samsung, FireStick,
-                                Raspberry Pi, etc.)
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-center pb-7">
-                  <Link to="/newscreendetail">
-                    <button
-                      className="text-white bg-[#00072E] font-semibold  px-6 py-2 text-sm rounded-[45px]"
-                      type="button"
-                    >
-                      Continue
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+          <ScreenOTPModal setShowOTPModal={setShowOTPModal} />
         </>
       ) : null}
       {/* screen otp modal end */}
@@ -343,10 +241,10 @@ const Sidebar = ({ sidebarOpen }) => {
           </div>
         </>
       ) : (
-        <div className="menu-bars">
-          <FaIcons.FaBars
+        <div className="menu-bars self-center">
+          <HiOutlineMenuAlt2
             onClick={handleSidebarToggle}
-            className={`text-primary ${mobileSidebar && "hidden"} ${
+            className={` text-SlateBlue text-3xl ${mobileSidebar && "hidden"} ${
               mobileSidebar ? "ml-0" : "ml-5"
             }`}
           />
