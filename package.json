@@ -24,6 +24,7 @@
     "react-leaflet": "^4.2.1",
     "react-player": "^2.12.0",
     "react-router-dom": "^6.13.0",
+    "react-select": "^5.7.4",
     "react-ymd-date-select": "^0.3.0",
     "yup": "^1.2.0"
   },

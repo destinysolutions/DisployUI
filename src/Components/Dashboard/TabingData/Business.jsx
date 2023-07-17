@@ -3,12 +3,12 @@ import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { Link } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { useState } from "react";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import { AiOutlineSearch } from "react-icons/ai";
+import { useEffect, useState } from "react";
+import Select from "react-select";
 
-const optionsBar = {
-  colors: ["#3C50E0", "#80CAEE"],
+//for sales revenue chart options
+const SalesOptions = {
+  colors: ["#41479b", "#d1d5db"],
   chart: {
     fontFamily: "Satoshi, sans-serif",
     type: "bar",
@@ -49,8 +49,9 @@ const optionsBar = {
   },
 
   xaxis: {
-    categories: ["M", "T", "W", "T", "F", "S", "S"],
+    categories: ["Jan", "Feb", "March", "April", "May", "June", "July"],
   },
+
   legend: {
     position: "top",
     horizontalAlign: "left",
@@ -65,27 +66,47 @@ const optionsBar = {
   fill: {
     opacity: 1,
   },
+  yaxis: {
+    labels: {
+      formatter: function (value) {
+        // Modify the formatter function according to your desired format
+        return value + "k";
+      },
+    },
+  },
 };
 
-const optionsRadialBar = {
-  series: [67],
+const stateVlaue = {
+  series: [
+    {
+      name: "Sales",
+      data: [44, 55, 41, 67, 22, 43, 65],
+    },
+    {
+      name: "Revenue",
+      data: [13, 23, 20, 8, 13, 27, 15],
+    },
+  ],
+};
+
+//for Company Growth chart options
+const CompanyGrowthOption = {
+  series: [40],
   chart: {
-    height: 350,
+    height: 150,
     type: "radialBar",
-    offsetY: -10,
   },
   plotOptions: {
     radialBar: {
-      startAngle: -135,
-      endAngle: 135,
+      startAngle: -180,
+      endAngle: 180,
       dataLabels: {
         name: {
           fontSize: "16px",
           color: undefined,
-          offsetY: 120,
         },
         value: {
-          offsetY: 76,
+          offsetY: 16,
           fontSize: "22px",
           color: undefined,
           formatter: function (val) {
@@ -107,25 +128,78 @@ const optionsRadialBar = {
     },
   },
   stroke: {
-    dashArray: 4,
+    dashArray: 10,
   },
-  labels: ["Median Ratio"],
+  labels: ["Growth"],
+  colors: ["#41479b"],
+};
+
+//for Screen chart options
+const ScreenOption = {
+  chart: {
+    type: "donut",
+  },
+  series: [80, 25, 37, 18],
+  labels: ["Android", "Tizen", "Webos", "Raspberry"],
+  colors: ["#6418c3", "#b270ec", "#ebcffc", "#e5e7eb"], // Set custom colors
+  plotOptions: {
+    pie: {
+      donut: {
+        labels: {
+          show: false, // Hide the inner label (percentage value)
+        },
+      },
+    },
+  },
+  dataLabels: {
+    enabled: false, // Hide all data labels including the inner label
+  },
+};
+
+//for Stores chart options
+var StoreOptions = {
+  chart: {
+    height: 280,
+    type: "radialBar",
+  },
+
+  series: [80],
+
+  plotOptions: {
+    radialBar: {
+      hollow: {
+        margin: 15,
+        size: "70%",
+      },
+
+      dataLabels: {
+        showOn: "always",
+        name: {
+          offsetY: -10,
+          show: true,
+          color: "#888",
+          fontSize: "23px",
+        },
+        value: {
+          color: "#111",
+          fontSize: "30px",
+          show: true,
+          formatter: function (val) {
+            return val.toFixed(0);
+          },
+        },
+      },
+    },
+  },
+  colors: ["#6418c3"],
+  stroke: {
+    lineCap: "round",
+  },
+  labels: ["Stores"],
 };
 
 const Business = () => {
-  const stateVlaue = {
-    series: [
-      {
-        name: "Sales",
-        data: [44, 55, 41, 67, 22, 43, 65],
-      },
-      {
-        name: "Revenue",
-        data: [13, 23, 20, 8, 13, 27, 15],
-      },
-    ],
-  };
-
+  //for map store icon
   const center = [20.5937, 78.9629];
   const centerUSA = [37.0902, -95.7129];
   const blueIcon = new L.Icon({
@@ -134,14 +208,67 @@ const Business = () => {
     iconSize: [25, 41],
     iconAnchor: [12, 41],
   });
+
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [states, setStates] = useState([]);
+  const [selectedState, setSelectedState] = useState("");
+  const [cities, setCities] = useState([]);
+
+  // Fetch country data from the API
+  useEffect(() => {
+    fetch("http://192.168.1.219/api/Cascading/GetAllCountry")
+      .then((response) => response.json())
+      .then((data) => {
+        setCountries(data.data);
+      })
+      .catch((error) => {
+        console.log("Error fetching country data:", error);
+      });
+  }, []);
+
+  // Fetch states based on the selected country
+  useEffect(() => {
+    if (selectedCountry) {
+      fetch(
+        `http://192.168.1.219/api/Cascading/SelectByState?countryID=${selectedCountry}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setStates(data.data);
+        })
+        .catch((error) => {
+          console.log("Error fetching states data:", error);
+        });
+    }
+  }, [selectedCountry]);
+
+  // Fetch cities based on the selected state
+  useEffect(() => {
+    if (selectedState) {
+      fetch(
+        `http://192.168.1.219/api/Cascading/SelectByCity?stateId=${selectedState}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setCities(data.data);
+        })
+        .catch((error) => {
+          console.log("Error fetching cities data:", error);
+        });
+    }
+  }, [selectedState]);
   const [showStore, setShowStore] = useState(false);
+
   const handleMarkerClick = () => {
     setShowStore(true);
+    setSelectedCountry(1);
   };
   const markerEventHandlers = {
     click: handleMarkerClick,
   };
-  const [selectState, setSelectState] = useState(false);
+  const [showCitydw, setShowCityDw] = useState(false);
+  const [showCityStores, setshowCityStores] = useState(false);
   return (
     <>
       <div className="bg-white shadow-md rounded-lg">
@@ -175,56 +302,137 @@ const Business = () => {
                 />
                 <div className="ml-2 font-semibold">India</div>
               </div>
-              <div className="relative">
-                <div className="border border-primary rounded-full flex items-center px-5 py-1 mr-10 ">
-                  Select State
-                  <div className="relative">
-                    <button onClick={() => setSelectState(true)}>
-                      <MdOutlineKeyboardArrowDown className="ml-5 text-2xl mt-1" />
-                    </button>
-                    {selectState && (
-                      <div className="statePopup mt-4">
-                        <div className="text-right mb-5 mr-5 flex items-end justify-end relative sm:mr-0">
-                          <AiOutlineSearch className="absolute top-[13px] right-[220px] z-10 text-gray searchicon" />
-                          <input
-                            type="text"
-                            placeholder=" Search State "
-                            className="border border-gray rounded-full px-7 py-2"
-                            //onChange={handleFilter}
-                          />
-                        </div>
-                        <div className="px-2 flex justify-between items-center">
-                          <label>Maharashtra</label>
-                          <input type="checkbox" />
-                        </div>
-                        <div className="px-2 flex justify-between items-center">
-                          <label>Andhra Pradesh</label>
-                          <input type="checkbox" />
-                        </div>
-                        <div className="px-2 flex justify-between items-center">
-                          <label>Gujrat</label>
-                          <input type="checkbox" />
-                        </div>
-                        <div className="px-2 flex justify-between items-center">
-                          <label>Madhya Pradesh</label>
-                          <input type="checkbox" />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+              <div>
+                <Select
+                  id="state"
+                  options={states.map((state) => ({
+                    value: state.stateId,
+                    label: state.stateName,
+                  }))}
+                  onChange={(selectedOption) => {
+                    setSelectedState(selectedOption.value);
+                    setShowCityDw(true);
+                    setShowStore(false);
+                  }}
+                  placeholder="Select State"
+                />
+                {/* <select
+                  id="state"
+                  value={selectedState}
+                  onChange={(selectedOption) => {
+                    setSelectedState(selectedOption.value);
+                    setShowCityDw(true);
+                    setShowStore(false);
+                  }}
+                >
+                  <option value="">Select State</option>
+                  {states.map((state) => (
+                    <option key={state.stateId} value={state.stateId}>
+                      {state.stateName}
+                    </option>
+                  ))}
+                </select> */}
               </div>
             </div>
           </div>
         </>
       )}
+      {showCitydw && (
+        <div className="bg-white shadow-md rounded-lg mt-5">
+          <div className="p-5 flex">
+            <div>
+              <Select
+                id="state"
+                options={states.map((state) => ({
+                  value: state.stateId,
+                  label: state.stateName,
+                }))}
+                onChange={(selectedOption) => {
+                  setSelectedState(selectedOption.value);
+                }}
+                placeholder="Select State"
+              />
+            </div>
+            <div className="ml-5">
+              <Select
+                id="city"
+                options={cities.map((city) => ({
+                  value: city.cityID,
+                  label: city.cityName,
+                }))}
+                onChange={() => {
+                  setshowCityStores(true);
+                }}
+                placeholder="Select City"
+              />
+              {/* <select
+                id="city"
+                onChange={(e) => {
+                  setshowCityStores(true);
+                }}
+              >
+                <option value="">Select City</option>
+                {cities.map((city) => (
+                  <option key={city.cityID} value={city.cityID}>
+                    {city.cityName}
+                  </option>
+                ))}
+              </select> */}
+            </div>
+          </div>
+          {showCityStores && (
+            <>
+              <div className="pb-4">
+                <div>
+                  <label className="p-5 text-lg font-semibold">Ahemdabad</label>
+                </div>
+                <div className="m-6">
+                  <div className="grid grid-cols-12 gap-4">
+                    <div className="lg:col-span-3 md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md">
+                      <div className="p-3">
+                        <label className="text-lg font-semibold">
+                          Total Stores
+                        </label>
+                      </div>
+                      <div id="chart">
+                        <ReactApexChart
+                          options={StoreOptions}
+                          series={StoreOptions.series}
+                          type="radialBar"
+                          height={300}
+                        />
+                      </div>
+                    </div>
+                    <div className="lg:col-span-9  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md">
+                      <div className="p-3">
+                        <label className="text-lg font-semibold">
+                          Total Screens
+                        </label>
+                      </div>
+                      <div className="flex justify-center">
+                        <ReactApexChart
+                          options={ScreenOption}
+                          series={ScreenOption.series}
+                          type="donut"
+                          width="380"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
       <div className=" mt-5 ">
         <div className="grid grid-cols-12 gap-4">
           <div className="lg:col-span-9  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
             <div className="mb-4 justify-between gap-4 sm:flex mt-3">
               <div>
                 <h4 className="text-xl font-semibold text-black dark:text-white ml-3">
-                  Profit this week
+                  Total Revenue
                 </h4>
               </div>
               <div>
@@ -234,8 +442,8 @@ const Business = () => {
                     id="#"
                     className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
                   >
-                    <option value="">This Week</option>
-                    <option value="">Last Week</option>
+                    <option value="">2023</option>
+                    {/* <option value="">Last Week</option> */}
                   </select>
                   <span className="absolute top-1/2 right-3 z-10 -translate-y-1/2">
                     <svg
@@ -264,7 +472,7 @@ const Business = () => {
             <div>
               <div id="chartTwo" className="ml-5 mb-5">
                 <ReactApexChart
-                  options={optionsBar}
+                  options={SalesOptions}
                   series={stateVlaue.series}
                   type="bar"
                   height="300px"
@@ -272,15 +480,19 @@ const Business = () => {
               </div>
             </div>
           </div>
-          <div className="lg:col-span-3 md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
+          <div className="lg:col-span-3 md:col-span-6 sm:col-span-12 bg-white shadow-lg rounded-md">
             <div id="chart">
               <ReactApexChart
-                options={optionsRadialBar}
-                series={optionsRadialBar.series}
+                options={CompanyGrowthOption}
+                series={CompanyGrowthOption.series}
                 type="radialBar"
                 height={350}
               />
             </div>
+            <label className="flex justify-center text-sm font-semibold">
+              40% Company Growth
+            </label>
+            {/* <div className="border border-b border-[#d1d5db] mt-3"></div> */}
           </div>
         </div>
       </div>
