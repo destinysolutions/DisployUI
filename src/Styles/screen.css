@@ -404,7 +404,7 @@ button.tabsyncshow.tabsyncactive {
 
 .backdrop {
   position: fixed;
-  background-color: #000;
+  background-color: #00000096;
   width: 100%;
   height: 100%;
   left: 0;
@@ -424,33 +424,39 @@ button.tabsyncshow.tabsyncactive {
   left: 50%;
   background: #fff;
   z-index: 99;
+  max-width: 100%;
   transform: translate(-50%, -50%);
 }
 
-input:checked~title {
-  background-color: #41479b;
-  color: #fff;
-
-}
-
-input:checked {
-  background-color: #41479b;
-  color: #fff;
-}
-
-.week-days input {
+button.daysbtn {
+  border-radius: 50%;
+  margin: 10px;
   width: 50px;
   height: 50px;
-  cursor: pointer;
-
-  border-width: 2px;
+  border: 1px solid #41479b;
+  color: #41479b;
 }
 
-.week-days .title {
-  left: 50%;
-  top: 50%;
+@media(max-width:1244px) {
+  button.daysbtn {
+    width: 35px;
+    height: 35px;
+    font-size: 12px;
+    margin: 5px;
+  }
+}
 
+@media(max-width:767px) {
+  button.daysbtn {
+    margin: 2px;
+  }
+}
 
-  transform: translate(-50%, -56%);
-
+@media(max-width:320px) {
+  button.daysbtn {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+    margin: 1px;
+  }
 }

@@ -23,7 +23,7 @@ import EditUser from "../Pages/EditUser";
 import ViewUserProfile from "../Pages/ViewUserProfile";
 import Mediareport from "../Components/Reports/Mediareport";
 import Uptimereport from "../Components/Reports/Uptimereport";
-
+import Settings from "../Components/Settings/Settings";
 const Routing = () => {
   //for screen resize sidebar open close
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -240,6 +240,16 @@ const Routing = () => {
           path="/mediareport"
           element={
             <Mediareport
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
+
+        <Route
+          path="/settings"
+          element={
+            <Settings
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
             />
