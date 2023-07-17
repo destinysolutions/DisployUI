@@ -40,6 +40,17 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [showhoursModal, setshowhoursModal] = useState(false);
   const [hoursdw, setshowhoursdw] = useState(false)
   const [paymentpop, setPaymentpop] = useState(false);
+
+  const [buttonStates, setButtonStates] = useState(Array(3).fill(false));
+  const handleButtonClick = (index) => {
+    setButtonStates((prevState) => {
+      const newState = [...prevState];
+      newState[index] = !newState[index];
+      return newState;
+    });
+  };
+  const buttons = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
   return (
     <>
       <div className="flex border-b border-gray py-3">
@@ -579,43 +590,46 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                           <h1>Custom Operating Hours</h1>
                                           <AiOutlineCloseCircle onClick={() => setshowhoursModal(false)} />
                                         </div>
-                                        <hr />
-                                        <div className="model-body p-5 ">
-                                          <div className="model-details drop-shadow-3xl p-3 text-left rounded-md border border-gray">
+                                        <hr className="border-gray " />
+                                        <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2 ">
+                                          <div className="model-details shadow-2xl lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 text-left rounded-2xl">
                                             <lable className="text-base font-medium">Hours:</lable>
                                             <div className="flex justify-between items-center mt-3">
                                               <input type="time" placeholder="From Time" />
-                                              <lable className="px-3 text-base">To</lable>
+                                              <lable className="lg:px-3 md:px-3 sm:px-1 xs:px-1 text-base">To</lable>
                                               <input type="time" placeholder="To Time" />
                                             </div>
-                                          </div>
-
-                                          <div className="week-days relative mt-5">
-                                            <div className="formgroup relative flex items-center ">
-                                              <div className="relative mr-2"><input type="checkbox" placeholder="Su" name="monday" value="monday" className="relative appearance-none p-0  " /><label className="title absolute">Sun</label></div>
-                                              <div className="relative mr-2"><input type="checkbox" name="monday" value="monday" className="relative appearance-none p-0  " /><label className="title absolute">Mon</label></div>
-                                              <div className="relative mr-2"><input type="checkbox" name="monday" value="monday" className="relative appearance-none p-0  " /><label className="title absolute">Tue</label></div>
-                                              <div className="relative mr-2"><input type="checkbox" name="monday" value="monday" className="relative appearance-none p-0  " /><label className="title absolute">Wed</label></div>
-                                              <div className="relative mr-2"><input type="checkbox" name="monday" value="monday" className="relative appearance-none p-0  " /><label className="title absolute">Thu</label></div>
-                                              <div className="relative mr-2"><input type="checkbox" name="monday" value="monday" className="relative appearance-none p-0  " /><label className="title absolute">Fri</label></div>
-                                              <div className="relative mr-2"><input type="checkbox" name="monday" value="monday" className="relative appearance-none p-0  " /><label className="title absolute">sat</label></div>
+                                            <div className="pt-5 text-center">
+                                              {buttons.map((label, index) => (
+                                                <button className="daysbtn"
+                                                  key={index}
+                                                  onClick={() => handleButtonClick(index)}
+                                                  style={{
+                                                    backgroundColor: buttonStates[index] ? '#fff' : ' #00072e',
+                                                    color: buttonStates[index] ? '#41479b' : '#fff',
+                                                  }}
+                                                >
+                                                  {label}
+                                                </button>
+                                              ))}
                                             </div>
+
+                                            <div className="formgroup lg:flex md:flex sm:flex xs:block justify-between items-center mt-5">
+                                              <label className="text-base font-medium mr-3">Action</label>
+                                              <select>
+                                                <option>Select Action</option>
+                                                <option>Shut Down</option>
+                                                <option>Sleep</option>
+                                              </select>
+                                            </div>
+
+
                                           </div>
-
-                                          <div className="formgroup flex justify-between items-center mt-5">
-                                            <label className="text-base font-medium mr-3">Action</label>
-                                            <select>
-                                              <option>Select Action</option>
-                                              <option>Shut Down</option>
-                                              <option>Sleep</option>
-                                            </select>
-                                          </div>
-
-
-
-
                                         </div>
-                                        <button className="bg-primary  text-white px-5 py-2 text-base rounded-full mb-5">Apply</button>
+                                        <div className="text-right mt-0 pr-5">
+                                          <button className="bg-primary  text-white lg:px-8 md:px-8 sm:px-5 xs:px-5 lg:py-3 md:py-3 sm:py-2 xs:py-2 text-base rounded-full mb-5 drop-shadow-xl ">Apply</button>
+                                        </div>
+
 
                                       </div>
                                     </div>

@@ -1,0 +1,33 @@
+.settingtab,
+button.stabshow.settingtabactive {
+    display: flex;
+
+    align-items: center;
+    padding: 10px 10px 10px 20px;
+}
+
+.settingtab li {
+    margin-bottom: 15px;
+}
+
+button.stabshow.settingtabactive {
+    background: #fff;
+    width: 100%;
+    box-shadow: -8px 5px 15px -2px #00000045;
+    padding: 10px 10px 10px 20px;
+    border-top-left-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+
+.tabdetails {
+    box-shadow: 30px 15px 21px -24px #0000005c;
+}
+
+.tabdetails .hbgCLW:nth-child(even) {
+    background: #fff;
+}
+
+.tabdetails .sc-eqUAAy.gocYik.rdt_TableHeadRow {
+    border: none;
+    border-radius: 10px;
+}
