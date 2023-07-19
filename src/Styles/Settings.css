@@ -6,6 +6,11 @@ button.stabshow.settingtabactive {
     padding: 10px 10px 10px 20px;
 }
 
+button.settingtab span,
+button.stabshow.settingtabactive span {
+    text-align: left;
+    display: block;
+}
 
 .mainsettingtab li {
     margin-bottom: 15px;
@@ -46,18 +51,21 @@ button.stabshow.settingtabactive {
     top: 50%;
     transform: translate(-50%, -50%);
     border-radius: 20px;
+    overflow-y: auto;
 }
 
 .user-model input,
 .user-model select,
 .screen-authorize-section input,
-.addnewcard input {
+.addnewcard input,
+.user-model .formInput {
     border: 1px solid #41479b78 !important;
 }
 
 .user-model input:focus,
 .screen-authorize-section input:focus,
-.addnewcard input:focus {
+.addnewcard input:focus,
+.user-model .formInput:focus {
     border: 1px solid #303791 !important;
 }
 
@@ -79,4 +87,61 @@ button.stabshow.settingtabactive {
 
 .paymentbox {
     box-shadow: 0px 0px 2px 1px #41479b36;
+}
+
+@media(max-width:767px) {
+
+    .settingtab,
+    button.stabshow.settingtabactive {
+        padding: 5px 05px 5px 5px;
+        /* display: block; */
+    }
+
+    button.settingtab span,
+    button.stabshow.settingtabactive span {
+        font-size: 13px !important;
+        display: block;
+    }
+}
+
+@media(max-width:480px) {
+
+    .settingtab,
+    button.stabshow.settingtabactive {
+        display: block;
+    }
+
+
+}
+
+@media(max-width:400px) {
+
+    .settingtab,
+    button.stabshow.settingtabactive {
+        display: flex;
+        padding: 10px 10px 10px 20px;
+    }
+
+    button.stabshow.settingtabactive {
+        border-radius: 25px;
+    }
+
+    .screen-authorize-section {
+        position: relative;
+        width: 100%;
+        top: inherit;
+        left: inherit;
+        padding: 30px 10px;
+        transform: translate(0%, 0%);
+    }
+
+}
+
+/* couponcode-table popup */
+.couponcode-table tr th {
+    background-color: #fff;
+}
+
+.couponcode-table tr:nth-child(odd) {
+    background: #E4E6FF;
 }

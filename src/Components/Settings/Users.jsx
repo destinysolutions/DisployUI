@@ -58,7 +58,7 @@ const Users = () => {
                     Add New Users
                 </button>
             </div>
-            <div className='clear-both'>
+            <div className='clear-both overflow-x-auto'>
                 <table className=' bg-[#EFF3FF] w-full text-left rounded-xl' cellPadding={15}>
                     <thead>
                         <tr className='border-b border-b-[#E4E6FF]'>

@@ -20,6 +20,8 @@ import Userrole from "./Userrole";
 import Users from "./Users";
 import ScreenAuthorize from "./ScreenAuthorize";
 import Billing from "./Billing";
+import Myplan from "./Myplan";
+import Discount from "./Discount";
 import '../../Styles/Settings.css'
 
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
@@ -185,7 +187,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
             <div className="pt-6 px-5">
                 <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
-                    <div className="lg:flex lg:justify-between sm:block xs:block  items-center mb-5 ">
+                    <div className="lg:flex justify-between sm:flex xs:block  items-center mb-5 ">
                         <div className=' lg:mb-0 md:mb-0 sm:mb-4'>
                             <h1 className="not-italic font-medium lg:text-2xl  md:text-2xl sm:text-xl xs:text-xs text-[#001737]  ">
                                 Settings
@@ -194,26 +196,26 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
                         {/* company info search */}
                         <div className={STabs === 1 ? "" : "hidden"} >
-                            <div className="text-right  mr-5 flex items-end justify-end relative" >
+                            <div className="text-right flex items-end justify-end relative" >
 
-                                <AiOutlineSearch className="absolute top-[13px] right-[234px] z-10 text-[#6e6e6e]" />
+                                <AiOutlineSearch className="absolute top-[13px] lg:right-[234px] md:right-[234px] sm:right-[234px] xs:right-auto xs:left-3 z-10 text-[#6e6e6e]" />
                                 <input
                                     type="text"
                                     placeholder=" Search Company Name"
-                                    className="border border-gray rounded-full px-7 py-2 setting-searchbtn"
+                                    className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
                                     onChange={handleFilter}
                                 />
                             </div>
                         </div>
                         {/* User Roles search */}
                         <div className={STabs === 2 ? "" : "hidden"} >
-                            <div className="text-right mr-5 flex items-end justify-end relative" >
+                            <div className="text-right flex items-end justify-end relative" >
 
-                                <AiOutlineSearch className="absolute top-[13px] right-[234px] z-10 text-[#6e6e6e]" />
+                                <AiOutlineSearch className="absolute top-[13px] lg:right-[234px] md:right-[234px] sm:right-[234px] xs:right-auto xs:left-3 z-10 text-[#6e6e6e]" />
                                 <input
                                     type="text"
-                                    placeholder=" Search User Roles"
-                                    className="border border-gray rounded-full px-7 py-2 setting-searchbtn"
+                                    placeholder=" Search User Role"
+                                    className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
 
                                 />
                             </div>
@@ -221,13 +223,13 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
                         {/* Screen Authorize */}
                         <div className={STabs === 4 ? "" : "hidden"} >
-                            <div className="text-right mr-5 flex items-end justify-end relative" >
+                            <div className="text-right flex items-end justify-end relative" >
 
-                                <AiOutlineSearch className="absolute top-[13px] right-[234px] z-10 text-[#6e6e6e]" />
+                                <AiOutlineSearch className="absolute top-[13px] lg:right-[234px] md:right-[234px] sm:right-[234px] xs:right-auto xs:left-3 z-10 text-[#6e6e6e]" />
                                 <input
                                     type="text"
-                                    placeholder="Search User Name"
-                                    className="border border-gray rounded-full px-7 py-2 setting-searchbtn"
+                                    placeholder=" Search User Name"
+                                    className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
 
                                 />
                             </div>
@@ -235,13 +237,27 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
                         {/* Billing */}
                         <div className={STabs === 5 ? "" : "hidden"} >
-                            <div className="text-right mr-5 flex items-end justify-end relative" >
+                            <div className="text-right flex items-end justify-end relative" >
 
-                                <AiOutlineSearch className="absolute top-[13px] right-[234px] z-10 text-[#6e6e6e]" />
+                                <AiOutlineSearch className="absolute top-[13px] lg:right-[234px] md:right-[234px] sm:right-[234px] xs:right-auto xs:left-3 z-10 text-[#6e6e6e]" />
                                 <input
                                     type="text"
-                                    placeholder="Search User Name"
-                                    className="border border-gray rounded-full px-7 py-2 setting-searchbtn"
+                                    placeholder=" Search User Name"
+                                    className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
+
+                                />
+                            </div>
+                        </div>
+
+                        {/* My Plan */}
+                        <div className={STabs === 6 ? "" : "hidden"} >
+                            <div className="text-right flex items-end justify-end relative" >
+
+                                <AiOutlineSearch className="absolute top-[13px] lg:right-[234px] md:right-[234px] sm:right-[234px] xs:right-auto xs:left-3 z-10 text-[#6e6e6e]" />
+                                <input
+                                    type="text"
+                                    placeholder=" Search Plan"
+                                    className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
 
                                 />
                             </div>
@@ -252,7 +268,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
                     <div className="grid grid-cols-12">
                         {/*Tab*/}
-                        <div className='mainsettingtab col-span-2  p-0 '>
+                        <div className='mainsettingtab  lg:col-span-2 md:col-span-3 sm:col-span-3 xs:col-span-12  p-0 '>
                             <ul className="w-full">
                                 <li className="">
 
@@ -332,7 +348,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
 
                         {/*Tab details*/}
-                        <div className="col-span-10 bg-white p-5 tabdetails rounded-md relative">
+                        <div className="lg:col-span-10 md:col-span-9 sm:col-span-9 xs:col-span-12 bg-white lg:p-5 md:p-5 sm:p-2 xs:p-2 tabdetails rounded-md relative">
                             <div className={STabs === 1 ? "" : "hidden"}>
                                 <DataTable
                                     columns={column}
@@ -360,6 +376,14 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                                 <Billing />
                             </div>
                             {/*End of Billing*/}
+                            <div className={STabs === 6 ? "" : "hidden"}>
+                                <Myplan />
+                            </div>
+                            {/*End of Plan*/}
+                            <div className={STabs === 7 ? "" : "hidden"}>
+                                <Discount />
+                            </div>
+                            {/*End of Plan*/}
                         </div>
                     </div>
 
