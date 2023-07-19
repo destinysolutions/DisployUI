@@ -19,7 +19,7 @@ const Userrole = () => {
                 </button>
 
                 <div className="accordions  clear-both">
-                    <div className="section shadow-md py-3 px-5 rounded-md bg-[#E4E6FF]  lg:flex md:flex  sm:block items-center justify-between">
+                    <div className="section shadow-md py-3 px-5 rounded-md bg-[#E4E6FF] flex  items-center justify-between">
                         <h1 className="text-lg text-primary font-medium">Manager</h1>
                         <div className=" flex items-center">
                             <button
@@ -38,7 +38,7 @@ const Userrole = () => {
                     </div>
 
                     {showdata && (
-                        <div className='bg-[#EFF3FF] py-5'>
+                        <div className='bg-[#EFF3FF] py-5 overflow-x-auto'>
                             <table className='w-full text-left' cellPadding={15}>
                                 <thead>
                                     <tr className='border-b border-b-[#E4E6FF]'>
@@ -184,7 +184,7 @@ const Userrole = () => {
 
                 {/*accordions1 close */}
                 <div className="accordions  clear-both mt-3">
-                    <div className="section shadow-md py-3 px-5 rounded-md bg-[#E4E6FF]  lg:flex md:flex  sm:block items-center justify-between">
+                    <div className="section shadow-md py-3 px-5 rounded-md bg-[#E4E6FF] flex  items-center justify-between">
                         <h1 className="text-lg text-primary font-medium">Jr. Manager</h1>
                         <div className=" flex items-center">
                             <button className="showicon">
@@ -202,7 +202,7 @@ const Userrole = () => {
                 {/*accordions 2 close */}
 
                 <div className="accordions  clear-both mt-3">
-                    <div className="section shadow-md py-3 px-5 rounded-md bg-[#E4E6FF]  lg:flex md:flex  sm:block items-center justify-between">
+                    <div className="section shadow-md py-3 px-5 rounded-md bg-[#E4E6FF] flex  items-center justify-between">
                         <h1 className="text-lg text-primary font-medium">Viewer</h1>
                         <div className=" flex items-center">
                             <button className="showicon">

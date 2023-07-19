@@ -1,26 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
 import '../../Styles/Settings.css'
 import { AiOutlinePlus } from 'react-icons/ai'
 const Billing = () => {
+
+    const [Addnewcard, setAddnewcard] = useState(false);
+    const handleAddnewcard = () => {
+        setAddnewcard(!Addnewcard);
+    }
     return (
         <>
             <div>
                 <h1 className='text-base text-primary font-medium mb-5'>Billing information</h1>
             </div>
-            <div className='payment-method bg-[#EFF3FF] p-5 rounded-lg'>
+            <div className='payment-method bg-[#EFF3FF] lg:p-5 md:p-5 sm:p-2 xs:p-2 rounded-lg'>
                 <h2 className='text-lg text-primary font-medium'>Select a payment method</h2>
-                {/* start Credi & Debit Cards */}
+                {/* start Credit & Debit Cards */}
                 <div className="grid grid-cols-6 gap-4 mt-5">
-                    <div class="col-start-2 col-span-4 bg-white rounded-xl shadow-sm p-5">
+                    <div class="lg:col-start-2 md:col-start-1 sm:col-start-1 lg:col-span-4 md:col-span-6 sm:col-span-6 bg-white rounded-xl shadow-sm lg:p-5 md:p-5 sm:p-2 xs:p-2">
                         <h1 className='text-primary text-base'>Credi & Debit Cards</h1>
                         <ul className='mt-5'>
                             <li className='paymentbox border border-[#D5E3FF] rounded-lg p-3 mb-3'>
                                 <div className='flex items-center justify-between'>
-
-                                    <div className='flex items-center' >
+                                    <div className='lg:flex md:flex sm:flex xs:block items-center' >
                                         <img src="../../../Settings/logos_mastercard.png" className='mr-2' />
-                                        <span className='text-[#606060] text-sm'>Axis Bank</span>
-                                        <span className='text-[#606060] text-sm'>**** **** **** 8395</span>
+                                        <h4 className='text-[#606060] lg:text-sm md:text-sm sm:text-sm xs:text-xs'>Axis Bank</h4>
+                                        <h4 className='text-[#606060] lg:text-sm md:text-sm sm:text-sm xs:text-xs'>**** **** **** 8395</h4>
                                     </div>
 
                                     <div>
@@ -32,10 +36,10 @@ const Billing = () => {
                             { /*end of payment option */}
                             <li className='paymentbox border border-[#D5E3FF] rounded-lg p-3 mb-3'>
                                 <div className='flex items-center justify-between'>
-                                    <div className='flex items-center'>
+                                    <div className='lg:flex md:flex sm:flex xs:block items-center'>
                                         <img src="../../../Settings/logos_visa.png" className='mr-2' />
-                                        <span className='text-[#606060] text-sm'>HDFC Bank</span>
-                                        <span className='text-[#606060] text-sm'>**** **** **** 6246</span>
+                                        <h4 className='text-[#606060] lg:text-sm md:text-sm sm:text-sm xs:text-xs'>HDFC Bank</h4>
+                                        <h4 className='text-[#606060] lg:text-sm md:text-sm sm:text-sm xs:text-xs'>**** **** **** 6246</h4>
                                     </div>
 
                                     <div>
@@ -47,10 +51,10 @@ const Billing = () => {
                             { /*end of payment option */}
                             <li className='paymentbox border border-[#D5E3FF] rounded-lg p-3 mb-3'>
                                 <div className='flex items-center justify-between'>
-                                    <div className='flex items-center'>
+                                    <div className='lg:flex md:flex sm:flex xs:block items-center'>
                                         <img src="../../../Settings/logos_mastercard.png" className='mr-2' />
-                                        <span className='text-[#606060] text-sm'>Axis Bank</span>
-                                        <span className='text-[#606060] text-sm'>**** **** **** 8395</span>
+                                        <h4 className='text-[#606060] lg:text-sm md:text-sm sm:text-sm xs:text-xs'>Axis Bank</h4>
+                                        <h4 className='text-[#606060] lg:text-sm md:text-sm sm:text-sm xs:text-xs'>**** **** **** 8395</h4>
                                     </div>
 
                                     <div>
@@ -62,10 +66,10 @@ const Billing = () => {
                             { /*end of payment option */}
                             <li className='paymentbox border border-[#D5E3FF] rounded-lg p-3 mb-3'>
                                 <div className='flex items-center justify-between'>
-                                    <div className='flex items-center'>
+                                    <div className='lg:flex md:flex sm:flex xs:block items-center'>
                                         <img src="../../../Settings/logos_visa.png" className='mr-2' />
-                                        <span className='text-[#606060] text-sm'>HDFC Bank</span>
-                                        <span className='text-[#606060] text-sm'>**** **** **** 6246</span>
+                                        <h4 className='text-[#606060] lg:text-sm md:text-sm sm:text-sm xs:text-xs'>HDFC Bank</h4>
+                                        <h4 className='text-[#606060] lg:text-sm md:text-sm sm:text-sm xs:text-xs'>**** **** **** 6246</h4>
                                     </div>
 
                                     <div>
@@ -78,9 +82,9 @@ const Billing = () => {
                             <li className='paymentbox border border-[#D5E3FF] rounded-lg p-3 mb-3'>
                                 <div className='flex items-center justify-between'>
                                     <div >
-                                        <button className='flex items-center'>
+                                        <button className='flex items-center' onClick={handleAddnewcard}>
                                             <AiOutlinePlus className=' text-SlateBlue bg-[#E4E6FF] rounded-md text-2xl p-1 mr-2' />
-                                            <span className='text-[#606060] text-sm'>Add New Card</span>
+                                            <h4 className='text-[#606060] lg:text-sm md:text-sm sm:text-sm xs:text-xs'>Add New Card</h4>
                                         </button>
                                     </div>
 
@@ -93,47 +97,49 @@ const Billing = () => {
                 {/* end of Credi & Debit Cards */}
 
                 {/* Add New Card */}
-                <div className="grid grid-cols-6 gap-4 mt-5 addnewcard">
-                    <div class="col-start-2 col-span-4 bg-white rounded-xl shadow-sm p-5">
-                        <h1 className='text-primary text-base'>Add New Card</h1>
-                        <div className="grid grid-cols-12 gap-6 mt-6">
-                            <div className='col-span-12'>
-                                <div className="relative">
-                                    <label className="formLabel">Name on card</label>
-                                    <input type='text' placeholder='Enter Card Name' name="CardName " className="formInput" />
+                {Addnewcard && (
+                    <div className="grid grid-cols-6 gap-4 mt-5 addnewcard">
+                        <div class="lg:col-start-2 md:col-start-1 sm:col-start-1 lg:col-span-4 md:col-span-6 sm:col-span-6 bg-white rounded-xl shadow-sm lg:p-5 md:p-5 sm:p-2 xs:p-2">
+                            <h1 className='text-primary text-base'>Add New Card</h1>
+                            <div className="grid grid-cols-12 lg:gap-6 md:gap-6 sm:gap-6 xs:gap-4 mt-6">
+                                <div className='col-span-12'>
+                                    <div className="relative">
+                                        <label className="formLabel">Name on card</label>
+                                        <input type='text' placeholder='Enter Card Name' name="CardName " className="formInput" />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className='col-span-12'>
-                                <div className="relative">
-                                    <label className="formLabel">Card Number</label>
-                                    <input type='text' placeholder='Enter Card Number' name="number " className="formInput" />
+                                <div className='col-span-12'>
+                                    <div className="relative">
+                                        <label className="formLabel">Card Number</label>
+                                        <input type='text' placeholder='Enter Card Number' name="number " className="formInput" />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className='lg:col-span-4 md:col-span-4 sm:col-span-12 xs:col-span-12'>
-                                <div className="relative">
-                                    <label className="formLabel">Expiration</label>
-                                    <input type='date' name="expdate " className="formInput" />
+                                <div className='lg:col-span-4 md:col-span-4 sm:col-span-12 xs:col-span-12'>
+                                    <div className="relative">
+                                        <label className="formLabel">Expiration</label>
+                                        <input type='date' name="expdate " className="formInput" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className='lg:col-span-8 md:col-span-8 sm:col-span-12 xs:col-span-12'>
-                                <div className="relative">
-                                    <label className="formLabel">CVV</label>
-                                    <input type='text' name="cvv" placeholder='Enter Cvv Number' className="formInput" />
+                                <div className='lg:col-span-8 md:col-span-8 sm:col-span-12 xs:col-span-12'>
+                                    <div className="relative">
+                                        <label className="formLabel">CVV</label>
+                                        <input type='text' name="cvv" placeholder='Enter Cvv Number' className="formInput" />
+                                    </div>
                                 </div>
+
+                                <div className='col-span-12 text-center'>
+                                    <button className='hover:bg-white hover:text-primary lg:text-base md:text-base sm:text-sm xs:text-xs xs:text-sm xs:text-xs lg:px-8 md:px-8 sm:px-6 xs:px-3 lg:py-3 md: md:py-3 sm:py-2  xs:py-2 border border-primary  shadow-md rounded-full bg-primary text-white '>Save card and Proceed</button>
+                                </div>
+
+
                             </div>
-
-                            <div className='col-span-12 text-center'>
-                                <button className='hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white '>Save card and Proceed</button>
-                            </div>
-
-
                         </div>
                     </div>
-                </div>
+                )}
                 <div className="grid grid-cols-6 gap-4 mt-5">
-                    <div class="col-start-2 col-span-4 bg-white rounded-xl shadow-sm p-5">
+                    <div class="lg:col-start-2 md:col-start-1 sm:col-start-1 lg:col-span-4 md:col-span-6 sm:col-span-6 bg-white rounded-xl shadow-sm lg:p-5 md:p-5 sm:p-2 xs:p-2">
                         <h1 className='text-primary text-base'>UIP</h1>
 
                         <ul className='mt-5'>
@@ -141,7 +147,7 @@ const Billing = () => {
                                 <div className='flex items-center justify-between'>
                                     <div className='flex items-center'>
                                         <img src="../../../Settings/gpay.png" className='mr-2' />
-                                        <span className='text-[#606060] text-sm'>Google Pay</span>
+                                        <span className='text-[#606060] text-sm xs:text-xs'>Google Pay</span>
                                     </div>
 
                                     <div>
@@ -155,7 +161,7 @@ const Billing = () => {
                                 <div className='flex items-center justify-between'>
                                     <div className='flex items-center'>
                                         <img src="../../../Settings/Pay.png" className='mr-2' />
-                                        <span className='text-[#606060] text-sm'>PhonePe</span>
+                                        <span className='text-[#606060] text-sm xs:text-xs'>PhonePe</span>
 
                                     </div>
 
@@ -172,7 +178,7 @@ const Billing = () => {
                                     <div >
                                         <button className='flex items-center'>
                                             <AiOutlinePlus className=' text-SlateBlue bg-[#E4E6FF] rounded-md text-2xl p-1 mr-2' />
-                                            <span className='text-[#606060] text-sm'>Add New UPI</span>
+                                            <span className='text-[#606060] text-sm xs:text-xs'>Add New UPI</span>
                                         </button>
                                     </div>
 
