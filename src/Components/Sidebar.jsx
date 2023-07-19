@@ -95,11 +95,11 @@ const Sidebar = ({ sidebarOpen }) => {
     {
       title: "My Schedule",
       cName: "nav-text link-items",
-      path: "/myplan",
+      path: "/myschedule",
       icon: (
         <img
           src="/MenuIcons/schedule_icon.svg"
-          alt="My_Plan"
+          alt="My_Schedule"
           className=" w-4"
         />
       ),
@@ -116,6 +116,18 @@ const Sidebar = ({ sidebarOpen }) => {
       path: "/reports",
       icon: (
         <img src="/MenuIcons/reports_icon.svg" alt="Reports" className=" w-4" />
+      ),
+    },
+    {
+      title: "Approval",
+      cName: "nav-text link-items",
+      path: "/approval",
+      icon: (
+        <img
+          src="/MenuIcons/approval_icon.svg"
+          alt="Approval"
+          className=" w-4"
+        />
       ),
     },
   ];
@@ -139,10 +151,10 @@ const Sidebar = ({ sidebarOpen }) => {
       icon: <img src="/MenuIcons/take_tour_icon.svg" alt="Take_Tour" />,
     },
     {
-      title: "Bin to Trash",
+      title: "Trash",
       cName: "nav-text link-items",
-      path: "/bintotrash",
-      icon: <img src="/MenuIcons/Trash_icon.svg" alt="Bin_to_Trash" />,
+      path: "/trash",
+      icon: <img src="/MenuIcons/Trash_icon.svg" alt="Trash" />,
     },
     {
       title: "Log Out",
