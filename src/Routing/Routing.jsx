@@ -24,6 +24,7 @@ import ViewUserProfile from "../Pages/ViewUserProfile";
 import Mediareport from "../Components/Reports/Mediareport";
 import Uptimereport from "../Components/Reports/Uptimereport";
 import Settings from "../Components/Settings/Settings";
+import MySchedule from "../Components/Schedule/MySchedule";
 const Routing = () => {
   //for screen resize sidebar open close
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -245,7 +246,17 @@ const Routing = () => {
             />
           }
         />
-
+        {/* Schedule component route */}
+        <Route
+          path="/myschedule"
+          element={
+            <MySchedule
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
+        {/* Settings component route */}
         <Route
           path="/settings"
           element={

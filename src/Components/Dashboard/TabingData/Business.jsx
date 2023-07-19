@@ -203,9 +203,8 @@ const Business = () => {
   const center = [20.5937, 78.9629];
   const centerUSA = [37.0902, -95.7129];
   const blueIcon = new L.Icon({
-    iconUrl:
-      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
-    iconSize: [25, 41],
+    iconUrl: "../../../../DisployImg/mapImg.png",
+    iconSize: [45, 40],
     iconAnchor: [12, 41],
   });
 
@@ -258,8 +257,11 @@ const Business = () => {
         });
     }
   }, [selectedState]);
+
+  //for show country store
   const [showStore, setShowStore] = useState(false);
 
+  //for marker click event
   const handleMarkerClick = () => {
     setShowStore(true);
     setSelectedCountry(1);
@@ -267,10 +269,15 @@ const Business = () => {
   const markerEventHandlers = {
     click: handleMarkerClick,
   };
+
+  //for city select popup
   const [showCitydw, setShowCityDw] = useState(false);
+
+  //for city store  popup
   const [showCityStores, setshowCityStores] = useState(false);
   return (
     <>
+      {/* google map start */}
       <div className="bg-white shadow-md rounded-lg">
         <div className="h-96 p-3">
           <MapContainer
@@ -291,6 +298,8 @@ const Business = () => {
           </MapContainer>
         </div>
       </div>
+      {/* google map end */}
+      {/* country store popup start */}
       {showStore && (
         <>
           <div className="bg-white shadow-md rounded-lg mt-5 ">
@@ -337,6 +346,8 @@ const Business = () => {
           </div>
         </>
       )}
+      {/* country store popup end */}
+      {/* city store popup start */}
       {showCitydw && (
         <div className="bg-white shadow-md rounded-lg mt-5">
           <div className="p-5 flex">
@@ -425,9 +436,11 @@ const Business = () => {
           )}
         </div>
       )}
+      {/* city store popup end */}
 
       <div className=" mt-5 ">
         <div className="grid grid-cols-12 gap-4">
+          {/* Revenue chart start*/}
           <div className="lg:col-span-9  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
             <div className="mb-4 justify-between gap-4 sm:flex mt-3">
               <div>
@@ -480,6 +493,8 @@ const Business = () => {
               </div>
             </div>
           </div>
+          {/* Revenue chart end*/}
+          {/* Company Growth start*/}
           <div className="lg:col-span-3 md:col-span-6 sm:col-span-12 bg-white shadow-lg rounded-md">
             <div id="chart">
               <ReactApexChart
@@ -494,8 +509,10 @@ const Business = () => {
             </label>
             {/* <div className="border border-b border-[#d1d5db] mt-3"></div> */}
           </div>
+          {/* Company Growth end*/}
         </div>
       </div>
+      {/* app store start*/}
       <div className="mt-5 mb-5">
         <div className="grid grid-cols-12 gap-4">
           <div className="lg:col-span-3 md:col-span-6 sm:col-span-12 ">
@@ -540,7 +557,7 @@ const Business = () => {
           </div>
         </div>
       </div>
-
+      {/* app store end*/}
       <div className="dashboard-footer text-center lg:text-base md:text-base  z-10 my-4 sm:text-sm  py-2 ">
         <h6 className="font-medium">
           Securely display dashboards from any application

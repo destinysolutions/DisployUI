@@ -137,7 +137,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
 
             {showdata && (
-              <div className="screen-table overflow-x-auto">
+              <div className="overflow-x-auto">
                 <table className="mt-9 w-full sm:mt-3">
                   <thead>
                     <tr className="flex justify-between items-center">
