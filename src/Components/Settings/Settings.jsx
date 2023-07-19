@@ -15,8 +15,11 @@ import { FiUserCheck } from 'react-icons/fi'
 import { RiEyeLine } from 'react-icons/ri'
 import { AiOutlineSearch } from 'react-icons/ai'
 import DataTable from "react-data-table-component";
-import { IoIosArrowDropup, IoIosArrowDropdown } from 'react-icons/io'
 
+import Userrole from "./Userrole";
+import Users from "./Users";
+import ScreenAuthorize from "./ScreenAuthorize";
+import Billing from "./Billing";
 import '../../Styles/Settings.css'
 
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
@@ -86,7 +89,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                             });
                             setRecords(newData);
                         }}
-                        className={`w-11 h-6 bg-gray rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all ${row.enabled ? "peer-checked:bg-[#009618]" : ""
+                        className={`w-10 h-5 bg-gray rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all ${row.enabled ? "peer-checked:bg-[#009618]" : ""
                             }`}
                     ></div>
                 </label>
@@ -140,6 +143,24 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
             show: <button><RiEyeLine className="text-xl text-[#8E94A9]" /></button>
 
         },
+        {
+            id: 6,
+            cname: "Company 6",
+            totalscreen: <label className="text-base bg-[#E4E6FF] p-3 rounded-xl">15</label>,
+            location: "India, USA ",
+            enabled: false,
+            show: <button><RiEyeLine className="text-xl text-[#8E94A9]" /></button>
+
+        },
+        {
+            id: 7,
+            cname: "Company 7",
+            totalscreen: <label className="text-base bg-[#E4E6FF] p-3 rounded-xl">45</label>,
+            location: "India, USA ",
+            enabled: true,
+            show: <button><RiEyeLine className="text-xl text-[#8E94A9]" /></button>
+        },
+
     ]
     const [records, setRecords] = useState(data);
 
@@ -151,7 +172,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
     }
 
     {/*User roles*/ }
-    const [showdata, setShowdata] = useState(false);
+
 
     return (
         <>
@@ -164,45 +185,74 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
             <div className="pt-6 px-5">
                 <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
-                    <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
+                    <div className="lg:flex lg:justify-between sm:block xs:block  items-center mb-5 ">
                         <div className=' lg:mb-0 md:mb-0 sm:mb-4'>
-                            <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl xs:text-xs text-[#001737]  ">
+                            <h1 className="not-italic font-medium lg:text-2xl  md:text-2xl sm:text-xl xs:text-xs text-[#001737]  ">
                                 Settings
                             </h1>
                         </div>
 
                         {/* company info search */}
                         <div className={STabs === 1 ? "" : "hidden"} >
-                            <div className="text-right mb-5 mr-5 flex items-end justify-end relative" >
+                            <div className="text-right  mr-5 flex items-end justify-end relative" >
 
-                                <AiOutlineSearch className="absolute top-[14px] right-[230px] z-10 text-gray" />
+                                <AiOutlineSearch className="absolute top-[13px] right-[234px] z-10 text-[#6e6e6e]" />
                                 <input
                                     type="text"
                                     placeholder=" Search Company Name"
-                                    className="border border-gray rounded-full px-7 py-2"
+                                    className="border border-gray rounded-full px-7 py-2 setting-searchbtn"
                                     onChange={handleFilter}
                                 />
                             </div>
                         </div>
                         {/* User Roles search */}
                         <div className={STabs === 2 ? "" : "hidden"} >
-                            <div className="text-right mb-5 mr-5 flex items-end justify-end relative" >
+                            <div className="text-right mr-5 flex items-end justify-end relative" >
 
-                                <AiOutlineSearch className="absolute top-[14px] right-[230px] z-10 text-gray" />
+                                <AiOutlineSearch className="absolute top-[13px] right-[234px] z-10 text-[#6e6e6e]" />
                                 <input
                                     type="text"
                                     placeholder=" Search User Roles"
-                                    className="border border-gray rounded-full px-7 py-2"
+                                    className="border border-gray rounded-full px-7 py-2 setting-searchbtn"
 
                                 />
                             </div>
                         </div>
 
+                        {/* Screen Authorize */}
+                        <div className={STabs === 4 ? "" : "hidden"} >
+                            <div className="text-right mr-5 flex items-end justify-end relative" >
+
+                                <AiOutlineSearch className="absolute top-[13px] right-[234px] z-10 text-[#6e6e6e]" />
+                                <input
+                                    type="text"
+                                    placeholder="Search User Name"
+                                    className="border border-gray rounded-full px-7 py-2 setting-searchbtn"
+
+                                />
+                            </div>
+                        </div>
+
+                        {/* Billing */}
+                        <div className={STabs === 5 ? "" : "hidden"} >
+                            <div className="text-right mr-5 flex items-end justify-end relative" >
+
+                                <AiOutlineSearch className="absolute top-[13px] right-[234px] z-10 text-[#6e6e6e]" />
+                                <input
+                                    type="text"
+                                    placeholder="Search User Name"
+                                    className="border border-gray rounded-full px-7 py-2 setting-searchbtn"
+
+                                />
+                            </div>
+                        </div>
+
+
                     </div>
 
                     <div className="grid grid-cols-12">
                         {/*Tab*/}
-                        <div className='settingtab col-span-2  p-0 '>
+                        <div className='mainsettingtab col-span-2  p-0 '>
                             <ul className="w-full">
                                 <li className="">
 
@@ -282,7 +332,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
 
                         {/*Tab details*/}
-                        <div className="col-span-10 bg-white p-5 tabdetails rounded-md">
+                        <div className="col-span-10 bg-white p-5 tabdetails rounded-md relative">
                             <div className={STabs === 1 ? "" : "hidden"}>
                                 <DataTable
                                     columns={column}
@@ -294,20 +344,22 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                             {/*End of company info details*/}
                             <div className={STabs === 2 ? "" : "hidden"}>
-                                <div className="section shadow-md p-5 rounded-md bg-white  lg:flex md:flex  sm:block items-center justify-between">
-                                    <h1 className="text-lg">Manager</h1>
-
-                                    <button onClick={() => handleDropupClick(showdata)}>
-
-                                        {showdata ? (
-                                            <IoIosArrowDropup className="text-3xl" />
-                                        ) : (
-                                            <IoIosArrowDropdown className="text-3xl" />
-                                        )}
-                                    </button>
-
-                                </div>
+                                <Userrole />
                             </div>
+                            {/*End of userrole details*/}
+                            <div className={STabs === 3 ? "" : "hidden"}>
+                                <Users />
+                            </div>
+                            {/*End of users details*/}
+
+                            <div className={STabs === 4 ? "" : "hidden"}>
+                                <ScreenAuthorize />
+                            </div>
+                            {/*End of users details*/}
+                            <div className={STabs === 5 ? "" : "hidden"}>
+                                <Billing />
+                            </div>
+                            {/*End of Billing*/}
                         </div>
                     </div>
 
