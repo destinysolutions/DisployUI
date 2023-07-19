@@ -6,7 +6,8 @@ button.stabshow.settingtabactive {
     padding: 10px 10px 10px 20px;
 }
 
-.settingtab li {
+
+.mainsettingtab li {
     margin-bottom: 15px;
 }
 
@@ -30,4 +31,52 @@ button.stabshow.settingtabactive {
 .tabdetails .sc-eqUAAy.gocYik.rdt_TableHeadRow {
     border: none;
     border-radius: 10px;
+}
+
+.setting-searchbtn::placeholder {
+    font-size: 14px !important;
+    color: #6e6e6e !important;
+}
+
+/* user */
+.user-model {
+    position: fixed;
+    background: #fff;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 20px;
+}
+
+.user-model input,
+.user-model select,
+.screen-authorize-section input,
+.addnewcard input {
+    border: 1px solid #41479b78 !important;
+}
+
+.user-model input:focus,
+.screen-authorize-section input:focus,
+.addnewcard input:focus {
+    border: 1px solid #303791 !important;
+}
+
+.screen-authorize-section input::placeholder {
+    color: #ccc !important;
+}
+
+/* screen-authorize-section */
+
+.screen-authorize-section {
+    position: absolute;
+    width: 90%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Billings */
+
+.paymentbox {
+    box-shadow: 0px 0px 2px 1px #41479b36;
 }
