@@ -1,5 +1,3 @@
-import React from "react";
-
 import { IoBarChartSharp } from "react-icons/io5";
 import { RiPlayListFill } from "react-icons/ri";
 import { BiAnchor } from "react-icons/bi";
@@ -8,8 +6,12 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const AssetModal = ({ setShowAssetModal }) => {
+  AssetModal.propTypes = {
+    setShowAssetModal: PropTypes.func.isRequired,
+  };
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   return (
     <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">

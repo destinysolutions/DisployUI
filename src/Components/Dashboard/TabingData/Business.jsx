@@ -5,6 +5,11 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { useEffect, useState } from "react";
 import Select from "react-select";
+import {
+  GET_ALL_COUNTRY,
+  GET_SELECT_BY_CITY,
+  GET_SELECT_BY_STATE,
+} from "../../../Pages/Api";
 
 //for sales revenue chart options
 const SalesOptions = {
@@ -216,7 +221,7 @@ const Business = () => {
 
   // Fetch country data from the API
   useEffect(() => {
-    fetch("http://192.168.1.219/api/Cascading/GetAllCountry")
+    fetch(GET_ALL_COUNTRY)
       .then((response) => response.json())
       .then((data) => {
         setCountries(data.data);
@@ -229,9 +234,7 @@ const Business = () => {
   // Fetch states based on the selected country
   useEffect(() => {
     if (selectedCountry) {
-      fetch(
-        `http://192.168.1.219/api/Cascading/SelectByState?countryID=${selectedCountry}`
-      )
+      fetch(`${GET_SELECT_BY_STATE}?CountryID=${selectedCountry}`)
         .then((response) => response.json())
         .then((data) => {
           setStates(data.data);
@@ -245,9 +248,7 @@ const Business = () => {
   // Fetch cities based on the selected state
   useEffect(() => {
     if (selectedState) {
-      fetch(
-        `http://192.168.1.219/api/Cascading/SelectByCity?stateId=${selectedState}`
-      )
+      fetch(`${GET_SELECT_BY_CITY}?StateId=${selectedState}`)
         .then((response) => response.json())
         .then((data) => {
           setCities(data.data);
