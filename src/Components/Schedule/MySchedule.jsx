@@ -36,10 +36,12 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 <TiWeatherSunny className="text-lg mr-1" />
                 Weather Schedule
               </button>
-              <button className="sm:ml-2 xs:ml-1  flex align-middle border-primary items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                <BiAddToQueue className="text-lg mr-1" />
-                New Schedule
-              </button>
+              <Link to="/addschedule">
+                <button className="sm:ml-2 xs:ml-1  flex align-middle border-primary items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  <BiAddToQueue className="text-lg mr-1" />
+                  New Schedule
+                </button>
+              </Link>
               <button className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <FiUpload />
               </button>

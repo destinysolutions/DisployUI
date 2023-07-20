@@ -209,7 +209,7 @@ const Business = () => {
   const centerUSA = [37.0902, -95.7129];
   const blueIcon = new L.Icon({
     iconUrl: "../../../../DisployImg/mapImg.png",
-    iconSize: [45, 40],
+    iconSize: [35, 35],
     iconAnchor: [12, 41],
   });
 
@@ -280,12 +280,12 @@ const Business = () => {
     <>
       {/* google map start */}
       <div className="bg-white shadow-md rounded-lg">
-        <div className="h-96 p-3">
+        <div className="p-9">
           <MapContainer
             center={center}
             zoom={2}
             scrollWheelZoom={false}
-            style={{ width: "100%", height: "360px" }}
+            style={{ width: "100%", height: "560px" }}
           >
             <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
 
