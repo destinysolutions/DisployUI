@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-import { TbAppsFilled } from "react-icons/tb";
+import { TbBoxMultiple } from "react-icons/tb";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useState } from "react";
 import { FiUpload } from "react-icons/fi";

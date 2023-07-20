@@ -8,9 +8,9 @@ export const ALL_SCREEN_URL =
   "https://disployapi.thedestinysolutions.com/api/Screen/GetAllScreen";
 export const ALL_MAPSTORE_GET =
   "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByStore";
-export const ALL_COUNTRY =
+export const GET_ALL_COUNTRY =
   "https://disployapi.thedestinysolutions.com/api/Cascading/GetAllCountry";
-export const SELECT_BY_STATE =
+export const GET_SELECT_BY_STATE =
   "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByState";
-export const SELECT_BY_CITY =
+export const GET_SELECT_BY_CITY =
   "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByCity";
