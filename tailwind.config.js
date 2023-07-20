@@ -13,7 +13,8 @@ export default {
       gray: '#ccc',
       white: '#fff',
       SlateBlue: '#41479B',
-      red: '#e16969'
+      red: '#e16969',
+      green: '#039F41',
     },
     screens: {
       'xs': '200px',

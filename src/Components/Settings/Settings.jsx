@@ -22,6 +22,7 @@ import ScreenAuthorize from "./ScreenAuthorize";
 import Billing from "./Billing";
 import Myplan from "./Myplan";
 import Discount from "./Discount";
+import Storagelimit from "./Storagelimit";
 import '../../Styles/Settings.css'
 
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
@@ -297,7 +298,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
                                     <button
                                         className={STabs === 4 ? "stabshow settingtabactive" : "settingtab"}
-                                        onClick={() => updateTab(4)}><FiUserCheck className="bg-primary text-white text-3xl rounded-md p-1 mr-2" /> <span className="text-base text-primary">Screen Authorize</span></button>
+                                        onClick={() => updateTab(4)}><FiUserCheck className="bg-primary text-white text-3xl rounded-md p-1 mr-2" /> <span className="text-base text-primary">Authorized Screen</span></button>
                                 </li>
 
 
@@ -384,6 +385,10 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                                 <Discount />
                             </div>
                             {/*End of Plan*/}
+                            <div className={STabs === 8 ? "" : "hidden"}>
+                                <Storagelimit />
+                            </div>
+                            {/*Storage Limits*/}
                         </div>
                     </div>
 

@@ -5,15 +5,15 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
   return (
     <>
       <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-        <div className="relative w-auto my-6 mx-auto lg:max-w-3xl md:max-w-3xl sm:max-w-sm xs:max-w-[17rem]">
+        <div className="relative w-auto my-6 lg:mx-auto md:mx-auto lg:max-w-xl md:max-w-xl sm:max-w-lg xs:w-full  sm:mx-3 xs:mx-3">
           <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-            <div className="flex items-start justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
+            <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
               <h3 className="text-xl font-medium">New Screen</h3>
               <button
                 className="p-1 text-xl"
                 onClick={() => setShowOTPModal(false)}
               >
-                <AiOutlineCloseCircle />
+                <AiOutlineCloseCircle className="text-3xl text-primary" />
               </button>
             </div>
 
@@ -22,7 +22,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                 <img src="/DisployImg/BlackLogo.svg" />
               </div>
 
-              <div className="bg-white rounded-[20px] newscreenpopup  lg:p-5 md:p-5 sm:p-5 xs:p-2">
+              <div className="bg-white rounded-[20px] newscreenpopup  lg:p-5 md:p-5 sm:p-5 xs:p-2 xs:py-5">
                 <div className="container mx-auto">
                   <div className="max-w-sm mx-auto md:max-w-lg">
                     <div className="w-full">
@@ -77,11 +77,11 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
 
                         <div className="flex justify-center text-center mt-5">
                           <input type="checkbox" />
-                          <p className="ml-2 text-[#515151] text-[13px] ">
+                          <p className="ml-2 text-[#515151] lg:text-[13px] md:text-[13px] sm:text-[12px] xs:text-[12px] ">
                             Start screen in Preview Mode
                           </p>
                         </div>
-                        <div className="flex justify-center text-center mt-5">
+                        <div className="flex justify-center text-center lg:mt-5 md:mt-5 sm:mt-3  xs:mt-3">
                           <p className="text-[#515151] text-[12px] max-w-[400px]">
                             To get pair code, please install Disploy app on your
                             Players (Android, LG, Samsung, FireStick, Raspberry
@@ -98,9 +98,9 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
             <div className="flex items-center justify-center pb-7">
               <Link to="/newscreendetail">
                 <button
-                  className="text-white bg-[#00072E] font-semibold  px-6 py-2 text-sm rounded-[45px]"
+                  className="text-white bg-[#00072E] font-semibold   lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-lg md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
                   type="button"
-                  //onClick={() => setShowOTPVerifyModal(true)}
+                //onClick={() => setShowOTPVerifyModal(true)}
                 >
                   Continue
                 </button>

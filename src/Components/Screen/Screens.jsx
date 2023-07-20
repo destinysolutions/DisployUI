@@ -386,14 +386,16 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       </label>
                       <div>
                         <Link to="/screensplayer">My Screen 1</Link>
+                        <button>
+                          <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
+                        </button>
                       </div>
                     </div>
                   </td>
                   <td className="p-2">
                     <button
-                      className={`rounded-full px-6 py-1 text-white bg-${
-                        screenStatus === "live" ? "[#3AB700]" : "red"
-                      }`}
+                      className={`rounded-full px-6 py-1 text-white bg-${screenStatus === "live" ? "[#3AB700]" : "red"
+                        }`}
                     >
                       {screenStatus === "live" ? "Live" : "Offline"}
                     </button>
