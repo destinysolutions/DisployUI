@@ -234,6 +234,13 @@ button.tabsyncshow.tabsyncactive {
     width: 100%;
   }
 
+  table.screen-status,
+  table.screen-status tr,
+  table.screen-status td,
+  .screen-status tbody {
+    text-align: center;
+  }
+
   .screen-palyer-img {
     position: relative;
     left: 00%;
@@ -448,15 +455,19 @@ button.daysbtn {
 
 @media(max-width:767px) {
   button.daysbtn {
-    margin: 2px;
+    margin: 1px;
   }
 }
 
 @media(max-width:320px) {
   button.daysbtn {
-    width: 30px;
-    height: 30px;
-    font-size: 12px;
+    width: 25px;
+    height: 25px;
+    font-size: 10px;
     margin: 1px;
+  }
+
+  .hours-model {
+    max-width: 95%;
   }
 }

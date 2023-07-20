@@ -584,15 +584,15 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 {showhoursModal && (
                                   <>
                                     <div className="backdrop">
-                                      <div className="hours-model">
+                                      <div className="hours-model rounded-lg">
 
-                                        <div className="hours-heading flex justify-between items-center p-5 border-b border-gray">
+                                        <div className="hours-heading flex  justify-between items-center p-5 border-b border-gray">
                                           <h1>Custom Operating Hours</h1>
-                                          <AiOutlineCloseCircle onClick={() => setshowhoursModal(false)} />
+                                          <AiOutlineCloseCircle className="text-primary text-3xl" onClick={() => setshowhoursModal(false)} />
                                         </div>
                                         <hr className="border-gray " />
-                                        <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2 ">
-                                          <div className="model-details shadow-2xl lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 text-left rounded-2xl">
+                                        <div className="model-body lg:p-5 md:p-5 sm:p-5 xs:p-4 ">
+                                          <div className="model-details shadow-2xl lg:p-3 md:p-5 sm:p-5 xs:py-3 xs:px-1 text-left rounded-2xl">
                                             <lable className="text-base font-medium">Hours:</lable>
                                             <div className="flex justify-between items-center mt-3">
                                               <input type="time" placeholder="From Time" />
@@ -615,7 +615,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                             </div>
 
                                             <div className="formgroup lg:flex md:flex sm:flex xs:block justify-between items-center mt-5">
-                                              <label className="text-base font-medium mr-3">Action</label>
+                                              <label className="lg:text-base md:text-base sm:text-base xs:text-xs  lg:ml-0 md:ml-0 sm:ml-0  xs:ml-3 font-medium mr-3">Action</label>
                                               <select>
                                                 <option>Select Action</option>
                                                 <option>Shut Down</option>
