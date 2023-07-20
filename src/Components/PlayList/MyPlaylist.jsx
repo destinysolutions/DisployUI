@@ -881,6 +881,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                               </div>
                             </Link>
                           </div>
+                          <Link to="/appinstance">
                           <div className="flex justify-between mt-3">
                             <div className="flex items-center">
                               <div className="bg-primary p-1.5 rounded-full">
@@ -900,7 +901,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                                 Added
                               </button>
                             </div>
-                          </div>
+                          </div></Link>
                           <div className="border-b-[1px] border-[#D5E3FF] mt-2"></div>
                           <div className="flex justify-between mt-3">
                             <div className="flex items-center">
