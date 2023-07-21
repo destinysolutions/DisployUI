@@ -23,6 +23,7 @@ import Billing from "./Billing";
 import Myplan from "./Myplan";
 import Discount from "./Discount";
 import Storagelimit from "./Storagelimit";
+import Defaultmedia from "./Defaultmedia";
 import '../../Styles/Settings.css'
 
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
@@ -349,15 +350,16 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
 
                         {/*Tab details*/}
-                        <div className="lg:col-span-10 md:col-span-9 sm:col-span-9 xs:col-span-12 bg-white lg:p-5 md:p-5 sm:p-2 xs:p-2 tabdetails rounded-md relative">
+                        <div className="lg:col-span-10 md:col-span-9 sm:col-span-9 xs:col-span-12 bg-white  tabdetails rounded-md relative">
                             <div className={STabs === 1 ? "" : "hidden"}>
-                                <DataTable
-                                    columns={column}
-                                    data={records}
-                                    fixedHeader
-                                    fixedHeaderScrollHeight="500px">
-                                </DataTable>
-
+                                <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
+                                    <DataTable
+                                        columns={column}
+                                        data={records}
+                                        fixedHeader
+                                        fixedHeaderScrollHeight="500px">
+                                    </DataTable>
+                                </div>
                             </div>
                             {/*End of company info details*/}
                             <div className={STabs === 2 ? "" : "hidden"}>
@@ -389,6 +391,10 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                                 <Storagelimit />
                             </div>
                             {/*Storage Limits*/}
+                            <div className={STabs === 9 ? "" : "hidden"}>
+                                <Defaultmedia />
+                            </div>
+                            {/*Default Media*/}
                         </div>
                     </div>
 

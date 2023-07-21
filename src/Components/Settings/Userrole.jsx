@@ -10,10 +10,44 @@ const Userrole = () => {
     };
     {/*model */ }
     const [showuserroleModal, setshowuserroleModal] = useState(false)
+
+    const tableData = [
+        { id: 1, name: 'Screen', create: true, edit: false, delete: true, proposeChanges: false, approveChanges: true },
+        { id: 2, name: 'My Schedule', create: false, edit: true, delete: true, proposeChanges: true, approveChanges: false },
+        { id: 3, name: 'Apps', create: false, edit: true, delete: true, proposeChanges: true, approveChanges: false },
+        { id: 4, name: 'Settings', create: false, edit: true, delete: true, proposeChanges: true, approveChanges: false },
+        { id: 5, name: 'Reports', create: false, edit: true, delete: true, proposeChanges: true, approveChanges: false },
+        { id: 6, name: 'Trash', create: false, edit: true, delete: true, proposeChanges: true, approveChanges: false },
+
+    ];
+    const [checkboxStates, setCheckboxStates] = useState({});
+
+    const handleCheckboxChange = (id) => {
+        setCheckboxStates((prevStates) => ({
+            ...prevStates,
+            [id]: !prevStates[id], // Toggle the checkbox state
+        }));
+    };
+    // Billing
+    const BillingData = [
+        { id: 7, name: 'Payment Method', create: true, edit: false, delete: true, proposeChanges: false, approveChanges: true },
+        { id: 8, name: 'receive bank Access', create: false, edit: true, delete: true, proposeChanges: true, approveChanges: false },
+    ]
+
+    // content
+    const contentData = [
+        { id: 9, name: 'Assets', create: true, edit: false, delete: true, proposeChanges: false, approveChanges: true },
+        { id: 10, name: 'Disploy Studio', create: false, edit: true, delete: true, proposeChanges: true, approveChanges: false },
+        { id: 11, name: 'Playlist', create: false, edit: true, delete: true, proposeChanges: true, approveChanges: false },
+        { id: 12, name: 'Template', create: false, edit: true, delete: true, proposeChanges: true, approveChanges: false },
+
+
+    ]
+
     return (
         <>
-            <div>
-                <button className=" dashboard-btn  flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 sm:mt-2 py-2 text-base sm:text-sm mb-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50" onClick={() => setshowuserroleModal(true)}>
+            <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2'>
+                <button className=" dashboard-btn  flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5  py-2 text-base sm:text-sm mb-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50" onClick={() => setshowuserroleModal(true)}>
                     <FaCertificate className="text-lg mr-1" />
                     Add New Role
                 </button>
@@ -51,129 +85,273 @@ const Userrole = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr className='border-b border-b-[#E4E6FF]'>
-                                        <td className='text-[#5E5E5E] max-w-xl'>Screen</td>
-                                        <td><input type='checkbox' value='screate' name='screate' checked /></td>
-                                        <td><input type='checkbox' value='screen' name='screen' checked /></td>
-                                        <td><input type='checkbox' value='delete' name='delete' checked /></td>
-                                        <td><input type='checkbox' value='Propose' name='Propose' /></td>
-                                        <td><input type='checkbox' value='Approve' name='Approve' /></td>
-                                    </tr>
-                                    {/*end of tr */}
-                                    <tr className='border-b border-b-[#E4E6FF]'>
-                                        <td className='text-[#5E5E5E] max-w-xl'>My Schedule</td>
-                                        <td><input type='checkbox' value='screate' name='screate' /></td>
-                                        <td><input type='checkbox' value='screen' name='screen' /></td>
-                                        <td><input type='checkbox' value='delete' name='delete' /></td>
-                                        <td><input type='checkbox' value='Propose' name='Propose' /></td>
-                                        <td><input type='checkbox' value='Approve' name='Approve' /></td>
-                                    </tr>
-                                    {/*end of tr */}
+                                    {tableData.map((row) => (
+                                        <tr key={row.id} className="border-b border-b-[#E4E6FF]">
+                                            <td className="text-[#5E5E5E] max-w-xl">{row.name}</td>
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-1`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-1`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-1`)}
+                                                />
+                                                <label for={`cbx${row.id}-1`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
+                                            <td className='text-center'>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-2`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-2`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-2`)}
+                                                />
+                                                <label htmlFor={`cbx${row.id}-2`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
+                                            <td className='text-center'>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-3`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-3`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-3`)}
+                                                />
+                                                <label htmlFor={`cbx${row.id}-3`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
 
-                                    <tr className='border-b border-b-[#E4E6FF]'>
-                                        <td className='text-[#5E5E5E] max-w-xl'>Apps</td>
-                                        <td><input type='checkbox' value='screate' name='screate' /></td>
-                                        <td><input type='checkbox' value='screen' name='screen' /></td>
-                                        <td><input type='checkbox' value='delete' name='delete' /></td>
-                                        <td><input type='checkbox' value='Propose' name='Propose' /></td>
-                                        <td><input type='checkbox' value='Approve' name='Approve' /></td>
-                                    </tr>
-                                    {/*end of tr */}
-                                    <tr className='border-b border-b-[#E4E6FF]'>
-                                        <td className='text-[#5E5E5E] max-w-xl'>Setting</td>
-                                        <td><input type='checkbox' value='screate' name='screate' /></td>
-                                        <td><input type='checkbox' value='screen' name='screen' /></td>
-                                        <td><input type='checkbox' value='delete' name='delete' /></td>
-                                        <td><input type='checkbox' value='Propose' name='Propose' /></td>
-                                        <td><input type='checkbox' value='Approve' name='Approve' /></td>
-                                    </tr>
-                                    {/*end of tr */}
-                                    <tr className='border-b border-b-[#E4E6FF]'>
-                                        <td className='text-[#5E5E5E] max-w-xl'>Reports</td>
-                                        <td><input type='checkbox' value='screate' name='screate' /></td>
-                                        <td><input type='checkbox' value='screen' name='screen' /></td>
-                                        <td><input type='checkbox' value='delete' name='delete' /></td>
-                                        <td><input type='checkbox' value='Propose' name='Propose' /></td>
-                                        <td><input type='checkbox' value='Approve' name='Approve' /></td>
-                                    </tr>
-                                    {/*end of tr */}
-                                    <tr className='border-b border-b-[#E4E6FF]'>
-                                        <td className='text-[#5E5E5E] max-w-xl'>Trash</td>
-                                        <td><input type='checkbox' value='screate' name='screate' /></td>
-                                        <td><input type='checkbox' value='screen' name='screen' /></td>
-                                        <td><input type='checkbox' value='delete' name='delete' /></td>
-                                        <td><input type='checkbox' value='Propose' name='Propose' /></td>
-                                        <td><input type='checkbox' value='Approve' name='Approve' /></td>
-                                    </tr>
-                                    {/*end of tr */}
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-4`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-4`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-4`)}
+                                                />
+                                                <label htmlFor={`cbx${row.id}-4`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-5`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-5`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-5`)}
+                                                />
+                                                <label htmlFor={`cbx${row.id}-5`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {/*Billing */}
                                     <tr className='border-b border-b-[#E4E6FF]'>
                                         <td colSpan={5} className='text-primary max-w-xl font-medium'>Billing</td>
                                     </tr>
-                                    {/*end of tr */}
-                                    <tr className='border-b border-b-[#E4E6FF]'>
-                                        <td className='text-[#5E5E5E] max-w-xl'>Payment Method</td>
-                                        <td><input type='checkbox' value='pscreate' name='pscreate' /></td>
-                                        <td><input type='checkbox' value='pscreen' name='pscreen' /></td>
-                                        <td><input type='checkbox' value='pdelete' name='pdelete' /></td>
-                                        <td><input type='checkbox' value='pPropose' name='pPropose' /></td>
-                                        <td><input type='checkbox' value='pApprove' name='pApprove' /></td>
-                                    </tr>
-                                    {/*end of tr */}
-                                    <tr className='border-b border-b-[#E4E6FF]'>
-                                        <td className='text-[#5E5E5E] max-w-xl'>Receive bank Access</td>
-                                        <td><input type='checkbox' value='pscreate' name='pscreate' /></td>
-                                        <td><input type='checkbox' value='pscreen' name='pscreen' /></td>
-                                        <td><input type='checkbox' value='pdelete' name='pdelete' /></td>
-                                        <td><input type='checkbox' value='pPropose' name='pPropose' /></td>
-                                        <td><input type='checkbox' value='pApprove' name='pApprove' /></td>
-                                    </tr>
-                                    {/*end of tr */}
+                                    {BillingData.map((row) => (
+                                        <tr key={row.id} className="border-b border-b-[#E4E6FF]">
+                                            <td className="text-[#5E5E5E] max-w-xl">{row.name}</td>
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-1`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-1`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-1`)}
+                                                />
+                                                <label for={`cbx${row.id}-1`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-2`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-2`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-2`)}
+                                                />
+                                                <label for={`cbx${row.id}-2`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-3`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-3`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-3`)}
+                                                />
+                                                <label for={`cbx${row.id}-3`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-4`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-4`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-4`)}
+                                                />
+                                                <label for={`cbx${row.id}-4`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-5`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-5`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-5`)}
+                                                />
+                                                <label for={`cbx${row.id}-5`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
+                                        </tr>
+
+                                    ))}
+
+                                    {/*content */}
                                     <tr className='border-b border-b-[#E4E6FF]'>
                                         <td colSpan={5} className='text-primary max-w-xl font-medium'>Content</td>
                                     </tr>
-                                    {/*end of tr */}
-                                    <tr className='border-b border-b-[#E4E6FF]'>
-                                        <td className='text-[#5E5E5E] max-w-xl'>Assets</td>
-                                        <td><input type='checkbox' value='ascreate' name='ascreate' /></td>
-                                        <td><input type='checkbox' value='ascreen' name='ascreen' /></td>
-                                        <td><input type='checkbox' value='adelete' name='adelete' /></td>
-                                        <td><input type='checkbox' value='aPropose' name='aPropose' /></td>
-                                        <td><input type='checkbox' value='aApprove' name='aApprove' /></td>
-                                    </tr>
-                                    {/*end of tr */}
-                                    <tr className='border-b border-b-[#E4E6FF]'>
-                                        <td className='text-[#5E5E5E] max-w-xl'>Disploy Studio</td>
-                                        <td><input type='checkbox' value='ascreate' name='ascreate' /></td>
-                                        <td><input type='checkbox' value='ascreen' name='ascreen' /></td>
-                                        <td><input type='checkbox' value='adelete' name='adelete' /></td>
-                                        <td><input type='checkbox' value='aPropose' name='aPropose' /></td>
-                                        <td><input type='checkbox' value='aApprove' name='aApprove' /></td>
-                                    </tr>
-                                    {/*end of tr */}
 
-                                    <tr className='border-b border-b-[#E4E6FF]'>
-                                        <td className='text-[#5E5E5E] max-w-xl'>Playlist</td>
-                                        <td><input type='checkbox' value='ascreate' name='ascreate' /></td>
-                                        <td><input type='checkbox' value='ascreen' name='ascreen' /></td>
-                                        <td><input type='checkbox' value='adelete' name='adelete' /></td>
-                                        <td><input type='checkbox' value='aPropose' name='aPropose' /></td>
-                                        <td><input type='checkbox' value='aApprove' name='aApprove' /></td>
-                                    </tr>
-                                    {/*end of tr */}
+                                    {contentData.map((row) => (
+                                        <tr key={row.id} className="border-b border-b-[#E4E6FF]">
+                                            <td className="text-[#5E5E5E] max-w-xl">{row.name}</td>
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-1`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-1`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-1`)}
+                                                />
+                                                <label for={`cbx${row.id}-1`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
 
-                                    <tr className='border-b border-b-[#E4E6FF]'>
-                                        <td className='text-[#5E5E5E] max-w-xl'>Template</td>
-                                        <td><input type='checkbox' value='ascreate' name='ascreate' /></td>
-                                        <td><input type='checkbox' value='ascreen' name='ascreen' /></td>
-                                        <td><input type='checkbox' value='adelete' name='adelete' /></td>
-                                        <td><input type='checkbox' value='aPropose' name='aPropose' /></td>
-                                        <td><input type='checkbox' value='aApprove' name='aApprove' /></td>
-                                    </tr>
-                                    {/*end of tr */}
-                                    <tr>
-                                        <td colSpan={6} className="text-right"><button className='bg-primary text-white text-base px-6 py-2 shadow-md rounded-full'>Save</button></td>
-                                    </tr>
-                                    {/*end of tr */}
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-2`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-2`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-2`)}
+                                                />
+                                                <label for={`cbx${row.id}-2`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-3`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-3`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-3`)}
+                                                />
+                                                <label for={`cbx${row.id}-3`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-4`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-4`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-4`)}
+                                                />
+                                                <label for={`cbx${row.id}-4`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    id={`cbx${row.id}-5`}
+                                                    className="hidden cbx"
+                                                    checked={checkboxStates[`cbx${row.id}-5`] || false}
+                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-5`)}
+                                                />
+                                                <label for={`cbx${row.id}-5`} className="check cbx">
+                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
+                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
+                                                        <polyline points="1 9 7 14 15 4"></polyline>
+                                                    </svg>
+                                                </label>
+                                            </td>
+                                        </tr>
+
+                                    ))}
+
+
+
+
+
 
                                 </tbody>
                             </table>

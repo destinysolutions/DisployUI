@@ -69,6 +69,7 @@ const Myplan = () => {
 
     return (
         <>
+        <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2'>
             <div>
                 <button className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50" onClick={() => showPlanModal(true)}>
                     <SlCalender className="text-lg mr-2" />
@@ -122,7 +123,7 @@ const Myplan = () => {
                     </tbody>
                 </table>
             </div>
-
+            </div>                                                    
             {/* Add new Plan */}
             {planModel && (
                 <>

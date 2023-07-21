@@ -280,7 +280,7 @@ const Business = () => {
     <>
       {/* google map start */}
       <div className="bg-white shadow-md rounded-lg">
-        <div className="p-9">
+        <div className="lg:p-9 md:p-6 sm:p-3 xs:p-2">
           <MapContainer
             center={center}
             zoom={2}
@@ -304,8 +304,8 @@ const Business = () => {
       {showStore && (
         <>
           <div className="bg-white shadow-md rounded-lg mt-5 ">
-            <div className="p-3 flex justify-between">
-              <div className="flex items-center">
+            <div className="p-3  justify-between lg:flex md:flex sm:flex xs:block items-center">
+              <div className="flex items-center lg:mb-0 md:mb-0 sm:mb-0 xs:mb-2">
                 <img
                   src="../../../../DisployImg/flag.png"
                   className="h-10 w-10 rounded-full"
@@ -324,7 +324,7 @@ const Business = () => {
                     setShowCityDw(true);
                     setShowStore(false);
                   }}
-                  placeholder="Select State"
+                  placeholder="Select State" className=" placeholder:text-sm"
                 />
                 {/* <select
                   id="state"
@@ -351,7 +351,7 @@ const Business = () => {
       {/* city store popup start */}
       {showCitydw && (
         <div className="bg-white shadow-md rounded-lg mt-5">
-          <div className="p-5 flex">
+          <div className="p-5 lg:flex md:flex sm:flex xs:block justify-between ">
             <div>
               <Select
                 id="state"
@@ -365,7 +365,7 @@ const Business = () => {
                 placeholder="Select State"
               />
             </div>
-            <div className="ml-5">
+            <div className="lg:mt-0 md:mt-0 sm:mt-0 xs:mt-3 ">
               <Select
                 id="city"
                 options={cities.map((city) => ({
@@ -394,13 +394,13 @@ const Business = () => {
           </div>
           {showCityStores && (
             <>
-              <div className="pb-4">
+              <div className="pb-4 ">
                 <div>
                   <label className="p-5 text-lg font-semibold">Ahemdabad</label>
                 </div>
                 <div className="m-6">
                   <div className="grid grid-cols-12 gap-4">
-                    <div className="lg:col-span-3 md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md">
+                    <div className="lg:col-span-4 md:col-span-5 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md">
                       <div className="p-3">
                         <label className="text-lg font-semibold">
                           Total Stores
@@ -415,7 +415,7 @@ const Business = () => {
                         />
                       </div>
                     </div>
-                    <div className="lg:col-span-9  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md">
+                    <div className="lg:col-span-8  md:col-span-7 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md">
                       <div className="p-3">
                         <label className="text-lg font-semibold">
                           Total Screens

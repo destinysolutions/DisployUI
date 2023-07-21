@@ -52,62 +52,64 @@ const Users = () => {
     const [showuserModal, setshowuserModal] = useState(false)
     return (
         <>
-            <div>
-                <button className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50" onClick={() => setshowuserModal(true)}>
-                    <BiUserPlus className="text-2xl mr-1" />
-                    Add New Users
-                </button>
-            </div>
-            <div className='clear-both overflow-x-auto'>
-                <table className=' bg-[#EFF3FF] w-full text-left rounded-xl' cellPadding={15}>
-                    <thead>
-                        <tr className='border-b border-b-[#E4E6FF]'>
+            <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2'>
+                <div>
+                    <button className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50" onClick={() => setshowuserModal(true)}>
+                        <BiUserPlus className="text-2xl mr-1" />
+                        Add New Users
+                    </button>
+                </div>
+                <div className='clear-both overflow-x-auto'>
+                    <table className=' bg-[#EFF3FF] w-full text-left rounded-xl' cellPadding={15}>
+                        <thead>
+                            <tr className='border-b border-b-[#E4E6FF]'>
 
-                            <th className='text-[#5A5881] text-base font-semibold'><lable className='flex items-center'>Name<FiFilter className='ml-1 text-lg' /></lable></th>
-                            <th className='text-[#5A5881] text-base font-semibold'>Phone Number</th>
-                            <th className='text-[#5A5881] text-base font-semibold'>Email</th>
-                            <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center'>Roles<FiFilter className='ml-1 text-lg' /></div></th>
-                            <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center'>Screen Access <FiFilter className='ml-1 text-lg' /></div></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map((user, index) => (
-                            <tr key={index} className='border-b border-b-[#E4E6FF]'>
-                                <td className='text-[#5E5E5E]'>{user.name}</td>
-                                <td>
-                                    <label className="inline-flex relative items-center  cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            className="sr-only peer"
-                                            checked={user.phoneEnabled}
-                                            onChange={() => handlePhoneToggle(index)}
-                                        />
-                                        <div
-                                            className={`w-11 h-6 rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[3px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all ${user.phoneEnabled ? "bg-[#41479B]" : "bg-[#ABB1FF]"
-                                                }`}
-                                        ></div>
-                                    </label>
-                                </td>
-                                <td>
-                                    <label className="inline-flex relative items-center cursor-pointer">
-                                        <input
-                                            type="checkbox"
-                                            className="sr-only peer"
-                                            checked={user.emailEnabled}
-                                            onChange={() => handleEmailToggle(index)}
-                                        />
-                                        <div
-                                            className={`w-11 h-6 rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[3px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all ${user.emailEnabled ? "bg-[#41479B]" : "bg-[#ABB1FF]"
-                                                }`}
-                                        ></div>
-                                    </label>
-                                </td>
-                                <td className='text-[#5E5E5E]'>{user.roles}</td>
-                                <td className='text-[#5E5E5E]'>{user.screen}</td>
+                                <th className='text-[#5A5881] text-base font-semibold'><lable className='flex items-center'>Name<FiFilter className='ml-1 text-lg' /></lable></th>
+                                <th className='text-[#5A5881] text-base font-semibold'>Phone Number</th>
+                                <th className='text-[#5A5881] text-base font-semibold'>Email</th>
+                                <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center'>Roles<FiFilter className='ml-1 text-lg' /></div></th>
+                                <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center'>Screen Access <FiFilter className='ml-1 text-lg' /></div></th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {users.map((user, index) => (
+                                <tr key={index} className='border-b border-b-[#E4E6FF]'>
+                                    <td className='text-[#5E5E5E]'>{user.name}</td>
+                                    <td>
+                                        <label className="inline-flex relative items-center  cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                className="sr-only peer"
+                                                checked={user.phoneEnabled}
+                                                onChange={() => handlePhoneToggle(index)}
+                                            />
+                                            <div
+                                                className={`w-11 h-6 rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[3px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all ${user.phoneEnabled ? "bg-[#41479B]" : "bg-[#ABB1FF]"
+                                                    }`}
+                                            ></div>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <label className="inline-flex relative items-center cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                className="sr-only peer"
+                                                checked={user.emailEnabled}
+                                                onChange={() => handleEmailToggle(index)}
+                                            />
+                                            <div
+                                                className={`w-11 h-6 rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[3px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all ${user.emailEnabled ? "bg-[#41479B]" : "bg-[#ABB1FF]"
+                                                    }`}
+                                            ></div>
+                                        </label>
+                                    </td>
+                                    <td className='text-[#5E5E5E]'>{user.roles}</td>
+                                    <td className='text-[#5E5E5E]'>{user.screen}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {showuserModal && (
