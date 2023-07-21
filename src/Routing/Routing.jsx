@@ -26,6 +26,8 @@ import Uptimereport from "../Components/Reports/Uptimereport";
 import Settings from "../Components/Settings/Settings";
 import MySchedule from "../Components/Schedule/MySchedule";
 import AddSchedule from "../Components/Schedule/AddSchedule";
+import WeatherSchedule from "../Components/Schedule/WeatherSchedule";
+import SaveAssignScreenModal from "../Components/Schedule/SaveAssignScreenModal";
 const Routing = () => {
   //for screen resize sidebar open close
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -257,7 +259,20 @@ const Routing = () => {
             />
           }
         />
+        <Route
+          path="/weatherschedule"
+          element={
+            <WeatherSchedule
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
         <Route path="/addschedule" element={<AddSchedule />} />
+        <Route
+          path="/saveassignscreenmodal"
+          element={<SaveAssignScreenModal />}
+        />
         {/* Settings component route */}
         <Route
           path="/settings"
