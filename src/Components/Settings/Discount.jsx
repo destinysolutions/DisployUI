@@ -84,157 +84,158 @@ const Discount = () => {
     const [couponTooltipVisible, setcouponTooltipVisible] = useState(false);
     return (
         <>
-
-            <div>
-                <h1 className='text-base text-primary font-semibold mb-5'>Discount</h1>
-            </div>
-            <hr className='border-[#E4E6FF]' />
-
-            <div className="accordions">
-                <div className="section py-3 px-5 rounded-md  border border-[#D5E3FF] flex  items-center justify-between cursor-pointer" onClick={() => handleDropupClick(1)}>
-                    <h1 className="text-lg text-primary font-medium">With coupon Codes</h1>
-                    <div className=" flex items-center">
-                        <button
-                            className="showicon"
-
-                        >
-
-                            {activeSection1 ? (
-                                <MdOutlineKeyboardArrowUp className="text-3xl" />
-                            ) : (
-                                <MdOutlineKeyboardArrowDown className="text-3xl" />
-                            )}
-                        </button>
-                    </div>
+            <div >
+                <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2'>
+                    <h1 className='text-base text-primary font-semibold'>Discount</h1>
                 </div>
-                {activeSection1 === 1 && (
-                    <>
-                        <div className='border border-[#E4E6FF] rounded-bl-xl rounded-br-xl'>
-                            <div className='my-3 text-right'>
-                                <button className="  bg-primary text-white items-center  rounded-full lg:px-6 sm:px-5 py-3 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50 border border-primary" onClick={() => setShowcoponModel(true)}>
-                                    Add new Coupon
+                <hr className='border-[#E4E6FF]' />
+                <div className='lg:p-5 md:p-5 sm:p-2 xs:p-2 mt-1'>
+                    <div className="accordions">
+                        <div className="section py-3 px-5 rounded-md  border border-[#D5E3FF] flex  items-center justify-between cursor-pointer" onClick={() => handleDropupClick(1)}>
+                            <h1 className="text-lg text-primary font-medium">With coupon Codes</h1>
+                            <div className=" flex items-center">
+                                <button
+                                    className="showicon"
+
+                                >
+
+                                    {activeSection1 ? (
+                                        <MdOutlineKeyboardArrowUp className="text-3xl" />
+                                    ) : (
+                                        <MdOutlineKeyboardArrowDown className="text-3xl" />
+                                    )}
                                 </button>
-
-                            </div>
-                            <hr className='border-[#E4E6FF]' />
-                            <div className='overflow-x-auto'>
-                                <table className='w-full text-left rounded-xl' cellPadding={15}>
-                                    <thead>
-                                        <tr className='border-b border-b-[#E4E6FF]'>
-                                            <th className='text-[#5A5881] text-base font-semibold'><span className='flex items-center'>Coupon Codes</span></th>
-                                            <th className='text-[#5A5881] text-base font-semibold text-center'><span className='flex items-center justify-center'>Added Date</span></th>
-                                            <th className='text-[#5A5881] text-base font-semibold'><span className='flex items-center justify-center'>Discounted Value</span></th>
-                                            <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center justify-center'>Information</div></th>
-                                            <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center justify-center'>Status</div></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {dis.map((discounts, index) => (
-                                            <tr key={index} className='border-b border-b-[#E4E6FF]'>
-                                                <td className='text-[#5E5E5E]'>{discounts.couponcodes}</td>
-                                                <td className='text-[#5E5E5E] text-center'><span style={{ background: '#E4E6FF', padding: '10px', borderRadius: '5px', fontSize: '16px' }}>{discounts.addeddate}</span></td>
-                                                <td className='text-[#5E5E5E] text-center'><span style={{ background: '#E4E6FF', padding: '10px', borderRadius: '5px' }}>{discounts.discountedvalue}</span></td>
-                                                <td className='text-[#5E5E5E] text-center'><span style={{ fontSize: '12px' }}> {discounts.information}</span> </td>
-                                                <td className='text-center'>
-                                                    <label className="inline-flex relative items-center cursor-pointer">
-                                                        <input
-                                                            type="checkbox"
-                                                            className="sr-only peer"
-                                                            checked={discounts.statusEnabled}
-                                                            onChange={() => handleStatusToggle(index)}
-                                                        />
-                                                        <div
-                                                            className={`w-10 h-5 rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all ${discounts.statusEnabled ? "bg-[#009618]" : "bg-gray"
-                                                                }`}
-                                                        ></div>
-                                                    </label>
-                                                </td>
-
-
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
+                        {activeSection1 === 1 && (
+                            <>
+                                <div className='border border-[#E4E6FF] rounded-bl-xl rounded-br-xl'>
+                                    <div className='my-3 text-right'>
+                                        <button className="  bg-primary text-white items-center  rounded-full lg:px-6 sm:px-5 py-3 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50 border border-primary" onClick={() => setShowcoponModel(true)}>
+                                            Add new Coupon
+                                        </button>
 
-                    </>
-                )}
+                                    </div>
+                                    <hr className='border-[#E4E6FF]' />
+                                    <div className='overflow-x-auto'>
+                                        <table className='w-full text-left rounded-xl' cellPadding={15}>
+                                            <thead>
+                                                <tr className='border-b border-b-[#E4E6FF]'>
+                                                    <th className='text-[#5A5881] text-base font-semibold'><span className='flex items-center'>Coupon Codes</span></th>
+                                                    <th className='text-[#5A5881] text-base font-semibold text-center'><span className='flex items-center justify-center'>Added Date</span></th>
+                                                    <th className='text-[#5A5881] text-base font-semibold'><span className='flex items-center justify-center'>Discounted Value</span></th>
+                                                    <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center justify-center'>Information</div></th>
+                                                    <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center justify-center'>Status</div></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {dis.map((discounts, index) => (
+                                                    <tr key={index} className='border-b border-b-[#E4E6FF]'>
+                                                        <td className='text-[#5E5E5E]'>{discounts.couponcodes}</td>
+                                                        <td className='text-[#5E5E5E] text-center lg:text-base md:text-sm sm:text-sm xs:text-xs whitespace-nowrap'><span style={{ background: '#E4E6FF', padding: '10px', borderRadius: '5px' }}>{discounts.addeddate}</span></td>
+                                                        <td className='text-[#5E5E5E] text-center text-center lg:text-base md:text-sm sm:text-sm xs:text-xs whitespace-nowrap'><span style={{ background: '#E4E6FF', padding: '10px', borderRadius: '5px' }}>{discounts.discountedvalue}</span></td>
+                                                        <td className='text-[#5E5E5E] text-center'><span style={{ fontSize: '12px' }}> {discounts.information}</span> </td>
+                                                        <td className='text-center'>
+                                                            <label className="inline-flex relative items-center cursor-pointer">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="sr-only peer"
+                                                                    checked={discounts.statusEnabled}
+                                                                    onChange={() => handleStatusToggle(index)}
+                                                                />
+                                                                <div
+                                                                    className={`w-10 h-5 rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all ${discounts.statusEnabled ? "bg-[#009618]" : "bg-gray"
+                                                                        }`}
+                                                                ></div>
+                                                            </label>
+                                                        </td>
 
-            </div>
-            {/*end of accordions */}
-            <div className="accordions mt-3">
-                <div className="section py-3 px-5 rounded-md  border border-[#D5E3FF] flex  items-center justify-between cursor-pointer" onClick={() => handleDropupClick(2)}>
-                    <h1 className="text-lg text-primary font-medium">With coupon Codes</h1>
-                    <div className=" flex items-center">
-                        <button
-                            className="showicon" >
 
-                            {activeSection2 ? (
-                                <MdOutlineKeyboardArrowUp className="text-3xl" />
-                            ) : (
-                                <MdOutlineKeyboardArrowDown className="text-3xl" />
-                            )}
-                        </button>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </>
+                        )}
+
                     </div>
-                </div>
-                {activeSection2 === 2 && (
-                    <>
-                        <div className='border border-[#E4E6FF] rounded-bl-xl rounded-br-xl mt-3'>
-                            <div className='my-3 text-right'>
-                                <button className=" bg-primary text-white items-center  rounded-full lg:px-6 sm:px-5 py-3 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50 border border-primary" onClick={() => showNewDiscountModal(true)}>
-                                    Add New Discount
+                    {/*end of accordions */}
+                    <div className="accordions mt-3">
+                        <div className="section py-3 px-5 rounded-md  border border-[#D5E3FF] flex  items-center justify-between cursor-pointer" onClick={() => handleDropupClick(2)}>
+                            <h1 className="text-lg text-primary font-medium">With coupon Codes</h1>
+                            <div className=" flex items-center">
+                                <button
+                                    className="showicon" >
+
+                                    {activeSection2 ? (
+                                        <MdOutlineKeyboardArrowUp className="text-3xl" />
+                                    ) : (
+                                        <MdOutlineKeyboardArrowDown className="text-3xl" />
+                                    )}
                                 </button>
-
-                            </div>
-                            <hr className='border-[#E4E6FF]' />
-                            <div className='overflow-x-auto'>
-                                <table className='w-full text-left rounded-xl' cellPadding={15}>
-                                    <thead>
-                                        <tr className='border-b border-b-[#E4E6FF]'>
-                                            <th className='text-[#5A5881] text-base font-semibold'><span className='flex items-center'>Discount</span></th>
-                                            <th className='text-[#5A5881] text-base font-semibold text-center'><span className='flex items-center justify-center'>Added Date</span></th>
-                                            <th className='text-[#5A5881] text-base font-semibold'><span className='flex items-center justify-center'>Discounted Value</span></th>
-                                            <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center justify-center'>Information</div></th>
-                                            <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center justify-center'>Status</div></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {withoutdis.map((withoutdiscounts, index) => (
-                                            <tr key={index} className='border-b border-b-[#E4E6FF]'>
-                                                <td className='text-[#5E5E5E] flex items-center'>{withoutdiscounts.discount} <FiEdit2 className='ml-2  text-sm d' /></td>
-                                                <td className='text-[#5E5E5E] text-center'><span style={{ background: '#E4E6FF', padding: '10px', borderRadius: '5px', fontSize: '16px' }}>{withoutdiscounts.addeddate} </span></td>
-                                                <td className='text-[#5E5E5E] text-center'><span style={{ background: '#E4E6FF', padding: '10px', borderRadius: '5px' }}>{withoutdiscounts.discountedvalue}</span></td>
-                                                <td className='text-[#5E5E5E] text-center'><span style={{ fontSize: '12px' }}> {withoutdiscounts.information}</span> </td>
-                                                <td className='text-center'>
-                                                    <label className="inline-flex relative items-center cursor-pointer">
-                                                        <input
-                                                            type="checkbox"
-                                                            className="sr-only peer"
-                                                            checked={withoutdiscounts.statusEnabled}
-                                                            onChange={() => handleStatusToggle(index)}
-                                                        />
-                                                        <div
-                                                            className={`w-10 h-5 rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all ${withoutdiscounts.statusEnabled ? "bg-[#009618]" : "bg-gray"
-                                                                }`}
-                                                        ></div>
-                                                    </label>
-                                                </td>
-
-
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
+                        {activeSection2 === 2 && (
+                            <>
+                                <div className='border border-[#E4E6FF] rounded-bl-xl rounded-br-xl mt-3'>
+                                    <div className='my-3 text-right'>
+                                        <button className=" bg-primary text-white items-center  rounded-full lg:px-6 sm:px-5 py-3 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50 border border-primary" onClick={() => showNewDiscountModal(true)}>
+                                            Add New Discount
+                                        </button>
 
-                    </>
-                )}
+                                    </div>
+                                    <hr className='border-[#E4E6FF]' />
+                                    <div className='overflow-x-auto'>
+                                        <table className='w-full text-left rounded-xl' cellPadding={15}>
+                                            <thead>
+                                                <tr className='border-b border-b-[#E4E6FF]'>
+                                                    <th className='text-[#5A5881] text-base font-semibold'><span className='flex items-center'>Discount</span></th>
+                                                    <th className='text-[#5A5881] text-base font-semibold text-center'><span className='flex items-center justify-center'>Added Date</span></th>
+                                                    <th className='text-[#5A5881] text-base font-semibold'><span className='flex items-center justify-center'>Discounted Value</span></th>
+                                                    <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center justify-center'>Information</div></th>
+                                                    <th className='text-[#5A5881] text-base font-semibold'><div className='flex items-center justify-center'>Status</div></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {withoutdis.map((withoutdiscounts, index) => (
+                                                    <tr key={index} className='border-b border-b-[#E4E6FF]'>
+                                                        <td className='text-[#5E5E5E] flex items-center'>{withoutdiscounts.discount} <FiEdit2 className='ml-2  text-sm d' /></td>
+                                                        <td className='text-[#5E5E5E] text-center'><span style={{ background: '#E4E6FF', padding: '10px', borderRadius: '5px', fontSize: '16px' }}>{withoutdiscounts.addeddate} </span></td>
+                                                        <td className='text-[#5E5E5E] text-center'><span style={{ background: '#E4E6FF', padding: '10px', borderRadius: '5px' }}>{withoutdiscounts.discountedvalue}</span></td>
+                                                        <td className='text-[#5E5E5E] text-center'><span style={{ fontSize: '12px' }}> {withoutdiscounts.information}</span> </td>
+                                                        <td className='text-center'>
+                                                            <label className="inline-flex relative items-center cursor-pointer">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    className="sr-only peer"
+                                                                    checked={withoutdiscounts.statusEnabled}
+                                                                    onChange={() => handleStatusToggle(index)}
+                                                                />
+                                                                <div
+                                                                    className={`w-10 h-5 rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all ${withoutdiscounts.statusEnabled ? "bg-[#009618]" : "bg-gray"
+                                                                        }`}
+                                                                ></div>
+                                                            </label>
+                                                        </td>
 
+
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </>
+                        )}
+
+                    </div>
+                    {/*end of accordions */}
+                </div>
             </div>
-            {/*end of accordions */}
-
             {/*Add new Coupon */}
 
             {Newcopon && (

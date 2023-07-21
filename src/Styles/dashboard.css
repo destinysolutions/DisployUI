@@ -6,18 +6,21 @@
   background: #edf3ff;
 }
 
-.sc-eqUAAy.gocYik.rdt_TableHeadRow {
+.sc-eqUAAy.gocYik.rdt_TableHeadRow,
+.hmdZnu {
   background: #e4e6ff;
   color: #41479b;
   font-size: 16px;
   font-weight: 600;
 }
 
-.hbgCLW:nth-child(even) {
+.hbgCLW:nth-child(even),
+.sc-dhKdcB .hxYGQY.rdt_TableRow:nth-child(even) {
   background: #edf3ff;
 }
 
-.ikexHN {
+.ikexHN,
+.hxYGQY {
   font-size: 14px;
 }
 
@@ -79,6 +82,7 @@
   top: -8px;
   right: 50%;
 }
+
 body {
   background: #e4e6ff91;
 }
