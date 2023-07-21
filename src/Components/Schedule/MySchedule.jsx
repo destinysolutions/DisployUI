@@ -13,10 +13,12 @@ import { Link } from "react-router-dom";
 import { HiDotsVertical } from "react-icons/hi";
 import { useState } from "react";
 import "../../Styles/schedule.css";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //for action popup
   const [showActionBox, setShowActionBox] = useState(false);
+  const [addScreenModal, setAddScreenModal] = useState(false);
   return (
     <>
       {/* navbar and sidebar start */}
@@ -32,10 +34,12 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               My Schedule
             </h1>
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn ">
-              <button className=" flex align-middle border-primary items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                <TiWeatherSunny className="text-lg mr-1" />
-                Weather Schedule
-              </button>
+              <Link to="/weatherschedule">
+                <button className=" flex align-middle border-primary items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  <TiWeatherSunny className="text-lg mr-1" />
+                  Weather Schedule
+                </button>
+              </Link>
               <Link to="/addschedule">
                 <button className="sm:ml-2 xs:ml-1  flex align-middle border-primary items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                   <BiAddToQueue className="text-lg mr-1" />
@@ -132,10 +136,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       {showActionBox && (
                         <div className="scheduleAction z-10 ">
                           <div className="my-1">
-                            <button>Edit Schedule</button>
+                            <Link to="/addschedule">
+                              <button>Edit Schedule</button>
+                            </Link>
                           </div>
                           <div className=" mb-1">
-                            <button>Add Screens</button>
+                            <button onClick={() => setAddScreenModal(true)}>
+                              Add Screens
+                            </button>
                           </div>
                           <div className="mb-1 border border-[#F2F0F9]"></div>
                           <div className=" mb-1 text-[#D30000]">
@@ -144,6 +152,48 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       )}
                       {/* action popup end */}
+                      {/* add screen modal start */}
+                      {addScreenModal && (
+                        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                          <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                                <div className="flex items-center">
+                                  <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
+                                    Select the Screen you want Schedule Content
+                                  </h3>
+                                </div>
+                                <button
+                                  className="p-1 text-xl ml-8"
+                                  onClick={() => setAddScreenModal(false)}
+                                >
+                                  <AiOutlineCloseCircle className="text-2xl" />
+                                </button>
+                              </div>
+                              <div className="flex justify-center p-9 ">
+                                <p className="break-words w-[280px] text-base text-black">
+                                  New schedule would be applied. Do you want to
+                                  proceed?
+                                </p>
+                              </div>
+                              <div className="pb-6 flex justify-center">
+                                <Link to="/saveassignscreenmodal">
+                                  <button className="bg-primary text-white px-8 py-2 rounded-full">
+                                    OK
+                                  </button>
+                                </Link>
+                                <button
+                                  className="bg-primary text-white px-4 py-2 rounded-full ml-3"
+                                  onClick={() => setAddScreenModal(false)}
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {/* add screen modal end */}
                     </div>
                   </td>
                 </tr>

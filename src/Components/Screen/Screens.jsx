@@ -7,11 +7,16 @@ import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { MdOutlineAddToQueue } from "react-icons/md";
 import { HiOutlineRectangleGroup } from "react-icons/hi2";
-import { VscVmActive } from "react-icons/vsc";
+import { VscCalendar, VscVmActive } from "react-icons/vsc";
 import { VscVmConnect } from "react-icons/vsc";
 import PropTypes from "prop-types";
 import ScreenOTPModal from "./ScreenOTPModal";
 import AssetModal from "../Assests/AssetModal";
+import { SlArrowDown } from "react-icons/sl";
+import { RiArrowDownSLine, RiComputerLine } from "react-icons/ri";
+import { HiDotsVertical, HiOutlineLocationMarker } from "react-icons/hi";
+import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
+import { BsTags } from "react-icons/bs";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -25,7 +30,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenGroupTooltipVisible, setScreenGroupTooltipVisible] =
     useState(false);
   const [selectAllTooltipVisible, setselectAllTooltipVisible] = useState(false);
-
+  const [moreTooltipVisible, setMoreTooltipVisible] = useState(false);
   const [selectActiveTooltipVisible, setselectActiveTooltipVisible] =
     useState(false);
 
@@ -43,6 +48,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
   const [scheduleModal, setScheduleModal] = useState(false);
+  const [moreModal, setMoreModal] = useState(false);
   const [repeatValue, setRepeatValue] = useState("");
   const [showWeeklyDays, setShowWeeklyDays] = useState(false);
   const [selectedWeeklyDays, setSelectedWeeklyDays] = useState([]);
@@ -181,6 +187,70 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 )}
               </div>
               <div
+                className="relative"
+                onMouseEnter={() => setMoreTooltipVisible(true)}
+                onMouseLeave={() => setMoreTooltipVisible(false)}
+              >
+                <div className="relative">
+                  <button
+                    type="button"
+                    className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
+                    onClick={() => setMoreModal(true)}
+                  >
+                    <RiArrowDownSLine className="p-1 text-3xl hover:text-white text-SlateBlue" />
+                  </button>
+                  {moreModal && (
+                    <div className="moredw">
+                      <ul>
+                        <li className="flex text-sm items-center ">
+                          <input type="checkbox" className="mr-2 text-lg" />
+                          Screen
+                        </li>
+                        <li className="flex text-sm items-center mt-2">
+                          <input type="checkbox" className="mr-2 text-lg" />
+                          Status
+                        </li>
+                        <li className="flex text-sm items-center mt-2">
+                          <input type="checkbox" className="mr-2 text-lg" />
+                          Last Seen
+                        </li>
+                        <li className="flex text-sm items-center mt-2">
+                          <input type="checkbox" className="mr-2 text-lg" />
+                          Now Playing
+                        </li>
+                        <li className="flex text-sm items-center mt-2 ">
+                          <input type="checkbox" className="mr-2 text-lg" />
+                          Current Schedule
+                        </li>
+                        <li className="flex text-sm items-center mt-2 ">
+                          <input type="checkbox" className="mr-2 text-lg" />
+                          Google Location
+                        </li>
+                        <li className="flex text-sm items-center mt-2 ">
+                          <input type="checkbox" className="mr-2 text-lg" />
+                          Tags
+                        </li>
+                        <li className="flex text-sm justify-end mt-2 ">
+                          <button className="bg-[#E4E6FF] text-SlateBlue px-4 py-2 rounded-full">
+                            Update
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+
+                {moreTooltipVisible && (
+                  <div
+                    id="tooltip-bottom"
+                    role="tooltip"
+                    className="absolute z-10 visible inline-block px-3 py-2 text-sm font-medium text-white  bg-SlateBlue rounded-lg shadow-sm opacity-100 tooltip bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full dark:bg-gray-700"
+                  >
+                    More
+                  </div>
+                )}
+              </div>
+              <div
                 className="flex items-center mt-1 relative"
                 onMouseEnter={() => setselectAllTooltipVisible(true)}
                 onMouseLeave={() => setselectAllTooltipVisible(false)}
@@ -220,6 +290,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         />
                       </svg>
                       Screen
+                    </button>
+                  </th>
+                  <th className="p-3 font-medium text-[14px]">
+                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                      <HiOutlineLocationMarker className="mr-2 text-xl" />
+                      Google Location
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
@@ -392,10 +468,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                     </div>
                   </td>
+                  <td className="p-2 break-words  w-[150px]">
+                    132, My Street, Kingston, New York 12401.
+                  </td>
                   <td className="p-2">
                     <button
-                      className={`rounded-full px-6 py-1 text-white bg-${screenStatus === "live" ? "[#3AB700]" : "red"
-                        }`}
+                      className={`rounded-full px-6 py-1 text-white bg-${
+                        screenStatus === "live" ? "[#3AB700]" : "red"
+                      }`}
                     >
                       {screenStatus === "live" ? "Live" : "Offline"}
                     </button>
@@ -428,6 +508,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
                     </button>
                   </td>
+                  <td className="p-2 break-words w-[150px]">
+                    132, My Street, Kingston, New York 12401.
+                  </td>
                   <td className="p-2">
                     <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
                       Live
@@ -453,9 +536,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
                 <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
                   <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
-                    <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                    <div className="flex items-start justify-between p-4 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
                       <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
-                        Select the Date and Time
+                        Set Schedule
                       </h3>
                       <button
                         className="p-1 text-xl"
@@ -464,132 +547,107 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <AiOutlineCloseCircle className="text-2xl" />
                       </button>
                     </div>
-                    <div className="p-4">
-                      <label>Schedule : </label>
-                      <div className="mt-3">
-                        <select className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                          <option
-                            value="-12:00"
-                            className="text-base  font-normal"
-                          >
-                            (GMT -12:00) Eniwetok, Kwajalein
-                          </option>
-                          <option
-                            value="-11:00"
-                            className="text-base  font-normal"
-                          >
-                            (GMT -11:00) Midway Island, Samoa
-                          </option>
-                          <option
-                            value="-10:00"
-                            className="text-base  font-normal"
-                          >
-                            (GMT -10:00) Hawaii
-                          </option>
-                          <option
-                            value="-09:50"
-                            className="text-base  font-normal"
-                          >
-                            (GMT -9:30) Taiohae
-                          </option>
-                          <option
-                            value="-09:00"
-                            className="text-base  font-normal"
-                          >
-                            (GMT -9:00) Alaska
-                          </option>
-                        </select>
-                      </div>
-                      <div className="mt-8 flex items-center justify-between">
-                        <div>
-                          <label>From</label>
-                        </div>
-                        <div className="ml-5">
-                          <label className="border border-[#D5E3FF] p-2">
-                            1 June 2023, 01:30PM
-                          </label>
-                        </div>
-                        <div className="ml-5">
-                          <label>To</label>
-                        </div>
-                        <div className="ml-5">
-                          <label className="border border-[#D5E3FF] p-2">
-                            30 June 2023, 01:30PM
-                          </label>
-                        </div>
-                      </div>
-                      <div className="mt-8">
-                        <label>Repeat : </label>
-                        <div className="mt-3">
-                          <select
-                            value={repeatValue}
-                            onChange={handleRepeatChange}
-                            className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                          >
-                            <option
-                              value="Does Not Repeat"
-                              className="text-base  font-normal"
-                            >
-                              Does Not Repeat
-                            </option>
-                            <option
-                              value="Daily"
-                              className="text-base  font-normal"
-                            >
-                              Daily
-                            </option>
-                            <option
-                              value="weekly"
-                              className="text-base  font-normal"
-                            >
-                              Weekly
-                              {/* {showWeeklyDays &&
-                                selectedWeeklyDays.length > 0 &&
-                                `: ${selectedWeeklyDays.join(", ")}`} */}
-                            </option>
-                            <option
-                              value="Monthly on the second"
-                              className="text-base  font-normal"
-                            >
-                              Monthly on the second
-                            </option>
-                            <option
-                              value="Monthly on the"
-                              className="text-base  font-normal"
-                            >
-                              Monthly on the
-                            </option>
-                            <option
-                              value="Every Weekday"
-                              className="text-base  font-normal"
-                            >
-                              Every Weekday
-                            </option>
-                            <option
-                              value="Custom"
-                              className="text-base  font-normal"
-                            >
-                              Custom
-                            </option>
-                          </select>
-                          {showWeeklyDays && (
-                            <select
-                              multiple
-                              className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full mt-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                              value={selectedWeeklyDays}
-                              onChange={handleWeeklyDaysChange}
-                            >
-                              <option value="Monday">Monday</option>
-                              <option value="Tuesday">Tuesday</option>
-                              <option value="Wednesday">Wednesday</option>
-                              <option value="Thursday">Thursday</option>
-                              <option value="Friday">Friday</option>
-                              <option value="Saturday">Saturday</option>
-                              <option value="Sunday">Sunday</option>
-                            </select>
-                          )}
-                        </div>
-                      </div>
+                    <div className="overflow-x-auto p-4">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="flex justify-between items-center">
+                            <th className="p-3 font-medium text-[14px]">
+                              <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                                <TbCalendarTime className="mr-2" />
+                                Schedule Name
+                              </button>
+                            </th>
+                            <th className="p-3 font-medium text-[14px]">
+                              <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                                <VscCalendar className="mr-2" />
+                                Date Added
+                              </button>
+                            </th>
+                            <th className="p-3 font-medium text-[14px]">
+                              <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                                <TbCalendarStats className="mr-2" />
+                                start date
+                              </button>
+                            </th>
+                            <th className="p-3 font-medium text-[14px]">
+                              <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                                <TbCalendarStats className="mr-2" />
+                                End date
+                              </button>
+                            </th>
+                            <th className="p-3 font-medium text-[14px]">
+                              <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                                <RiComputerLine className="mr-2" />
+                                screens Assigned
+                              </button>
+                            </th>
+                            <th className="p-3 font-medium text-[14px]">
+                              <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                                <BsTags className="mr-2" />
+                                Tags
+                              </button>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
+                            <td className="flex items-center ">
+                              <input type="checkbox" className="mr-3" />
+                              <div>
+                                <div>
+                                  <Link to="/screensplayer">Schedule Name</Link>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="break-words w-[108px] p-2">
+                              10 May 2023 10:30AM
+                            </td>
+                            <td className="break-words w-[108px] p-2">
+                              05 June 2023 01:30PM
+                            </td>
+
+                            <td className="break-words w-[108px] p-2">
+                              25 June 2023 03:30PM
+                            </td>
+                            <td className="p-2">1</td>
+                            <td className="p-2 flex items-center">
+                              Tags, Tags{" "}
+                              <div className="relative">
+                                <button className="ml-3">
+                                  <HiDotsVertical />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
+                            <td className="flex items-center ">
+                              <input type="checkbox" className="mr-3" />
+                              <div>
+                                <div>
+                                  <Link to="/screensplayer">Schedule Name</Link>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="break-words w-[108px] p-2">
+                              10 May 2023 10:30AM
+                            </td>
+                            <td className="break-words w-[108px] p-2">
+                              05 June 2023 01:30PM
+                            </td>
+
+                            <td className="break-words w-[108px] p-2">
+                              25 June 2023 03:30PM
+                            </td>
+                            <td className="p-2">1</td>
+                            <td className="p-2 flex items-center">
+                              Tags, Tags{" "}
+                              <button className="ml-3">
+                                <HiDotsVertical />
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
