@@ -10,6 +10,7 @@ import "../../../Styles/screen.css";
 import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
 import PropTypes from "prop-types";
+import Footer from "../../Footer";
 
 const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   MergeScreen.propTypes = {
@@ -436,11 +437,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             )}
           </div>
-
-
-
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

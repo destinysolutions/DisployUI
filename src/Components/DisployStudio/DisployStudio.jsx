@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { GrServicePlay } from "react-icons/gr"
 import '../../Styles/Studio.css'
+import Footer from '../Footer';
 
 const DisployStudio = ({ sidebarOpen, setSidebarOpen }) => {
     DisployStudio.propTypes = {
@@ -71,6 +72,7 @@ const DisployStudio = ({ sidebarOpen, setSidebarOpen }) => {
 
                 </div>
             </div>
+            <Footer/>
         </>
     )
 }

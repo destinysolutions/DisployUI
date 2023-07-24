@@ -17,6 +17,7 @@ import { RiArrowDownSLine, RiComputerLine } from "react-icons/ri";
 import { HiDotsVertical, HiOutlineLocationMarker } from "react-icons/hi";
 import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
 import { BsTags } from "react-icons/bs";
+import Footer from "../Footer";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -656,6 +657,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

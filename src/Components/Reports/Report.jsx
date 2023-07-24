@@ -8,6 +8,7 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import "../../Styles/Report.css";
 import { useDateSelect } from "react-ymd-date-select";
 import { useNavigate } from "react-router-dom";
+import Footer from "../Footer";
 
 {
   /*popup datepicker */
@@ -301,6 +302,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
           setModelVisible={setModelVisible}
         />
       )}
+      <Footer/>
     </>
   );
 };

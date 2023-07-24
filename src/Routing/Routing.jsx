@@ -11,7 +11,6 @@ import Screensplayer from "../Components/Screen/SubScreens/Screensplayer";
 import { useState, useEffect, useCallback } from "react";
 import MergeScreen from "../Components/Screen/SubScreens/MergeScreen";
 import NewScreenDetail from "../Components/Screen/SubScreens/NewScreenDetail";
-import FileUpload from "../Components/Assests/fileUpload";
 import Assets from "../Components/Assests/Assets";
 import MyPlaylist from "../Components/PlayList/MyPlaylist";
 import Apps from "../Components/Apps/Apps";
@@ -28,6 +27,8 @@ import MySchedule from "../Components/Schedule/MySchedule";
 import AddSchedule from "../Components/Schedule/AddSchedule";
 import WeatherSchedule from "../Components/Schedule/WeatherSchedule";
 import SaveAssignScreenModal from "../Components/Schedule/SaveAssignScreenModal";
+import Approval from "../Components/Approval/Approval";
+import FileUpload from "../Components/Assests/FileUpload";
 const Routing = () => {
   //for screen resize sidebar open close
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -272,6 +273,16 @@ const Routing = () => {
         <Route
           path="/saveassignscreenmodal"
           element={<SaveAssignScreenModal />}
+        />
+        {/* Approval component route */}
+        <Route
+          path="/approval"
+          element={
+            <Approval
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
         />
         {/* Settings component route */}
         <Route

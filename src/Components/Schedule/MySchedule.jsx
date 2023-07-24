@@ -14,6 +14,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import { useState } from "react";
 import "../../Styles/schedule.css";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import Footer from "../Footer";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //for action popup
@@ -229,6 +230,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

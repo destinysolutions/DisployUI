@@ -16,6 +16,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { SlFolderAlt } from "react-icons/sl";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import Footer from "../Footer";
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -518,6 +519,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       }
+      <Footer/>
     </>
   );
 };
