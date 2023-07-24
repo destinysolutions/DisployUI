@@ -112,7 +112,7 @@ const CompanyGrowthOption = {
         },
         value: {
           offsetY: 16,
-          fontSize: "22px",
+          fontSize: "18px",
           color: undefined,
           formatter: function (val) {
             return val + "%";
@@ -164,7 +164,6 @@ const ScreenOption = {
 //for Stores chart options
 var StoreOptions = {
   chart: {
-    height: 280,
     type: "radialBar",
   },
 
@@ -183,11 +182,11 @@ var StoreOptions = {
           offsetY: -10,
           show: true,
           color: "#888",
-          fontSize: "23px",
+          fontSize: "20px",
         },
         value: {
           color: "#111",
-          fontSize: "30px",
+          fontSize: "25px",
           show: true,
           formatter: function (val) {
             return val.toFixed(0);
@@ -412,7 +411,7 @@ const Business = () => {
                           options={StoreOptions}
                           series={StoreOptions.series}
                           type="radialBar"
-                          height={300}
+                          className="max-h-full"
                         />
                       </div>
                     </div>
@@ -422,14 +421,13 @@ const Business = () => {
                           Total Screens
                         </label>
                       </div>
-                      <div className="flex justify-center">
-                        <ReactApexChart
-                          options={ScreenOption}
-                          series={ScreenOption.series}
-                          type="donut"
-                          width="380"
-                        />
-                      </div>
+
+                      <ReactApexChart
+                        options={ScreenOption}
+                        series={ScreenOption.series}
+                        type="donut"
+                        className="max-w-md"
+                      />
                     </div>
                   </div>
                 </div>
@@ -443,7 +441,7 @@ const Business = () => {
       <div className=" mt-5 ">
         <div className="grid grid-cols-12 gap-4">
           {/* Revenue chart start*/}
-          <div className="lg:col-span-9  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
+          <div className="lg:col-span-8  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
             <div className="mb-4 justify-between gap-4 sm:flex mt-3">
               <div>
                 <h4 className="text-xl font-semibold text-black dark:text-white ml-3">
@@ -497,13 +495,13 @@ const Business = () => {
           </div>
           {/* Revenue chart end*/}
           {/* Company Growth start*/}
-          <div className="lg:col-span-3 md:col-span-6 sm:col-span-12 bg-white shadow-lg rounded-md">
+          <div className="lg:col-span-4 md:col-span-6 sm:col-span-12 bg-white shadow-lg rounded-md ">
             <div id="chart">
               <ReactApexChart
                 options={CompanyGrowthOption}
                 series={CompanyGrowthOption.series}
                 type="radialBar"
-                height={350}
+                className="min-h-full"
               />
             </div>
             <label className="flex justify-center text-sm font-semibold">

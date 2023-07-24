@@ -50,32 +50,18 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const [scheduleModal, setScheduleModal] = useState(false);
   const [moreModal, setMoreModal] = useState(false);
-  const [repeatValue, setRepeatValue] = useState("");
-  const [showWeeklyDays, setShowWeeklyDays] = useState(false);
-  const [selectedWeeklyDays, setSelectedWeeklyDays] = useState([]);
-
-  const handleRepeatChange = (e) => {
-    const value = e.target.value;
-    setRepeatValue(value);
-    if (value === "weekly") {
-      // Show the weekly days dropdown
-
-      setShowWeeklyDays(true);
+  const [moreCheckboxClick, setMoreCheckboxClick] = useState(false);
+  const [locCheckboxClick, setLocCheckboxClick] = useState(false);
+  const handleCheckboxClick = () => {
+    setLocCheckboxClick(!locCheckboxClick);
+  };
+  const handleUpdateButtonClick = () => {
+    if (locCheckboxClick) {
+      setMoreCheckboxClick(true);
     } else {
-      // Hide the weekly days dropdown
-      setShowWeeklyDays(false);
-      setSelectedWeeklyDays([]);
+      setMoreCheckboxClick(false);
     }
   };
-
-  const handleWeeklyDaysChange = (e) => {
-    const selectedDays = Array.from(
-      e.target.selectedOptions,
-      (option) => option.value
-    );
-    setSelectedWeeklyDays(selectedDays);
-  };
-
   return (
     <>
       <div className="flex border-b border-gray py-3">
@@ -204,35 +190,67 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     <div className="moredw">
                       <ul>
                         <li className="flex text-sm items-center ">
-                          <input type="checkbox" className="mr-2 text-lg" />
+                          <input
+                            type="checkbox"
+                            className="mr-2 text-lg"
+                            defaultChecked
+                          />
                           Screen
                         </li>
                         <li className="flex text-sm items-center mt-2">
-                          <input type="checkbox" className="mr-2 text-lg" />
+                          <input
+                            type="checkbox"
+                            className="mr-2 text-lg"
+                            defaultChecked
+                          />
                           Status
                         </li>
                         <li className="flex text-sm items-center mt-2">
-                          <input type="checkbox" className="mr-2 text-lg" />
+                          <input
+                            type="checkbox"
+                            className="mr-2 text-lg"
+                            defaultChecked
+                          />
                           Last Seen
                         </li>
                         <li className="flex text-sm items-center mt-2">
-                          <input type="checkbox" className="mr-2 text-lg" />
+                          <input
+                            type="checkbox"
+                            className="mr-2 text-lg"
+                            defaultChecked
+                          />
                           Now Playing
                         </li>
                         <li className="flex text-sm items-center mt-2 ">
-                          <input type="checkbox" className="mr-2 text-lg" />
+                          <input
+                            type="checkbox"
+                            className="mr-2 text-lg"
+                            defaultChecked
+                          />
                           Current Schedule
                         </li>
                         <li className="flex text-sm items-center mt-2 ">
-                          <input type="checkbox" className="mr-2 text-lg" />
+                          <input
+                            type="checkbox"
+                            className="mr-2 text-lg"
+                            checked={locCheckboxClick}
+                            onChange={handleCheckboxClick}
+                          />
                           Google Location
                         </li>
                         <li className="flex text-sm items-center mt-2 ">
-                          <input type="checkbox" className="mr-2 text-lg" />
+                          <input
+                            type="checkbox"
+                            className="mr-2 text-lg"
+                            defaultChecked
+                          />
                           Tags
                         </li>
                         <li className="flex text-sm justify-end mt-2 ">
-                          <button className="bg-[#E4E6FF] text-SlateBlue px-4 py-2 rounded-full">
+                          <button
+                            className="bg-[#E4E6FF] text-SlateBlue px-4 py-2 rounded-full"
+                            onClick={handleUpdateButtonClick}
+                          >
                             Update
                           </button>
                         </li>
@@ -293,12 +311,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       Screen
                     </button>
                   </th>
-                  <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
-                      <HiOutlineLocationMarker className="mr-2 text-xl" />
-                      Google Location
-                    </button>
-                  </th>
+                  {moreCheckboxClick && (
+                    <th className="p-3 font-medium text-[14px]">
+                      <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                        <HiOutlineLocationMarker className="mr-2 text-xl" />
+                        Google Location
+                      </button>
+                    </th>
+                  )}
                   <th className="p-3 font-medium text-[14px]">
                     <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
                       <svg
@@ -469,9 +489,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                     </div>
                   </td>
-                  <td className="p-2 break-words  w-[150px]">
-                    132, My Street, Kingston, New York 12401.
-                  </td>
+                  {moreCheckboxClick && (
+                    <td className="p-2 break-words  w-[150px]">
+                      132, My Street, Kingston, New York 12401.
+                    </td>
+                  )}
                   <td className="p-2">
                     <button
                       className={`rounded-full px-6 py-1 text-white bg-${
@@ -509,9 +531,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
                     </button>
                   </td>
-                  <td className="p-2 break-words w-[150px]">
-                    132, My Street, Kingston, New York 12401.
-                  </td>
+                  {moreCheckboxClick && (
+                    <td className="p-2 break-words  w-[150px]">
+                      132, My Street, Kingston, New York 12401.
+                    </td>
+                  )}
                   <td className="p-2">
                     <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
                       Live
@@ -657,7 +681,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };
