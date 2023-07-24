@@ -10,6 +10,7 @@ import { MdOutlineWidgets } from "react-icons/md";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import "../../Styles/apps.css";
 import { Link } from "react-router-dom";
+import Footer from "../Footer";
 
 const Apps = ({ sidebarOpen, setSidebarOpen }) => {
   Apps.propTypes = {
@@ -285,16 +286,9 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
               ))}
             </div>
           </div>
-          <div className="dashboard-footer text-center lg:text-base md:text-base  z-10 my-4 sm:text-sm  py-2 ">
-            <h6 className="font-medium">
-              Securely display dashboards from any application
-            </h6>
-            <p>
-              Find out more at <Link to="/">disploy.com</Link>
-            </p>
-          </div>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

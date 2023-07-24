@@ -13,8 +13,9 @@ import PropTypes from "prop-types";
 import ReactPlayer from "react-player";
 import { FiPlus } from "react-icons/fi";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import { AiOutlineCloseCircle } from 'react-icons/ai'
+import { AiOutlineCloseCircle } from "react-icons/ai";
 import { select } from "@material-tailwind/react";
+import Footer from "../../Footer";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -36,9 +37,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   {
     /*payment dw */
   }
-  { /* custome operating hours popup*/ }
+  {
+    /* custome operating hours popup*/
+  }
   const [showhoursModal, setshowhoursModal] = useState(false);
-  const [hoursdw, setshowhoursdw] = useState(false)
+  const [hoursdw, setshowhoursdw] = useState(false);
   const [paymentpop, setPaymentpop] = useState(false);
 
   const [buttonStates, setButtonStates] = useState(Array(3).fill(false));
@@ -49,7 +52,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       return newState;
     });
   };
-  const buttons = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+  const buttons = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
   return (
     <>
@@ -325,10 +328,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   onClick={() => {
                                     setEnabled(!enabled);
                                   }}
-                                  className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled
-                                    ? " bg-gray text-left pl-2 text-white text-sm"
-                                    : "bg-gray text-right pr-2 text-white text-sm"
-                                    }`}
+                                  className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
+                                    enabled
+                                      ? " bg-gray text-left pl-2 text-white text-sm"
+                                      : "bg-gray text-right pr-2 text-white text-sm"
+                                  }`}
                                 >
                                   {enabled ? "On" : "Off"}
                                 </div>
@@ -545,7 +549,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   </td>
                                 </tr>
 
-
                                 <tr className="border-b border-[#D5E3FF] relative">
                                   <td className="text-right">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
@@ -556,57 +559,83 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     <div className="paymentlabel relative">
                                       <span
                                         className="flex justify-between"
-                                        onClick={() =>
-                                          setshowhoursdw(!hoursdw)
-                                        }
+                                        onClick={() => setshowhoursdw(!hoursdw)}
                                       >
-                                        <label className=""> Operating Hours</label>
+                                        <label className="">
+                                          {" "}
+                                          Operating Hours
+                                        </label>
                                         <MdOutlineKeyboardArrowDown className=" text-xl font-black cursor-pointer" />
                                       </span>
-
                                     </div>
-                                    {
-                                      hoursdw && (
-                                        <div className="hoursdw relative">
-                                          <ul className=" absolute top-0 left-0 bg-white rounded-xl w-full drop-shadow-xl z-10 border-[#ddd] border">
-                                            <li className="px-3 py-1 text-sm hover:rounded-tl-xl hover:rounded-tr-xl text-left">Always On</li>
-                                            <li className="px-3  py-1 text-sm  hover:rounded-bl-xl hover:rounded-br-xl text-left" onClick={() => setshowhoursModal(true)}><button >Custom</button></li>
-
-                                          </ul>
-                                        </div>
-                                      )
-                                    }
-
+                                    {hoursdw && (
+                                      <div className="hoursdw relative">
+                                        <ul className=" absolute top-0 left-0 bg-white rounded-xl w-full drop-shadow-xl z-10 border-[#ddd] border">
+                                          <li className="px-3 py-1 text-sm hover:rounded-tl-xl hover:rounded-tr-xl text-left">
+                                            Always On
+                                          </li>
+                                          <li
+                                            className="px-3  py-1 text-sm  hover:rounded-bl-xl hover:rounded-br-xl text-left"
+                                            onClick={() =>
+                                              setshowhoursModal(true)
+                                            }
+                                          >
+                                            <button>Custom</button>
+                                          </li>
+                                        </ul>
+                                      </div>
+                                    )}
                                   </td>
                                 </tr>
-
 
                                 {showhoursModal && (
                                   <>
                                     <div className="backdrop">
                                       <div className="hours-model rounded-lg">
-
                                         <div className="hours-heading flex  justify-between items-center p-5 border-b border-gray">
                                           <h1>Custom Operating Hours</h1>
-                                          <AiOutlineCloseCircle className="text-primary text-3xl" onClick={() => setshowhoursModal(false)} />
+                                          <AiOutlineCloseCircle
+                                            className="text-primary text-3xl"
+                                            onClick={() =>
+                                              setshowhoursModal(false)
+                                            }
+                                          />
                                         </div>
                                         <hr className="border-gray " />
                                         <div className="model-body lg:p-5 md:p-5 sm:p-5 xs:p-4 ">
                                           <div className="model-details shadow-2xl lg:p-3 md:p-5 sm:p-5 xs:py-3 xs:px-1 text-left rounded-2xl">
-                                            <lable className="text-base font-medium">Hours:</lable>
+                                            <lable className="text-base font-medium">
+                                              Hours:
+                                            </lable>
                                             <div className="flex justify-between items-center mt-3">
-                                              <input type="time" placeholder="From Time" />
-                                              <lable className="lg:px-3 md:px-3 sm:px-1 xs:px-1 text-base">To</lable>
-                                              <input type="time" placeholder="To Time" />
+                                              <input
+                                                type="time"
+                                                placeholder="From Time"
+                                              />
+                                              <lable className="lg:px-3 md:px-3 sm:px-1 xs:px-1 text-base">
+                                                To
+                                              </lable>
+                                              <input
+                                                type="time"
+                                                placeholder="To Time"
+                                              />
                                             </div>
                                             <div className="pt-5 text-center">
                                               {buttons.map((label, index) => (
-                                                <button className="daysbtn"
+                                                <button
+                                                  className="daysbtn"
                                                   key={index}
-                                                  onClick={() => handleButtonClick(index)}
+                                                  onClick={() =>
+                                                    handleButtonClick(index)
+                                                  }
                                                   style={{
-                                                    backgroundColor: buttonStates[index] ? '#fff' : ' #00072e',
-                                                    color: buttonStates[index] ? '#41479b' : '#fff',
+                                                    backgroundColor:
+                                                      buttonStates[index]
+                                                        ? "#fff"
+                                                        : " #00072e",
+                                                    color: buttonStates[index]
+                                                      ? "#41479b"
+                                                      : "#fff",
                                                   }}
                                                 >
                                                   {label}
@@ -615,28 +644,26 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                             </div>
 
                                             <div className="formgroup lg:flex md:flex sm:flex xs:block justify-between items-center mt-5">
-                                              <label className="lg:text-base md:text-base sm:text-base xs:text-xs  lg:ml-0 md:ml-0 sm:ml-0  xs:ml-3 font-medium mr-3">Action</label>
+                                              <label className="lg:text-base md:text-base sm:text-base xs:text-xs  lg:ml-0 md:ml-0 sm:ml-0  xs:ml-3 font-medium mr-3">
+                                                Action
+                                              </label>
                                               <select>
                                                 <option>Select Action</option>
                                                 <option>Shut Down</option>
                                                 <option>Sleep</option>
                                               </select>
                                             </div>
-
-
                                           </div>
                                         </div>
                                         <div className="text-right mt-0 pr-5">
-                                          <button className="bg-primary  text-white lg:px-8 md:px-8 sm:px-5 xs:px-5 lg:py-3 md:py-3 sm:py-2 xs:py-2 text-base rounded-full mb-5 drop-shadow-xl ">Apply</button>
+                                          <button className="bg-primary  text-white lg:px-8 md:px-8 sm:px-5 xs:px-5 lg:py-3 md:py-3 sm:py-2 xs:py-2 text-base rounded-full mb-5 drop-shadow-xl ">
+                                            Apply
+                                          </button>
                                         </div>
-
-
                                       </div>
                                     </div>
                                   </>
-                                )
-
-                                }
+                                )}
 
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
@@ -727,10 +754,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                           onClick={() => {
                                             setEnabled(!enabled);
                                           }}
-                                          className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled
-                                            ? " bg-gray text-left pl-2 text-white text-sm"
-                                            : "bg-gray text-right pr-2 text-white text-sm"
-                                            }`}
+                                          className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
+                                            enabled
+                                              ? " bg-gray text-left pl-2 text-white text-sm"
+                                              : "bg-gray text-right pr-2 text-white text-sm"
+                                          }`}
                                         >
                                           {enabled ? "On" : "Off"}
                                         </div>
@@ -833,11 +861,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 <td>
                                   <select className="relative">
                                     <option>Always On</option>
-                                    <option> <button >Custom</button></option>
+                                    <option>
+                                      {" "}
+                                      <button>Custom</button>
+                                    </option>
                                   </select>
                                 </td>
                               </tr>
-
 
                               <tr className="border-b border-[#D5E3FF]">
                                 <td className="text-right">
@@ -857,7 +887,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   <div className="flex items-center justify-center">
                                     {" "}
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base mr-2">
-                                      Do you want to run the App at boot up time :
+                                      Do you want to run the App at boot up time
+                                      :
                                     </p>
                                     <label className="inline-flex relative items-center  cursor-pointer">
                                       <input
@@ -870,10 +901,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                         onClick={() => {
                                           setEnabled(!enabled);
                                         }}
-                                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled
-                                          ? " bg-gray text-left pl-2 text-white text-sm"
-                                          : "bg-gray text-right pr-2 text-white text-sm"
-                                          }`}
+                                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
+                                          enabled
+                                            ? " bg-gray text-left pl-2 text-white text-sm"
+                                            : "bg-gray text-right pr-2 text-white text-sm"
+                                        }`}
                                       >
                                         {enabled ? "On" : "Off"}
                                       </div>
@@ -881,7 +913,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div>
                                 </td>
                               </tr>
-
                             </table>
                             <div className="text-right my-5">
                               <button className="bg-primary text-base px-5 py-2 rounded-full text-white hover:bg-SlateBlue">
@@ -899,6 +930,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       }
+      <Footer />
     </>
   );
 };

@@ -7,6 +7,7 @@ import { GrScheduleNew } from "react-icons/gr";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import AssetModal from "../../Assests/AssetModal";
+import Footer from "../../Footer";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
@@ -478,6 +479,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

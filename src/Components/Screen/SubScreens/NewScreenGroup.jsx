@@ -13,6 +13,7 @@ import { HiOutlineRectangleGroup } from "react-icons/hi2";
 import { IoMdRefresh } from "react-icons/io";
 import { TbScanEye } from "react-icons/tb";
 import PropTypes from "prop-types";
+import Footer from "../../Footer";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenGroup.propTypes = {
@@ -29,7 +30,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     } else {
       setIsHovering(true);
     }
-
   };
   const handleMouseOut = () => {
     setIsHovering(false);
@@ -73,15 +73,17 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="accordions mt-5" >
-            <div className="section shadow-md  lg:p-5 md:p-5 sm:p-3 rounded-md bg-white  lg:flex md:flex  sm:block items-center justify-between" onMouseOver={handleMouseOver}
-              onMouseOut={handleMouseOut}>
+          <div className="accordions mt-5">
+            <div
+              className="section shadow-md  lg:p-5 md:p-5 sm:p-3 rounded-md bg-white  lg:flex md:flex  sm:block items-center justify-between"
+              onMouseOver={handleMouseOver}
+              onMouseOut={handleMouseOut}
+            >
               <h1 className="text-lg">Group Name1</h1>
 
               <div className="flex items-center">
                 {isHovering && (
                   <div className="flex items-center flex-wrap">
-
                     <button className="rounded-full mx-1 border hover:bg-SlateBlue">
                       <TbScanEye className="text-2xl p-1 hover:text-white" />
                     </button>
@@ -109,8 +111,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                         <LuMonitor className="text-sm mr-1" />
                         03
                       </button>
-                      <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white flex items-center">Preview</button>
-
+                      <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white flex items-center">
+                        Preview
+                      </button>
                       <button className="rounded-full mx-1 border hover:bg-SlateBlue">
                         <TbUpload className="text-2xl p-1 hover:text-white" />
                       </button>
@@ -126,10 +129,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                       </button>
                     </>
                   )}
-                  <button
-                    onClick={handleDropupClick}
-
-                  >
+                  <button onClick={handleDropupClick}>
                     {" "}
                     {showdata ? (
                       <IoIosArrowDropup className="text-3xl" />
@@ -452,6 +452,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

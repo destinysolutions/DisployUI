@@ -16,6 +16,7 @@ import {
   AiOutlineSearch,
 } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import Footer from "../Footer";
 
 const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
   AppInstance.propTypes = {
@@ -366,6 +367,7 @@ const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

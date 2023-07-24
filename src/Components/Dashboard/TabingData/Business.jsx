@@ -324,7 +324,8 @@ const Business = () => {
                     setShowCityDw(true);
                     setShowStore(false);
                   }}
-                  placeholder="Select State" className=" placeholder:text-sm"
+                  placeholder="Select State"
+                  className=" placeholder:text-sm"
                 />
                 {/* <select
                   id="state"
@@ -559,14 +560,6 @@ const Business = () => {
         </div>
       </div>
       {/* app store end*/}
-      <div className="dashboard-footer text-center lg:text-base md:text-base  z-10 my-4 sm:text-sm  py-2 ">
-        <h6 className="font-medium">
-          Securely display dashboards from any application
-        </h6>
-        <p>
-          Find out more at <Link to="/">disploy.com</Link>
-        </p>
-      </div>
     </>
   );
 };

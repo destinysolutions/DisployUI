@@ -8,6 +8,7 @@ import { AiOutlineSearch } from 'react-icons/ai'
 import { LuDownload } from 'react-icons/lu'
 import { CiFilter } from 'react-icons/ci'
 import { Link } from 'react-router-dom';
+import Footer from '../Footer';
 
 const Mediareport = ({ sidebarOpen, setSidebarOpen }) => {
     Mediareport.propTypes = {
@@ -85,6 +86,7 @@ const Mediareport = ({ sidebarOpen, setSidebarOpen }) => {
 
                 </div>
             </div>
+            <Footer/>
         </>
     )
 }

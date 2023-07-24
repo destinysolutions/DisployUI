@@ -7,6 +7,7 @@ import { MdOutlineGroups } from "react-icons/md";
 import { useState } from "react";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import SaveAssignScreenModal from "./SaveAssignScreenModal";
+import Footer from "../Footer";
 
 const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectScreenModal, setSelectScreenModal] = useState(false);
@@ -150,6 +151,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

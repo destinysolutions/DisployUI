@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { FiCheckCircle } from "react-icons/fi";
 import { BiError } from "react-icons/bi";
 import PropTypes from "prop-types";
+import Footer from "../Footer";
 
 const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   FileUpload.propTypes = {
@@ -265,6 +266,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
           ) : null}
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

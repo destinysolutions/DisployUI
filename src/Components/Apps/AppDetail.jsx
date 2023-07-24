@@ -9,6 +9,7 @@ import { TbExclamationMark } from "react-icons/tb";
 import { VscBook } from "react-icons/vsc";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import Footer from "../Footer";
 
 const AppDetail = ({ sidebarOpen, setSidebarOpen }) => {
   AppDetail.propTypes = {
@@ -199,6 +200,7 @@ const AppDetail = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

@@ -18,6 +18,7 @@ import PropTypes from "prop-types";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
+import Footer from "../Footer";
 
 const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
   Dashboard.propTypes = {
@@ -142,6 +143,7 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
       {/* dashboard component end */}
+      <Footer />
     </>
   );
 };
