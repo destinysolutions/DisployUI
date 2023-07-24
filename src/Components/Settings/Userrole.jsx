@@ -103,7 +103,7 @@ const Userrole = () => {
                                                     </svg>
                                                 </label>
                                             </td>
-                                            <td className='text-center'>
+                                            <td>
                                                 <input
                                                     type="checkbox"
                                                     id={`cbx${row.id}-2`}
@@ -118,7 +118,7 @@ const Userrole = () => {
                                                     </svg>
                                                 </label>
                                             </td>
-                                            <td className='text-center'>
+                                            <td>
                                                 <input
                                                     type="checkbox"
                                                     id={`cbx${row.id}-3`}

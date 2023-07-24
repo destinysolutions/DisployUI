@@ -13,6 +13,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { LOGIN_URL } from "./Api";
+import video from '../../public/DisployImg/video.mp4'
 
 const Login = () => {
   //using for routing
@@ -133,9 +134,10 @@ const Login = () => {
       {/* login faild error meg display end */}
 
       {/* Login form start*/}
-      <div className="main login">
+      <div className="videobg login">
+        <video src={video} autoPlay muted loop />
         <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
-          <div className="flex flex-col items-center justify-center min-h-screen px-6 mx-auto  lg:py-2 md:py-3 sm:py-5 xs:py-5">
+          <div className="flex flex-col items-center justify-center min-h-screen px-6 mx-auto  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
             <div className="flex items-center pb-5">
               <img
                 className="w-227 h-50"
@@ -143,12 +145,12 @@ const Login = () => {
                 alt="title"
               />
             </div>
-            <div className="w-full bg-white rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
+            <div className="w-full border-[#ffffff6e] border rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
               <div className="p-6 sm:px-6 py-6">
-                <div className="mb-2 font-inter not-italic font-medium text-[24px] text-black">
+                <div className="mb-2 font-inter not-italic font-medium text-[24px] text-white">
                   Sign in
                 </div>
-                <div className="mb-8 font-['Poppins'] not-italic font-normal text-[16px] text-black">
+                <div className="mb-8 font-['Poppins'] not-italic font-normal text-[16px] text-white">
                   Fill in the fields below to sign into your account.
                 </div>
                 <form
@@ -156,34 +158,36 @@ const Login = () => {
                   onSubmit={formik.handleSubmit}
                 >
                   <div className="relative">
-                    <label className="formLabel">Email address</label>
+
                     <input
                       type="email"
                       name="emailID"
                       id="emailID"
-                      className="formInput"
-                      placeholder="Enter Your Email Address"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.emailID}
+                      placeholder="Email"
+                      className="formInput"
                     />
+                    {/*<label for="emailID">Email address</label> */}
                     {formik.errors.emailID && formik.touched.emailID && (
                       <div className="error">{formik.errors.emailID}</div>
                     )}
                   </div>
                   <div className="relative">
-                    <label className="formLabel">Password</label>
+
                     <div className="relative">
                       <input
                         type={showPassword ? "text" : "password"}
                         name="password"
                         id="password"
-                        placeholder="Enter Your Password"
+                        placeholder="Password"
                         className="formInput"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.password}
                       />
+                      {/* <label for="password">Password</label>*/}
                       <div className="icon">
                         {showPassword ? (
                           <BsFillEyeFill
@@ -212,14 +216,14 @@ const Login = () => {
                         className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
                       />
                     </div>
-                    <div className="lg:flex ml-3 text-sm sm:block">
-                      <label className="not-italic text-[#808080] font-medium">
+                    <div className="flex ml-3 text-sm flex-wrap">
+                      <p className="not-italic text-white font-medium">
                         I accept the
-                      </label>
+                      </p>
                       <Link to="/termsconditions">
-                        <p className="lg:ml-1 not-italic text-[#3871E1] font-medium">
+                        <a className="ml-1 not-italic text-white font-medium decoration-white border-b ">
                           terms and conditions
-                        </p>
+                        </a>
                       </Link>
                     </div>
                   </div>
@@ -232,12 +236,12 @@ const Login = () => {
                   >
                     Sign in
                   </button>
-                  <div className="lg:flex lg:ml-3 text-sm sm:block">
-                    <label className="not-italic text-[#808080] font-medium">
+                  <div className="flex lg:ml-3 text-sm flex-wrap">
+                    <p className="not-italic text-white font-medium">
                       Don’t have an account, yet?
-                    </label>
+                    </p>
                     <button
-                      className="lg:ml-1 not-italic text-[#3871E1] font-medium"
+                      className="ml-1 not-italic text-white font-medium border-b border-white"
                       onClick={handleRegister}
                     >
                       Sign up here
