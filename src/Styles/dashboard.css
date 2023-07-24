@@ -143,3 +143,38 @@ body {
     font-size: 10px !important;
   }
 }
+
+/* footer */
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  right: 0;
+
+  transform: translate(-40%, 10px);
+}
+
+
+
+div#root,
+body {
+  position: relative;
+  min-height: 100%;
+
+  margin: 0;
+}
+
+
+.pt-6.px-5 {
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 50px;
+
+}
+
+@media(max-width:767px) {
+  .footer {
+    transform: translate(-50%, 10px);
+    width: 100%;
+  }
+}
