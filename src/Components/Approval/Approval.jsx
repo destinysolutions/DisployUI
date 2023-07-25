@@ -16,7 +16,7 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {/* sidebar and navbar display end */}
-      <div className="pt-6 px-5">
+      <div className="pt-6 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
           <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
             Approval
@@ -84,11 +84,10 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                         onClick={() => {
                           setEnabled(!enabled);
                         }}
-                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
-                          enabled
-                            ? " bg-gray text-left pl-2 text-white text-sm"
-                            : "bg-gray text-right pr-2 text-white text-sm"
-                        }`}
+                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled
+                          ? " bg-gray text-left pl-2 text-white text-sm"
+                          : "bg-gray text-right pr-2 text-white text-sm"
+                          }`}
                       >
                         {enabled ? "On" : "Off"}
                       </div>
@@ -122,11 +121,10 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                         onClick={() => {
                           setEnabled1(!enabled1);
                         }}
-                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
-                          enabled1
-                            ? " bg-gray text-left pl-2 text-white text-sm"
-                            : "bg-gray text-right pr-2 text-white text-sm"
-                        }`}
+                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled1
+                          ? " bg-gray text-left pl-2 text-white text-sm"
+                          : "bg-gray text-right pr-2 text-white text-sm"
+                          }`}
                       >
                         {enabled1 ? "On" : "Off"}
                       </div>
@@ -159,11 +157,10 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                         onClick={() => {
                           setEnabled2(!enabled2);
                         }}
-                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
-                          enabled2
-                            ? " bg-gray text-left pl-2 text-white text-sm"
-                            : "bg-gray text-right pr-2 text-white text-sm"
-                        }`}
+                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled2
+                          ? " bg-gray text-left pl-2 text-white text-sm"
+                          : "bg-gray text-right pr-2 text-white text-sm"
+                          }`}
                       >
                         {enabled2 ? "On" : "Off"}
                       </div>
@@ -195,11 +192,10 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
                         onClick={() => {
                           setEnabled3(!enabled3);
                         }}
-                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
-                          enabled3
-                            ? " bg-gray text-left pl-2 text-white text-sm"
-                            : "bg-gray text-right pr-2 text-white text-sm"
-                        }`}
+                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled3
+                          ? " bg-gray text-left pl-2 text-white text-sm"
+                          : "bg-gray text-right pr-2 text-white text-sm"
+                          }`}
                       >
                         {enabled3 ? "On" : "Off"}
                       </div>

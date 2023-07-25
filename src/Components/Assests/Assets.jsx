@@ -252,11 +252,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className="relative ">
                           <img
                             src={Image}
-                            className={`imagebox relative ${
-                              selectedItems.includes(id)
+                            className={`imagebox relative ${selectedItems.includes(id)
                                 ? "active opacity-1 w-full rounded-2xl"
                                 : "opacity-50 w-full rounded-2xl"
-                            }`}
+                              }`}
                           />
 
                           <div
@@ -519,7 +518,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       }
-      <Footer/>
+      <Footer />
     </>
   );
 };

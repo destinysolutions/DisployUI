@@ -134,7 +134,7 @@ const Login = () => {
       {/* login faild error meg display end */}
 
       {/* Login form start*/}
-      <div className="videobg login">
+      <div className="videobg login relative">
         <video src={video} autoPlay muted loop />
         <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center min-h-screen px-6 mx-auto  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">

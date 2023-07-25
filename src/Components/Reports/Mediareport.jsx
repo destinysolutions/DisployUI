@@ -23,7 +23,7 @@ const Mediareport = ({ sidebarOpen, setSidebarOpen }) => {
                 <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
                 <Navbar />
             </div>
-            <div className="pt-6 px-5">
+            <div className="pt-6 px-5 page-contain">
                 <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
                     <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
                         <div className='flex items-center lg:mb-0 md:mb-0 sm:mb-4'>
@@ -86,7 +86,7 @@ const Mediareport = ({ sidebarOpen, setSidebarOpen }) => {
 
                 </div>
             </div>
-            <Footer/>
+            <Footer />
         </>
     )
 }

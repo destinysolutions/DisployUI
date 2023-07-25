@@ -98,9 +98,8 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
               });
               setRecords(newData);
             }}
-            className={`w-10 h-5 bg-gray rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all ${
-              row.enabled ? "peer-checked:bg-[#009618]" : ""
-            }`}
+            className={`w-10 h-5 bg-gray rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all ${row.enabled ? "peer-checked:bg-[#009618]" : ""
+              }`}
           ></div>
         </label>
       ),
@@ -231,7 +230,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
 
-      <div className="pt-6 px-5">
+      <div className="pt-6 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
           <div className="lg:flex justify-between sm:flex xs:block  items-center mb-5 ">
             <div className=" lg:mb-0 md:mb-0 sm:mb-4">

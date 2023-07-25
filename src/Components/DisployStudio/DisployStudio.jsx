@@ -23,7 +23,7 @@ const DisployStudio = ({ sidebarOpen, setSidebarOpen }) => {
                 <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
                 <Navbar />
             </div>
-            <div className="pt-6 px-5">
+            <div className="pt-6 px-5 page-contain">
                 <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
                     <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
                         <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
@@ -72,7 +72,7 @@ const DisployStudio = ({ sidebarOpen, setSidebarOpen }) => {
 
                 </div>
             </div>
-            <Footer/>
+            <Footer />
         </>
     )
 }
