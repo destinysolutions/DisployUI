@@ -6,17 +6,79 @@ import {
   Month,
   Agenda,
   Inject,
+  DragAndDrop,
+  Resize,
+  ResourcesDirective,
+  ResourceDirective,
 } from "@syncfusion/ej2-react-schedule";
 import { useState } from "react";
-import { AiOutlineCloseCircle } from "react-icons/ai";
 import { BsPencilFill } from "react-icons/bs";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import { MdOutlineGroups } from "react-icons/md";
 import SaveAssignScreenModal from "./SaveAssignScreenModal";
 
 const AddSchedule = () => {
   const [selectScreenModal, setSelectScreenModal] = useState(false);
+  const data = [
+    {
+      Id: 1,
+      Subject: "Playlist Name",
+      StartTime: new Date(2023, 6, 26, 1, 0), // Aug 20th, 2023, 6:00 AM
+      EndTime: new Date(2023, 6, 26, 3, 30), // Aug 20th, 2023, 7:00 AM
+      Location: "Video1",
+      ResourceID: 1,
+    },
+    {
+      Id: 2,
+      Subject: "Playlist Name",
+      StartTime: new Date(2023, 6, 26, 5, 0), // Aug 20th, 2023, 3:00 PM
+      EndTime: new Date(2023, 6, 26, 7, 0), // Aug 20th, 2023, 4:00 PM
+      Location: "Video2",
+      ResourceID: 2,
+    },
+    {
+      Id: 3,
+      Subject: "Playlist Name",
+      StartTime: new Date(2023, 6, 26, 10, 0), // Aug 20th, 2023, 3:00 PM
+      EndTime: new Date(2023, 6, 26, 11, 30), // Aug 20th, 2023, 4:00 PM
+      Location: "Video3",
+      ResourceID: 3,
+    },
+  ];
+  const resourceDataSource = [
+    {
+      Name: "Playlist 1",
+      Id: 1,
+      Color: "#29CC39",
+    },
+    {
+      Name: "Playlist 2",
+      Id: 2,
+      Color: "#FF6347",
+    },
+    {
+      Name: "Playlist 3",
+      Id: 3,
+      Color: "#7A29CC",
+    },
+  ];
+  // Event handler to access the Schedule event data
+  // const onActionBegin = (args) => {
+  //   if (args.requestType === "eventCreate") {
+  //     // New event is being created
+  //     console.log("New event data:", args.data); // The newly added event data will be logged here
+  //     const eventsInLocalStorage =
+  //       JSON.parse(localStorage.getItem("events")) || [];
+  //     eventsInLocalStorage.push(args.data);
+  //     localStorage.setItem("events", JSON.stringify(eventsInLocalStorage));
+  //   } else if (args.requestType === "eventChange") {
+  //     // Event is being edited/updated
+  //     console.log("Updated event data:", args.data); // The updated event data will be logged here
+  //   } else if (args.requestType === "eventRemove") {
+  //     // Event is being deleted
+  //     console.log("Deleted event data:", args.data); // The deleted event data will be logged here
+  //   }
+  // };
   return (
     <>
       <div className="p-6">
@@ -38,13 +100,36 @@ const AddSchedule = () => {
 
         <div className="grid grid-cols-12">
           <div className="lg:col-span-10 md:col-span-8 sm:col-span-12 xs:col-span-12 ">
-            <ScheduleComponent>
-              <Inject services={[Day, Week, WorkWeek, Month, Agenda]} />
+            <ScheduleComponent
+              eventSettings={{ dataSource: data }}
+              //actionBegin={onActionBegin}
+            >
+              <ResourcesDirective>
+                <ResourceDirective
+                  dataSource={resourceDataSource}
+                  field="ResourceID"
+                  title="Resource Name"
+                  name="Resources"
+                  textField="Name"
+                  idField="Id"
+                  colorField="Color"
+                ></ResourceDirective>
+              </ResourcesDirective>
+              <Inject
+                services={[
+                  Day,
+                  Week,
+                  WorkWeek,
+                  Month,
+                  Agenda,
+                  DragAndDrop,
+                  Resize,
+                ]}
+              />
             </ScheduleComponent>
           </div>
           <div className=" bg-white shadow-md ml-5 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 ">
             <div className="p-3">
-              {" "}
               <span className="text-xl">Schedule Name</span>
             </div>
             <div className="border-b-2 border-[#D5E3FF]"></div>
@@ -105,7 +190,9 @@ const AddSchedule = () => {
             Save & Assign screen
           </button>
           {selectScreenModal && (
-           <SaveAssignScreenModal setSelectScreenModal={setSelectScreenModal}/>
+            <SaveAssignScreenModal
+              setSelectScreenModal={setSelectScreenModal}
+            />
           )}
         </div>
       </div>
