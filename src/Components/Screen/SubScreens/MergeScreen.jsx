@@ -18,9 +18,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
   const [showdata, setShowdata] = useState(false);
-  
+
   const [isHovering, setIsHovering] = useState(false);
-  
+
   const handleMouseOver = () => {
     if (showdata === true) {
       setIsHovering(false);
@@ -46,7 +46,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-6 px-5">
+      <div className="pt-6 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
           <div className="justify-between lg:flex md:flex items-center sm:block">
             <div className="section-title">
@@ -439,7 +439,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };

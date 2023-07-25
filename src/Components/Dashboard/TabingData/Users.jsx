@@ -8,7 +8,7 @@ import axios from "axios";
 import { AiOutlineClose } from "react-icons/ai";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { ADD_REGISTER_URL, All_REGISTER_URL } from "../../../Pages/Api";
-
+import Footer from "../../Footer";
 const Users = () => {
   const [userData, setUserData] = useState([]);
   const [deletePopup, setdeletePopup] = useState(false);
@@ -140,24 +140,27 @@ const Users = () => {
   };
 
   return (
-    <div>
-      <div className="text-right mb-5 mr-5 flex items-end justify-end relative sm:mr-0">
-        <AiOutlineSearch className="absolute top-[13px] right-[220px] z-10 text-gray searchicon" />
-        <input
-          type="text"
-          placeholder=" Search Users "
-          className="border border-gray rounded-full px-7 py-2 search-user"
-          onChange={handleFilter}
-        />
+    <>
+      <div>
+        <div className="text-right mb-5 mr-5 flex items-end justify-end relative sm:mr-0">
+          <AiOutlineSearch className="absolute top-[13px] right-[220px] z-10 text-gray searchicon" />
+          <input
+            type="text"
+            placeholder=" Search Users "
+            className="border border-gray rounded-full px-7 py-2 search-user"
+            onChange={handleFilter}
+          />
+        </div>
+        <DataTable
+          columns={columns}
+          data={userData}
+          fixedHeader
+          pagination
+          paginationPerPage={10}
+        ></DataTable>
       </div>
-      <DataTable
-        columns={columns}
-        data={userData}
-        fixedHeader
-        pagination
-        paginationPerPage={10}
-      ></DataTable>
-    </div>
+
+    </>
   );
 };
 

@@ -33,7 +33,7 @@ const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-6 px-5">
+      <div className="pt-6 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block  items-center">
             <div className="flex items-center">
@@ -367,7 +367,7 @@ const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };

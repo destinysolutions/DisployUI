@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { TiFolderOpen } from "react-icons/ti";
@@ -133,6 +134,50 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       setSelectedItems([...selectedItems, itemId]);
     }
   };
+  const [videoApi, setVideoApi] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "http://192.168.1.219/api/Video/GetAllVideo"
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+
+        console.log("Data received from API:", data);
+
+        // Assuming data is an object with a "data" property holding the array
+        if (Array.isArray(data.data)) {
+          setVideoApi(data.data);
+        } else {
+          console.error("Data received from API is not an array:", data);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+  const [videos, setVideos] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("Nature.mp4");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        // Process the received data here
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <>
       <div className="flex border-b border-gray py-3">
@@ -140,7 +185,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {
-        <div className="pt-6 px-5">
+        <div className="pt-6 px-5 page-contain">
           <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
             <div className="lg:flex lg:justify-between sm:block items-center">
               <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
@@ -243,29 +288,36 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   : "togglecontent"
               }
             >
-              <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-12 gap-8">
-                {tabitems.map((elem) => {
-                  const { id, Image, icon, status, vtitle, vdetails } = elem;
+              <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-12 gap-8 mb-5">
+                {videoApi.map((elem) => {
+                  const { id, video, name, icon, status, vtitle, vdetails } = elem;
                   return (
                     <>
                       <div key={id} className="relative assetsbox">
                         <div className="relative ">
-                          <img
-                            src={Image}
-                            className={`imagebox relative ${
-                              selectedItems.includes(id)
-                                ? "active opacity-1 w-full rounded-2xl"
-                                : "opacity-50 w-full rounded-2xl"
-                            }`}
-                          />
+                          {videos.map((video) => (
+                            <video key={video.id} controls width="320" height="240">
+                              <source src={video.url} type="video/mp4" />
+                              Your browser does not support the video tag.
+                            </video>))}
+                          {/*<img
+                            src={video}
+                            className={`imagebox relative ${selectedItems.includes(id)
+                              ? "active opacity-1 w-full rounded-2xl"
+                              : "opacity-50 w-full rounded-2xl"
+                              }`} 
+                          />*/}
+                          <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs  mb-1">
+                            {name}
+                          </h3>
 
-                          <div
+                          {/* <div
                             className="tabicon text-center absolute left-2/4 bottom-[-50px] z-10"
                             onMouseEnter={() => setHoveredTabIcon(id)}
                             onMouseLeave={() => setHoveredTabIcon(null)}
                           >
                             {icon}
-                          </div>
+                          </div> */}
 
                           {hoveredTabIcon === id && (
                             <div className="vdetails">
@@ -275,6 +327,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     {status}
                                   </span>
                                 </div>
+
                                 {/* <div className="storage mb-1">
                                                                         <span className="bg-white text-primary rounded-sm p-1 text-sm">{storage}</span>
                                                         </div>*/}
@@ -519,7 +572,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       }
-      <Footer/>
+      <Footer />
     </>
   );
 };

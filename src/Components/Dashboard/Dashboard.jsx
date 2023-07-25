@@ -95,7 +95,7 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
       {/* registration success meg show end */}
 
       {/* dashboard component start */}
-      <div className="pt-6 px-5">
+      <div className="pt-6 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4">
@@ -113,7 +113,7 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="mt-5">
+          <div className="mt-5 page-contain">
             <Tabs value={activeTab}>
               <TabsHeader className="border-b rounded-none border-blue-gray-50 p-0 mb-5 text-[#A7AFB7]  ">
                 {data.map(({ label, value }) => (
@@ -121,11 +121,10 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
                     key={value}
                     value={value}
                     onClick={() => setActiveTab(value)}
-                    className={`${
-                      activeTab === value
-                        ? "text-SlateBlue border-b-2 border-SlateBlue  "
-                        : ""
-                    } p-2 pb-2 w-auto font-semibold `}
+                    className={`${activeTab === value
+                      ? "text-SlateBlue border-b-2 border-SlateBlue  "
+                      : ""
+                      } p-2 pb-2 w-auto font-semibold `}
                   >
                     {label}
                   </Tab>
@@ -140,9 +139,12 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
               </TabsBody>
             </Tabs>
           </div>
+
+
         </div>
       </div>
       {/* dashboard component end */}
+
       <Footer />
     </>
   );

@@ -68,7 +68,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-6 px-5">
+      <div className="pt-6 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -496,9 +496,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   )}
                   <td className="p-2">
                     <button
-                      className={`rounded-full px-6 py-1 text-white bg-${
-                        screenStatus === "live" ? "[#3AB700]" : "red"
-                      }`}
+                      className={`rounded-full px-6 py-1 text-white bg-${screenStatus === "live" ? "[#3AB700]" : "red"
+                        }`}
                     >
                       {screenStatus === "live" ? "Live" : "Offline"}
                     </button>
