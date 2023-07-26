@@ -13,7 +13,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { LOGIN_URL } from "./Api";
-import video from '../../public/DisployImg/video.mp4'
+import video from '../../public/DisployImg/iStock-1137481126.mp4'
 
 const Login = () => {
   //using for routing
@@ -137,7 +137,7 @@ const Login = () => {
       <div className="videobg login relative">
         <video src={video} autoPlay muted loop />
         <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
-          <div className="flex flex-col items-center justify-center min-h-screen px-6 mx-auto  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
+          <div className="flex flex-col items-center justify-center loginbg  lg:px-6 md:px-6 sm:px-2 xs:px-2 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-2  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
             <div className="flex items-center pb-5">
               <img
                 className="w-227 h-50"
@@ -146,11 +146,11 @@ const Login = () => {
               />
             </div>
             <div className="w-full border-[#ffffff6e] border rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
-              <div className="p-6 sm:px-6 py-6">
+              <div className="lg:p-6 md:p-6  sm:px-4 xs:p-2 py-6">
                 <div className="mb-2 font-inter not-italic font-medium text-[24px] text-white">
                   Sign in
                 </div>
-                <div className="mb-8 font-['Poppins'] not-italic font-normal text-[16px] text-white">
+                <div className="lg:mb-8 md:mb-8 sm:mb-3 xs:mb-2 font-['Poppins'] not-italic font-normal lg:text-base md:text-base sm:text-sm xs:text-[14px] text-white">
                   Fill in the fields below to sign into your account.
                 </div>
                 <form
@@ -216,14 +216,14 @@ const Login = () => {
                         className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
                       />
                     </div>
-                    <div className="flex ml-3 text-sm flex-wrap">
+                    <div className="flex ml-3 lg:text-sm md:text-sm sm:text-sm xs:text-[14px] flex-wrap">
                       <p className="not-italic text-white font-medium">
                         I accept the
                       </p>
                       <Link to="/termsconditions">
-                        <a className="ml-1 not-italic text-white font-medium decoration-white border-b ">
+                        <p className="ml-1 not-italic text-white font-medium decoration-white border-b ">
                           terms and conditions
-                        </a>
+                        </p>
                       </Link>
                     </div>
                   </div>
@@ -236,7 +236,7 @@ const Login = () => {
                   >
                     Sign in
                   </button>
-                  <div className="flex lg:ml-3 text-sm flex-wrap">
+                  <div className="flex lg:ml-3 lg:text-sm md:text-sm sm:text-sm xs:text-[14px] flex-wrap">
                     <p className="not-italic text-white font-medium">
                       Don’t have an account, yet?
                     </p>
