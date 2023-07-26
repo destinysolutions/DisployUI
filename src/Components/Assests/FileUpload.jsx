@@ -17,6 +17,7 @@ import { FiCheckCircle } from "react-icons/fi";
 import { BiError } from "react-icons/bi";
 import PropTypes from "prop-types";
 import Footer from "../Footer";
+import useDrivePicker from 'react-google-drive-picker'
 
 const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   FileUpload.propTypes = {
@@ -26,6 +27,48 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   const [browseFiles, setbrowseFiles] = useState(false);
   const [fileSuccessModal, setfileSuccessModal] = useState(false);
   const [fileErrorModal, setfileErrorModal] = useState(false);
+
+  {/* google drive */ }
+  const [openPicker, authResponse] = useDrivePicker();
+  const [selectedFiles, setSelectedFiles] = useState([]); {/*file selected*/ }
+
+  const handleOpenPicker = () => {
+    openPicker({
+      clientId: "1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com", // Your client ID
+      developerKey: "AIzaSyD518eOQPOtFuzqw9-97zhAdDCmZcpt42U", // Your developer key
+      viewId: "DOCS",
+      showUploadView: true,
+      showUploadFolders: true,
+      supportDrives: true,
+      multiselect: true,
+      callbackFunction: (data) => {
+        if (data.action === 'cancel') {
+          console.log('User clicked cancel/close button');
+        } else if (data.action === 'picked') {
+          console.log('Selected Files:', data.docs);
+          setSelectedFiles(data.docs); // Update the state with the selected files
+        }
+      },
+    });
+  };
+
+  const clientId = '1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com';
+
+  const handleLoginSuccess = (response) => {
+    // Access the user's access_token here
+    const accessToken = response.accessToken;
+    console.log('Access Token:', accessToken);
+
+    // Now, you can use the accessToken to access the user's Google Drive.
+    // You can use the Google Drive API or any other library to interact with the Drive.
+  };
+
+  const handleLoginFailure = (error) => {
+    console.log('Login Failed:', error);
+  };
+
+
+
 
   return (
     <>
@@ -56,7 +99,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
             </span>
             <span
               className="fileUploadIcon"
-            //   onClick={handleIconClick}
+              onClick={() => handleOpenPicker()}
             >
               <RiDriveFill size={30} />
             </span>
@@ -137,6 +180,20 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
               Browse
             </button>
           </div>
+
+          {selectedFiles.length > 0 && (
+            <div className="mt-10">
+              {/* Loop through the selected files and display them */}
+              {selectedFiles.map((file) => (
+                <div key={file.id} className="p-3 bg-white flex items-center">
+                  {/* Display the file details here */}
+                  <span>{file.name}</span>
+                  {/* Additional file information */}
+                </div>
+              ))}
+            </div>
+          )}
+
           {browseFiles && (
             <>
               <div className="mt-10">
@@ -266,7 +323,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
           ) : null}
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };
