@@ -18,7 +18,7 @@ import { BiError } from "react-icons/bi";
 import PropTypes from "prop-types";
 import Footer from "../Footer";
 import useDrivePicker from 'react-google-drive-picker'
-
+import DropboxChooser from 'react-dropbox-chooser'
 const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   FileUpload.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -52,6 +52,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
     });
   };
 
+
   const clientId = '1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com';
 
   const handleLoginSuccess = (response) => {
@@ -66,9 +67,11 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   const handleLoginFailure = (error) => {
     console.log('Login Failed:', error);
   };
-
-
-
+  const DbAppKey = "63hbbudlhzm3uqu"
+  {/*dropbox */ }
+  function handleSuccess(files) {
+    console.log(files);
+  }
 
   return (
     <>
@@ -92,10 +95,16 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <div className="flex lg:justify-between md:justify-between flex-wrap sm:justify-start xs:justify-start items-center lg:mt-7 md:mt-7 sm:mt-5 xs:mt-5 media-icon">
             <span
-              className="fileUploadIcon"
+              className="fileUploadIcon dropbox-button"
             //   onClick={handleIconClick}
             >
-              <AiOutlineDropbox size={30} />
+
+              {<DropboxChooser appKey={DbAppKey}
+                success={handleSuccess}
+                cancel={() => console.log("closed")}
+              >
+                <AiOutlineDropbox size={30} />
+              </DropboxChooser>}
             </span>
             <span
               className="fileUploadIcon"
@@ -169,6 +178,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="flex w-full flex-col gap-4"></div>
           <div className="flex flex-col items-center justify-center min-h-full lg:p-40 md:p-20 sm:p-10 xs:p-4 bg-[#E4E6FF] lg:mt-14 md:mt-14 sm:mt-5 xs:mt-5  border-2 rounded-[20px] border-SlateBlue border-dashed">
             <FiUploadCloud className="text-SlateBlue md:mb-7 sm:mb-3 xs:mb-2 lg:text-[150px] md:text-[100px] sm:text-[80px] xs:text-[45px]" />
+            <input type="file" />
             <span className="text-SlateBlue text-center">Select Files to Upload</span>
             <p className="text-sm font-normal text-center">
               Drop your first video, photo or document here
