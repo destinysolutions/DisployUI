@@ -17,8 +17,11 @@ import { FiCheckCircle } from "react-icons/fi";
 import { BiError } from "react-icons/bi";
 import PropTypes from "prop-types";
 import Footer from "../Footer";
-import useDrivePicker from 'react-google-drive-picker'
-import DropboxChooser from 'react-dropbox-chooser'
+import useDrivePicker from 'react-google-drive-picker';
+import DropboxChooser from 'react-dropbox-chooser';
+import { useRef } from "react";
+import { useEffect } from "react";
+
 const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   FileUpload.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -67,12 +70,48 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   const handleLoginFailure = (error) => {
     console.log('Login Failed:', error);
   };
-  const DbAppKey = "63hbbudlhzm3uqu"
-  {/*dropbox */ }
-  function handleSuccess(files) {
-    console.log(files);
-  }
 
+  {/*dropbox */ }
+  const [dburl, setdburl] = useState("")
+  const DbAppKey = "63hbbudlhzm3uqu"
+  function handleSuccess(files) {
+    setdburl(files[0].thumbnailLink);
+    console.log(url);
+  }
+  {/*camera */ }
+  let videoRef = useRef(null);
+  let PhotoRef = useRef(null)
+  const getUserCamera = () => {
+    navigator.mediaDevices.getUserMedia({
+      video: true
+    })
+      .then((stream) => {
+        let video = videoRef.current
+        video.srcObject = stream
+        video.play()
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+  useEffect(() => {
+    getUserCamera()
+  }, [videoRef])
+  const takePickture = () => {
+    let width = 500
+    let height = width / (16 / 9)
+    let photo = PhotoRef.current
+    let video = videoRef.current
+    photo.width = width
+    photo.height = height
+    let ctx = photo.getContext('2d')
+    ctx.drawImage(video, 0, 0, photo.width, photo.height)
+  }
+  const clearImage = () => {
+    let photo = PhotoRef.current
+    let ctx = photo.getContext('2d')
+    ctx.clearRect(0, 0, photo.width, photo.height)
+  }
   return (
     <>
       <div className="flex border-b border-gray py-3">
@@ -102,6 +141,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
               {<DropboxChooser appKey={DbAppKey}
                 success={handleSuccess}
                 cancel={() => console.log("closed")}
+                multiselect={true}
               >
                 <AiOutlineDropbox size={30} />
               </DropboxChooser>}
@@ -141,7 +181,11 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
               className="fileUploadIcon"
             //   onClick={handleIconClick}
             >
-              <FiCamera size={30} />
+              <video ref={videoRef}></video>
+              <FiCamera size={30} onClick={takePickture} />
+
+              <canvas ref={PhotoRef} />
+              <button onClick={clearImage}>Clear</button>
             </span>
             <span
               className="fileUploadIcon"
@@ -178,7 +222,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="flex w-full flex-col gap-4"></div>
           <div className="flex flex-col items-center justify-center min-h-full lg:p-40 md:p-20 sm:p-10 xs:p-4 bg-[#E4E6FF] lg:mt-14 md:mt-14 sm:mt-5 xs:mt-5  border-2 rounded-[20px] border-SlateBlue border-dashed">
             <FiUploadCloud className="text-SlateBlue md:mb-7 sm:mb-3 xs:mb-2 lg:text-[150px] md:text-[100px] sm:text-[80px] xs:text-[45px]" />
-            <input type="file" />
+
             <span className="text-SlateBlue text-center">Select Files to Upload</span>
             <p className="text-sm font-normal text-center">
               Drop your first video, photo or document here
@@ -203,7 +247,9 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
               ))}
             </div>
           )}
-
+          {/* Dropbox*/}
+          <img src={dburl} />
+          {/* End of  Dropbox*/}
           {browseFiles && (
             <>
               <div className="mt-10">
