@@ -21,9 +21,39 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const [showTagBox, setShowTagBox] = useState(false);
+  const [tagName, setTagName] = useState("");
+  const [suggestedTags, setSuggestedTags] = useState([
+    "Corporate",
+    "DMB",
+    "Marketing",
+    "Lobby",
+    "Conference Room",
+  ]);
 
   const handleTagBoxClick = () => {
     setShowTagBox(!showTagBox);
+  };
+
+  const handleTagNameChange = (event) => {
+    setTagName(event.target.value);
+  };
+
+  const handleTagSelection = (selectedTag) => {
+    setTagName(selectedTag);
+    setShowTagBox(false);
+  };
+
+  const handleAddCustomTag = () => {
+    if (tagName.trim() !== "" && !suggestedTags.includes(tagName)) {
+      setSuggestedTags([...suggestedTags, tagName]);
+    }
+    setTagName("");
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleAddCustomTag();
+    }
   };
 
   const [selectedOption, setSelectedOption] = useState("");
@@ -299,9 +329,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       <tr>
                         <td></td>
                       </tr>
-                      <tr>
-                        <td></td>
-                      </tr>
                     </>
                   )}
                   <tr>
@@ -409,8 +436,20 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     </td>
                     <td>
                       <div className="md:w-full">
-                        <div className="border border-[#D5E3FF] rounded w-full px-2 py-2 relative flex justify-end">
-                          <button type="button" onClick={handleTagBoxClick}>
+                        <div className="relative flex justify-end">
+                          <input
+                            type="text"
+                            className="border border-[#D5E3FF] rounded w-full px-2 py-2"
+                            placeholder="Enter tag..."
+                            value={tagName}
+                            onChange={handleTagNameChange}
+                            onKeyDown={handleKeyDown}
+                          />
+                          <button
+                            type="button"
+                            onClick={handleTagBoxClick}
+                            className="ml-2"
+                          >
                             <svg
                               width="20"
                               height="20"
@@ -428,14 +467,14 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           </button>
                           {showTagBox && (
                             <>
-                              <div className=" tagname absolute top-[42px] lg:right-[0px] md:right-[0px] sm:lg:right-[0px] xs:lg:right-[0px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10 max-w-[250px]">
+                              <div className=" tagname absolute top-[45px] right-[-8px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10 max-w-[250px]">
                                 <div className="lg:flex md:flex sm:block">
                                   <div className="p-2">
                                     <h6 className="text-center text-sm mb-1">
                                       Give a Tag Name Such
                                     </h6>
                                     <div className="flex flex-wrap">
-                                      <div className="p-1 rounded bg-[#EFF5FF] m-1 text-sm font-light">
+                                      {/* <div className="p-1 rounded bg-[#EFF5FF] m-1 text-sm font-light">
                                         Corporate
                                       </div>
                                       <div className="p-1 rounded bg-[#EFF5FF] m-1 text-sm  font-light">
@@ -449,7 +488,18 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                       </div>
                                       <div className="p-1 rounded bg-[#EFF5FF] m-1 text-sm font-light">
                                         Conference Room
-                                      </div>
+                                      </div> */}
+                                      {suggestedTags.map((tag) => (
+                                        <div
+                                          key={tag}
+                                          className="p-1 rounded bg-[#EFF5FF] m-1 text-sm font-light cursor-pointer"
+                                          onClick={() =>
+                                            handleTagSelection(tag)
+                                          }
+                                        >
+                                          {tag}
+                                        </div>
+                                      ))}
                                     </div>
                                   </div>
                                 </div>

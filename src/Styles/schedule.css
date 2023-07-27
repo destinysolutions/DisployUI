@@ -24,3 +24,7 @@
   top: -8px;
   right: 14px;
 }
+div#_dialog_wrapper {
+  max-width: 90% !important;
+  width: 90% !important;
+}
