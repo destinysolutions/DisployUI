@@ -22,8 +22,6 @@ import DropboxChooser from 'react-dropbox-chooser';
 import { useRef } from "react";
 import { useEffect } from "react";
 import Video from "./Video";
-
-import { useRecordWebcam } from 'react-record-webcam'
 {/* end of video*/ }
 const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   FileUpload.propTypes = {

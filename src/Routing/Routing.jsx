@@ -32,6 +32,7 @@ import FileUpload from "../Components/Assests/FileUpload";
 import Auditlogreport from "../Components/Reports/Auditlogreport";
 import SalesReport from "../Components/Reports/SalesReport";
 import CancelReport from "../Components/Reports/CancelReport";
+import EventEditor from "../Components/Schedule/EventEditor";
 const Routing = () => {
   //for screen resize sidebar open close
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -319,6 +320,17 @@ const Routing = () => {
           path="/settings"
           element={
             <Settings
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
+
+        {/*Event Editors */}
+        <Route
+          path="/eventedit"
+          element={
+            <EventEditor
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
             />
