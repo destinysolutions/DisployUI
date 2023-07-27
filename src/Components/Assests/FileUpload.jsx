@@ -21,7 +21,10 @@ import useDrivePicker from 'react-google-drive-picker';
 import DropboxChooser from 'react-dropbox-chooser';
 import { useRef } from "react";
 import { useEffect } from "react";
+import Video from "./Video";
 
+import { useRecordWebcam } from 'react-record-webcam'
+{/* end of video*/ }
 const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   FileUpload.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -82,36 +85,54 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   let videoRef = useRef(null);
   let PhotoRef = useRef(null)
   const getUserCamera = () => {
-    navigator.mediaDevices.getUserMedia({
-      video: true
-    })
-      .then((stream) => {
-        let video = videoRef.current
-        video.srcObject = stream
-        video.play()
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  }
+    // Check if the "facingMode" option is supported
+    if ("mediaDevices" in navigator && "getUserMedia" in navigator.mediaDevices) {
+      navigator.mediaDevices
+        .getUserMedia({
+          video: {
+            facingMode: "environment" // "environment" refers to the back-side camera
+          }
+        })
+        .then((stream) => {
+          let video = videoRef.current;
+          video.srcObject = stream;
+          video.play();
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      console.log("getUserMedia is not supported");
+    }
+  };
+
   useEffect(() => {
-    getUserCamera()
-  }, [videoRef])
-  const takePickture = () => {
-    let width = 500
-    let height = width / (16 / 9)
-    let photo = PhotoRef.current
-    let video = videoRef.current
-    photo.width = width
-    photo.height = height
-    let ctx = photo.getContext('2d')
-    ctx.drawImage(video, 0, 0, photo.width, photo.height)
-  }
+    getUserCamera();
+  }, []);
+
+  const takePicture = () => {
+    let width = 500;
+    let height = width / (16 / 9);
+    let photo = PhotoRef.current;
+    let video = videoRef.current;
+    photo.width = width;
+    photo.height = height;
+    let ctx = photo.getContext("2d");
+    ctx.drawImage(video, 0, 0, photo.width, photo.height);
+  };
+
   const clearImage = () => {
-    let photo = PhotoRef.current
-    let ctx = photo.getContext('2d')
-    ctx.clearRect(0, 0, photo.width, photo.height)
-  }
+    let photo = PhotoRef.current;
+    let ctx = photo.getContext("2d");
+    ctx.clearRect(0, 0, photo.width, photo.height);
+  };
+  {/*video*/ }
+  let [recordOption, setRecordOption] = useState("video");
+  const toggleRecordOption = (type) => {
+    return () => {
+      setRecordOption(type);
+    };
+  };
   return (
     <>
       <div className="flex border-b border-gray py-3">
@@ -177,32 +198,27 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
                 />
               </svg>
             </span>
-            <span
-              className="fileUploadIcon"
-            //   onClick={handleIconClick}
-            >
+            <span className="fileUploadIcon">
               <video ref={videoRef}></video>
-              <FiCamera size={30} onClick={takePickture} />
-
+              <FiCamera size={30} onClick={takePicture} />
               <canvas ref={PhotoRef} />
               <button onClick={clearImage}>Clear</button>
             </span>
-            <span
-              className="fileUploadIcon"
-            //   onClick={handleIconClick}
-            >
-              <AiOutlineVideoCamera size={30} />
+            <span className="fileUploadIcon">
+              <AiOutlineVideoCamera size={30} onClick={toggleRecordOption("video")} />
+              <div>
+                {recordOption === "video" ? <Video /> : null}
+              </div>
             </span>
+
+
             <span
               className="fileUploadIcon"
-            //   onClick={handleIconClick}
+
             >
               <FaUnsplash size={30} />
             </span>
-            <span
-              className="bg-[#D5E3FF] text-SlateBlue py-4 px-4 rounded-[45px]"
-            //   onClick={handleIconClick}
-            >
+            <span className="bg-[#D5E3FF] text-SlateBlue py-4 px-4 rounded-[45px]">
               <svg
                 width="20"
                 height="16"
