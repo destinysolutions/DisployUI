@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { ADD_REGISTER_URL } from "./Api";
-
+import video from '../../public/DisployImg/iStock-1137481126.mp4'
 const Registration = () => {
   //using show or hide password field
   const [showPassword, setShowPassword] = useState(false);
@@ -105,11 +105,12 @@ const Registration = () => {
       {/* registration faild error msg display end*/}
 
       {/* registration form start*/}
-      <div className="main registration">
+      <div className="videobg login relative">
+        <video src={video} autoPlay muted loop />
         <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
-          <div className="flex flex-col items-center justify-center px-6 mx-auto md:min-h-screen lg:py-2 md:py-3 sm:py-5 xs:py-5">
+          <div className="flex flex-col items-center justify-center loginbg  lg:px-6 md:px-6 sm:px-2 xs:px-2 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-2  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
             <div className="flex items-center pb-5">
-              <img
+              <imgRe
                 className="w-227 h-50"
                 src="/DisployImg/logo.svg"
                 alt="title"
