@@ -80,57 +80,104 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
     console.log(url);
   }
   {/*camera */ }
-  let videoRef = useRef(null);
-  let PhotoRef = useRef(null)
+  const [facingMode, setFacingMode] = useState('environment'); // 'environment' refers to the back-side camera
+  const [isRecording, setIsRecording] = useState(false);
+  const [capturedPhoto, setCapturedPhoto] = useState(null);
+  const [capturedVideo, setCapturedVideo] = useState(null);
+  const videoRef = useRef(null);
+  const photoRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+
   const getUserCamera = () => {
-    // Check if the "facingMode" option is supported
-    if ("mediaDevices" in navigator && "getUserMedia" in navigator.mediaDevices) {
+    if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
       navigator.mediaDevices
         .getUserMedia({
           video: {
-            facingMode: "environment" // "environment" refers to the back-side camera
+            facingMode: facingMode // Use the selected facing mode
           }
         })
         .then((stream) => {
           let video = videoRef.current;
           video.srcObject = stream;
           video.play();
+          mediaRecorderRef.current = new MediaRecorder(stream);
+          mediaRecorderRef.current.ondataavailable = handleDataAvailable;
+          mediaRecorderRef.current.onstop = handleStop;
         })
         .catch((error) => {
           console.error(error);
         });
     } else {
-      console.log("getUserMedia is not supported");
+      console.log('getUserMedia is not supported');
     }
   };
 
   useEffect(() => {
     getUserCamera();
-  }, []);
+    return () => {
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+        mediaRecorderRef.current.stop();
+      }
+    };
+  }, [facingMode]);
+
+  const toggleFacingMode = () => {
+    // Switch between 'user' (front) and 'environment' (back) facing modes
+    setFacingMode((prevFacingMode) =>
+      prevFacingMode === 'user' ? 'environment' : 'user'
+    );
+  };
+
+  const startRecording = () => {
+    if (mediaRecorderRef.current) {
+      chunksRef.current = [];
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+
+  const handleDataAvailable = (event) => {
+    if (event.data.size > 0) {
+      chunksRef.current.push(event.data);
+    }
+  };
+
+  const handleStop = () => {
+    const videoBlob = new Blob(chunksRef.current, { type: 'video/mp4' });
+    setCapturedVideo(videoBlob);
+  };
 
   const takePicture = () => {
     let width = 500;
     let height = width / (16 / 9);
-    let photo = PhotoRef.current;
+    let photo = photoRef.current;
     let video = videoRef.current;
     photo.width = width;
     photo.height = height;
-    let ctx = photo.getContext("2d");
+    let ctx = photo.getContext('2d');
     ctx.drawImage(video, 0, 0, photo.width, photo.height);
+    const dataUrl = photo.toDataURL();
+    setCapturedPhoto(dataUrl);
   };
 
   const clearImage = () => {
-    let photo = PhotoRef.current;
-    let ctx = photo.getContext("2d");
+    setCapturedPhoto(null);
+    setCapturedVideo(null);
+    let photo = photoRef.current;
+    let ctx = photo.getContext('2d');
     ctx.clearRect(0, 0, photo.width, photo.height);
   };
-  {/*video*/ }
-  let [recordOption, setRecordOption] = useState("video");
-  const toggleRecordOption = (type) => {
-    return () => {
-      setRecordOption(type);
-    };
-  };
+
+
   return (
     <>
       <div className="flex border-b border-gray py-3">
@@ -197,16 +244,22 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
               </svg>
             </span>
             <span className="fileUploadIcon">
+
               <video ref={videoRef}></video>
-              <FiCamera size={30} onClick={takePicture} />
-              <canvas ref={PhotoRef} />
+              <FiCamera size={30} onClick={isRecording ? stopRecording : startRecording} />
+              <canvas ref={photoRef} />
               <button onClick={clearImage}>Clear</button>
-            </span>
-            <span className="fileUploadIcon">
-              <AiOutlineVideoCamera size={30} onClick={toggleRecordOption("video")} />
-              <div>
-                {recordOption === "video" ? <Video /> : null}
-              </div>
+              <button onClick={toggleFacingMode}>
+                {facingMode === 'user' ? 'Switch to Back Camera' : 'Switch to Front Camera'}
+              </button>
+
+              {capturedPhoto && <img src={capturedPhoto} alt="Captured" />}
+              {capturedVideo && (
+                <video controls>
+                  <source src={URL.createObjectURL(capturedVideo)} type="video/mp4" />
+                </video>
+              )}
+
             </span>
 
 
