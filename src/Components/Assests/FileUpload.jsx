@@ -22,8 +22,9 @@ import DropboxChooser from 'react-dropbox-chooser';
 import { useRef } from "react";
 import { useEffect } from "react";
 import Video from "./Video";
+
 {/* end of video*/ }
-const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
+const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
   FileUpload.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
@@ -157,6 +158,34 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
     let ctx = photo.getContext('2d');
     ctx.clearRect(0, 0, photo.width, photo.height);
   };
+
+  // file drag and drop our system
+
+  const wrapperRef = useRef(null);
+
+  const [fileList, setFileList] = useState([]);
+
+  const onDragEnter = () => wrapperRef.current.classList.add('dragover');
+
+  const onDragLeave = () => wrapperRef.current.classList.remove('dragover');
+
+  const onDrop = () => wrapperRef.current.classList.remove('dragover');
+
+  const onFileDrop = (e) => {
+    const newFile = e.target.files[0];
+    if (newFile) {
+      const updatedList = [...fileList, newFile];
+      setFileList(updatedList);
+
+    }
+  }
+
+  const fileRemove = (file) => {
+    const updatedList = [...fileList];
+    updatedList.splice(fileList.indexOf(file), 1);
+    setFileList(updatedList);
+
+  }
   return (
     <>
       <div className="flex border-b border-gray py-3">
@@ -239,12 +268,10 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
               )}
             </span>
 
-            <span
-              className="fileUploadIcon"
-
-            >
+            <span className="fileUploadIcon">
               <FaUnsplash size={30} />
             </span>
+
             <span className="bg-[#D5E3FF] text-SlateBlue py-4 px-4 rounded-[45px]">
               <svg
                 width="20"
@@ -263,20 +290,50 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
             </span>
           </div>
           <div className="flex w-full flex-col gap-4"></div>
-          <div className="flex flex-col items-center justify-center min-h-full lg:p-40 md:p-20 sm:p-10 xs:p-4 bg-[#E4E6FF] lg:mt-14 md:mt-14 sm:mt-5 xs:mt-5  border-2 rounded-[20px] border-SlateBlue border-dashed">
-            <FiUploadCloud className="text-SlateBlue md:mb-7 sm:mb-3 xs:mb-2 lg:text-[150px] md:text-[100px] sm:text-[80px] xs:text-[45px]" />
-
-            <span className="text-SlateBlue text-center">Select Files to Upload</span>
-            <p className="text-sm font-normal text-center">
-              Drop your first video, photo or document here
-            </p>
-            <button
-              className="bg-SlateBlue text-white px-7 py-2 rounded mt-4"
-              onClick={() => setbrowseFiles(true)}
-            >
-              Browse
-            </button>
+          <div
+            ref={wrapperRef}
+            className="drop-file-input"
+            onDragEnter={onDragEnter}
+            onDragLeave={onDragLeave}
+            onDrop={onDrop}
+          >
+            <div className=" relative flex flex-col items-center justify-center min-h-full lg:p-40 md:p-20 sm:p-10 xs:p-4 bg-[#E4E6FF] lg:mt-14 md:mt-14 sm:mt-5 xs:mt-5  border-2 rounded-[20px] border-SlateBlue border-dashed">
+              <FiUploadCloud className="text-SlateBlue md:mb-7 sm:mb-3 xs:mb-2 lg:text-[150px] md:text-[100px] sm:text-[80px] xs:text-[45px]" />
+              <input type="file" value="" className=" absolute left-0 top-0 w-full h-full opacity-0 cursor-pointer" name="upload" onChange={onFileDrop} />
+              <span className="text-SlateBlue text-center">Select Files to Upload</span>
+              <p className="text-sm font-normal text-center">
+                Drop your first video, photo or document here
+              </p>
+              <button
+                className="bg-SlateBlue text-white px-7 py-2 rounded mt-4"
+                onClick={() => setbrowseFiles(true)}
+              >
+                Browse
+              </button>
+            </div>
           </div>
+
+          {
+            fileList.length > 0 ? (
+              <div className="drop-file-preview">
+                <p className="drop-file-preview__title">
+                  Ready to upload
+                </p>
+                {
+                  fileList.map((item, index) => (
+                    <div key={index} className="drop-file-preview__item">
+
+                      <div className="drop-file-preview__item__info">
+                        <p>{item.name}</p>
+                        <p>{item.size}B</p>
+                      </div>
+                      <span className="drop-file-preview__item__del" onClick={() => fileRemove(item)}>x</span>
+                    </div>
+                  ))
+                }
+              </div>
+            ) : null
+          }
 
           {selectedFiles.length > 0 && (
             <div className="mt-10">
@@ -426,5 +483,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
     </>
   );
 };
-
+FileUpload.propTypes = {
+  onFileChange: PropTypes.func
+}
 export default FileUpload;
