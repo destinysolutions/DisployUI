@@ -1,49 +1,115 @@
-import {
-  ScheduleComponent,
-  Day,
-  Week,
-  WorkWeek,
-  Month,
-  Agenda,
-  Inject,
-  DragAndDrop,
-  Resize,
-  ResourcesDirective,
-  ResourceDirective,
-} from "@syncfusion/ej2-react-schedule";
 import { useState } from "react";
 import { BsPencilFill } from "react-icons/bs";
 import { IoArrowBackOutline } from "react-icons/io5";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import SaveAssignScreenModal from "./SaveAssignScreenModal";
 import { AiOutlineSearch } from "react-icons/ai";
 import { BsTags } from "react-icons/bs";
 import { GrSchedules } from "react-icons/gr";
-import {
-  MdDateRange,
-  MdKeyboardArrowLeft,
-  MdOutlinePermMedia,
-} from "react-icons/md";
+import { MdDateRange, MdOutlinePermMedia } from "react-icons/md";
 import { VscCompass } from "react-icons/vsc";
 import "../../Styles/schedule.css";
+import Paper from "@mui/material/Paper";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import {
+  EditingState,
+  IntegratedEditing,
+  ViewState,
+} from "@devexpress/dx-react-scheduler";
+import {
+  Scheduler,
+  WeekView,
+  MonthView,
+  Appointments,
+  DayView,
+  Toolbar,
+  DateNavigator,
+  TodayButton,
+  AppointmentTooltip,
+  AppointmentForm,
+  DragDropProvider,
+  EditRecurrenceMenu,
+} from "@devexpress/dx-react-scheduler-material-ui";
+import { useEffect } from "react";
+const SHIFT_KEY = 16;
+const ExternalViewSwitcher = ({ currentViewName, onChange }) => (
+  <RadioGroup
+    aria-label="Views"
+    style={{ flexDirection: "row" }}
+    name="views"
+    value={currentViewName}
+    onChange={onChange}
+  >
+    <FormControlLabel
+      value="Day"
+      control={<Radio />}
+      label="Day"
+      className="border-r border-primary mr-0 w-24 text-center"
+    />
+    <FormControlLabel
+      value="Week"
+      control={<Radio />}
+      label="Week"
+      className="border-r border-primary mr-0 w-24 text-center"
+    />
 
-const EventEditor = ({ eventData, onSave, onCancel }) => {
-  const [subject, setSubject] = useState(eventData?.Subject || "");
-  const [startTime, setStartTime] = useState(
-    eventData?.StartTime || new Date().toISOString().slice(0, 16)
+    <FormControlLabel value="Month" control={<Radio />} label="Month" />
+  </RadioGroup>
+);
+const CustomFormTemplate = ({ children, appointmentData, onFieldChange }) => {
+  const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Function to format time to "HH:mm" format
+  const formatTime = (date) => {
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
+
+  // Assuming appointmentData.startDate and appointmentData.endDate are Date objects
+  const [editedStartDate, setEditedStartDate] = useState(
+    formatDate(appointmentData.startDate)
   );
-  const [endTime, setEndTime] = useState(
-    eventData?.EndTime || new Date().toISOString().slice(0, 16)
+  const [editedStartTime, setEditedStartTime] = useState(
+    formatTime(appointmentData.startDate)
+  );
+  const [editedEndDate, setEditedEndDate] = useState(
+    formatDate(appointmentData.endDate)
+  );
+  const [editedEndTime, setEditedEndTime] = useState(
+    formatTime(appointmentData.endDate)
   );
 
-  const handleSave = () => {
-    const updatedEvent = {
-      ...eventData,
-      Subject: subject,
-      StartTime: new Date(startTime),
-      EndTime: new Date(endTime),
-    };
-    onSave(updatedEvent);
+  const handleStartDateChange = (e) => {
+    setEditedStartDate(e.target.value);
+  };
+
+  const handleStartTimeChange = (e) => {
+    setEditedStartTime(e.target.value);
+  };
+
+  const handleEndDateChange = (e) => {
+    setEditedEndDate(e.target.value);
+  };
+
+  const handleEndTimeChange = (e) => {
+    setEditedEndTime(e.target.value);
+  };
+
+  const onSaveButtonClick = () => {
+    // Combine edited date and time to create new start and end dates
+    const newStartDate = new Date(`${editedStartDate}T${editedStartTime}`);
+    const newEndDate = new Date(`${editedEndDate}T${editedEndTime}`);
+
+    // Call onFieldChange with the edited start and end dates
+    onFieldChange({ startDate: newStartDate, endDate: newEndDate });
   };
 
   return (
@@ -55,7 +121,7 @@ const EventEditor = ({ eventData, onSave, onCancel }) => {
       <div className="grid grid-cols-12 mt-9">
         <div className="lg:col-span-10 md:col-span-8 sm:col-span-12 xs:col-span-12 bg-white shadow-md rounded-lg p-4">
           <div className="mr-5 relative sm:mr-0">
-            <AiOutlineSearch className="absolute top-[9px] left-[12px] z-10 text-gray" />
+            <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
             <input
               type="text"
               placeholder=" Search by Name"
@@ -127,6 +193,10 @@ const EventEditor = ({ eventData, onSave, onCancel }) => {
         <div className=" bg-white shadow-md ml-5 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 ">
           <div className="p-3">
             <span className="text-xl">Assets Name</span>
+            <input
+              value={appointmentData.title}
+              onChange={(e) => onFieldChange({ title: e.target.value })}
+            />
           </div>
           <div className="border-b-2 border-[#D5E3FF]"></div>
           <div className="p-3">
@@ -136,29 +206,48 @@ const EventEditor = ({ eventData, onSave, onCancel }) => {
                 <li className="border-b-2 border-[#D5E3FF] p-3">
                   <h3>Start Date:</h3>
                   <div className="bg-[#E4E6FF] rounded-full px-3 py-2 mt-2">
-                    01 / 06 /2023
+                    {/* 01 / 06 /2023 */}
+                    <input
+                      type="date"
+                      value={editedStartDate}
+                      onChange={handleStartDateChange}
+                    />
                   </div>
                 </li>
                 <li className="border-b-2 border-[#D5E3FF] p-3">
                   <h3>End Date:</h3>
                   <div className="bg-[#E4E6FF] rounded-full px-3 py-2 mt-2">
-                    01 / 06 /2023
+                    {/* 01 / 06 /2023 */}
+                    <input
+                      type="date"
+                      value={editedEndDate}
+                      onChange={handleEndDateChange}
+                    />
                   </div>
                 </li>
                 <li className="border-b-2 border-[#D5E3FF] p-3">
                   <h3>Start Time:</h3>
                   <div className="bg-[#E4E6FF] rounded-full px-3 py-2 mt-2">
-                    04:00 PM
+                    <input
+                      type="time"
+                      value={editedStartTime}
+                      onChange={handleStartTimeChange}
+                    />
                   </div>
                 </li>
                 <li className=" p-3">
                   <h3>End Time:</h3>
                   <div className="bg-[#E4E6FF] rounded-full px-3 py-2 mt-2">
-                    04:00 PM
+                    <input
+                      type="time"
+                      value={editedEndTime}
+                      onChange={handleEndTimeChange}
+                    />
                   </div>
                 </li>
               </ul>
             </div>
+            {children}
             <div className="p-3">
               <div>Repeat Multiple Day</div>
 
@@ -166,6 +255,7 @@ const EventEditor = ({ eventData, onSave, onCancel }) => {
                 <label>Repeat</label>
                 <input type="checkbox" />
               </div>
+              {/* <button onClick={onSaveButtonClick}>Save</button> */}
             </div>
           </div>
         </div>
@@ -175,69 +265,97 @@ const EventEditor = ({ eventData, onSave, onCancel }) => {
 };
 const AddSchedule = () => {
   const [selectScreenModal, setSelectScreenModal] = useState(false);
-  const data = [
+  const [data, setData] = useState([
     {
-      Id: 1,
-      Subject: "Playlist Name",
-      StartTime: new Date(2023, 6, 26, 1, 0), // Aug 20th, 2023, 6:00 AM
-      EndTime: new Date(2023, 6, 26, 3, 30), // Aug 20th, 2023, 7:00 AM
-      Location: "Video1",
-      ResourceID: 1,
+      title: "Website Re-Design Plan",
+      startDate: new Date(2023, 7, 1, 9, 30),
+      endDate: new Date(2023, 7, 1, 11, 30),
     },
     {
-      Id: 2,
-      Subject: "Playlist Name",
-      StartTime: new Date(2023, 6, 26, 5, 0), // Aug 20th, 2023, 3:00 PM
-      EndTime: new Date(2023, 6, 26, 7, 0), // Aug 20th, 2023, 4:00 PM
-      Location: "Video2",
-      ResourceID: 2,
+      title: "Book Flights to San Fran for Sales Trip",
+      startDate: new Date(2023, 7, 1, 12, 0),
+      endDate: new Date(2023, 7, 1, 13, 0),
     },
     {
-      Id: 3,
-      Subject: "Playlist Name",
-      StartTime: new Date(2023, 6, 26, 10, 0), // Aug 20th, 2023, 3:00 PM
-      EndTime: new Date(2023, 6, 26, 11, 30), // Aug 20th, 2023, 4:00 PM
-      Location: "Video3",
-      ResourceID: 3,
-    },
-  ];
-  const resourceDataSource = [
-    {
-      Name: "Playlist 1",
-      Id: 1,
-      Color: "#29CC39",
+      title: "Install New Router in Dev Room",
+      startDate: new Date(2023, 7, 1, 14, 30),
+      endDate: new Date(2023, 7, 1, 15, 30),
     },
     {
-      Name: "Playlist 2",
-      Id: 2,
-      Color: "#FF6347",
+      title: "Install Router in Dev Room",
+      startDate: new Date(2023, 6, 31, 14, 30),
+      endDate: new Date(2023, 6, 31, 15, 30),
     },
-    {
-      Name: "Playlist 3",
-      Id: 3,
-      Color: "#7A29CC",
-    },
-  ];
+  ]);
 
-  const navigate = useNavigate();
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [showEditor, setShowEditor] = useState(false);
+  const [currentViewName, setCurrentViewName] = useState("Day");
 
-  const handleEventClick = (args) => {
-    setSelectedEvent(args.event.data);
-    setShowEditor(true);
+  const handleCurrentViewNameChange = (newViewName) => {
+    setCurrentViewName(newViewName);
   };
 
-  const handleEditorSave = (updatedEvent) => {
-    setShowEditor(false);
-    setSelectedEvent(null);
-    //navigate("/eventedit");
-  };
+  const [isShiftPressed, setIsShiftPressed] = useState(false);
 
-  const handleEditorCancel = () => {
-    // Close the editor without saving
-    setShowEditor(false);
-    setSelectedEvent(null);
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (event.keyCode === SHIFT_KEY) {
+        setIsShiftPressed(true);
+      }
+    };
+
+    const onKeyUp = (event) => {
+      if (event.keyCode === SHIFT_KEY) {
+        setIsShiftPressed(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keyup", onKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keyup", onKeyUp);
+    };
+  }, []);
+
+  const commitChanges = ({ added, changed, deleted }) => {
+    setData((prevData) => {
+      let updatedData = [...prevData];
+      if (added) {
+        const startingAddedId =
+          prevData.length > 0 ? prevData[prevData.length - 1].id + 1 : 0;
+        updatedData = [...prevData, { id: startingAddedId, ...added }];
+      }
+      if (changed) {
+        if (isShiftPressed) {
+          const changedAppointment = prevData.find(
+            (appointment) => changed[appointment.id]
+          );
+          const startingAddedId =
+            prevData.length > 0 ? prevData[prevData.length - 1].id + 1 : 0;
+          updatedData = [
+            ...prevData,
+            {
+              ...changedAppointment,
+              id: startingAddedId,
+              ...changed[changedAppointment.id],
+            },
+          ];
+        } else {
+          updatedData = prevData.map((appointment) =>
+            changed[appointment.id]
+              ? { ...appointment, ...changed[appointment.id] }
+              : appointment
+          );
+        }
+      }
+      if (deleted !== undefined) {
+        updatedData = prevData.filter(
+          (appointment) => appointment.id !== deleted
+        );
+      }
+      return updatedData;
+    });
   };
 
   return (
@@ -250,60 +368,57 @@ const AddSchedule = () => {
               <BsPencilFill />
             </button>
           </div>
-          <div>
-            <Link to="/myschedule">
-              <button className="border-2 border-primary rounded-full px-3 py-1">
-                save
-              </button>
-            </Link>
-          </div>
         </div>
 
         <div className="grid grid-cols-12">
           <div className="lg:col-span-10 md:col-span-8 sm:col-span-12 xs:col-span-12 ">
-            <ScheduleComponent
-              eventSettings={{ dataSource: data }}
-              onEventClick={handleEventClick}
-              editorTemplate={(props) => (
-                <EventEditor
-                  {...props}
-                  onSave={handleEditorSave}
-                  eventData={selectedEvent}
-                  nCancel={handleEditorCancel}
+            <Paper>
+              <Scheduler data={data} height={700}>
+                <ViewState currentViewName={currentViewName} />
+                <WeekView startDayHour={10} endDayHour={19} />
+                <DayView />
+                <EditingState onCommitChanges={commitChanges} />
+                <IntegratedEditing />
+                <MonthView />
+                <Toolbar />
+                <DateNavigator />
+                <TodayButton />
+                <div className="flex justify-end absolute top-2 right-0 border border-primary rounded-3xl px-2">
+                  <ExternalViewSwitcher
+                    currentViewName={currentViewName}
+                    onChange={(e) =>
+                      handleCurrentViewNameChange(e.target.value)
+                    }
+                  />
+                </div>
+                <EditRecurrenceMenu />
+                <Appointments />
+                <AppointmentTooltip
+                  showCloseButton
+                  showOpenButton
+                  contentComponent={(props) => (
+                    <CustomFormTemplate
+                      onFieldChange={props.onFieldChange}
+                      appointmentData={props.appointmentData}
+                    />
+                  )}
                 />
-              )}
-            >
-              <ResourcesDirective>
-                <ResourceDirective
-                  dataSource={resourceDataSource}
-                  field="ResourceID"
-                  title="Resource Name"
-                  name="Resources"
-                  textField="Name"
-                  idField="Id"
-                  colorField="Color"
-                />
-              </ResourcesDirective>
-              <Inject
-                services={[
-                  Day,
-                  Week,
-                  WorkWeek,
-                  Month,
-                  Agenda,
-                  DragAndDrop,
-                  Resize,
-                ]}
-              />
-            </ScheduleComponent>
 
-            {/* {showEditor && (
-              <EventEditor
-                eventData={selectedEvent}
-                onSave={handleEditorSave}
-                onCancel={handleEditorCancel}
+                {/* Use Template to provide the custom form editor */}
+                {/* <Template name="appointmentForm">
+            {({ onFieldChange, appointmentData }) => (
+              <CustomFormEditor
+                onFieldChange={onFieldChange}
+                appointmentData={appointmentData}
               />
-            )} */}
+            )}
+          </Template> */}
+
+                {/* Pass the template to the AppointmentForm */}
+                <AppointmentForm />
+                <DragDropProvider />
+              </Scheduler>
+            </Paper>
           </div>
           <div className=" bg-white shadow-md ml-5 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 ">
             <div className="p-3">
