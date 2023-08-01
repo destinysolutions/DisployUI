@@ -31,6 +31,7 @@ import {
   AppointmentForm,
   DragDropProvider,
   EditRecurrenceMenu,
+  Resources,
 } from "@devexpress/dx-react-scheduler-material-ui";
 import { useEffect } from "react";
 const SHIFT_KEY = 16;
@@ -103,23 +104,14 @@ const CustomFormTemplate = ({ children, appointmentData, onFieldChange }) => {
     setEditedEndTime(e.target.value);
   };
 
-  const onSaveButtonClick = () => {
-    // Combine edited date and time to create new start and end dates
-    const newStartDate = new Date(`${editedStartDate}T${editedStartTime}`);
-    const newEndDate = new Date(`${editedEndDate}T${editedEndTime}`);
-
-    // Call onFieldChange with the edited start and end dates
-    onFieldChange({ startDate: newStartDate, endDate: newEndDate });
-  };
-
   return (
-    <div className="pt-6 px-5">
+    <div className="px-5">
       <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl xs:text-xs text-[#001737]  ">
         Select Assets and Shedule Time
       </h1>
 
-      <div className="grid grid-cols-12 mt-9">
-        <div className="lg:col-span-10 md:col-span-8 sm:col-span-12 xs:col-span-12 bg-white shadow-md rounded-lg p-4">
+      <div className="grid grid-cols-12 my-6">
+        <div className="lg:col-span-10 md:col-span-8 sm:col-span-12 xs:col-span-12 bg-white shadow-2xl rounded-lg p-4">
           <div className="mr-5 relative sm:mr-0">
             <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
             <input
@@ -190,12 +182,12 @@ const CustomFormTemplate = ({ children, appointmentData, onFieldChange }) => {
             </table>
           </div>
         </div>
-        <div className=" bg-white shadow-md ml-5 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 ">
+        <div className=" bg-white shadow-2xl md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0">
           <div className="p-3">
-            <span className="text-xl">Assets Name</span>
             <input
               value={appointmentData.title}
               onChange={(e) => onFieldChange({ title: e.target.value })}
+              className="w-full"
             />
           </div>
           <div className="border-b-2 border-[#D5E3FF]"></div>
@@ -205,43 +197,47 @@ const CustomFormTemplate = ({ children, appointmentData, onFieldChange }) => {
               <ul className="border-2 border-[#D5E3FF] rounded">
                 <li className="border-b-2 border-[#D5E3FF] p-3">
                   <h3>Start Date:</h3>
-                  <div className="bg-[#E4E6FF] rounded-full px-3 py-2 mt-2">
+                  <div className="mt-2">
                     {/* 01 / 06 /2023 */}
                     <input
                       type="date"
                       value={editedStartDate}
                       onChange={handleStartDateChange}
+                      className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
                     />
                   </div>
                 </li>
                 <li className="border-b-2 border-[#D5E3FF] p-3">
                   <h3>End Date:</h3>
-                  <div className="bg-[#E4E6FF] rounded-full px-3 py-2 mt-2">
+                  <div className="mt-2">
                     {/* 01 / 06 /2023 */}
                     <input
                       type="date"
                       value={editedEndDate}
                       onChange={handleEndDateChange}
+                      className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
                     />
                   </div>
                 </li>
                 <li className="border-b-2 border-[#D5E3FF] p-3">
                   <h3>Start Time:</h3>
-                  <div className="bg-[#E4E6FF] rounded-full px-3 py-2 mt-2">
+                  <div className="mt-2">
                     <input
                       type="time"
                       value={editedStartTime}
                       onChange={handleStartTimeChange}
+                      className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
                     />
                   </div>
                 </li>
                 <li className=" p-3">
                   <h3>End Time:</h3>
-                  <div className="bg-[#E4E6FF] rounded-full px-3 py-2 mt-2">
+                  <div className="mt-2">
                     <input
                       type="time"
                       value={editedEndTime}
                       onChange={handleEndTimeChange}
+                      className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
                     />
                   </div>
                 </li>
@@ -270,24 +266,56 @@ const AddSchedule = () => {
       title: "Website Re-Design Plan",
       startDate: new Date(2023, 7, 1, 9, 30),
       endDate: new Date(2023, 7, 1, 11, 30),
+      location: "Office A",
+      asset: "Asset 1",
     },
     {
       title: "Book Flights to San Fran for Sales Trip",
       startDate: new Date(2023, 7, 1, 12, 0),
       endDate: new Date(2023, 7, 1, 13, 0),
+      location: "Office B",
+      asset: "Asset 2",
     },
     {
       title: "Install New Router in Dev Room",
       startDate: new Date(2023, 7, 1, 14, 30),
       endDate: new Date(2023, 7, 1, 15, 30),
+      location: "Office C",
+      asset: "Asset 3",
     },
     {
       title: "Install Router in Dev Room",
       startDate: new Date(2023, 6, 31, 14, 30),
       endDate: new Date(2023, 6, 31, 15, 30),
+      location: "Office D",
+      asset: "Asset 4",
     },
   ]);
 
+  const assetResource = {
+    fieldName: "asset",
+    title: "Asset",
+    instances: [
+      { id: "Asset 1", text: "Asset 1", color: "#ff5722" },
+      { id: "Asset 2", text: "Asset 2", color: "#e91e63" },
+      { id: "Asset 3", text: "Asset 3", color: "#ff9800" },
+      { id: "Asset 4", text: "Asset 4", color: "#b2ff59" },
+      // Add more assets as needed
+    ],
+  };
+  const resources = [
+    {
+      fieldName: "location",
+      title: "Location",
+      instances: [
+        { id: "Office A", text: "Office A", color: "#4fc3f7" },
+        { id: "Office B", text: "Office B", color: "#cddc39" },
+        { id: "Office C", text: "Office C", color: "#ff9800" },
+        { id: "Office D", text: "Office D", color: "#b2ff59" },
+      ],
+    },
+    assetResource,
+  ];
   const [currentViewName, setCurrentViewName] = useState("Day");
 
   const handleCurrentViewNameChange = (newViewName) => {
@@ -362,7 +390,7 @@ const AddSchedule = () => {
     <>
       <div className="p-6">
         <div className="flex justify-between">
-          <div className="flex items-center pb-5">
+          <div className="flex items-center mt-5">
             <h1 className="text-xl font-semibold">Create Schedule</h1>
             <button className="ml-3 text-sm">
               <BsPencilFill />
@@ -370,7 +398,7 @@ const AddSchedule = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-12">
+        <div className="grid grid-cols-12 mt-5">
           <div className="lg:col-span-10 md:col-span-8 sm:col-span-12 xs:col-span-12 ">
             <Paper>
               <Scheduler data={data} height={700}>
@@ -383,7 +411,7 @@ const AddSchedule = () => {
                 <Toolbar />
                 <DateNavigator />
                 <TodayButton />
-                <div className="flex justify-end absolute top-2 right-0 border border-primary rounded-3xl px-2">
+                <div className="flex justify-end lg:absolute md:absolute sm:relative xs:relative lg:top-[13px] md:top-[13px] sm:top-[0px] top-7 lg:right-6 md:right-6 sm:right-0 xs:right-0 border border-primary rounded-3xl px-2">
                   <ExternalViewSwitcher
                     currentViewName={currentViewName}
                     onChange={(e) =>
@@ -396,14 +424,13 @@ const AddSchedule = () => {
                 <AppointmentTooltip
                   showCloseButton
                   showOpenButton
-                  contentComponent={(props) => (
+                  contentComponent={({ onFieldChange, appointmentData }) => (
                     <CustomFormTemplate
-                      onFieldChange={props.onFieldChange}
-                      appointmentData={props.appointmentData}
+                      onFieldChange={onFieldChange}
+                      appointmentData={appointmentData}
                     />
                   )}
                 />
-
                 {/* Use Template to provide the custom form editor */}
                 {/* <Template name="appointmentForm">
             {({ onFieldChange, appointmentData }) => (
@@ -416,11 +443,12 @@ const AddSchedule = () => {
 
                 {/* Pass the template to the AppointmentForm */}
                 <AppointmentForm />
+                <Resources data={resources} />
                 <DragDropProvider />
               </Scheduler>
             </Paper>
           </div>
-          <div className=" bg-white shadow-md ml-5 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 ">
+          <div className=" bg-white shadow-2xl lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
             <div className="p-3">
               <span className="text-xl">Schedule Name</span>
             </div>

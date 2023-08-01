@@ -24,7 +24,8 @@
   top: -8px;
   right: 14px;
 }
-.css-1fklddj-MuiModal-root-MuiPopover-root .Layout-popover {
+.css-1fklddj-MuiModal-root-MuiPopover-root .Layout-popover,
+.css-1wwby0q .Layout-popover {
   border-radius: 8px;
   width: 100% !important;
 }
