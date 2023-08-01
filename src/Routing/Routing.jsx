@@ -33,6 +33,7 @@ import Auditlogreport from "../Components/Reports/Auditlogreport";
 import SalesReport from "../Components/Reports/SalesReport";
 import CancelReport from "../Components/Reports/CancelReport";
 import EventEditor from "../Components/Schedule/EventEditor";
+import Unsplash from "../Components/Assests/Unsplash";
 const Routing = () => {
   //for screen resize sidebar open close
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -334,6 +335,14 @@ const Routing = () => {
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
             />
+          }
+        />
+
+        {/*Event Editors */}
+        <Route
+          path="/unplash"
+          element={
+            <Unsplash />
           }
         />
 

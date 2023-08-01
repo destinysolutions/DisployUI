@@ -18,10 +18,14 @@ import { BiError } from "react-icons/bi";
 import PropTypes from "prop-types";
 import Footer from "../Footer";
 import useDrivePicker from 'react-google-drive-picker';
-import DropboxChooser from 'react-dropbox-chooser';
+
 import { useRef } from "react";
 import { useEffect } from "react";
 import Video from "./Video";
+import Axios from 'axios';
+import { insert } from "formik";
+import DropboxChooser from 'react-dropbox-chooser'
+import axios from "axios";
 
 {/* end of video*/ }
 const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
@@ -75,7 +79,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
 
   {/*dropbox */ }
   const [dburl, setdburl] = useState("")
-  const DbAppKey = "63hbbudlhzm3uqu"
+  const DbAppKey = "bsoy3tjwi8cyssi"
   function handleSuccess(files) {
     setdburl(files[0].thumbnailLink);
     console.log(url);
@@ -186,6 +190,71 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
     setFileList(updatedList);
 
   }
+  const [uploadFile, setUploadFile] = useState(null);
+  const onFileChange = (e) => {
+    const file = e.target.files[0];
+    setUploadFile(file);
+  };
+
+  const postData = () => {
+    if (!uploadFile) {
+      console.log("Please select a file to upload.");
+      return;
+    }
+    const fileType = getFileType(uploadFile.name); // Function to extract file type from the name
+    const name = uploadFile.name;
+    const details = "Some Details about the file"; // You can change this or collect more Details if needed
+    const fileSize = uploadFile.size; // Get file size in bytes
+    const contentType = getContentType(uploadFile.type); // Function to extract content type from MIME type
+    const operation = "Insert";
+    const formData = new FormData();
+    formData.append('file', 'dummy');
+    // formData.append('Images', JSON.stringify([]));
+    formData.append('id', '2');
+    formData.append('operation', operation);
+    formData.append('fileType', fileType);
+    formData.append('name', name);
+    formData.append('details', details);
+    formData.append('fileSize', fileSize);
+    formData.append('contentType', contentType); // Append the content type
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'multipart/form-data');
+
+    axios.post('http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload', formData)
+      .then(res => {
+        console.log('Data uploaded successfully:', res.data);
+      })
+      .catch(err => {
+        console.error('Error uploading data:', err);
+      });
+  };
+
+  const getFileType = (fileName, mimeType) => {
+    const extension = fileName.split('.').pop().toLowerCase();
+
+    if (extension === 'jpg' || extension === 'jpeg' || extension === 'png') {
+      return 'Image';
+    } else if (extension === 'mp4' || extension === 'avi' || extension === 'mov') {
+      return 'Video';
+    } else if (mimeType && (mimeType.startsWith('application/pdf') || mimeType.startsWith('text/') || mimeType === 'application/msword' || mimeType === 'application/vnd.ms-excel' || mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
+      return 'DOC';
+    } else {
+      return 'file type not found'; // You can set a default value or handle other file types as needed
+    }
+  };
+  // Function to extract content type from the MIME type
+  const getContentType = (mime) => {
+    if (mime.startsWith('image/')) {
+      return 'Image';
+    } else if (mime.startsWith('video/')) {
+      return 'Video';
+    } else if (mime.startsWith('application/pdf') || mime.startsWith('text/') || mime.startsWith('application/msword')) {
+      return 'DOC';
+    } else {
+      return 'file content type not found'; // You can set a default value or handle other content types as needed
+    }
+  };
   return (
     <>
       <div className="flex border-b border-gray py-3">
@@ -269,7 +338,10 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
             </span>
 
             <span className="fileUploadIcon">
-              <FaUnsplash size={30} />
+
+              <Link to='/unplash'>
+                <FaUnsplash size={30} />
+              </Link>
             </span>
 
             <span className="bg-[#D5E3FF] text-SlateBlue py-4 px-4 rounded-[45px]">
@@ -299,19 +371,20 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
           >
             <div className=" relative flex flex-col items-center justify-center min-h-full lg:p-40 md:p-20 sm:p-10 xs:p-4 bg-[#E4E6FF] lg:mt-14 md:mt-14 sm:mt-5 xs:mt-5  border-2 rounded-[20px] border-SlateBlue border-dashed">
               <FiUploadCloud className="text-SlateBlue md:mb-7 sm:mb-3 xs:mb-2 lg:text-[150px] md:text-[100px] sm:text-[80px] xs:text-[45px]" />
-              <input type="file" value="" className=" absolute left-0 top-0 w-full h-full opacity-0 cursor-pointer" name="upload" onChange={onFileDrop} />
+              <input type="file" className=" absolute left-0 top-0 w-full h-full opacity-0 cursor-pointer" name="uploadfile" onChange={onFileChange} />
               <span className="text-SlateBlue text-center">Select Files to Upload</span>
               <p className="text-sm font-normal text-center">
                 Drop your first video, photo or document here
               </p>
-              <button
-                className="bg-SlateBlue text-white px-7 py-2 rounded mt-4"
-                onClick={() => setbrowseFiles(true)}
-              >
-                Browse
-              </button>
+
             </div>
           </div>
+          <button
+            className="bg-SlateBlue text-white px-7 py-2 rounded mt-4"
+            onClick={postData}
+          >
+            Browse
+          </button>
 
           {
             fileList.length > 0 ? (
@@ -483,7 +556,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
     </>
   );
 };
-FileUpload.propTypes = {
-  onFileChange: PropTypes.func
-}
+// FileUpload.propTypes = {
+//   onFileChange: PropTypes.func
+// }
 export default FileUpload;
