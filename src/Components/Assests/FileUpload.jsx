@@ -27,6 +27,7 @@ import { insert } from "formik";
 import DropboxChooser from "react-dropbox-chooser";
 import axios from "axios";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
+import Unsplash from "./Unsplash";
 
 {
   /* end of video*/
@@ -252,7 +253,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
         mimeType === "application/msword" ||
         mimeType === "application/vnd.ms-excel" ||
         mimeType ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     ) {
       return "DOC";
     } else {
@@ -272,12 +273,26 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
         mime === "application/msword" ||
         mime === "application/vnd.ms-excel" ||
         mime ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     ) {
       return "DOC";
     } else {
       return "file content type not found";
     }
+  };
+
+  // unsplash code
+  const [showUnsplash, setShowUnsplash] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState([]);
+  const handleUnsplashButtonClick = () => {
+    setShowUnsplash(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowUnsplash(false);
+  };
+  const handleSelectedImages = (selectedImages) => {
+    setUploadedImages((prevUploaded) => [...prevUploaded, ...selectedImages]);
   };
   return (
     <>
@@ -302,7 +317,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
           <div className="flex lg:justify-between md:justify-between flex-wrap sm:justify-start xs:justify-start items-center lg:mt-7 md:mt-7 sm:mt-5 xs:mt-5 media-icon">
             <span
               className="fileUploadIcon dropbox-button"
-              //   onClick={handleIconClick}
+            //   onClick={handleIconClick}
             >
               {
                 <DropboxChooser
@@ -320,13 +335,13 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
             </span>
             <span
               className="fileUploadIcon"
-              //   onClick={handleIconClick}
+            //   onClick={handleIconClick}
             >
               <FaCloudUploadAlt size={30} />
             </span>
             <span
               className="bg-[#D5E3FF] text-SlateBlue py-4 px-3 rounded-[45px] "
-              //   onClick={handleIconClick}
+            //   onClick={handleIconClick}
             >
               <svg
                 width="25"
@@ -367,13 +382,28 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
                 </video>
               )}
             </span>
-
+            {/* start unspalsh */}
             <span className="fileUploadIcon">
-              <Link to="/unplash">
-                <FaUnsplash size={30} />
-              </Link>
-            </span>
+              <button onClick={handleUnsplashButtonClick} className="relative">
+                <FaUnsplash size={30} className="relative" />
+                {showUnsplash && (
+                  <Unsplash closeModal={handleCloseModal} onSelectedImages={handleSelectedImages} />
+                )}
+              </button>
 
+              <div>
+
+
+                <ul>
+                  {uploadedImages.map((imageUrl) => (
+                    <li key={imageUrl}>
+                      <img src={imageUrl} alt="Uploaded" />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </span>
+            {/* end unspalsh */}
             <span className="bg-[#D5E3FF] text-SlateBlue py-4 px-4 rounded-[45px]">
               <svg
                 width="20"
