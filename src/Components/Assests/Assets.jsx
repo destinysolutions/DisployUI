@@ -51,6 +51,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       setClickedTabIcon(null); // If the same item is clicked again, hide its details
     } else {
       setClickedTabIcon(item); // Otherwise, show the details of the clicked item
+      setassetsdw(null);
     }
   };
   const handleMouseOver = () => {
@@ -290,10 +291,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   : "togglecontent"
               }
             >
-              <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-12 gap-8 mb-5">
+              <div className="grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section">
                 {gridData.length > 0 ? (
                   gridData.map((item, index) => (
-                    <li key={`tabitem-grid-${item.id}-${index}`} className="relative list-none">
+                    <li key={`tabitem-grid-${item.id}-${index}`} className="relative list-none assetsbox">
                       {item.image && <img src={item.image} alt={item.name} className={`imagebox relative ${selectedItems.includes(item)
                         ? "active opacity-1 w-full rounded-2xl"
                         : "opacity-50 w-full rounded-2xl"
@@ -365,8 +366,24 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 Add to Playlist
                               </li>
                               <li className="flex text-sm items-center">
-                                <FiDownload className="mr-2 text-lg" />
-                                Download
+                                {item.image && (
+                                  <li className="flex text-sm items-center">
+                                    <FiDownload className="mr-2 text-lg" />
+                                    <a href={item.image} download>Download</a>
+                                  </li>
+                                )}
+                                {item.video && (
+                                  <li className="flex text-sm items-center">
+                                    <FiDownload className="mr-2 text-lg" />
+                                    <a href={item.video} download>Download</a>
+                                  </li>
+                                )}
+                                {item.video && (
+                                  <li className="flex text-sm items-center">
+                                    <FiDownload className="mr-2 text-lg" />
+                                    <a href={item.video} download>Download</a>
+                                  </li>
+                                )}
                               </li>
                               <li className="flex text-sm items-center">
                                 <CgMoveRight className="mr-2 text-lg" />
@@ -383,7 +400,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
                       {/*end of checkbox*/}
                       {item.doc &&
-                        <div className="bg-white px-4 py-5 rounded-lg shadow-lg">
+                        <div className="bg-white px-4 py-5 rounded-lg shadow-lg h-full">
                           {item.doc && <HiDocumentDuplicate className=" text-primary text-4xl mt-10" />}
                           {item.doc && (
 
@@ -498,11 +515,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
                           <td className="flex items-center relative">
                             {item.image &&
-                              <div>
+                              <div className="imagebox">
 
                                 <img
                                   src={item.image}
-                                  className=" rounded-2xl max-w-[100px]"
+                                  className=" rounded-2xl"
                                 />
                                 <div className="tabicon text-center absolute left-10 top-3">
 
@@ -512,8 +529,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             }
 
                             {item.video &&
-                              <div className="relative">
-                                <video controls className="w-full rounded-2xl relative h-40">
+                              <div className="relative videobox">
+                                <video controls className="w-full rounded-2xl relative">
                                   <source src={item.video} type="video/mp4" />
                                   Your browser does not support the video tag.
                                 </video>
