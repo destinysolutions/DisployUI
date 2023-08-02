@@ -1,64 +1,112 @@
 import React from 'react'
 import { useState } from 'react';
 import { useEffect } from 'react';
+import './../../Styles/assest.css';
+import { BiLoaderCircle } from 'react-icons/bi'
 const Unsplash = () => {
     const [img, setImg] = useState("");
     const [res, setRes] = useState([]);
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedImages, setSelectedImages] = useState([]);
+    const [uploadedImages, setUploadedImages] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+
     const API_KEY = "Sgv-wti48nSLfRjYsH7lmH_8N3wjzC18ccTYFxBzxmw";
-    const fetchRequest = async () => {
+
+    const fetchRequest = async (query, page = 1) => {
         const data = await fetch(
-            `https://api.unsplash.com/search/photos?page=1&query=${img}&client_id=${API_KEY}`
+            `https://api.unsplash.com/search/photos?page=${page}&query=${encodeURIComponent(
+                query.toLowerCase()
+            )}&client_id=${API_KEY}`
         );
         const dataJ = await data.json();
         const result = dataJ.results;
         console.log(result);
-        setRes(result);
+        setRes((prevResults) => (page === 1 ? result : [...prevResults, ...result]));
+        setCurrentPage(page + 1); // Update the current page for the next request
     };
     useEffect(() => {
-        fetchRequest();
-    }, []);
-    const Submit = () => {
-        fetchRequest();
-        setImg("");
+        fetchRequest(img);
+    }, [img]);
+
+
+    const handleImageSelect = (imageUrl) => {
+        setSelectedImages((prevSelected) => [...prevSelected, imageUrl]);
     };
 
+    const handleImageUpload = () => {
+        if (selectedImages.length > 0) {
+            setUploadedImages((prevUploaded) => [...prevUploaded, ...selectedImages]);
+            setSelectedImages([]);
+        }
+    };
+    const handleLoadMore = () => {
+        fetchRequest(img, currentPage);
+    };
+    useEffect(() => {
+        fetchRequest(img);
+    }, [img]);
     return (
         <>
-            <input
-                className=" form-control-sm py-1 fs-4 text-capitalize border border-3 border-dark"
-                type="text" placeholder="Search Anything..." value={img}
-                onChange={(e) => setImg(e.target.value)}
-            />
+            <div className='text-center'>
+                <h1 className=' text-SlateBlue text-3xl my-5 font-medium'>Search Images</h1>
+                <input
+                    className="form-control-sm py-1 fs-4 text-capitalize border border-3 border-dark"
+                    type="text"
+                    placeholder="Search Anything..."
+                    value={img}
+                    onChange={(e) => setImg(e.target.value)}
+                />
+            </div>
+            <div className='container mx-auto'>
+                <div className="grid grid-cols-12 gap-4 unsplash-section mt-8">
+                    {res.map((val) => {
+                        const isSelected = selectedImages.includes(val.urls.small);
+                        return (
+                            <div key={val.id} className="lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-12 relative unsplash-box">
+                                <label className='relative'>
+                                    <input
+                                        type="checkbox"
+                                        checked={isSelected}
+                                        onChange={() => handleImageSelect(val.urls.small)} className=' absolute top-3 left-3 z-10'
+                                    />
+                                    <img
+                                        className="relative unsplash-img"
+                                        src={val.urls.small}
+                                        alt={val.alt_description}
+                                    />
+                                </label>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+            <div className='text-center'>
+                <button
+                    type="button"
+                    onClick={handleLoadMore}
+                    className="btn  text-[#8d8c8c] fs-3 mt-5 flex items-center "
+                >
+                    <BiLoaderCircle /> Load More
+                </button>
+            </div>
             <button
-                type="submit"
-                onClick={Submit}
-                className="btn bg-dark text-white fs-3 mx-3"
+                type="button"
+                onClick={handleImageUpload}
+                className="btn bg-dark text-white fs-3 mt-3"
             >
-                Search
+                Upload Selected Images
             </button>
 
-            <div className="grid grid-cols-12 ">
-                {res.map((val) => {
-                    return (
-                        <div key={val.id} className='col-span-3' onClick={() => setSelectedImage(val.urls.small)}>
-                            <img
-                                className="img-fluid img-thumbnail"
-                                src={val.urls.small}
-                                alt={val.alt_description}
-                            />
-                        </div>
-                    );
-                })}
-                {selectedImage && (
-                    <div>
-                        <h3>Selected Image:</h3>
-                        <img src={selectedImage} alt="Selected" />
-                    </div>
-                )}
-            </div>
+            <ul>
+                {uploadedImages.map((imageUrl) => (
+                    <li key={imageUrl}>
+                        <img src={imageUrl} alt="Uploaded" />
+                    </li>
+                ))}
+            </ul>
         </>
-    )
-}
+    );
+};
+
 
 export default Unsplash
