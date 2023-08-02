@@ -38,15 +38,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const [hoveredTabIcon, setHoveredTabIcon] = useState(null);
-  const [showDetails, setShowDetails] = useState(false);
-  const updatevbtntoggle = (id) => {
-    if (vbtn === id) {
-      setVbtnclick(null);
-      setHoveredTabIcon(null); // Reset the hoveredTabIcon state when the same tabicon is clicked again
-    } else {
-      setVbtnclick(id);
-    }
-  };
   const handleIconClick = (item) => {
     // Toggle the visibility of the details for the clicked item
     if (clickedTabIcon === item) {
@@ -55,12 +46,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       setClickedTabIcon(item); // Otherwise, show the details of the clicked item
       setassetsdw(null);
     }
-  };
-  const handleMouseOver = () => {
-    setIsHovering(true);
-  };
-  const handleMouseOut = () => {
-    setIsHovering(false);
   };
 
   {
@@ -127,15 +112,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   /*API */
 
   const [activetab, setActivetab] = useState(1);
-  const [tabitems, setTabitems] = useState([]);
   const [originalData, setOriginalData] = useState([]);
   const [gridData, setGridData] = useState([]);
   const [tableData, setTableData] = useState([]);
-
-  useEffect(() => {
-    fetchData();
-    handleActiveBtnClick(1);
-  }, []);
 
   const fetchData = () => {
     axios
@@ -149,7 +128,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.video ? fetchedData.video : []),
           ...(fetchedData.doc ? fetchedData.doc : []),
         ];
-        setTabitems(allAssets);
         setGridData(allAssets);
         setTableData(allAssets);
       })
@@ -157,6 +135,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
+
+  useEffect(() => {
+    fetchData();
+    handleActiveBtnClick(1);
+  }, []);
 
   const handleActiveBtnClick = (btnNumber) => {
     setActivetab(btnNumber);
@@ -169,24 +152,19 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         ...(originalData.video ? originalData.video : []),
         ...(originalData.doc ? originalData.doc : []),
       ];
-      setTabitems(allAssets);
       setGridData(allAssets);
       setTableData(allAssets);
     } else if (btnNumber === 2) {
-      setTabitems(originalData.image ? originalData.image : []);
       setGridData(originalData.image ? originalData.image : []);
       setTableData([]);
     } else if (btnNumber === 3) {
-      setTabitems(originalData.video ? originalData.video : []);
       setGridData(originalData.video ? originalData.video : []);
       setTableData([]);
     } else if (btnNumber === 4) {
-      setTabitems(originalData.doc ? originalData.doc : []);
       setGridData(originalData.doc ? originalData.doc : []);
       setTableData([]);
     } else if (btnNumber === 5) {
       // Handle other tab buttons (e.g., Apps) if needed
-      // setTabitems([...]); // Set data for other buttons
       // setGridData([...]); // Set data for other buttons for grid view
       // setTableData([...]); // Set data for other buttons for table view
     }
@@ -295,9 +273,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       key={`tabitem-grid-${item.id}-${index}`}
                       className="relative list-none assetsbox"
                     >
-                      {item.image && (
+                      {item.categorieType === "Image" && (
                         <img
-                          src={item.image}
+                          src={item.fileType}
                           alt={item.name}
                           className={`imagebox relative ${
                             selectedItems.includes(item)
@@ -307,12 +285,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         />
                       )}
 
-                      {item.video && (
+                      {item.categorieType === "Video" && (
                         <video
                           controls
                           className="w-full rounded-2xl relative h-56"
                         >
-                          <source src={item.video} type="video/mp4" />
+                          <source src={item.fileType} type="video/mp4" />
                           Your browser does not support the video tag.
                         </video>
                       )}
@@ -323,10 +301,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         onMouseLeave={() => setHoveredTabIcon(null)}
                         onClick={() => handleIconClick(item)}
                       >
-                        {item.image && (
+                        {item.categorieType === "Image" && (
                           <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
                         )}
-                        {item.video && (
+                        {item.categorieType === "Video" && (
                           <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
                         )}
                       </div>
@@ -377,39 +355,37 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 <MdPlaylistPlay className="mr-2 text-lg" />
                                 Add to Playlist
                               </li>
-                              <li className="flex text-sm items-center">
-                                {item.image && (
-                                  <li className="flex text-sm items-center">
-                                    <FiDownload className="mr-2 text-lg" />
-                                    <a href={item.image} download>
-                                      Download
-                                    </a>
-                                  </li>
-                                )}
-                                {item.video && (
-                                  <li className="flex text-sm items-center">
-                                    <FiDownload className="mr-2 text-lg" />
-                                    <a href={item.video} download>
-                                      Download
-                                    </a>
-                                  </li>
-                                )}
-                                {item.video && (
-                                  <li className="flex text-sm items-center">
-                                    <FiDownload className="mr-2 text-lg" />
-                                    <a href={item.video} download>
-                                      Download
-                                    </a>
-                                  </li>
-                                )}
-                              </li>
+                              {item.categorieType === "Image" && (
+                                <li className="flex text-sm items-center">
+                                  <FiDownload className="mr-2 text-lg" />
+                                  <a href={item.fileType} download>
+                                    Download
+                                  </a>
+                                </li>
+                              )}
+                              {item.categorieType === "Video" && (
+                                <li className="flex text-sm items-center">
+                                  <FiDownload className="mr-2 text-lg" />
+                                  <a href={item.fileType} download>
+                                    Download
+                                  </a>
+                                </li>
+                              )}
+                              {item.categorieType === "DOC" && (
+                                <li className="flex text-sm items-center">
+                                  <FiDownload className="mr-2 text-lg" />
+                                  <a href={item.fileType} download>
+                                    Download
+                                  </a>
+                                </li>
+                              )}
                               <li className="flex text-sm items-center">
                                 <CgMoveRight className="mr-2 text-lg" />
                                 Move to
                               </li>
                               <li className="flex text-sm items-center">
                                 <RiDeleteBin5Line className="mr-2 text-lg" />
-                                Move to Trast
+                                Move to Trash
                               </li>
                             </ul>
                           </div>
@@ -417,21 +393,23 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
 
                       {/*end of checkbox*/}
-                      {item.doc && (
+                      {item.categorieType === "DOC" && (
                         <div className="bg-white px-4 py-5 rounded-lg shadow-lg h-full">
-                          {item.doc && (
+                          {item.categorieType === "DOC" && (
                             <HiDocumentDuplicate className=" text-primary text-4xl mt-10" />
                           )}
-                          {item.doc && (
+                          {item.categorieType === "DOC" && (
                             <a
-                              href={item.doc}
+                              href={item.fileType}
                               target="_blank"
                               rel="noopener noreferrer"
                             >
                               {item.name}
                             </a>
                           )}
-                          {item.doc && <p>{item.details}</p>}
+                          {item.categorieType === "DOC" && (
+                            <p>{item.details}</p>
+                          )}
                         </div>
                       )}
                     </li>
@@ -471,7 +449,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <tr className="bg-white rounded-lg font-normal text-[14px] text-[#5E5E5E] shadow-sm newfolder">
                           <td className="flex items-center relative">
                             <div>
-                              <SlFolderAlt className=" text-5xl font-medium text-primary " />
+                              <SlFolderAlt className="text-5xl font-medium text-primary" />
                             </div>
                             <div className="ml-3">
                               <h1 className="font-medium text-base">
@@ -535,97 +513,96 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           key={`tabitem-table-${item.id}-${index}`}
                           className=" mt-2 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] shadow-sm border-b border-[#cccccca6]"
                         >
-                          {" "}
-                          <>
-                            <td className="flex items-center relative">
-                              {item.image && (
-                                <div className="imagebox">
-                                  <img
-                                    src={item.image}
-                                    className=" rounded-2xl"
-                                  />
-                                  <div className="tabicon text-center absolute left-10 top-3">
-                                    {item.image && (
-                                      <RiGalleryFill className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
-                                    )}
-                                  </div>
+                          <td className="flex items-center relative">
+                            {item.categorieType === "Image" && (
+                              <div className="imagebox">
+                                <img
+                                  src={item.fileType}
+                                  className="rounded-2xl"
+                                />
+                                <div className="tabicon text-center absolute left-10 top-3">
+                                  {item.categorieType === "Image" && (
+                                    <RiGalleryFill className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
+                                  )}
                                 </div>
-                              )}
-
-                              {item.video && (
-                                <div className="relative videobox">
-                                  <video
-                                    controls
-                                    className="w-full rounded-2xl relative"
-                                  >
-                                    <source src={item.video} type="video/mp4" />
-                                    Your browser does not support the video tag.
-                                  </video>
-                                  <div className="tabicon text-center absolute left-10 top-3">
-                                    {item.video && (
-                                      <HiOutlineVideoCamera className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
-                                    )}
-                                  </div>
-                                </div>
-                              )}
-
-                              <div className="ml-2">
-                                <h1 className="font-medium lg:text-base md:text-sm sm:text-sm xs:text-xs">
-                                  {item.name}
-                                </h1>
-                                <p className="max-w-[250px] lg:text-base md:text-sm sm:text-sm xs:text-xs">
-                                  {item.details}
-                                </p>
                               </div>
-                            </td>
-
-                            <td>0.40min</td>
-                            <td>1200*50</td>
-                            <td>{item.contentType}</td>
-                            <td>{item.fileSize}</td>
-
-                            <td>
-                              <input
-                                type="checkbox"
-                                className="w-[20px] h-[20px]"
-                              />
-                            </td>
-                            <td className="relative w-[40px]">
-                              <button onClick={() => updateassetsdw2(item)}>
-                                <BsThreeDotsVertical className="text-2xl relative" />
-                              </button>
-                              {assetsdw2 === item && (
-                                <div className="assetsdw">
-                                  <ul>
-                                    <li className="flex text-sm items-center">
-                                      <FiUpload className="mr-2 text-lg" />
-                                      Set to Screen
-                                    </li>
-                                    <li className="flex text-sm items-center">
-                                      <MdPlaylistPlay className="mr-2 text-lg" />
-                                      Add to Playlist
-                                    </li>
-                                    <li className="flex text-sm items-center">
-                                      <FiDownload className="mr-2 text-lg" />
-                                      Download
-                                    </li>
-                                    <li className="flex text-sm items-center">
-                                      <CgMoveRight className="mr-2 text-lg" />
-                                      Move to
-                                    </li>
-                                    <li className="flex text-sm items-center">
-                                      <RiDeleteBin5Line className="mr-2 text-lg" />
-                                      Move to Trast
-                                    </li>
-                                  </ul>
+                            )}
+                            {item.categorieType === "Video" && (
+                              <div className="relative videobox">
+                                <video
+                                  controls
+                                  className="w-full rounded-2xl relative"
+                                >
+                                  <source
+                                    src={item.fileType}
+                                    type="video/mp4"
+                                  />
+                                  Your browser does not support the video tag.
+                                </video>
+                                <div className="tabicon text-center absolute left-10 top-3">
+                                  {item.categorieType === "Video" && (
+                                    <HiOutlineVideoCamera className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
+                                  )}
                                 </div>
-                              )}
-                            </td>
+                              </div>
+                            )}
 
-                            <tr>
-                              <div className="my-2"></div>
-                            </tr>
-                          </>
+                            <div className="ml-2">
+                              <h1 className="font-medium lg:text-base md:text-sm sm:text-sm xs:text-xs">
+                                {item.name}
+                              </h1>
+                              <p className="max-w-[250px] lg:text-base md:text-sm sm:text-sm xs:text-xs">
+                                {item.details}
+                              </p>
+                            </div>
+                          </td>
+
+                          <td>0.40min</td>
+                          <td>1200*50</td>
+                          <td>{item.fileType}</td>
+                          <td>{item.fileSize}</td>
+
+                          <td>
+                            <input
+                              type="checkbox"
+                              className="w-[20px] h-[20px]"
+                            />
+                          </td>
+                          <td className="relative w-[40px]">
+                            <button onClick={() => updateassetsdw2(item)}>
+                              <BsThreeDotsVertical className="text-2xl relative" />
+                            </button>
+                            {assetsdw2 === item && (
+                              <div className="assetsdw">
+                                <ul>
+                                  <li className="flex text-sm items-center">
+                                    <FiUpload className="mr-2 text-lg" />
+                                    Set to Screen
+                                  </li>
+                                  <li className="flex text-sm items-center">
+                                    <MdPlaylistPlay className="mr-2 text-lg" />
+                                    Add to Playlist
+                                  </li>
+                                  <li className="flex text-sm items-center">
+                                    <FiDownload className="mr-2 text-lg" />
+                                    Download
+                                  </li>
+                                  <li className="flex text-sm items-center">
+                                    <CgMoveRight className="mr-2 text-lg" />
+                                    Move to
+                                  </li>
+                                  <li className="flex text-sm items-center">
+                                    <RiDeleteBin5Line className="mr-2 text-lg" />
+                                    Move to Trast
+                                  </li>
+                                </ul>
+                              </div>
+                            )}
+                          </td>
+
+                          <td>
+                            <div className="my-2"></div>
+                          </td>
                         </tr>
                       ))
                     ) : (
