@@ -17,17 +17,20 @@ import { FiCheckCircle } from "react-icons/fi";
 import { BiError } from "react-icons/bi";
 import PropTypes from "prop-types";
 import Footer from "../Footer";
-import useDrivePicker from 'react-google-drive-picker';
+import useDrivePicker from "react-google-drive-picker";
 
 import { useRef } from "react";
 import { useEffect } from "react";
 import Video from "./Video";
-import Axios from 'axios';
+import Axios from "axios";
 import { insert } from "formik";
-import DropboxChooser from 'react-dropbox-chooser'
+import DropboxChooser from "react-dropbox-chooser";
 import axios from "axios";
+import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 
-{/* end of video*/ }
+{
+  /* end of video*/
+}
 const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
   FileUpload.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -37,13 +40,19 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
   const [fileSuccessModal, setfileSuccessModal] = useState(false);
   const [fileErrorModal, setfileErrorModal] = useState(false);
 
-  {/* google drive */ }
+  {
+    /* google drive */
+  }
   const [openPicker, authResponse] = useDrivePicker();
-  const [selectedFiles, setSelectedFiles] = useState([]); {/*file selected*/ }
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  {
+    /*file selected*/
+  }
 
   const handleOpenPicker = () => {
     openPicker({
-      clientId: "1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com", // Your client ID
+      clientId:
+        "1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com", // Your client ID
       developerKey: "AIzaSyD518eOQPOtFuzqw9-97zhAdDCmZcpt42U", // Your developer key
       viewId: "DOCS",
       showUploadView: true,
@@ -51,41 +60,45 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
       supportDrives: true,
       multiselect: true,
       callbackFunction: (data) => {
-        if (data.action === 'cancel') {
-          console.log('User clicked cancel/close button');
-        } else if (data.action === 'picked') {
-          console.log('Selected Files:', data.docs);
+        if (data.action === "cancel") {
+          console.log("User clicked cancel/close button");
+        } else if (data.action === "picked") {
+          console.log("Selected Files:", data.docs);
           setSelectedFiles(data.docs); // Update the state with the selected files
         }
       },
     });
   };
 
-
-  const clientId = '1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com';
+  const clientId =
+    "1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com";
 
   const handleLoginSuccess = (response) => {
     // Access the user's access_token here
     const accessToken = response.accessToken;
-    console.log('Access Token:', accessToken);
+    console.log("Access Token:", accessToken);
 
     // Now, you can use the accessToken to access the user's Google Drive.
     // You can use the Google Drive API or any other library to interact with the Drive.
   };
 
   const handleLoginFailure = (error) => {
-    console.log('Login Failed:', error);
+    console.log("Login Failed:", error);
   };
 
-  {/*dropbox */ }
-  const [dburl, setdburl] = useState("")
-  const DbAppKey = "bsoy3tjwi8cyssi"
+  {
+    /*dropbox */
+  }
+  const [dburl, setdburl] = useState("");
+  const DbAppKey = "bsoy3tjwi8cyssi";
   function handleSuccess(files) {
     setdburl(files[0].thumbnailLink);
     console.log(url);
   }
-  {/*camera */ }
-  const [facingMode, setFacingMode] = useState('environment'); // 'environment' refers to the back-side camera
+  {
+    /*camera */
+  }
+  const [facingMode, setFacingMode] = useState("environment"); // 'environment' refers to the back-side camera
   const [isRecording, setIsRecording] = useState(false);
   const [capturedPhoto, setCapturedPhoto] = useState(null);
   const [capturedVideo, setCapturedVideo] = useState(null);
@@ -93,11 +106,14 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
   const canvasRef = useRef(null); // Use canvasRef to capture photos
 
   const getUserCamera = () => {
-    if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
+    if (
+      "mediaDevices" in navigator &&
+      "getUserMedia" in navigator.mediaDevices
+    ) {
       const constraints = {
         video: {
-          facingMode: facingMode // Use the selected facing mode
-        }
+          facingMode: facingMode, // Use the selected facing mode
+        },
       };
 
       navigator.mediaDevices
@@ -111,7 +127,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
           console.error(error);
         });
     } else {
-      console.log('getUserMedia is not supported');
+      console.log("getUserMedia is not supported");
     }
   };
 
@@ -130,7 +146,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
   const toggleFacingMode = () => {
     // Switch between 'user' (front) and 'environment' (back) facing modes
     setFacingMode((prevFacingMode) =>
-      prevFacingMode === 'user' ? 'environment' : 'user'
+      prevFacingMode === "user" ? "environment" : "user"
     );
   };
 
@@ -149,7 +165,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
     const height = video.videoHeight;
     photo.width = width;
     photo.height = height;
-    let ctx = photo.getContext('2d');
+    let ctx = photo.getContext("2d");
     ctx.drawImage(video, 0, 0, width, height);
     const dataUrl = photo.toDataURL();
     setCapturedPhoto(dataUrl);
@@ -159,7 +175,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
     setCapturedPhoto(null);
     setCapturedVideo(null);
     let photo = canvasRef.current;
-    let ctx = photo.getContext('2d');
+    let ctx = photo.getContext("2d");
     ctx.clearRect(0, 0, photo.width, photo.height);
   };
 
@@ -169,27 +185,25 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
 
   const [fileList, setFileList] = useState([]);
 
-  const onDragEnter = () => wrapperRef.current.classList.add('dragover');
+  const onDragEnter = () => wrapperRef.current.classList.add("dragover");
 
-  const onDragLeave = () => wrapperRef.current.classList.remove('dragover');
+  const onDragLeave = () => wrapperRef.current.classList.remove("dragover");
 
-  const onDrop = () => wrapperRef.current.classList.remove('dragover');
+  const onDrop = () => wrapperRef.current.classList.remove("dragover");
 
   const onFileDrop = (e) => {
     const newFile = e.target.files[0];
     if (newFile) {
       const updatedList = [...fileList, newFile];
       setFileList(updatedList);
-
     }
-  }
+  };
 
   const fileRemove = (file) => {
     const updatedList = [...fileList];
     updatedList.splice(fileList.indexOf(file), 1);
     setFileList(updatedList);
-
-  }
+  };
   const [uploadFile, setUploadFile] = useState(null);
   const onFileChange = (e) => {
     const file = e.target.files[0];
@@ -201,58 +215,68 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
       console.log("Please select a file to upload.");
       return;
     }
-    const fileType = getFileType(uploadFile.name); // Function to extract file type from the name
-    const name = uploadFile.name;
-    const details = "Some Details about the file"; // You can change this or collect more Details if needed
-    const fileSize = uploadFile.size; // Get file size in bytes
-    const contentType = getContentType(uploadFile.type); // Function to extract content type from MIME type
-    const operation = "Insert";
-    const formData = new FormData();
-    formData.append('file', 'dummy');
-    // formData.append('Images', JSON.stringify([]));
-    formData.append('id', '2');
-    formData.append('operation', operation);
-    formData.append('fileType', fileType);
-    formData.append('name', name);
-    formData.append('details', details);
-    formData.append('fileSize', fileSize);
-    formData.append('contentType', contentType); // Append the content type
+    const details = "Some Details about the file";
+    const CategorieType = getContentType(uploadFile.type);
 
-    const headers = new Headers();
-    headers.append('Content-Type', 'multipart/form-data');
+    const formdata = new FormData();
+    formdata.append("File", uploadFile);
+    formdata.append("operation", "Insert");
+    formdata.append("CategorieType", CategorieType);
+    formdata.append("details", details);
 
-    axios.post('http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload', formData)
-      .then(res => {
-        console.log('Data uploaded successfully:', res.data);
+    axios
+      .post(ALL_FILES_UPLOAD, formdata)
+      .then((res) => {
+        console.log("Data uploaded successfully:", res.data);
       })
-      .catch(err => {
-        console.error('Error uploading data:', err);
+      .catch((err) => {
+        console.error("Error uploading data:", err);
       });
   };
 
   const getFileType = (fileName, mimeType) => {
-    const extension = fileName.split('.').pop().toLowerCase();
+    const extension = fileName.split(".").pop().toLowerCase();
 
-    if (extension === 'jpg' || extension === 'jpeg' || extension === 'png') {
-      return 'Image';
-    } else if (extension === 'mp4' || extension === 'avi' || extension === 'mov') {
-      return 'Video';
-    } else if (mimeType && (mimeType.startsWith('application/pdf') || mimeType.startsWith('text/') || mimeType === 'application/msword' || mimeType === 'application/vnd.ms-excel' || mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
-      return 'DOC';
+    if (extension === "jpg" || extension === "jpeg" || extension === "png") {
+      return "Image";
+    } else if (
+      extension === "mp4" ||
+      extension === "avi" ||
+      extension === "mov"
+    ) {
+      return "Video";
+    } else if (
+      mimeType &&
+      (mimeType.startsWith("application/pdf") ||
+        mimeType.startsWith("text/") ||
+        mimeType === "application/msword" ||
+        mimeType === "application/vnd.ms-excel" ||
+        mimeType ===
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+    ) {
+      return "DOC";
     } else {
-      return 'file type not found'; // You can set a default value or handle other file types as needed
+      return "file type not found"; // You can set a default value or handle other file types as needed
     }
   };
   // Function to extract content type from the MIME type
   const getContentType = (mime) => {
-    if (mime.startsWith('image/')) {
-      return 'Image';
-    } else if (mime.startsWith('video/')) {
-      return 'Video';
-    } else if (mime.startsWith('application/pdf') || mime.startsWith('text/') || mime.startsWith('application/msword')) {
-      return 'DOC';
+    if (mime.startsWith("image/")) {
+      return "Image";
+    } else if (mime.startsWith("video/")) {
+      return "Video";
+    } else if (
+      mime &&
+      (mime.startsWith("application/pdf") ||
+        mime.startsWith("text/") ||
+        mime === "application/msword" ||
+        mime === "application/vnd.ms-excel" ||
+        mime ===
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+    ) {
+      return "DOC";
     } else {
-      return 'file content type not found'; // You can set a default value or handle other content types as needed
+      return "file content type not found";
     }
   };
   return (
@@ -278,32 +302,31 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
           <div className="flex lg:justify-between md:justify-between flex-wrap sm:justify-start xs:justify-start items-center lg:mt-7 md:mt-7 sm:mt-5 xs:mt-5 media-icon">
             <span
               className="fileUploadIcon dropbox-button"
-            //   onClick={handleIconClick}
+              //   onClick={handleIconClick}
             >
-
-              {<DropboxChooser appKey={DbAppKey}
-                success={handleSuccess}
-                cancel={() => console.log("closed")}
-                multiselect={true}
-              >
-                <AiOutlineDropbox size={30} />
-              </DropboxChooser>}
+              {
+                <DropboxChooser
+                  appKey={DbAppKey}
+                  success={handleSuccess}
+                  cancel={() => console.log("closed")}
+                  multiselect={true}
+                >
+                  <AiOutlineDropbox size={30} />
+                </DropboxChooser>
+              }
             </span>
-            <span
-              className="fileUploadIcon"
-              onClick={() => handleOpenPicker()}
-            >
+            <span className="fileUploadIcon" onClick={() => handleOpenPicker()}>
               <RiDriveFill size={30} />
             </span>
             <span
               className="fileUploadIcon"
-            //   onClick={handleIconClick}
+              //   onClick={handleIconClick}
             >
               <FaCloudUploadAlt size={30} />
             </span>
             <span
               className="bg-[#D5E3FF] text-SlateBlue py-4 px-3 rounded-[45px] "
-            //   onClick={handleIconClick}
+              //   onClick={handleIconClick}
             >
               <svg
                 width="25"
@@ -322,24 +345,31 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
             </span>
             <span className="fileUploadIcon">
               <video ref={videoRef}></video>
-              <FiCamera size={30} onClick={isRecording ? stopRecording : startRecording} />
-              <canvas ref={canvasRef} style={{ display: 'none' }} /> {/* Use hidden canvas for photo capture */}
+              <FiCamera
+                size={30}
+                onClick={isRecording ? stopRecording : startRecording}
+              />
+              <canvas ref={canvasRef} style={{ display: "none" }} />{" "}
+              {/* Use hidden canvas for photo capture */}
               <button onClick={clearImage}>Clear</button>
               <button onClick={toggleFacingMode}>
-                {facingMode === 'user' ? 'Switch to Back Camera' : 'Switch to Front Camera'}
+                {facingMode === "user"
+                  ? "Switch to Back Camera"
+                  : "Switch to Front Camera"}
               </button>
-
               {capturedPhoto && <img src={capturedPhoto} alt="Captured" />}
               {capturedVideo && (
                 <video controls>
-                  <source src={URL.createObjectURL(capturedVideo)} type="video/mp4" />
+                  <source
+                    src={URL.createObjectURL(capturedVideo)}
+                    type="video/mp4"
+                  />
                 </video>
               )}
             </span>
 
             <span className="fileUploadIcon">
-
-              <Link to='/unplash'>
+              <Link to="/unplash">
                 <FaUnsplash size={30} />
               </Link>
             </span>
@@ -371,12 +401,18 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
           >
             <div className=" relative flex flex-col items-center justify-center min-h-full lg:p-40 md:p-20 sm:p-10 xs:p-4 bg-[#E4E6FF] lg:mt-14 md:mt-14 sm:mt-5 xs:mt-5  border-2 rounded-[20px] border-SlateBlue border-dashed">
               <FiUploadCloud className="text-SlateBlue md:mb-7 sm:mb-3 xs:mb-2 lg:text-[150px] md:text-[100px] sm:text-[80px] xs:text-[45px]" />
-              <input type="file" className=" absolute left-0 top-0 w-full h-full opacity-0 cursor-pointer" name="uploadfile" onChange={onFileChange} />
-              <span className="text-SlateBlue text-center">Select Files to Upload</span>
+              <input
+                type="file"
+                className=" absolute left-0 top-0 w-full h-full opacity-0 cursor-pointer"
+                name="uploadfile"
+                onChange={onFileChange}
+              />
+              <span className="text-SlateBlue text-center">
+                Select Files to Upload
+              </span>
               <p className="text-sm font-normal text-center">
                 Drop your first video, photo or document here
               </p>
-
             </div>
           </div>
           <button
@@ -386,27 +422,25 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
             Browse
           </button>
 
-          {
-            fileList.length > 0 ? (
-              <div className="drop-file-preview">
-                <p className="drop-file-preview__title">
-                  Ready to upload
-                </p>
-                {
-                  fileList.map((item, index) => (
-                    <div key={index} className="drop-file-preview__item">
-
-                      <div className="drop-file-preview__item__info">
-                        <p>{item.name}</p>
-                        <p>{item.size}B</p>
-                      </div>
-                      <span className="drop-file-preview__item__del" onClick={() => fileRemove(item)}>x</span>
-                    </div>
-                  ))
-                }
-              </div>
-            ) : null
-          }
+          {fileList.length > 0 ? (
+            <div className="drop-file-preview">
+              <p className="drop-file-preview__title">Ready to upload</p>
+              {fileList.map((item, index) => (
+                <div key={index} className="drop-file-preview__item">
+                  <div className="drop-file-preview__item__info">
+                    <p>{item.name}</p>
+                    <p>{item.size}B</p>
+                  </div>
+                  <span
+                    className="drop-file-preview__item__del"
+                    onClick={() => fileRemove(item)}
+                  >
+                    x
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : null}
 
           {selectedFiles.length > 0 && (
             <div className="mt-10">
