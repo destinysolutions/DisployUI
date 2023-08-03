@@ -1,127 +1,68 @@
+import moment from "moment/moment";
 import { useState } from "react";
+import { useCallback } from "react";
+import { useMemo } from "react";
+import {
+  Calendar as BigCalendar,
+  momentLocalizer,
+  Views,
+} from "react-big-calendar";
 import { BsPencilFill } from "react-icons/bs";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import SaveAssignScreenModal from "./SaveAssignScreenModal";
-import "../../Styles/schedule.css";
-import Paper from "@mui/material/Paper";
-import {
-  EditingState,
-  IntegratedEditing,
-  ViewState,
-} from "@devexpress/dx-react-scheduler";
-import {
-  Scheduler,
-  WeekView,
-  MonthView,
-  Appointments,
-  DayView,
-  Toolbar,
-  DateNavigator,
-  TodayButton,
-  AppointmentTooltip,
-  AppointmentForm,
-  DragDropProvider,
-  EditRecurrenceMenu,
-  Resources,
-  ViewSwitcher,
-} from "@devexpress/dx-react-scheduler-material-ui";
+import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import EventEditor from "./EventEditor";
 
+const localizer = momentLocalizer(moment);
+const DragAndDropCalendar = withDragAndDrop(BigCalendar);
 const AddSchedule = () => {
   const [selectScreenModal, setSelectScreenModal] = useState(false);
-  const [data, setData] = useState([
+  const events = [
     {
-      id: 1,
-      title: "Website Re-Design Plan",
-      startDate: new Date(2023, 7, 1, 9, 30),
-      endDate: new Date(2023, 7, 1, 11, 30),
-      location: "Office A",
-      asset: "Asset 1",
+      title: "Event 1",
+      start: new Date(),
+      end: new Date(),
     },
     {
-      id: 2,
-      title: "Book Flights to San Fran for Sales Trip",
-      startDate: new Date(2023, 7, 1, 12, 0),
-      endDate: new Date(2023, 7, 1, 13, 0),
-      location: "Office B",
-      asset: "Asset 2",
+      title: "Event 2",
+      start: new Date(),
+      end: new Date(),
     },
-    {
-      id: 3,
-      title: "Install New Router in Dev Room",
-      startDate: new Date(2023, 7, 1, 14, 30),
-      endDate: new Date(2023, 7, 1, 15, 30),
-      location: "Office C",
-      asset: "Asset 3",
-    },
-    {
-      id: 4,
-      title: "Install Router in Dev Room",
-      startDate: new Date(2023, 6, 31, 14, 30),
-      endDate: new Date(2023, 6, 31, 15, 30),
-      location: "Office D",
-      asset: "Asset 4",
-    },
-  ]);
-
-  const assetResource = {
-    fieldName: "asset",
-    title: "Asset",
-    instances: [
-      { id: "Asset 1", text: "Asset 1", color: "#ff5722" },
-      { id: "Asset 2", text: "Asset 2", color: "#e91e63" },
-      { id: "Asset 3", text: "Asset 3", color: "#ff9800" },
-      { id: "Asset 4", text: "Asset 4", color: "#b2ff59" },
-    ],
-  };
-  const resources = [
-    {
-      fieldName: "location",
-      title: "Location",
-      instances: [
-        { id: "Office A", text: "Office A", color: "#4fc3f7" },
-        { id: "Office B", text: "Office B", color: "#cddc39" },
-        { id: "Office C", text: "Office C", color: "#ff9800" },
-        { id: "Office D", text: "Office D", color: "#b2ff59" },
-      ],
-    },
-    assetResource,
+    // Add more events as needed
   ];
-  const [currentViewName, setCurrentViewName] = useState("Day");
+  const [myEvents, setEvents] = useState(events);
+  const [isCreatePopupOpen, setCreatePopupOpen] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const handleCurrentViewNameChange = (newViewName) => {
-    setCurrentViewName(newViewName);
+  const handleSelectSlot = useCallback(({ start, end }) => {
+    setSelectedSlot({ start, end });
+    setCreatePopupOpen(true);
+  }, []);
+
+  const handleSelectEvent = useCallback((event) => {
+    setSelectedEvent(event);
+    setCreatePopupOpen(true);
+  }, []);
+
+  const handleCreateEvent = (eventData) => {
+    // Save the event data to your events list
+    const newEvent = { ...eventData, id: Math.random() }; // Add a unique id to the new event
+    setEvents((prev) => [...prev, newEvent]);
+    setSelectedSlot(null);
+    setSelectedEvent(null);
+    setCreatePopupOpen(false);
   };
 
-  const commitChanges = ({ added, changed, deleted }) => {
-    setData((prevData) => {
-      let updatedData = [...prevData];
-      if (added) {
-        const startingAddedId =
-          prevData.length > 0 ? prevData[prevData.length - 1].id + 1 : 0;
-        updatedData = [...prevData, { id: startingAddedId, ...added }];
-      }
-      if (changed) {
-        updatedData = updatedData.map((appointment) =>
-          changed[appointment.id]
-            ? { ...appointment, ...changed[appointment.id] }
-            : appointment
-        );
-      }
-      if (deleted !== undefined) {
-        updatedData = updatedData.filter(
-          (appointment) => appointment.id !== deleted
-        );
-      }
-      return updatedData;
-    });
+
+  const handleCloseCreatePopup = () => {
+    setSelectedSlot(null);
+    setSelectedEvent(null);
+    setCreatePopupOpen(false);
   };
-  const handleFieldChange = (changes) => {
-    // Handle changes to the appointmentData here
-    // For example, you can update the state or send the changes to the server
-    console.log("Field changes:", changes);
-  };
+
   return (
     <>
       <div className="p-6">
@@ -136,42 +77,21 @@ const AddSchedule = () => {
 
         <div className="grid grid-cols-12 mt-5">
           <div className="lg:col-span-10 md:col-span-8 sm:col-span-12 xs:col-span-12 ">
-            <Paper>
-              <Scheduler data={data} height={700}>
-                <ViewState
-                  currentViewName={currentViewName}
-                  onCurrentViewNameChange={handleCurrentViewNameChange}
-                />
-                <WeekView startDayHour={10} endDayHour={19} />
-                <DayView />
-                <EditingState onCommitChanges={commitChanges} />
-                <IntegratedEditing />
-                <MonthView />
-                <Toolbar />
-                <DateNavigator />
-                <TodayButton />
-                <ViewSwitcher />
-                <EditRecurrenceMenu />
-                <Appointments />
-                <AppointmentTooltip
-                  showCloseButton
-                  showOpenButton
-                  showDeleteButton
-                  // contentComponent={({ onFieldChange, appointmentData }) => (
-                  //   <EventEditor
-                  //     onFieldChange={onFieldChange}
-                  //     appointmentData={appointmentData}
-                  //   />
-                  // )}
-                  contentComponent={(props) => (
-                    <EventEditor {...props} onFieldChange={handleFieldChange} />
-                  )}
-                />
-                <AppointmentForm />
-                <Resources data={resources} />
-                <DragDropProvider />
-              </Scheduler>
-            </Paper>
+            <DragAndDropCalendar
+              defaultView={Views.DAY}
+              events={myEvents}
+              localizer={localizer}
+              onSelectEvent={handleSelectEvent}
+              onSelectSlot={handleSelectSlot}
+              selectable
+            />
+            <EventEditor
+              isOpen={isCreatePopupOpen}
+              onClose={handleCloseCreatePopup}
+              onSave={handleCreateEvent}
+              selectedSlot={selectedSlot}
+              selectedEvent={selectedEvent}
+            />
           </div>
           <div className=" bg-white shadow-2xl lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
             <div className="p-3">
