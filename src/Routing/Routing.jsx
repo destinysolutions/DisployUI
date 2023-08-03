@@ -339,12 +339,7 @@ const Routing = () => {
         />
 
         {/*Event Editors */}
-        <Route
-          path="/unplash"
-          element={
-            <Unsplash />
-          }
-        />
+
 
         {/* error page route */}
         <Route path="*" element={<ErrorPage />} />
