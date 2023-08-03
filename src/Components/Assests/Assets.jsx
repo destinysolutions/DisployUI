@@ -251,7 +251,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
               <button
                 className={activetab === 5 ? "tabactivebtn " : "tabbtn"}
-                // onClick={() => handleActiveBtnClick(5)}
+              // onClick={() => handleActiveBtnClick(5)}
               >
                 App
               </button>
@@ -277,11 +277,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <img
                           src={item.fileType}
                           alt={item.name}
-                          className={`imagebox relative ${
-                            selectedItems.includes(item)
-                              ? "active opacity-1 w-full rounded-2xl"
-                              : "opacity-50 w-full rounded-2xl"
-                          }`}
+                          className={`imagebox relative ${selectedItems.includes(item)
+                            ? "active opacity-1 w-full rounded-2xl"
+                            : "opacity-50 w-full rounded-2xl"
+                            }`}
                         />
                       )}
 
@@ -558,8 +557,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                           </td>
 
-                          <td>0.40min</td>
-                          <td>1200*50</td>
+                          <td>{item.durations}</td>
+                          <td>{item.resolutions}</td>
                           <td>{item.fileType}</td>
                           <td>{item.fileSize}</td>
 
