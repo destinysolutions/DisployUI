@@ -156,13 +156,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       setTableData(allAssets);
     } else if (btnNumber === 2) {
       setGridData(originalData.image ? originalData.image : []);
-      setTableData([]);
+      setTableData(originalData.image ? originalData.image : []);
     } else if (btnNumber === 3) {
       setGridData(originalData.video ? originalData.video : []);
-      setTableData([]);
+      setTableData(originalData.video ? originalData.video : []);
     } else if (btnNumber === 4) {
       setGridData(originalData.doc ? originalData.doc : []);
-      setTableData([]);
+      setTableData(originalData.doc ? originalData.doc : []);
     } else if (btnNumber === 5) {
       // Handle other tab buttons (e.g., Apps) if needed
       // setGridData([...]); // Set data for other buttons for grid view
@@ -439,6 +439,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       <th className="text-[#8E94A9] font-normal">Resolution</th>
                       <th className="text-[#8E94A9] font-normal">Type</th>
                       <th className="text-[#8E94A9] font-normal">Size</th>
+                      <th></th>
                       <th></th>
                       <th></th>
                     </tr>
