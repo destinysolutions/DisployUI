@@ -21,14 +21,14 @@ import useDrivePicker from "react-google-drive-picker";
 
 import { useRef } from "react";
 import { useEffect } from "react";
-import Video from "./Video";
-import Axios from "axios";
-import { insert } from "formik";
+
 import DropboxChooser from "react-dropbox-chooser";
 import axios from "axios";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import Unsplash from "./Unsplash";
-
+import OneDrive from "./OneDrive";
+import Pexels from "./Pexels";
+import { SiPexels } from 'react-icons/si'
 {
   /* end of video*/
 }
@@ -284,16 +284,33 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
   // unsplash code
   const [showUnsplash, setShowUnsplash] = useState(false);
   const [uploadedImages, setUploadedImages] = useState([]);
+
+  // Function to toggle the Unsplash modal
   const handleUnsplashButtonClick = () => {
-    setShowUnsplash(true);
+    setShowUnsplash(prev => !prev);
   };
 
+  // Function to handle selected images from Unsplash modal
+  const handleSelectedImages = (selectedImages) => {
+    setUploadedImages(selectedImages);
+  };
+
+  // Function to close the Unsplash modal
   const handleCloseModal = () => {
     setShowUnsplash(false);
   };
-  const handleSelectedImages = (selectedImages) => {
-    setUploadedImages((prevUploaded) => [...prevUploaded, ...selectedImages]);
+
+  // start pexels code
+  const [showpexels, setShowpexels] = useState(false);
+
+  const handlePexelsButtonClick = () => {
+    setShowpexels(prev => !prev);
   };
+  const handleClosePexelsModal = () => {
+    setShowpexels(false);
+  };
+  // End pexels code
+
   return (
     <>
       <div className="flex border-b border-gray py-3">
@@ -338,6 +355,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
             //   onClick={handleIconClick}
             >
               <FaCloudUploadAlt size={30} />
+              <OneDrive />
             </span>
             <span
               className="bg-[#D5E3FF] text-SlateBlue py-4 px-3 rounded-[45px] "
@@ -386,39 +404,23 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
             <span className="fileUploadIcon">
               <button onClick={handleUnsplashButtonClick} className="relative">
                 <FaUnsplash size={30} className="relative" />
-                {showUnsplash && (
-                  <Unsplash closeModal={handleCloseModal} onSelectedImages={handleSelectedImages} />
-                )}
               </button>
-
-              <div>
-
-
-                <ul>
-                  {uploadedImages.map((imageUrl) => (
-                    <li key={imageUrl}>
-                      <img src={imageUrl} alt="Uploaded" />
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              {showUnsplash && (
+                <Unsplash closeModal={handleCloseModal} onSelectedImages={handleSelectedImages} />
+              )}
             </span>
+
             {/* end unspalsh */}
             <span className="bg-[#D5E3FF] text-SlateBlue py-4 px-4 rounded-[45px]">
-              <svg
-                width="20"
-                height="16"
-                viewBox="0 0 22 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M16.2231 7.27754L18.9716 10.7953H22L17.5124 5.27165L21.6202 0H18.7718L16.2531 3.29611L13.9944 0H11.1259L14.9038 5.27165L10.7961 10.7953H13.7544L16.2231 7.27754ZM5.33522 0.00530449C3.82076 0.0433313 2.56243 0.567838 1.56008 1.57865C0.557742 2.58952 0.037693 3.85864 0 5.38591V15.1145H2.11978V10.7908H5.33522C6.85062 10.7517 8.11302 10.2232 9.12228 9.2054C10.1316 8.1875 10.6556 6.91443 10.6943 5.38609C10.6556 3.85876 10.1316 2.58969 9.12228 1.57883C8.11302 0.567958 6.85068 0.0433909 5.33522 0.00530449ZM2.11978 8.6527V5.38591C2.14214 4.4626 2.45472 3.697 3.0576 3.08893C3.66049 2.48092 4.41971 2.16568 5.33522 2.14315C6.2621 2.16568 7.0283 2.48092 7.63369 3.08893C8.23902 3.69694 8.55265 4.4626 8.57446 5.38591C8.55265 6.32073 8.23902 7.09336 7.63369 7.70394C7.0283 8.31451 6.2621 8.63076 5.33522 8.6527H2.11978Z"
-                  fill="#41479B"
-                />
-              </svg>
+
+              <button onClick={handlePexelsButtonClick} className="relative">
+                <SiPexels size={30} className="relative" />
+              </button>
+              {showpexels && (
+                <Pexels closeModal={handleClosePexelsModal} />
+              )}
+
+
             </span>
           </div>
           <div className="flex w-full flex-col gap-4"></div>
@@ -487,6 +489,18 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
           {/* Dropbox*/}
           <img src={dburl} />
           {/* End of  Dropbox*/}
+
+          {/* start unspalsh */}
+          <div>
+            <ul>
+              {uploadedImages.map((imageUrl) => (
+                <li key={imageUrl} className="  bg-white p-2 my-2">
+                  <img src={imageUrl} alt="Uploaded" className=" max-w-[100px] " />
+                </li>
+              ))}
+            </ul>
+          </div>
+          {/* end unspalsh */}
           {browseFiles && (
             <>
               <div className="mt-10">
@@ -562,6 +576,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
               </div>
             </>
           )}
+
           {fileSuccessModal ? (
             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
               <div className="relative w-full max-w-xl max-h-full">
@@ -615,7 +630,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
             </div>
           ) : null}
         </div>
-      </div>
+      </div >
       <Footer />
     </>
   );

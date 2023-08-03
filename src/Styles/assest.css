@@ -172,9 +172,9 @@ button.tabshow.tabassactive.right {
 
 
 td .assetsdw {
-  right: 7px;
+  right:6px;
   top: inherit;
-  bottom: -80px;
+  bottom: -85px;
   z-index: 9;
 }
 
@@ -306,10 +306,12 @@ td .tabicon svg {
 
 .unspalsh-searchbox {
   border: 1px solid #ccc;
-  padding: 10px;
-  width: 20%;
+  padding: 15px;
+  width: 40%;
   border-radius: 50px;
   box-shadow: 0px 11px 23px 5px #41479b1f;
+  margin-bottom: 10px;
+
 }
 
 .unsplash-model {
@@ -319,4 +321,31 @@ td .tabicon svg {
   top: 50%;
   transform: translate(-50%, -50%);
 
+}
+
+@media(max-width:1224px) {
+  .unsplash-model {
+    width: 80%;
+  }
+}
+
+@media(max-width:767px) {
+  .unspalsh-searchbox {
+    width: 90%;
+  }
+
+  .unsplash-model {
+    width: 90%;
+  }
+
+  .unsplash-model .container {
+    max-width: 600px;
+  }
+}
+
+@media(max-width:450px) {
+  .unsplash-section {
+    max-height: 300px;
+    overflow-y: auto;
+  }
 }
