@@ -44,7 +44,7 @@ const Navbar = () => {
 
   return (
     // navbar component start
-    <div className="w-full topbar">
+    <div className="w-full topbar  bg-white py-3">
       <div>
         <div className="flex-col flex">
           <div className="w-full">
@@ -52,14 +52,14 @@ const Navbar = () => {
               <img
                 src="/NavbarIcons/Union.svg"
                 alt="Union"
-                className="m-1 cursor-pointer"
+                className="m-1 cursor-pointer bg-lightgray"
               />
               {/* Notification box start */}
               <div className="relative">
                 <img
                   src="/NavbarIcons/notification.svg"
                   alt="notification"
-                  className="m-1 cursor-pointer relative"
+                  className="m-1 cursor-pointer relative bg-lightgray"
                   onClick={handleNotificationClick}
                 />
                 {showNotificationBox && (

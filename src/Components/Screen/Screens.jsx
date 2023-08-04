@@ -79,7 +79,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   };
   return (
     <>
-      <div className="flex border-b border-gray py-3">
+      <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
@@ -99,9 +99,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 <Link to="/mergescreen">
                   <button
                     type="button"
-                    className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
+                    className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
                   >
-                    <VscVmConnect className="p-1 text-3xl text-SlateBlue hover:text-white" />
+                    <VscVmConnect className="p-1 text-3xl text-primary hover:text-white" />
                   </button>
                 </Link>
                 {connectScreenTooltipVisible && (
@@ -122,10 +122,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
+                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
                   onClick={() => setShowOTPModal(true)}
                 >
-                  <MdOutlineAddToQueue className="p-1 text-3xl hover:text-white text-SlateBlue" />
+                  <MdOutlineAddToQueue className="p-1 text-3xl hover:text-white text-primary" />
                 </button>
                 {newScreenTooltipVisible && (
                   <div
@@ -150,9 +150,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 <Link to="/newscreengroup">
                   <button
                     type="button"
-                    className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
+                    className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
                   >
-                    <HiOutlineRectangleGroup className="p-1 text-3xl hover:text-white text-SlateBlue" />
+                    <HiOutlineRectangleGroup className="p-1 text-3xl hover:text-white text-primary" />
                   </button>
                 </Link>
                 {screenGroupTooltipVisible && (
@@ -173,20 +173,19 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
+                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
                   onClick={handleConfirmDeactivation}
                   disabled={!checkboxChecked}
                 >
-                  <VscVmActive className="p-1 text-3xl hover:text-white text-SlateBlue" />
+                  <VscVmActive className="p-1 text-3xl hover:text-white text-primary" />
                 </button>
 
                 {checkboxChecked && (
                   <div
                     id="tooltip-bottom"
                     role="tooltip"
-                    className={`absolute z-10 visible inline-block px-3 py-2 text-sm font-medium text-white bg-SlateBlue rounded-lg shadow-sm opacity-100 tooltip bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full dark:bg-gray-700 ${
-                      selectActiveTooltipVisible ? "" : "hidden"
-                    }`}
+                    className={`absolute z-10 visible inline-block px-3 py-2 text-sm font-medium text-white bg-SlateBlue rounded-lg shadow-sm opacity-100 tooltip bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full dark:bg-gray-700 ${selectActiveTooltipVisible ? "" : "hidden"
+                      }`}
                   >
                     {screenStatus === "live" ? "Deactivate" : "Activate"}
                   </div>
@@ -195,11 +194,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   <div
                     id="tooltip-bottom"
                     role="tooltip"
-                    className={`absolute z-10 visible inline-block px-3 py-2 text-sm font-medium text-white bg-SlateBlue rounded-lg shadow-sm opacity-100 tooltip bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full dark:bg-gray-700 ${
-                      selectActiveTooltipVisible && screenStatus === "live"
-                        ? "hidden"
-                        : ""
-                    }`}
+                    className={`absolute z-10 visible inline-block px-3 py-2 text-sm font-medium text-white bg-SlateBlue rounded-lg shadow-sm opacity-100 tooltip bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full dark:bg-gray-700 ${selectActiveTooltipVisible && screenStatus === "live"
+                      ? "hidden"
+                      : ""
+                      }`}
                   >
                     {screenStatus === "live" ? "First select screen" : ""}
                   </div>
@@ -223,10 +221,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className="relative">
                   <button
                     type="button"
-                    className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
+                    className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
                     onClick={() => setMoreModal(true)}
                   >
-                    <RiArrowDownSLine className="p-1 text-3xl hover:text-white text-SlateBlue" />
+                    <RiArrowDownSLine className="p-1 text-3xl hover:text-white text-primary" />
                   </button>
                   {moreModal && (
                     <div className="moredw">
@@ -290,7 +288,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         </li>
                         <li className="flex text-sm justify-end mt-2 ">
                           <button
-                            className="bg-[#E4E6FF] text-SlateBlue px-4 py-2 rounded-full"
+                            className="bg-lightgray text-primary px-4 py-2 rounded-full"
                             onClick={handleUpdateButtonClick}
                           >
                             Update
@@ -336,47 +334,47 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               <thead>
                 <tr className="flex justify-between items-center">
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2 border border-gray">
                       <SlScreenDesktop className="mr-2 text-xl" />
                       Screen
                     </button>
                   </th>
                   {moreCheckboxClick && (
                     <th className="p-3 font-medium text-[14px]">
-                      <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                      <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2 border border-gray">
                         <HiOutlineLocationMarker className="mr-2 text-xl" />
                         Google Location
                       </button>
                     </th>
                   )}
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2  border border-gray">
                       <MdLiveTv className="mr-2 text-xl" />
                       status
                       <BiFilterAlt className="ml-1 text-lg" />
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2 border border-gray">
                       <RxTimer className="mr-2 text-xl" />
                       Last Seen
                       <BiFilterAlt className="ml-1 text-lg" />
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2 border border-gray">
                       <BsCollectionPlay className="mr-2 text-xl" />
                       Now Playing
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center border border-gray">
                       <MdOutlineCalendarMonth className="mr-2 text-xl" />
                       Current Schedule
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center border border-gray">
                       <BsPencilSquare className="mr-2 text-xl" />
                       Tags
                       <BiFilterAlt className="ml-1 text-lg" />
@@ -412,9 +410,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   )}
                   <td className="p-2">
                     <button
-                      className={`rounded-full px-6 py-1 text-white bg-${
-                        screenStatus === "live" ? "[#3AB700]" : "red"
-                      }`}
+                      className={`rounded-full px-6 py-1 text-white bg-${screenStatus === "live" ? "[#3AB700]" : "red"
+                        }`}
                     >
                       {screenStatus === "live" ? "Live" : "Offline"}
                     </button>
@@ -423,8 +420,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   <td className="p-2">
                     <button
                       onClick={() => setShowAssetModal(true)}
-                      className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm   hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                      className="flex  items-center border-gray bg-lightgray border rounded-full lg:pr-3 sm:px-5  py-2  text-sm   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                     >
+
                       Asset Name
                       <AiOutlineCloudUpload className="ml-2 text-lg" />
                     </button>
@@ -459,7 +457,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   </td>
                   <td className="p-2">25 May 2023</td>
                   <td className="p-2">
-                    <button className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm   hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                    <button className="flex  items-center border-gray bg-lightgray border rounded-full lg:pr-3 sm:px-5  py-2  text-sm   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                       Asset Name
                       <AiOutlineCloudUpload className="ml-2 text-lg" />
                     </button>
@@ -493,37 +491,37 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <thead>
                           <tr className="flex justify-between items-center">
                             <th className="p-3 font-medium text-[14px]">
-                              <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                              <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                                 <TbCalendarTime className="mr-2" />
                                 Schedule Name
                               </button>
                             </th>
                             <th className="p-3 font-medium text-[14px]">
-                              <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                              <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                                 <VscCalendar className="mr-2" />
                                 Date Added
                               </button>
                             </th>
                             <th className="p-3 font-medium text-[14px]">
-                              <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                              <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                                 <TbCalendarStats className="mr-2" />
                                 start date
                               </button>
                             </th>
                             <th className="p-3 font-medium text-[14px]">
-                              <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                              <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                                 <TbCalendarStats className="mr-2" />
                                 End date
                               </button>
                             </th>
                             <th className="p-3 font-medium text-[14px]">
-                              <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                              <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                                 <RiComputerLine className="mr-2" />
                                 screens Assigned
                               </button>
                             </th>
                             <th className="p-3 font-medium text-[14px]">
-                              <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                              <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                                 <BsTags className="mr-2" />
                                 Tags
                               </button>

@@ -17,7 +17,7 @@ const Auditlogreport = ({ sidebarOpen, setSidebarOpen }) => {
     };
     return (
         <>
-            <div className="flex border-b border-gray py-3">
+            <div className="flex border-b border-gray">
                 <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
                 <Navbar />
             </div>
@@ -60,7 +60,7 @@ const Auditlogreport = ({ sidebarOpen, setSidebarOpen }) => {
 
                     <div className='sectiondetails mt-5 bg-white p-5 rounded-md drop-shadow-sm overflow-x-auto'>
                         <table className='w-full text-[#5E5E5E]' cellPadding={20}>
-                            <tr className='bg-[#E4E6FF] rounded-md'>
+                            <tr className='bg-lightgray rounded-md'>
                                 <th className='flex items-center font-medium p-3'>Screen Name <CiFilter className='text-sm text-primary ml-2' /></th>
                                 <th className=' font-medium text-center p-3'>Total Up-time</th>
                                 <th className=' font-medium text-center p-3'>Total Offline Time</th>
@@ -70,17 +70,17 @@ const Auditlogreport = ({ sidebarOpen, setSidebarOpen }) => {
 
                             <tr className=' align-middle border-b border-[#E4E6FF]'>
                                 <td><p>Screen Name 1</p></td>
-                                <td className='text-center'><span className='bg-[#E4E6FF] px-4 py-2 text-base rounded-md'>00:15:10</span></td>
-                                <td className='text-center'><span className='bg-[#E4E6FF] px-4 py-2 text-base rounded-md'>00:05:10</span></td>
-                                <td className='text-center'><span className='bg-[#E4E6FF] px-4 py-2 text-base rounded-md'>00:05:10</span></td>
+                                <td className='text-center'><span className='bg-lightgray px-4 py-2 text-base rounded-md'>00:15:10</span></td>
+                                <td className='text-center'><span className='bg-lightgray px-4 py-2 text-base rounded-md'>00:05:10</span></td>
+                                <td className='text-center'><span className='bg-lightgray px-4 py-2 text-base rounded-md'>00:05:10</span></td>
 
                             </tr>
 
                             <tr className=' align-middle border-b border-[#E4E6FF]'>
                                 <td><p>Screen Name 1</p></td>
-                                <td className='text-center'><span className='bg-[#E4E6FF] px-4 py-2 text-base rounded-md'>00:20:25</span></td>
-                                <td className='text-center'><span className='bg-[#E4E6FF] px-4 py-2 text-base rounded-md'>00:20:25</span></td>
-                                <td className='text-center'><span className='bg-[#E4E6FF] px-4 py-2 text-base rounded-md'>00:20:25</span></td>
+                                <td className='text-center'><span className='bg-lightgray px-4 py-2 text-base rounded-md'>00:20:25</span></td>
+                                <td className='text-center'><span className='bg-lightgray px-4 py-2 text-base rounded-md'>00:20:25</span></td>
+                                <td className='text-center'><span className='bg-lightgray px-4 py-2 text-base rounded-md'>00:20:25</span></td>
 
                             </tr>
 

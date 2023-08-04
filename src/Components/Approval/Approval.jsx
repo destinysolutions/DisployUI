@@ -11,7 +11,7 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
   return (
     <>
       {/* sidebar and navbar display start */}
-      <div className="flex border-b border-gray py-3">
+      <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
@@ -26,32 +26,32 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
               <thead>
                 <tr className="flex justify-between items-center">
                   <th>
-                    <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                       Type
                     </button>
                   </th>
                   <th>
-                    <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                       request date
                     </button>
                   </th>
                   <th>
-                    <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                       screen iD
                     </button>
                   </th>
                   <th>
-                    <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                       Screen location
                     </button>
                   </th>
                   <th>
-                    <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                       requested By
                     </button>
                   </th>
                   <th>
-                    <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                       Action
                     </button>
                   </th>

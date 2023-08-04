@@ -232,7 +232,7 @@ const Login = () => {
                   )}
                   <button
                     type="submit"
-                    className="w-full text-[#FFFFFF] bg-[#002359] not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4"
+                    className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4"
                   >
                     Sign in
                   </button>

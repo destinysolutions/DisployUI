@@ -30,7 +30,7 @@ const SaveAssignScreenModal = ({ setSelectScreenModal }) => {
               <thead>
                 <tr className="flex justify-between items-center">
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                       <svg
                         width="20"
                         height="20"
@@ -48,7 +48,7 @@ const SaveAssignScreenModal = ({ setSelectScreenModal }) => {
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                       <svg
                         className="mr-2"
                         width="17"
@@ -83,13 +83,13 @@ const SaveAssignScreenModal = ({ setSelectScreenModal }) => {
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                       <HiOutlineLocationMarker className="mr-2 text-xl" />
                       Google Location
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                       <svg
                         className="mr-2"
                         width="19"
@@ -109,7 +109,7 @@ const SaveAssignScreenModal = ({ setSelectScreenModal }) => {
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                       <svg
                         className="mr-2"
                         width="15"
@@ -142,7 +142,7 @@ const SaveAssignScreenModal = ({ setSelectScreenModal }) => {
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                       <MdOutlineGroups className="mr-2 text-lg" />
                       Group
                     </button>

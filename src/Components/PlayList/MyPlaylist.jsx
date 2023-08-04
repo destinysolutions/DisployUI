@@ -73,7 +73,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
   const [showPlaylistModal, setShowPlaylistModal] = useState(false);
   return (
     <>
-      <div className="flex border-b border-gray py-3">
+      <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
@@ -84,19 +84,19 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
               My Playlists
             </h1>
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn">
-              <button className=" flex align-middle border-primary items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className=" flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 Preview
               </button>
-              <button className="sm:ml-2 xs:ml-1  flex align-middle border-primary items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 Save
               </button>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="sm:ml-2 xs:ml-1 flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <TbBoxMultiple />
               </button>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="sm:ml-2 xs:ml-1 flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <FiUpload />
               </button>
-              <button className="sm:ml-2 xs:ml-1  flex align-middle border-primary items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <RiDeleteBinLine />
               </button>
             </div>
@@ -126,7 +126,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div className="border-b-[1px] border-[#D5E3FF]"></div>
                 <div
-                  className={`flex items-center justify-between p-4 ${playlistChange == 1 ? "bg-[#D5E3FF]" : "bg-white"
+                  className={`flex items-center justify-between p-4 ${playlistChange == 1 ? "bg-lightgray" : "bg-white"
                     }`}
                   onClick={() => handlePlaylistChange(1)}
                 >
@@ -140,7 +140,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                       </h4>
                       <p className="text-sm">
                         Saved{" "}
-                        <span className="bg-[#E4E6FF] rounded-md text-sm p-1">
+                        <span className="bg-lightgray rounded-md text-sm p-1">
                           01:10:00
                         </span>
                       </p>
@@ -176,7 +176,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div className="border-b-[1px] border-[#D5E3FF]"></div>
                 <div
-                  className={`flex items-center justify-between p-4 ${playlistChange == 2 ? "bg-[#D5E3FF]" : "bg-white"
+                  className={`flex items-center justify-between p-4 ${playlistChange == 2 ? "bg-lightgray" : "bg-white"
                     }`}
                   onClick={() => handlePlaylistChange(2)}
                 >
@@ -190,7 +190,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                       </h4>
                       <p className="text-sm">
                         Saved{" "}
-                        <span className="bg-[#E4E6FF] rounded-md text-sm p-1">
+                        <span className="bg-lightgray rounded-md text-sm p-1">
                           01:10:00
                         </span>
                       </p>
@@ -206,7 +206,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                     <div
                       key={index}
                       className={`flex items-center justify-between p-4 ${playlistChange == index + 3
-                        ? "bg-[#D5E3FF]"
+                        ? "bg-lightgray"
                         : "bg-white"
                         }`}
                       onClick={() => handlePlaylistChange(index + 3)}
@@ -221,7 +221,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
                           <div className="flex">
                             <p className="text-sm">Saved</p>
-                            <div className="ml-1 bg-[#E4E6FF] rounded-md text-sm p-1">
+                            <div className="ml-1 bg-lightgray rounded-md text-sm p-1">
                               {playlist.savedTime}
                             </div>
                           </div>
@@ -244,7 +244,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                       Total
                     </div>
                     <div className="m-1">
-                      <button className="bg-[#E4E6FF] text-SlateBlue py-1 px-2 rounded-full text-sm font-normal">
+                      <button className="bg-lightgray text-SlateBlue py-1 px-2 rounded-full text-sm font-normal">
                         01:10:00
                       </button>
                     </div>
@@ -312,7 +312,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                                     <span
                                       className={`p-1 rounded ${popupActiveTab === 1
                                         ? "bg-primary text-white"
-                                        : "bg-[#D5E3FF]"
+                                        : "bg-lightgray"
                                         } `}
                                     >
                                       <IoBarChartSharp size={15} />
@@ -328,7 +328,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                                     <span
                                       className={`p-1 rounded ${popupActiveTab === 2
                                         ? "bg-primary text-white"
-                                        : "bg-[#D5E3FF]"
+                                        : "bg-lightgray"
                                         } `}
                                     >
                                       <RiPlayListFill size={15} />
@@ -344,7 +344,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                                     <span
                                       className={`p-1 rounded ${popupActiveTab === 3
                                         ? "bg-primary text-white"
-                                        : "bg-[#D5E3FF]"
+                                        : "bg-lightgray"
                                         } `}
                                     >
                                       <BiAnchor size={15} />
@@ -360,7 +360,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                                     <span
                                       className={`p-1 rounded ${popupActiveTab === 4
                                         ? "bg-primary text-white"
-                                        : "bg-[#D5E3FF]"
+                                        : "bg-lightgray"
                                         } `}
                                     >
                                       <AiOutlineAppstoreAdd size={15} />
@@ -399,7 +399,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                                       }}
                                     >
                                       <thead>
-                                        <tr className="bg-[#E4E6FF]">
+                                        <tr className="bg-lightgray">
                                           <th className="p-3 w-80 text-left">
                                             Playlist Name
                                           </th>
@@ -861,7 +861,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                               App <MdArrowForwardIos /> YouTube
                             </div>
                             <Link to="/apps">
-                              <div className="bg-[#E4E6FF] p-1.5 rounded">
+                              <div className="bg-lightgray p-1.5 rounded">
                                 <AiOutlinePlus />
                               </div>
                             </Link>
@@ -1041,7 +1041,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className="flex justify-between items-center mb-2 flex-wrap">
                           <div>Images</div>
                           <div>
-                            <button className="bg-[#E4E6FF] px-3 py-1.5 rounded-full">
+                            <button className="bg-lightgray px-3 py-1.5 rounded-full">
                               00:02:00
                             </button>
                           </div>
@@ -1050,7 +1050,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className="flex justify-between items-center my-2  flex-wrap">
                           <div>Apps</div>
                           <div>
-                            <button className="bg-[#E4E6FF] px-3 py-1.5 rounded-full">
+                            <button className="bg-lightgray px-3 py-1.5 rounded-full">
                               00:02:00
                             </button>
                           </div>
@@ -1059,7 +1059,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className="flex justify-between items-center my-2  flex-wrap">
                           <div>Links</div>
                           <div>
-                            <button className="bg-[#E4E6FF] px-3 py-1.5 rounded-full">
+                            <button className="bg-lightgray px-3 py-1.5 rounded-full">
                               00:02:00
                             </button>
                           </div>
@@ -1068,7 +1068,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className="flex justify-between items-center my-2  flex-wrap">
                           <div>Dashboards</div>
                           <div>
-                            <button className="bg-[#E4E6FF] px-3 py-1.5 rounded-full">
+                            <button className="bg-lightgray px-3 py-1.5 rounded-full">
                               00:02:00
                             </button>
                           </div>
@@ -1077,7 +1077,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className="flex justify-between items-center mt-2  flex-wrap">
                           <div>Documents</div>
                           <div>
-                            <button className="bg-[#E4E6FF] px-3 py-1.5 rounded-full">
+                            <button className="bg-lightgray px-3 py-1.5 rounded-full">
                               00:02:00
                             </button>
                           </div>

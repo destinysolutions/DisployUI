@@ -14,7 +14,7 @@ const CancelReport = ({ sidebarOpen, setSidebarOpen }) => {
   };
   return (
     <>
-      <div className="flex border-b border-gray py-3">
+      <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
@@ -63,7 +63,7 @@ const CancelReport = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="sectiondetails mt-5 bg-white p-5 rounded-md drop-shadow-sm overflow-x-auto">
             <table className="w-full text-[#5E5E5E]" cellPadding={20}>
               <thead>
-                <tr className="bg-[#E4E6FF] rounded-md text-left">
+                <tr className="bg-lightgray rounded-md text-left">
                   <th className=" font-medium p-3">Date</th>
                   <th className=" font-medium p-3">Plan</th>
                   <th className=" font-medium  p-3">Total Screens</th>

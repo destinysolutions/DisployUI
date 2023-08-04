@@ -309,11 +309,13 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
   const handleClosePexelsModal = () => {
     setShowpexels(false);
   };
+
+
   // End pexels code
 
   return (
     <>
-      <div className="flex border-b border-gray py-3">
+      <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
@@ -358,7 +360,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
               <OneDrive />
             </span>
             <span
-              className="bg-[#D5E3FF] text-SlateBlue py-4 px-3 rounded-[45px] "
+              className="bg-lightgray text-SlateBlue py-4 px-3 rounded-[45px] "
             //   onClick={handleIconClick}
             >
               <svg
@@ -411,7 +413,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
             </span>
 
             {/* end unspalsh */}
-            <span className="bg-[#D5E3FF] text-SlateBlue py-4 px-4 rounded-[45px]">
+            <span className="bg-lightgray text-SlateBlue py-4 px-4 rounded-[45px]">
 
               <button onClick={handlePexelsButtonClick} className="relative">
                 <SiPexels size={30} className="relative" />
@@ -431,7 +433,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
             onDragLeave={onDragLeave}
             onDrop={onDrop}
           >
-            <div className=" relative flex flex-col items-center justify-center min-h-full lg:p-40 md:p-20 sm:p-10 xs:p-4 bg-[#E4E6FF] lg:mt-14 md:mt-14 sm:mt-5 xs:mt-5  border-2 rounded-[20px] border-SlateBlue border-dashed">
+            <div className=" relative flex flex-col items-center justify-center min-h-full lg:p-40 md:p-20 sm:p-10 xs:p-4 bg-lightgray lg:mt-14 md:mt-14 sm:mt-5 xs:mt-5  border-2 rounded-[20px] border-SlateBlue border-dashed">
               <FiUploadCloud className="text-SlateBlue md:mb-7 sm:mb-3 xs:mb-2 lg:text-[150px] md:text-[100px] sm:text-[80px] xs:text-[45px]" />
               <input
                 type="file"

@@ -41,7 +41,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      <div className="flex border-b border-gray py-3">
+      <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
@@ -107,11 +107,11 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                   {showdata && (
                     <>
                       {" "}
-                      <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white flex items-center">
+                      <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white flex items-center">
                         <LuMonitor className="text-sm mr-1" />
                         03
                       </button>
-                      <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white flex items-center">
+                      <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white flex items-center">
                         Preview
                       </button>
                       <button className="rounded-full mx-1 border hover:bg-SlateBlue">
@@ -147,7 +147,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                   <thead>
                     <tr className="flex justify-between items-center">
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                           <svg
                             width="20"
                             height="20"
@@ -165,7 +165,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                           <svg
                             className="mr-2"
                             width="17"
@@ -200,7 +200,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                           <svg
                             className="mr-2"
                             width="16"
@@ -235,7 +235,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                           <svg
                             className="mr-2"
                             width="15"
@@ -264,7 +264,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                        <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                           <svg
                             className="mr-2"
                             width="19"
@@ -284,7 +284,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                        <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                           <svg
                             className="mr-2"
                             width="15"

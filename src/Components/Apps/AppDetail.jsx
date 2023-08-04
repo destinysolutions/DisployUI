@@ -56,7 +56,7 @@ const AppDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [appDetailModal, setAppDetailModal] = useState(false);
   return (
     <>
-      <div className="flex border-b border-gray py-3">
+      <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
@@ -80,7 +80,7 @@ const AppDetail = ({ sidebarOpen, setSidebarOpen }) => {
                   YouTube
                 </h1>
                 <div className="flex">
-                  <button className="rounded bg-[#E4E6FF] p-1">
+                  <button className="rounded bg-lightgray p-1">
                     <div className="flex items-center">
                       <BsCameraVideo />
                       <div className="ml-1">

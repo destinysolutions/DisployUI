@@ -61,7 +61,7 @@ const Screens = () => {
     setScreenData(newData);
   }
   return (
-    <div>
+    <div className="bg-white p-3 rounded-md">
       <div className="text-right mb-5 mr-5 flex items-end justify-end relative sm:mr-0">
         <AiOutlineSearch className="absolute top-[13px] right-[220px] z-10 text-gray searchicon" />
         <input

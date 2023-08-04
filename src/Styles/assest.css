@@ -1,8 +1,10 @@
 .fileUploadIcon {
-  background-color: #d5e3ff;
-  color: SlateBlue;
+  background-color: #ffffff;
+  color: #e4aa07;
   padding: 12px;
   border-radius: 45px;
+  border: 1px solid #fadd8b;
+  box-shadow: 0px 5px 10px #cccccc5e;
 }
 
 .progress-continue,
@@ -46,7 +48,7 @@
 
 
 .tabactivebtn {
-  background-color: #00072e;
+  background-color: #e4aa07;
   color: #fff;
   padding: 12px 20px;
   border-radius: 30px;
@@ -65,13 +67,13 @@
   transform: translate(-50%, 0%);
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-top: 10px solid #00072e;
+  border-top: 10px solid #e4aa07;
   border-bottom: 10px solid transparent;
 }
 
 
 .tabbtn {
-  background: #E4E6FF;
+  background: #ebebeb;
   padding: 12px 20px;
   border-radius: 30px;
   box-shadow: 0px 10px 20px #cccccc26;
@@ -79,6 +81,7 @@
   min-width: 120px;
   text-align: center;
   height: 100%;
+  border: 1px solid #ccc
 }
 
 .assetsdw {
@@ -172,7 +175,7 @@ button.tabshow.tabassactive.right {
 
 
 td .assetsdw {
-  right:6px;
+  right: 6px;
   top: inherit;
   bottom: -85px;
   z-index: 9;
@@ -348,4 +351,13 @@ td .tabicon svg {
     max-height: 300px;
     overflow-y: auto;
   }
+}
+
+/* pexels */
+
+.pexels-input input:focus,
+.pexels-input select:focus {
+  border: none !important;
+  background: none !important;
+
 }

@@ -8,15 +8,15 @@
 
 .sc-eqUAAy.gocYik.rdt_TableHeadRow,
 .ilZlKI {
-  background: #e4e6ff;
-  color: #41479b;
+  background: #ebebeb;
+  color: #353535;
   font-size: 16px;
   font-weight: 600;
 }
 
 .hbgCLW:nth-child(even),
 .sc-dAbbOL.huFvJk.rdt_TableBody .sc-dhKdcB.hxYGQY.rdt_TableRow:nth-child(even) {
-  background: #edf3ff;
+  background: #ebebeb;
 }
 
 .ikexHN,
@@ -84,7 +84,7 @@
 }
 
 body {
-  background: #e4e6ff91;
+  background: #f3f4f7;
 }
 
 .absolute.inset-0.z-10.h-full.bg-white.rounded-md.shadow {
@@ -188,3 +188,5 @@ body {
   box-shadow: 0px 20px 10px #00000078;
   background: linear-gradient(to right, #030303d6 0%, #565454cf 100%);
 }
+
+/* comman css */

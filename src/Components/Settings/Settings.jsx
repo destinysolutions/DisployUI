@@ -115,7 +115,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
       id: 1,
       cname: "Company 1",
       totalscreen: (
-        <label className="text-base bg-[#E4E6FF] p-3 rounded-xl">15</label>
+        <label className="text-base bg-lightgray p-3 rounded-xl">15</label>
       ),
       location: "India, USA ",
       enabled: true,
@@ -129,7 +129,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
       id: 2,
       cname: "Patels",
       totalscreen: (
-        <label className="text-base bg-[#E4E6FF] p-3 rounded-xl">25</label>
+        <label className="text-base bg-lightgray p-3 rounded-xl">25</label>
       ),
       location: "India, USA ",
       enabled: false,
@@ -143,7 +143,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
       id: 3,
       cname: "Sundari",
       totalscreen: (
-        <label className="text-base bg-[#E4E6FF] p-3 rounded-xl">55</label>
+        <label className="text-base bg-lightgray p-3 rounded-xl">55</label>
       ),
       location: "India, USA ",
       enabled: false,
@@ -157,7 +157,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
       id: 4,
       cname: "Company 4",
       totalscreen: (
-        <label className="text-base bg-[#E4E6FF] p-3 rounded-xl">45</label>
+        <label className="text-base bg-lightgray p-3 rounded-xl">45</label>
       ),
       location: "India, USA ",
       enabled: true,
@@ -171,7 +171,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
       id: 5,
       cname: "Company 5",
       totalscreen: (
-        <label className="text-base bg-[#E4E6FF] p-3 rounded-xl">105</label>
+        <label className="text-base bg-lightgray p-3 rounded-xl">105</label>
       ),
       location: "India, USA ",
       enabled: false,
@@ -185,7 +185,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
       id: 6,
       cname: "Company 6",
       totalscreen: (
-        <label className="text-base bg-[#E4E6FF] p-3 rounded-xl">15</label>
+        <label className="text-base bg-lightgray p-3 rounded-xl">15</label>
       ),
       location: "India, USA ",
       enabled: false,
@@ -199,7 +199,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
       id: 7,
       cname: "Company 7",
       totalscreen: (
-        <label className="text-base bg-[#E4E6FF] p-3 rounded-xl">45</label>
+        <label className="text-base bg-lightgray p-3 rounded-xl">45</label>
       ),
       location: "India, USA ",
       enabled: true,
@@ -225,7 +225,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      <div className="flex border-b border-gray py-3">
+      <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>

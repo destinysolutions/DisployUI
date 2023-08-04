@@ -171,7 +171,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
   return (
     <>
-      <div className="flex border-b border-gray py-3">
+      <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
@@ -184,15 +184,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               </h1>
               <div className=" flex-wrap flex  lg:mt-0 md:mt-0 sm:mt-3">
                 <button
-                  className=" dashboard-btn  flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  className=" dashboard-btn  flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                   onClick={handleNewFolder}
                 >
-                  <TiFolderOpen className="text-2xl rounded-full mr-1 bg-primary text-white p-1" />
+                  <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
                   New Folder
                 </button>
 
-                <button className=" dashboard-btn flex align-middle items-center text-primary rounded-full  text-base border border-primary lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                  <AiOutlineCloudUpload className="text-2xl rounded-full mr-1 bg-primary text-white p-1" />
+                <button className=" dashboard-btn flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
                   <Link to={"/FileUpload"}> Upload </Link>
                 </button>
 

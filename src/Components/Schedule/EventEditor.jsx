@@ -75,32 +75,32 @@
 //               <thead>
 //                 <tr className="flex justify-between items-center">
 //                   <th className="p-3 font-medium text-[14px]">
-//                     <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+//                     <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
 //                       <MdOutlinePermMedia className="mr-2 text-xl" />
 //                       Assets
 //                     </button>
 //                   </th>
 //                   <th className="p-3 font-medium text-[14px]">
-//                     <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+//                     <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
 //                       <MdDateRange className="mr-2 text-xl" />
 //                       Date Added
 //                     </button>
 //                   </th>
 //                   <th className="p-3 font-medium text-[14px]">
-//                     <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+//                     <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
 //                       <GrSchedules className="mr-2 text-xl" />
 //                       Associated Schedule
 //                     </button>
 //                   </th>
 //                   <th className="p-3 font-medium text-[14px]">
-//                     <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+//                     <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
 //                       <VscCompass className="mr-2 text-xl" />
 //                       orientation
 //                     </button>
 //                   </th>
 
 //                   <th className="p-3 font-medium text-[14px]">
-//                     <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+//                     <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
 //                       <BsTags className="mr-2 text-xl" />
 //                       Tags
 //                     </button>
@@ -152,7 +152,7 @@
 //                       type="date"
 //                       value={editedStartDate}
 //                       onChange={handleStartDateChange}
-//                       className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+//                       className="bg-lightgray rounded-full px-3 py-2 w-full"
 //                     />
 //                   </div>
 //                 </li>
@@ -163,7 +163,7 @@
 //                       type="date"
 //                       value={editedEndDate}
 //                       onChange={handleEndDateChange}
-//                       className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+//                       className="bg-lightgray rounded-full px-3 py-2 w-full"
 //                     />
 //                   </div>
 //                 </li>
@@ -174,7 +174,7 @@
 //                       type="time"
 //                       value={editedStartTime}
 //                       onChange={handleStartTimeChange}
-//                       className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+//                       className="bg-lightgray rounded-full px-3 py-2 w-full"
 //                     />
 //                   </div>
 //                 </li>
@@ -185,7 +185,7 @@
 //                       type="time"
 //                       value={editedEndTime}
 //                       onChange={handleEndTimeChange}
-//                       className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+//                       className="bg-lightgray rounded-full px-3 py-2 w-full"
 //                     />
 //                   </div>
 //                 </li>
@@ -309,7 +309,7 @@ const EventEditor = ({
           },
           content: {
             maxWidth: "90%",
-            maxHeight:"70%",
+            maxHeight: "70%",
             margin: "auto",
             padding: "20px",
           },
@@ -344,32 +344,32 @@ const EventEditor = ({
                   <thead>
                     <tr className="flex justify-between items-center">
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                           <MdOutlinePermMedia className="mr-2 text-xl" />
                           Assets
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                           <MdDateRange className="mr-2 text-xl" />
                           Date Added
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                           <GrSchedules className="mr-2 text-xl" />
                           Associated Schedule
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                           <VscCompass className="mr-2 text-xl" />
                           orientation
                         </button>
                       </th>
 
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                        <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                           <BsTags className="mr-2 text-xl" />
                           Tags
                         </button>
@@ -403,7 +403,7 @@ const EventEditor = ({
             </div>
             <div className=" bg-white shadow-2xl md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0">
               <div className="p-3">
-                <input type="text" value={title} onChange={handleTitleChange} placeholder="Enter Title"/>
+                <input type="text" value={title} onChange={handleTitleChange} placeholder="Enter Title" />
               </div>
               <div className="border-b-2 border-[#D5E3FF]"></div>
               <div className="p-3">
@@ -414,44 +414,44 @@ const EventEditor = ({
                       <h3>Start Date:</h3>
                       <div className="mt-2">
                         <input
-                      type="date"
-                      value={editedStartDate}
-                      onChange={handleStartDateChange}
-                      className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
-                    />
+                          type="date"
+                          value={editedStartDate}
+                          onChange={handleStartDateChange}
+                          className="bg-lightgray rounded-full px-3 py-2 w-full"
+                        />
                       </div>
                     </li>
                     <li className="border-b-2 border-[#D5E3FF] p-3">
                       <h3>End Date:</h3>
                       <div className="mt-2">
                         <input
-                      type="date"
-                      value={editedEndDate}
-                      onChange={handleEndDateChange}
-                      className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
-                    />
+                          type="date"
+                          value={editedEndDate}
+                          onChange={handleEndDateChange}
+                          className="bg-lightgray rounded-full px-3 py-2 w-full"
+                        />
                       </div>
                     </li>
                     <li className="border-b-2 border-[#D5E3FF] p-3">
                       <h3>Start Time:</h3>
                       <div className="mt-2">
                         <input
-                      type="time"
-                      value={editedStartTime}
-                      onChange={handleStartTimeChange}
-                      className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
-                    />
+                          type="time"
+                          value={editedStartTime}
+                          onChange={handleStartTimeChange}
+                          className="bg-lightgray rounded-full px-3 py-2 w-full"
+                        />
                       </div>
                     </li>
                     <li className=" p-3">
                       <h3>End Time:</h3>
                       <div className="mt-2">
                         <input
-                      type="time"
-                      value={editedEndTime}
-                      onChange={handleEndTimeChange}
-                      className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
-                    />
+                          type="time"
+                          value={editedEndTime}
+                          onChange={handleEndTimeChange}
+                          className="bg-lightgray rounded-full px-3 py-2 w-full"
+                        />
                       </div>
                     </li>
                   </ul>
