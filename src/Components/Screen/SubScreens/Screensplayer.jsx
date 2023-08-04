@@ -56,7 +56,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      <div className="flex border-b border-gray py-3">
+      <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
@@ -72,21 +72,21 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="icons flex  items-center">
                 <div>
                   <Link to={"../screens"}>
-                    <button className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue">
-                      <MdArrowBackIosNew className="p-1 text-3xl text-SlateBlue hover:text-white " />
+                    <button className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray">
+                      <MdArrowBackIosNew className="p-1 text-3xl text-black hover:text-white " />
                     </button>
                   </Link>
                 </div>
                 <div>
-                  <button className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue">
-                    <IoMdRefresh className="p-1 text-3xl text-SlateBlue hover:text-white " />
+                  <button className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray">
+                    <IoMdRefresh className="p-1 text-3xl text-black hover:text-white " />
                   </button>
                 </div>
 
                 <div>
                   <div>
-                    <button className="border rounded-full mr-2 hover:shadow-xl border-SlateBlue hover:bg-red hover:border-red">
-                      <RiDeleteBin5Line className="p-1 text-3xl text-SlateBlue hover:text-white " />
+                    <button className="border rounded-full mr-2 hover:shadow-xl border-gray hover:bg-red hover:border-red">
+                      <RiDeleteBin5Line className="p-1 text-3xl text-black hover:text-white " />
                     </button>
                   </div>
                 </div>
@@ -105,12 +105,12 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
 
               <div className="grid  grid-cols-12  screen-player-details pb-7 sm:pb-0 border-b border-[#D5E3FF]">
-                <div className="default-media flex items-center xs-block justify-between bg-[#595F7A] py-2 px-5 rounded-md lg:col-start-4 lg:col-span-6 md:col-start-3 md:col-span-8  sm:col-start-1 sm:col-span-12">
+                <div className="default-media flex items-center xs-block justify-between bg-lightgray py-2 px-5 rounded-md lg:col-start-4 lg:col-span-6 md:col-start-3 md:col-span-8  sm:col-start-1 sm:col-span-12">
                   <div>
-                    <p className="text-[#E4E6FF] text-sm font-light">
+                    <p className="text-primary text-sm font-light">
                       Now Playing
                     </p>
-                    <h4 className="text-[#E4E6FF] text-lg">Default Media</h4>
+                    <h4 className="text-primary text-lg">Default Media</h4>
                   </div>
 
                   <div className="relative">
@@ -145,7 +145,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
               <div className="grid  grid-cols-12">
                 <div className="lg:col-start-4 lg:col-span-6 md:col-start-1 md:col-span-12  sm:col-start-1 sm:col-span-12 text-center">
-                  <ul className="inline-flex items-center justify-center border border-primary rounded-full my-4 shadow-xl">
+                  <ul className="inline-flex items-center justify-center border border-gray rounded-full my-4 shadow-xl">
                     <li className="text-sm firstli">
                       {" "}
                       <button
@@ -328,11 +328,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   onClick={() => {
                                     setEnabled(!enabled);
                                   }}
-                                  className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
-                                    enabled
-                                      ? " bg-gray text-left pl-2 text-white text-sm"
-                                      : "bg-gray text-right pr-2 text-white text-sm"
-                                  }`}
+                                  className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled
+                                    ? " bg-gray text-left pl-2 text-white text-sm"
+                                    : "bg-gray text-right pr-2 text-white text-sm"
+                                    }`}
                                 >
                                   {enabled ? "On" : "Off"}
                                 </div>
@@ -722,7 +721,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                             </li>
                                             <li className="border-2 my-1 p-2 rounded-md border-[#E4E6FF]">
                                               <button className="flex items-center">
-                                                <FiPlus className="bg-[#E4E6FF] text-SlateBlue text-2xl p-1 rounded-md mr-3" />
+                                                <FiPlus className="bg-lightgray text-SlateBlue text-2xl p-1 rounded-md mr-3" />
                                                 <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs">
                                                   Add New Card
                                                 </span>
@@ -754,11 +753,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                           onClick={() => {
                                             setEnabled(!enabled);
                                           }}
-                                          className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
-                                            enabled
-                                              ? " bg-gray text-left pl-2 text-white text-sm"
-                                              : "bg-gray text-right pr-2 text-white text-sm"
-                                          }`}
+                                          className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled
+                                            ? " bg-gray text-left pl-2 text-white text-sm"
+                                            : "bg-gray text-right pr-2 text-white text-sm"
+                                            }`}
                                         >
                                           {enabled ? "On" : "Off"}
                                         </div>
@@ -901,11 +899,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                         onClick={() => {
                                           setEnabled(!enabled);
                                         }}
-                                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
-                                          enabled
-                                            ? " bg-gray text-left pl-2 text-white text-sm"
-                                            : "bg-gray text-right pr-2 text-white text-sm"
-                                        }`}
+                                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled
+                                          ? " bg-gray text-left pl-2 text-white text-sm"
+                                          : "bg-gray text-right pr-2 text-white text-sm"
+                                          }`}
                                       >
                                         {enabled ? "On" : "Off"}
                                       </div>

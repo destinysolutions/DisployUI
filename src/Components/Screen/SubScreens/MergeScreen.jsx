@@ -42,7 +42,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      <div className="flex border-b border-gray py-3">
+      <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
@@ -106,7 +106,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                   {showdata && (
                     <>
                       {" "}
-                      <button className="bg-[#E4E6FF] py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
+                      <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
                         Preview
                       </button>{" "}
 
@@ -143,7 +143,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                   <thead>
                     <tr className="flex justify-between items-center">
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                           <svg
                             width="20"
                             height="20"
@@ -161,7 +161,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                           <svg
                             className="mr-2"
                             width="17"
@@ -196,7 +196,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                           <svg
                             className="mr-2"
                             width="16"
@@ -231,7 +231,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                           <svg
                             className="mr-2"
                             width="15"
@@ -260,7 +260,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                        <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                           <svg
                             className="mr-2"
                             width="19"
@@ -280,7 +280,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                        <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                           <svg
                             className="mr-2"
                             width="15"

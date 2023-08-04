@@ -7,14 +7,16 @@ export default {
   theme: {
     extend: {},
     colors: {
-      primary: '#00072E',
+      primary: '#000',
       secondary: '#fff',
       black: '#000',
       gray: '#ccc',
       white: '#fff',
-      SlateBlue: '#41479B',
+      SlateBlue: '#e4aa07',
       red: '#e16969',
       green: '#039F41',
+      lightgray: '#ebebeb'
+
     },
     screens: {
       'xs': '200px',

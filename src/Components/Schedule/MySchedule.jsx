@@ -23,7 +23,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   return (
     <>
       {/* navbar and sidebar start */}
-      <div className="flex border-b border-gray py-3">
+      <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
@@ -66,37 +66,37 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               <thead>
                 <tr className="flex justify-between items-center">
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                       <TbCalendarTime className="mr-2" />
                       Schedule Name
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                       <VscCalendar className="mr-2" />
                       Date Added
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                       <TbCalendarStats className="mr-2" />
                       start date
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                       <TbCalendarStats className="mr-2" />
                       End date
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                       <RiComputerLine className="mr-2" />
                       screens Assigned
                     </button>
                   </th>
                   <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                       <BsTags className="mr-2" />
                       Tags
                     </button>

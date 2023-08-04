@@ -47,7 +47,7 @@ div#tooltip-bottom:before {
   border-top: 10px solid transparent;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid #41479b;
+  border-bottom: 10px solid #e4aa07;
   top: -18px;
   left: 50%;
   transform: translate(-50%, 0px);
@@ -100,6 +100,7 @@ input::placeholder {
 }
 
 @media (max-width: 767px) {
+
   .screen-details,
   .screen-details tr,
   .screen-details td {
@@ -147,7 +148,7 @@ li.text-sm.firstli button.tabshow.tabactive {
 }
 
 button.tabshow.tabactive {
-  background: #00072e;
+  background: #e4aa07;
   color: #ffff;
   padding: 10px 30px;
   border-top-right-radius: 20px;
@@ -244,6 +245,7 @@ button.tabsyncshow.tabsyncactive {
 }
 
 @media (max-width: 767px) {
+
   table.sync-table.w-full,
   table.sync-table.w-full tr,
   table.sync-table.w-full td,

@@ -71,7 +71,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      <div className="flex border-b border-gray py-3">
+      <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
@@ -286,7 +286,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                             <div className="flex items-center ml-5">
                               <span
-                                className="bg-[#D5E3FF] p-2 rounded"
+                                className="bg-lightgray p-2 rounded"
                                 onClick={handleIconClick}
                               >
                                 <FiUploadCloud size={20} />
@@ -359,7 +359,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                             />
                             <Link to="/myplaylist">
                               <div className="flex items-center ml-5">
-                                <span className="bg-[#D5E3FF] p-2 rounded">
+                                <span className="bg-lightgray p-2 rounded">
                                   <svg
                                     width="15"
                                     height="15"
@@ -418,7 +418,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               Set a schedule
                             </span>
                             <div className="flex items-center ml-5">
-                              <span className="bg-[#D5E3FF] p-2 rounded">
+                              <span className="bg-lightgray p-2 rounded">
                                 <GrScheduleNew size={20} />
                               </span>
                             </div>

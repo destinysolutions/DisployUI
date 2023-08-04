@@ -29,7 +29,7 @@ const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
   const [playlistDeleteModal, setPlaylistDeleteModal] = useState(false);
   return (
     <>
-      <div className="flex border-b border-gray py-3">
+      <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
@@ -115,10 +115,10 @@ const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
                             />
                           </div>
                           <div className="flex items-center">
-                            <button className="bg-[#E4E6FF] rounded-full px-4 py-2 text-SlateBlue">
+                            <button className="bg-lightgray rounded-full px-4 py-2 text-SlateBlue">
                               Tags
                             </button>
-                            <button className="flex items-center bg-[#E4E6FF] rounded-full px-4 py-2 text-SlateBlue ml-3">
+                            <button className="flex items-center bg-lightgray rounded-full px-4 py-2 text-SlateBlue ml-3">
                               <input type="checkbox" className="w-5 h-5 mr-2" />
                               All Clear
                             </button>
@@ -130,22 +130,22 @@ const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
                               <thead>
                                 <tr className="flex justify-between items-center">
                                   <th className="font-medium text-[14px]">
-                                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                                       Name
                                     </button>
                                   </th>
                                   <th className="p-3 font-medium text-[14px]">
-                                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                                       Group
                                     </button>
                                   </th>
                                   <th className="p-3 font-medium text-[14px]">
-                                    <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
+                                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
                                       Playing
                                     </button>
                                   </th>
                                   <th className="p-3 font-medium text-[14px]">
-                                    <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
+                                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
                                       Status
                                     </button>
                                   </th>
@@ -304,7 +304,7 @@ const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
                               onClick={() => {
                                 setEnabled(!enabled);
                               }}
-                              className="w-11 h-6 bg-[#E4E6FF] rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all "
+                              className="w-11 h-6 bg-lightgray rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all "
                             ></div>
                           </label>
                         </td>
@@ -327,7 +327,7 @@ const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
                               onClick={() => {
                                 setEnabled(!enabled);
                               }}
-                              className="w-11 h-6 bg-[#E4E6FF] rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all "
+                              className="w-11 h-6 bg-lightgray rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all "
                             ></div>
                           </label>
                         </td>

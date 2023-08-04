@@ -59,7 +59,7 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
     return (
         <>
             <div className='backdrop'>
-                <div className='fixed unsplash-model bg-[#d5e3ff] lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl'>
+                <div className='fixed unsplash-model bg-lightgray lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl'>
                     <button onClick={closeModal} className=' absolute right-3 top-3 text-2xl rounded-lg'><AiOutlineCloseCircle /></button>
                     <div className='text-center '>
                         <h1 className=' text-SlateBlue lg:text-3xl md:text-3xl sm:lg:text-xl xs:text-lg lg:mb-5 md:mb-5 sm:mb-3 xs:mb-2 font-medium'>Search Images</h1>
@@ -100,7 +100,7 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
                             <button
                                 type="button"
                                 onClick={handleLoadMore}
-                                className="btn  text-[#8d8c8c] fs-3 my-4 flex items-center justify-center mx-auto"
+                                className="text-[#8d8c8c] fs-3 my-4 flex items-center justify-center mx-auto"
                             >
                                 <BiLoaderCircle /> Load More
                             </button>

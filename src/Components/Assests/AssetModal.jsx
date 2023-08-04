@@ -42,17 +42,15 @@ const AssetModal = ({ setShowAssetModal }) => {
                     >
                       <button
                         type="button"
-                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                          popupActiveTab === 1 ? "active" : ""
-                        }`}
-                        // onClick={() => handleTabClick(1)}
+                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 1 ? "active" : ""
+                          }`}
+                      // onClick={() => handleTabClick(1)}
                       >
                         <span
-                          className={`p-1 rounded ${
-                            popupActiveTab === 1
-                              ? "bg-primary text-white"
-                              : "bg-[#D5E3FF]"
-                          } `}
+                          className={`p-1 rounded ${popupActiveTab === 1
+                            ? "bg-primary text-white"
+                            : "bg-lightgray"
+                            } `}
                         >
                           <IoBarChartSharp size={15} />
                         </span>
@@ -60,17 +58,15 @@ const AssetModal = ({ setShowAssetModal }) => {
                       </button>
                       <button
                         type="button"
-                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                          popupActiveTab === 2 ? "active" : ""
-                        }`}
-                        //onClick={() => handleTabClick(2)}
+                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 2 ? "active" : ""
+                          }`}
+                      //onClick={() => handleTabClick(2)}
                       >
                         <span
-                          className={`p-1 rounded ${
-                            popupActiveTab === 2
-                              ? "bg-primary text-white"
-                              : "bg-[#D5E3FF]"
-                          } `}
+                          className={`p-1 rounded ${popupActiveTab === 2
+                            ? "bg-primary text-white"
+                            : "bg-lightgray"
+                            } `}
                         >
                           <RiPlayListFill size={15} />
                         </span>
@@ -78,17 +74,15 @@ const AssetModal = ({ setShowAssetModal }) => {
                       </button>
                       <button
                         type="button"
-                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                          popupActiveTab === 3 ? "active" : ""
-                        }`}
-                        // onClick={() => handleTabClick(3)}
+                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 3 ? "active" : ""
+                          }`}
+                      // onClick={() => handleTabClick(3)}
                       >
                         <span
-                          className={`p-1 rounded ${
-                            popupActiveTab === 3
-                              ? "bg-primary text-white"
-                              : "bg-[#D5E3FF]"
-                          } `}
+                          className={`p-1 rounded ${popupActiveTab === 3
+                            ? "bg-primary text-white"
+                            : "bg-lightgray"
+                            } `}
                         >
                           <BiAnchor size={15} />
                         </span>
@@ -96,17 +90,15 @@ const AssetModal = ({ setShowAssetModal }) => {
                       </button>
                       <button
                         type="button"
-                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                          popupActiveTab === 4 ? "active" : ""
-                        }`}
-                        // onClick={() => handleTabClick(4)}
+                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 4 ? "active" : ""
+                          }`}
+                      // onClick={() => handleTabClick(4)}
                       >
                         <span
-                          className={`p-1 rounded ${
-                            popupActiveTab === 4
-                              ? "bg-primary text-white"
-                              : "bg-[#D5E3FF]"
-                          } `}
+                          className={`p-1 rounded ${popupActiveTab === 4
+                            ? "bg-primary text-white"
+                            : "bg-lightgray"
+                            } `}
                         >
                           <AiOutlineAppstoreAdd size={15} />
                         </span>
@@ -140,7 +132,7 @@ const AssetModal = ({ setShowAssetModal }) => {
                           }}
                         >
                           <thead>
-                            <tr className="bg-[#E4E6FF]">
+                            <tr className="bg-lightgray">
                               <th className="p-3 w-80 text-left">Media Name</th>
                               <th className="">Date Added</th>
                               <th className="p-3">Size</th>
