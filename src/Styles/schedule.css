@@ -29,3 +29,6 @@
   border-radius: 8px;
   width: 100% !important;
 }
+.sketch-picker {
+  width: auto !important;
+}
