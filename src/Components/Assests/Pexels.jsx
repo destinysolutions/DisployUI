@@ -111,7 +111,7 @@ const Pexels = ({ closeModal }) => {
         <>
             <div className='backdrop'>
 
-                <div className='fixed unsplash-model bg-lightgray lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl '>
+                <div className='fixed unsplash-model bg-black lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl '>
                     <button onClick={closeModal} className=' absolute right-3 top-3 text-2xl rounded-lg'><AiOutlineCloseCircle /></button>
                     <div className='text-center mb-5'>
                         <h1 className=' text-SlateBlue lg:text-3xl md:text-3xl sm:lg:text-xl xs:text-lg lg:mb-5 md:mb-5 sm:mb-3 xs:mb-2 font-medium'>Media from Pexels</h1>

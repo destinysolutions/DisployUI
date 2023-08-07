@@ -270,7 +270,7 @@ const Registration = () => {
                   )}
                   <button
                     type="submit"
-                    className="w-full text-[#FFFFFF] bg-[#002359] not-italic font-medium rounded-lg py-3 text-center text-base"
+                    className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3 text-center text-base"
                   >
                     Create Your account
                   </button>

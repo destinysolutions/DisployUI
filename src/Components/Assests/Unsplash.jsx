@@ -5,11 +5,12 @@ import './../../Styles/assest.css';
 import { BiLoaderCircle } from 'react-icons/bi'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
 const Unsplash = ({ closeModal, onSelectedImages }) => {
-    const [img, setImg] = useState("");
+    const [img, setImg] = useState("Natural");
     const [res, setRes] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
     const [uploadedImages, setUploadedImages] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [fileData, setFileData] = useState([]);
 
     const API_KEY = "Sgv-wti48nSLfRjYsH7lmH_8N3wjzC18ccTYFxBzxmw";
 
@@ -36,30 +37,59 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
         fetchRequest(img);
     }, [img]);
 
+    useEffect(() => {
+        const imageData = selectedImages.map((image) => image.webformatURL);
+        setFileData(imageData);
+    }, [selectedImages]);
 
-    const handleImageSelect = (imageUrl) => {
-        setSelectedImages((prevSelected) => [...prevSelected, imageUrl]);
+    const handleImageSelect = (image) => {
+        setSelectedImages((prevSelected) =>
+            prevSelected.includes(image)
+                ? prevSelected.filter((img) => img !== image)
+                : [...prevSelected, image]
+        );
     };
+
 
     const handleImageUpload = () => {
-        if (selectedImages.length > 0) {
-            // Pass the selected images back to the parent component
-            onSelectedImages(selectedImages);
-            setSelectedImages([]);
-        }
+        // ... (existing code for getContentType)
+        console.log("Selected Images:", fileData);
+        const UPLOAD_API_URL = "http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload";
+
+        fileData.forEach((imageURL) => {
+            const formData = new FormData();
+
+            const details = "Some Details about the file";
+            const CategorieType = getContentType(image.type);
+
+            formData.append("File", imageURL);
+            formData.append("operation", "Insert");
+            formData.append("CategorieType", CategorieType);
+            formData.append("details", details);
+
+            axios
+                .post(UPLOAD_API_URL, formData)
+                .then((response) => {
+                    console.log("Upload Success:", response.data);
+                })
+                .catch((error) => {
+                    console.error("Upload Error:", error);
+                });
+        });
+
+        // Clear the selected images after uploading
+        setSelectedImages([]);
+
     };
     const handleLoadMore = () => {
+        // Call the fetchRequest function with the current search term and the next page number
         fetchRequest(img, currentPage);
     };
-    useEffect(() => {
-        fetchRequest(img);
-    }, [img]);
-
 
     return (
         <>
             <div className='backdrop'>
-                <div className='fixed unsplash-model bg-lightgray lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl'>
+                <div className='fixed unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl'>
                     <button onClick={closeModal} className=' absolute right-3 top-3 text-2xl rounded-lg'><AiOutlineCloseCircle /></button>
                     <div className='text-center '>
                         <h1 className=' text-SlateBlue lg:text-3xl md:text-3xl sm:lg:text-xl xs:text-lg lg:mb-5 md:mb-5 sm:mb-3 xs:mb-2 font-medium'>Search Images</h1>
@@ -96,15 +126,18 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
                     </div>
                     <div className='text-center '>
 
-                        {res.length > 0 && (
-                            <button
-                                type="button"
-                                onClick={handleLoadMore}
-                                className="text-[#8d8c8c] fs-3 my-4 flex items-center justify-center mx-auto"
-                            >
-                                <BiLoaderCircle /> Load More
-                            </button>
-                        )}
+                        <div className='text-center '>
+
+                            {res.length > 0 && (
+                                <button
+                                    type="button"
+                                    onClick={handleLoadMore}
+                                    className="text-[#8d8c8c] fs-3 my-4 flex items-center justify-center mx-auto"
+                                >
+                                    <BiLoaderCircle /> Load More
+                                </button>
+                            )}
+                        </div>
                     </div>
                     <div className='text-center mt-5'>
                         <button
