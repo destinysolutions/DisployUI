@@ -1,9 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import * as msal from '@azure/msal-browser';
 
+
+import React, { useEffect, useState } from 'react'
+import { PublicClientApplication } from "@azure/msal-browser";
+import { FaCloudUploadAlt } from "react-icons/fa";
 const OneDrive = () => {
-    const [files, setFiles] = useState([]);
+    const [app, setApp] = useState(null);
     const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+    useEffect(() => {
+        const msalConfig = {
+            auth: {
+                clientId: '3e34f72d-7f91-48fe-9805-4946b9b17997',
+                redirectUri: 'http://localhost:5173',
+            },
+        };
+        const msalInstance = new PublicClientApplication(msalConfig);
+        setApp(msalInstance);
+    }, []);
 
     const handleLogin = async () => {
         if (isLoggingIn) {
@@ -13,19 +26,15 @@ const OneDrive = () => {
 
         setIsLoggingIn(true);
 
-        const msalConfig = {
-            auth: {
-                clientId: 'YOUR_CLIENT_ID',
-                redirectUri: 'YOUR_REDIRECT_URI',
-            },
-        };
-        const msalInstance = new msal.PublicClientApplication(msalConfig);
-
         try {
             // Ensure that the user is logged in
-            const accounts = msalInstance.getAllAccounts();
+            const accounts = app?.getAllAccounts();
             if (accounts.length === 0) {
-                await msalInstance.loginPopup();
+                // Use the RedirectRequest to handle login manually
+                const request = {
+                    scopes: ['user.read'],
+                };
+                await app?.loginRedirect(request);
             }
 
             // Rest of the code for token acquisition and data fetching remains the same...
@@ -36,18 +45,32 @@ const OneDrive = () => {
         }
     };
 
+    const handleClick = async () => {
+        // Prevent login if already logging in
+        if (isLoggingIn) {
+            return;
+        }
+
+        setIsLoggingIn(true);
+
+        try {
+            await handleLogin();
+        } finally {
+            // Re-enable the button after a short delay (e.g., 2 seconds)
+            setTimeout(() => setIsLoggingIn(false), 2000);
+        }
+    };
+
+
+
     return (
-        <div>
-            <h2>Files in OneDrive:</h2>
-            <button onClick={handleLogin} disabled={isLoggingIn}>
-                {isLoggingIn ? 'Logging in...' : 'Login with OneDrive'}
+        <div id="original-tab-id" className=' leading-none'>
+            <button onClick={handleClick} disabled={isLoggingIn}>
+                <FaCloudUploadAlt size={30} />
+                {isLoggingIn}
             </button>
-            <ul>
-                {files.map((file) => (
-                    <li key={file.id}>{file.name}</li>
-                ))}
-            </ul>
         </div>
-    );
-};
-export default OneDrive;
+    )
+}
+
+export default OneDrive
