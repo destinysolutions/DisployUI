@@ -15,7 +15,7 @@ const EventEditor = ({
   onSave,
   selectedEvent,
   selectedSlot,
-  onDelete
+  onDelete,
 }) => {
   const [title, setTitle] = useState("");
   const [selectedColor, setSelectedColor] = useState("#4A90E2");

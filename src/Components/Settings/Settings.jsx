@@ -26,6 +26,7 @@ import Storagelimit from "./Storagelimit";
 import Defaultmedia from "./Defaultmedia";
 import "../../Styles/Settings.css";
 import Footer from "../Footer";
+import ApprovalReq from "./ApprovalReq";
 
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
   Settings.propTypes = {
@@ -98,8 +99,9 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
               });
               setRecords(newData);
             }}
-            className={`w-10 h-5 bg-gray rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all ${row.enabled ? "peer-checked:bg-[#009618]" : ""
-              }`}
+            className={`w-10 h-5 bg-gray rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all ${
+              row.enabled ? "peer-checked:bg-[#009618]" : ""
+            }`}
           ></div>
         </label>
       ),
@@ -329,6 +331,19 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                 <li className="">
                   <button
                     className={
+                      STabs === 10 ? "stabshow settingtabactive" : "settingtab"
+                    }
+                    onClick={() => updateTab(10)}
+                  >
+                    <SiMediamarkt className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />{" "}
+                    <span className="text-base text-primary">
+                      Approval Required
+                    </span>
+                  </button>
+                </li>
+                <li className="">
+                  <button
+                    className={
                       STabs === 3 ? "stabshow settingtabactive" : "settingtab"
                     }
                     onClick={() => updateTab(3)}
@@ -465,6 +480,9 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                 <Defaultmedia />
               </div>
               {/*Default Media*/}
+              <div className={STabs === 10 ? "" : "hidden"}>
+                <ApprovalReq />
+              </div>
             </div>
           </div>
         </div>

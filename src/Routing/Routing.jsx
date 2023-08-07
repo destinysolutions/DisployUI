@@ -34,6 +34,7 @@ import SalesReport from "../Components/Reports/SalesReport";
 import CancelReport from "../Components/Reports/CancelReport";
 import EventEditor from "../Components/Schedule/EventEditor";
 import Unsplash from "../Components/Assests/Unsplash";
+import Userrole from "../Components/Settings/Userrole";
 const Routing = () => {
   //for screen resize sidebar open close
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -327,6 +328,15 @@ const Routing = () => {
           }
         />
 
+        <Route
+          path="/userrole"
+          element={
+            <Userrole
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
         {/*Event Editors */}
         <Route
           path="/eventedit"
@@ -339,7 +349,6 @@ const Routing = () => {
         />
 
         {/*Event Editors */}
-
 
         {/* error page route */}
         <Route path="*" element={<ErrorPage />} />
