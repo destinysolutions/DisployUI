@@ -27,11 +27,12 @@ import Camera from "./Camera";
 import VideoRecorder from "./VideoRecorder";
 import { SiPixabay } from "react-icons/si"
 import Pixabay from "./Pixabay";
-// import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip'
+
 {
   /* end of video*/
 }
-const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
+const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   FileUpload.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
@@ -44,89 +45,8 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
     /* google drive */
   }
 
-  {
-    /*camera */
-  }
-  // const [facingMode, setFacingMode] = useState("environment"); // 'environment' refers to the back-side camera
-  // const [isRecording, setIsRecording] = useState(false);
-  // const [capturedPhoto, setCapturedPhoto] = useState(null);
-  // const [capturedVideo, setCapturedVideo] = useState(null);
-  // const videoRef = useRef(null);
-  // const canvasRef = useRef(null); // Use canvasRef to capture photos
+  {/*camera */ }
 
-  // const getUserCamera = () => {
-  //   if (
-  //     "mediaDevices" in navigator &&
-  //     "getUserMedia" in navigator.mediaDevices
-  //   ) {
-  //     const constraints = {
-  //       video: {
-  //         facingMode: facingMode, // Use the selected facing mode
-  //       },
-  //     };
-
-  //     navigator.mediaDevices
-  //       .getUserMedia(constraints)
-  //       .then((stream) => {
-  //         let video = videoRef.current;
-  //         video.srcObject = stream;
-  //         video.play();
-  //       })
-  //       .catch((error) => {
-  //         console.error(error);
-  //       });
-  //   } else {
-  //     console.log("getUserMedia is not supported");
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getUserCamera();
-  //   return () => {
-  //     // Clean up the video stream when the component is unmounted
-  //     const stream = videoRef.current.srcObject;
-  //     if (stream) {
-  //       const tracks = stream.getTracks();
-  //       tracks.forEach((track) => track.stop());
-  //     }
-  //   };
-  // }, [facingMode]);
-
-  // const toggleFacingMode = () => {
-  //   // Switch between 'user' (front) and 'environment' (back) facing modes
-  //   setFacingMode((prevFacingMode) =>
-  //     prevFacingMode === "user" ? "environment" : "user"
-  //   );
-  // };
-
-  // const startRecording = () => {
-  //   // Handle video recording (same as in previous code)
-  // };
-
-  // const stopRecording = () => {
-  //   // Handle video recording (same as in previous code)
-  // };
-
-  // const takePicture = () => {
-  //   let photo = canvasRef.current;
-  //   let video = videoRef.current;
-  //   const width = video.videoWidth;
-  //   const height = video.videoHeight;
-  //   photo.width = width;
-  //   photo.height = height;
-  //   let ctx = photo.getContext("2d");
-  //   ctx.drawImage(video, 0, 0, width, height);
-  //   const dataUrl = photo.toDataURL();
-  //   setCapturedPhoto(dataUrl);
-  // };
-
-  // const clearImage = () => {
-  //   setCapturedPhoto(null);
-  //   setCapturedVideo(null);
-  //   let photo = canvasRef.current;
-  //   let ctx = photo.getContext("2d");
-  //   ctx.clearRect(0, 0, photo.width, photo.height);
-  // };
 
   // file drag and drop our system
 
@@ -272,14 +192,49 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
 
   // start Camera
   const [showCamera, setShowCamera] = useState(false);
-  const handleCameraButtonClick = () => {
-    setShowCamera(prev => !prev);
+  const [savedImages, setSavedImages] = useState([]);
+  const openCameraModal = () => {
+    setShowCamera(true);
   };
-  const handleCameraCloseModal = () => {
+  const closeCameraModal = () => {
     setShowCamera(false);
   };
-  // End Camera
 
+
+  const handleImageUpload = (newSavedImages) => {
+    setSavedImages(newSavedImages);
+  };
+
+  // End Camera
+  // start video
+  const [showVideo, setShowVideo] = useState(false);
+  const openVideoModal = () => {
+    setShowVideo(true);
+  };
+  const closeVideoModal = () => {
+    setShowVideo(false);
+  };
+
+
+
+  const handleDownloadVideo = (videoBlob) => {
+    const url = URL.createObjectURL(videoBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'recorded-video.webm';
+    a.click();
+  };
+  const [uploadedVideoBlob, setUploadedVideoBlob] = useState(null);
+
+
+  const [recordedVideos, setRecordedVideos] = useState([]);
+
+  const handleVideoRecorded = (blob) => {
+    // Update the list of recorded videos
+    setRecordedVideos((prevVideos) => [...prevVideos, blob]);
+  };
+
+  // end video
 
   return (
     <>
@@ -302,11 +257,15 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
             </div>
           </div>
           <div className="flex lg:justify-between md:justify-between flex-wrap sm:justify-start xs:justify-start items-center lg:mt-7 md:mt-7 sm:mt-5 xs:mt-5 media-icon">
+
+
             <span >
-              <DropboxUpload />
+              <DropboxUpload data-tooltip-id="dropboxbtn" data-tooltip-content="Hello world!"  />
 
               {/*dropbox*/}
             </span>
+
+
 
             <span><GoogleDrive /></span>
 
@@ -335,24 +294,29 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
             </span>
             {/* start Camera */}
             <span className="fileUploadIcon" data-tip="Camera">
-              <button onClick={handleCameraButtonClick} className="relative">
+              <button onClick={openCameraModal} className="relative">
                 <FiCamera size={30} className="relative" />
               </button>
-              {showCamera && (
-                <Camera closeModal={handleCameraCloseModal} />
-              )}
+              {showCamera && <Camera onImageUpload={handleImageUpload} closeModal={closeCameraModal} />}
+
             </span>
             {/* End Camera */}
 
             {/* start Video */}
             <span className="fileUploadIcon">
-              <button onClick={handleCameraButtonClick} className="relative">
+              <button onClick={openVideoModal} className="relative">
                 <AiOutlineVideoCamera size={30} className="relative" />
               </button>
-              {showCamera && (
-                <VideoRecorder closeModal={handleCameraCloseModal} />
-              )}
+              {showVideo &&
+
+                <VideoRecorder closeModal={closeVideoModal} onDownloadVideo={handleDownloadVideo} onVideoRecorded={handleVideoRecorded} />
+
+
+
+              }
             </span>
+
+
             {/* End Video*/}
 
 
@@ -464,6 +428,23 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, props }) => {
           )}
 
           {/* End of  Dropbox*/}
+          {/* ... start camera */}
+          <div>
+            {savedImages.map((image, index) => (
+              <img key={index} src={image} alt={`Saved ${index}`} className="max-w-[20%]" />
+            ))}
+          </div>
+          {/* end of camera */}
+          {/* ... start Video*/}
+          <div>
+            {recordedVideos.map((blob, index) => (
+              <div key={index}>
+                <video controls src={URL.createObjectURL(blob)} className="max-w-[20%]" />
+
+              </div>
+            ))}
+          </div>
+          {/* ... end camera */}
 
           {/* start unspalsh */}
           <div>

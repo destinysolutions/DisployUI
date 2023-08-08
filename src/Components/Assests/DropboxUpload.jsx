@@ -25,7 +25,7 @@ const DropboxUpload = () => {
                 extensions={['.pdf', '.docx', '.jpg', '.png']}
                 linkType="direct"
             >
-                <button className="fileUploadIcon dropbox-button"> <AiOutlineDropbox size={30} /></button>
+                <button className="fileUploadIcon dropbox-button"> <AiOutlineDropbox size={30} className="text-[#007de4] border-[#007de4]" /></button>
             </DropboxChooser>
         </>
     )
