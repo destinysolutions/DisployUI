@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import { RiDriveFill } from "react-icons/ri";
 import useDrivePicker from "react-google-drive-picker";
+import Googledrive from '../../../public/Assets/google-drive.png'
 const GoogleDrive = () => {
     const [openPicker, authResponse] = useDrivePicker();
     const [selectedFiles, setSelectedFiles] = useState([]);
@@ -51,7 +52,8 @@ const GoogleDrive = () => {
     return (
         <>
             <button className="fileUploadIcon" onClick={() => googleDriveLogin().then(handleLoginSuccess).catch(handleLoginFailure)}>
-                <RiDriveFill size={30} />
+
+                <img src={Googledrive} className=' w-9' />
             </button>
         </>
     )

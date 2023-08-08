@@ -1,80 +1,55 @@
-import React from 'react'
-import { useState, useRef } from "react";
-const Video = () => {
+import React, { useState, useRef } from 'react';
+import Webcam from 'react-webcam';
+import RecordRTC from 'recordrtc';
 
-    const [permission, setPermission] = useState(false);
-    const mediaRecorder = useRef(null);
-    const liveVideoFeed = useRef(null);
-    const [recordingStatus, setRecordingStatus] = useState("inactive");
-    const [stream, setStream] = useState(null);
-    const [videoChunks, setVideoChunks] = useState([]);
-    const [recordedVideo, setRecordedVideo] = useState(null);
+const VideoRecorder = () => {
+    const webcamRef = useRef(null);
+    const [recording, setRecording] = useState(false);
+    const [recordedChunks, setRecordedChunks] = useState([]);
 
-
-    const getCameraPermission = async () => {
-        setRecordedVideo(null);
-        if ("MediaRecorder" in window) {
-            try {
-                const videoConstraints = {
-
-                    video: true,
-                };
-                const audioConstraints = { audio: true };
-                // create audio and video streams separately
-
-                const videoStream = await navigator.mediaDevices.getUserMedia(
-                    videoConstraints
-                );
-                setPermission(true);
-                //combine both audio and video streams
-                const combinedStream = new MediaStream([
-                    ...videoStream.getVideoTracks(),
-
-                ]);
-                setStream(combinedStream);
-                //set videostream to live feed player
-                liveVideoFeed.current.srcObject = videoStream;
-            } catch (err) {
-                alert(err.message);
-            }
-        } else {
-            alert("The MediaRecorder API is not supported in your browser.");
-        }
+    const startRecording = () => {
+        const recorder = new RecordRTC(webcamRef.current.stream, {
+            type: 'video',
+            mimeType: 'video/webm',
+        });
+        recorder.startRecording();
+        setRecording(true);
     };
-    const startRecording = async () => {
-        setRecordingStatus("recording");
-        const media = new MediaRecorder(stream, { mimeType });
-        mediaRecorder.current = media;
-        mediaRecorder.current.start();
-        let localVideoChunks = [];
-        mediaRecorder.current.ondataavailable = (event) => {
-            if (typeof event.data === "undefined") return;
-            if (event.data.size === 0) return;
-            localVideoChunks.push(event.data);
-        };
-        setVideoChunks(localVideoChunks);
+
+    const stopRecording = () => {
+        webcamRef.current.stream.getTracks().forEach(track => track.stop());
+        recorder.stopRecording(() => {
+            const blobs = recorder.getBlob();
+            setRecordedChunks([blobs]);
+        });
+        setRecording(false);
     };
+
+    const downloadVideo = () => {
+        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'recorded-video.webm';
+        document.body.appendChild(a);
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
     return (
-        <>
-            <div>
-                <h2>Video Recorder</h2>
-                <main>
-                    <div className="video-controls">
-                        {!permission ? (
-                            <button onClick={getCameraPermission} type="button">
-                                Get Camera
-                            </button>
-                        ) : null}
-                        {permission ? (
-                            <button type="button">
-                                Record
-                            </button>
-                        ) : null}
-                    </div>
-                </main>
-            </div>
-        </>
-    )
-}
+        <div>
+            <Webcam audio={true} ref={webcamRef} />
+            {recording ? (
+                <button onClick={stopRecording}>Stop Recording</button>
+            ) : (
+                <button onClick={startRecording}>Start Recording</button>
+            )}
+            {recordedChunks.length > 0 && (
+                <button onClick={downloadVideo}>Download Video</button>
+            )}
+        </div>
+    );
+};
 
-export default Video
+export default VideoRecorder;
