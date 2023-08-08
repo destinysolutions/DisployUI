@@ -98,22 +98,22 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="pt-6 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
-            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4">
+            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ">
               Overview dashboard
             </h1>
             <div className="lg:flex md:flex sm:block">
-              <button className=" dashboard-btn  flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="dashboard-btn  flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <BsLightningCharge className="text-lg mr-1" />
                 Book a Demo
               </button>
-              <button className=" dashboard-btn flex align-middle items-center text-white rounded-full bg-SlateBlue  text-base border border-white lg:px-6 sm:px-5 sm:mt-3 py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="dashboard-btn  flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <MdOutlineSlowMotionVideo className="text-lg mr-1" />
                 Watch Video
               </button>
             </div>
           </div>
 
-          <div className="mt-5 page-contain">
+          {/* <div className="mt-5 page-contain">
             <Tabs value={activeTab}>
               <TabsHeader className="border-b rounded-none border-lightgray p-0 mb-5 text-[#A7AFB7]  ">
                 {data.map(({ label, value }) => (
@@ -138,9 +138,9 @@ const Dashboard = ({ sidebarOpen, setSidebarOpen }) => {
                 ))}
               </TabsBody>
             </Tabs>
-          </div>
+          </div> */}
 
-
+          <Business />
         </div>
       </div>
       {/* dashboard component end */}

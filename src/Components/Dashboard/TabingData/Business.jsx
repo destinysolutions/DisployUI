@@ -1,5 +1,5 @@
 import ReactApexChart from "react-apexcharts";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Link } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -10,74 +10,23 @@ import {
   GET_SELECT_BY_CITY,
   GET_SELECT_BY_STATE,
 } from "../../../Pages/Api";
+import Screens from "./Screens";
+import RevenueTable from "../RevenueTable";
+import MarkerClusterGroup from "react-leaflet-cluster";
 
 //for sales revenue chart options
 const SalesOptions = {
-  colors: ["#41479b", "#d1d5db"],
+  colors: ["#41479b"],
   chart: {
-    fontFamily: "Satoshi, sans-serif",
-    type: "bar",
-    height: 335,
-    stacked: true,
-    toolbar: {
-      show: false,
-    },
-    zoom: {
-      enabled: false,
-    },
+    type: "basic-bar",
   },
 
-  responsive: [
-    {
-      breakpoint: 1536,
-      options: {
-        plotOptions: {
-          bar: {
-            borderRadius: 0,
-            columnWidth: "25%",
-          },
-        },
-      },
-    },
-  ],
-  plotOptions: {
-    bar: {
-      horizontal: false,
-      borderRadius: 0,
-      columnWidth: "25%",
-      borderRadiusApplication: "end",
-      borderRadiusWhenStacked: "last",
-    },
-  },
   dataLabels: {
     enabled: false,
   },
 
   xaxis: {
     categories: ["Jan", "Feb", "March", "April", "May", "June", "July"],
-  },
-
-  legend: {
-    position: "top",
-    horizontalAlign: "left",
-    fontFamily: "Satoshi",
-    fontWeight: 500,
-    fontSize: "14px",
-
-    markers: {
-      radius: 99,
-    },
-  },
-  fill: {
-    opacity: 1,
-  },
-  yaxis: {
-    labels: {
-      formatter: function (value) {
-        // Modify the formatter function according to your desired format
-        return value + "k";
-      },
-    },
   },
 };
 
@@ -86,10 +35,6 @@ const stateVlaue = {
     {
       name: "Sales",
       data: [44, 55, 41, 67, 22, 43, 65],
-    },
-    {
-      name: "Revenue",
-      data: [13, 23, 20, 8, 13, 27, 15],
     },
   ],
 };
@@ -205,7 +150,6 @@ var StoreOptions = {
 const Business = () => {
   //for map store icon
   const center = [20.5937, 78.9629];
-  const centerUSA = [37.0902, -95.7129];
   const blueIcon = new L.Icon({
     iconUrl: "../../../../DisployImg/mapImg.png",
     iconSize: [35, 35],
@@ -224,6 +168,7 @@ const Business = () => {
       .then((response) => response.json())
       .then((data) => {
         setCountries(data.data);
+        console.log(data.data);
       })
       .catch((error) => {
         console.log("Error fetching country data:", error);
@@ -237,6 +182,7 @@ const Business = () => {
         .then((response) => response.json())
         .then((data) => {
           setStates(data.data);
+          console.log(data.data, "setStates");
         })
         .catch((error) => {
           console.log("Error fetching states data:", error);
@@ -251,6 +197,7 @@ const Business = () => {
         .then((response) => response.json())
         .then((data) => {
           setCities(data.data);
+          console.log(data.data);
         })
         .catch((error) => {
           console.log("Error fetching cities data:", error);
@@ -262,12 +209,9 @@ const Business = () => {
   const [showStore, setShowStore] = useState(false);
 
   //for marker click event
-  const handleMarkerClick = () => {
+  const handleMarkerClick = (countryID) => {
+    setSelectedCountry(countryID);
     setShowStore(true);
-    setSelectedCountry(1);
-  };
-  const markerEventHandlers = {
-    click: handleMarkerClick,
   };
 
   //for city select popup
@@ -275,26 +219,46 @@ const Business = () => {
 
   //for city store  popup
   const [showCityStores, setshowCityStores] = useState(false);
+
+  const [selectedStateName, setSelectedStateName] = useState('');
   return (
     <>
       {/* google map start */}
-      <div className="bg-white shadow-md rounded-lg">
+      <div className="bg-white shadow-md rounded-lg mt-9">
         <div className="lg:p-9 md:p-6 sm:p-3 xs:p-2">
           <MapContainer
             center={center}
-            zoom={2}
-            scrollWheelZoom={false}
+            zoom={4}
+            maxZoom={18}
             style={{ width: "100%", height: "560px" }}
           >
             <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
 
-            <Marker
-              position={center}
-              icon={blueIcon}
-              eventHandlers={markerEventHandlers}
-            />
-
-            <Marker position={centerUSA} icon={blueIcon} />
+            <MarkerClusterGroup>
+              {countries.map((country) => (
+                <Marker
+                  key={country.countryID}
+                  position={[country.latitude, country.longitude]}
+                  eventHandlers={{
+                    click: () => handleMarkerClick(country.countryID),
+                  }}
+                ></Marker>
+              ))}
+              {selectedCountry &&
+                states.map((state) => (
+                  <Marker
+                    key={state.stateId}
+                    position={[state.latitude, state.longitude]}
+                  ></Marker>
+                ))}
+              {selectedState &&
+                cities.map((city) => (
+                  <Marker
+                    key={city.cityID}
+                    position={[city.latitude, city.longitude]}
+                  ></Marker>
+                ))}
+            </MarkerClusterGroup>
           </MapContainer>
         </div>
       </div>
@@ -320,28 +284,13 @@ const Business = () => {
                   }))}
                   onChange={(selectedOption) => {
                     setSelectedState(selectedOption.value);
+                    setSelectedStateName(selectedOption.label)
                     setShowCityDw(true);
                     setShowStore(false);
                   }}
                   placeholder="Select State"
                   className=" placeholder:text-sm"
                 />
-                {/* <select
-                  id="state"
-                  value={selectedState}
-                  onChange={(selectedOption) => {
-                    setSelectedState(selectedOption.value);
-                    setShowCityDw(true);
-                    setShowStore(false);
-                  }}
-                >
-                  <option value="">Select State</option>
-                  {states.map((state) => (
-                    <option key={state.stateId} value={state.stateId}>
-                      {state.stateName}
-                    </option>
-                  ))}
-                </select> */}
               </div>
             </div>
           </div>
@@ -362,7 +311,7 @@ const Business = () => {
                 onChange={(selectedOption) => {
                   setSelectedState(selectedOption.value);
                 }}
-                placeholder="Select State"
+                placeholder={selectedStateName}
               />
             </div>
             <div className="lg:mt-0 md:mt-0 sm:mt-0 xs:mt-3 ">
@@ -377,19 +326,6 @@ const Business = () => {
                 }}
                 placeholder="Select City"
               />
-              {/* <select
-                id="city"
-                onChange={(e) => {
-                  setshowCityStores(true);
-                }}
-              >
-                <option value="">Select City</option>
-                {cities.map((city) => (
-                  <option key={city.cityID} value={city.cityID}>
-                    {city.cityName}
-                  </option>
-                ))}
-              </select> */}
             </div>
           </div>
           {showCityStores && (
@@ -441,22 +377,19 @@ const Business = () => {
       <div className=" mt-5 ">
         <div className="grid grid-cols-12 gap-4">
           {/* Revenue chart start*/}
-          <div className="lg:col-span-8  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
+          <div className="lg:col-span-6  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
             <div className="mb-4 justify-between gap-4 sm:flex mt-3">
               <div>
-                <h4 className="text-xl font-semibold text-black dark:text-white ml-3">
+                <h4 className="text-xl font-semibold text-black dark:text-white ml-7 mt-4">
                   Total Revenue
                 </h4>
               </div>
               <div>
-                <div className="relative z-20 inline-block">
-                  <select
-                    name="#"
-                    id="#"
-                    className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
-                  >
+                <div>
+                  <select className=" border border-primary mr-5 mt-2 px-4 py-1 rounded-full">
                     <option value="">2023</option>
-                    {/* <option value="">Last Week</option> */}
+                    <option value="">2022</option>
+                    <option value="">2021</option>
                   </select>
                   <span className="absolute top-1/2 right-3 z-10 -translate-y-1/2">
                     <svg
@@ -495,8 +428,8 @@ const Business = () => {
           </div>
           {/* Revenue chart end*/}
           {/* Company Growth start*/}
-          <div className="lg:col-span-4 md:col-span-6 sm:col-span-12 bg-white shadow-lg rounded-md ">
-            <div id="chart">
+          <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white shadow-lg rounded-md ">
+            {/* <div id="chart">
               <ReactApexChart
                 options={CompanyGrowthOption}
                 series={CompanyGrowthOption.series}
@@ -506,7 +439,8 @@ const Business = () => {
             </div>
             <label className="flex justify-center text-sm font-semibold">
               40% Company Growth
-            </label>
+            </label> */}
+            <RevenueTable />
             {/* <div className="border border-b border-[#d1d5db] mt-3"></div> */}
           </div>
           {/* Company Growth end*/}
