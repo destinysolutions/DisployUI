@@ -90,9 +90,9 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
         <>
             <div className='backdrop'>
                 <div className='fixed unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl'>
-                    <button onClick={closeModal} className=' absolute right-3 top-3 text-2xl rounded-lg'><AiOutlineCloseCircle /></button>
+                    <button onClick={closeModal} className=' absolute right-3 top-3 text-2xl rounded-lg'><AiOutlineCloseCircle className=' text-SlateBlue' /></button>
                     <div className='text-center '>
-                        <h1 className=' text-SlateBlue lg:text-3xl md:text-3xl sm:lg:text-xl xs:text-lg lg:mb-5 md:mb-5 sm:mb-3 xs:mb-2 font-medium'>Search Images</h1>
+                        <h1 className=' text-SlateBlue lg:text-3xl md:text-3xl sm:lg:text-xl xs:text-lg lg:mb-5 md:mb-5 sm:mb-3 xs:mb-2 font-medium'>Search Images from Unsplash</h1>
                         <input
                             className="form-control-sm py-2 fs-4 text-capitalize border border-3 border-dark unspalsh-searchbox"
                             type="text"

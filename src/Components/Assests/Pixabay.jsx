@@ -132,7 +132,7 @@ const Pixabay = ({ closeModal }) => {
                         onClick={closeModal}
                         className="absolute right-3 top-3 text-2xl rounded-lg"
                     >
-                        <AiOutlineCloseCircle />
+                        <AiOutlineCloseCircle className=" text-SlateBlue" />
                     </button>
                     <div className='text-center '>
                         <h1 className=' text-SlateBlue lg:text-3xl md:text-3xl sm:lg:text-xl xs:text-lg lg:mb-5 md:mb-5 sm:mb-3 xs:mb-2 font-medium'>Pixabay Image Gallery</h1>
