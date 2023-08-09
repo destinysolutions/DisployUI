@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { PublicClientApplication } from "@azure/msal-browser";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import Onedrive from '../../../public/Assets/one-drive.png'
 const OneDrive = () => {
     const [app, setApp] = useState(null);
     const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -11,7 +12,7 @@ const OneDrive = () => {
         const msalConfig = {
             auth: {
                 clientId: '3e34f72d-7f91-48fe-9805-4946b9b17997',
-                redirectUri: 'http://localhost:5173',
+                redirectUri: 'https://disploy.thedestinysolutions.com',
             },
         };
         const msalInstance = new PublicClientApplication(msalConfig);
@@ -66,7 +67,8 @@ const OneDrive = () => {
     return (
         <div id="original-tab-id" className=' leading-none'>
             <button onClick={handleClick} disabled={isLoggingIn}>
-                <FaCloudUploadAlt size={30} />
+
+                <img src={Onedrive} className='w-9' />
                 {isLoggingIn}
             </button>
         </div>

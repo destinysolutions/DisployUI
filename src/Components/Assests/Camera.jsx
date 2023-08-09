@@ -49,7 +49,7 @@ const Camera = ({ closeModal, onImageUpload }) => {
     return (
         <div className='backdrop'>
             <div className='fixed unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 pt-10 rounded-2xl lg:w-1/2 md:w-1/2 sm:w-4/5 xs:w-4/5  '>
-                <button onClick={closeCameraModal} className='absolute right-3 top-3 text-2xl rounded-lg'>
+                <button onClick={closeCameraModal} className='absolute right-3 top-3 text-2xl rounded-lg text-SlateBlue'>
                     <AiOutlineCloseCircle />
                 </button>
                 <div className='relative'>
@@ -77,8 +77,8 @@ const Camera = ({ closeModal, onImageUpload }) => {
                         </button>
                     </div>
                     <div className='text-right absolute right-0 top-2/4 -translate-y-1/2'>
-                        <button onClick={toggleCamera}>{isFrontCamera ? <TbCameraSelfie className='lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl' /> : <MdFlipCameraAndroid className='lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl' />} </button>
-                        {imageSrc && <button onClick={savePhoto} className="save-button"><BiDownload className='lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl ml-2' /></button>}
+                        <button onClick={toggleCamera}>{isFrontCamera ? <TbCameraSelfie className='lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl text-SlateBlue' /> : <MdFlipCameraAndroid className='lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl text-SlateBlue' />} </button>
+                        {imageSrc && <button onClick={savePhoto} className="save-button"><BiDownload className='lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl ml-2 text-SlateBlue' /></button>}
                         {isSaved && <p className="text-green-500 text-center mt-2">Image saved successfully!</p>}
 
 

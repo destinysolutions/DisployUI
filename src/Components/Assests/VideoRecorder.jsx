@@ -47,7 +47,7 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
     };
 
     const constraints = {
-        video: { facingMode: 'user' } // or 'environment' for the back camera
+        video: { facingMode: 'environment' } // Use 'environment' for the back camera
     };
     navigator.mediaDevices.getUserMedia(constraints)
         .then((stream) => {
@@ -82,26 +82,28 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
             setRecordedChunks((prevChunks) => [...prevChunks, event.data]);
             const newBlob = new Blob([...recordedChunks, event.data], { type: 'video/webm' });
             setRecordedBlob(newBlob);
-            onVideoRecorded(newBlob); // Send the new blob to the parent component
+            onVideoRecorded(newBlob); // Check if this callback is being called
         }
     };
+
+
     return (
         <div>
             <div className='backdrop'>
                 <div className='fixed unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 pt-10 rounded-2xl lg:w-1/2 md:w-1/2 sm:w-4/5 xs:w-4/5  '>
                     <button
                         onClick={closeModal}
-                        className='absolute right-3 top-3 text-2xl rounded-lg'
+                        className='absolute right-3 top-3 text-2xl rounded-lg text-SlateBlue'
                     >
                         <AiOutlineCloseCircle />
                     </button>
                     <Webcam
                         audio={true}
-                        videoConstraints={{ facingMode }}
+                        videoConstraints={{ facingMode: facingMode }}
                         ref={webcamRef}
-                        mirrored={true}
                         className='videocanvas w-full'
                     />
+
                     <div className='my-5 relative'>
                         <div className='text-center relative'>
                             <button onClick={recording ? stopRecording : startRecording}>
@@ -109,9 +111,18 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
                             </button>
                         </div>
                         <div className='text-right absolute right-0 top-2/4 -translate-y-1/2'>
-                            <button onClick={toggleCamera}><MdFlipCameraAndroid className='lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl' /></button>
+
+
+                            <button onClick={toggleCamera}>
+                                {facingMode === 'user' ? (
+                                    <TbCameraSelfie className='lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl text-SlateBlue' />
+                                ) : (
+                                    <MdFlipCameraAndroid className='lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl text-SlateBlue' />
+                                )}
+                            </button>
+
                             {recordedChunks.length > 0 && (
-                                <button onClick={handleDownload} className='lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl ml-2'><BiDownload /></button>
+                                <button onClick={handleDownload} className='lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl ml-2'><BiDownload className=' text-SlateBlue' /></button>
                             )}
                         </div>
 
