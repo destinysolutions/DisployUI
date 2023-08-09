@@ -154,8 +154,6 @@ body {
   transform: translate(-40%, 10px);
 } */
 
-
-
 div#root,
 body {
   position: relative;
@@ -163,15 +161,12 @@ body {
   margin: 0;
 }
 
-
-
 .page-contain {
   position: relative;
   min-height: 100vh;
   /* padding-bottom: 50px; */
   display: flex;
   flex-direction: column;
-
 }
 
 /* .videobg:before {
@@ -190,3 +185,8 @@ body {
 }
 
 /* comman css */
+
+div#apexchartswuhtoyysi {
+  width: 250px !important;
+  height: 250px !important;
+}
