@@ -267,7 +267,7 @@ const Sidebar = ({ sidebarOpen }) => {
       {/* mobile screen sidebar start */}
       {mobileSidebar && (
         <div className="flex">
-          <div className="w-56 fixed top-0 left-0 z-40 px-4 h-screen rounded-tr-[50px] bg-primary">
+          <div className="w-56 fixed top-0 left-0 z-[9999] px-4 h-screen rounded-tr-[50px] bg-primary">
             <div className="flex items-center py-6">
               <img
                 src="/DisployImg/logo.svg"
