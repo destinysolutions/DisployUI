@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react'
 import { PublicClientApplication } from "@azure/msal-browser";
-import { FaCloudUploadAlt } from "react-icons/fa";
+
 import Onedrive from '../../../public/Assets/one-drive.png'
+import { Tooltip } from "@material-tailwind/react";
 const OneDrive = () => {
     const [app, setApp] = useState(null);
     const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -12,7 +13,7 @@ const OneDrive = () => {
         const msalConfig = {
             auth: {
                 clientId: '3e34f72d-7f91-48fe-9805-4946b9b17997',
-                redirectUri: 'https://disploy.thedestinysolutions.com',
+                redirectUri: 'https://onedrive.live.com',
             },
         };
         const msalInstance = new PublicClientApplication(msalConfig);
@@ -66,11 +67,15 @@ const OneDrive = () => {
 
     return (
         <div id="original-tab-id" className=' leading-none'>
-            <button onClick={handleClick} disabled={isLoggingIn}>
+            <Tooltip content="OneDrive" placement="bottom-end" className=" bg-SlateBlue text-white z-10 ml-6" animate={{
+                mount: { scale: 1, y: 0 }, unmount: { scale: 1, y: 30 },
+            }}>
+                <button onClick={handleClick} disabled={isLoggingIn}>
 
-                <img src={Onedrive} className='w-9' />
-                {isLoggingIn}
-            </button>
+                    <img src={Onedrive} className='w-9' />
+                    {isLoggingIn}
+                </button>
+            </Tooltip>
         </div>
     )
 }

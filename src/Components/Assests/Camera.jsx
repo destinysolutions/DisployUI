@@ -5,6 +5,7 @@ import { MdFlipCameraAndroid } from "react-icons/md";
 import { TbCameraSelfie } from "react-icons/tb";
 import { BiDownload } from "react-icons/bi";
 import { MdMotionPhotosOn } from 'react-icons/md'
+import { Tooltip } from "@material-tailwind/react";
 const Camera = ({ closeModal, onImageUpload }) => {
     const webcamRef = useRef(null);
     const [imageSrc, setImageSrc] = useState(null);

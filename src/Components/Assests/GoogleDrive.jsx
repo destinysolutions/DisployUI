@@ -1,20 +1,37 @@
-import React from 'react'
-import { useState } from 'react';
-
+import React from 'react';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 import useDrivePicker from "react-google-drive-picker";
-import Googledrive from '../../../public/Assets/google-drive.png'
+import Googledrive from '../../../public/Assets/google-drive.png';
+import { Tooltip } from "@material-tailwind/react";
 const GoogleDrive = () => {
     const [openPicker, authResponse] = useDrivePicker();
     const [selectedFiles, setSelectedFiles] = useState([]);
-    {
-        /*file selected*/
-    }
 
-    const handleOpenPicker = () => {
+    const handleLoginSuccess = (response) => {
+        const accessToken = response.accessToken;
+        console.log("Access Token:", accessToken);
+        handleOpenPicker(accessToken); // Pass the access token to handleOpenPicker
+    };
+
+    const handleLoginFailure = (error) => {
+        console.log("Login Failed:", error);
+    };
+
+    const googleDriveLogin = () => {
+        return new Promise((resolve, reject) => {
+            const response = { accessToken: "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" };
+            resolve(response);
+        });
+    };
+
+
+    const handleOpenPicker = (accessToken) => {
         openPicker({
             clientId: "1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com", // Your client ID
             developerKey: "AIzaSyCbWICmzquQqKHgCDNEFCBUgpH8VGe2ezo", // Your developer key
             viewId: "DOCS",
+            token: "ya29.a0AfB_byB3B5m4yqeLFxiFQn-Gdf7mdZmpZjRb5YqiSBhyZcYvKJ2ZAFTSwAojgJ8fYNGqAx5eRD-35bPtv5x9Fzat-MXp6Ary6WdIUvMPRs2NNtIo_-XCKHgDEAThQzTE3JugVMKP0g4CmN29e5MypdGPv7MjaCgYKASESARESFQHsvYlsgaSn9zyxV4iJ9DB5rSBXcw0163",
             showUploadView: true,
             showUploadFolders: true,
             supportDrives: true,
@@ -24,39 +41,60 @@ const GoogleDrive = () => {
                     console.log("User clicked cancel/close button");
                 } else if (data.action === "picked") {
                     console.log("Selected Files:", data.docs);
-                    setSelectedFiles(data.docs); // Update the state with the selected files
+                    setSelectedFiles(data.docs);
+                    handleImageUpload(data.docs, accessToken); // Pass the selected files and access token
                 }
-            },
+            }
+
         });
     };
 
+    const handleImageUpload = async (selectedFiles, accessToken) => {
+        const uploadPromises = selectedFiles.map(async (file) => {
+            const formData = new FormData();
+            formData.append('file', file.id); // Assuming you need to pass the file ID
 
-    const handleLoginSuccess = (response) => {
-        // Access the user's access_token here
-        const accessToken = response.accessToken;
-        console.log("Access Token:", accessToken);
-        handleOpenPicker();
-    };
+            const response = await axios.post(
+                `https://www.googleapis.com/upload/drive/v3/files/${file.id}?uploadType=media`,
+                formData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
 
-    const handleLoginFailure = (error) => {
-        console.log("Login Failed:", error);
-    };
-    const googleDriveLogin = () => {
-        return new Promise((resolve, reject) => {
-
-            const response = { accessToken: "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" };
-            resolve(response);
+            console.log("File uploaded:", response.data);
         });
+
+        try {
+            await Promise.all(uploadPromises);
+            console.log("All files uploaded successfully.");
+        } catch (error) {
+            console.error("Error uploading files:", error);
+        }
     };
+
+
+
+
+
+
+
+
 
     return (
         <>
-            <button className="fileUploadIcon" onClick={() => googleDriveLogin().then(handleLoginSuccess).catch(handleLoginFailure)}>
+            <Tooltip content="Google Drive" placement="bottom-end" className=" bg-SlateBlue text-white z-10 ml-5" animate={{
+                mount: { scale: 1, y: 0 }, unmount: { scale: 1, y: 10 },
+            }}>
+                <button className="fileUploadIcon" onClick={() => googleDriveLogin().then(handleLoginSuccess).catch(handleLoginFailure)}>
+                    <img src={Googledrive} className='w-9' alt="Google Drive Icon" />
+                </button>
+            </Tooltip>
 
-                <img src={Googledrive} className=' w-9' />
-            </button>
         </>
-    )
-}
+    );
+};
 
-export default GoogleDrive
+export default GoogleDrive;
