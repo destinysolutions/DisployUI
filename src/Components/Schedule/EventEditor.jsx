@@ -8,7 +8,7 @@ import { GrSchedules } from "react-icons/gr";
 import { MdDateRange, MdOutlinePermMedia } from "react-icons/md";
 import { VscCompass } from "react-icons/vsc";
 import ReactModal from "react-modal";
-import RepeatSettings from "./RepeatSettings.JSX";
+
 const EventEditor = ({
   isOpen,
   onClose,
@@ -23,6 +23,13 @@ const EventEditor = ({
   const [editedStartTime, setEditedStartTime] = useState("");
   const [editedEndDate, setEditedEndDate] = useState("");
   const [editedEndTime, setEditedEndTime] = useState("");
+
+  // State to keep track of repeat settings modal
+  const [showRepeatSettings, setShowRepeatSettings] = useState(false);
+
+  const handleOpenRepeatSettings = () => {
+    setShowRepeatSettings(true);
+  };
 
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
   useEffect(() => {
@@ -61,23 +68,43 @@ const EventEditor = ({
     setEditedEndTime(e.target.value);
   };
 
-  // State to keep track of repeat settings modal
-  const [showRepeatSettings, setShowRepeatSettings] = useState(false);
-
-  const handleOpenRepeatSettings = () => {
-    setShowRepeatSettings(true);
+  // Create a variable to check if the modal is in "edit" mode
+  const isEditMode = !!selectedEvent;
+  const handleDelete = () => {
+    if (selectedEvent && selectedEvent.id) {
+      onDelete(selectedEvent.id);
+      onClose(); // Close the modal after deleting the event.
+    }
   };
 
-  // State to store the repeat settings data
-  const [currentEventRepeatSettings, setCurrentEventRepeatSettings] =
-    useState(null);
+  // Helper functions to format dates and times
+  const formatDate = (date) => {
+    return date.toISOString().slice(0, 10);
+  };
 
-  // Function to handle saving repeat settings
-  const handleSaveRepeatSettings = (repeatSettingsData) => {
-    // Save the repeat settings data to state
-    setCurrentEventRepeatSettings(repeatSettingsData);
-    // Close the repeat settings modal
-    setShowRepeatSettings(false);
+  const formatTime = (date) => {
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
+
+  const startDate = new Date(editedStartDate);
+  const endDate = new Date(editedEndDate);
+  const dayDifference = Math.floor(
+    (endDate - startDate) / (1000 * 60 * 60 * 24)
+  );
+
+  const buttons = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+  const [selectAllDays, setSelectAllDays] = useState(false);
+  const [selectedDays, setSelectedDays] = useState(
+    new Array(buttons.length).fill(false)
+  );
+
+  // Helper function to check if a given day is within the start and end date range
+  const isDayInRange = (dayIndex) => {
+    const currentDate = new Date(startDate);
+    currentDate.setDate(startDate.getDate() + dayIndex);
+    return currentDate >= startDate && currentDate <= endDate;
   };
 
   const handleSave = () => {
@@ -91,8 +118,19 @@ const EventEditor = ({
       start: start,
       end: end,
       color: selectedColor,
+      repeat: [], // Initialize the repeat array
     };
-
+    if (selectAllDays) {
+      // If "Repeat for All Day" is selected, add all days to the repeat array
+      eventData.repeat = buttons.slice();
+    } else {
+      // Otherwise, add the selected days to the repeat array
+      selectedDays.forEach((isSelected, index) => {
+        if (isSelected && isDayInRange(index)) {
+          eventData.repeat.push(buttons[index]);
+        }
+      });
+    }
     // Check if the selected event is present and has the same data as the form data
     if (
       selectedEvent &&
@@ -115,25 +153,6 @@ const EventEditor = ({
     }
   };
 
-  // Create a variable to check if the modal is in "edit" mode
-  const isEditMode = !!selectedEvent;
-  const handleDelete = () => {
-    if (selectedEvent && selectedEvent.id) {
-      onDelete(selectedEvent.id);
-      onClose(); // Close the modal after deleting the event.
-    }
-  };
-
-  // Helper functions to format dates and times
-  const formatDate = (date) => {
-    return date.toISOString().slice(0, 10);
-  };
-
-  const formatTime = (date) => {
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
   return (
     <>
       <ReactModal
@@ -153,7 +172,7 @@ const EventEditor = ({
           </h1>
 
           <div className="grid grid-cols-12 my-6">
-            <div className="lg:col-span-10 md:col-span-8 sm:col-span-12 xs:col-span-12 bg-white shadow-2xl rounded-lg p-4">
+            <div className="lg:col-span-9 md:col-span-8 sm:col-span-12 xs:col-span-12 bg-white shadow-2xl rounded-lg p-4">
               <div className="mr-5 relative sm:mr-0">
                 <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
                 <input
@@ -224,92 +243,189 @@ const EventEditor = ({
                 </table>
               </div>
             </div>
-
-            <div className="  md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0">
-              <div className="bg-white shadow-2xl">
-                <div className="p-3">
-                  <input
-                    type="text"
-                    value={title}
-                    onChange={handleTitleChange}
-                    placeholder="Enter Title"
-                  />
-                </div>
-                <div className="border-b-2 border-[#D5E3FF]"></div>
-                <div className="p-3">
-                  <div className="mb-2">Schedule Date time</div>
-                  <div>
-                    <ul className="border-2 border-[#D5E3FF] rounded">
-                      <li className="border-b-2 border-[#D5E3FF] p-3">
-                        <h3>Start Date:</h3>
-                        <div className="mt-2">
-                          <input
-                            type="date"
-                            value={editedStartDate}
-                            onChange={handleStartDateChange}
-                            className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
-                          />
-                        </div>
-                      </li>
-                      <li className="border-b-2 border-[#D5E3FF] p-3">
-                        <h3>End Date:</h3>
-                        <div className="mt-2">
-                          <input
-                            type="date"
-                            value={editedEndDate}
-                            onChange={handleEndDateChange}
-                            className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
-                          />
-                        </div>
-                      </li>
-                      <li className="border-b-2 border-[#D5E3FF] p-3">
-                        <h3>Start Time:</h3>
-                        <div className="mt-2">
-                          <input
-                            type="time"
-                            value={editedStartTime}
-                            onChange={handleStartTimeChange}
-                            className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
-                          />
-                        </div>
-                      </li>
-                      <li className=" p-3">
-                        <h3>End Time:</h3>
-                        <div className="mt-2">
-                          <input
-                            type="time"
-                            value={editedEndTime}
-                            onChange={handleEndTimeChange}
-                            className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
-                          />
-                        </div>
-                      </li>
-                    </ul>
+            {showRepeatSettings ? (
+              <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0 bg-white shadow-2xl p-4">
+                <div className="">
+                  <div className="flex mt-5 items-center">
+                    <label>Start Date:</label>
+                    <div className="ml-3">
+                      <input
+                        type="date"
+                        value={editedStartDate}
+                        onChange={handleStartDateChange}
+                        className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                      />
+                    </div>
                   </div>
-                  <div className="p-3">
-                    <div>Repeat Multiple Day</div>
+                  <div className="flex mt-5 items-center">
+                    <label>End Date:</label>
+                    <div className="ml-5">
+                      <input
+                        type="date"
+                        value={editedEndDate}
+                        onChange={handleEndDateChange}
+                        className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
 
-                    <div className="flex justify-between">
-                      {/* <label>Repeat</label>
-                      <input type="checkbox" /> */}
-                      <button onClick={handleOpenRepeatSettings}>Repeat</button>
+                <div className="mt-5 text-black font-medium text-lg">
+                  <label>Repeating {dayDifference} Day(s)</label>
+                </div>
+
+                <div className="flex mt-5">
+                  <div>
+                    <div>
+                      <label className="ml-2">Start Time</label>
+                      <div>
+                        <input
+                          type="time"
+                          value={editedStartTime}
+                          onChange={handleStartTimeChange}
+                          className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="ml-9">
+                    <div>
+                      <label className="ml-2">End Time</label>
+                      <div>
+                        <input
+                          type="time"
+                          value={editedEndTime}
+                          onChange={handleEndTimeChange}
+                          className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-5 text-black font-medium text-lg">
+                  <input
+                    type="checkbox"
+                    checked={selectAllDays}
+                    onChange={() => setSelectAllDays(!selectAllDays)}
+                  />
+                  <label className="ml-3">Repeat for All Day</label>
+                </div>
+
+                <div>
+                  {buttons.map((label, index) => (
+                    <button
+                      className={`daysbtn ${
+                        (selectAllDays || selectedDays[index]) &&
+                        isDayInRange(index)
+                          ? "bg-red"
+                          : ""
+                      }`}
+                      key={index}
+                      disabled={!isDayInRange(index)} // Disable days outside the range
+                      onClick={() => {
+                        // Toggle the selected state for the clicked button
+                        if (isDayInRange(index)) {
+                          const newSelectedDays = [...selectedDays];
+                          newSelectedDays[index] = !newSelectedDays[index];
+                          setSelectedDays(newSelectedDays);
+                        }
+                      }}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0">
+                <div className="bg-white shadow-2xl">
+                  <div className="p-3">
+                    <input
+                      type="text"
+                      value={title}
+                      onChange={handleTitleChange}
+                      placeholder="Enter Title"
+                    />
+                  </div>
+                  <div className="border-b-2 border-[#D5E3FF]"></div>
+                  <div className="p-3">
+                    <div className="mb-2">Schedule Date time</div>
+                    <div>
+                      <ul className="border-2 border-[#D5E3FF] rounded">
+                        <li className="border-b-2 border-[#D5E3FF] p-3">
+                          <h3>Start Date:</h3>
+                          <div className="mt-2">
+                            <input
+                              type="date"
+                              value={editedStartDate}
+                              onChange={handleStartDateChange}
+                              className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                            />
+                          </div>
+                        </li>
+                        <li className="border-b-2 border-[#D5E3FF] p-3">
+                          <h3>End Date:</h3>
+                          <div className="mt-2">
+                            <input
+                              type="date"
+                              value={editedEndDate}
+                              onChange={handleEndDateChange}
+                              className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                            />
+                          </div>
+                        </li>
+                        <li className="border-b-2 border-[#D5E3FF] p-3">
+                          <h3>Start Time:</h3>
+                          <div className="mt-2">
+                            <input
+                              type="time"
+                              value={editedStartTime}
+                              onChange={handleStartTimeChange}
+                              className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                            />
+                          </div>
+                        </li>
+                        <li className=" p-3">
+                          <h3>End Time:</h3>
+                          <div className="mt-2">
+                            <input
+                              type="time"
+                              value={editedEndTime}
+                              onChange={handleEndTimeChange}
+                              className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                            />
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="p-3">
+                      <div>Repeat Multiple Day</div>
+
+                      <div className="flex justify-between">
+                        {/* <label>Repeat</label>
+                  <input type="checkbox" /> */}
+                        <button onClick={handleOpenRepeatSettings}>
+                          Repeat
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white shadow-2xl mt-4 ">
+                  <div className="p-3 w-full">
+                    <h3>Select Color :</h3>
+                    <div className="mt-2">
+                      <SketchPicker
+                        color={selectedColor}
+                        onChange={(color) => setSelectedColor(color.hex)}
+                        className="sketch-picker"
+                      />
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="bg-white shadow-2xl mt-4 ">
-                <div className="p-3 w-full">
-                  <h3>Select Color :</h3>
-                  <div className="mt-2">
-                    <SketchPicker
-                      color={selectedColor}
-                      onChange={(color) => setSelectedColor(color.hex)}
-                      className="sketch-picker"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
           <div className="flex justify-center mt-16">
             <button
@@ -346,13 +462,6 @@ const EventEditor = ({
           )} */}
           </div>
         </div>
-        {showRepeatSettings && (
-          <RepeatSettings
-            repeatSettings={currentEventRepeatSettings}
-            onSaveRepeatSettings={handleSaveRepeatSettings}
-            onClose={() => setShowRepeatSettings(false)}
-          />
-        )}
       </ReactModal>
     </>
   );
