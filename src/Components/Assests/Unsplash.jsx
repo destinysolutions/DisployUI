@@ -4,13 +4,15 @@ import { useEffect } from 'react';
 import './../../Styles/assest.css';
 import { BiLoaderCircle } from 'react-icons/bi'
 import { AiOutlineCloseCircle } from 'react-icons/ai'
+import axios from "axios";
+const API_UPLOAD_URL = "http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload";
 const Unsplash = ({ closeModal, onSelectedImages }) => {
     const [img, setImg] = useState("Natural");
     const [res, setRes] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
     const [uploadedImages, setUploadedImages] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [fileData, setFileData] = useState([]);
+    // const [fileData, setFileData] = useState([]);
 
     const API_KEY = "Sgv-wti48nSLfRjYsH7lmH_8N3wjzC18ccTYFxBzxmw";
 
@@ -36,55 +38,88 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
     useEffect(() => {
         fetchRequest(img);
     }, [img]);
-
     useEffect(() => {
-        const imageData = selectedImages.map((image) => image.webformatURL);
-        setFileData(imageData);
+        onSelectedImages(selectedImages);
     }, [selectedImages]);
 
     const handleImageSelect = (image) => {
         setSelectedImages((prevSelected) =>
-            prevSelected.includes(image)
-                ? prevSelected.filter((img) => img !== image)
-                : [...prevSelected, image]
+            prevSelected.includes(image) ? prevSelected.filter((img) => img !== image) : [...prevSelected, image]
         );
     };
 
-
     const handleImageUpload = () => {
-        // ... (existing code for getContentType)
-        console.log("Selected Images:", fileData);
-        const UPLOAD_API_URL = "http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload";
-
-        fileData.forEach((imageURL) => {
-            const formData = new FormData();
-
-            const details = "Some Details about the file";
-            const CategorieType = getContentType(image.type);
-
-            formData.append("File", imageURL);
-            formData.append("operation", "Insert");
-            formData.append("CategorieType", CategorieType);
-            formData.append("details", details);
-
-            axios
-                .post(UPLOAD_API_URL, formData)
-                .then((response) => {
-                    console.log("Upload Success:", response.data);
-                })
-                .catch((error) => {
-                    console.error("Upload Error:", error);
-                });
-        });
-
-        // Clear the selected images after uploading
-        setSelectedImages([]);
-
+        onSelectedImages(selectedImages);
+        closeModal();
     };
+
     const handleLoadMore = () => {
-        // Call the fetchRequest function with the current search term and the next page number
+
         fetchRequest(img, currentPage);
     };
+    // api
+
+    // const handleImageUpload = async () => {
+    //     try {
+    //         selectedImages.forEach((image) => {
+    //             const formData = new FormData();
+
+    //             const details = "Some Details about the file";
+    //             const CategorieType = getContentType(image.type);
+
+    //             axios.get(image.urls.small, { responseType: 'blob' })
+    //                 .then(response => {
+    //                     const imageBlob = response.data;
+    //                     const fileName = image.urls.small.split('/').pop();
+
+    //                     formData.append("File", imageBlob, fileName);
+    //                     formData.append("operation", "Insert");
+    //                     formData.append("CategorieType", CategorieType);
+    //                     formData.append("details", details);
+
+    //                     axios.post(API_UPLOAD_URL, formData)
+    //                         .then((response) => {
+    //                             console.log("Upload data in API:", response.data);
+    //                         })
+    //                         .catch((error) => {
+    //                             console.error("Upload Error:", error);
+    //                         });
+    //                 })
+    //                 .catch(error => {
+    //                     console.error("Error fetching image:", error);
+    //                 });
+    //         });
+
+    //         // Close the modal
+    //         closeModal();
+    //     } catch (error) {
+    //         // Handle error here
+    //         console.error('Error uploading images:', error);
+    //     }
+    // };
+    // const getContentType = (mime) => {
+    //     if (!mime) {
+    //         return "file content type not found";
+    //     }
+
+    //     if (mime.startsWith("image/")) {
+    //         return "Image";
+    //     } else if (mime.startsWith("video/")) {
+    //         return "Video";
+    //     } else if (
+    //         mime.startsWith("application/pdf") ||
+    //         mime.startsWith("text/") ||
+    //         mime === "application/msword" ||
+    //         mime === "application/vnd.ms-excel" ||
+    //         mime ===
+    //         "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    //     ) {
+    //         return "DOC";
+    //     } else {
+    //         return "file content type not found";
+    //     }
+    // };
+
 
     return (
         <>
@@ -111,7 +146,8 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
                                             <input
                                                 type="checkbox"
                                                 checked={isSelected}
-                                                onChange={() => handleImageSelect(val.urls.small)} className=' absolute top-3 left-3 z-10 '
+                                                className=' absolute top-3 left-3 z-10 '
+                                                onChange={() => handleImageSelect(val.id)}
                                             />
                                             <img
                                                 className="relative unsplash-img"
@@ -149,12 +185,13 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
                         </button>
                     </div>
                     <ul>
-                        {uploadedImages.map((imageUrl) => (
-                            <li key={imageUrl}>
-                                <img src={imageUrl} alt="Uploaded" />
+                        {uploadedImages.map((image) => (
+                            <li key={image.id}>
+                                <img src={image.url} alt="Uploaded" />
                             </li>
                         ))}
                     </ul>
+
                 </div>
 
             </div>
