@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 
 const Pixabay = ({ closeModal }) => {
   const [images, setImages] = useState([]);
@@ -75,9 +76,6 @@ const Pixabay = ({ closeModal }) => {
   const handleImageUpload = () => {
     // ... (existing code for getContentType)
 
-    const UPLOAD_API_URL =
-      "http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload";
-
     selectedImages.forEach((image) => {
       console.log(image);
       const formData = new FormData();
@@ -90,7 +88,7 @@ const Pixabay = ({ closeModal }) => {
       formData.append("details", details);
 
       axios
-        .post(UPLOAD_API_URL, formData)
+        .post(ALL_FILES_UPLOAD, formData)
         .then((response) => {
           console.log("Upload Success:", response.data);
         })

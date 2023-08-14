@@ -8,6 +8,7 @@ import { BiDownload } from "react-icons/bi";
 import { TbCameraSelfie } from "react-icons/tb";
 import { MdFlipCameraAndroid } from "react-icons/md";
 import axios from 'axios';
+import { ALL_FILES_UPLOAD } from '../../Pages/Api';
 
 const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
 
@@ -78,7 +79,7 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
             formData.append('details', 'Video Uploaded');
 
             const response = await axios.post(
-                'http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload',
+                ALL_FILES_UPLOAD,
                 formData,
                 {
                     headers: {

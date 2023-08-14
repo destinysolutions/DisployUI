@@ -22,7 +22,7 @@ import Footer from "../Footer";
 import { HiOutlineVideoCamera } from "react-icons/hi2";
 import { RiGalleryFill } from "react-icons/ri";
 import { HiDocumentDuplicate } from "react-icons/hi";
-import { GET_ALL_FILES } from "../../Pages/Api";
+import { ALL_FILES_UPLOAD, GET_ALL_FILES } from "../../Pages/Api";
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -178,7 +178,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       formData.append("operation", "Delete");
       formData.append("CategorieType", item.categorieType);
       axios
-        .post("http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload", formData)
+        .post(ALL_FILES_UPLOAD, formData)
         .then(response => {
           console.log("Data deleted successfully:", response.data);
           const updatedGridData = gridData.filter(item => item.id !== id);

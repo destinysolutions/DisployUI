@@ -7,6 +7,7 @@ import { BiDownload } from "react-icons/bi";
 import { MdMotionPhotosOn } from 'react-icons/md'
 import { Tooltip } from "@material-tailwind/react";
 import axios from "axios";
+import { ALL_FILES_UPLOAD } from '../../Pages/Api';
 const Camera = ({ closeModal, onImageUpload }) => {
     const webcamRef = useRef(null);
     const [imageSrc, setImageSrc] = useState(null);
@@ -66,7 +67,7 @@ const Camera = ({ closeModal, onImageUpload }) => {
             formData.append("details", details);
 
             // Step 3: Send POST request using Axios
-            axios.post('http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload', formData)
+            axios.post(ALL_FILES_UPLOAD, formData)
                 .then(response => {
                     console.log('Image uploaded successfully:', response.data);
 
