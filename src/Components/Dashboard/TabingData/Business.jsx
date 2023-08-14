@@ -262,13 +262,13 @@ const Business = () => {
       {showStore && (
         <>
           <div className="bg-white shadow-md rounded-lg mt-5 ">
-            <div className="p-3  justify-between lg:flex md:flex sm:flex xs:block items-center">
+            <div className="p-3 lg:flex md:flex sm:flex xs:block items-center">
               <div className="flex items-center lg:mb-0 md:mb-0 sm:mb-0 xs:mb-2">
                 <img
                   src="../../../../DisployImg/flag.png"
                   className="h-10 w-10 rounded-full"
                 />
-                <div className="ml-2 font-semibold">India</div>
+                <div className="ml-2 mr-6 font-semibold">India</div>
               </div>
               <div>
                 <Select
@@ -295,8 +295,8 @@ const Business = () => {
       {/* city store popup start */}
       {showCitydw && (
         <div className="bg-white shadow-md rounded-lg mt-5">
-          <div className="p-5 lg:flex md:flex sm:flex xs:block justify-between ">
-            <div>
+          <div className="p-5 lg:flex md:flex sm:flex xs:block ">
+            <div className="mr-5">
               <Select
                 id="state"
                 options={states.map((state) => ({

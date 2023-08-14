@@ -23,6 +23,7 @@ const EventEditor = ({
   const [editedStartTime, setEditedStartTime] = useState("");
   const [editedEndDate, setEditedEndDate] = useState("");
   const [editedEndTime, setEditedEndTime] = useState("");
+  const [endDateDisabled, setEndDateDisabled] = useState(true);
 
   // State to keep track of repeat settings modal
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
@@ -54,6 +55,7 @@ const EventEditor = ({
 
   const handleStartDateChange = (e) => {
     setEditedStartDate(e.target.value);
+    setEndDateDisabled(false);
   };
 
   const handleStartTimeChange = (e) => {
@@ -112,44 +114,72 @@ const EventEditor = ({
     const start = new Date(editedStartDate + " " + editedStartTime);
     const end = new Date(editedEndDate + " " + editedEndTime);
 
-    // Perform validation and create the new event data
-    const eventData = {
-      title: title,
-      start: start,
-      end: end,
-      color: selectedColor,
-      repeat: [], // Initialize the repeat array
-    };
-    if (selectAllDays) {
-      // If "Repeat for All Day" is selected, add all days to the repeat array
-      eventData.repeat = buttons.slice();
-    } else {
-      // Otherwise, add the selected days to the repeat array
-      selectedDays.forEach((isSelected, index) => {
-        if (isSelected && isDayInRange(index)) {
-          eventData.repeat.push(buttons[index]);
+    // Determine if any specific days are selected (excluding the "Repeat for All Day" option)
+    const areSpecificDaysSelected = selectedDays.some(
+      (isSelected) => isSelected
+    );
+
+    if (areSpecificDaysSelected || selectAllDays) {
+      // Create events for selected days within the date range
+      const events = [];
+      let currentDate = new Date(start);
+
+      while (currentDate <= end) {
+        if (selectAllDays || selectedDays[currentDate.getDay()]) {
+          const eventStart = new Date(currentDate);
+          eventStart.setHours(start.getHours(), start.getMinutes());
+
+          const eventEnd = new Date(currentDate);
+          eventEnd.setHours(end.getHours(), end.getMinutes());
+
+          events.push({
+            title: title,
+            start: eventStart,
+            end: eventEnd,
+            color: selectedColor,
+            repeat: [], // Add repeat information here if needed
+          });
         }
-      });
-    }
-    // Check if the selected event is present and has the same data as the form data
-    if (
-      selectedEvent &&
-      selectedEvent.title === title &&
-      selectedEvent.start.getTime() === start.getTime() &&
-      selectedEvent.end.getTime() === end.getTime()
-    ) {
-      // If the data is the same, simply close the modal without creating/updating a new event
-      onClose();
-    } else {
-      // If selectedEvent is present, it means we are editing an existing event
-      if (selectedEvent) {
-        // Call the onSave function with the selectedEvent's id and the updated eventData
-        onSave(selectedEvent.id, eventData);
-      } else {
-        // Otherwise, we are creating a new event, so call the onSave function with null as id
-        onSave(null, eventData);
+
+        // Move to the next day
+        currentDate.setDate(currentDate.getDate() + 1);
       }
-      onClose();
+
+      // Save the generated events
+      events.forEach((event) => {
+        // Use your onSave function here to save the event
+        onSave(null, event);
+      });
+    } else {
+      // If no specific days are selected, treat it as a one-time event and save it
+      const eventData = {
+        title: title,
+        start: start,
+        end: end,
+        color: selectedColor,
+        repeat: [], // Initialize the repeat array
+      };
+
+      // Check if the selected event is present and has the same data as the form data
+      if (
+        selectedEvent &&
+        selectedEvent.title === title &&
+        selectedEvent.start.getTime() === start.getTime() &&
+        selectedEvent.end.getTime() === end.getTime()
+      ) {
+        // If the data is the same, simply close the modal without creating/updating a new event
+        onClose();
+      } else {
+        // If selectedEvent is present, it means we are editing an existing event
+        if (selectedEvent) {
+          // Call the onSave function with the selectedEvent's id and the updated eventData
+          onSave(selectedEvent.id, eventData);
+        } else {
+          // Otherwise, we are creating a new event, so call the onSave function with null as id
+          onSave(null, eventData);
+        }
+        onClose();
+      }
     }
   };
 
@@ -265,6 +295,7 @@ const EventEditor = ({
                         value={editedEndDate}
                         onChange={handleEndDateChange}
                         className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                        disabled={endDateDisabled}
                       />
                     </div>
                   </div>
@@ -322,9 +353,8 @@ const EventEditor = ({
                           : ""
                       }`}
                       key={index}
-                      disabled={!isDayInRange(index)} // Disable days outside the range
+                      disabled={!isDayInRange(index)}
                       onClick={() => {
-                        // Toggle the selected state for the clicked button
                         if (isDayInRange(index)) {
                           const newSelectedDays = [...selectedDays];
                           newSelectedDays[index] = !newSelectedDays[index];
@@ -364,7 +394,7 @@ const EventEditor = ({
                             />
                           </div>
                         </li>
-                        <li className="border-b-2 border-[#D5E3FF] p-3">
+                        {/* <li className="border-b-2 border-[#D5E3FF] p-3">
                           <h3>End Date:</h3>
                           <div className="mt-2">
                             <input
@@ -374,7 +404,7 @@ const EventEditor = ({
                               className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
                             />
                           </div>
-                        </li>
+                        </li> */}
                         <li className="border-b-2 border-[#D5E3FF] p-3">
                           <h3>Start Time:</h3>
                           <div className="mt-2">
@@ -399,13 +429,14 @@ const EventEditor = ({
                         </li>
                       </ul>
                     </div>
-                    <div className="p-3">
+                    <div className="p-3 flex justify-between items-center">
                       <div>Repeat Multiple Day</div>
 
-                      <div className="flex justify-between">
-                        {/* <label>Repeat</label>
-                  <input type="checkbox" /> */}
-                        <button onClick={handleOpenRepeatSettings}>
+                      <div>
+                        <button
+                          onClick={handleOpenRepeatSettings}
+                          className="border border-primary rounded-full px-4 py-1"
+                        >
                           Repeat
                         </button>
                       </div>
@@ -430,36 +461,25 @@ const EventEditor = ({
           <div className="flex justify-center mt-16">
             <button
               className="border-2 border-primary  px-5 py-2 rounded-full"
-              onClick={onClose}
+              onClick={()=>{setShowRepeatSettings(false);onClose();}}
             >
               Cancel
             </button>
 
             <button
               className="border-2 border-primary  px-6 py-2 rounded-full ml-3"
-              onClick={handleSave}
+              onClick={()=>{setShowRepeatSettings(false);handleSave();}}
             >
               Save
             </button>
             {isEditMode && (
               <button
                 className="border-2 border-primary  px-6 py-2 rounded-full ml-3"
-                onClick={handleDelete}
+                onClick={()=>{setShowRepeatSettings(false);handleDelete();}}
               >
                 Delete
               </button>
             )}
-            {/* <button
-            className="border-2 border-primary  px-4 py-2 rounded-full ml-3"
-            onClick={() => setSelectScreenModal(true)}
-          >
-            Save & Assign screen
-          </button>
-          {selectScreenModal && (
-            <SaveAssignScreenModal
-              setSelectScreenModal={setSelectScreenModal}
-            />
-          )} */}
           </div>
         </div>
       </ReactModal>
