@@ -13,7 +13,7 @@ const OneDrive = () => {
         const msalConfig = {
             auth: {
                 clientId: '3e34f72d-7f91-48fe-9805-4946b9b17997',
-                redirectUri: 'https://onedrive.live.com',
+                redirectUri: 'https://onedrive.live.com ',
             },
         };
         const msalInstance = new PublicClientApplication(msalConfig);

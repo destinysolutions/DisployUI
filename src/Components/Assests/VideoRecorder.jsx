@@ -7,24 +7,23 @@ import { MdOutlineStopCircle } from 'react-icons/md'
 import { BiDownload } from "react-icons/bi";
 import { TbCameraSelfie } from "react-icons/tb";
 import { MdFlipCameraAndroid } from "react-icons/md";
+import axios from 'axios';
+
 const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
+
     const webcamRef = useRef(null);
     const [recording, setRecording] = useState(false);
-    const [recordedChunks, setRecordedChunks] = useState([]);
+    const [recordedChunksList, setRecordedChunksList] = useState([]);
     const [facingMode, setFacingMode] = useState('user');
-    const [recordedBlob, setRecordedBlob] = useState(null);
     const [mediaRecorder, setMediaRecorder] = useState(null);
+
     const startRecording = () => {
         try {
             if (webcamRef.current) {
                 const stream = webcamRef.current.stream;
-
-                // Create a new MediaRecorder instance and save it to state
                 const newMediaRecorder = new MediaRecorder(stream);
-                newMediaRecorder.ondataavailable = handleDataAvailable;
+                newMediaRecorder.ondataavailable = handleDataAvailable(newMediaRecorder);
                 newMediaRecorder.start();
-
-                // Save the MediaRecorder instance to state
                 setMediaRecorder(newMediaRecorder);
                 setRecording(true);
             }
@@ -32,8 +31,6 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
             console.error('Error starting recording:', error);
         }
     };
-
-
 
     const stopRecording = () => {
         try {
@@ -46,30 +43,24 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
         }
     };
 
-    const constraints = {
-        video: { facingMode: 'environment' } // Use 'environment' for the back camera
-    };
-    navigator.mediaDevices.getUserMedia(constraints)
-        .then((stream) => {
-            // Use the new stream for recording
-        })
-        .catch((error) => {
-            console.error('Error accessing camera:', error);
-        });
-
-
     const toggleCamera = () => {
         setFacingMode((prevFacingMode) =>
             prevFacingMode === 'user' ? 'environment' : 'user'
         );
     };
 
-
     const handleDownload = () => {
         try {
-            if (recordedBlob) {
+            if (recordedChunksList.length > 0) {
+                const combinedChunks = recordedChunksList.flatMap(
+                    (recording) => recording.chunks
+                );
+                const combinedBlob = new Blob(combinedChunks, {
+                    type: 'video/webm',
+                });
+
                 const downloadLink = document.createElement('a');
-                downloadLink.href = URL.createObjectURL(recordedBlob);
+                downloadLink.href = URL.createObjectURL(combinedBlob);
                 downloadLink.download = 'recorded_video.webm';
                 downloadLink.click();
             }
@@ -77,15 +68,51 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
             console.error('Error handling download:', error);
         }
     };
-    const handleDataAvailable = (event) => {
-        if (event.data.size > 0) {
-            setRecordedChunks((prevChunks) => [...prevChunks, event.data]);
-            const newBlob = new Blob([...recordedChunks, event.data], { type: 'video/webm' });
-            setRecordedBlob(newBlob);
-            onVideoRecorded(newBlob); // Check if this callback is being called
+    const sendDataToApi = async (videoBlob) => {
+        try {
+            const uniqueFileName = `recorded_video_${Date.now()}.webm`; // Generate a unique file name with timestamp
+            const formData = new FormData();
+            formData.append('File', videoBlob, uniqueFileName); // Use the unique file name
+            formData.append('operation', 'Insert');
+            formData.append('CategorieType', 'Video');
+            formData.append('details', 'Video Uploaded');
+
+            const response = await axios.post(
+                'http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            );
+
+            console.log('API response:', response.data);
+        } catch (error) {
+            console.error('Error sending data to API:', error);
         }
     };
 
+    const handleDataAvailable = (recorderIndex) => (event) => {
+        if (event.data.size > 0) {
+            const newChunk = event.data;
+            setRecordedChunksList((prevRecordings) => {
+                const existingRecording = prevRecordings.find((recording, index) => index === recorderIndex);
+
+                if (existingRecording) {
+                    return prevRecordings.map((recording, index) =>
+                        index === recorderIndex
+                            ? { ...recording, chunks: [...recording.chunks, newChunk] }
+                            : recording
+                    );
+                } else {
+                    return [...prevRecordings, { recorder: recorderIndex, chunks: [newChunk] }];
+                }
+            });
+
+            sendDataToApi(newChunk);
+        }
+    };
 
     return (
         <div>
@@ -121,13 +148,19 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
                                 )}
                             </button>
 
-                            {recordedChunks.length > 0 && (
-                                <button onClick={handleDownload} className='lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl ml-2'><BiDownload className=' text-SlateBlue' /></button>
+                            {recordedChunksList.length > 0 && (
+                                <button onClick={handleDownload} className='lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl ml-2'>
+                                    <BiDownload className=' text-SlateBlue' />
+                                </button>
                             )}
+
                         </div>
+
+
 
                     </div>
                     {/* Video element removed here */}
+
                 </div>
             </div>
         </div>

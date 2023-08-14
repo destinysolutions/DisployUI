@@ -11,7 +11,7 @@ import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
 import PropTypes from "prop-types";
 import Footer from "../../Footer";
-
+import { AiOutlineCloudUpload } from "react-icons/ai";
 const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   MergeScreen.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -56,16 +56,16 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             <div className="icons flex  items-center sm:mt-3">
               <div>
-                <button className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue ">
-                  <IoMdRefresh className="p-1 text-3xl text-SlateBlue hover:text-white " />
+                <button className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue hover:border-SlateBlue border-primary ">
+                  <IoMdRefresh className="p-1 text-3xl  hover:text-white text-primary " />
                 </button>
               </div>
               <div>
                 <button
                   type="button"
-                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-SlateBlue"
+                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue hover:border-SlateBlue border-primary"
                 >
-                  <VscVmConnect className="p-1 text-3xl text-SlateBlue hover:text-white" />
+                  <VscVmConnect className="p-1 text-3xl text-primary hover:text-white" />
                 </button>
               </div>
               <div>
@@ -139,11 +139,11 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
 
             {showdata && (
               <div className="overflow-x-auto">
-                <table className="mt-9 w-full sm:mt-3">
+                <table className="mt-9 w-full sm:mt-3 lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white" cellPadding={20}>
                   <thead>
-                    <tr className="flex justify-between items-center">
+                    <tr className="border-b border-lightgray">
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className=" flex  items-center justify-center px-6 py-2">
                           <svg
                             width="20"
                             height="20"
@@ -161,7 +161,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className=" flex  items-center justify-center mx-auto px-6 py-2">
                           <svg
                             className="mr-2"
                             width="17"
@@ -196,7 +196,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className=" flex  items-center justify-center mx-auto px-6 py-2">
                           <svg
                             className="mr-2"
                             width="16"
@@ -231,7 +231,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
+                        <button className=" flex  items-center justify-center mx-auto px-6 py-2">
                           <svg
                             className="mr-2"
                             width="15"
@@ -260,7 +260,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
+                        <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
                           <svg
                             className="mr-2"
                             width="19"
@@ -280,7 +280,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </th>
                       <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
+                        <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
                           <svg
                             className="mr-2"
                             width="15"
@@ -315,122 +315,74 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
+                    <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2">
                       <td className="flex items-center ">
                         <input type="checkbox" className="mr-3" /> My Screen 1
                       </td>
-                      <td className="p-2">
-                        <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white  hover:bg-primary">
+                      <td className="p-2 text-center">
+                        <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white   hover:bg-primary">
                           Live
                         </button>
                       </td>
-                      <td className="p-2">25 May 2023</td>
-                      <td className="p-2">
-                        <button className="   flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm   hover:bg-primary hover:text-white asset-btn">
-                          Asset Name
-                          <svg
-                            className="ml-2"
-                            width="15"
-                            height="11"
-                            viewBox="0 0 15 11"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g clipPath="url(#clip0_1057_2578)">
-                              <path
-                                d="M10.5275 3.65207C10.1303 3.84835 9.77432 4.10207 9.43155 4.38156L8.8418 3.70685C9.27569 3.30431 9.78164 2.98937 10.3254 2.75792C9.225 0.80851 6.56368 0.298745 4.80879 1.66164C4.17159 2.15499 3.6879 2.89328 3.50186 3.87121L3.44327 4.17677L3.13858 4.23068C2.84004 4.28283 2.57344 4.3549 2.33965 4.4463C0.880669 5.01085 0.471098 6.63478 1.36377 7.86789C1.74581 8.39259 2.23272 8.92755 2.87168 9.01662H3.76495C3.75879 9.10451 3.75557 9.19298 3.75557 9.28234C3.75557 9.49738 3.77373 9.70802 3.80889 9.9131H2.85733L2.80108 9.90812C1.90665 9.79445 1.17159 9.12853 0.640434 8.39289C-0.597944 6.68781 0.0117235 4.38947 2.01944 3.61076C2.22891 3.52902 2.45303 3.46076 2.68916 3.40597C2.95723 2.34132 3.52852 1.5216 4.26299 0.952651C6.52442 -0.799595 9.91934 -0.0528178 11.2146 2.52179C11.4094 2.49103 11.6045 2.4755 11.7981 2.47785C14.6956 2.49923 15.8414 6.20441 14.3379 8.20041C13.7353 8.99992 12.8109 9.68019 11.8591 9.90109L11.7592 9.9131H11.1788C11.2292 9.6171 11.244 9.31613 11.2228 9.01662H11.7094C12.4169 8.8464 13.1716 8.26427 13.6204 7.66427C14.6886 6.24162 13.9304 3.38546 11.792 3.37199C11.3742 3.36847 10.9392 3.46955 10.5275 3.65207ZM6.87686 10.6909H8.12374C8.41524 10.6909 8.6543 10.4519 8.6543 10.1604V8.4424H9.56368C9.75528 8.4342 9.89122 8.37091 9.97002 8.25138C10.183 7.93175 9.89209 7.61623 9.69024 7.39386C9.11749 6.76515 8.13106 5.83439 7.84834 5.50158C7.63389 5.26486 7.3292 5.26486 7.11475 5.50158C6.82266 5.84259 5.80108 6.84249 5.25645 7.45392C5.06748 7.66691 4.83399 7.95695 5.03028 8.25138C5.11114 8.37091 5.24561 8.4342 5.43721 8.4424H6.34659V10.1604C6.34659 10.4486 6.58536 10.6909 6.87686 10.6909Z"
-                                fill="black"
-                              />
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_1057_2578">
-                                <rect width="15" height="10.691" fill="white" />
-                              </clipPath>
-                            </defs>
-                          </svg>
+                      <td className="p-2 text-center">25 May 2023</td>
+                      <td className="p-2 text-center">
+                        <button
+                          onClick={() => setShowAssetModal(true)}
+                          className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                        > Asset Name
+                          <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
                       </td>
-                      <td className="break-words	w-[150px] p-2">
+                      <td className="break-words	w-[150px] p-2 text-center">
                         Schedule Name Till 28 June 2023
                       </td>
-                      <td className="p-2">Tags, Tags</td>
+                      <td className="p-2 text-center">Tags, Tags</td>
                     </tr>
-                    <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm flex  justify-between items-center px-5 py-2">
-                      <td className="flex items-center">
-                        <input type="checkbox" className=" mr-3" /> My Screen 2
+                    <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2">
+                      <td className="flex items-center ">
+                        <input type="checkbox" className="mr-3" /> My Screen 1
                       </td>
-                      <td className="p-2">
-                        <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
+                      <td className="p-2 text-center">
+                        <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white   hover:bg-primary">
                           Live
                         </button>
                       </td>
-                      <td className="p-2">25 May 2023</td>
-                      <td className="p-2">
-                        <button className="   flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2 text-sm   hover:bg-primary hover:text-white asset-btn">
-                          Asset Name
-                          <svg
-                            className="ml-2"
-                            width="15"
-                            height="11"
-                            viewBox="0 0 15 11"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g clipPath="url(#clip0_1057_2578)">
-                              <path
-                                d="M10.5275 3.65207C10.1303 3.84835 9.77432 4.10207 9.43155 4.38156L8.8418 3.70685C9.27569 3.30431 9.78164 2.98937 10.3254 2.75792C9.225 0.80851 6.56368 0.298745 4.80879 1.66164C4.17159 2.15499 3.6879 2.89328 3.50186 3.87121L3.44327 4.17677L3.13858 4.23068C2.84004 4.28283 2.57344 4.3549 2.33965 4.4463C0.880669 5.01085 0.471098 6.63478 1.36377 7.86789C1.74581 8.39259 2.23272 8.92755 2.87168 9.01662H3.76495C3.75879 9.10451 3.75557 9.19298 3.75557 9.28234C3.75557 9.49738 3.77373 9.70802 3.80889 9.9131H2.85733L2.80108 9.90812C1.90665 9.79445 1.17159 9.12853 0.640434 8.39289C-0.597944 6.68781 0.0117235 4.38947 2.01944 3.61076C2.22891 3.52902 2.45303 3.46076 2.68916 3.40597C2.95723 2.34132 3.52852 1.5216 4.26299 0.952651C6.52442 -0.799595 9.91934 -0.0528178 11.2146 2.52179C11.4094 2.49103 11.6045 2.4755 11.7981 2.47785C14.6956 2.49923 15.8414 6.20441 14.3379 8.20041C13.7353 8.99992 12.8109 9.68019 11.8591 9.90109L11.7592 9.9131H11.1788C11.2292 9.6171 11.244 9.31613 11.2228 9.01662H11.7094C12.4169 8.8464 13.1716 8.26427 13.6204 7.66427C14.6886 6.24162 13.9304 3.38546 11.792 3.37199C11.3742 3.36847 10.9392 3.46955 10.5275 3.65207ZM6.87686 10.6909H8.12374C8.41524 10.6909 8.6543 10.4519 8.6543 10.1604V8.4424H9.56368C9.75528 8.4342 9.89122 8.37091 9.97002 8.25138C10.183 7.93175 9.89209 7.61623 9.69024 7.39386C9.11749 6.76515 8.13106 5.83439 7.84834 5.50158C7.63389 5.26486 7.3292 5.26486 7.11475 5.50158C6.82266 5.84259 5.80108 6.84249 5.25645 7.45392C5.06748 7.66691 4.83399 7.95695 5.03028 8.25138C5.11114 8.37091 5.24561 8.4342 5.43721 8.4424H6.34659V10.1604C6.34659 10.4486 6.58536 10.6909 6.87686 10.6909Z"
-                                fill="black"
-                              />
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_1057_2578">
-                                <rect width="15" height="10.691" fill="white" />
-                              </clipPath>
-                            </defs>
-                          </svg>
+                      <td className="p-2 text-center">25 May 2023</td>
+                      <td className="p-2 text-center">
+                        <button
+                          onClick={() => setShowAssetModal(true)}
+                          className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                        > Asset Name
+                          <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
                       </td>
-                      <td className="break-words	w-[150px] p-2">Set Schedule</td>
-                      <td className="p-2">Tags, Tags</td>
-                    </tr>
-
-                    <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm flex  justify-between items-center px-5 py-2">
-                      <td className="flex items-center">
-                        <input type="checkbox" className=" mr-3" /> My Screen 2
+                      <td className="break-words	w-[150px] p-2 text-center">
+                        Schedule Name Till 28 June 2023
                       </td>
-                      <td className="p-2">
-                        <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
+                      <td className="p-2 text-center">Tags, Tags</td>
+                    </tr>
+                    <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2">
+                      <td className="flex items-center ">
+                        <input type="checkbox" className="mr-3" /> My Screen 1
+                      </td>
+                      <td className="p-2 text-center">
+                        <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white   hover:bg-primary">
                           Live
                         </button>
                       </td>
-                      <td className="p-2">25 May 2023</td>
-                      <td className="p-2">
-                        <button className="   flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2 text-sm   hover:bg-primary hover:text-white asset-btn">
-                          Asset Name
-                          <svg
-                            className="ml-2"
-                            width="15"
-                            height="11"
-                            viewBox="0 0 15 11"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g clipPath="url(#clip0_1057_2578)">
-                              <path
-                                d="M10.5275 3.65207C10.1303 3.84835 9.77432 4.10207 9.43155 4.38156L8.8418 3.70685C9.27569 3.30431 9.78164 2.98937 10.3254 2.75792C9.225 0.80851 6.56368 0.298745 4.80879 1.66164C4.17159 2.15499 3.6879 2.89328 3.50186 3.87121L3.44327 4.17677L3.13858 4.23068C2.84004 4.28283 2.57344 4.3549 2.33965 4.4463C0.880669 5.01085 0.471098 6.63478 1.36377 7.86789C1.74581 8.39259 2.23272 8.92755 2.87168 9.01662H3.76495C3.75879 9.10451 3.75557 9.19298 3.75557 9.28234C3.75557 9.49738 3.77373 9.70802 3.80889 9.9131H2.85733L2.80108 9.90812C1.90665 9.79445 1.17159 9.12853 0.640434 8.39289C-0.597944 6.68781 0.0117235 4.38947 2.01944 3.61076C2.22891 3.52902 2.45303 3.46076 2.68916 3.40597C2.95723 2.34132 3.52852 1.5216 4.26299 0.952651C6.52442 -0.799595 9.91934 -0.0528178 11.2146 2.52179C11.4094 2.49103 11.6045 2.4755 11.7981 2.47785C14.6956 2.49923 15.8414 6.20441 14.3379 8.20041C13.7353 8.99992 12.8109 9.68019 11.8591 9.90109L11.7592 9.9131H11.1788C11.2292 9.6171 11.244 9.31613 11.2228 9.01662H11.7094C12.4169 8.8464 13.1716 8.26427 13.6204 7.66427C14.6886 6.24162 13.9304 3.38546 11.792 3.37199C11.3742 3.36847 10.9392 3.46955 10.5275 3.65207ZM6.87686 10.6909H8.12374C8.41524 10.6909 8.6543 10.4519 8.6543 10.1604V8.4424H9.56368C9.75528 8.4342 9.89122 8.37091 9.97002 8.25138C10.183 7.93175 9.89209 7.61623 9.69024 7.39386C9.11749 6.76515 8.13106 5.83439 7.84834 5.50158C7.63389 5.26486 7.3292 5.26486 7.11475 5.50158C6.82266 5.84259 5.80108 6.84249 5.25645 7.45392C5.06748 7.66691 4.83399 7.95695 5.03028 8.25138C5.11114 8.37091 5.24561 8.4342 5.43721 8.4424H6.34659V10.1604C6.34659 10.4486 6.58536 10.6909 6.87686 10.6909Z"
-                                fill="black"
-                              />
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_1057_2578">
-                                <rect width="15" height="10.691" fill="white" />
-                              </clipPath>
-                            </defs>
-                          </svg>
+                      <td className="p-2 text-center">25 May 2023</td>
+                      <td className="p-2 text-center">
+                        <button
+                          onClick={() => setShowAssetModal(true)}
+                          className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                        > Asset Name
+                          <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
                       </td>
-                      <td className="break-words	w-[150px] p-2">Set Schedule</td>
-                      <td className="p-2">Tags, Tags</td>
+                      <td className="break-words	w-[150px] p-2 text-center">
+                        Schedule Name Till 28 June 2023
+                      </td>
+                      <td className="p-2 text-center">Tags, Tags</td>
                     </tr>
                   </tbody>
                 </table>
@@ -438,7 +390,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
             )}
           </div>
         </div>
-      </div>
+      </div >
       <Footer />
     </>
   );

@@ -31,7 +31,7 @@ const GoogleDrive = () => {
             clientId: "1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com", // Your client ID
             developerKey: "AIzaSyCbWICmzquQqKHgCDNEFCBUgpH8VGe2ezo", // Your developer key
             viewId: "DOCS",
-            token: "ya29.a0AfB_byB3B5m4yqeLFxiFQn-Gdf7mdZmpZjRb5YqiSBhyZcYvKJ2ZAFTSwAojgJ8fYNGqAx5eRD-35bPtv5x9Fzat-MXp6Ary6WdIUvMPRs2NNtIo_-XCKHgDEAThQzTE3JugVMKP0g4CmN29e5MypdGPv7MjaCgYKASESARESFQHsvYlsgaSn9zyxV4iJ9DB5rSBXcw0163",
+            token: "ya29.a0AfB_byA8Laaw9Ht1HFI4WZfNM4Fzg-ymtEtXB4UFfVHOCw-BxqrzokrD8PFuV6ZKpFTQBYfFiooOegqhIDFTCFeH4fOu3pEhMg5fae0fUnAOWFTR1oPu7o8aonA8kjIoZ2Aceh5i7q5Ww0f2w2p6uhViVCosaCgYKAUkSARESFQHsvYlskNLFlLORK1Wr_-H-5V5XbQ0163",
             showUploadView: true,
             showUploadFolders: true,
             supportDrives: true,

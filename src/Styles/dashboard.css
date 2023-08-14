@@ -93,6 +93,10 @@ body {
   box-shadow: none !important;
 }
 
+.w-full.topbar.bg-white.py-3 {
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.12);
+}
+
 @media (max-width: 992px) {
   .md\:col-span-6 {
     grid-column: span 6 / span 6;

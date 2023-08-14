@@ -329,52 +329,52 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
           </div>
-          <div className="overflow-x-auto">
-            <table className="mt-9 w-full sm:mt-3">
+          <div className="overflow-x-auto bg-white rounded-xl mt-8 shadow">
+            <table className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto" cellPadding={20}>
               <thead>
-                <tr className="flex justify-between items-center">
-                  <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2 border border-gray">
+                <tr className="border-b border-lightgray">
+                  <th className=" font-medium text-[14px]">
+                    <button className="flex  items-center justify-center ">
                       <SlScreenDesktop className="mr-2 text-xl" />
                       Screen
                     </button>
                   </th>
                   {moreCheckboxClick && (
-                    <th className="p-3 font-medium text-[14px]">
-                      <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2 border border-gray">
+                    <th className=" font-medium text-[14px]">
+                      <button className="flex  items-center justify-center ">
                         <HiOutlineLocationMarker className="mr-2 text-xl" />
                         Google Location
                       </button>
                     </th>
                   )}
-                  <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2  border border-gray">
+                  <th className=" font-medium text-[14px]">
+                    <button className="flex  items-center justify-center  mx-auto ">
                       <MdLiveTv className="mr-2 text-xl" />
                       status
                       <BiFilterAlt className="ml-1 text-lg" />
                     </button>
                   </th>
-                  <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2 border border-gray">
+                  <th className=" font-medium text-[14px]">
+                    <button className="flex  items-center justify-center   mx-auto">
                       <RxTimer className="mr-2 text-xl" />
                       Last Seen
                       <BiFilterAlt className="ml-1 text-lg" />
                     </button>
                   </th>
-                  <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2 border border-gray">
+                  <th className=" font-medium text-[14px]">
+                    <button className="flex  items-center justify-center  mx-auto">
                       <BsCollectionPlay className="mr-2 text-xl" />
                       Now Playing
                     </button>
                   </th>
-                  <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center border border-gray">
+                  <th className=" font-medium text-[14px]">
+                    <button className=" flex  items-center mx-auto justify-center">
                       <MdOutlineCalendarMonth className="mr-2 text-xl" />
                       Current Schedule
                     </button>
                   </th>
-                  <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center border border-gray">
+                  <th className="font-medium text-[14px]">
+                    <button className=" flex mx-auto items-center justify-center">
                       <BsPencilSquare className="mr-2 text-xl" />
                       Tags
                       <BiFilterAlt className="ml-1 text-lg" />
@@ -383,7 +383,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 </tr>
               </thead>
               <tbody>
-                <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
+                <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2">
                   <td className="flex items-center ">
                     <input
                       type="checkbox"
@@ -408,22 +408,20 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       132, My Street, Kingston, New York 12401.
                     </td>
                   )}
-                  <td className="p-2">
+                  <td className="p-2 text-center">
                     <button
-                      className={`rounded-full px-6 py-1 text-white bg-${screenStatus === "live" ? "[#3AB700]" : "red"
+                      className={`rounded-full px-6 py-1 text-white text-center bg-${screenStatus === "live" ? "[#3AB700]" : "red"
                         }`}
                     >
                       {screenStatus === "live" ? "Live" : "Offline"}
                     </button>
                   </td>
-                  <td className="p-2">25 May 2023</td>
-                  <td className="p-2">
+                  <td className="p-2 text-center">25 May 2023</td>
+                  <td className="p-2 text-center">
                     <button
                       onClick={() => setShowAssetModal(true)}
-                      className="flex  items-center border-gray bg-lightgray border rounded-full lg:pr-3 sm:px-5  py-2  text-sm   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                    >
-
-                      Asset Name
+                      className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                    > Asset Name
                       <AiOutlineCloudUpload className="ml-2 text-lg" />
                     </button>
                     {showAssetModal ? (
@@ -432,42 +430,62 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       </>
                     ) : null}
                   </td>
-                  <td className="break-words	w-[150px] p-2">
+                  <td className="break-words	w-[150px] p-2 text-center">
                     Schedule Name Till 28 June 2023
                   </td>
-                  <td className="p-2">Tags, Tags</td>
+                  <td className="p-2 text-center">Tags, Tags</td>
                 </tr>
-                <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm flex  justify-between items-center px-5 py-2">
-                  <td className="flex items-center">
-                    <input type="checkbox" className="mr-3" />
-                    <Link to="/screensplayer">My Screen 2</Link>
-                    <button>
-                      <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
-                    </button>
+                <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2">
+                  <td className="flex items-center ">
+                    <input
+                      type="checkbox"
+                      className="mr-3"
+                      checked={checkboxChecked}
+                      onChange={handleCheckboxChange}
+                    />
+                    <div>
+                      <label className="text-red">
+                        {screenStatus === "live" ? "" : "Deactivated"}
+                      </label>
+                      <div>
+                        <Link to="/screensplayer">My Screen 2</Link>
+                        <button>
+                          <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
+                        </button>
+                      </div>
+                    </div>
                   </td>
                   {moreCheckboxClick && (
                     <td className="p-2 break-words  w-[150px]">
                       132, My Street, Kingston, New York 12401.
                     </td>
                   )}
-                  <td className="p-2">
-                    <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
-                      Live
+                  <td className="p-2 text-center">
+                    <button
+                      className={`rounded-full px-6 py-1 text-white text-center bg-${screenStatus === "live" ? "[#3AB700]" : "red"
+                        }`}
+                    >
+                      {screenStatus === "live" ? "Live" : "Offline"}
                     </button>
                   </td>
-                  <td className="p-2">25 May 2023</td>
-                  <td className="p-2">
-                    <button className="flex  items-center border-gray bg-lightgray border rounded-full lg:pr-3 sm:px-5  py-2  text-sm   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                      Asset Name
+                  <td className="p-1 text-center">25 May 2023</td>
+                  <td className="p-1 text-center">
+                    <button
+                      onClick={() => setShowAssetModal(true)}
+                      className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                    > Asset Name
                       <AiOutlineCloudUpload className="ml-2 text-lg" />
                     </button>
+                    {showAssetModal ? (
+                      <>
+                        <AssetModal setShowAssetModal={setShowAssetModal} />
+                      </>
+                    ) : null}
                   </td>
-                  <td className="break-words	w-[150px] p-2">
-                    <button onClick={() => setScheduleModal(true)}>
-                      Set Schedule
-                    </button>
+                  <td className="break-words	w-[150px] p-2 text-center">
+                    Schedule Name Till 28 June 2023
                   </td>
-                  <td className="p-2">Tags, Tags</td>
+                  <td className="p-2 text-center">Tags, Tags</td>
                 </tr>
               </tbody>
             </table>
