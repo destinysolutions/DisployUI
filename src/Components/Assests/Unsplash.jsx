@@ -42,11 +42,14 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
         onSelectedImages(selectedImages);
     }, [selectedImages]);
 
-    const handleImageSelect = (image) => {
+    const handleImageSelect = (imageId) => {
         setSelectedImages((prevSelected) =>
-            prevSelected.includes(image) ? prevSelected.filter((img) => img !== image) : [...prevSelected, image]
+            prevSelected.includes(imageId)
+                ? prevSelected.filter((imgId) => imgId !== imageId)
+                : [...prevSelected, imageId]
         );
     };
+
 
     const handleImageUpload = () => {
         onSelectedImages(selectedImages);
@@ -145,10 +148,11 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
                                         <label className='relative'>
                                             <input
                                                 type="checkbox"
-                                                checked={isSelected}
+                                                checked={selectedImages.includes(val.id)}
                                                 className=' absolute top-3 left-3 z-10 '
                                                 onChange={() => handleImageSelect(val.id)}
                                             />
+
                                             <img
                                                 className="relative unsplash-img"
                                                 src={val.urls.small}

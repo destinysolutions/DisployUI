@@ -80,6 +80,13 @@ const Pexels = ({ closeModal }) => {
             };
         });
     };
+    // const handleImageSelect = (imageId) => {
+    //     setSelectedImages((prevSelected) =>
+    //         prevSelected.includes(imageId)
+    //             ? prevSelected.filter((imgId) => imgId !== imageId)
+    //             : [...prevSelected, imageId]
+    //     );
+    // };
 
     // API
 
@@ -151,10 +158,11 @@ const Pexels = ({ closeModal }) => {
                                             <label>
                                                 <input
                                                     type="checkbox"
-                                                    checked={selectedMedia.videos.includes(item.id)}
-                                                    onChange={() => handleSelectMedia('videos', item.id)}
-                                                    className='absolute top-3 left-3 z-10'
+                                                    checked={selectedImages.includes(val.id)}
+                                                    className=' absolute top-3 left-3 z-10 '
+
                                                 />
+
                                                 <video width="100%" height="200px" controls className='relative unsplash-img'>
                                                     <source src={item.video_files[0].link} type="video/mp4" />
                                                     Your browser does not support the video tag.

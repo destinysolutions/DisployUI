@@ -169,6 +169,29 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       // setTableData([...]); // Set data for other buttons for table view
     }
   };
+  // Delete API
+
+  const handelDeletedata = (id) => {
+    gridData.forEach((item) => {
+      const formData = new FormData();
+      formData.append("Id", id);
+      formData.append("operation", "Delete");
+      formData.append("CategorieType", item.categorieType);
+      axios
+        .post("http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload", formData)
+        .then(response => {
+          console.log("Data deleted successfully:", response.data);
+          const updatedGridData = gridData.filter(item => item.id !== id);
+          setGridData(updatedGridData);
+          setTableData(updatedGridData);
+        })
+        .catch(error => {
+          // Handle error 
+          console.error("Error deleting data:", error);
+        });
+    });
+  };
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -382,9 +405,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 <CgMoveRight className="mr-2 text-lg" />
                                 Move to
                               </li>
-                              <li className="flex text-sm items-center">
-                                <RiDeleteBin5Line className="mr-2 text-lg" />
-                                Move to Trash
+                              <li >
+                                <button onClick={() => handelDeletedata(item.id)} className="flex text-sm items-center">
+                                  <RiDeleteBin5Line className="mr-2 text-lg" />
+                                  Move to Trash
+                                </button>
+
                               </li>
                             </ul>
                           </div>
@@ -491,9 +517,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     <CgMoveRight className="mr-2 text-lg" />
                                     Move to
                                   </li>
-                                  <li className="flex text-sm items-center">
-                                    <RiDeleteBin5Line className="mr-2 text-lg" />
-                                    Move to Trast
+                                  <li >
+                                    <button onClick={() => handelDeletedata(id)} className="flex text-sm items-center" >
+                                      <RiDeleteBin5Line className="mr-2 text-lg" />
+                                      Move to Trash
+                                    </button>
                                   </li>
                                 </ul>
                               </div>
@@ -591,9 +619,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     <CgMoveRight className="mr-2 text-lg" />
                                     Move to
                                   </li>
-                                  <li className="flex text-sm items-center">
-                                    <RiDeleteBin5Line className="mr-2 text-lg" />
-                                    Move to Trast
+                                  <li >
+                                    <button onClick={() => handelDeletedata(item.id)} className="flex text-sm items-center">
+                                      <RiDeleteBin5Line className="mr-2 text-lg" />
+                                      Move to Trash
+                                    </button>
                                   </li>
                                 </ul>
                               </div>
