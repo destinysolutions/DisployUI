@@ -8,10 +8,8 @@ import { IoArrowBackOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import EventEditor from "./EventEditor";
-import RepeatSettings from "./RepeatSettings.JSX";
 
 const localizer = momentLocalizer(moment);
-// Enable drag and drop by wrapping the Calendar component with the withDragAndDrop higher-order component
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 const AddSchedule = () => {
@@ -59,23 +57,10 @@ const AddSchedule = () => {
   const [isCreatePopupOpen, setCreatePopupOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  // State to track the repeat settings modal
-  const [showRepeatSettings, setShowRepeatSettings] = useState(false);
 
   // State to store repeat settings for the currently edited event
   const [currentEventRepeatSettings, setCurrentEventRepeatSettings] =
     useState(null);
-
-  // Function to handle opening repeat settings modal
-  const handleOpenRepeatSettings = () => {
-    // setShowRepeatSettings(true);
-  };
-
-  // Function to handle saving repeat settings
-  const handleSaveRepeatSettings = (repeatSettings) => {
-    setCurrentEventRepeatSettings(repeatSettings);
-    setShowRepeatSettings(false);
-  };
 
   const handleSelectSlot = useCallback(({ start, end }) => {
     setSelectedSlot({ start, end });
@@ -177,7 +162,7 @@ const AddSchedule = () => {
               showMultiDayTimes
               onSelectEvent={handleSelectEvent}
               onSelectSlot={handleSelectSlot}
-              // eventPropGetter={eventStyleGetter}
+              eventPropGetter={eventStyleGetter}
             />
             <EventEditor
               isOpen={isCreatePopupOpen}
