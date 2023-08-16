@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-import { FiCamera } from "react-icons/fi";
-import { AiOutlineVideoCamera } from "react-icons/ai";
+
 import { FaUnsplash } from "react-icons/fa";
 import { FiUploadCloud } from "react-icons/fi";
 import "../../Styles/assest.css";
@@ -25,13 +24,14 @@ import DropboxUpload from "./DropboxUpload";
 import GoogleDrive from "./GoogleDrive";
 import Camera from "./Camera";
 import VideoRecorder from "./VideoRecorder";
-import { SiPixabay } from "react-icons/si"
+
 import Pixabay from "./Pixabay";
 import { Tooltip } from "@material-tailwind/react";
 import cameraimg from '../../../public/Assets/photography.png'
 import videoimg from '../../../public/Assets/camera.png'
 import pixabayimg from '../../../public/Assets/pixabay.png'
 
+import { AiOutlineCloseCircle } from 'react-icons/ai';
 {
   /* end of video*/
 }
@@ -76,35 +76,65 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
     updatedList.splice(fileList.indexOf(file), 1);
     setFileList(updatedList);
   };
-  const [uploadFile, setUploadFile] = useState(null);
+  // file upload
+
+  const [uploadFiles, setUploadFiles] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
   const onFileChange = (e) => {
-    const file = e.target.files[0];
-    setUploadFile(file);
+    const files = Array.from(e.target.files);
+    setUploadFiles(files);
+    ;
+
   };
 
-  const postData = () => {
-    if (!uploadFile) {
-      console.log("Please select a file to upload.");
+  const uploadData = async () => {
+    if (uploadFiles.length === 0) {
+      alert('Please select files to upload.');
       return;
     }
-    const details = "Some Details about the file";
-    const CategorieType = getContentType(uploadFile.type);
 
-    const formdata = new FormData();
-    formdata.append("File", uploadFile);
-    formdata.append("operation", "Insert");
-    formdata.append("CategorieType", CategorieType);
-    formdata.append("details", details);
+    setUploading(true);
+    setUploadSuccess(false);
+    setUploadProgress(0);
 
-    axios
-      .post(ALL_FILES_UPLOAD, formdata)
-      .then((res) => {
-        console.log("Data uploaded successfully:", res.data);
-      })
-      .catch((err) => {
-        console.error("Error uploading data:", err);
+    try {
+      const uploadPromises = uploadFiles.map(async (file) => {
+        const CategorieType = getContentType(file.type);
+        const details = 'Some Details about the file';
+        const formData = new FormData();
+        formData.append('File', file);
+        formData.append('operation', 'Insert');
+        formData.append('CategorieType', CategorieType);
+        formData.append('details', details);
+
+        const response = await axios.post(ALL_FILES_UPLOAD, formData, {
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round(
+              (progressEvent.loaded / progressEvent.total) * 100
+            );
+            setUploadProgress(progress);
+          },
+        });
+
+        if (response.status === 200) {
+          console.log(`File ${file.name} uploaded successfully.`);
+        } else {
+          console.error(`Upload failed for file ${file.name}`);
+        }
       });
+
+      await Promise.all(uploadPromises);
+      setUploadSuccess(true);
+    } catch (error) {
+      console.error('An error occurred during upload:', error);
+    } finally {
+      setUploading(false);
+    }
   };
+
 
   const getFileType = (fileName, mimeType) => {
     const extension = fileName.split(".").pop().toLowerCase();
@@ -228,18 +258,27 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
     a.download = 'recorded-video.webm';
     a.click();
   };
-  const [uploadedVideoBlob, setUploadedVideoBlob] = useState(null);
-
-
   const [recordedVideos, setRecordedVideos] = useState([]);
-
   const handleVideoRecorded = (blob) => {
-    // Update the list of recorded videos
+
     setRecordedVideos((prevVideos) => [...prevVideos, blob]);
   };
 
   // end video
 
+  // image upload Msg
+  useEffect(() => {
+    if (uploadProgress === 100) {
+      setUploadSuccess(true);
+      setShowPopup(true);
+    }
+  }, [uploadProgress]);
+  const handleCancelUpload = () => {
+    setUploadProgress(0);
+    setUploadSuccess(false);
+    setShowPopup(false);
+    setUploading(false); // Reset uploading status
+  };
   return (
     <>
       <div className="flex border-b border-gray">
@@ -263,7 +302,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="flex lg:justify-between md:justify-between flex-wrap sm:justify-start xs:justify-start items-center lg:mt-7 md:mt-7 sm:mt-5 xs:mt-5 media-icon">
 
 
-            <span >
+            <span>
               <DropboxUpload />
 
               {/*dropbox*/}
@@ -409,13 +448,72 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
               <div className=" absolute bottom-20 left-1/2 -translate-x-2/4">
                 <button
                   className="bg-SlateBlue text-white px-7 py-2 rounded mt-4 z-10"
-                  onClick={postData}
+                  onClick={uploadData}
+                  disabled={uploading}
                 >
-                  Browse
+                  Upload
                 </button>
               </div>
             </div>
           </div>
+
+
+          <div className="popup fixed top-1/2 left-2/4 bg-white shadow-2xl">
+            {uploadProgress > 0 && uploadProgress < 100 && (
+              <div className="flex justify-between items-center bg-white w-96 p-10">
+                <div>
+                  <h1>Uploading... </h1> {uploadProgress}%
+                  <progress value={uploadProgress} max={100} className="w-full custom-progress" />
+                </div>
+                <div>
+                  {uploading && (
+                    <button onClick={handleCancelUpload}><AiOutlineCloseCircle /></button>
+                  )}
+                </div>
+              </div>
+            )}
+            {showPopup && (
+              <div className="popup p-5">
+
+                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                  <div className="relative w-full max-w-xl max-h-full">
+                    <div className="relative bg-white rounded-lg shadow">
+                      <div className="p-6 text-center">
+                        <FiCheckCircle className="mx-auto mb-4 text-[#20AE5C] w-14 h-14" />
+                        <h3 className="mb-5 text-2xl font-bold text-[#20AE5C]">
+                          {uploadSuccess ? 'Upload successful!' : 'Upload failed!'}
+                        </h3>
+                        <p>Thank you for your request.</p>
+                        <p>
+                          We are working hard to find the best service and deals for
+                          you.
+                        </p>
+                        <p className="mb-7 text-[#9892A6] mt-1">
+                          Kindly check your media gallery for confirmation.
+                        </p>
+                        <Link to="/assets">
+                          <button className="text-white bg-[#20AE5C] rounded text-lg font-bold px-7 py-2.5">
+                            Continue
+                          </button>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+
+              </div>
+            )}
+          </div>
+
+
+
+
+
+
+
 
 
           {fileList.length > 0 ? (
@@ -586,6 +684,9 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
           ) : null}
+
+
+
           {fileErrorModal ? (
             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
               <div className="relative w-full max-w-xl max-h-full">
