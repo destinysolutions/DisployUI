@@ -369,3 +369,12 @@ td .tabicon svg {
 .videocanvas {
   transform: scaleX(1) !important;
 }
+
+.custom-progress {
+  width: 300px !important;
+
+}
+
+.custom-progress::-webkit-progress-value {
+  color: blue !important;
+}

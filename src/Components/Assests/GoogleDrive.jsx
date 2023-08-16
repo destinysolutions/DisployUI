@@ -26,60 +26,118 @@ const GoogleDrive = () => {
     };
 
 
-    const handleOpenPicker = (accessToken) => {
+    const handleOpenPicker = async (accessToken) => {
+        const currentTime = Date.now() / 1000; // Convert to seconds
+        if (accessToken.expiryTime - currentTime < 300) { // Check if token will expire in less than 5 minutes
+            try {
+                const newAccessToken = await renewAccessTokenUsingRefreshToken(accessToken.refreshToken);
+                accessToken = newAccessToken; // Update the access token
+            } catch (error) {
+                console.error("Error renewing access token:", error);
+                return;
+            }
+        }
+        const handleFileUpload = async (data) => {
+            if (data.action === "picked") {
+                console.log("Selected Files:", data.docs);
+                setSelectedFiles(data.docs);
+
+                // Upload selected files to the API
+                await uploadDataToAPI(data.docs);
+            }
+        };
         openPicker({
             clientId: "1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com", // Your client ID
             developerKey: "AIzaSyCbWICmzquQqKHgCDNEFCBUgpH8VGe2ezo", // Your developer key
             viewId: "DOCS",
-            token: "ya29.a0AfB_byA8Laaw9Ht1HFI4WZfNM4Fzg-ymtEtXB4UFfVHOCw-BxqrzokrD8PFuV6ZKpFTQBYfFiooOegqhIDFTCFeH4fOu3pEhMg5fae0fUnAOWFTR1oPu7o8aonA8kjIoZ2Aceh5i7q5Ww0f2w2p6uhViVCosaCgYKAUkSARESFQHsvYlskNLFlLORK1Wr_-H-5V5XbQ0163",
+            token: "ya29.a0AfB_byAKCOY6mrEzK5WXRgoGRSLjDaShVm6oJPVQx3SkuFnYDIjMg-LUIZN3vsp-EYajdZcop8fezAxeHPu85SQ8nCnjPv-kq2-d8KEelN5n6BsSdKbYyPze-ov9pGjnm0zzgcYuxVe6zsBFObPum-J-p86vaCgYKAXkSARESFQHsvYlsrv5O-MBYGhuxqdP8R-tCWA0163",
             showUploadView: true,
             showUploadFolders: true,
             supportDrives: true,
             multiselect: true,
-            callbackFunction: (data) => {
-                if (data.action === "cancel") {
-                    console.log("User clicked cancel/close button");
-                } else if (data.action === "picked") {
-                    console.log("Selected Files:", data.docs);
-                    setSelectedFiles(data.docs);
-                    handleImageUpload(data.docs, accessToken); // Pass the selected files and access token
-                }
-            }
-
+            callbackFunction: handleFileUpload,
         });
     };
-
-    const handleImageUpload = async (selectedFiles, accessToken) => {
-        const uploadPromises = selectedFiles.map(async (file) => {
-            const formData = new FormData();
-            formData.append('file', file.id); // Assuming you need to pass the file ID
-
+    const renewAccessTokenUsingRefreshToken = async (refreshToken) => {
+        try {
             const response = await axios.post(
-                `https://www.googleapis.com/upload/drive/v3/files/${file.id}?uploadType=media`,
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                }
+                "https://oauth2.googleapis.com/token",
+                new URLSearchParams({
+                    client_id: "1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com",
+                    client_secret: "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",
+                    refresh_token: "1//04koL-KekfHVsCgYIARAAGAQSNwF-L9IrDbG17VxWnKBot3mz5lHu_-hq5CfWJ9oZxlgBVGGAbt5gXswTGmd8qcuAX6fJK8YL-aI",
+                    grant_type: "refresh_token",
+                })
             );
 
-            console.log("File uploaded:", response.data);
-        });
+            const newAccessToken = {
+                accessToken: response.data.access_token,
+                expiryTime: Date.now() / 1000 + response.data.expires_in,
+                refreshToken: refreshToken,
+            };
 
-        try {
-            await Promise.all(uploadPromises);
-            console.log("All files uploaded successfully.");
+            return newAccessToken;
         } catch (error) {
-            console.error("Error uploading files:", error);
+            throw error;
         }
     };
 
+    // API
+
+    console.log(selectedFiles)
+    const uploadDataToAPI = async (selectedFiles) => {
+        try {
+
+            const apiUrl = 'http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload';
 
 
+            for (const file of selectedFiles) {
+                const CategorieType = getContentType(file.mimeType);
+                console.log('File MIME:', file.mimeType);
+                console.log('Calculated CategorieType:', file.url);
+                const details = 'Some Details about the file';
+                const formData = new FormData();
+                formData.append('file', file.url);
+                formData.append("operation", "Insert");
+                formData.append("CategorieType", CategorieType);
+                formData.append("details", details);
+
+                const response = await axios.post(apiUrl, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+
+                    },
+                });
 
 
+                console.log('Upload response:', response.data);
+            }
 
+            console.log('All files uploaded successfully');
+        } catch (error) {
+            console.error('Error uploading files:', error);
+        }
+    };
+
+    const getContentType = (mime) => {
+        if (mime.startsWith("image/")) {
+            return "Image";
+        } else if (mime.startsWith("video/")) {
+            return "Video";
+        } else if (
+            mime &&
+            (mime.startsWith("application/pdf") ||
+                mime.startsWith("text/") ||
+                mime === "application/msword" ||
+                mime === "application/vnd.ms-excel" ||
+                mime ===
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        ) {
+            return "DOC";
+        } else {
+            return "file content type not found";
+        }
+    };
 
 
 
@@ -92,6 +150,7 @@ const GoogleDrive = () => {
                     <img src={Googledrive} className='w-9' alt="Google Drive Icon" />
                 </button>
             </Tooltip>
+
 
         </>
     );
