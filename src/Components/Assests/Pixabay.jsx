@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 
 const Pixabay = ({ closeModal }) => {
   const [images, setImages] = useState([]);
-  const [category, setCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,21 +39,19 @@ const Pixabay = ({ closeModal }) => {
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
+
   const handleImageSelect = (image) => {
-    setSelectedImages((prevSelected) =>
-      prevSelected.includes(image)
-        ? prevSelected.filter((img) => img !== image)
-        : [...prevSelected, image]
-    );
+    if (image) {
+      // Check if the image is not null or undefined
+      setSelectedImages((prevSelected) =>
+        prevSelected.includes(image)
+          ? prevSelected.filter((img) => img !== image)
+          : [...prevSelected, image]
+      );
+    }
   };
 
-  useEffect(() => {
-    selectedImages.forEach((image) => {
-      setFileData((prevData) => [...prevData, image.webformatURL]);
-    });
-  }, [selectedImages]);
-
-  // Function to load more images when "Load More" button is clicked
+  // Function to load more images when "Load More" button is clicked 
   const handleLoadMore = () => {
     if (currentPage < totalPages) {
       // If there are more pages to load
@@ -62,35 +60,16 @@ const Pixabay = ({ closeModal }) => {
   };
 
   //   API
-  const [fileData, setFileData] = useState([]);
-
-  useEffect(() => {
-    selectedImages.forEach((image) => {
-      setFileData((prevData) => [...prevData, image.webformatURL]);
-    });
-  }, [selectedImages]);
-
-  console.log(fileData, "fileData");
-
   const handleImageUpload = () => {
-    // ... (existing code for getContentType)
-
-    const UPLOAD_API_URL =
-      "http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload";
-
     selectedImages.forEach((image) => {
-      console.log(image);
       const formData = new FormData();
-
       const details = "Some Details about the file";
-
       formData.append("FileType", image.webformatURL);
       formData.append("operation", "Insert");
       formData.append("CategorieType", "Online");
       formData.append("details", details);
-
       axios
-        .post(UPLOAD_API_URL, formData)
+        .post(ALL_FILES_UPLOAD, formData)
         .then((response) => {
           console.log("Upload Success:", response.data);
         })

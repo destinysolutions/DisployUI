@@ -22,7 +22,7 @@ import Footer from "../Footer";
 import { HiOutlineVideoCamera } from "react-icons/hi2";
 import { RiGalleryFill } from "react-icons/ri";
 import { HiDocumentDuplicate } from "react-icons/hi";
-import { GET_ALL_FILES } from "../../Pages/Api";
+import { ALL_FILES_UPLOAD, GET_ALL_FILES } from "../../Pages/Api";
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -32,7 +32,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     /* video btn */
   }
   const [asstab, setTogglebtn] = useState(1);
-  const [vbtn, setVbtnclick] = useState(null);
   const updatetoggle = (id) => {
     setTogglebtn(id);
   };
@@ -127,6 +126,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.image ? fetchedData.image : []),
           ...(fetchedData.video ? fetchedData.video : []),
           ...(fetchedData.doc ? fetchedData.doc : []),
+          ...(fetchedData.images ? fetchedData.images : []),
         ];
         setGridData(allAssets);
         setTableData(allAssets);
@@ -151,6 +151,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         ...(originalData.image ? originalData.image : []),
         ...(originalData.video ? originalData.video : []),
         ...(originalData.doc ? originalData.doc : []),
+        ...(originalData.images ? originalData.images : []),
       ];
       setGridData(allAssets);
       setTableData(allAssets);
@@ -178,15 +179,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       formData.append("operation", "Delete");
       formData.append("CategorieType", item.categorieType);
       axios
-        .post("http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload", formData)
-        .then(response => {
+        .post(ALL_FILES_UPLOAD, formData)
+        .then((response) => {
           console.log("Data deleted successfully:", response.data);
-          const updatedGridData = gridData.filter(item => item.id !== id);
+          const updatedGridData = gridData.filter((item) => item.id !== id);
           setGridData(updatedGridData);
           setTableData(updatedGridData);
         })
-        .catch(error => {
-          // Handle error 
+        .catch((error) => {
+          // Handle error
           console.error("Error deleting data:", error);
         });
     });
@@ -274,7 +275,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
               <button
                 className={activetab === 5 ? "tabactivebtn " : "tabbtn"}
-              // onClick={() => handleActiveBtnClick(5)}
+                // onClick={() => handleActiveBtnClick(5)}
               >
                 App
               </button>
@@ -300,11 +301,36 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <img
                           src={item.fileType}
                           alt={item.name}
-                          className={`imagebox relative ${selectedItems.includes(item)
-                            ? "active opacity-1 w-full rounded-2xl"
-                            : "opacity-50 w-full rounded-2xl"
-                            }`}
+                          className={`imagebox relative ${
+                            selectedItems.includes(item)
+                              ? "active opacity-1 w-full rounded-2xl"
+                              : "opacity-50 w-full rounded-2xl"
+                          }`}
                         />
+                      )}
+
+                      {item.categorieType === "Online" && (
+                        <>
+                          {item.name === "Video" ? (
+                            <video
+                              controls
+                              className="w-full rounded-2xl relative h-56"
+                            >
+                              <source src={item.fileType} type="video/mp4" />
+                              Your browser does not support the video tag.
+                            </video>
+                          ) : (
+                            <img
+                              src={item.fileType}
+                              alt={item.name}
+                              className={`imagebox relative ${
+                                selectedItems.includes(item)
+                                  ? "active opacity-1 w-full rounded-2xl"
+                                  : "opacity-50 w-full rounded-2xl"
+                              }`}
+                            />
+                          )}
+                        </>
                       )}
 
                       {item.categorieType === "Video" && (
@@ -325,6 +351,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       >
                         {item.categorieType === "Image" && (
                           <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                        )}
+                        {item.categorieType === "Online" && (
+                          <>
+                            {item.name === "Video" ? (
+                              <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                            ) : (
+                              <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                            )}
+                          </>
                         )}
                         {item.categorieType === "Video" && (
                           <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
@@ -385,6 +420,25 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   </a>
                                 </li>
                               )}
+                              {item.categorieType === "Online" && (
+                                <>
+                                  {item.name === "Video" ? (
+                                    <li className="flex text-sm items-center">
+                                      <FiDownload className="mr-2 text-lg" />
+                                      <a href={item.fileType} download>
+                                        Download
+                                      </a>
+                                    </li>
+                                  ) : (
+                                    <li className="flex text-sm items-center">
+                                      <FiDownload className="mr-2 text-lg" />
+                                      <a href={item.fileType} download>
+                                        Download
+                                      </a>
+                                    </li>
+                                  )}
+                                </>
+                              )}
                               {item.categorieType === "Video" && (
                                 <li className="flex text-sm items-center">
                                   <FiDownload className="mr-2 text-lg" />
@@ -405,12 +459,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 <CgMoveRight className="mr-2 text-lg" />
                                 Move to
                               </li>
-                              <li >
-                                <button onClick={() => handelDeletedata(item.id)} className="flex text-sm items-center">
+                              <li>
+                                <button
+                                  onClick={() => handelDeletedata(item.id)}
+                                  className="flex text-sm items-center"
+                                >
                                   <RiDeleteBin5Line className="mr-2 text-lg" />
                                   Move to Trash
                                 </button>
-
                               </li>
                             </ul>
                           </div>
@@ -517,8 +573,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     <CgMoveRight className="mr-2 text-lg" />
                                     Move to
                                   </li>
-                                  <li >
-                                    <button onClick={() => handelDeletedata(id)} className="flex text-sm items-center" >
+                                  <li>
+                                    <button
+                                      onClick={() => handelDeletedata(id)}
+                                      className="flex text-sm items-center"
+                                    >
                                       <RiDeleteBin5Line className="mr-2 text-lg" />
                                       Move to Trash
                                     </button>
@@ -554,6 +613,42 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   )}
                                 </div>
                               </div>
+                            )}
+                            {item.categorieType === "Online" && (
+                              <>
+                                {item.name === "Video" ? (
+                                  <div className="relative videobox">
+                                    <video
+                                      controls
+                                      className="w-full rounded-2xl relative"
+                                    >
+                                      <source
+                                        src={item.fileType}
+                                        type="video/mp4"
+                                      />
+                                      Your browser does not support the video
+                                      tag.
+                                    </video>
+                                    <div className="tabicon text-center absolute left-10 top-3">
+                                      {item.name === "Video" && (
+                                        <HiOutlineVideoCamera className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
+                                      )}
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="imagebox">
+                                    <img
+                                      src={item.fileType}
+                                      className="rounded-2xl"
+                                    />
+                                    <div className="tabicon text-center absolute left-10 top-3">
+                                      {item.categorieType === "Online" && (
+                                        <RiGalleryFill className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                              </>
                             )}
                             {item.categorieType === "Video" && (
                               <div className="relative videobox">
@@ -619,8 +714,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     <CgMoveRight className="mr-2 text-lg" />
                                     Move to
                                   </li>
-                                  <li >
-                                    <button onClick={() => handelDeletedata(item.id)} className="flex text-sm items-center">
+                                  <li>
+                                    <button
+                                      onClick={() => handelDeletedata(item.id)}
+                                      className="flex text-sm items-center"
+                                    >
                                       <RiDeleteBin5Line className="mr-2 text-lg" />
                                       Move to Trash
                                     </button>

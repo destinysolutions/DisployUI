@@ -7,6 +7,7 @@ import { BsPencilFill } from "react-icons/bs";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import EventEditor from "./EventEditor";
 
 const localizer = momentLocalizer(moment);
@@ -32,13 +33,13 @@ const AddSchedule = () => {
     {
       id: 3,
       title: "Long Event",
-      start: new Date(2023, 7, 4, 10),
-      end: new Date(2023, 7, 4, 12),
+      start: new Date(2023, 7, 16, 10),
+      end: new Date(2023, 7, 16, 12),
       color: "#e91e63",
     },
   ];
 
-  const eventStyleGetter = (event, start, end, isSelected) => {
+  const eventStyleGetter = (event) => {
     const backgroundColor = event.color;
     const style = {
       backgroundColor,
@@ -117,21 +118,32 @@ const AddSchedule = () => {
     }
   };
 
+  const updateEvent = (data) => {
+    const allEvents = [...events];
+    let index = allEvents.findIndex((event) => event.id === data.id);
+    allEvents.splice(index, 1, data);
+    setEvents([...allEvents]);
+  };
+
   // Function to handle event drag and drop
   const handleEventDrop = ({ event, start, end }) => {
-    const updatedEvent = { ...event, start, end };
-    setEvents((prev) =>
-      prev.map((ev) => (ev.id === updatedEvent.id ? updatedEvent : ev))
-    );
+    const data = {
+      ...event,
+      start,
+      end,
+    };
+    updateEvent(data);
   };
 
   // Function to handle event resize
   const handleEventResize = ({ event, start, end }) => {
-    // Update the event's start and end times after resizing
-    const updatedEvent = { ...event, start, end };
-    setEvents((prevEvents) =>
-      prevEvents.map((ev) => (ev.id === updatedEvent.id ? updatedEvent : ev))
-    );
+    // Create a new event with the updated start and end times
+    const resizedEvent = {
+      ...event,
+      start,
+      end,
+    };
+    updateEvent(resizedEvent);
   };
 
   return (
@@ -152,12 +164,12 @@ const AddSchedule = () => {
               selectable
               localizer={localizer}
               events={myEvents}
-              onEventDrop={handleEventDrop}
-              resizable
-              onEventResize={handleEventResize}
               defaultView={Views.DAY}
               startAccessor="start"
               endAccessor="end"
+              onEventDrop={handleEventDrop}
+              resizable
+              onEventResize={handleEventResize}
               step={30}
               showMultiDayTimes
               onSelectEvent={handleSelectEvent}

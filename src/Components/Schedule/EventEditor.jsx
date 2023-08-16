@@ -8,6 +8,7 @@ import { GrSchedules } from "react-icons/gr";
 import { MdDateRange, MdOutlinePermMedia } from "react-icons/md";
 import { VscCompass } from "react-icons/vsc";
 import ReactModal from "react-modal";
+import { Link } from "react-router-dom";
 
 const EventEditor = ({
   isOpen,
@@ -145,9 +146,12 @@ const EventEditor = ({
         currentDate.setDate(currentDate.getDate() + 1);
       }
 
+      console.log("Generated events:", events);
+
       // Save the generated events
       events.forEach((event) => {
         // Use your onSave function here to save the event
+        console.log("Saving event:", event);
         onSave(null, event);
       });
     } else {
@@ -250,7 +254,9 @@ const EventEditor = ({
                   </thead>
                   <tbody>
                     <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
-                      <td className="py-2">Assets Name 1</td>
+                      <td className="py-2">
+                        <Link to="/screensplayer">Assets Name 1</Link>
+                      </td>
                       <td className="py-2">25 May 2023</td>
                       <td className="break-words	w-[150px] py-2">
                         Schedule Name Till 28 June 2023
@@ -461,21 +467,21 @@ const EventEditor = ({
           <div className="flex justify-center mt-16">
             <button
               className="border-2 border-primary  px-5 py-2 rounded-full"
-              onClick={()=>{setShowRepeatSettings(false);onClose();}}
+              onClick={onClose}
             >
               Cancel
             </button>
 
             <button
               className="border-2 border-primary  px-6 py-2 rounded-full ml-3"
-              onClick={()=>{setShowRepeatSettings(false);handleSave();}}
+              onClick={handleSave}
             >
               Save
             </button>
             {isEditMode && (
               <button
                 className="border-2 border-primary  px-6 py-2 rounded-full ml-3"
-                onClick={()=>{setShowRepeatSettings(false);handleDelete();}}
+                onClick={handleDelete}
               >
                 Delete
               </button>
