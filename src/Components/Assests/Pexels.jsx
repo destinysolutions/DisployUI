@@ -109,7 +109,7 @@ const Pexels = ({ closeModal }) => {
         .then((response) => {
           console.log("Upload Success:", response.data);
           setUploadProgress(0);
-          setUploadSuccess(true); // Reset progress after successful upload
+          setUploadSuccess(true);
         })
         .catch((error) => {
           console.error("Upload Error:", error);
@@ -256,46 +256,44 @@ const Pexels = ({ closeModal }) => {
                     <div><h1>Uploading... </h1></div>
                     <div
                       className="progress-bar"
-                      style={{ width: `${uploadProgress}%` }}
-                    >
-
-
-                      {uploadProgress}%
-
+                      style={{ width: `${uploadProgress}%` }}>{uploadProgress}%
                     </div>
                   </div>
                 )}
               </div>
 
-              {uploadSuccess && (
-                <div className="success-popup">
 
-                  <div className="relative w-full max-w-xl max-h-full">
-                    <div className="relative bg-white rounded-lg shadow">
-                      <div className="p-6 text-center">
-                        <FiCheckCircle className="mx-auto mb-4 text-[#20AE5C] w-14 h-14" />
-                        <h3 className="mb-5 text-2xl font-bold text-[#20AE5C]">
-                          Image Upload successfully
-                        </h3>
-                        <p>Thank you for your request.</p>
-                        <p>
-                          We are working hard to find the best service and deals for
-                          you.
-                        </p>
-                        <p className="mb-7 text-[#9892A6] mt-1">
-                          Kindly check your media gallery for confirmation.
-                        </p>
-                        <Link to="/assets">
-                          <button className="text-white bg-[#20AE5C] rounded text-lg font-bold px-7 py-2.5">
-                            Continue
-                          </button>
-                        </Link>
+              {uploadSuccess && (
+                <div className="backdrop">
+                  <div className="success-popup">
+
+                    <div className="relative w-full max-w-xl max-h-full">
+                      <div className="relative bg-white rounded-lg shadow">
+                        <div className="lg:p-6 md:p-6 sm:p-3 xs:p-2 text-center">
+                          <FiCheckCircle className="mx-auto mb-4 text-[#20AE5C] w-14 h-14" />
+                          <h3 className="mb-5 text-2xl font-bold text-[#20AE5C]">
+                            Image Upload successfully
+                          </h3>
+                          <p>Thank you for your request.</p>
+                          <p>
+                            We are working hard to find the best service and deals for
+                            you.
+                          </p>
+                          <p className="mb-7 text-[#9892A6] mt-1">
+                            Kindly check your media gallery for confirmation.
+                          </p>
+                          <Link to="/assets">
+                            <button className="text-white bg-[#20AE5C] rounded text-lg font-bold px-7 py-2.5">
+                              Continue
+                            </button>
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-
               )}
+
 
 
 

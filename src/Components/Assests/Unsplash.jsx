@@ -6,6 +6,8 @@ import { BiLoaderCircle } from "react-icons/bi";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import axios from "axios";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
+import { FiCheckCircle } from "react-icons/fi";
+import { Link } from "react-router-dom";
 const API_UPLOAD_URL =
   "http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload";
 const Unsplash = ({ closeModal, onSelectedImages }) => {
@@ -14,7 +16,8 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  // const [fileData, setFileData] = useState([]);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
   const API_KEY = "Sgv-wti48nSLfRjYsH7lmH_8N3wjzC18ccTYFxBzxmw";
 
@@ -51,12 +54,6 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
         : [...prevSelected, imageId]
     );
   };
-
-  //   const handleImageUpload = () => {
-  //     onSelectedImages(selectedImages);
-  //     closeModal();
-  //   };
-
   const handleLoadMore = () => {
     fetchRequest(img, currentPage);
   };
@@ -72,9 +69,20 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
       formData.append("CategorieType", "Online");
       formData.append("details", details);
       axios
-        .post(ALL_FILES_UPLOAD, formData)
+        .post(ALL_FILES_UPLOAD, formData, {
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round(
+              (progressEvent.loaded / progressEvent.total) * 100
+            );
+            setUploadProgress(progress);
+          },
+        })
+
+
         .then((response) => {
           console.log("Upload Success:", response.data);
+          setUploadProgress(0);
+          setUploadSuccess(true);
         })
         .catch((error) => {
           console.error("Upload Error:", error);
@@ -141,6 +149,11 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
               )}
             </div>
           </div>
+
+
+
+
+
           <div className="text-center mt-5">
             <button
               type="button"
@@ -151,6 +164,56 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
             </button>
           </div>
         </div>
+
+        <div className="  bg-white shadow-2xl">
+          {uploadProgress > 0 && (
+            
+            <div className="progress-container">
+              <div><h1>Uploading... </h1></div>
+              <div
+                className="progress-bar"
+                style={{ width: `${uploadProgress}%` }}>{uploadProgress}%
+              </div>
+            </div>
+            
+          )}
+        
+        </div>
+
+        {uploadSuccess && (
+          <div className="backdrop">
+            <div className="success-popup lg:w-auto md:w-auto sm:w-4/5 xs:w-[90%]">
+
+              <div className="relative w-full">
+                <div className="relative bg-white rounded-lg shadow">
+                  <div className="lg:p-6 md:p-6 sm:p-3 xs:p-2 text-center">
+                    <FiCheckCircle className="mx-auto mb-4 text-[#20AE5C] w-14 h-14" />
+                    <h3 className="mb-5 text-2xl font-bold text-[#20AE5C]">
+                      Image Upload successfully
+                    </h3>
+                    <h2 className="mb-3 leading-3">Thank you for your request.</h2>
+                    <div>
+                      <p className="mb-3 leading-5">
+                        We are working hard to find the best service and deals for
+                        you.
+                      </p>
+                    </div>
+
+                    <h5 className="mb-7 text-[#9892A6] mt-1  leading-5">
+                      Kindly check your media gallery for confirmation.
+                    </h5>
+                    <Link to="/assets">
+                      <button className="text-white bg-[#20AE5C] rounded text-lg font-bold px-7 py-2.5">
+                        Continue
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </>
   );

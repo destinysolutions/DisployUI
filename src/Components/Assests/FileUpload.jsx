@@ -152,7 +152,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
         mimeType === "application/msword" ||
         mimeType === "application/vnd.ms-excel" ||
         mimeType ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     ) {
       return "DOC";
     } else {
@@ -172,7 +172,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
         mime === "application/msword" ||
         mime === "application/vnd.ms-excel" ||
         mime ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     ) {
       return "DOC";
     } else {
@@ -486,7 +486,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="popup fixed top-1/2 left-2/4 bg-white shadow-2xl">
+          <div className="progressbar-popup  bg-white shadow-2xl">
             {uploadProgress > 0 && uploadProgress < 100 && (
               <div className="flex justify-between items-center bg-white w-96 p-10">
                 <div>
