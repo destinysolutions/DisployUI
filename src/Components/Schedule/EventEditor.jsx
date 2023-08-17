@@ -37,12 +37,14 @@ const EventEditor = ({
   useEffect(() => {
     if (isOpen && selectedEvent) {
       setTitle(selectedEvent.title);
+      setSelectedColor(selectedEvent.color);
       setEditedStartDate(formatDate(selectedEvent.start));
       setEditedStartTime(formatTime(selectedEvent.start));
       setEditedEndDate(formatDate(selectedEvent.end));
       setEditedEndTime(formatTime(selectedEvent.end));
     } else if (isOpen && selectedSlot) {
       setTitle("");
+      setSelectedColor("");
       setEditedStartDate(formatDate(selectedSlot.start));
       setEditedStartTime(formatTime(selectedSlot.start));
       setEditedEndDate(formatDate(selectedSlot.end));
@@ -169,7 +171,8 @@ const EventEditor = ({
         selectedEvent &&
         selectedEvent.title === title &&
         selectedEvent.start.getTime() === start.getTime() &&
-        selectedEvent.end.getTime() === end.getTime()
+        selectedEvent.end.getTime() === end.getTime() &&
+        selectedEvent.color === selectedColor
       ) {
         // If the data is the same, simply close the modal without creating/updating a new event
         onClose();

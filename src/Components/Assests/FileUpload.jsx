@@ -19,7 +19,7 @@ import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import Unsplash from "./Unsplash";
 import OneDrive from "./OneDrive";
 import Pexels from "./Pexels";
-import { SiPexels } from 'react-icons/si'
+import { SiPexels } from "react-icons/si";
 import DropboxUpload from "./DropboxUpload";
 import GoogleDrive from "./GoogleDrive";
 import Camera from "./Camera";
@@ -27,11 +27,11 @@ import VideoRecorder from "./VideoRecorder";
 
 import Pixabay from "./Pixabay";
 import { Tooltip } from "@material-tailwind/react";
-import cameraimg from '../../../public/Assets/photography.png'
-import videoimg from '../../../public/Assets/camera.png'
-import pixabayimg from '../../../public/Assets/pixabay.png'
+import cameraimg from "../../../public/Assets/photography.png";
+import videoimg from "../../../public/Assets/camera.png";
+import pixabayimg from "../../../public/Assets/pixabay.png";
 
-import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { AiOutlineCloseCircle } from "react-icons/ai";
 {
   /* end of video*/
 }
@@ -48,8 +48,9 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
     /* google drive */
   }
 
-  {/*camera */ }
-
+  {
+    /*camera */
+  }
 
   // file drag and drop our system
 
@@ -86,13 +87,11 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   const onFileChange = (e) => {
     const files = Array.from(e.target.files);
     setUploadFiles(files);
-    ;
-
   };
 
   const uploadData = async () => {
     if (uploadFiles.length === 0) {
-      alert('Please select files to upload.');
+      alert("Please select files to upload.");
       return;
     }
 
@@ -103,12 +102,12 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
     try {
       const uploadPromises = uploadFiles.map(async (file) => {
         const CategorieType = getContentType(file.type);
-        const details = 'Some Details about the file';
+        const details = "Some Details about the file";
         const formData = new FormData();
-        formData.append('File', file);
-        formData.append('operation', 'Insert');
-        formData.append('CategorieType', CategorieType);
-        formData.append('details', details);
+        formData.append("File", file);
+        formData.append("operation", "Insert");
+        formData.append("CategorieType", CategorieType);
+        formData.append("details", details);
 
         const response = await axios.post(ALL_FILES_UPLOAD, formData, {
           onUploadProgress: (progressEvent) => {
@@ -129,12 +128,11 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
       await Promise.all(uploadPromises);
       setUploadSuccess(true);
     } catch (error) {
-      console.error('An error occurred during upload:', error);
+      console.error("An error occurred during upload:", error);
     } finally {
       setUploading(false);
     }
   };
-
 
   const getFileType = (fileName, mimeType) => {
     const extension = fileName.split(".").pop().toLowerCase();
@@ -154,7 +152,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
         mimeType === "application/msword" ||
         mimeType === "application/vnd.ms-excel" ||
         mimeType ===
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     ) {
       return "DOC";
     } else {
@@ -174,7 +172,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
         mime === "application/msword" ||
         mime === "application/vnd.ms-excel" ||
         mime ===
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     ) {
       return "DOC";
     } else {
@@ -191,11 +189,9 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
     setShowUnsplash(true);
   };
 
-
   const handleSelectedImages = (selectedImages) => {
     setUploadedImages(selectedImages); // Update uploaded images
   };
-
 
   // Function to close the Unsplash modal
   const handleCloseModal = () => {
@@ -206,7 +202,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   const [showpexels, setShowpexels] = useState(false);
 
   const handlePexelsButtonClick = () => {
-    setShowpexels(prev => !prev);
+    setShowpexels((prev) => !prev);
   };
   const handleClosePexelsModal = () => {
     setShowpexels(false);
@@ -216,7 +212,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   const [showPexabay, setShowPexabay] = useState(false);
 
   const handlePexabaysButtonClick = () => {
-    setShowPexabay(prev => !prev);
+    setShowPexabay((prev) => !prev);
   };
   const handleClosePexabaysModal = () => {
     setShowPexabay(false);
@@ -234,7 +230,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
     setShowCamera(false);
   };
 
-
   const handleImageUpload = (newSavedImages) => {
     setSavedImages(newSavedImages);
   };
@@ -249,18 +244,15 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
     setShowVideo(false);
   };
 
-
-
   const handleDownloadVideo = (videoBlob) => {
     const url = URL.createObjectURL(videoBlob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'recorded-video.webm';
+    a.download = "recorded-video.webm";
     a.click();
   };
   const [recordedVideos, setRecordedVideos] = useState([]);
   const handleVideoRecorded = (blob) => {
-
     setRecordedVideos((prevVideos) => [...prevVideos, blob]);
   };
 
@@ -300,27 +292,36 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
           <div className="flex lg:justify-between md:justify-between flex-wrap sm:justify-start xs:justify-start items-center lg:mt-7 md:mt-7 sm:mt-5 xs:mt-5 media-icon">
-
-
             <span>
               <DropboxUpload />
 
               {/*dropbox*/}
             </span>
-            <span><GoogleDrive /></span> {/*Google drive*/}
-
-
-            <span className="fileUploadIcon"><OneDrive /></span> {/*onedrive*/}
-
+            <span>
+              <GoogleDrive />
+            </span>{" "}
+            {/*Google drive*/}
+            <span className="fileUploadIcon">
+              <OneDrive />
+            </span>{" "}
+            {/*onedrive*/}
             <span className="bg-white py-5 px-3 rounded-[45px] fileUploadIcon">
-              <Tooltip content="Box Cloud" placement="bottom-end" className=" bg-SlateBlue text-white z-10 ml-6" animate={{
-                mount: { scale: 1, y: 0 }, unmount: { scale: 1, y: 10 },
-              }}>
+              <Tooltip
+                content="Box Cloud"
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-6"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
                 <button>
-                  <svg width="40px"
+                  <svg
+                    width="40px"
                     viewBox="0 0 34 19"
                     fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
                       fillRule="evenodd"
                       clipRule="evenodd"
@@ -333,91 +334,119 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
             </span>
             {/* start Camera */}
             <span className="fileUploadIcon" data-tip="Camera">
-              <Tooltip content="Camera" placement="bottom-end" className=" bg-SlateBlue text-white z-10 ml-5" animate={{
-                mount: { scale: 1, y: 0 }, unmount: { scale: 1, y: 10 },
-              }}>
+              <Tooltip
+                content="Camera"
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-5"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
                 <button onClick={openCameraModal} className="relative">
-
                   <img src={cameraimg} className="w-9 relative" />
                 </button>
               </Tooltip>
-              {showCamera && <Camera onImageUpload={handleImageUpload} closeModal={closeCameraModal} />}
-
+              {showCamera && (
+                <Camera
+                  onImageUpload={handleImageUpload}
+                  closeModal={closeCameraModal}
+                />
+              )}
             </span>
             {/* End Camera */}
-
             {/* start Video */}
             <span className="fileUploadIcon">
-              <Tooltip content="Video" placement="bottom-end" className=" bg-SlateBlue text-white z-10 ml-3" animate={{
-                mount: { scale: 1, y: 0 }, unmount: { scale: 1, y: 10 },
-              }}>
-                <button
-
-                  onClick={openVideoModal}
-                  className="relative"
-                >
+              <Tooltip
+                content="Video"
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-3"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
+                <button onClick={openVideoModal} className="relative">
                   <img src={videoimg} className="w-9 relative" />
                 </button>
               </Tooltip>
 
-              {showVideo &&
-
-                <VideoRecorder closeModal={closeVideoModal} onDownloadVideo={handleDownloadVideo} onVideoRecorded={handleVideoRecorded} />}
-
+              {showVideo && (
+                <VideoRecorder
+                  closeModal={closeVideoModal}
+                  onDownloadVideo={handleDownloadVideo}
+                  onVideoRecorded={handleVideoRecorded}
+                />
+              )}
             </span>
-
-
             {/* End Video*/}
-
-
             {/* start unspalsh */}
             <span className="fileUploadIcon">
-              <Tooltip content="Unsplash" placement="bottom-end" className=" bg-SlateBlue text-white z-10 ml-7" animate={{
-                mount: { scale: 1, y: 0 }, unmount: { scale: 1, y: 10 },
-              }}>
-                <button onClick={handleUnsplashButtonClick} className="relative">
+              <Tooltip
+                content="Unsplash"
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-7"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
+                <button
+                  onClick={handleUnsplashButtonClick}
+                  className="relative"
+                >
                   <FaUnsplash size={30} className="relative" />
                 </button>
               </Tooltip>
               {showUnsplash && (
                 <Unsplash
-                  closeModal={handleCloseModal} onSelectedImages={handleSelectedImages} />
+                  closeModal={handleCloseModal}
+                  onSelectedImages={handleSelectedImages}
+                />
               )}
             </span>
-
             {/* end unspalsh */}
             {/* start pixels */}
             <span className="bg-white  px-3 leading-none  rounded-[45px] fileUploadIcon">
-              <Tooltip content="Pexels" placement="bottom-end" className=" bg-SlateBlue text-white z-10 ml-5" animate={{
-                mount: { scale: 1, y: 0 }, unmount: { scale: 1, y: 10 },
-              }}>
-                <button onClick={handlePexelsButtonClick} className="relative text-[#07a081]">
+              <Tooltip
+                content="Pexels"
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-5"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
+                <button
+                  onClick={handlePexelsButtonClick}
+                  className="relative text-[#07a081]"
+                >
                   <SiPexels size={30} className="relative" />
-
                 </button>
               </Tooltip>
-              {showpexels && (
-                <Pexels closeModal={handleClosePexelsModal} />
-              )}
+              {showpexels && <Pexels closeModal={handleClosePexelsModal} />}
             </span>
             {/* end pixels */}
-
             {/* start pixabay */}
             <span className="bg-white text-SlateBlue px-3 leading-none  rounded-[45px] fileUploadIcon relative">
-              <Tooltip content="Pixabay" placement="bottom-end" className=" bg-SlateBlue text-white z-10 ml-5" animate={{
-                mount: { scale: 1, y: 0 }, unmount: { scale: 1, y: 10 },
-              }}>
-                <button onClick={handlePexabaysButtonClick} className="relative">
-
+              <Tooltip
+                content="Pixabay"
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-5"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
+                <button
+                  onClick={handlePexabaysButtonClick}
+                  className="relative"
+                >
                   <img src={pixabayimg} className="relative w-9" />
                 </button>
               </Tooltip>
-              {showPexabay && (
-                <Pixabay closeModal={handleClosePexabaysModal} />
-              )}
+              {showPexabay && <Pixabay closeModal={handleClosePexabaysModal} />}
               {/* end pixabay */}
-
-
             </span>
           </div>
           <div className="flex w-full flex-col gap-4"></div>
@@ -457,36 +486,42 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-
           <div className="popup fixed top-1/2 left-2/4 bg-white shadow-2xl">
             {uploadProgress > 0 && uploadProgress < 100 && (
               <div className="flex justify-between items-center bg-white w-96 p-10">
                 <div>
                   <h1>Uploading... </h1> {uploadProgress}%
-                  <progress value={uploadProgress} max={100} className="w-full custom-progress" />
+                  <progress
+                    value={uploadProgress}
+                    max={100}
+                    className="w-full custom-progress"
+                  />
                 </div>
                 <div>
                   {uploading && (
-                    <button onClick={handleCancelUpload}><AiOutlineCloseCircle /></button>
+                    <button onClick={handleCancelUpload}>
+                      <AiOutlineCloseCircle />
+                    </button>
                   )}
                 </div>
               </div>
             )}
             {showPopup && (
               <div className="popup p-5">
-
                 <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                   <div className="relative w-full max-w-xl max-h-full">
                     <div className="relative bg-white rounded-lg shadow">
                       <div className="p-6 text-center">
                         <FiCheckCircle className="mx-auto mb-4 text-[#20AE5C] w-14 h-14" />
                         <h3 className="mb-5 text-2xl font-bold text-[#20AE5C]">
-                          {uploadSuccess ? 'Upload successful!' : 'Upload failed!'}
+                          {uploadSuccess
+                            ? "Upload successful!"
+                            : "Upload failed!"}
                         </h3>
                         <p>Thank you for your request.</p>
                         <p>
-                          We are working hard to find the best service and deals for
-                          you.
+                          We are working hard to find the best service and deals
+                          for you.
                         </p>
                         <p className="mb-7 text-[#9892A6] mt-1">
                           Kindly check your media gallery for confirmation.
@@ -500,21 +535,9 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
                   </div>
                 </div>
-
-
-
-
               </div>
             )}
           </div>
-
-
-
-
-
-
-
-
 
           {fileList.length > 0 ? (
             <div className="drop-file-preview">
@@ -553,7 +576,12 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
           {/* ... start camera */}
           <div>
             {savedImages.map((image, index) => (
-              <img key={index} src={image} alt={`Saved ${index}`} className="max-w-[20%]" />
+              <img
+                key={index}
+                src={image}
+                alt={`Saved ${index}`}
+                className="max-w-[20%]"
+              />
             ))}
           </div>
           {/* end of camera */}
@@ -561,26 +589,16 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
           <div>
             {recordedVideos.map((blob, index) => (
               <div key={index}>
-                <video controls src={URL.createObjectURL(blob)} className="max-w-[20%]" />
-
+                <video
+                  controls
+                  src={URL.createObjectURL(blob)}
+                  className="max-w-[20%]"
+                />
               </div>
             ))}
           </div>
           {/* ... end camera */}
 
-          {/* start unspalsh */}
-          <div>
-            <ul>
-              {uploadedImages.map((imageUrl, index) => (
-                <li key={index}>
-                  <img src={imageUrl} alt="Uploaded" />
-                </li>
-              ))}
-            </ul>
-
-
-          </div>
-          {/* end unspalsh */}
           {browseFiles && (
             <>
               <div className="mt-10">
@@ -685,8 +703,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           ) : null}
 
-
-
           {fileErrorModal ? (
             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
               <div className="relative w-full max-w-xl max-h-full">
@@ -713,7 +729,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           ) : null}
         </div>
-      </div >
+      </div>
       <Footer />
     </>
   );
