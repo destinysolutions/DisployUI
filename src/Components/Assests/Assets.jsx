@@ -192,6 +192,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         });
     });
   };
+  // select All checkbox
+  const [selectAll, setSelectAll] = useState(false);
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
+  };
 
   return (
     <>
@@ -242,8 +247,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     </button>
                   </li>
                 </ul>
-                <button>
-                  <input type="checkbox" className=" mx-1 w-6 h-5 mt-2" />
+                <button onClick={handleSelectAll}>
+                  <input type="checkbox" className=" mx-1 w-6 h-5 mt-2" checked={selectAll} readOnly />
                 </button>
               </div>
             </div>
@@ -275,7 +280,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
               <button
                 className={activetab === 5 ? "tabactivebtn " : "tabbtn"}
-                // onClick={() => handleActiveBtnClick(5)}
+              // onClick={() => handleActiveBtnClick(5)}
               >
                 App
               </button>
@@ -301,11 +306,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <img
                           src={item.fileType}
                           alt={item.name}
-                          className={`imagebox relative ${
-                            selectedItems.includes(item)
-                              ? "active opacity-1 w-full rounded-2xl"
-                              : "opacity-50 w-full rounded-2xl"
-                          }`}
+                          className={`imagebox relative ${selectedItems.includes(item)
+                            ? "active opacity-1 w-full rounded-2xl"
+                            : "opacity-50 w-full rounded-2xl"
+                            }`}
                         />
                       )}
 
@@ -323,11 +327,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             <img
                               src={item.fileType}
                               alt={item.name}
-                              className={`imagebox relative ${
-                                selectedItems.includes(item)
-                                  ? "active opacity-1 w-full rounded-2xl"
-                                  : "opacity-50 w-full rounded-2xl"
-                              }`}
+                              className={`imagebox relative ${selectedItems.includes(item)
+                                ? "active opacity-1 w-full rounded-2xl"
+                                : "opacity-50 w-full rounded-2xl"
+                                }`}
                             />
                           )}
                         </>
@@ -395,7 +398,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <input
                           type="checkbox"
                           className="w-[20px] h-[20px]"
-                          checked={selectedItems.includes(item)}
+                          checked={selectAll || selectedItems.includes(item)}
                           onChange={() => handleCheckboxChange(item)}
                         />
                         <button onClick={() => updateassetsdw(item)}>
@@ -514,15 +517,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="assetstable">
                 <table className="w-full text-left" cellPadding={15}>
                   <thead>
-                    <tr className="bg-white rounded-xl">
-                      <th className="text-[#8E94A9] font-normal">Recent</th>
-                      <th className="text-[#8E94A9] font-normal">Duration</th>
-                      <th className="text-[#8E94A9] font-normal">Resolution</th>
-                      <th className="text-[#8E94A9] font-normal">Type</th>
-                      <th className="text-[#8E94A9] font-normal">Size</th>
+                    <tr className=" bg-lightgray rounded-xl">
+                      <th className="text-black font-medium">Recent</th>
+                      <th className="text-black font-medium">Duration</th>
+                      <th className="text-black font-medium">Resolution</th>
+                      <th className="text-black font-medium">Type</th>
+                      <th className="text-black font-medium">Size</th>
                       <th></th>
                       <th></th>
-                      <th></th>
+
                     </tr>
                   </thead>
                   <tbody>
@@ -598,16 +601,16 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       tableData.map((item, index) => (
                         <tr
                           key={`tabitem-table-${item.id}-${index}`}
-                          className=" mt-2 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] shadow-sm border-b border-[#cccccca6]"
+                          className=" mt-2 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] shadow-inner"
                         >
                           <td className="flex items-center relative">
                             {item.categorieType === "Image" && (
-                              <div className="imagebox">
+                              <div className="imagebox relative">
                                 <img
                                   src={item.fileType}
                                   className="rounded-2xl"
                                 />
-                                <div className="tabicon text-center absolute left-10 top-3">
+                                <div className="tabicon text-center absolute right-0 bottom-[25px]">
                                   {item.categorieType === "Image" && (
                                     <RiGalleryFill className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
                                   )}
@@ -629,19 +632,19 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       Your browser does not support the video
                                       tag.
                                     </video>
-                                    <div className="tabicon text-center absolute left-10 top-3">
+                                    <div className="tabicon text-center absolute right-0 bottom-[25px]">
                                       {item.name === "Video" && (
                                         <HiOutlineVideoCamera className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
                                       )}
                                     </div>
                                   </div>
                                 ) : (
-                                  <div className="imagebox">
+                                  <div className="imagebox relative">
                                     <img
                                       src={item.fileType}
                                       className="rounded-2xl"
                                     />
-                                    <div className="tabicon text-center absolute left-10 top-3">
+                                    <div className="tabicon text-center absolute right-0 bottom-[25px]">
                                       {item.categorieType === "Online" && (
                                         <RiGalleryFill className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
                                       )}
@@ -682,7 +685,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
                           <td>{item.durations}</td>
                           <td>{item.resolutions}</td>
-                          <td>{item.fileType}</td>
+                          <td className=" break-all max-w-sm">{item.categorieType}</td>
                           <td>{item.fileSize}</td>
 
                           <td>
@@ -728,9 +731,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             )}
                           </td>
 
-                          <td>
-                            <div className="my-2"></div>
-                          </td>
+
                         </tr>
                       ))
                     ) : (
