@@ -332,12 +332,12 @@ const Business = () => {
                 </div>
                 <div className="m-6">
                   <div className="grid grid-cols-12 gap-4">
-                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md p-4">
+                    <div className="lg:col-span-4 md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md p-4">
                       <h5 className="text-xl font-semibold text-black dark:text-white">
                         Total Stores
                       </h5>
 
-                      <div className="relative aspect-w-1 aspect-h-1">
+                      <div className="relative aspect-w-1 aspect-h-1 md:mt-11">
                         <ReactApexChart
                           options={StoreOptions}
                           series={StoreOptions.series}
@@ -346,56 +346,57 @@ const Business = () => {
                       </div>
                     </div>
 
-                    <div className="lg:col-span-6  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md p-4">
+                    <div className="lg:col-span-8 md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md p-4 ">
                       <h5 className="text-xl font-semibold text-black dark:text-white">
                         Total Screens
                       </h5>
+                      <div className="flex items-center justify-center flex-wrap">
+                        <div className="mb-2 mt-9">
+                          <div className="mx-auto flex justify-center">
+                            <ReactApexChart
+                              options={ScreenOption}
+                              series={ScreenOption.series}
+                              type="donut"
+                            />
+                          </div>
+                        </div>
 
-                      <div className="mb-2 mt-9">
-                        <div className="mx-auto flex justify-center">
-                          <ReactApexChart
-                            options={ScreenOption}
-                            series={ScreenOption.series}
-                            type="donut"
-                          />
-                        </div>
-                      </div>
-                      <div className="-mx-8 flex flex-wrap items-center justify-center gap-y-3">
-                        <div className="w-full px-8 sm:w-1/2">
-                          <div className="flex w-full items-center">
-                            <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#404f8b]"></span>
-                            <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-                              <span> Android </span>
-                              <span> 65% </span>
-                            </p>
-                          </div>
-                        </div>
-                        <div className="w-full px-8 sm:w-1/2">
-                          <div className="flex w-full items-center">
-                            <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#8ca0b9]"></span>
-                            <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-                              <span> Tizen </span>
-                              <span> 34% </span>
-                            </p>
-                          </div>
-                        </div>
-                        <div className="w-full px-8 sm:w-1/2">
-                          <div className="flex w-full items-center">
-                            <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#8ca0b9]"></span>
-                            <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-                              <span> Webos </span>
-                              <span> 45% </span>
-                            </p>
-                          </div>
-                        </div>
-                        <div className="w-full px-8 sm:w-1/2">
-                          <div className="flex w-full items-center">
-                            <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#b2c7d0]"></span>
-                            <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-                              <span> Raspberry </span>
-                              <span> 12% </span>
-                            </p>
-                          </div>
+                        <div>
+                          <table cellPadding={10}>
+                            <tbody>
+                              <tr>
+                                <td className="flex items-center">
+                                  <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#404f8b]"></span>
+                                  Android
+                                </td>
+                                <td>65%</td>
+                              </tr>
+                              <tr>
+                                <td className="flex items-center">
+                                  {" "}
+                                  <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#59709a]"></span>
+                                  Tizen
+                                </td>
+                                <td>34%</td>
+                              </tr>
+                              <tr>
+                                <td className="flex items-center">
+                                  {" "}
+                                  <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#8ca0b9]"></span>
+                                  Webos
+                                </td>
+                                <td>45% </td>
+                              </tr>
+                              <tr>
+                                <td className="flex items-center">
+                                  {" "}
+                                  <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#b2c7d0]"></span>
+                                  Raspberry
+                                </td>
+                                <td>12%</td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
                       </div>
                     </div>
@@ -435,7 +436,7 @@ const Business = () => {
                   options={SalesOptions}
                   series={stateVlaue.series}
                   type="bar"
-                  height="300px"
+                  height="380px"
                 />
               </div>
             </div>
