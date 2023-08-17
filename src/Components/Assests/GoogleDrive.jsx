@@ -113,23 +113,23 @@ const GoogleDrive = () => {
     console.log(files, "files");
   });
 
-  //  const uploadDataToAPI = async () => {
-  //     try {
-  //       for (const file of selectedFiles) {
-  //         const formData = new FormData();
-  //         const details = "Some Details about the file";
-  //         const CategorieType = getContentType(file.mimeType);
-  //         formData.append("FileType", file.url);
-  //         formData.append("operation", "Insert");
-  //         formData.append("CategorieType", CategorieType);
-  //         formData.append("details", details);
-  //         const response = await axios.post(ALL_FILES_UPLOAD, formData);
-  //         console.log("Upload Success:", response.data);
-  //       }
-  //     } catch (error) {
-  //       console.error("Upload Error:", error);
+  // const uploadDataToAPI = async () => {
+  //   try {
+  //     for (const file of selectedFiles) {
+  //       const formData = new FormData();
+  //       const details = "drive image";
+  //       const CategorieType = getContentType(file.mimeType);
+  //       formData.append("FileType", file.embedUrl);
+  //       formData.append("operation", "Insert");
+  //       formData.append("CategorieType", "Online");
+  //       formData.append("details", details);
+  //       const response = await axios.post(ALL_FILES_UPLOAD, formData);
+  //       console.log("Upload Success:", response.data);
   //     }
-  //   };
+  //   } catch (error) {
+  //     console.error("Upload Error:", error);
+  //   }
+  // };
 
   const uploadDataToAPI = () => {
     selectedFiles.forEach((files) => {
@@ -138,7 +138,7 @@ const GoogleDrive = () => {
       const CategorieType = getContentType(files.type);
       formData.append("FileType", files.embedUrl);
       formData.append("operation", "Insert");
-      formData.append("CategorieType", CategorieType);
+      formData.append("CategorieType", "Online");
       formData.append("details", details);
       axios
         .post(ALL_FILES_UPLOAD, formData)
