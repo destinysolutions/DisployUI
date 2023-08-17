@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PublicClientApplication } from "@azure/msal-browser";
 import { Tooltip } from "@material-tailwind/react";
-import { Client } from "@microsoft/microsoft-graph-client";
+// import { Client } from "@microsoft/microsoft-graph-client";
 
 import Onedrive from '../../../public/Assets/one-drive.png';
 
@@ -28,17 +28,17 @@ const OneDrive = () => {
             return tokenResponse.accessToken;
         };
 
-        setGraphClient(Client.init({
-            authProvider: (done) => {
-                accessTokenCallback()
-                    .then((accessToken) => {
-                        done(null, accessToken);
-                    })
-                    .catch((error) => {
-                        done(error, null);
-                    });
-            }
-        }));
+        // setGraphClient(Client.init({
+        //     authProvider: (done) => {
+        //         accessTokenCallback()
+        //             .then((accessToken) => {
+        //                 done(null, accessToken);
+        //             })
+        //             .catch((error) => {
+        //                 done(error, null);
+        //             });
+        //     }
+        // }));
 
         const accounts = msalInstance.getAllAccounts();
         setIsLoggedIn(accounts.length > 0);
