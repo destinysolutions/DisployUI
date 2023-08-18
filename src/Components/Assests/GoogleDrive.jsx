@@ -131,25 +131,29 @@ const GoogleDrive = () => {
   //   }
   // };
 
-  const uploadDataToAPI = () => {
-    selectedFiles.forEach((files) => {
-      const formData = new FormData();
-      const details = "Some Details about the file";
-      const CategorieType = getContentType(files.type);
-      formData.append("FileType", files.embedUrl);
-      formData.append("operation", "Insert");
-      formData.append("CategorieType", "Online");
-      formData.append("details", details);
-      axios
-        .post(ALL_FILES_UPLOAD, formData)
-        .then((response) => {
-          console.log("Upload Success:", response.data);
-        })
-        .catch((error) => {
-          console.error("Upload Error:", error);
-        });
-    });
+  const uploadDataToAPI = async () => {
+    try {
+      for (const file of selectedFiles) {
+        const CategorieType = getContentType(file.mimeType);
+        console.log("file", file);
+        // Fetch the file data
+        const response = await fetch(file.embedUrl);
+        const fileData = await response.blob();
+
+        const formData = new FormData();
+        formData.append("FileType", fileData, file.name);
+        formData.append("operation", "Insert");
+        formData.append("CategorieType", CategorieType);
+        formData.append("details", "drive image");
+
+        await axios.post(ALL_FILES_UPLOAD, formData);
+      }
+      console.log("Upload Success", response.data);
+    } catch (error) {
+      console.error("Upload Error:", error);
+    }
   };
+
   return (
     <>
       <Tooltip
