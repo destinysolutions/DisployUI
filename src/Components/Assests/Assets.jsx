@@ -6,7 +6,7 @@ import Navbar from "../Navbar";
 import { TiFolderOpen } from "react-icons/ti";
 import { AiOutlineCloudUpload, AiOutlineUnorderedList } from "react-icons/ai";
 import { RxDashboard } from "react-icons/rx";
-
+import { FiCheckCircle } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
 import "../../Styles/assest.css";
 import { FiUpload } from "react-icons/fi";
@@ -23,6 +23,7 @@ import { HiOutlineVideoCamera } from "react-icons/hi2";
 import { RiGalleryFill } from "react-icons/ri";
 import { HiDocumentDuplicate } from "react-icons/hi";
 import { ALL_FILES_UPLOAD, GET_ALL_FILES } from "../../Pages/Api";
+import { useLocation } from "react-router-dom";
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -197,6 +198,23 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
   };
+  // Image uploaded logic
+  const location = useLocation();
+  const [showSpinner, setShowSpinner] = useState(false);
+
+  useEffect(() => {
+    const uploadSuccessFromStorage = localStorage.getItem('uploadSuccess');
+    const { uploadSuccess } = location.state || {};
+
+    if (uploadSuccessFromStorage === 'true' && uploadSuccess) {
+      setShowSpinner(true);
+
+      setTimeout(() => {
+        setShowSpinner(false);
+        localStorage.removeItem('uploadSuccess'); // Clear the storage after showing spinner
+      }, 3000);
+    }
+  }, [location.state]);
 
   return (
     <>
@@ -295,7 +313,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   : "togglecontent"
               }
             >
-              <div className="grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section">
+              <div className={`page-content grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section ${showSpinner ? "dimmed" : ""}`}>
                 {gridData.length > 0 ? (
                   gridData.map((item, index) => (
                     <li
@@ -308,7 +326,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           alt={item.name}
                           className={`imagebox relative ${selectedItems.includes(item)
                             ? "active opacity-1 w-full rounded-2xl"
-                            : "opacity-50 w-full rounded-2xl"
+                            : "opacity-1 w-full rounded-2xl"
                             }`}
                         />
                       )}
@@ -329,7 +347,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               alt={item.name}
                               className={`imagebox relative ${selectedItems.includes(item)
                                 ? "active opacity-1 w-full rounded-2xl"
-                                : "opacity-50 w-full rounded-2xl"
+                                : "opacity-100 w-full rounded-2xl"
                                 }`}
                             />
                           )}
@@ -745,6 +763,30 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
 
             {/*End of List View */}
+
+            {/* sucess popup */}
+
+            <div className="parent-wrapper">
+              {showSpinner && (
+                <div className="spinner-overlay">
+                  <div className="spinner">
+                    <div className="absolute top-1/2 left-1/2 -mt-4 -ml-2 h-8 w-4 text-indigo-700">
+                      <div className="absolute z-10 -ml-2 h-8 w-8 animate-bounce">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="animate-spin w-10" fill="#e4aa07" stroke="currentColor" strokeWidth={0} viewBox="0 0 16 16">
+                          <path d="M8 0c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zM8 4c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4zM12.773 12.773c-1.275 1.275-2.97 1.977-4.773 1.977s-3.498-0.702-4.773-1.977-1.977-2.97-1.977-4.773c0-1.803 0.702-3.498 1.977-4.773l1.061 1.061c0 0 0 0 0 0-2.047 2.047-2.047 5.378 0 7.425 0.992 0.992 2.31 1.538 3.712 1.538s2.721-0.546 3.712-1.538c2.047-2.047 2.047-5.378 0-7.425l1.061-1.061c1.275 1.275 1.977 2.97 1.977 4.773s-0.702 3.498-1.977 4.773z"></path>
+                        </svg>
+                      </div>
+                      <div className="absolute top-4 h-5 w-4 animate-bounce border-b-2 border-SlateBlue -rotate-90"></div>
+                      <div className="absolute top-4 h-5 w-4 animate-bounce border-b-2 border-SlateBlue rotate-90"></div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+
+
+
           </div>
         </div>
       }

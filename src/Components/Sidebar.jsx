@@ -200,6 +200,7 @@ const Sidebar = ({ sidebarOpen }) => {
               </div>
               <ul className="space-y-1 font-medium">
                 {Menus.map((item, index) => {
+                  const isSubMenuActive = activeSubmenu === index;
                   return (
                     <li key={index} className={item.cName}>
                       <div className="flex items-center">
@@ -210,16 +211,19 @@ const Sidebar = ({ sidebarOpen }) => {
                         {item.subMenus && (
                           <div className="ml-5 absolute right-0">
                             <FiIcons.FiChevronDown
-                              className={`${
-                                activeSubmenu ? "transform rotate-180" : ""
-                              } transition-transform duration-300 text-white 
+                              className={`${isSubMenuActive ? "transform rotate-180" : ""
+                                } transition-transform duration-300 text-white 
                             `}
-                              onClick={() => setActiveSubmenu(!activeSubmenu)}
+                              onClick={() =>
+                                setActiveSubmenu(
+                                  isSubMenuActive ? null : index
+                                )
+                              }
                             />
                           </div>
                         )}
                       </div>
-                      {activeSubmenu && item.subMenus && (
+                      {isSubMenuActive && item.subMenus && (
                         <ul className="ml-4 mt-3">
                           {item.subMenus.map((submenu, subIndex) => (
                             <li key={subIndex} className="p-2 relative submenu">
@@ -256,9 +260,8 @@ const Sidebar = ({ sidebarOpen }) => {
         <div className="menu-bars self-center">
           <HiOutlineMenuAlt2
             onClick={handleSidebarToggle}
-            className={` text-SlateBlue text-3xl ${mobileSidebar && "hidden"} ${
-              mobileSidebar ? "ml-0" : "ml-5"
-            }`}
+            className={` text-SlateBlue text-3xl ${mobileSidebar && "hidden"} ${mobileSidebar ? "ml-0" : "ml-5"
+              }`}
           />
         </div>
       )}
@@ -293,9 +296,8 @@ const Sidebar = ({ sidebarOpen }) => {
                       {item.subMenus && (
                         <div className="ml-5 absolute right-0">
                           <FiIcons.FiChevronDown
-                            className={`${
-                              activeSubmenu ? "transform rotate-180" : ""
-                            } transition-transform duration-300 text-white 
+                            className={`${activeSubmenu ? "transform rotate-180" : ""
+                              } transition-transform duration-300 text-white 
                           `}
                             onClick={() => setActiveSubmenu(!activeSubmenu)}
                           />

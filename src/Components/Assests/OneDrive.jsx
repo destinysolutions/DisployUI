@@ -95,6 +95,7 @@ import Onedrive from '../../../public/Assets/one-drive.png';
 
 const OneDrive = (props) => {
     const [app, setApp] = useState(null);
+    const [interactionInProgress, setInteractionInProgress] = useState(false);
     const baseUrl = "https://onedrive.live.com/picker";
     const authority = "https://login.microsoftonline.com/common";
 
@@ -206,8 +207,8 @@ const OneDrive = (props) => {
 
     const launchPicker = async (e) => {
         e.preventDefault();
-        e.target.disabled = true;
-
+        const button = e.target;
+        button.disabled = true;
         try {
             const authToken = await getToken();
             const params = {
@@ -246,8 +247,8 @@ const OneDrive = (props) => {
         } catch (error) {
             console.error("Error launching picker:", error);
         } finally {
-            // Re-enable the button after interaction is completed or failed
-            e.target.disabled = false;
+            button.disabled = false;
+            // e.target.disabled = false;
         }
     };
 
