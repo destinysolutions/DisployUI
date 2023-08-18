@@ -6,9 +6,11 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { BsTags } from "react-icons/bs";
 import { GrSchedules } from "react-icons/gr";
 import { MdDateRange, MdOutlinePermMedia } from "react-icons/md";
-import { VscCompass } from "react-icons/vsc";
+import { IoTvOutline } from "react-icons/io5";
 import ReactModal from "react-modal";
 import { Link } from "react-router-dom";
+import { GET_ALL_FILES } from "../../Pages/Api";
+import axios from "axios";
 
 const EventEditor = ({
   isOpen,
@@ -24,7 +26,6 @@ const EventEditor = ({
   const [editedStartTime, setEditedStartTime] = useState("");
   const [editedEndDate, setEditedEndDate] = useState("");
   const [editedEndTime, setEditedEndTime] = useState("");
-  const [endDateDisabled, setEndDateDisabled] = useState(true);
 
   // State to keep track of repeat settings modal
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
@@ -58,7 +59,6 @@ const EventEditor = ({
 
   const handleStartDateChange = (e) => {
     setEditedStartDate(e.target.value);
-    setEndDateDisabled(false);
   };
 
   const handleStartTimeChange = (e) => {
@@ -105,6 +105,18 @@ const EventEditor = ({
     new Array(buttons.length).fill(false)
   );
 
+  // Count the repeated days within the selected date range
+  const countRepeatedDaysInRange = () => {
+    let count = 0;
+    for (let i = 0; i <= dayDifference; i++) {
+      const dayIndex = (startDate.getDay() + i) % 7;
+      if (selectedDays[dayIndex]) {
+        count++;
+      }
+    }
+    return count;
+  };
+
   // Helper function to check if a given day is within the start and end date range
   const isDayInRange = (dayIndex) => {
     const currentDate = new Date(startDate);
@@ -148,12 +160,8 @@ const EventEditor = ({
         currentDate.setDate(currentDate.getDate() + 1);
       }
 
-      console.log("Generated events:", events);
-
       // Save the generated events
       events.forEach((event) => {
-        // Use your onSave function here to save the event
-        console.log("Saving event:", event);
         onSave(null, event);
       });
     } else {
@@ -189,6 +197,28 @@ const EventEditor = ({
       }
     }
   };
+
+  const [assetData, setAssetData] = useState([]);
+  useEffect(() => {
+    axios
+      .get(GET_ALL_FILES)
+      .then((response) => {
+        const fetchedData = response.data;
+        console.log(fetchedData);
+        setAssetData(fetchedData);
+        // const allAssets = [
+        //   ...(fetchedData.image ? fetchedData.image : []),
+        //   ...(fetchedData.video ? fetchedData.video : []),
+        //   ...(fetchedData.doc ? fetchedData.doc : []),
+        //   ...(fetchedData.images ? fetchedData.images : []),
+        // ];
+        // setGridData(allAssets);
+        // setTableData(allAssets);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <>
@@ -242,8 +272,8 @@ const EventEditor = ({
                       </th>
                       <th className="p-3 font-medium text-[14px]">
                         <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
-                          <VscCompass className="mr-2 text-xl" />
-                          orientation
+                          <IoTvOutline className="mr-2 text-xl" />
+                          Resolution
                         </button>
                       </th>
 
@@ -264,7 +294,7 @@ const EventEditor = ({
                       <td className="break-words	w-[150px] py-2">
                         Schedule Name Till 28 June 2023
                       </td>
-                      <td className="py-2">0</td>
+                      <td className="py-2">1280*832</td>
 
                       <td className="py-2">Tags, Tags</td>
                     </tr>
@@ -274,7 +304,7 @@ const EventEditor = ({
                       <td className="break-words	w-[150px] py-2">
                         Schedule Name Till 28 June 2023
                       </td>
-                      <td className="py-2">90</td>
+                      <td className="py-2">1920*1080</td>
 
                       <td className="py-2">Tags, Tags</td>
                     </tr>
@@ -304,14 +334,13 @@ const EventEditor = ({
                         value={editedEndDate}
                         onChange={handleEndDateChange}
                         className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
-                        disabled={endDateDisabled}
                       />
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-5 text-black font-medium text-lg">
-                  <label>Repeating {dayDifference} Day(s)</label>
+                  <label>Repeating {countRepeatedDaysInRange()} Day(s)</label>
                 </div>
 
                 <div className="flex mt-5">
@@ -403,17 +432,17 @@ const EventEditor = ({
                             />
                           </div>
                         </li>
-                        {/* <li className="border-b-2 border-[#D5E3FF] p-3">
+                        <li className="border-b-2 border-[#D5E3FF] p-3">
                           <h3>End Date:</h3>
                           <div className="mt-2">
                             <input
                               type="date"
-                              value={editedEndDate}
-                              onChange={handleEndDateChange}
+                              value={editedStartDate}
+                              readOnly
                               className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
                             />
                           </div>
-                        </li> */}
+                        </li>
                         <li className="border-b-2 border-[#D5E3FF] p-3">
                           <h3>Start Time:</h3>
                           <div className="mt-2">
@@ -470,21 +499,30 @@ const EventEditor = ({
           <div className="flex justify-center mt-16">
             <button
               className="border-2 border-primary  px-5 py-2 rounded-full"
-              onClick={onClose}
+              onClick={() => {
+                onClose();
+                setShowRepeatSettings(false);
+              }}
             >
               Cancel
             </button>
 
             <button
               className="border-2 border-primary  px-6 py-2 rounded-full ml-3"
-              onClick={handleSave}
+              onClick={() => {
+                handleSave();
+                setShowRepeatSettings(false);
+              }}
             >
               Save
             </button>
             {isEditMode && (
               <button
                 className="border-2 border-primary  px-6 py-2 rounded-full ml-3"
-                onClick={handleDelete}
+                onClick={() => {
+                  handleDelete();
+                  setShowRepeatSettings(false);
+                }}
               >
                 Delete
               </button>

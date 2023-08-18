@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../Styles/sidebar.css";
 import { Link } from "react-router-dom";
 import * as FiIcons from "react-icons/fi";
@@ -176,6 +176,23 @@ const Sidebar = ({ sidebarOpen }) => {
     setMobileSidebar(!mobileSidebar);
   };
 
+  const [submenuStates, setSubmenuStates] = useState({});
+
+  // Update submenu state and store in local storage
+  const updateSubmenuState = (submenuTitle, isOpen) => {
+    const updatedStates = { ...submenuStates, [submenuTitle]: isOpen };
+    setSubmenuStates(updatedStates);
+    localStorage.setItem("submenuStates", JSON.stringify(updatedStates));
+  };
+
+  // Load submenu states from local storage on component mount
+  useEffect(() => {
+    const storedStates = localStorage.getItem("submenuStates");
+    if (storedStates) {
+      setSubmenuStates(JSON.parse(storedStates));
+    }
+  }, []);
+  
   return (
     <>
       {/* screen otp modal start */}
@@ -200,6 +217,7 @@ const Sidebar = ({ sidebarOpen }) => {
               </div>
               <ul className="space-y-1 font-medium">
                 {Menus.map((item, index) => {
+                  const submenuIsOpen = submenuStates[item.title] || false; // Check if submenu is open
                   return (
                     <li key={index} className={item.cName}>
                       <div className="flex items-center">
@@ -211,15 +229,17 @@ const Sidebar = ({ sidebarOpen }) => {
                           <div className="ml-5 absolute right-0">
                             <FiIcons.FiChevronDown
                               className={`${
-                                activeSubmenu ? "transform rotate-180" : ""
-                              } transition-transform duration-300 text-white 
-                            `}
-                              onClick={() => setActiveSubmenu(!activeSubmenu)}
+                                submenuIsOpen ? "transform rotate-180" : ""
+                              } transition-transform duration-300 text-white `}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                updateSubmenuState(item.title, !submenuIsOpen);
+                              }} // Update submenu state
                             />
                           </div>
                         )}
                       </div>
-                      {activeSubmenu && item.subMenus && (
+                      {submenuIsOpen && item.subMenus && (
                         <ul className="ml-4 mt-3">
                           {item.subMenus.map((submenu, subIndex) => (
                             <li key={subIndex} className="p-2 relative submenu">
