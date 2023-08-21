@@ -126,18 +126,29 @@ const Pexels = ({ closeModal }) => {
     });
 
     selectedMedia.videos.forEach((video) => {
+      // Split the URL by '/'
+      const urlParts = video.image.split("/");
+
+      // Get the last part of the URL which contains the filename
+      const filenameWithQuery = urlParts[urlParts.length - 1];
+
+      // Remove any query parameters from the filename
+      const filename = filenameWithQuery.split("?")[0];
+
+      // Extract the name from the filename by removing the file extension
+      const name = filename.split(".")[0];
       const formData = new FormData();
       const details = "Some Details about the file";
       formData.append("FileType", video.video_files[0].link);
       formData.append("operation", "Insert");
       formData.append("CategorieType", "Online");
-      formData.append("details", details);
-      formData.append("name", "Video");
+      formData.append("details", "Video");
       formData.append(
         "resolutions",
         `${video.video_files[0].height}*${video.video_files[0].width}`
       );
       formData.append("durations", video.duration);
+      formData.append("name", name);
       axios
         .post(ALL_FILES_UPLOAD, formData, {
           onUploadProgress: (progressEvent) => {

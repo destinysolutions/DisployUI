@@ -203,15 +203,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [showSpinner, setShowSpinner] = useState(false);
 
   useEffect(() => {
-    const uploadSuccessFromStorage = localStorage.getItem('uploadSuccess');
+    const uploadSuccessFromStorage = localStorage.getItem("uploadSuccess");
     const { uploadSuccess } = location.state || {};
 
-    if (uploadSuccessFromStorage === 'true' && uploadSuccess) {
+    if (uploadSuccessFromStorage === "true" && uploadSuccess) {
       setShowSpinner(true);
 
       setTimeout(() => {
         setShowSpinner(false);
-        localStorage.removeItem('uploadSuccess'); // Clear the storage after showing spinner
+        localStorage.removeItem("uploadSuccess"); // Clear the storage after showing spinner
       }, 3000);
     }
   }, [location.state]);
@@ -266,7 +266,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   </li>
                 </ul>
                 <button onClick={handleSelectAll}>
-                  <input type="checkbox" className=" mx-1 w-6 h-5 mt-2" checked={selectAll} readOnly />
+                  <input
+                    type="checkbox"
+                    className=" mx-1 w-6 h-5 mt-2"
+                    checked={selectAll}
+                    readOnly
+                  />
                 </button>
               </div>
             </div>
@@ -298,7 +303,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
               <button
                 className={activetab === 5 ? "tabactivebtn " : "tabbtn"}
-              // onClick={() => handleActiveBtnClick(5)}
+                // onClick={() => handleActiveBtnClick(5)}
               >
                 App
               </button>
@@ -313,7 +318,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   : "togglecontent"
               }
             >
-              <div className={`page-content grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section ${showSpinner ? "dimmed" : ""}`}>
+              <div
+                className={`page-content grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section ${
+                  showSpinner ? "dimmed" : ""
+                }`}
+              >
                 {gridData.length > 0 ? (
                   gridData.map((item, index) => (
                     <li
@@ -324,16 +333,17 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <img
                           src={item.fileType}
                           alt={item.name}
-                          className={`imagebox relative ${selectedItems.includes(item)
-                            ? "active opacity-1 w-full rounded-2xl"
-                            : "opacity-1 w-full rounded-2xl"
-                            }`}
+                          className={`imagebox relative ${
+                            selectedItems.includes(item)
+                              ? "active opacity-1 w-full rounded-2xl"
+                              : "opacity-1 w-full rounded-2xl"
+                          }`}
                         />
                       )}
 
                       {item.categorieType === "Online" && (
                         <>
-                          {item.name === "Video" ? (
+                          {item.details === "Video" ? (
                             <video
                               controls
                               className="w-full rounded-2xl relative h-56"
@@ -345,10 +355,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             <img
                               src={item.fileType}
                               alt={item.name}
-                              className={`imagebox relative ${selectedItems.includes(item)
-                                ? "active opacity-1 w-full rounded-2xl"
-                                : "opacity-100 w-full rounded-2xl"
-                                }`}
+                              className={`imagebox relative ${
+                                selectedItems.includes(item)
+                                  ? "active opacity-1 w-full rounded-2xl"
+                                  : "opacity-100 w-full rounded-2xl"
+                              }`}
                             />
                           )}
                         </>
@@ -375,7 +386,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         )}
                         {item.categorieType === "Online" && (
                           <>
-                            {item.name === "Video" ? (
+                            {item.details === "Video" ? (
                               <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
                             ) : (
                               <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
@@ -443,7 +454,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               )}
                               {item.categorieType === "Online" && (
                                 <>
-                                  {item.name === "Video" ? (
+                                  {item.details === "Video" ? (
                                     <li className="flex text-sm items-center">
                                       <FiDownload className="mr-2 text-lg" />
                                       <a href={item.fileType} download>
@@ -543,7 +554,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       <th className="text-black font-medium">Size</th>
                       <th></th>
                       <th></th>
-
                     </tr>
                   </thead>
                   <tbody>
@@ -637,7 +647,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             )}
                             {item.categorieType === "Online" && (
                               <>
-                                {item.name === "Video" ? (
+                                {item.details === "Video" ? (
                                   <div className="relative videobox">
                                     <video
                                       controls
@@ -651,7 +661,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       tag.
                                     </video>
                                     <div className="tabicon text-center absolute right-0 bottom-[25px]">
-                                      {item.name === "Video" && (
+                                      {item.details === "Video" && (
                                         <HiOutlineVideoCamera className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
                                       )}
                                     </div>
@@ -703,7 +713,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
                           <td>{item.durations}</td>
                           <td>{item.resolutions}</td>
-                          <td className=" break-all max-w-sm">{item.categorieType}</td>
+                          <td className=" break-all max-w-sm">
+                            {item.categorieType}
+                          </td>
                           <td>{item.fileSize}</td>
 
                           <td>
@@ -748,8 +760,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               </div>
                             )}
                           </td>
-
-
                         </tr>
                       ))
                     ) : (
@@ -772,7 +782,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   <div className="spinner">
                     <div className="absolute top-1/2 left-1/2 -mt-4 -ml-2 h-8 w-4 text-indigo-700">
                       <div className="absolute z-10 -ml-2 h-8 w-8 animate-bounce">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="animate-spin w-10" fill="#e4aa07" stroke="currentColor" strokeWidth={0} viewBox="0 0 16 16">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="animate-spin w-10"
+                          fill="#e4aa07"
+                          stroke="currentColor"
+                          strokeWidth={0}
+                          viewBox="0 0 16 16"
+                        >
                           <path d="M8 0c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zM8 4c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4zM12.773 12.773c-1.275 1.275-2.97 1.977-4.773 1.977s-3.498-0.702-4.773-1.977-1.977-2.97-1.977-4.773c0-1.803 0.702-3.498 1.977-4.773l1.061 1.061c0 0 0 0 0 0-2.047 2.047-2.047 5.378 0 7.425 0.992 0.992 2.31 1.538 3.712 1.538s2.721-0.546 3.712-1.538c2.047-2.047 2.047-5.378 0-7.425l1.061-1.061c1.275 1.275 1.977 2.97 1.977 4.773s-0.702 3.498-1.977 4.773z"></path>
                         </svg>
                       </div>
@@ -783,10 +800,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               )}
             </div>
-
-
-
-
           </div>
         </div>
       }
