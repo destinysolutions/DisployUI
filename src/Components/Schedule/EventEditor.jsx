@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { SketchPicker } from "react-color";
-import { AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
 import { BsTags } from "react-icons/bs";
 import { GrSchedules } from "react-icons/gr";
 import { MdDateRange, MdOutlinePermMedia } from "react-icons/md";
@@ -235,6 +235,16 @@ const EventEditor = ({
       setAssetData(filteredData);
     }
   }
+  const [selectedAsset, setSelectedAsset] = useState(null);
+  const [assetPreview, setAssetPreview] = useState(null);
+
+  const handleAssetChange = (selectedName) => {
+    const selectedAssetPreview = assetData.find(
+      (item) => item.name === selectedName
+    );
+    setAssetPreview(selectedAssetPreview);
+  };
+  const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
 
   return (
     <>
@@ -293,7 +303,13 @@ const EventEditor = ({
                         {assetData.map((item) => (
                           <tr key={item.id}>
                             <td className="border-b border-[#eee] py-5 px-4 pl-9 md:pl-10">
-                              <h5 className="font-medium text-black">
+                              <h5
+                                className="font-medium text-black cursor-pointer"
+                                onClick={() => {
+                                  handleAssetChange(item.name);
+                                  setAssetPreviewPopup(true);
+                                }}
+                              >
                                 {item.name}
                               </h5>
                             </td>
@@ -311,8 +327,110 @@ const EventEditor = ({
                             <td className="border-b border-[#eee] py-5 px-4 ">
                               <p className="text-black">Tags, Tags</p>
                             </td>
+                            <td className="border-b border-[#eee] py-5 px-4">
+                              <button
+                                className="border border-primary p-3 rounded-full"
+                                onClick={() => setSelectedAsset(item)}
+                              >
+                                Select
+                              </button>
+                            </td>
                           </tr>
                         ))}
+                        <tr>
+                          <td>
+                            {assetPreviewPopup && (
+                              <>
+                                <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-50 outline-none focus:outline-none">
+                                  <div className="relative max-w-xl my-6 mx-auto myplaylist-popup-details">
+                                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                                      <div className="flex items-start justify-end p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                                        <button
+                                          className="p-1 text-xl"
+                                          onClick={() =>
+                                            setAssetPreviewPopup(false)
+                                          }
+                                        >
+                                          <AiOutlineCloseCircle className="text-2xl" />
+                                        </button>
+                                      </div>
+                                      <div className="p-3">
+                                        {assetPreview && (
+                                          <>
+                                            {assetPreview.categorieType ===
+                                              "Online" && (
+                                              <>
+                                                {assetPreview.details ===
+                                                "Video" ? (
+                                                  <div className="relative videobox">
+                                                    <video
+                                                      controls
+                                                      className="w-full rounded-2xl relative"
+                                                    >
+                                                      <source
+                                                        src={
+                                                          assetPreview.fileType
+                                                        }
+                                                        type="video/mp4"
+                                                      />
+                                                      Your browser does not
+                                                      support the video tag.
+                                                    </video>
+                                                  </div>
+                                                ) : (
+                                                  <div className="imagebox relative p-3">
+                                                    <img
+                                                      src={
+                                                        assetPreview.fileType
+                                                      }
+                                                      className="rounded-2xl"
+                                                    />
+                                                  </div>
+                                                )}
+                                              </>
+                                            )}
+                                            {assetPreview.categorieType ===
+                                              "Image" && (
+                                              <img
+                                                src={assetPreview.fileType}
+                                                alt={assetPreview.name}
+                                                className="imagebox relative"
+                                              />
+                                            )}
+                                            {assetPreview.categorieType ===
+                                              "Video" && (
+                                              <video
+                                                controls
+                                                className="w-full rounded-2xl relative h-56"
+                                              >
+                                                <source
+                                                  src={assetPreview.fileType}
+                                                  type="video/mp4"
+                                                />
+                                                Your browser does not support
+                                                the video tag.
+                                              </video>
+                                            )}
+                                            {assetPreview.categorieType ===
+                                              "DOC" && (
+                                              <a
+                                                href={assetPreview.fileType}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                              >
+                                                {assetPreview.name}
+                                              </a>
+                                            )}
+                                          </>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
+                            )}
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -422,6 +540,21 @@ const EventEditor = ({
                       onChange={handleTitleChange}
                       placeholder="Enter Title"
                     />
+                  </div>
+                  <div className="border-b-2 border-[#D5E3FF]"></div>
+                  <div className="p-3">
+                    <input
+                      type="text"
+                      value={selectedAsset ? selectedAsset.name : "Set Media"}
+                      readOnly
+                      className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                    />
+                    <button
+                      className="border border-primary rounded-full px-4 py-1 ml-3 mt-2"
+                      onClick={() => setSelectedAsset(null)}
+                    >
+                      Clear Media
+                    </button>
                   </div>
                   <div className="border-b-2 border-[#D5E3FF]"></div>
                   <div className="p-3">

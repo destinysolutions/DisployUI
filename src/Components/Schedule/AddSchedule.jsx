@@ -24,6 +24,7 @@ const AddSchedule = () => {
       start: new Date(),
       end: new Date(),
       color: "#ff5722",
+      
     },
     {
       id: 2,
@@ -167,6 +168,14 @@ const AddSchedule = () => {
       });
   }, []);
 
+  const [selectedAsset, setSelectedAsset] = useState(null);
+
+  const handleAssetChange = (event) => {
+    const selectedName = event.target.value;
+    const selectedAsset = assetData.find((item) => item.name === selectedName);
+    setSelectedAsset(selectedAsset);
+  };
+
   return (
     <>
       <div className="p-6">
@@ -228,24 +237,87 @@ const AddSchedule = () => {
                     </div>
                   </li>
                   <li className="p-3">
-                    <select className="w-full">
-                    {assetData.map((item) => (
-                      <option>{item.name}</option>
+                    <select className="w-full" onChange={handleAssetChange}>
+                      <option value="">Select an asset</option>
+                      {assetData.map((item) => (
+                        <option key={item.id} value={item.name}>
+                          {item.name}
+                        </option>
                       ))}
                     </select>
                   </li>
+                  {selectedAsset && (
+                    <>
+                      {selectedAsset.categorieType === "Online" && (
+                        <>
+                          {selectedAsset.details === "Video" ? (
+                            <div className="relative videobox">
+                              <video
+                                controls
+                                className="w-full rounded-2xl relative"
+                              >
+                                <source
+                                  src={selectedAsset.fileType}
+                                  type="video/mp4"
+                                />
+                                Your browser does not support the video tag.
+                              </video>
+                            </div>
+                          ) : (
+                            <div className="imagebox relative p-3">
+                              <img
+                                src={selectedAsset.fileType}
+                                className="rounded-2xl"
+                              />
+                            </div>
+                          )}
+                        </>
+                      )}
+                      {selectedAsset.categorieType === "Image" && (
+                        <img
+                          src={selectedAsset.fileType}
+                          alt={selectedAsset.name}
+                          className="imagebox relative"
+                        />
+                      )}
+                      {selectedAsset.categorieType === "Video" && (
+                        <video
+                          controls
+                          className="w-full rounded-2xl relative h-56"
+                        >
+                          <source
+                            src={selectedAsset.fileType}
+                            type="video/mp4"
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      )}
+                      {selectedAsset.categorieType === "DOC" && (
+                        <a
+                          href={selectedAsset.fileType}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {selectedAsset.name}
+                        </a>
+                      )}
+                    </>
+                  )}
                 </ul>
               </div>
-              <div className="flex mt-4">
-                <div className="mt-1">
-                  <button>
-                    <IoArrowBackOutline />
-                  </button>
+              {assetData.length === 0 && (
+                <div className="flex mt-4">
+                  <div className="mt-1">
+                    <button>
+                      <IoArrowBackOutline />
+                    </button>
+                  </div>
+                  <p className="mx-3">
+                    No Associated Assets. Start by selecting a date & time on
+                    the calendar.
+                  </p>
                 </div>
-                <p className="mx-3">
-                  No Associated Assets start by select date & time on calendar.
-                </p>
-              </div>
+              )}
             </div>
           </div>
         </div>
