@@ -93,10 +93,12 @@ const Pexels = ({ closeModal }) => {
     selectedMedia.images.forEach((image) => {
       const formData = new FormData();
       const details = "Some Details about the file";
-      formData.append("FileType", image.src.medium);
+      formData.append("FileType", image.src.original);
       formData.append("operation", "Insert");
       formData.append("CategorieType", "Online");
       formData.append("details", details);
+      formData.append("name", image.alt);
+      formData.append("resolutions", `${image.height}*${image.width}`);
 
       axios
         .post(ALL_FILES_UPLOAD, formData, {
@@ -131,7 +133,11 @@ const Pexels = ({ closeModal }) => {
       formData.append("CategorieType", "Online");
       formData.append("details", details);
       formData.append("name", "Video");
-
+      formData.append(
+        "resolutions",
+        `${video.video_files[0].height}*${video.video_files[0].width}`
+      );
+      formData.append("durations", video.duration);
       axios
         .post(ALL_FILES_UPLOAD, formData, {
           onUploadProgress: (progressEvent) => {
@@ -155,9 +161,8 @@ const Pexels = ({ closeModal }) => {
         });
     });
 
-    localStorage.setItem('uploadSuccess', 'true');
+    localStorage.setItem("uploadSuccess", "true");
   };
-
 
   return (
     <>
@@ -208,7 +213,7 @@ const Pexels = ({ closeModal }) => {
                       }}
                     >
                       <img
-                        src={photo.src.medium}
+                        src={photo.src.original}
                         alt={photo.photographer}
                         className="relative unsplash-img"
                       />
@@ -265,14 +270,22 @@ const Pexels = ({ closeModal }) => {
                 </Link>
               </div>
 
-
               <div className="">
                 {uploadProgress > 0 && (
                   <div className="progress-container">
-                    <div><h1>Uploading... </h1></div>
+                    <div>
+                      <h1>Uploading... </h1>
+                    </div>
                     <div className="absolute top-1/2 left-1/2 -mt-4 -ml-2 h-8 w-4 text-indigo-700">
                       <div className="absolute z-10 -ml-2 h-8 w-8 animate-bounce">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="animate-spin" fill="currentColor" stroke="currentColor" strokeWidth={0} viewBox="0 0 16 16">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="animate-spin"
+                          fill="currentColor"
+                          stroke="currentColor"
+                          strokeWidth={0}
+                          viewBox="0 0 16 16"
+                        >
                           <path d="M8 0c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zM8 4c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4zM12.773 12.773c-1.275 1.275-2.97 1.977-4.773 1.977s-3.498-0.702-4.773-1.977-1.977-2.97-1.977-4.773c0-1.803 0.702-3.498 1.977-4.773l1.061 1.061c0 0 0 0 0 0-2.047 2.047-2.047 5.378 0 7.425 0.992 0.992 2.31 1.538 3.712 1.538s2.721-0.546 3.712-1.538c2.047-2.047 2.047-5.378 0-7.425l1.061-1.061c1.275 1.275 1.977 2.97 1.977 4.773s-0.702 3.498-1.977 4.773z"></path>
                         </svg>
                       </div>
@@ -283,11 +296,9 @@ const Pexels = ({ closeModal }) => {
                 )}
               </div>
 
-
               {uploadSuccess && (
                 <div className="backdrop">
                   <div className="success-popup">
-
                     <div className="relative w-full max-w-xl max-h-full">
                       <div className="relative bg-white rounded-lg shadow">
                         <div className="lg:p-6 md:p-6 sm:p-3 xs:p-2 text-center">
@@ -297,8 +308,8 @@ const Pexels = ({ closeModal }) => {
                           </h3>
                           <p>Thank you for your request.</p>
                           <p>
-                            We are working hard to find the best service and deals for
-                            you.
+                            We are working hard to find the best service and
+                            deals for you.
                           </p>
                           <p className="mb-7 text-[#9892A6] mt-1">
                             Kindly check your media gallery for confirmation.
@@ -315,10 +326,6 @@ const Pexels = ({ closeModal }) => {
                 </div>
               )}
 
-
-
-
-
               {/* Display selected media as uploaded */}
               {uploadedMedia.images.length > 0 && (
                 <div>
@@ -331,7 +338,7 @@ const Pexels = ({ closeModal }) => {
                       return (
                         <li key={photo.id}>
                           <img
-                            src={photo.src.medium}
+                            src={photo.src.original}
                             alt={photo.photographer}
                           />
                         </li>

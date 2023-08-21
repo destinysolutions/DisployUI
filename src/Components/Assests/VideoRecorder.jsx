@@ -77,6 +77,7 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
             formData.append('operation', 'Insert');
             formData.append('CategorieType', 'Video');
             formData.append('details', 'Video Uploaded');
+            formData.append("name", uniqueFileName);
 
             const response = await axios.post(
                 ALL_FILES_UPLOAD,

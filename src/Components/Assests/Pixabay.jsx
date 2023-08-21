@@ -54,7 +54,7 @@ const Pixabay = ({ closeModal }) => {
     }
   };
 
-  // Function to load more images when "Load More" button is clicked 
+  // Function to load more images when "Load More" button is clicked
   const handleLoadMore = () => {
     if (currentPage < totalPages) {
       // If there are more pages to load
@@ -62,7 +62,7 @@ const Pixabay = ({ closeModal }) => {
     }
   };
 
-  //   API
+  //API
   const handleImageUpload = () => {
     selectedImages.forEach((image) => {
       const formData = new FormData();
@@ -71,6 +71,11 @@ const Pixabay = ({ closeModal }) => {
       formData.append("operation", "Insert");
       formData.append("CategorieType", "Online");
       formData.append("details", details);
+      formData.append(
+        "resolutions",
+        `${image.webformatHeight}*${image.webformatWidth}`
+      );
+      formData.append("name", image.tags);
       axios
         .post(ALL_FILES_UPLOAD, formData, {
           onUploadProgress: (progressEvent) => {
@@ -78,7 +83,6 @@ const Pixabay = ({ closeModal }) => {
               (progressEvent.loaded / progressEvent.total) * 100
             );
             setUploadProgress(progress);
-
           },
         })
         .then((response) => {
@@ -161,10 +165,14 @@ const Pixabay = ({ closeModal }) => {
           <div className="  bg-white shadow-2xl">
             {uploadProgress > 0 && (
               <div className="progress-container">
-                <div><h1>Uploading... </h1></div>
+                <div>
+                  <h1>Uploading... </h1>
+                </div>
                 <div
                   className="progress-bar"
-                  style={{ width: `${uploadProgress}%` }}>{uploadProgress}%
+                  style={{ width: `${uploadProgress}%` }}
+                >
+                  {uploadProgress}%
                 </div>
               </div>
             )}
@@ -172,7 +180,6 @@ const Pixabay = ({ closeModal }) => {
 
           {uploadSuccess && (
             <div className="success-popup lg:w-auto md:w-auto sm:w-4/5 xs:w-[90%]">
-
               <div className="relative w-full max-w-xl max-h-full">
                 <div className="relative bg-white rounded-lg shadow">
                   <div className="lg:p-6 md:p-6 sm:p-3 xs:p-2 text-center">
@@ -197,7 +204,6 @@ const Pixabay = ({ closeModal }) => {
                 </div>
               </div>
             </div>
-
           )}
         </div>
       </div>

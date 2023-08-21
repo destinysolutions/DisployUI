@@ -1,5 +1,5 @@
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { Calendar, Views, momentLocalizer } from "react-big-calendar";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
@@ -9,6 +9,8 @@ import { Link } from "react-router-dom";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import EventEditor from "./EventEditor";
+import axios from "axios";
+import { GET_ALL_FILES } from "../../Pages/Api";
 
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
@@ -146,6 +148,25 @@ const AddSchedule = () => {
     updateEvent(resizedEvent);
   };
 
+  const [assetData, setAssetData] = useState([]);
+  useEffect(() => {
+    axios
+      .get(GET_ALL_FILES)
+      .then((response) => {
+        const fetchedData = response.data;
+        const allAssets = [
+          ...(fetchedData.image ? fetchedData.image : []),
+          ...(fetchedData.video ? fetchedData.video : []),
+          ...(fetchedData.doc ? fetchedData.doc : []),
+          ...(fetchedData.images ? fetchedData.images : []),
+        ];
+        setAssetData(allAssets);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   return (
     <>
       <div className="p-6">
@@ -208,10 +229,9 @@ const AddSchedule = () => {
                   </li>
                   <li className="p-3">
                     <select className="w-full">
-                      <option>Associated Assets</option>
-                      <option> Assets Name 1</option>
-                      <option> Assets Name 2</option>
-                      <option> Assets Name 3</option>
+                    {assetData.map((item) => (
+                      <option>{item.name}</option>
+                      ))}
                     </select>
                   </li>
                 </ul>

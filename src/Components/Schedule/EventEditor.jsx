@@ -199,26 +199,42 @@ const EventEditor = ({
   };
 
   const [assetData, setAssetData] = useState([]);
+  const [allAssets, setAllAssets] = useState([]);
+
   useEffect(() => {
     axios
       .get(GET_ALL_FILES)
       .then((response) => {
         const fetchedData = response.data;
-        console.log(fetchedData);
-        setAssetData(fetchedData);
-        // const allAssets = [
-        //   ...(fetchedData.image ? fetchedData.image : []),
-        //   ...(fetchedData.video ? fetchedData.video : []),
-        //   ...(fetchedData.doc ? fetchedData.doc : []),
-        //   ...(fetchedData.images ? fetchedData.images : []),
-        // ];
-        // setGridData(allAssets);
-        // setTableData(allAssets);
+        const allAssets = [
+          ...(fetchedData.image ? fetchedData.image : []),
+          ...(fetchedData.video ? fetchedData.video : []),
+          ...(fetchedData.doc ? fetchedData.doc : []),
+          ...(fetchedData.images ? fetchedData.images : []),
+        ];
+        setAssetData(allAssets);
+        setAllAssets(allAssets);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
+
+  const [searchAsset, setSearchAsset] = useState("");
+  function handleFilter(event) {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchAsset(searchQuery);
+
+    if (searchQuery === "") {
+      setAssetData(allAssets);
+    } else {
+      const filteredData = allAssets.filter((item) => {
+        const itemName = item.name ? item.name.toLowerCase() : "";
+        return itemName.includes(searchQuery);
+      });
+      setAssetData(filteredData);
+    }
+  }
 
   return (
     <>
@@ -246,70 +262,61 @@ const EventEditor = ({
                   type="text"
                   placeholder=" Search by Name"
                   className="border border-primary rounded-full px-7 py-2 search-user"
+                  value={searchAsset}
+                  onChange={handleFilter}
                 />
               </div>
               <div className="overflow-x-auto">
-                <table className="mt-9 w-full sm:mt-3">
-                  <thead>
-                    <tr className="flex justify-between items-center">
-                      <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
-                          <MdOutlinePermMedia className="mr-2 text-xl" />
-                          Assets
-                        </button>
-                      </th>
-                      <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
-                          <MdDateRange className="mr-2 text-xl" />
-                          Date Added
-                        </button>
-                      </th>
-                      <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
-                          <GrSchedules className="mr-2 text-xl" />
-                          Associated Schedule
-                        </button>
-                      </th>
-                      <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full flex  items-center justify-center px-6 py-2">
-                          <IoTvOutline className="mr-2 text-xl" />
-                          Resolution
-                        </button>
-                      </th>
-
-                      <th className="p-3 font-medium text-[14px]">
-                        <button className="bg-[#E4E6FF] rounded-full px-6 py-2 flex  items-center justify-center">
-                          <BsTags className="mr-2 text-xl" />
-                          Tags
-                        </button>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
-                      <td className="py-2">
-                        <Link to="/screensplayer">Assets Name 1</Link>
-                      </td>
-                      <td className="py-2">25 May 2023</td>
-                      <td className="break-words	w-[150px] py-2">
-                        Schedule Name Till 28 June 2023
-                      </td>
-                      <td className="py-2">1280*832</td>
-
-                      <td className="py-2">Tags, Tags</td>
-                    </tr>
-                    <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
-                      <td className="py-2">Assets Name 2</td>
-                      <td className="py-2">25 May 2023</td>
-                      <td className="break-words	w-[150px] py-2">
-                        Schedule Name Till 28 June 2023
-                      </td>
-                      <td className="py-2">1920*1080</td>
-
-                      <td className="py-2">Tags, Tags</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div className="rounded-sm bg-white px-5 pt-6 pb-2.5 shadow-2xl sm:px-7 md:pb-1">
+                  <div className="max-w-full overflow-x-auto max-h-[810px] overflow-y-auto">
+                    <table className="w-full ">
+                      <thead>
+                        <tr className="bg-[#E4E6FF] text-left">
+                          <th className="min-w-[220px] py-4 px-4 font-medium text-black md:pl-10">
+                            Assets
+                          </th>
+                          <th className="min-w-[150px] py-4 px-4 font-medium text-black">
+                            Date Added
+                          </th>
+                          <th className="min-w-[120px] py-4 px-4 font-medium text-black">
+                            Associated Schedule
+                          </th>
+                          <th className="py-4 px-4 font-medium text-black">
+                            Resolution
+                          </th>
+                          <th className="py-4 px-4 font-medium text-black">
+                            Tags
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {assetData.map((item) => (
+                          <tr key={item.id}>
+                            <td className="border-b border-[#eee] py-5 px-4 pl-9 md:pl-10">
+                              <h5 className="font-medium text-black">
+                                {item.name}
+                              </h5>
+                            </td>
+                            <td className="border-b border-[#eee] py-5 px-4 ">
+                              <p className="text-black">Jan 13,2023</p>
+                            </td>
+                            <td className="border-b border-[#eee] py-5 px-4 ">
+                              <p className="text-black ">
+                                Schedule Name Till 28 June 2023
+                              </p>
+                            </td>
+                            <td className="border-b border-[#eee] py-5 px-4 ">
+                              <p className="text-black">{item.resolutions}</p>
+                            </td>
+                            <td className="border-b border-[#eee] py-5 px-4 ">
+                              <p className="text-black">Tags, Tags</p>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
             {showRepeatSettings ? (
