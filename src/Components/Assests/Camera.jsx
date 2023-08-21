@@ -53,12 +53,14 @@ const Camera = ({ closeModal, onImageUpload }) => {
         byteArrays[i] = byteCharacters.charCodeAt(i);
       }
       const blob = new Blob([byteArrays], { type: "image/jpeg" });
+      console.log(blob);
       const uniqueFileName = `Image_${Date.now()}.jpg`;
       const formData = new FormData();
       formData.append("File", blob, uniqueFileName);
       formData.append("operation", "Insert");
       formData.append("CategorieType", "Image");
       formData.append("details", details);
+      formData.append("name", uniqueFileName);
 
       axios
         .post(ALL_FILES_UPLOAD, formData)
