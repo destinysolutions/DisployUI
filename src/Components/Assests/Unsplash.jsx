@@ -27,15 +27,13 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
     );
     const dataJ = await data.json();
     const result = dataJ.results;
-    console.log(result);
 
     if (page === 1) {
-      
       setCurrentPage(2);
       setRes(result);
     } else {
       setRes((prevResults) => [...prevResults, ...result]);
-      setCurrentPage(page + 1); 
+      setCurrentPage(page + 1);
     }
   };
   useEffect(() => {
@@ -46,7 +44,6 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
   }, [selectedImages]);
 
   const handleImageSelect = (imageId) => {
-
     setSelectedImages((prevSelected) =>
       prevSelected.includes(imageId)
         ? prevSelected.filter((imgId) => imgId !== imageId)
@@ -57,8 +54,6 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
     fetchRequest(img, currentPage);
   };
 
-  console.log(selectedImages);
-
   const handleImageUpload = () => {
     setUploadInProgress(true);
     selectedImages.forEach((image) => {
@@ -68,6 +63,7 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
       formData.append("operation", "Insert");
       formData.append("CategorieType", "Online");
       formData.append("details", details);
+      formData.append("name", image.alt_description);
       setImageUploadProgress((prevProgress) => ({
         ...prevProgress,
         [image.id]: 0,
@@ -82,10 +78,8 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
               ...prevProgress,
               [image.id]: progress,
             }));
-
           },
         })
-
 
         .then((response) => {
           console.log("Upload Success:", response.data);
@@ -93,30 +87,28 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
         })
         .catch((error) => {
           console.error("Upload Error:", error);
-
         })
         .finally(() => {
-        
-          if (selectedImages.every((img) => imageUploadProgress[img.id] === 100)) {
-            
+          if (
+            selectedImages.every((img) => imageUploadProgress[img.id] === 100)
+          ) {
             setUploadInProgress(false);
           }
         });
     });
   };
 
-
   useEffect(() => {
-    const allImagesUploaded = selectedImages.every((img) => imageUploadProgress[img.id] === 100);
+    const allImagesUploaded = selectedImages.every(
+      (img) => imageUploadProgress[img.id] === 100
+    );
 
     if (allImagesUploaded) {
       // Introduce a delay before setting uploadInProgress to false
       setTimeout(() => {
         setUploadInProgress(false);
       }, 5000);
-
     }
-
   }, [selectedImages, imageUploadProgress]);
   return (
     <>
@@ -178,10 +170,6 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
             </div>
           </div>
 
-
-
-
-
           <div className="text-center mt-5">
             <button
               type="button"
@@ -193,22 +181,20 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
           </div>
         </div>
 
-
-
         <div className="  bg-white shadow-2xl max-w-xs">
-
           {uploadInProgress && (
             <div className="bg-white shadow-2xl max-w-xs flex ">
               {/* Conditionally render individual image upload spinners */}
               {selectedImages.map((image) => (
-                <div key={image.id} className="image-upload-progress progress-container">
+                <div
+                  key={image.id}
+                  className="image-upload-progress progress-container"
+                >
                   <div className="progress flex items-center">
                     <div
                       className="progress-bar"
                       style={{ width: `${imageUploadProgress[image.id]}%` }}
-                    >
-
-                    </div>
+                    ></div>
                     {imageUploadProgress[image.id]}%
                   </div>
                 </div>
@@ -216,10 +202,6 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
             </div>
           )}
         </div>
-
-
-
-
       </div>
     </>
   );
