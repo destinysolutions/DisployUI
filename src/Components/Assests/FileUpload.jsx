@@ -30,12 +30,12 @@ import { Tooltip } from "@material-tailwind/react";
 import cameraimg from "../../../public/Assets/photography.png";
 import videoimg from "../../../public/Assets/camera.png";
 import pixabayimg from "../../../public/Assets/pixabay.png";
-
+import { useNavigate } from "react-router-dom";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 {
   /* end of video*/
 }
-const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
+const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   FileUpload.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
@@ -44,6 +44,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   const [fileSuccessModal, setfileSuccessModal] = useState(false);
   const [fileErrorModal, setfileErrorModal] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
+
   {
     /* google drive */
   }
@@ -84,6 +85,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const navigate = useNavigate();
   const onFileChange = (e) => {
     const files = Array.from(e.target.files);
     setUploadFiles(files);
@@ -120,6 +122,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
 
         if (response.status === 200) {
           console.log(`File ${file.name} uploaded successfully.`);
+          navigate("/assets");
         } else {
           console.error(`Upload failed for file ${file.name}`);
         }
@@ -179,6 +182,8 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
       return "file content type not found";
     }
   };
+
+
 
   // unsplash code
   const [showUnsplash, setShowUnsplash] = useState(false);
@@ -479,6 +484,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
                   className="bg-SlateBlue text-white px-7 py-2 rounded mt-4 z-10"
                   onClick={uploadData}
                   disabled={uploading}
+
                 >
                   Upload
                 </button>
@@ -507,7 +513,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             )}
             {showPopup && (
-              <div className="popup p-5">
+              <div className="popup">
                 <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                   <div className="relative w-full max-w-xl max-h-full">
                     <div className="relative bg-white rounded-lg shadow">
@@ -574,16 +580,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen }) => {
 
           {/* End of  Dropbox*/}
           {/* ... start camera */}
-          <div>
-            {savedImages.map((image, index) => (
-              <img
-                key={index}
-                src={image}
-                alt={`Saved ${index}`}
-                className="max-w-[20%]"
-              />
-            ))}
-          </div>
+
           {/* end of camera */}
           {/* ... start Video*/}
           <div>

@@ -7,7 +7,7 @@ import { BiDownload } from "react-icons/bi";
 import { MdMotionPhotosOn } from "react-icons/md";
 import axios from "axios";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
-
+import { useNavigate } from "react-router-dom";
 const Camera = ({ closeModal, onImageUpload }) => {
   const webcamRef = useRef(null);
   const [imageSrc, setImageSrc] = useState(null);
@@ -15,7 +15,9 @@ const Camera = ({ closeModal, onImageUpload }) => {
   const [isCapturing, setIsCapturing] = useState(false);
   const [savedImages, setSavedImages] = useState([]);
   const [isSaved, setIsSaved] = useState(false);
-
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const navigate = useNavigate();
   const toggleCamera = () => {
     setIsFrontCamera(!isFrontCamera);
     setImageSrc(null);
@@ -42,18 +44,16 @@ const Camera = ({ closeModal, onImageUpload }) => {
 
   const savePhoto = () => {
     if (imageSrc) {
-      setSavedImages([...savedImages, imageSrc]);
-      setImageSrc(null);
-      setIsSaved(true);
+      setUploading(true);
+      setUploadProgress(0); // Initialize progress to 0
 
       const details = "Camera image Upload";
-      const byteCharacters = atob(imageSrc.split(",")[1]); // Extract the base64 part of the image data
+      const byteCharacters = atob(imageSrc.split(",")[1]);
       const byteArrays = new Uint8Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
         byteArrays[i] = byteCharacters.charCodeAt(i);
       }
       const blob = new Blob([byteArrays], { type: "image/jpeg" });
-      console.log(blob);
       const uniqueFileName = `Image_${Date.now()}.jpg`;
       const formData = new FormData();
       formData.append("File", blob, uniqueFileName);
@@ -63,26 +63,37 @@ const Camera = ({ closeModal, onImageUpload }) => {
       formData.append("name", uniqueFileName);
 
       axios
-        .post(ALL_FILES_UPLOAD, formData)
+        .post(ALL_FILES_UPLOAD, formData, {
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round(
+              (progressEvent.loaded / progressEvent.total) * 100
+            );
+            setUploadProgress(progress); // Update progress as the upload progresses
+          },
+        })
         .then((response) => {
-          console.log("Image uploaded successfully:", response.data);
+          setUploading(false);
+          setUploadProgress(0); // Reset progress to 0 after successful upload
 
           if (response.data.status === 200) {
             const imageUrl = response.data.data[0];
             setSavedImages([...savedImages, imageUrl]);
-
             setIsSaved(true);
 
             setTimeout(() => {
               setIsSaved(false);
-            }, 2000);
+              navigate("/assets");
+            }, 1000);
           }
         })
         .catch((error) => {
+          setUploading(false);
+          setUploadProgress(0); // Reset progress to 0 on error
           console.error("Error uploading image:", error);
         });
     }
   };
+
   return (
     <div className="backdrop">
       <div className="fixed unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 pt-10 rounded-2xl lg:w-1/2 md:w-1/2 sm:w-4/5 xs:w-4/5  ">
@@ -141,12 +152,24 @@ const Camera = ({ closeModal, onImageUpload }) => {
                 <BiDownload className="lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl ml-2 text-SlateBlue" />
               </button>
             )}
-            {isSaved && (
-              <p className="text-green-500 text-center mt-2">
-                Image saved successfully!
-              </p>
-            )}
+
+
           </div>
+
+          {uploading && (
+            <div className="progress-container">
+              <div className="progress flex items-center justify-between">
+                <div
+                  className="progress-bar"
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+                <div className="ml-3">
+                  {uploadProgress}%
+                </div>
+              </div>
+
+            </div>
+          )}
         </div>
       </div>
     </div>

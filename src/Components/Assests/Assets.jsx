@@ -78,14 +78,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [newFolderName, setNewFolderName] = useState("");
   const [tableRows, setTableRows] = useState([]);
 
-  const handleNewFolder = () => {
-    const newFolder = {
-      id: tableRows.length + 1,
-      name: newFolderName,
-    };
-    setTableRows([...tableRows, newFolder]);
-    setNewFolderName("");
-  };
+  // const handleNewFolder = () => {
+  //   const newFolder = {
+  //     id: tableRows.length + 1,
+  //     name: newFolderName,
+  //   };
+  //   setTableRows([...tableRows, newFolder]);
+  //   setNewFolderName("");
+  // };
   {
     /*newfolder threedot dwopdown */
   }
@@ -199,22 +199,103 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectAll(!selectAll);
   };
   // Image uploaded logic
-  const location = useLocation();
-  const [showSpinner, setShowSpinner] = useState(false);
+  // const location = useLocation();
+  // const [showSpinner, setShowSpinner] = useState(false);
 
-  useEffect(() => {
-    const uploadSuccessFromStorage = localStorage.getItem("uploadSuccess");
-    const { uploadSuccess } = location.state || {};
+  // useEffect(() => {
+  //   const uploadSuccessFromStorage = localStorage.getItem("uploadSuccess");
+  //   const { uploadSuccess } = location.state || {};
 
-    if (uploadSuccessFromStorage === "true" && uploadSuccess) {
-      setShowSpinner(true);
+  //   if (uploadSuccessFromStorage === "true" && uploadSuccess) {
+  //     setShowSpinner(true);
 
-      setTimeout(() => {
-        setShowSpinner(false);
-        localStorage.removeItem("uploadSuccess"); // Clear the storage after showing spinner
-      }, 3000);
+  //     setTimeout(() => {
+  //       setShowSpinner(false);
+  //       localStorage.removeItem("uploadSuccess"); // Clear the storage after showing spinner
+  //     }, 3000);
+  //   }
+  // }, [location.state]);
+
+  // New folder
+  //   const [folderId, setFolderId] = useState(null);
+  //   const folderName = 'DefaultFolderName';
+  //   const createNewFolder = () => {
+  //     const folderName = 'DefaultFolderName';
+  //   }
+  // axios
+  //     .post(
+  //       ALL_FILES_UPLOAD,
+  //       { name: folderName },
+  //       {
+  //         headers: {
+  //           'Content-Type': 'application/json', // Specify JSON content type
+  //         },
+  //       }
+  //     )
+  //     .then((response) => {
+  //       console.log("New folder created:", response.data);
+  //       setFolderId(response.data.id);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error creating folder:", error.response);
+  //     });
+
+  //   const insertDataIntoFolder = (folderId, data) => {
+  //     const formData = new FormData();
+  //     formData.append("File", data);
+  //     formData.append("operation", "Insert");
+  //     formData.append("CategorieType", "Image");
+
+  //     axios
+  //       .post(
+  //         ALL_FILES_UPLOAD,
+  //         formData, // Use the FormData object as the request data
+  //         {
+  //           headers: {
+  //             'Content-Type': 'multipart/form-data', // Specify the correct content type for form data
+  //           },
+  //           params: {
+  //             folderId: folderId, // Include folderId as a URL parameter if required
+  //           },
+  //         }
+  //       )
+  //       .then((response) => {
+  //         // Handle the success response here
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error inserting data:", error);
+  //       });
+  //   };
+
+  //   useEffect(() => {
+  //     // Check if folderId is defined before using it
+  //     if (folderId !== null) {
+  //       // Insert data into the created folder
+  //       const dataToInsert = { /* Your data object */ };
+  //       insertDataIntoFolder(folderId, dataToInsert);
+  //     }
+  //   }, [folderId]);
+
+  const createFolder = async () => {
+    try {
+      const folderData = {
+        name: "New Folder Name",
+        description: "Optional description"
+      };
+
+      const response = await axios.post(ALL_FILES_UPLOAD, folderData, {
+        headers: {
+          'Content-Type': 'application/json',
+          // Include any authentication headers if required
+        }
+      });
+
+      console.log("New folder created:", response.data);
+    } catch (error) {
+      console.error("Error creating folder:", error.response);
     }
-  }, [location.state]);
+  };
+
 
   return (
     <>
@@ -232,7 +313,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               <div className=" flex-wrap flex  lg:mt-0 md:mt-0 sm:mt-3">
                 <button
                   className=" dashboard-btn  flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                  onClick={handleNewFolder}
+                  onClick={createFolder}
                 >
                   <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
                   New Folder
@@ -303,7 +384,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
               <button
                 className={activetab === 5 ? "tabactivebtn " : "tabbtn"}
-                // onClick={() => handleActiveBtnClick(5)}
+              // onClick={() => handleActiveBtnClick(5)}
               >
                 App
               </button>
@@ -319,9 +400,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               }
             >
               <div
-                className={`page-content grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section ${
-                  showSpinner ? "dimmed" : ""
-                }`}
+                className={"page-content grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section"}
               >
                 {gridData.length > 0 ? (
                   gridData.map((item, index) => (
@@ -333,11 +412,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <img
                           src={item.fileType}
                           alt={item.name}
-                          className={`imagebox relative ${
-                            selectedItems.includes(item)
-                              ? "active opacity-1 w-full rounded-2xl"
-                              : "opacity-1 w-full rounded-2xl"
-                          }`}
+                          className={`imagebox relative ${selectedItems.includes(item)
+                            ? "active opacity-1 w-full rounded-2xl"
+                            : "opacity-1 w-full rounded-2xl"
+                            }`}
                         />
                       )}
 
@@ -355,11 +433,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             <img
                               src={item.fileType}
                               alt={item.name}
-                              className={`imagebox relative ${
-                                selectedItems.includes(item)
-                                  ? "active opacity-1 w-full rounded-2xl"
-                                  : "opacity-100 w-full rounded-2xl"
-                              }`}
+                              className={`imagebox relative ${selectedItems.includes(item)
+                                ? "active opacity-1 w-full rounded-2xl"
+                                : "opacity-100 w-full rounded-2xl"
+                                }`}
                             />
                           )}
                         </>
@@ -776,30 +853,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
             {/* sucess popup */}
 
-            <div className="parent-wrapper">
-              {showSpinner && (
-                <div className="spinner-overlay">
-                  <div className="spinner">
-                    <div className="absolute top-1/2 left-1/2 -mt-4 -ml-2 h-8 w-4 text-indigo-700">
-                      <div className="absolute z-10 -ml-2 h-8 w-8 animate-bounce">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="animate-spin w-10"
-                          fill="#e4aa07"
-                          stroke="currentColor"
-                          strokeWidth={0}
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M8 0c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zM8 4c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4zM12.773 12.773c-1.275 1.275-2.97 1.977-4.773 1.977s-3.498-0.702-4.773-1.977-1.977-2.97-1.977-4.773c0-1.803 0.702-3.498 1.977-4.773l1.061 1.061c0 0 0 0 0 0-2.047 2.047-2.047 5.378 0 7.425 0.992 0.992 2.31 1.538 3.712 1.538s2.721-0.546 3.712-1.538c2.047-2.047 2.047-5.378 0-7.425l1.061-1.061c1.275 1.275 1.977 2.97 1.977 4.773s-0.702 3.498-1.977 4.773z"></path>
-                        </svg>
-                      </div>
-                      <div className="absolute top-4 h-5 w-4 animate-bounce border-b-2 border-SlateBlue -rotate-90"></div>
-                      <div className="absolute top-4 h-5 w-4 animate-bounce border-b-2 border-SlateBlue rotate-90"></div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+
           </div>
         </div>
       }
