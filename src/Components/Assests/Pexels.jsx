@@ -11,8 +11,9 @@ const Pexels = ({ closeModal }) => {
   const [media, setMedia] = useState([]);
   const [searchQuery, setSearchQuery] = useState("Nature");
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [uploadInProgress, setUploadInProgress] = useState(false);
+  const [imageUploadProgress, setImageUploadProgress] = useState({})
+  const [videoUploadProgress, setVideoUploadProgress] = useState({});
   const navigate = useNavigate();
   const [selectedMedia, setSelectedMedia] = useState({
     images: [],
@@ -56,6 +57,11 @@ const Pexels = ({ closeModal }) => {
         )
         .then((response) => {
           setMedia((prevMedia) => [...prevMedia, ...response.data.videos]);
+          const initialVideoProgress = {};
+          response.data.videos.forEach((video) => {
+            initialVideoProgress[video.id] = 0; // Initialize progress to 0 for each video
+          });
+          setVideoUploadProgress(initialVideoProgress);
         })
         .catch((error) => {
           console.error("Error fetching videos:", error);
@@ -90,6 +96,7 @@ const Pexels = ({ closeModal }) => {
   };
 
   const handleMediaUpload = () => {
+    setUploadInProgress(true);
     selectedMedia.images.forEach((image) => {
       const formData = new FormData();
       const details = "Some Details about the file";
@@ -106,22 +113,30 @@ const Pexels = ({ closeModal }) => {
             const progress = Math.round(
               (progressEvent.loaded / progressEvent.total) * 100
             );
-            setUploadProgress(progress); // Fix here: Use setUploadProgress instead of setShowSpinner
+            setImageUploadProgress((prevProgress) => ({
+              ...prevProgress,
+              [image.id]: progress,
+            }));
           },
         })
         .then((response) => {
           console.log("Upload Success:", response.data);
-          setUploadSuccess(true);
-          setShowSuccessMessage(false);
-          navigate("/assets", {
-            state: {
-              uploadProgress,
-              uploadSuccess: true,
-            },
-          });
+          navigate("/assets");
+
         })
         .catch((error) => {
           console.error("Upload Error:", error);
+        })
+        .finally(() => {
+
+          const allImagesUploaded = selectedMedia.images.every(
+            (image) => imageUploadProgress[image.id] === 100
+          );
+
+          // Check if all images and videos have completed uploading
+          if (allImagesUploaded && selectedMedia.videos.every((video) => videoUploadProgress[video.id] === 100)) {
+            setUploadInProgress(false);
+          }
         });
     });
 
@@ -155,25 +170,34 @@ const Pexels = ({ closeModal }) => {
             const progress = Math.round(
               (progressEvent.loaded / progressEvent.total) * 100
             );
-            setUploadProgress(progress); // Fix here: Use setUploadProgress instead of setShowSpinner
+            setVideoUploadProgress((prevProgress) => ({
+              ...prevProgress,
+              [video.id]: progress,
+            }));
           },
         })
         .then((response) => {
           console.log("Upload Success:", response.data);
-          navigate("/assets", {
-            state: {
-              uploadProgress,
-              uploadSuccess: true,
-            },
-          });
+          navigate("/assets");
         })
         .catch((error) => {
           console.error("Upload Error:", error);
+        })
+        .finally(() => {
+          const allVideosUploaded = selectedMedia.videos.every(
+            (video) => videoUploadProgress[video.id] === 100
+          );
+
+          // Check if all images and videos have completed uploading
+          if (allVideosUploaded && selectedMedia.images.every((image) => imageUploadProgress[image.id] === 100)) {
+            setUploadInProgress(false);
+          }
         });
     });
 
-    localStorage.setItem("uploadSuccess", "true");
+
   };
+
 
   return (
     <>
@@ -281,61 +305,39 @@ const Pexels = ({ closeModal }) => {
                 </Link>
               </div>
 
-              <div className="">
-                {uploadProgress > 0 && (
-                  <div className="progress-container">
-                    <div>
-                      <h1>Uploading... </h1>
-                    </div>
-                    <div className="absolute top-1/2 left-1/2 -mt-4 -ml-2 h-8 w-4 text-indigo-700">
-                      <div className="absolute z-10 -ml-2 h-8 w-8 animate-bounce">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="animate-spin"
-                          fill="currentColor"
-                          stroke="currentColor"
-                          strokeWidth={0}
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M8 0c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zM8 4c2.209 0 4 1.791 4 4s-1.791 4-4 4-4-1.791-4-4 1.791-4 4-4zM12.773 12.773c-1.275 1.275-2.97 1.977-4.773 1.977s-3.498-0.702-4.773-1.977-1.977-2.97-1.977-4.773c0-1.803 0.702-3.498 1.977-4.773l1.061 1.061c0 0 0 0 0 0-2.047 2.047-2.047 5.378 0 7.425 0.992 0.992 2.31 1.538 3.712 1.538s2.721-0.546 3.712-1.538c2.047-2.047 2.047-5.378 0-7.425l1.061-1.061c1.275 1.275 1.977 2.97 1.977 4.773s-0.702 3.498-1.977 4.773z"></path>
-                        </svg>
+              <div className="  bg-white shadow-2xl max-w-xs">
+
+                {uploadInProgress && (
+                  <>
+                    {/* For Images */}
+                    <div key={image.id} className="image-upload-progress progress-container">
+                      <div className="progress flex items-center">
+                        <div
+                          className="progress-bar"
+                          style={{ width: `${imageUploadProgress[image.id]}%` }}
+                        ></div>
+                        {imageUploadProgress[image.id]}%
                       </div>
-                      <div className="absolute top-4 h-5 w-4 animate-bounce border-l-2 border-gray-200 -rotate-90"></div>
-                      <div className="absolute top-4 h-5 w-4 animate-bounce border-r-2 border-gray-200 rotate-90"></div>
                     </div>
-                  </div>
+
+                    {/* For Videos */}
+                    <div key={video.id} className="video-upload-progress progress-container">
+                      <div className="progress flex items-center">
+                        <div
+                          className="progress-bar"
+                          style={{ width: `${videoUploadProgress[video.id]}%` }}
+                        ></div>
+                        {videoUploadProgress[video.id]}%
+                      </div>
+                    </div>
+
+                  </>
                 )}
+
+
+
               </div>
 
-              {uploadSuccess && (
-                <div className="backdrop">
-                  <div className="success-popup">
-                    <div className="relative w-full max-w-xl max-h-full">
-                      <div className="relative bg-white rounded-lg shadow">
-                        <div className="lg:p-6 md:p-6 sm:p-3 xs:p-2 text-center">
-                          <FiCheckCircle className="mx-auto mb-4 text-[#20AE5C] w-14 h-14" />
-                          <h3 className="mb-5 text-2xl font-bold text-[#20AE5C]">
-                            Image Upload successfully
-                          </h3>
-                          <p>Thank you for your request.</p>
-                          <p>
-                            We are working hard to find the best service and
-                            deals for you.
-                          </p>
-                          <p className="mb-7 text-[#9892A6] mt-1">
-                            Kindly check your media gallery for confirmation.
-                          </p>
-                          <Link to="/assets">
-                            <button className="text-white bg-[#20AE5C] rounded text-lg font-bold px-7 py-2.5">
-                              Continue
-                            </button>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
 
               {/* Display selected media as uploaded */}
               {uploadedMedia.images.length > 0 && (
@@ -383,7 +385,7 @@ const Pexels = ({ closeModal }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div >
     </>
   );
 };

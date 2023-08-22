@@ -2,17 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
-import { FiCheckCircle } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const Pixabay = ({ closeModal }) => {
   const [images, setImages] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
-
+  const [uploadInProgress, setUploadInProgress] = useState(false);
+  const [imageUploadProgress, setImageUploadProgress] = useState({});
+  const navigate = useNavigate();
   useEffect(() => {
     const API_KEY = "38694421-d79007fafdaa5464faa5f9999";
     const BASE_URL = "https://pixabay.com/api/?key=" + API_KEY;
@@ -24,7 +23,7 @@ const Pixabay = ({ closeModal }) => {
     axios
       .get(url)
       .then((response) => {
-        // If it's the first page, update the images directly
+
         if (currentPage === 1) {
           setImages(response.data.hits);
         } else {
@@ -64,6 +63,7 @@ const Pixabay = ({ closeModal }) => {
 
   //API
   const handleImageUpload = () => {
+    setUploadInProgress(true);
     selectedImages.forEach((image) => {
       const formData = new FormData();
       const details = "Some Details about the file";
@@ -82,20 +82,40 @@ const Pixabay = ({ closeModal }) => {
             const progress = Math.round(
               (progressEvent.loaded / progressEvent.total) * 100
             );
-            setUploadProgress(progress);
+            setImageUploadProgress((prevProgress) => ({
+              ...prevProgress,
+              [image.id]: progress,
+            }));
           },
         })
         .then((response) => {
           console.log("Upload Success:", response.data);
-          setUploadProgress(0);
-          setUploadSuccess(true);
+          navigate("/assets");
         })
         .catch((error) => {
           console.error("Upload Error:", error);
+        })
+        .finally(() => {
+
+          if (selectedImages.every((img) => imageUploadProgress[img.id] === 100)) {
+
+            setUploadInProgress(false);
+          }
         });
     });
   };
+  useEffect(() => {
+    const allImagesUploaded = selectedImages.every((img) => imageUploadProgress[img.id] === 100);
 
+    if (allImagesUploaded) {
+      // Introduce a delay before setting uploadInProgress to false
+      setTimeout(() => {
+        setUploadInProgress(false);
+      }, 5000);
+
+    }
+
+  }, [selectedImages, imageUploadProgress]);
   return (
     <>
       <div className="backdrop">
@@ -162,49 +182,28 @@ const Pixabay = ({ closeModal }) => {
             </div>
           )}
 
-          <div className="  bg-white shadow-2xl">
-            {uploadProgress > 0 && (
-              <div className="progress-container">
-                <div>
-                  <h1>Uploading... </h1>
-                </div>
-                <div
-                  className="progress-bar"
-                  style={{ width: `${uploadProgress}%` }}
-                >
-                  {uploadProgress}%
-                </div>
+          <div className="  bg-white shadow-2xl max-w-xs">
+
+            {uploadInProgress && (
+              <div className="bg-white shadow-2xl max-w-xs flex ">
+                {/* Conditionally render individual image upload spinners */}
+                {selectedImages.map((image) => (
+                  <div key={image.id} className="image-upload-progress progress-container">
+                    <div className="progress flex items-center">
+                      <div
+                        className="progress-bar"
+                        style={{ width: `${imageUploadProgress[image.id]}%` }}
+                      >
+
+                      </div>
+                      {imageUploadProgress[image.id]}%
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
 
-          {uploadSuccess && (
-            <div className="success-popup lg:w-auto md:w-auto sm:w-4/5 xs:w-[90%]">
-              <div className="relative w-full max-w-xl max-h-full">
-                <div className="relative bg-white rounded-lg shadow">
-                  <div className="lg:p-6 md:p-6 sm:p-3 xs:p-2 text-center">
-                    <FiCheckCircle className="mx-auto mb-4 text-[#20AE5C] w-14 h-14" />
-                    <h3 className="mb-5 text-2xl font-bold text-[#20AE5C]">
-                      Image Upload successfully
-                    </h3>
-                    <p className="text-black">Thank you for your request.</p>
-                    <p className="text-black mt-2 mb-4">
-                      We are working hard to find the best service and deals for
-                      you.
-                    </p>
-                    <p className="mb-7 text-[#9892A6] mt-1">
-                      Kindly check your media gallery for confirmation.
-                    </p>
-                    <Link to="/assets">
-                      <button className="text-white bg-[#20AE5C] rounded text-lg font-bold px-7 py-2.5">
-                        Continue
-                      </button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </>

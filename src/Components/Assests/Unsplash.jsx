@@ -6,20 +6,18 @@ import { BiLoaderCircle } from "react-icons/bi";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import axios from "axios";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
-import { FiCheckCircle } from "react-icons/fi";
-import { Link } from "react-router-dom";
-const API_UPLOAD_URL =
-  "http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload";
+
+import { useNavigate } from "react-router-dom";
+
 const Unsplash = ({ closeModal, onSelectedImages }) => {
   const [img, setImg] = useState("Natural");
   const [res, setRes] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);
-  const [uploadedImages, setUploadedImages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
-
+  const [uploadInProgress, setUploadInProgress] = useState(false);
+  const [imageUploadProgress, setImageUploadProgress] = useState({});
   const API_KEY = "Sgv-wti48nSLfRjYsH7lmH_8N3wjzC18ccTYFxBzxmw";
+  const navigate = useNavigate();
 
   const fetchRequest = async (query, page = 1) => {
     const data = await fetch(
@@ -32,12 +30,12 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
     console.log(result);
 
     if (page === 1) {
-      // Reset the state for the current page when page is 1
+      
       setCurrentPage(2);
       setRes(result);
     } else {
       setRes((prevResults) => [...prevResults, ...result]);
-      setCurrentPage(page + 1); // Update the current page for the next request
+      setCurrentPage(page + 1); 
     }
   };
   useEffect(() => {
@@ -48,6 +46,7 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
   }, [selectedImages]);
 
   const handleImageSelect = (imageId) => {
+
     setSelectedImages((prevSelected) =>
       prevSelected.includes(imageId)
         ? prevSelected.filter((imgId) => imgId !== imageId)
@@ -61,6 +60,7 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
   console.log(selectedImages);
 
   const handleImageUpload = () => {
+    setUploadInProgress(true);
     selectedImages.forEach((image) => {
       const formData = new FormData();
       const details = "Some Details about the file";
@@ -68,28 +68,56 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
       formData.append("operation", "Insert");
       formData.append("CategorieType", "Online");
       formData.append("details", details);
+      setImageUploadProgress((prevProgress) => ({
+        ...prevProgress,
+        [image.id]: 0,
+      }));
       axios
         .post(ALL_FILES_UPLOAD, formData, {
           onUploadProgress: (progressEvent) => {
             const progress = Math.round(
               (progressEvent.loaded / progressEvent.total) * 100
             );
-            setUploadProgress(progress);
+            setImageUploadProgress((prevProgress) => ({
+              ...prevProgress,
+              [image.id]: progress,
+            }));
+
           },
         })
 
 
         .then((response) => {
           console.log("Upload Success:", response.data);
-          setUploadProgress(0);
-          setUploadSuccess(true);
+          navigate("/assets");
         })
         .catch((error) => {
           console.error("Upload Error:", error);
+
+        })
+        .finally(() => {
+        
+          if (selectedImages.every((img) => imageUploadProgress[img.id] === 100)) {
+            
+            setUploadInProgress(false);
+          }
         });
     });
   };
 
+
+  useEffect(() => {
+    const allImagesUploaded = selectedImages.every((img) => imageUploadProgress[img.id] === 100);
+
+    if (allImagesUploaded) {
+      // Introduce a delay before setting uploadInProgress to false
+      setTimeout(() => {
+        setUploadInProgress(false);
+      }, 5000);
+
+    }
+
+  }, [selectedImages, imageUploadProgress]);
   return (
     <>
       <div className="backdrop">
@@ -165,54 +193,32 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
           </div>
         </div>
 
-        <div className="  bg-white shadow-2xl">
-          {uploadProgress > 0 && (
-            
-            <div className="progress-container">
-              <div><h1>Uploading... </h1></div>
-              <div
-                className="progress-bar"
-                style={{ width: `${uploadProgress}%` }}>{uploadProgress}%
-              </div>
-            </div>
-            
-          )}
-        
-        </div>
 
-        {uploadSuccess && (
-          <div className="backdrop">
-            <div className="success-popup lg:w-auto md:w-auto sm:w-4/5 xs:w-[90%]">
 
-              <div className="relative w-full">
-                <div className="relative bg-white rounded-lg shadow">
-                  <div className="lg:p-6 md:p-6 sm:p-3 xs:p-2 text-center">
-                    <FiCheckCircle className="mx-auto mb-4 text-[#20AE5C] w-14 h-14" />
-                    <h3 className="mb-5 text-2xl font-bold text-[#20AE5C]">
-                      Image Upload successfully
-                    </h3>
-                    <h2 className="mb-3 leading-3">Thank you for your request.</h2>
-                    <div>
-                      <p className="mb-3 leading-5">
-                        We are working hard to find the best service and deals for
-                        you.
-                      </p>
+        <div className="  bg-white shadow-2xl max-w-xs">
+
+          {uploadInProgress && (
+            <div className="bg-white shadow-2xl max-w-xs flex ">
+              {/* Conditionally render individual image upload spinners */}
+              {selectedImages.map((image) => (
+                <div key={image.id} className="image-upload-progress progress-container">
+                  <div className="progress flex items-center">
+                    <div
+                      className="progress-bar"
+                      style={{ width: `${imageUploadProgress[image.id]}%` }}
+                    >
+
                     </div>
-
-                    <h5 className="mb-7 text-[#9892A6] mt-1  leading-5">
-                      Kindly check your media gallery for confirmation.
-                    </h5>
-                    <Link to="/assets">
-                      <button className="text-white bg-[#20AE5C] rounded text-lg font-bold px-7 py-2.5">
-                        Continue
-                      </button>
-                    </Link>
+                    {imageUploadProgress[image.id]}%
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
+
+
+
 
       </div>
     </>

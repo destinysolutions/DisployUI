@@ -9,7 +9,7 @@ import { TbCameraSelfie } from "react-icons/tb";
 import { MdFlipCameraAndroid } from "react-icons/md";
 import axios from 'axios';
 import { ALL_FILES_UPLOAD } from '../../Pages/Api';
-
+import { useNavigate } from "react-router-dom";
 const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
 
     const webcamRef = useRef(null);
@@ -17,7 +17,9 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
     const [recordedChunksList, setRecordedChunksList] = useState([]);
     const [facingMode, setFacingMode] = useState('user');
     const [mediaRecorder, setMediaRecorder] = useState(null);
-
+    const [uploading, setUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const navigate = useNavigate();
     const startRecording = () => {
         try {
             if (webcamRef.current) {
