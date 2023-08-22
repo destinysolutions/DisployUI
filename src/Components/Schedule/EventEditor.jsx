@@ -3,14 +3,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { SketchPicker } from "react-color";
 import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
-import { BsTags } from "react-icons/bs";
-import { GrSchedules } from "react-icons/gr";
-import { MdDateRange, MdOutlinePermMedia } from "react-icons/md";
-import { IoTvOutline } from "react-icons/io5";
 import ReactModal from "react-modal";
-import { Link } from "react-router-dom";
-import { GET_ALL_FILES } from "../../Pages/Api";
-import axios from "axios";
 
 const EventEditor = ({
   isOpen,
@@ -19,6 +12,10 @@ const EventEditor = ({
   selectedEvent,
   selectedSlot,
   onDelete,
+  assetData,
+  setAssetData,
+  allAssets,
+  setSelectedEvent,
 }) => {
   const [title, setTitle] = useState("");
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
@@ -26,7 +23,10 @@ const EventEditor = ({
   const [editedStartTime, setEditedStartTime] = useState("");
   const [editedEndDate, setEditedEndDate] = useState("");
   const [editedEndTime, setEditedEndTime] = useState("");
+  const [selectedAsset, setSelectedAsset] = useState("");
+  const [assetPreview, setAssetPreview] = useState(null);
 
+  console.log(selectedAsset, "selectedAsset");
   // State to keep track of repeat settings modal
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
 
@@ -37,6 +37,7 @@ const EventEditor = ({
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
   useEffect(() => {
     if (isOpen && selectedEvent) {
+      setSelectedAsset(selectedEvent.selectedAsset);
       setTitle(selectedEvent.title);
       setSelectedColor(selectedEvent.color);
       setEditedStartDate(formatDate(selectedEvent.start));
@@ -44,6 +45,7 @@ const EventEditor = ({
       setEditedEndDate(formatDate(selectedEvent.end));
       setEditedEndTime(formatTime(selectedEvent.end));
     } else if (isOpen && selectedSlot) {
+      // setSelectedAsset("");
       setTitle("");
       setSelectedColor("");
       setEditedStartDate(formatDate(selectedSlot.start));
@@ -124,6 +126,19 @@ const EventEditor = ({
     return currentDate >= startDate && currentDate <= endDate;
   };
 
+  const handleAssetChange = (selectedAsset) => {
+    // Update the selected asset state
+    setSelectedAsset(selectedAsset);
+    setAssetPreview(selectedAsset)
+    // Update the selected event's asset (if in edit mode)
+    if (selectedEvent) {
+      setSelectedEvent((prevEvent) => ({
+        ...prevEvent,
+        asset: selectedAsset,
+      }));
+    }
+  };
+
   const handleSave = () => {
     // Convert edited dates and times to actual Date objects
     const start = new Date(editedStartDate + " " + editedStartTime);
@@ -152,6 +167,7 @@ const EventEditor = ({
             start: eventStart,
             end: eventEnd,
             color: selectedColor,
+            asset: selectedAsset,
             repeat: [], // Add repeat information here if needed
           });
         }
@@ -162,6 +178,7 @@ const EventEditor = ({
 
       // Save the generated events
       events.forEach((event) => {
+        event.asset = selectedAsset;
         onSave(null, event);
       });
     } else {
@@ -171,6 +188,7 @@ const EventEditor = ({
         start: start,
         end: end,
         color: selectedColor,
+        asset: selectedAsset,
         repeat: [], // Initialize the repeat array
       };
 
@@ -180,45 +198,20 @@ const EventEditor = ({
         selectedEvent.title === title &&
         selectedEvent.start.getTime() === start.getTime() &&
         selectedEvent.end.getTime() === end.getTime() &&
-        selectedEvent.color === selectedColor
+        selectedEvent.color === selectedColor &&
+        selectedEvent.asset === selectedAsset
       ) {
-        // If the data is the same, simply close the modal without creating/updating a new event
         onClose();
       } else {
-        // If selectedEvent is present, it means we are editing an existing event
         if (selectedEvent) {
-          // Call the onSave function with the selectedEvent's id and the updated eventData
           onSave(selectedEvent.id, eventData);
         } else {
-          // Otherwise, we are creating a new event, so call the onSave function with null as id
           onSave(null, eventData);
         }
         onClose();
       }
     }
   };
-
-  const [assetData, setAssetData] = useState([]);
-  const [allAssets, setAllAssets] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get(GET_ALL_FILES)
-      .then((response) => {
-        const fetchedData = response.data;
-        const allAssets = [
-          ...(fetchedData.image ? fetchedData.image : []),
-          ...(fetchedData.video ? fetchedData.video : []),
-          ...(fetchedData.doc ? fetchedData.doc : []),
-          ...(fetchedData.images ? fetchedData.images : []),
-        ];
-        setAssetData(allAssets);
-        setAllAssets(allAssets);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
   const [searchAsset, setSearchAsset] = useState("");
   function handleFilter(event) {
@@ -235,15 +228,7 @@ const EventEditor = ({
       setAssetData(filteredData);
     }
   }
-  const [selectedAsset, setSelectedAsset] = useState(null);
-  const [assetPreview, setAssetPreview] = useState(null);
 
-  const handleAssetChange = (selectedName) => {
-    const selectedAssetPreview = assetData.find(
-      (item) => item.name === selectedName
-    );
-    setAssetPreview(selectedAssetPreview);
-  };
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
 
   return (
@@ -306,7 +291,7 @@ const EventEditor = ({
                               <h5
                                 className="font-medium text-black cursor-pointer"
                                 onClick={() => {
-                                  handleAssetChange(item.name);
+                                  handleAssetChange(item);
                                   setAssetPreviewPopup(true);
                                 }}
                               >
@@ -327,14 +312,6 @@ const EventEditor = ({
                             <td className="border-b border-[#eee] py-5 px-4 ">
                               <p className="text-black">Tags, Tags</p>
                             </td>
-                            <td className="border-b border-[#eee] py-5 px-4">
-                              <button
-                                className="border border-primary p-3 rounded-full"
-                                onClick={() => setSelectedAsset(item)}
-                              >
-                                Select
-                              </button>
-                            </td>
                           </tr>
                         ))}
                         <tr>
@@ -342,9 +319,9 @@ const EventEditor = ({
                             {assetPreviewPopup && (
                               <>
                                 <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-50 outline-none focus:outline-none">
-                                  <div className="relative max-w-xl my-6 mx-auto myplaylist-popup-details">
-                                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
-                                      <div className="flex items-start justify-end p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                                  <div className="fixed top-1/2 left-1/2 asset-preview-popup">
+                                    <div className="border-0 rounded-lg shadow-lg relative w-full bg-black outline-none focus:outline-none">
+                                      <div className="p-1  rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
                                         <button
                                           className="p-1 text-xl"
                                           onClick={() =>
