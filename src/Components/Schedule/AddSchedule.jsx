@@ -24,7 +24,7 @@ const AddSchedule = () => {
       start: new Date(),
       end: new Date(),
       color: "#ff5722",
-      
+      asset: null,
     },
     {
       id: 2,
@@ -32,6 +32,7 @@ const AddSchedule = () => {
       start: new Date(),
       end: new Date(),
       color: "#e91e63",
+      asset: null,
     },
     {
       id: 3,
@@ -39,6 +40,7 @@ const AddSchedule = () => {
       start: new Date(2023, 7, 16, 10),
       end: new Date(2023, 7, 16, 12),
       color: "#e91e63",
+      asset: null,
     },
   ];
 
@@ -61,6 +63,7 @@ const AddSchedule = () => {
   const [isCreatePopupOpen, setCreatePopupOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedAsset, setSelectedAsset] = useState(null);
 
   // State to store repeat settings for the currently edited event
   const [currentEventRepeatSettings, setCurrentEventRepeatSettings] =
@@ -101,7 +104,7 @@ const AddSchedule = () => {
     }
     setSelectedSlot(null);
     setSelectedEvent(null);
-    setCurrentEventRepeatSettings(null); // Reset repeat settings after save
+    setCurrentEventRepeatSettings(null);
     setCreatePopupOpen(false);
   };
 
@@ -150,6 +153,8 @@ const AddSchedule = () => {
   };
 
   const [assetData, setAssetData] = useState([]);
+  const [allAssets, setAllAssets] = useState([]);
+
   useEffect(() => {
     axios
       .get(GET_ALL_FILES)
@@ -162,18 +167,25 @@ const AddSchedule = () => {
           ...(fetchedData.images ? fetchedData.images : []),
         ];
         setAssetData(allAssets);
+        setAllAssets(allAssets);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  const [selectedAsset, setSelectedAsset] = useState(null);
-
   const handleAssetChange = (event) => {
     const selectedName = event.target.value;
     const selectedAsset = assetData.find((item) => item.name === selectedName);
+    console.log(selectedName);
     setSelectedAsset(selectedAsset);
+
+    if (selectedEvent) {
+      setSelectedEvent((prevEvent) => ({
+        ...prevEvent,
+        asset: selectedAsset,
+      }));
+    }
   };
 
   return (
@@ -213,6 +225,13 @@ const AddSchedule = () => {
               onDelete={handleEventDelete}
               selectedSlot={selectedSlot}
               selectedEvent={selectedEvent}
+              assetData={assetData}
+              setAssetData={setAssetData}
+              allAssets={allAssets}
+              setSelectedEvent={setSelectedEvent}
+              //handleAssetChange={handleAssetChange}
+              // setSelectedAsset={setSelectedAsset}
+              // selectedAsset={selectedAsset}
             />
           </div>
           <div className=" bg-white shadow-2xl lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
@@ -239,9 +258,9 @@ const AddSchedule = () => {
                   <li className="p-3">
                     <select className="w-full" onChange={handleAssetChange}>
                       <option value="">Select an asset</option>
-                      {assetData.map((item) => (
-                        <option key={item.id} value={item.name}>
-                          {item.name}
+                      {assetData.map((asset) => (
+                        <option key={asset.id} value={asset.name}>
+                          {asset.name}
                         </option>
                       ))}
                     </select>
