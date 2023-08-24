@@ -10,13 +10,15 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import EventEditor from "./EventEditor";
 import axios from "axios";
+import "../../Styles/schedule.css";
 import { GET_ALL_FILES } from "../../Pages/Api";
 import { MdPermMedia } from "react-icons/md";
-
+import Sidebar from "../Sidebar";
+import Navbar from "../Navbar";
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
-const AddSchedule = () => {
+const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectScreenModal, setSelectScreenModal] = useState(false);
 
   const eventStyleGetter = (event) => {
@@ -53,8 +55,33 @@ const AddSchedule = () => {
     setSelectedEvent(event);
     setCreatePopupOpen(true);
   }, []);
+  useEffect(() => {
+    axios
+      .get("http://192.168.1.219/api/ScheduleMaster/GetAllSchedule")
+      .then((response) => {
+        const fetchedData = response.data.data;
+        // console.log(fetchedData.name, "fetchedData");
+        // Check if fetchedData is an array
+        if (Array.isArray(fetchedData)) {
+          const fetchedEvents = fetchedData.map((item) => ({
+            id: item.scheduleId,
+            title: item.title,
+            start: new Date(item.startDate),
+            end: new Date(item.endDate),
+            color: item.color,
+            asset: item.asset,
+          }));
 
-  const handleCreateEvent = (eventId, eventData) => {
+          setEvents(fetchedEvents);
+        } else {
+          console.log("Fetched data is not an array:", fetchedData);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+  const handleCreateEvent = (eventData) => {
     let data = JSON.stringify({
       startDate: eventData.start,
       endDate: eventData.end,
@@ -66,7 +93,6 @@ const AddSchedule = () => {
 
     let config = {
       method: "post",
-      maxBodyLength: Infinity,
       url: "http://192.168.1.219/api/ScheduleMaster/AddSchedule",
       headers: {
         "Content-Type": "application/json",
@@ -78,8 +104,12 @@ const AddSchedule = () => {
       .request(config)
       .then((response) => {
         console.log(JSON.stringify(response.data));
-        const createdEvent = response.data.data.model;
-        setEvents((prevEvents) => [...prevEvents, createdEvent]); // Add the new event to the existing events
+        const newEvent = {
+          ...eventData,
+          id: response.data.scheduleId,
+          repeatSettings: currentEventRepeatSettings,
+        };
+        setEvents((prev) => [...prev, newEvent]);
       })
       .catch((error) => {
         console.log(error);
@@ -165,175 +195,186 @@ const AddSchedule = () => {
 
   return (
     <>
-      <div className="p-6">
-        <div className="flex justify-between">
-          <div className="flex items-center mt-5">
-            <h1 className="text-xl font-semibold">Create Schedule</h1>
-            <button className="ml-3 text-sm">
-              <BsPencilFill />
-            </button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-12 mt-5">
-          <div className="lg:col-span-10 md:col-span-8 sm:col-span-12 xs:col-span-12 ">
-            <DragAndDropCalendar
-              selectable
-              localizer={localizer}
-              events={myEvents}
-              defaultView={Views.DAY}
-              startAccessor="start"
-              endAccessor="end"
-              onEventDrop={handleEventDrop}
-              resizable
-              onEventResize={handleEventResize}
-              step={30}
-              showMultiDayTimes
-              onSelectEvent={handleSelectEvent}
-              onSelectSlot={handleSelectSlot}
-              eventPropGetter={eventStyleGetter}
-            />
-            <EventEditor
-              isOpen={isCreatePopupOpen}
-              onClose={handleCloseCreatePopup}
-              onSave={handleCreateEvent}
-              onDelete={handleEventDelete}
-              selectedSlot={selectedSlot}
-              selectedEvent={selectedEvent}
-              assetData={assetData}
-              setAssetData={setAssetData}
-              allAssets={allAssets}
-              setSelectedEvent={setSelectedEvent}
-            />
-          </div>
-          <div className=" bg-white shadow-2xl lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
-            <div className="p-3">
-              <span className="text-xl">Schedule Name</span>
+      <div className="flex border-b border-gray bg-white">
+        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <Navbar />
+      </div>
+      <div className=" px-5 page-contain ">
+        <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
+          <div className="">
+            <div className="flex justify-between">
+              <div className="flex items-center mt-5">
+                <h1 className="text-xl font-semibold ">Create Schedule</h1>
+                <button className="ml-3 text-sm">
+                  <BsPencilFill />
+                </button>
+              </div>
             </div>
-            <div className="border-b-2 border-[#D5E3FF]"></div>
-            <div className="p-3">
-              <div className="mb-2">Schedule Date time</div>
-              <div>
-                <ul className="border-2 border-[#D5E3FF] rounded">
-                  <li className="border-b-2 border-[#D5E3FF] p-3">
-                    <h3>Start Date & Time:</h3>
-                    <div className="bg-lightgray rounded-full px-3 py-2 mt-2">
-                      01 / 06 /2023, 05:02 PM
-                    </div>
-                  </li>
-                  <li className="border-b-2 border-[#D5E3FF] p-3">
-                    <h3>End Date & Time:</h3>
-                    <div className="bg-lightgray rounded-full px-3 py-2 mt-2">
-                      01 / 06 /2023, 05:02 PM
-                    </div>
-                  </li>
-                  <li className="p-3">
-                    <select className="w-full" onChange={handleAssetChange}>
-                      <option value="">Select an asset</option>
-                      {assetData.map((asset) => (
-                        <option key={asset.id} value={asset.name}>
-                          {asset.name}
-                        </option>
-                      ))}
-                    </select>
-                  </li>
-                  {selectedAsset && (
-                    <>
-                      {selectedAsset.categorieType === "Online" && (
+
+            <div className="grid grid-cols-12 mt-5">
+              <div className="lg:col-span-10 md:col-span-8 sm:col-span-12 xs:col-span-12 ">
+                <DragAndDropCalendar
+                  selectable
+                  localizer={localizer}
+                  events={myEvents}
+                  defaultView={Views.DAY}
+                  startAccessor="start"
+                  endAccessor="end"
+                  onEventDrop={handleEventDrop}
+                  resizable
+                  onEventResize={handleEventResize}
+                  step={30}
+                  showMultiDayTimes
+                  onSelectEvent={handleSelectEvent}
+                  onSelectSlot={handleSelectSlot}
+                  eventPropGetter={eventStyleGetter}
+                />
+                <EventEditor
+                  isOpen={isCreatePopupOpen}
+                  onClose={handleCloseCreatePopup}
+                  onSave={handleCreateEvent}
+                  onDelete={handleEventDelete}
+                  selectedSlot={selectedSlot}
+                  selectedEvent={selectedEvent}
+                  assetData={assetData}
+                  setAssetData={setAssetData}
+                  allAssets={allAssets}
+                  setSelectedEvent={setSelectedEvent}
+                />
+              </div>
+              <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
+                <div className="p-3">
+                  <span className="text-xl">Schedule Name</span>
+                </div>
+                <div className="border-b-2 border-lightgray"></div>
+                <div className="p-3">
+                  <div className="mb-2">Schedule Date time</div>
+                  <div>
+                    <ul className="border-2 border-lightgray">
+                      <li className="border-b-2 border-lightgray p-3">
+                        <h3>Start Date & Time:</h3>
+                        <div className="bg-lightgray rounded-full px-3 py-2 mt-2">
+                          01 / 06 /2023, 05:02 PM
+                        </div>
+                      </li>
+                      <li className="border-b-2 border-lightgray p-3">
+                        <h3>End Date & Time:</h3>
+                        <div className="bg-lightgray rounded-full px-3 py-2 mt-2">
+                          01 / 06 /2023, 05:02 PM
+                        </div>
+                      </li>
+                      <li className="p-3">
+                        <select className="w-full paymentlabel relative" onChange={handleAssetChange}>
+                          <option value="">Select an asset</option>
+                          {assetData.map((asset) => (
+                            <option key={asset.id} value={asset.name}>
+                              {asset.name}
+                            </option>
+                          ))}
+                        </select>
+                      </li>
+
+
+                      {selectedAsset && (
                         <>
-                          {selectedAsset.details === "Video" ? (
-                            <div className="relative videobox">
-                              <video
-                                controls
-                                className="w-full rounded-2xl relative"
-                              >
-                                <source
-                                  src={selectedAsset.fileType}
-                                  type="video/mp4"
-                                />
-                                Your browser does not support the video tag.
-                              </video>
-                            </div>
-                          ) : (
-                            <div className="imagebox relative p-3">
-                              <img
+                          {selectedAsset.categorieType === "Online" && (
+                            <>
+                              {selectedAsset.details === "Video" ? (
+                                <div className="relative videobox">
+                                  <video
+                                    controls
+                                    className="w-full rounded-2xl relative"
+                                  >
+                                    <source
+                                      src={selectedAsset.fileType}
+                                      type="video/mp4"
+                                    />
+                                    Your browser does not support the video tag.
+                                  </video>
+                                </div>
+                              ) : (
+                                <div className="imagebox relative p-3">
+                                  <img
+                                    src={selectedAsset.fileType}
+                                    className="rounded-2xl"
+                                  />
+                                </div>
+                              )}
+                            </>
+                          )}
+                          {selectedAsset.categorieType === "Image" && (
+                            <img
+                              src={selectedAsset.fileType}
+                              alt={selectedAsset.name}
+                              className="imagebox relative"
+                            />
+                          )}
+                          {selectedAsset.categorieType === "Video" && (
+                            <video
+                              controls
+                              className="w-full rounded-2xl relative h-56"
+                            >
+                              <source
                                 src={selectedAsset.fileType}
-                                className="rounded-2xl"
+                                type="video/mp4"
                               />
-                            </div>
+                              Your browser does not support the video tag.
+                            </video>
+                          )}
+                          {selectedAsset.categorieType === "DOC" && (
+                            <a
+                              href={selectedAsset.fileType}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {selectedAsset.name}
+                            </a>
                           )}
                         </>
                       )}
-                      {selectedAsset.categorieType === "Image" && (
-                        <img
-                          src={selectedAsset.fileType}
-                          alt={selectedAsset.name}
-                          className="imagebox relative"
-                        />
-                      )}
-                      {selectedAsset.categorieType === "Video" && (
-                        <video
-                          controls
-                          className="w-full rounded-2xl relative h-56"
-                        >
-                          <source
-                            src={selectedAsset.fileType}
-                            type="video/mp4"
-                          />
-                          Your browser does not support the video tag.
-                        </video>
-                      )}
-                      {selectedAsset.categorieType === "DOC" && (
-                        <a
-                          href={selectedAsset.fileType}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {selectedAsset.name}
-                        </a>
-                      )}
-                    </>
-                  )}
-                </ul>
-              </div>
-              {assetData.length === 0 && (
-                <div className="flex mt-4">
-                  <div className="mt-1">
-                    <button>
-                      <IoArrowBackOutline />
-                    </button>
+
+                    </ul>
                   </div>
-                  <p className="mx-3">
-                    No Associated Assets. Start by selecting a date & time on
-                    the calendar.
-                  </p>
+                  {assetData.length === 0 && (
+                    <div className="flex mt-4">
+                      <div className="mt-1">
+                        <button>
+                          <IoArrowBackOutline />
+                        </button>
+                      </div>
+                      <p className="mx-3">
+                        No Associated Assets. Start by selecting a date & time on
+                        the calendar.
+                      </p>
+                    </div>
+                  )}
                 </div>
+              </div>
+            </div>
+            <div className="flex justify-center mt-5">
+              <Link to="/myschedule">
+                <button className="border-2 border-gray bg-lightgray hover:bg-primary hover:text-white  px-5 py-2 rounded-full">
+                  Cancel
+                </button>{" "}
+              </Link>
+              <Link to="/myschedule">
+                <button className="border-2 border-gray bg-lightgray hover:bg-primary hover:text-white  px-6 py-2 rounded-full ml-3">
+                  Save
+                </button>
+              </Link>
+              <button
+                className="border-2 border-lightgray bg-SlateBlue text-white hover:bg-primary hover:text-white   px-4 py-2 rounded-full ml-3"
+                onClick={() => setSelectScreenModal(true)}
+              >
+                Save & Assign screen
+              </button>
+              {selectScreenModal && (
+                <SaveAssignScreenModal
+                  setSelectScreenModal={setSelectScreenModal}
+                />
               )}
             </div>
           </div>
-        </div>
-        <div className="flex justify-center mt-5">
-          <Link to="/myschedule">
-            <button className="border-2 border-primary  px-5 py-2 rounded-full">
-              Cancel
-            </button>{" "}
-          </Link>
-          <Link to="/myschedule">
-            <button className="border-2 border-primary  px-6 py-2 rounded-full ml-3">
-              Save
-            </button>
-          </Link>
-          <button
-            className="border-2 border-primary  px-4 py-2 rounded-full ml-3"
-            onClick={() => setSelectScreenModal(true)}
-          >
-            Save & Assign screen
-          </button>
-          {selectScreenModal && (
-            <SaveAssignScreenModal
-              setSelectScreenModal={setSelectScreenModal}
-            />
-          )}
         </div>
       </div>
     </>
