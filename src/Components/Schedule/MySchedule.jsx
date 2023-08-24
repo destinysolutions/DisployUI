@@ -34,77 +34,77 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
               My Schedule
             </h1>
-            <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn ">
+            <div className=" items-center flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn ">
               <Link to="/weatherschedule">
-                <button className=" flex align-middle border-primary items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                <button className=" flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                   <TiWeatherSunny className="text-lg mr-1" />
                   Weather Schedule
                 </button>
               </Link>
               <Link to="/addschedule">
-                <button className="sm:ml-2 xs:ml-1  flex align-middle border-primary items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                <button className="sm:ml-2 xs:ml-1  flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                   <BiAddToQueue className="text-lg mr-1" />
                   New Schedule
                 </button>
               </Link>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                <FiUpload />
+              <button className="sm:ml-2 xs:ml-1 flex align-middle border-gray items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                <FiUpload className="text-lg" />
               </button>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                <RiDeleteBin5Line />
+              <button className="sm:ml-2 xs:ml-1 flex align-middle border-gray items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                <RiDeleteBin5Line className="text-lg" />
               </button>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                <HiMagnifyingGlass />
+              <button className="sm:ml-2 xs:ml-1 flex align-middle border-gray items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                <HiMagnifyingGlass className="text-lg" />
               </button>
               <button className="sm:ml-2 xs:ml-1 mt-1">
                 <input type="checkbox" className="h-7 w-7 " />
               </button>
             </div>
           </div>
-          <div className="overflow-x-auto mt-9">
-            <table className="w-full sm:mt-3">
+          <div className="Schedule-table bg-white rounded-xl mt-8 shadow">
+            <table className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto" cellPadding={20}>
               <thead>
-                <tr className="flex justify-between items-center">
-                  <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
-                      <TbCalendarTime className="mr-2" />
+                <tr className="border-b border-lightgray">
+                  <th className="font-medium text-[14px]">
+                    <button className=" flex  items-center justify-center">
+                      <TbCalendarTime className="mr-2 text-xl" />
                       Schedule Name
                     </button>
                   </th>
-                  <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
-                      <VscCalendar className="mr-2" />
+                  <th className="font-medium text-[14px]">
+                    <button className=" flex  items-center justify-center mx-auto">
+                      <VscCalendar className="mr-2 text-xl" />
                       Date Added
                     </button>
                   </th>
-                  <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
-                      <TbCalendarStats className="mr-2" />
+                  <th className="font-medium text-[14px]">
+                    <button className=" flex  items-center justify-center mx-auto">
+                      <TbCalendarStats className="mr-2 text-xl" />
                       start date
                     </button>
                   </th>
-                  <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
-                      <TbCalendarStats className="mr-2" />
+                  <th className="font-medium text-[14px]">
+                    <button className=" flex  items-center justify-center mx-auto">
+                      <TbCalendarStats className="mr-2 text-xl" />
                       End date
                     </button>
                   </th>
-                  <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
-                      <RiComputerLine className="mr-2" />
+                  <th className="font-medium text-[14px]">
+                    <button className=" flex  items-center justify-center mx-auto">
+                      <RiComputerLine className="mr-2 text-xl" />
                       screens Assigned
                     </button>
                   </th>
-                  <th className="p-3 font-medium text-[14px]">
-                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
-                      <BsTags className="mr-2" />
+                  <th className="font-medium text-[14px]">
+                    <button className=" flex  items-center justify-center mx-auto">
+                      <BsTags className="mr-2 text-xl" />
                       Tags
                     </button>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
+                <tr className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2">
                   <td className="flex items-center ">
                     <input type="checkbox" className="mr-3" />
                     <div>
@@ -113,18 +113,18 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                     </div>
                   </td>
-                  <td className="break-words w-[108px] p-2">
+                  <td className="break-words w-[108px] p-2 text-center">
                     10 May 2023 10:30AM
                   </td>
-                  <td className="break-words w-[108px] p-2">
+                  <td className="break-words w-[108px] p-2 text-center">
                     05 June 2023 01:30PM
                   </td>
 
-                  <td className="break-words w-[108px] p-2">
+                  <td className="break-words w-[108px] p-2 text-center">
                     25 June 2023 03:30PM
                   </td>
-                  <td className="p-2">1</td>
-                  <td className="p-2 flex items-center">
+                  <td className="p-2 text-center">1</td>
+                  <td className="p-2 flex items-center justify-center max-auto">
                     Tags, Tags{" "}
                     <div className="relative">
                       <button
@@ -198,7 +198,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
                   </td>
                 </tr>
-                <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
+                <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] px-5 py-2">
                   <td className="flex items-center ">
                     <input type="checkbox" className="mr-3" />
                     <div>
@@ -207,18 +207,18 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                     </div>
                   </td>
-                  <td className="break-words w-[108px] p-2">
+                  <td className="break-words w-[108px] p-2 text-center">
                     10 May 2023 10:30AM
                   </td>
-                  <td className="break-words w-[108px] p-2">
+                  <td className="break-words w-[108px] p-2 text-center">
                     05 June 2023 01:30PM
                   </td>
 
-                  <td className="break-words w-[108px] p-2">
+                  <td className="break-words w-[108px] p-2 text-center">
                     25 June 2023 03:30PM
                   </td>
-                  <td className="p-2">1</td>
-                  <td className="p-2 flex items-center">
+                  <td className="p-2 text-center">1</td>
+                  <td className="p-2 flex items-center justify-center max-auto">
                     Tags, Tags{" "}
                     <button className="ml-3">
                       <HiDotsVertical />

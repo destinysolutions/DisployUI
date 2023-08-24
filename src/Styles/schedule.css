@@ -24,16 +24,52 @@
   top: -8px;
   right: 14px;
 }
+
 .css-1fklddj-MuiModal-root-MuiPopover-root .Layout-popover,
 .css-1wwby0q .Layout-popover {
   border-radius: 8px;
   width: 100% !important;
 }
+
 .sketch-picker {
   width: auto !important;
 }
+
 .asset-preview-popup {
   transform: translate(-50%, -50%);
   max-width: 400px;
   height: 400px;
+}
+
+@media(max-width:767px) {
+  .Schedule-table {
+    overflow-x: auto;
+  }
+}
+
+.rbc-toolbar button:active,
+.rbc-toolbar button.rbc-active {
+
+  background-color: #e4aa07 !important;
+
+}
+
+.rbc-time-view {
+  background: #fff;
+}
+
+.rbc-toolbar {
+  background: #fff;
+  padding: 5px;
+  margin: 0 !important;
+}
+
+.rbc-month-view,
+.rbc-agenda-view {
+  background: #fff !important;
+}
+
+.rbc-agenda-view {
+  align-items: center;
+  justify-content: center;
 }

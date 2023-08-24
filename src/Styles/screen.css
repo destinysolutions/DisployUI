@@ -460,8 +460,8 @@ button.daysbtn {
   margin: 10px;
   width: 50px;
   height: 50px;
-  border: 1px solid #41479b;
-  color: #41479b;
+  border: 1px solid #8e94a9;
+  color: #000000;
 }
 
 @media (max-width: 1244px) {

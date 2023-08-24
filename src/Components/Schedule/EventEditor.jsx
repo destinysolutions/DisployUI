@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -220,7 +221,32 @@ const EventEditor = ({
   }
 
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
+  const handelDeletedata = () => {
+    let data = JSON.stringify({
+      scheduleId: selectedEvent.id,
+      operation: "Delete",
+    });
 
+    let config = {
+      method: "post",
+      url: "http://192.168.1.219/api/ScheduleMaster/AddSchedule",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        onDelete(selectedEvent.id);
+        onClose();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <>
       <ReactModal
@@ -234,14 +260,14 @@ const EventEditor = ({
           },
         }}
       >
-        <div className="px-5">
-          <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl xs:text-xs text-[#001737]  ">
+        <div>
+          <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl xs:text-xs text-[#001737] border-b border-lightgray pb-2  ">
             Select Assets and Shedule Time
           </h1>
 
           <div className="grid grid-cols-12 my-6">
-            <div className="lg:col-span-9 md:col-span-8 sm:col-span-12 xs:col-span-12 bg-white shadow-2xl rounded-lg p-4">
-              <div className="mr-5 relative sm:mr-0">
+            <div className="lg:col-span-9 md:col-span-8 sm:col-span-12 xs:col-span-12 rounded-lg">
+              <div className="mb-5 relative ">
                 <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
                 <input
                   type="text"
@@ -252,11 +278,11 @@ const EventEditor = ({
                 />
               </div>
               <div className="overflow-x-auto">
-                <div className="rounded-sm bg-white px-5 pt-6 pb-2.5 shadow-2xl sm:px-7 md:pb-1">
-                  <div className="max-w-full overflow-x-auto max-h-[810px] overflow-y-auto">
-                    <table className="w-full ">
+                <div className="rounded-sm bg-white  shadow-2xl md:pb-1">
+                  <div className="max-w-full overflow-x-auto">
+                    <table className="w-full table-fixed text-sm break-words" cellPadding={10}>
                       <thead>
-                        <tr className="bg-[#E4E6FF] text-left">
+                        <tr className="bg-lightgray text-left">
                           <th className="min-w-[220px] py-4 px-4 font-medium text-black md:pl-10">
                             Assets
                           </th>
@@ -281,7 +307,7 @@ const EventEditor = ({
                         {assetData.map((item) => (
                           <tr key={item.id}>
                             <td
-                              className="border-b border-[#eee] py-5 px-4"
+                              className="border-b border-[#eee]"
                               onClick={() => {
                                 handleAssetAdd(item);
                                 setAssetPreviewPopup(true);
@@ -344,7 +370,7 @@ const EventEditor = ({
                                 </a>
                               )}
                             </td>
-                            <td className="border-b border-[#eee] py-5 px-4 ">
+                            <td className="border-b border-[#eee]">
                               <h5
                                 className="font-medium text-black cursor-pointer"
                                 onClick={() => {
@@ -355,18 +381,18 @@ const EventEditor = ({
                                 {item.name}
                               </h5>
                             </td>
-                            <td className="border-b border-[#eee] py-5 px-4 ">
+                            <td className="border-b border-[#eee]">
                               <p className="text-black">Jan 13,2023</p>
                             </td>
-                            <td className="border-b border-[#eee] py-5 px-4 ">
+                            <td className="border-b border-[#eee]">
                               <p className="text-black ">
                                 Schedule Name Till 28 June 2023
                               </p>
                             </td>
-                            <td className="border-b border-[#eee] py-5 px-4 ">
+                            <td className="border-b border-[#eee]">
                               <p className="text-black">{item.resolutions}</p>
                             </td>
-                            <td className="border-b border-[#eee] py-5 px-4 ">
+                            <td className="border-b border-[#eee]">
                               <p className="text-black">Tags, Tags</p>
                             </td>
                           </tr>
@@ -393,68 +419,68 @@ const EventEditor = ({
                                           <>
                                             {assetPreview.categorieType ===
                                               "Online" && (
-                                              <>
-                                                {assetPreview.details ===
-                                                "Video" ? (
-                                                  <div className="relative videobox">
-                                                    <video
-                                                      controls
-                                                      className="w-full rounded-2xl relative"
-                                                    >
-                                                      <source
+                                                <>
+                                                  {assetPreview.details ===
+                                                    "Video" ? (
+                                                    <div className="relative videobox">
+                                                      <video
+                                                        controls
+                                                        className="w-full rounded-2xl relative"
+                                                      >
+                                                        <source
+                                                          src={
+                                                            assetPreview.fileType
+                                                          }
+                                                          type="video/mp4"
+                                                        />
+                                                        Your browser does not
+                                                        support the video tag.
+                                                      </video>
+                                                    </div>
+                                                  ) : (
+                                                    <div className="imagebox relative p-3">
+                                                      <img
                                                         src={
                                                           assetPreview.fileType
                                                         }
-                                                        type="video/mp4"
+                                                        className="rounded-2xl"
                                                       />
-                                                      Your browser does not
-                                                      support the video tag.
-                                                    </video>
-                                                  </div>
-                                                ) : (
-                                                  <div className="imagebox relative p-3">
-                                                    <img
-                                                      src={
-                                                        assetPreview.fileType
-                                                      }
-                                                      className="rounded-2xl"
-                                                    />
-                                                  </div>
-                                                )}
-                                              </>
-                                            )}
+                                                    </div>
+                                                  )}
+                                                </>
+                                              )}
                                             {assetPreview.categorieType ===
                                               "Image" && (
-                                              <img
-                                                src={assetPreview.fileType}
-                                                alt={assetPreview.name}
-                                                className="imagebox relative"
-                                              />
-                                            )}
+                                                <img
+                                                  src={assetPreview.fileType}
+                                                  alt={assetPreview.name}
+                                                  className="imagebox relative"
+                                                />
+                                              )}
                                             {assetPreview.categorieType ===
                                               "Video" && (
-                                              <video
-                                                controls
-                                                className="w-full rounded-2xl relative h-56"
-                                              >
-                                                <source
-                                                  src={assetPreview.fileType}
-                                                  type="video/mp4"
-                                                />
-                                                Your browser does not support
-                                                the video tag.
-                                              </video>
-                                            )}
+                                                <video
+                                                  controls
+                                                  className="w-full rounded-2xl relative h-56"
+                                                >
+                                                  <source
+                                                    src={assetPreview.fileType}
+                                                    type="video/mp4"
+                                                  />
+                                                  Your browser does not support
+                                                  the video tag.
+                                                </video>
+                                              )}
                                             {assetPreview.categorieType ===
                                               "DOC" && (
-                                              <a
-                                                href={assetPreview.fileType}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                              >
-                                                {assetPreview.name}
-                                              </a>
-                                            )}
+                                                <a
+                                                  href={assetPreview.fileType}
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                >
+                                                  {assetPreview.name}
+                                                </a>
+                                              )}
                                           </>
                                         )}
                                       </div>
@@ -481,7 +507,7 @@ const EventEditor = ({
                         type="date"
                         value={editedStartDate}
                         onChange={handleStartDateChange}
-                        className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                        className="bg-lightgray rounded-full px-3 py-2 w-full"
                       />
                     </div>
                   </div>
@@ -492,7 +518,7 @@ const EventEditor = ({
                         type="date"
                         value={editedEndDate}
                         onChange={handleEndDateChange}
-                        className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                        className="bg-lightgray rounded-full px-3 py-2 w-full"
                       />
                     </div>
                   </div>
@@ -511,7 +537,7 @@ const EventEditor = ({
                           type="time"
                           value={editedStartTime}
                           onChange={handleStartTimeChange}
-                          className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                          className="bg-lightgray rounded-full px-3 py-2 w-full"
                         />
                       </div>
                     </div>
@@ -524,7 +550,7 @@ const EventEditor = ({
                           type="time"
                           value={editedEndTime}
                           onChange={handleEndTimeChange}
-                          className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                          className="bg-lightgray rounded-full px-3 py-2 w-full"
                         />
                       </div>
                     </div>
@@ -543,12 +569,11 @@ const EventEditor = ({
                 <div>
                   {buttons.map((label, index) => (
                     <button
-                      className={`daysbtn ${
-                        (selectAllDays || selectedDays[index]) &&
+                      className={`daysbtn ${(selectAllDays || selectedDays[index]) &&
                         isDayInRange(index)
-                          ? "bg-red"
-                          : ""
-                      }`}
+                        ? " bg-SlateBlue border-white"
+                        : ""
+                        }`}
                       key={index}
                       disabled={!isDayInRange(index)}
                       onClick={() => {
@@ -575,13 +600,13 @@ const EventEditor = ({
                       placeholder="Enter Title"
                     />
                   </div>
-                  <div className="border-b-2 border-[#D5E3FF]"></div>
+                  <div className="border-b-2 border-lightgray"></div>
                   <div className="p-3">
                     <input
                       type="text"
                       value={selectedAsset ? selectedAsset.name : "Set Media"}
                       readOnly
-                      className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                      className="bg-lightgray rounded-full px-3 py-2 w-full"
                       onClick={() => setAssetPreviewPopup(true)}
                     />
                     <button
@@ -591,41 +616,41 @@ const EventEditor = ({
                       Clear Media
                     </button>
                   </div>
-                  <div className="border-b-2 border-[#D5E3FF]"></div>
+                  <div className="border-b-2 border-lightgray"></div>
                   <div className="p-3">
                     <div className="mb-2">Schedule Date time</div>
                     <div>
-                      <ul className="border-2 border-[#D5E3FF] rounded">
-                        <li className="border-b-2 border-[#D5E3FF] p-3">
+                      <ul className="border-2 border-lightgray rounded">
+                        <li className="border-b-2 border-lightgray p-3">
                           <h3>Start Date:</h3>
                           <div className="mt-2">
                             <input
                               type="date"
                               value={editedStartDate}
                               onChange={handleStartDateChange}
-                              className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                              className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
                           </div>
                         </li>
-                        <li className="border-b-2 border-[#D5E3FF] p-3">
+                        <li className="border-b-2 border-lightgray p-3">
                           <h3>End Date:</h3>
                           <div className="mt-2">
                             <input
                               type="date"
                               value={editedStartDate}
                               readOnly
-                              className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                              className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
                           </div>
                         </li>
-                        <li className="border-b-2 border-[#D5E3FF] p-3">
+                        <li className="border-b-2 border-lightgray p-3">
                           <h3>Start Time:</h3>
                           <div className="mt-2">
                             <input
                               type="time"
                               value={editedStartTime}
                               onChange={handleStartTimeChange}
-                              className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                              className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
                           </div>
                         </li>
@@ -636,7 +661,7 @@ const EventEditor = ({
                               type="time"
                               value={editedEndTime}
                               onChange={handleEndTimeChange}
-                              className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                              className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
                           </div>
                         </li>
@@ -673,7 +698,7 @@ const EventEditor = ({
           </div>
           <div className="flex justify-center mt-16">
             <button
-              className="border-2 border-primary  px-5 py-2 rounded-full"
+              className="border-2 border-lightgray hover:bg-primary hover:text-white   px-5 py-2 rounded-full"
               onClick={() => {
                 onClose();
                 setShowRepeatSettings(false);
@@ -683,7 +708,7 @@ const EventEditor = ({
             </button>
 
             <button
-              className="border-2 border-primary  px-6 py-2 rounded-full ml-3"
+              className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
               onClick={() => {
                 handleSave();
                 setShowRepeatSettings(false);
@@ -693,9 +718,9 @@ const EventEditor = ({
             </button>
             {isEditMode && (
               <button
-                className="border-2 border-primary  px-6 py-2 rounded-full ml-3"
+                className="border-2 border-lightgray hover:bg-primary hover:text-white   px-6 py-2 rounded-full ml-3"
                 onClick={() => {
-                  handleDelete();
+                  handelDeletedata();
                   setShowRepeatSettings(false);
                 }}
               >
