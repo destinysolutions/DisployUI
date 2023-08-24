@@ -15,7 +15,6 @@ const EventEditor = ({
   assetData,
   setAssetData,
   allAssets,
-  setSelectedEvent,
 }) => {
   const [title, setTitle] = useState("");
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
@@ -26,7 +25,6 @@ const EventEditor = ({
   const [selectedAsset, setSelectedAsset] = useState("");
   const [assetPreview, setAssetPreview] = useState(null);
 
-  console.log(selectedAsset, "selectedAsset");
   // State to keep track of repeat settings modal
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
 
@@ -37,15 +35,15 @@ const EventEditor = ({
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
   useEffect(() => {
     if (isOpen && selectedEvent) {
-      setSelectedAsset(selectedEvent.selectedAsset);
-      setTitle(selectedEvent.title);
+      setSelectedAsset(selectedEvent.asset);
+      setTitle(selectedEvent.originalTitle);
       setSelectedColor(selectedEvent.color);
       setEditedStartDate(formatDate(selectedEvent.start));
       setEditedStartTime(formatTime(selectedEvent.start));
       setEditedEndDate(formatDate(selectedEvent.end));
       setEditedEndTime(formatTime(selectedEvent.end));
     } else if (isOpen && selectedSlot) {
-      // setSelectedAsset("");
+      setSelectedAsset("");
       setTitle("");
       setSelectedColor("");
       setEditedStartDate(formatDate(selectedSlot.start));
@@ -126,17 +124,9 @@ const EventEditor = ({
     return currentDate >= startDate && currentDate <= endDate;
   };
 
-  const handleAssetChange = (selectedAsset) => {
-    // Update the selected asset state
-    setSelectedAsset(selectedAsset);
-    setAssetPreview(selectedAsset)
-    // Update the selected event's asset (if in edit mode)
-    if (selectedEvent) {
-      setSelectedEvent((prevEvent) => ({
-        ...prevEvent,
-        asset: selectedAsset,
-      }));
-    }
+  const handleAssetAdd = (asset) => {
+    setSelectedAsset(asset);
+    setAssetPreview(asset);
   };
 
   const handleSave = () => {
@@ -270,6 +260,9 @@ const EventEditor = ({
                           <th className="min-w-[220px] py-4 px-4 font-medium text-black md:pl-10">
                             Assets
                           </th>
+                          <th className="min-w-[220px] py-4 px-4 font-medium text-black">
+                            Assets
+                          </th>
                           <th className="min-w-[150px] py-4 px-4 font-medium text-black">
                             Date Added
                           </th>
@@ -287,11 +280,75 @@ const EventEditor = ({
                       <tbody>
                         {assetData.map((item) => (
                           <tr key={item.id}>
-                            <td className="border-b border-[#eee] py-5 px-4 pl-9 md:pl-10">
+                            <td
+                              className="border-b border-[#eee] py-5 px-4"
+                              onClick={() => {
+                                handleAssetAdd(item);
+                                setAssetPreviewPopup(true);
+                              }}
+                            >
+                              {item.categorieType === "Online" && (
+                                <>
+                                  {item.details === "Video" ? (
+                                    <div className="relative videobox">
+                                      <video
+                                        controls
+                                        className="w-full rounded-2xl relative"
+                                      >
+                                        <source
+                                          src={item.fileType}
+                                          type="video/mp4"
+                                        />
+                                        Your browser does not support the video
+                                        tag.
+                                      </video>
+                                    </div>
+                                  ) : (
+                                    <div className="imagebox relative">
+                                      <img
+                                        src={item.fileType}
+                                        className="rounded-2xl"
+                                      />
+                                    </div>
+                                  )}
+                                </>
+                              )}
+                              {item.categorieType === "Image" && (
+                                <img
+                                  src={item.fileType}
+                                  alt={item.name}
+                                  className="imagebox relative"
+                                />
+                              )}
+                              {item.categorieType === "Video" && (
+                                <div className="relative videobox">
+                                  <video
+                                    controls
+                                    className="w-full rounded-2xl relative"
+                                  >
+                                    <source
+                                      src={item.fileType}
+                                      type="video/mp4"
+                                    />
+                                    Your browser does not support the video tag.
+                                  </video>
+                                </div>
+                              )}
+                              {item.categorieType === "DOC" && (
+                                <a
+                                  href={item.fileType}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  {item.name}
+                                </a>
+                              )}
+                            </td>
+                            <td className="border-b border-[#eee] py-5 px-4 ">
                               <h5
                                 className="font-medium text-black cursor-pointer"
                                 onClick={() => {
-                                  handleAssetChange(item);
+                                  handleAssetAdd(item);
                                   setAssetPreviewPopup(true);
                                 }}
                               >
@@ -525,6 +582,7 @@ const EventEditor = ({
                       value={selectedAsset ? selectedAsset.name : "Set Media"}
                       readOnly
                       className="bg-[#E4E6FF] rounded-full px-3 py-2 w-full"
+                      onClick={() => setAssetPreviewPopup(true)}
                     />
                     <button
                       className="border border-primary rounded-full px-4 py-1 ml-3 mt-2"

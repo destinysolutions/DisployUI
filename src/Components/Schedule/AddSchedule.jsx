@@ -11,38 +11,13 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import EventEditor from "./EventEditor";
 import axios from "axios";
 import { GET_ALL_FILES } from "../../Pages/Api";
+import { MdPermMedia } from "react-icons/md";
 
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 const AddSchedule = () => {
   const [selectScreenModal, setSelectScreenModal] = useState(false);
-  const events = [
-    {
-      id: 1,
-      title: "Event 1",
-      start: new Date(),
-      end: new Date(),
-      color: "#ff5722",
-      asset: null,
-    },
-    {
-      id: 2,
-      title: "Event 2",
-      start: new Date(),
-      end: new Date(),
-      color: "#e91e63",
-      asset: null,
-    },
-    {
-      id: 3,
-      title: "Long Event",
-      start: new Date(2023, 7, 16, 10),
-      end: new Date(2023, 7, 16, 12),
-      color: "#e91e63",
-      asset: null,
-    },
-  ];
 
   const eventStyleGetter = (event) => {
     const backgroundColor = event.color;
@@ -59,7 +34,7 @@ const AddSchedule = () => {
     };
   };
 
-  const [myEvents, setEvents] = useState(events);
+  const [myEvents, setEvents] = useState([]);
   const [isCreatePopupOpen, setCreatePopupOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -80,28 +55,36 @@ const AddSchedule = () => {
   }, []);
 
   const handleCreateEvent = (eventId, eventData) => {
-    if (eventId === null) {
-      // Creating a new event with repeat settings
-      const newEvent = {
-        ...eventData,
-        id: Math.random(),
-        repeatSettings: currentEventRepeatSettings,
-      };
-      setEvents((prev) => [...prev, newEvent]);
-    } else {
-      // Updating an existing event with repeat settings
-      setEvents((prev) =>
-        prev.map((event) =>
-          event.id === eventId
-            ? {
-                ...event,
-                ...eventData,
-                repeatSettings: currentEventRepeatSettings,
-              }
-            : event
-        )
-      );
-    }
+    let data = JSON.stringify({
+      startDate: eventData.start,
+      endDate: eventData.end,
+      asset: eventData.asset.id,
+      title: eventData.title,
+      color: eventData.color,
+      operation: "Insert",
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "http://192.168.1.219/api/ScheduleMaster/AddSchedule",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        const createdEvent = response.data.data.model;
+        setEvents((prevEvents) => [...prevEvents, createdEvent]); // Add the new event to the existing events
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     setSelectedSlot(null);
     setSelectedEvent(null);
     setCurrentEventRepeatSettings(null);
@@ -125,7 +108,7 @@ const AddSchedule = () => {
   };
 
   const updateEvent = (data) => {
-    const allEvents = [...events];
+    const allEvents = [...myEvents];
     let index = allEvents.findIndex((event) => event.id === data.id);
     allEvents.splice(index, 1, data);
     setEvents([...allEvents]);
@@ -177,15 +160,7 @@ const AddSchedule = () => {
   const handleAssetChange = (event) => {
     const selectedName = event.target.value;
     const selectedAsset = assetData.find((item) => item.name === selectedName);
-    console.log(selectedName);
     setSelectedAsset(selectedAsset);
-
-    if (selectedEvent) {
-      setSelectedEvent((prevEvent) => ({
-        ...prevEvent,
-        asset: selectedAsset,
-      }));
-    }
   };
 
   return (
@@ -229,9 +204,6 @@ const AddSchedule = () => {
               setAssetData={setAssetData}
               allAssets={allAssets}
               setSelectedEvent={setSelectedEvent}
-              //handleAssetChange={handleAssetChange}
-              // setSelectedAsset={setSelectedAsset}
-              // selectedAsset={selectedAsset}
             />
           </div>
           <div className=" bg-white shadow-2xl lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
