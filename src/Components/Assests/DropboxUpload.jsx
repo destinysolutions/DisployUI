@@ -6,25 +6,6 @@ import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import axios from "axios";
 
 const DropboxUpload = () => {
-  const getContentType = (mime) => {
-    if (mime.startsWith("image/")) {
-      return "Image";
-    } else if (mime.startsWith("video/")) {
-      return "Video";
-    } else if (
-      mime &&
-      (mime.startsWith("application/pdf") ||
-        mime.startsWith("text/") ||
-        mime === "application/msword" ||
-        mime === "application/vnd.ms-excel" ||
-        mime ===
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-    ) {
-      return "DOC";
-    } else {
-      return "file content type not found";
-    }
-  };
   const handleSuccess = (files) => {
     files.forEach((image) => {
       const formData = new FormData();
