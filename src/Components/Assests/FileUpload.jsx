@@ -496,53 +496,23 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
             {uploadProgress > 0 && uploadProgress < 100 && (
               <div className="flex justify-between items-center bg-white w-96 p-10">
                 <div>
-                  <h1>Uploading... </h1> {uploadProgress}%
+                  {/* <h1>Uploading... </h1> {uploadProgress}% */}
                   <progress
                     value={uploadProgress}
                     max={100}
-                    className="w-full custom-progress"
+                    className="w-full custom-progress bg-SlateBlue rounded-sm"
                   />
                 </div>
-                <div>
+                {/*<div>
                   {uploading && (
                     <button onClick={handleCancelUpload}>
                       <AiOutlineCloseCircle />
                     </button>
                   )}
-                </div>
+                  </div>*/}
               </div>
             )}
-            {showPopup && (
-              <div className="popup">
-                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                  <div className="relative w-full max-w-xl max-h-full">
-                    <div className="relative bg-white rounded-lg shadow">
-                      <div className="p-6 text-center">
-                        <FiCheckCircle className="mx-auto mb-4 text-[#20AE5C] w-14 h-14" />
-                        <h3 className="mb-5 text-2xl font-bold text-[#20AE5C]">
-                          {uploadSuccess
-                            ? "Upload successful!"
-                            : "Upload failed!"}
-                        </h3>
-                        <p>Thank you for your request.</p>
-                        <p>
-                          We are working hard to find the best service and deals
-                          for you.
-                        </p>
-                        <p className="mb-7 text-[#9892A6] mt-1">
-                          Kindly check your media gallery for confirmation.
-                        </p>
-                        <Link to="/assets">
-                          <button className="text-white bg-[#20AE5C] rounded text-lg font-bold px-7 py-2.5">
-                            Continue
-                          </button>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+
           </div>
 
           {fileList.length > 0 ? (

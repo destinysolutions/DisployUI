@@ -41,10 +41,19 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
                 mediaRecorder.stop();
             }
             setRecording(false);
+
+            // Start uploading
+            setUploading(true);
+            setTimeout(() => {
+
+                navigate("/assets");
+            }, 1000);
         } catch (error) {
             console.error('Error stopping recording:', error);
         }
     };
+
+
 
     const toggleCamera = () => {
         setFacingMode((prevFacingMode) =>
@@ -88,14 +97,26 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
+                    onUploadProgress: (progressEvent) => {
+                        const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                        setUploadProgress(progress);
+                    },
                 }
             );
+
+            // Reset upload progress when done
+            setUploadProgress(0);
+            setUploading(false);
 
             console.log('API response:', response.data);
         } catch (error) {
             console.error('Error sending data to API:', error);
+            setUploadProgress(0);
+            setUploading(false);
         }
     };
+
+
 
     const handleDataAvailable = (recorderIndex) => (event) => {
         if (event.data.size > 0) {
@@ -159,6 +180,21 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
                             )}
 
                         </div>
+
+                        {uploading && (
+                            <div className="progress-container">
+                                <div className="progress flex items-center justify-between">
+                                    <div
+                                        className="progress-bar"
+                                        style={{ width: `${uploadProgress}%` }}
+                                    ></div>
+                                    <div className="ml-3">
+                                        {uploadProgress}%
+                                    </div>
+                                </div>
+
+                            </div>
+                        )}
 
 
 

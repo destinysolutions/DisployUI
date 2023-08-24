@@ -4,13 +4,13 @@ import "./../../Styles/assest.css";
 import { BiLoaderCircle } from "react-icons/bi";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
-import { FiCheckCircle } from "react-icons/fi";
+
 import { Link, useNavigate } from "react-router-dom";
 const Pexels = ({ closeModal }) => {
   const [photos, setPhotos] = useState([]);
   const [media, setMedia] = useState([]);
   const [searchQuery, setSearchQuery] = useState("Nature");
-  const [uploadProgress, setUploadProgress] = useState(0);
+
   const [uploadInProgress, setUploadInProgress] = useState(false);
   const [imageUploadProgress, setImageUploadProgress] = useState({})
   const [videoUploadProgress, setVideoUploadProgress] = useState({});
@@ -57,11 +57,9 @@ const Pexels = ({ closeModal }) => {
         )
         .then((response) => {
           setMedia((prevMedia) => [...prevMedia, ...response.data.videos]);
-          const initialVideoProgress = {};
-          response.data.videos.forEach((video) => {
-            initialVideoProgress[video.id] = 0; // Initialize progress to 0 for each video
-          });
-          setVideoUploadProgress(initialVideoProgress);
+
+
+
         })
         .catch((error) => {
           console.error("Error fetching videos:", error);
@@ -187,8 +185,6 @@ const Pexels = ({ closeModal }) => {
           const allVideosUploaded = selectedMedia.videos.every(
             (video) => videoUploadProgress[video.id] === 100
           );
-
-          // Check if all images and videos have completed uploading
           if (allVideosUploaded && selectedMedia.images.every((image) => imageUploadProgress[image.id] === 100)) {
             setUploadInProgress(false);
           }
@@ -310,29 +306,34 @@ const Pexels = ({ closeModal }) => {
                 {uploadInProgress && (
                   <>
                     {/* For Images */}
-                    <div key={image.id} className="image-upload-progress progress-container">
-                      <div className="progress flex items-center">
-                        <div
-                          className="progress-bar"
-                          style={{ width: `${imageUploadProgress[image.id]}%` }}
-                        ></div>
-                        {imageUploadProgress[image.id]}%
+                    {selectedMedia.images.map((image) => (
+                      <div key={image.id} className="image-upload-progress progress-container">
+                        <div className="progress flex items-center">
+                          <div
+                            className="progress-bar"
+                            style={{ width: `${imageUploadProgress[image.id]}%` }}
+                          ></div>
+                          {imageUploadProgress[image.id]}%
+                        </div>
                       </div>
-                    </div>
+                    ))}
 
                     {/* For Videos */}
-                    <div key={video.id} className="video-upload-progress progress-container">
-                      <div className="progress flex items-center">
-                        <div
-                          className="progress-bar"
-                          style={{ width: `${videoUploadProgress[video.id]}%` }}
-                        ></div>
-                        {videoUploadProgress[video.id]}%
+                    {selectedMedia.videos.map((video) => (
+                      <div key={video.id} className="video-upload-progress progress-container">
+                        <div className="progress flex items-center">
+                          <div
+                            className="progress-bar"
+                            style={{ width: `${videoUploadProgress[video.id]}%` }}
+                          ></div>
+                          {videoUploadProgress[video.id]}%
+                        </div>
                       </div>
-                    </div>
-
+                    ))}
                   </>
                 )}
+
+
 
 
 

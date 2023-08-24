@@ -372,13 +372,22 @@ td .tabicon svg {
 
 .custom-progress {
   width: 300px !important;
-
+  background: #e4aa07 !important;
+  border-radius: 20px !important;
 }
 
 .custom-progress::-webkit-progress-value {
   color: blue !important;
+  background: #e4aa07 !important;
+
 }
 
+.custom-progress::webkit-progress-bar {
+  background-color: #000 !important;
+  /* Change to your desired background color */
+  border-radius: 5px !important;
+  /* Optional: Add rounded corners to the progress bar background */
+}
 
 .progress-text {
   text-align: center;

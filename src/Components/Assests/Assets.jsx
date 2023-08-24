@@ -23,7 +23,7 @@ import { HiOutlineVideoCamera } from "react-icons/hi2";
 import { RiGalleryFill } from "react-icons/ri";
 import { HiDocumentDuplicate } from "react-icons/hi";
 import { ALL_FILES_UPLOAD, GET_ALL_FILES } from "../../Pages/Api";
-import { useLocation } from "react-router-dom";
+
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
