@@ -73,3 +73,8 @@
   align-items: center;
   justify-content: center;
 }
+
+.rbc-addons-dnd.rbc-calendar {
+  min-height: calc(100vh - 200px);
+  max-height: calc(100vh - 200px);
+}
