@@ -12,7 +12,6 @@ import EventEditor from "./EventEditor";
 import axios from "axios";
 import "../../Styles/schedule.css";
 import { GET_ALL_FILES } from "../../Pages/Api";
-import { MdPermMedia } from "react-icons/md";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 const localizer = momentLocalizer(moment);
@@ -41,6 +40,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedAsset, setSelectedAsset] = useState(null);
+  const [scheduleAsset, setScheduleAsset] = useState([]);
 
   // State to store repeat settings for the currently edited event
   const [currentEventRepeatSettings, setCurrentEventRepeatSettings] =
@@ -60,8 +60,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .get("http://192.168.1.219/api/ScheduleMaster/GetAllSchedule")
       .then((response) => {
         const fetchedData = response.data.data;
-        // console.log(fetchedData.name, "fetchedData");
-        // Check if fetchedData is an array
+        setScheduleAsset(response.data.data);
         if (Array.isArray(fetchedData)) {
           const fetchedEvents = fetchedData.map((item) => ({
             id: item.scheduleId,
@@ -81,15 +80,15 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   }, []);
-  const handleCreateEvent = (eventData) => {
-    let data = JSON.stringify({
+  const handleCreateEvent = (id, eventData) => {
+    let data = {
       startDate: eventData.start,
       endDate: eventData.end,
       asset: eventData.asset.id,
       title: eventData.title,
       color: eventData.color,
       operation: "Insert",
-    });
+    };
 
     let config = {
       method: "post",
@@ -103,7 +102,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
+        console.log(response.data);
         const newEvent = {
           ...eventData,
           id: response.data.scheduleId,
@@ -193,6 +192,53 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedAsset(selectedAsset);
   };
 
+  const getEarliestStartTime = (events) => {
+    if (events.length === 0) return null;
+    return events.reduce((earliest, event) => {
+      return event.start < earliest ? event.start : earliest;
+    }, events[0].start);
+  };
+
+  const getLatestEndTime = (events) => {
+    if (events.length === 0) return null;
+    return events.reduce((latest, event) => {
+      return event.end > latest ? event.end : latest;
+    }, events[0].end);
+  };
+
+  const today = new Date();
+  const eventsForToday = myEvents.filter((event) =>
+    moment(event.start).isSame(today, "day")
+  );
+  const getDayEventTimes = (events, selectedDate) => {
+    const eventsForSelectedDay = events.filter(
+      (event) =>
+        moment(event.start).isSame(selectedDate, "day") ||
+        moment(event.end).isSame(selectedDate, "day")
+    );
+
+    const earliestStartTime = getEarliestStartTime(eventsForSelectedDay);
+    const latestEndTime = getLatestEndTime(eventsForSelectedDay);
+
+    return {
+      earliestStartTime,
+      latestEndTime,
+    };
+  };
+  const dayStartTime = getDayEventTimes(
+    eventsForToday,
+    today
+  ).earliestStartTime;
+  const dayEndTime = getDayEventTimes(eventsForToday, today).latestEndTime;
+
+  const handleUpdateEvent = (eventId, updatedEventData) => {
+    // Update the event in the myEvents state array
+    const updatedEvents = myEvents.map((event) =>
+      event.id === eventId ? { ...event, ...updatedEventData } : event
+    );
+    setEvents(updatedEvents);
+  };
+
   return (
     <>
       <div className="flex border-b border-gray bg-white">
@@ -240,11 +286,14 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   setAssetData={setAssetData}
                   allAssets={allAssets}
                   setSelectedEvent={setSelectedEvent}
+                  onUpdate={handleUpdateEvent}
                 />
               </div>
               <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
                 <div className="p-3">
-                  <span className="text-xl">Schedule Name</span>
+                  <span className="lg:text-lg md:text-md sm:text-sm xs:text-sm ">
+                    Schedule Name
+                  </span>
                 </div>
                 <div className="border-b-2 border-lightgray"></div>
                 <div className="p-3">
@@ -254,26 +303,34 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       <li className="border-b-2 border-lightgray p-3">
                         <h3>Start Date & Time:</h3>
                         <div className="bg-lightgray rounded-full px-3 py-2 mt-2">
-                          01 / 06 /2023, 05:02 PM
+                          {dayStartTime?.toLocaleString()}
                         </div>
                       </li>
                       <li className="border-b-2 border-lightgray p-3">
                         <h3>End Date & Time:</h3>
                         <div className="bg-lightgray rounded-full px-3 py-2 mt-2">
-                          01 / 06 /2023, 05:02 PM
+                          {dayEndTime?.toLocaleString()}
                         </div>
                       </li>
                       <li className="p-3">
-                        <select className="w-full paymentlabel relative" onChange={handleAssetChange}>
+                        <select
+                          className="w-full paymentlabel relative"
+                          onChange={handleAssetChange}
+                        >
                           <option value="">Select an asset</option>
-                          {assetData.map((asset) => (
-                            <option key={asset.id} value={asset.name}>
-                              {asset.name}
-                            </option>
-                          ))}
+                          {scheduleAsset
+                            .filter(
+                              (asset, index, self) =>
+                                self.findIndex((a) => a.id === asset.id) ===
+                                index
+                            )
+                            .map((asset) => (
+                              <option key={asset.id} value={asset.name}>
+                                {asset.name}
+                              </option>
+                            ))}
                         </select>
                       </li>
-
 
                       {selectedAsset && (
                         <>
@@ -332,7 +389,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                           )}
                         </>
                       )}
-
                     </ul>
                   </div>
                   {assetData.length === 0 && (
@@ -343,8 +399,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         </button>
                       </div>
                       <p className="mx-3">
-                        No Associated Assets. Start by selecting a date & time on
-                        the calendar.
+                        No Associated Assets. Start by selecting a date & time
+                        on the calendar.
                       </p>
                     </div>
                   )}
