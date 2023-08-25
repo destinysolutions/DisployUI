@@ -8,6 +8,7 @@ import axios from "axios";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 
 import { useNavigate } from "react-router-dom";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 const Unsplash = ({ closeModal, onSelectedImages }) => {
   const [img, setImg] = useState("Natural");
@@ -53,7 +54,7 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
   const handleLoadMore = () => {
     fetchRequest(img, currentPage);
   };
-
+  const [imageUploadStatus, setImageUploadStatus] = useState({});
   const handleImageUpload = () => {
     setUploadInProgress(true);
     selectedImages.forEach((image) => {
@@ -83,14 +84,22 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
 
         .then((response) => {
           console.log("Upload Success:", response.data);
+          setImageUploadStatus((prevStatus) => ({
+            ...prevStatus,
+            [image.id]: "success",
+          }));
           navigate("/assets");
         })
         .catch((error) => {
           console.error("Upload Error:", error);
+          setImageUploadStatus((prevStatus) => ({
+            ...prevStatus,
+            [image.id]: "error",
+          }));
         })
         .finally(() => {
           if (
-            selectedImages.every((img) => imageUploadProgress[img.id] === 100)
+            selectedImages.every((img) => imageUploadStatus[img.id] === "success")
           ) {
             setUploadInProgress(false);
           }
@@ -110,6 +119,13 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
       }, 5000);
     }
   }, [selectedImages, imageUploadProgress]);
+  const handleDeleteImage = (imageId) => {
+    setSelectedImages((prevSelected) =>
+      prevSelected.filter((img) => img.id !== imageId)
+    );
+  };
+
+
   return (
     <>
       <div className="backdrop">
@@ -156,6 +172,38 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
               })}
             </div>
           </div>
+
+          {/* Display selected image previews with name and size */}
+
+
+
+          {/* Display progress bars */}
+          <div className="  bg-white shadow-2xl max-w-xs">
+
+            {uploadInProgress && (
+              <div className="bg-white shadow-2xl max-w-xs flex ">
+                {/* Conditionally render individual image upload spinners */}
+                {selectedImages.map((image) => (
+                  <div key={image.id} className="image-upload-progress progress-container">
+                    <div className="progress flex items-center">
+                      <div
+                        className="progress-bar"
+                        style={{ width: `${imageUploadProgress[image.id]}%` }}
+                      >
+
+                      </div>
+                      {imageUploadProgress[image.id]}%
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+
+
+
+
           <div className="text-center ">
             <div className="text-center ">
               {res.length > 0 && (
@@ -179,29 +227,33 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
               Upload Images
             </button>
           </div>
-        </div>
 
-        <div className="  bg-white shadow-2xl max-w-xs">
-          {uploadInProgress && (
-            <div className="bg-white shadow-2xl max-w-xs flex ">
-              {/* Conditionally render individual image upload spinners */}
-              {selectedImages.map((image) => (
-                <div
-                  key={image.id}
-                  className="image-upload-progress progress-container"
-                >
-                  <div className="progress flex items-center">
-                    <div
-                      className="progress-bar"
-                      style={{ width: `${imageUploadProgress[image.id]}%` }}
-                    ></div>
-                    {imageUploadProgress[image.id]}%
+          { /* <div className="selected-images mt-3">
+            {selectedImages.map((image) => (
+              <div key={image.id} className="selected-image flex bg-white p-2 rounded-sm shadow-inner items-center  justify-between">
+                <div className="flex items-center">
+                  <img src={image.urls.full} alt={image.alt_description} className="w-20  h-20 rounded-lg" />
+                  <div className="ml-2">
+                    <p className=" text-sm">Name: {image.alt_description}</p>
+                    <p className=" text-sm">Size: {image.file_size} KB</p>
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+                <div>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDeleteImage(image.id)}
+                  >
+                    <RiDeleteBin6Line className="text-red text-lg" />
+                  </button>
+                </div>
+              </div>
+            ))}
+            </div> */}
         </div>
+
+
+
+
       </div>
     </>
   );
