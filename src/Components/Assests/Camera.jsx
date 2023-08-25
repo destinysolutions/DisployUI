@@ -152,7 +152,11 @@ const Camera = ({ closeModal, onImageUpload }) => {
                 <BiDownload className="lg:text-4xl md:text-4xl sm:text-2xl xs:text-2xl ml-2 text-SlateBlue" />
               </button>
             )}
-
+            {isSaved && (
+              <div className="text-center text-green-500 mt-3">
+                Image uploaded successfully!
+              </div>
+            )}
 
           </div>
 
@@ -170,6 +174,8 @@ const Camera = ({ closeModal, onImageUpload }) => {
 
             </div>
           )}
+
+
         </div>
       </div>
     </div>

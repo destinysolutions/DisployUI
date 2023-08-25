@@ -31,7 +31,8 @@ import cameraimg from "../../../public/Assets/photography.png";
 import videoimg from "../../../public/Assets/camera.png";
 import pixabayimg from "../../../public/Assets/pixabay.png";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineCloseCircle } from "react-icons/ai";
+import { FcFile } from "react-icons/fc";
+import { RiDeleteBin6Line } from "react-icons/ri";
 {
   /* end of video*/
 }
@@ -40,10 +41,16 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const [browseFiles, setbrowseFiles] = useState(false);
   const [fileSuccessModal, setfileSuccessModal] = useState(false);
   const [fileErrorModal, setfileErrorModal] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
+  const [imageSelected, setImageSelected] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState("");
+  const [selectedFileSize, setSelectedFileSize] = useState("");
+  const [selectedImages, setSelectedImages] = useState([]);
+
 
   {
     /* google drive */
@@ -79,34 +86,76 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     setFileList(updatedList);
   };
   // file upload
-
-  const [uploadFiles, setUploadFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
   const onFileChange = (e) => {
     const files = Array.from(e.target.files);
-    setUploadFiles(files);
+
+    if (files.length > 0) {
+      const newImages = [...selectedImages];
+
+      files.forEach((file) => {
+        const fileSizeKB = Math.round(file.size / 1024);
+
+        if (file.type.startsWith('image/')) {
+          // Handle images
+          newImages.push({
+            file,
+            name: file.name,
+            size: fileSizeKB + ' KB',
+            preview: URL.createObjectURL(file),
+          });
+        } else if (file.type.startsWith('video/')) {
+          // Handle videos
+          newImages.push({
+            file,
+            name: file.name,
+            size: fileSizeKB + ' KB',
+            isVideo: true,
+          });
+        } else if (file.type.startsWith('application/pdf')) {
+          // Handle PDFs (you can add more document types as needed)
+          newImages.push({
+            file,
+            name: file.name,
+            size: fileSizeKB + ' KB',
+            isDocument: true,
+          });
+        } else {
+          // Handle other document types (e.g., Word documents)
+          newImages.push({
+            file,
+            name: file.name,
+            size: fileSizeKB + ' KB',
+            isDocument: true,
+          });
+        }
+      });
+
+      setSelectedImages(newImages);
+    }
   };
 
+
+
+
+
   const uploadData = async () => {
-    if (uploadFiles.length === 0) {
-      alert("Please select files to upload.");
+    if (selectedImages.length === 0) {
+      alert("Please select at least one image to upload.");
       return;
     }
 
     setUploading(true);
-    setUploadSuccess(false);
     setUploadProgress(0);
 
     try {
-      const uploadPromises = uploadFiles.map(async (file) => {
-        const CategorieType = getContentType(file.type);
+      const uploadPromises = selectedImages.map(async (image) => {
+        const CategorieType = getContentType(image.file.type);
         const details = "Some Details about the file";
         const formData = new FormData();
-        formData.append("File", file);
+        formData.append("File", image.file);
         formData.append("operation", "Insert");
         formData.append("CategorieType", CategorieType);
         formData.append("details", details);
@@ -121,21 +170,23 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         });
 
         if (response.status === 200) {
-          console.log(`File ${file.name} uploaded successfully.`);
+          console.log(`File ${image.name} uploaded successfully.`);
           navigate("/assets");
         } else {
-          console.error(`Upload failed for file ${file.name}`);
+          console.error(`Upload failed for file ${image.name}`);
         }
       });
 
       await Promise.all(uploadPromises);
-      setUploadSuccess(true);
+
     } catch (error) {
       console.error("An error occurred during upload:", error);
     } finally {
       setUploading(false);
     }
   };
+
+
 
   const getFileType = (fileName, mimeType) => {
     const extension = fileName.split(".").pop().toLowerCase();
@@ -263,18 +314,9 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
 
   // end video
 
-  // image upload Msg
-  useEffect(() => {
-    if (uploadProgress === 100) {
-      setUploadSuccess(true);
-      setShowPopup(true);
-    }
-  }, [uploadProgress]);
-  const handleCancelUpload = () => {
-    setUploadProgress(0);
-    setUploadSuccess(false);
-    setShowPopup(false);
-    setUploading(false); // Reset uploading status
+  const handleDelete = (indexToDelete) => {
+    const updatedImages = selectedImages.filter((_, index) => index !== indexToDelete);
+    setSelectedImages(updatedImages);
   };
   return (
     <>
@@ -282,7 +324,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-6 px-5">
+      <div className="pt-6 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between md:justify-between sm:justify-between sm:flex flex-wrap items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4">
@@ -463,57 +505,96 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
             onDrop={onDrop}
           >
             <div className="relative">
-              <div className=" relative flex flex-col items-center justify-center min-h-full lg:py-40 md:py-32 sm:py-32 xs:pb-32 xs:pt-14 px-2  bg-lightgray lg:mt-14 md:mt-14 sm:mt-5 xs:mt-5  border-2 rounded-[20px] border-SlateBlue border-dashed">
-                <FiUploadCloud className="text-SlateBlue md:mb-7 sm:mb-3 xs:mb-2 lg:text-[150px] md:text-[100px] sm:text-[80px] xs:text-[45px]" />
-                <input
-                  type="file"
-                  className=" absolute left-0 top-0 w-full h-full opacity-0 cursor-pointer"
-                  name="uploadfile"
-                  onChange={onFileChange}
-                />
-                <span className="text-SlateBlue text-center">
-                  Select Files to Upload
-                </span>
-                <p className="text-sm font-normal text-center">
-                  Drop your first video, photo or document here
-                </p>
+              <div className=" relative flex-col flex  items-center justify-center min-h-full lg:py-16 md:py-10 sm:py-32 xs:pb-32 xs:pt-14 px-2  bg-lightgray lg:mt-14 md:mt-14 sm:mt-5 xs:mt-5  border-2 rounded-[20px] border-SlateBlue border-dashed">
+
+                <div className=" relative text-center max-auto">
+                  <FiUploadCloud className="text-SlateBlue md:mb-7 sm:mb-3 xs:mb-2 lg:text-[150px] md:text-[100px] sm:text-[80px] xs:text-[45px] mx-auto text-center" />
+                  <input
+                    type="file"
+                    className=" absolute left-0 top-0 w-full h-full opacity-0 cursor-pointer"
+                    name="uploadfile"
+                    onChange={onFileChange}
+                    multiple
+                    accept="image/*, video/*, application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  />
+                  <span className="text-SlateBlue text-center">
+                    Select Files to Upload
+                  </span>
+                  <p className="text-sm font-normal text-center">
+                    Drop your first video, photo or document here
+                  </p>
+                </div>
+                <div className=" relative z-10 text-center ">
+                  <button
+                    className="bg-SlateBlue text-white px-7 py-2 rounded mt-4 z-10"
+                    onClick={uploadData}
+                    disabled={uploading} >
+                    Upload
+                  </button>
+                </div>
+
+
+                <div className="relative max-w-[750px] text-center mt-5">
+                  {selectedImages.map((item, index) => (
+                    <div key={index} className="image-item flex  justify-between items-center bg-white p-2 rounded-sm shadow-inner">
+                      <div className="image-item flex  items-center">
+                        {item.isVideo ? (
+                          <>
+                            <video controls className="max-w-16 max-h-16 rounded-lg">
+                              <source src={URL.createObjectURL(item.file)} type={item.file.type} />
+                              Your browser does not support the video tag.
+                            </video>
+                            <div className="ml-2 text-left">
+                              <p className="text-base">{item.name}</p>
+                              <p className="text-sm"><span className="font-medium text-base">Size:</span> {item.size}</p>
+                            </div></>
+                        ) : item.isDocument ? ( // Check if it's a document
+                          <div className="flex" >
+                            <FcFile size={40} color="red" /> {/* Render the document icon */}
+                            <div className="ml-2 text-left">
+                              <p className="text-base">{item.name}</p>
+                              <p className="text-sm"><span className="font-medium text-base">Size:</span> {item.size}</p>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <img src={item.preview} alt={`Selected Image ${index}`} className="max-w-16 max-h-16 rounded-lg" />
+                            <div className="ml-2 text-left">
+                              <p className="text-base">{item.name}</p>
+                              <p className="text-sm"><span className="font-medium text-base">Size:</span> {item.size}</p>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                      <button onClick={() => handleDelete(index)}><RiDeleteBin6Line className="text-red text-lg ml-5" /></button>
+                    </div>
+                  ))}
+
+                </div>
               </div>
 
-              <div className=" absolute bottom-20 left-1/2 -translate-x-2/4">
-                <button
-                  className="bg-SlateBlue text-white px-7 py-2 rounded mt-4 z-10"
-                  onClick={uploadData}
-                  disabled={uploading}
 
-                >
-                  Upload
-                </button>
-              </div>
+
+
             </div>
           </div>
 
-          <div className="progressbar-popup  bg-white shadow-2xl">
-            {uploadProgress > 0 && uploadProgress < 100 && (
+          {uploading && (
+            <div className="progressbar-popup bg-white shadow-2xl">
               <div className="flex justify-between items-center bg-white w-96 p-10">
                 <div>
-                  {/* <h1>Uploading... </h1> {uploadProgress}% */}
+                  <h1>Uploading... {uploadProgress}%</h1>
                   <progress
                     value={uploadProgress}
                     max={100}
                     className="w-full custom-progress bg-SlateBlue rounded-sm"
                   />
                 </div>
-                {/*<div>
-                  {uploading && (
-                    <button onClick={handleCancelUpload}>
-                      <AiOutlineCloseCircle />
-                    </button>
-                  )}
-                  </div>*/}
               </div>
-            )}
+            </div>
+          )}
 
-          </div>
+
 
           {fileList.length > 0 ? (
             <div className="drop-file-preview">
@@ -535,18 +616,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
             </div>
           ) : null}
 
-          {selectedFiles.length > 0 && (
-            <div className="mt-10">
-              {/* Loop through the selected files and display them */}
-              {selectedFiles.map((file) => (
-                <div key={file.id} className="p-3 bg-white flex items-center">
-                  {/* Display the file details here */}
-                  <span>{file.name}</span>
-                  {/* Additional file information */}
-                </div>
-              ))}
-            </div>
-          )}
+
 
           {/* End of  Dropbox*/}
           {/* ... start camera */}
@@ -566,81 +636,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
           </div>
           {/* ... end camera */}
 
-          {browseFiles && (
-            <>
-              <div className="mt-10">
-                <div className="p-3 bg-white flex items-center">
-                  <span>
-                    <AiFillFile className="text-[#AC96E4] text-4xl bg-[#E9E3F7] p-2 rounded-sm" />
-                  </span>
-                  <div className="flex flex-col ml-4 w-full">
-                    <div className="flex justify-between">
-                      <div>
-                        <h6 className="text-sm">Scann_158.pdf</h6>
-                        <span className="text-sm">30 MB / 74 MB</span>
-                      </div>
-                      <div>
-                        <RxCross2 className="text-SlateBlue" />
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center mt-2">
-                      <progress
-                        className="progress-continue"
-                        max={100}
-                        value={46}
-                      />
-                      <span className="ml-3 text-[#9892A6]">46%</span>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className="p-3 bg-white flex items-center mt-5"
-                  onClick={() => setfileSuccessModal(true)}
-                >
-                  <span>
-                    <AiFillFile className="text-[#73B172] text-4xl bg-[#DAF2D9] p-2 rounded-sm" />
-                  </span>
-                  <div className="flex flex-col ml-4 w-full">
-                    <h6 className="text-sm">Scann_158.pdf</h6>
-                    <span className="text-sm">30 MB / 74 MB</span>
-                    <div className="flex justify-between items-center mt-2">
-                      <progress
-                        className="progress-success"
-                        max={100}
-                        value={100}
-                      />
-                      <span className="ml-3 text-[#309B2E]">100%</span>
-                    </div>
-                    <button></button>
-                  </div>
-                </div>
 
-                <div
-                  className="p-3 bg-white flex items-center my-5"
-                  onClick={() => setfileErrorModal(true)}
-                >
-                  <span>
-                    <AiFillFile className="text-[#E36363] text-4xl bg-[#F2D9D9] p-2 rounded-sm" />
-                  </span>
-                  <div className="flex flex-col ml-4 w-full">
-                    <div className="flex justify-between">
-                      <div>
-                        <h6 className="text-sm">Scann_158.pdf</h6>
-                        <span className="text-sm">30 MB / 74 MB</span>
-                      </div>
-                      <div>
-                        <IoMdRefresh className="text-SlateBlue" />
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center mt-2">
-                      <progress className="progress-error" max={100} />
-                      <span className="ml-3 text-[#E36363]">error</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
 
           {fileSuccessModal ? (
             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
