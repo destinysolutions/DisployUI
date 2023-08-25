@@ -1,4 +1,5 @@
 import axios from "axios";
+import moment from "moment";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -16,6 +17,7 @@ const EventEditor = ({
   assetData,
   setAssetData,
   allAssets,
+  onUpdate,
 }) => {
   const [title, setTitle] = useState("");
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
@@ -76,12 +78,6 @@ const EventEditor = ({
 
   // Create a variable to check if the modal is in "edit" mode
   const isEditMode = !!selectedEvent;
-  const handleDelete = () => {
-    if (selectedEvent && selectedEvent.id) {
-      onDelete(selectedEvent.id);
-      onClose(); // Close the modal after deleting the event.
-    }
-  };
 
   // Helper functions to format dates and times
   const formatDate = (date) => {
@@ -247,6 +243,25 @@ const EventEditor = ({
         console.log(error);
       });
   };
+
+  const handleUpdate = () => {
+    const start = new Date(editedStartDate + " " + editedStartTime);
+    const end = new Date(editedEndDate + " " + editedEndTime);
+
+    const updatedEventData = {
+      title: title,
+      start: selectedEvent.start, // Use selectedEvent's start time
+      end: selectedEvent.end, // Use selectedEvent's end time
+      color: selectedColor,
+      asset: selectedAsset,
+      // repeat: [], // Adjust repeat information if needed
+    };
+
+    // Call the update function passing the event ID and updated data
+    onUpdate(selectedEvent.id, updatedEventData);
+    onClose();
+  };
+  console.log(selectedEvent, "selectedEvent.id");
   return (
     <>
       <ReactModal
@@ -280,7 +295,10 @@ const EventEditor = ({
               <div className="overflow-x-auto">
                 <div className="rounded-sm bg-white  shadow-2xl md:pb-1">
                   <div className="max-w-full overflow-x-auto">
-                    <table className="w-full table-fixed text-sm break-words" cellPadding={10}>
+                    <table
+                      className="w-full table-fixed text-sm break-words"
+                      cellPadding={10}
+                    >
                       <thead>
                         <tr className="bg-lightgray text-left">
                           <th className="min-w-[220px] py-4 px-4 font-medium text-black md:pl-10">
@@ -382,7 +400,9 @@ const EventEditor = ({
                               </h5>
                             </td>
                             <td className="border-b border-[#eee]">
-                              <p className="text-black">Jan 13,2023</p>
+                              <p className="text-black">
+                                {moment(item.createdDate).format("YYYY-MM-DD")}
+                              </p>
                             </td>
                             <td className="border-b border-[#eee]">
                               <p className="text-black ">
@@ -419,68 +439,68 @@ const EventEditor = ({
                                           <>
                                             {assetPreview.categorieType ===
                                               "Online" && (
-                                                <>
-                                                  {assetPreview.details ===
-                                                    "Video" ? (
-                                                    <div className="relative videobox">
-                                                      <video
-                                                        controls
-                                                        className="w-full rounded-2xl relative"
-                                                      >
-                                                        <source
-                                                          src={
-                                                            assetPreview.fileType
-                                                          }
-                                                          type="video/mp4"
-                                                        />
-                                                        Your browser does not
-                                                        support the video tag.
-                                                      </video>
-                                                    </div>
-                                                  ) : (
-                                                    <div className="imagebox relative p-3">
-                                                      <img
+                                              <>
+                                                {assetPreview.details ===
+                                                "Video" ? (
+                                                  <div className="relative videobox">
+                                                    <video
+                                                      controls
+                                                      className="w-full rounded-2xl relative"
+                                                    >
+                                                      <source
                                                         src={
                                                           assetPreview.fileType
                                                         }
-                                                        className="rounded-2xl"
+                                                        type="video/mp4"
                                                       />
-                                                    </div>
-                                                  )}
-                                                </>
-                                              )}
+                                                      Your browser does not
+                                                      support the video tag.
+                                                    </video>
+                                                  </div>
+                                                ) : (
+                                                  <div className="imagebox relative p-3">
+                                                    <img
+                                                      src={
+                                                        assetPreview.fileType
+                                                      }
+                                                      className="rounded-2xl"
+                                                    />
+                                                  </div>
+                                                )}
+                                              </>
+                                            )}
                                             {assetPreview.categorieType ===
                                               "Image" && (
-                                                <img
-                                                  src={assetPreview.fileType}
-                                                  alt={assetPreview.name}
-                                                  className="imagebox relative"
-                                                />
-                                              )}
+                                              <img
+                                                src={assetPreview.fileType}
+                                                alt={assetPreview.name}
+                                                className="imagebox relative"
+                                              />
+                                            )}
                                             {assetPreview.categorieType ===
                                               "Video" && (
-                                                <video
-                                                  controls
-                                                  className="w-full rounded-2xl relative h-56"
-                                                >
-                                                  <source
-                                                    src={assetPreview.fileType}
-                                                    type="video/mp4"
-                                                  />
-                                                  Your browser does not support
-                                                  the video tag.
-                                                </video>
-                                              )}
+                                              <video
+                                                controls
+                                                className="w-full rounded-2xl relative h-56"
+                                              >
+                                                <source
+                                                  src={assetPreview.fileType}
+                                                  type="video/mp4"
+                                                />
+                                                Your browser does not support
+                                                the video tag.
+                                              </video>
+                                            )}
                                             {assetPreview.categorieType ===
                                               "DOC" && (
-                                                <a
-                                                  href={assetPreview.fileType}
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                >
-                                                  {assetPreview.name}
-                                                </a>
-                                              )}
+                                              <a
+                                                href={assetPreview.fileType}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                              >
+                                                {assetPreview.name}
+                                              </a>
+                                            )}
                                           </>
                                         )}
                                       </div>
@@ -569,11 +589,12 @@ const EventEditor = ({
                 <div>
                   {buttons.map((label, index) => (
                     <button
-                      className={`daysbtn ${(selectAllDays || selectedDays[index]) &&
+                      className={`daysbtn ${
+                        (selectAllDays || selectedDays[index]) &&
                         isDayInRange(index)
-                        ? " bg-SlateBlue border-white"
-                        : ""
-                        }`}
+                          ? " bg-SlateBlue border-white"
+                          : ""
+                      }`}
                       key={index}
                       disabled={!isDayInRange(index)}
                       onClick={() => {
@@ -707,15 +728,27 @@ const EventEditor = ({
               Cancel
             </button>
 
-            <button
-              className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
-              onClick={() => {
-                handleSave();
-                setShowRepeatSettings(false);
-              }}
-            >
-              Save
-            </button>
+            {isEditMode ? (
+              <button
+                className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
+                onClick={() => {
+                  handleUpdate();
+                  setShowRepeatSettings(false);
+                }}
+              >
+                Update
+              </button>
+            ) : (
+              <button
+                className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
+                onClick={() => {
+                  handleSave();
+                  setShowRepeatSettings(false);
+                }}
+              >
+                Save
+              </button>
+            )}
             {isEditMode && (
               <button
                 className="border-2 border-lightgray hover:bg-primary hover:text-white   px-6 py-2 rounded-full ml-3"
