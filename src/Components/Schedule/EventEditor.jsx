@@ -35,6 +35,18 @@ const EventEditor = ({
     setShowRepeatSettings(true);
   };
 
+  // Helper functions to format dates and times
+  const formatDate = (date) => {
+    console.log(date, "date");
+    return date.toISOString().slice(0, 10);
+  };
+
+  const formatTime = (date) => {
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
+
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
   useEffect(() => {
     if (isOpen && selectedEvent) {
@@ -78,17 +90,6 @@ const EventEditor = ({
 
   // Create a variable to check if the modal is in "edit" mode
   const isEditMode = !!selectedEvent;
-
-  // Helper functions to format dates and times
-  const formatDate = (date) => {
-    return date.toISOString().slice(0, 10);
-  };
-
-  const formatTime = (date) => {
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
 
   const startDate = new Date(editedStartDate);
   const endDate = new Date(editedEndDate);
@@ -225,7 +226,7 @@ const EventEditor = ({
 
     let config = {
       method: "post",
-      url: "http://192.168.1.219/api/ScheduleMaster/AddSchedule",
+      url: "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/AddSchedule",
       headers: {
         "Content-Type": "application/json",
       },
@@ -249,11 +250,12 @@ const EventEditor = ({
     const end = new Date(editedEndDate + " " + editedEndTime);
 
     const updatedEventData = {
+      id: selectedEvent.id,
       title: title,
-      start: selectedEvent.start, // Use selectedEvent's start time
-      end: selectedEvent.end, // Use selectedEvent's end time
+      start: start, // Use selectedEvent's start time
+      end: end, // Use selectedEvent's end time
       color: selectedColor,
-      asset: selectedAsset,
+      asset: selectedAsset.id,
       // repeat: [], // Adjust repeat information if needed
     };
 
@@ -261,7 +263,7 @@ const EventEditor = ({
     onUpdate(selectedEvent.id, updatedEventData);
     onClose();
   };
-  console.log(selectedEvent, "selectedEvent.id");
+  // console.log(selectedEvent, "selectedEvent.id");
   return (
     <>
       <ReactModal
@@ -294,7 +296,7 @@ const EventEditor = ({
               </div>
               <div className="overflow-x-auto">
                 <div className="rounded-sm bg-white  shadow-2xl md:pb-1">
-                  <div className="max-w-full overflow-x-auto">
+                  <div className="max-w-full overflow-x-auto max-h-[1122px]">
                     <table
                       className="w-full table-fixed text-sm break-words"
                       cellPadding={10}
