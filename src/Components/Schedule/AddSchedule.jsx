@@ -57,7 +57,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
   useEffect(() => {
     axios
-      .get("http://192.168.1.219/api/ScheduleMaster/GetAllSchedule")
+      .get(
+        "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/GetAllSchedule"
+      )
       .then((response) => {
         const fetchedData = response.data.data;
         setScheduleAsset(response.data.data);
@@ -92,7 +94,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
     let config = {
       method: "post",
-      url: "http://192.168.1.219/api/ScheduleMaster/AddSchedule",
+      url: "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/AddSchedule",
       headers: {
         "Content-Type": "application/json",
       },
@@ -136,13 +138,48 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  const updateEvent = (data) => {
-    const allEvents = [...myEvents];
-    let index = allEvents.findIndex((event) => event.id === data.id);
-    allEvents.splice(index, 1, data);
-    setEvents([...allEvents]);
-  };
+  // const updateEvent = (data) => {
+  //   const allEvents = [...myEvents];
+  //   let index = allEvents.findIndex((event) => event.id === data.id);
+  //   allEvents.splice(index, 1, data);
+  //   setEvents([...allEvents]);
+  // };
+  const handleUpdateEvent = (eventId, updatedEventData) => {
+    let data = {
+      scheduleId: eventId,
+      startDate: updatedEventData.start,
+      endDate: updatedEventData.end,
+      asset: updatedEventData.asset,
+      title: updatedEventData.title,
+      color: updatedEventData.color,
+      operation: "Update",
+    };
+    console.log(data, "data");
+    let config = {
+      method: "post",
+      url: "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/AddSchedule",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
 
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data);
+        // const updatedEvents = myEvents.map((event) => {
+        //   console.log(event, "deventeventeventeventevent");
+        //   event.id === response.data.scheduleId
+        //     ? { ...event, ...updatedEventData }
+        //     : event;
+        // });
+        setEvents(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   // Function to handle event drag and drop
   const handleEventDrop = ({ event, start, end }) => {
     const data = {
@@ -150,7 +187,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       start,
       end,
     };
-    updateEvent(data);
+    handleUpdateEvent(data);
   };
 
   // Function to handle event resize
@@ -161,7 +198,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       start,
       end,
     };
-    updateEvent(resizedEvent);
+    handleUpdateEvent(resizedEvent);
   };
 
   const [assetData, setAssetData] = useState([]);
@@ -230,14 +267,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     today
   ).earliestStartTime;
   const dayEndTime = getDayEventTimes(eventsForToday, today).latestEndTime;
-
-  const handleUpdateEvent = (eventId, updatedEventData) => {
-    // Update the event in the myEvents state array
-    const updatedEvents = myEvents.map((event) =>
-      event.id === eventId ? { ...event, ...updatedEventData } : event
-    );
-    setEvents(updatedEvents);
-  };
 
   return (
     <>

@@ -302,7 +302,15 @@ const Routing = () => {
             />
           }
         />
-        <Route path="/addschedule" element={<AddSchedule />} />
+        <Route
+          path="/addschedule"
+          element={
+            <AddSchedule
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
         <Route
           path="/saveassignscreenmodal"
           element={<SaveAssignScreenModal />}
