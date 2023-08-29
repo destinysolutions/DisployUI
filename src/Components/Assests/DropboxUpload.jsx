@@ -61,8 +61,6 @@
 // };
 
 // export default DropboxUpload;
-
-
 import React from "react";
 import DropboxChooser from "react-dropbox-chooser";
 import { AiOutlineDropbox } from "react-icons/ai";
@@ -72,17 +70,17 @@ import axios from "axios";
 
 const DropboxUpload = () => {
   const handleSuccess = (files) => {
-    files.forEach((file) => {
+    files.forEach((image) => {
       const formData = new FormData();
       const details = "Dropbox file upload";
 
       // You can check the file type here to make sure it's a video before uploading
-      if (file.link_type === "direct" && file.is_dir === false && file.name.match(/\.(mp4|mov|avi|mkv)$/i)) {
-        formData.append("FileType", file.link);
+      if (image.link_type === "direct" && image.is_dir === false && image.name.match(/\.(mp4|mov|avi|mkv)$/i)) {
+        formData.append("FileType", image.link);
         formData.append("operation", "Insert");
         formData.append("CategorieType", "Online");
         formData.append("details", details);
-        formData.append("name", file.name);
+        formData.append("name", image.name);
 
         axios
           .post(ALL_FILES_UPLOAD, formData)

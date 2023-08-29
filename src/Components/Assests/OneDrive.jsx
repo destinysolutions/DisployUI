@@ -112,11 +112,10 @@ const OneDrive = () => {
         const msalInstance = new msal.PublicClientApplication(msalParams);
         setApp(msalInstance);
 
-        // Check for existing accounts to determine if the user is already logged in
+      
         const accounts = msalInstance.getAllAccounts();
         if (accounts.length > 0) {
-            // User is already logged in
-            // You can set some state here to indicate the user's logged-in status
+       
         }
     }, []);
 
@@ -177,7 +176,7 @@ const OneDrive = () => {
     async function getToken() {
         let accessToken = "";
 
-        let authParams = { scopes: ["User.ReadWrite"] }; // Update with the required scopes
+        let authParams = { scopes: ["Files.ReadWrite"] }; // Update with the required scopes
 
         try {
             const resp = await app.acquireTokenSilent(authParams);
