@@ -11,7 +11,7 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import EventEditor from "./EventEditor";
 import axios from "axios";
 import "../../Styles/schedule.css";
-import { GET_ALL_FILES } from "../../Pages/Api";
+import { ADD_SCHEDULE, GET_ALL_FILES, GET_ALL_SCHEDULE } from "../../Pages/Api";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 const localizer = momentLocalizer(moment);
@@ -55,11 +55,10 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedEvent(event);
     setCreatePopupOpen(true);
   }, []);
+
   useEffect(() => {
     axios
-      .get(
-        "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/GetAllSchedule"
-      )
+      .get(GET_ALL_SCHEDULE)
       .then((response) => {
         const fetchedData = response.data.data;
         setScheduleAsset(response.data.data);
@@ -82,19 +81,25 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   }, []);
-  const handleCreateEvent = (id, eventData) => {
+
+  const handleSaveEvent = (eventId, eventData) => {
+    console.log(eventData, "eventData");
     let data = {
       startDate: eventData.start,
       endDate: eventData.end,
       asset: eventData.asset.id,
       title: eventData.title,
       color: eventData.color,
-      operation: "Insert",
+      operation: eventId ? "Update" : "Insert",
     };
+
+    if (eventId) {
+      data.scheduleId = eventId;
+    }
 
     let config = {
       method: "post",
-      url: "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/AddSchedule",
+      url: ADD_SCHEDULE,
       headers: {
         "Content-Type": "application/json",
       },
@@ -104,13 +109,22 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data);
-        const newEvent = {
+        console.log(response.data, "update");
+        const updatedEvent = {
           ...eventData,
-          id: response.data.scheduleId,
+          scheduleId: response.data.data.model.scheduleId,
           repeatSettings: currentEventRepeatSettings,
         };
-        setEvents((prev) => [...prev, newEvent]);
+
+        if (eventId) {
+          const updatedEvents = myEvents.map((event) =>
+            event.id === eventId ? updatedEvent : event
+          );
+          console.log(updatedEvents, "updatedEvents");
+          setEvents(updatedEvents);
+        } else {
+          setEvents((prev) => [...prev, updatedEvent]);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -138,67 +152,25 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  // const updateEvent = (data) => {
-  //   const allEvents = [...myEvents];
-  //   let index = allEvents.findIndex((event) => event.id === data.id);
-  //   allEvents.splice(index, 1, data);
-  //   setEvents([...allEvents]);
-  // };
-  const handleUpdateEvent = (eventId, updatedEventData) => {
-    let data = {
-      scheduleId: eventId,
-      startDate: updatedEventData.start,
-      endDate: updatedEventData.end,
-      asset: updatedEventData.asset,
-      title: updatedEventData.title,
-      color: updatedEventData.color,
-      operation: "Update",
-    };
-    console.log(data, "data");
-    let config = {
-      method: "post",
-      url: "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/AddSchedule",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(response.data);
-        // const updatedEvents = myEvents.map((event) => {
-        //   console.log(event, "deventeventeventeventevent");
-        //   event.id === response.data.scheduleId
-        //     ? { ...event, ...updatedEventData }
-        //     : event;
-        // });
-        setEvents(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   // Function to handle event drag and drop
   const handleEventDrop = ({ event, start, end }) => {
-    const data = {
+    const updatedEvent = {
       ...event,
       start,
       end,
     };
-    handleUpdateEvent(data);
+    handleSaveEvent(updatedEvent.id, updatedEvent);
   };
 
   // Function to handle event resize
   const handleEventResize = ({ event, start, end }) => {
-    // Create a new event with the updated start and end times
     const resizedEvent = {
       ...event,
       start,
       end,
     };
-    handleUpdateEvent(resizedEvent);
+    console.log(resizedEvent, "eventeventevent");
+    handleSaveEvent(resizedEvent.id, resizedEvent);
   };
 
   const [assetData, setAssetData] = useState([]);
@@ -307,7 +279,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 <EventEditor
                   isOpen={isCreatePopupOpen}
                   onClose={handleCloseCreatePopup}
-                  onSave={handleCreateEvent}
+                  onSave={handleSaveEvent}
                   onDelete={handleEventDelete}
                   selectedSlot={selectedSlot}
                   selectedEvent={selectedEvent}
@@ -315,7 +287,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   setAssetData={setAssetData}
                   allAssets={allAssets}
                   setSelectedEvent={setSelectedEvent}
-                  onUpdate={handleUpdateEvent}
                 />
               </div>
               <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
