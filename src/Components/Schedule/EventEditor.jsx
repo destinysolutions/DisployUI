@@ -6,6 +6,7 @@ import { useState } from "react";
 import { SketchPicker } from "react-color";
 import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
 import ReactModal from "react-modal";
+import { ADD_SCHEDULE } from "../../Pages/Api";
 
 const EventEditor = ({
   isOpen,
@@ -17,7 +18,6 @@ const EventEditor = ({
   assetData,
   setAssetData,
   allAssets,
-  onUpdate,
 }) => {
   const [title, setTitle] = useState("");
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
@@ -25,7 +25,7 @@ const EventEditor = ({
   const [editedStartTime, setEditedStartTime] = useState("");
   const [editedEndDate, setEditedEndDate] = useState("");
   const [editedEndTime, setEditedEndTime] = useState("");
-  const [selectedAsset, setSelectedAsset] = useState("");
+  const [selectedAsset, setSelectedAsset] = useState(null);
   const [assetPreview, setAssetPreview] = useState(null);
 
   // State to keep track of repeat settings modal
@@ -37,7 +37,6 @@ const EventEditor = ({
 
   // Helper functions to format dates and times
   const formatDate = (date) => {
-    console.log(date, "date");
     return date.toISOString().slice(0, 10);
   };
 
@@ -50,8 +49,9 @@ const EventEditor = ({
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
   useEffect(() => {
     if (isOpen && selectedEvent) {
+      console.log(selectedEvent, "selectedEvent");
       setSelectedAsset(selectedEvent.asset);
-      setTitle(selectedEvent.originalTitle);
+      setTitle(selectedEvent.title);
       setSelectedColor(selectedEvent.color);
       setEditedStartDate(formatDate(selectedEvent.start));
       setEditedStartTime(formatTime(selectedEvent.start));
@@ -226,7 +226,7 @@ const EventEditor = ({
 
     let config = {
       method: "post",
-      url: "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/AddSchedule",
+      url: ADD_SCHEDULE,
       headers: {
         "Content-Type": "application/json",
       },
@@ -245,25 +245,6 @@ const EventEditor = ({
       });
   };
 
-  const handleUpdate = () => {
-    const start = new Date(editedStartDate + " " + editedStartTime);
-    const end = new Date(editedEndDate + " " + editedEndTime);
-
-    const updatedEventData = {
-      id: selectedEvent.id,
-      title: title,
-      start: start, // Use selectedEvent's start time
-      end: end, // Use selectedEvent's end time
-      color: selectedColor,
-      asset: selectedAsset.id,
-      // repeat: [], // Adjust repeat information if needed
-    };
-
-    // Call the update function passing the event ID and updated data
-    onUpdate(selectedEvent.id, updatedEventData);
-    onClose();
-  };
-  // console.log(selectedEvent, "selectedEvent.id");
   return (
     <>
       <ReactModal
@@ -734,7 +715,7 @@ const EventEditor = ({
               <button
                 className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
                 onClick={() => {
-                  handleUpdate();
+                  handleSave();
                   setShowRepeatSettings(false);
                 }}
               >
