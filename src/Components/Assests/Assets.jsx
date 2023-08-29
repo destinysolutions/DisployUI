@@ -23,6 +23,7 @@ import { HiOutlineVideoCamera } from "react-icons/hi2";
 import { RiGalleryFill } from "react-icons/ri";
 import { HiDocumentDuplicate } from "react-icons/hi";
 import { ALL_FILES_UPLOAD, GET_ALL_FILES } from "../../Pages/Api";
+import Trash from "../Trash";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -75,7 +76,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   {
     /*New Folder */
   }
-  const [newFolderName, setNewFolderName] = useState("");
+
   const [tableRows, setTableRows] = useState([]);
 
   // const handleNewFolder = () => {
@@ -116,6 +117,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [gridData, setGridData] = useState([]);
   const [tableData, setTableData] = useState([]);
 
+  
   const fetchData = () => {
     axios
       .get(GET_ALL_FILES)
@@ -166,23 +168,41 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       setGridData(originalData.doc ? originalData.doc : []);
       setTableData(originalData.doc ? originalData.doc : []);
     } else if (btnNumber === 5) {
-      // Handle other tab buttons (e.g., Apps) if needed
-      // setGridData([...]); // Set data for other buttons for grid view
-      // setTableData([...]); // Set data for other buttons for table view
+      
     }
   };
   // Delete API
 
+  const [trashData, setTrashData] = useState([]); // Array to store deleted items
   const handelDeletedata = (id) => {
-    gridData.forEach((item) => {
+    const deletedItem = gridData.find((item) => item.id === id); // Find the item to be deleted
+  
+    if (deletedItem) {
       const formData = new FormData();
       formData.append("Id", id);
       formData.append("operation", "Delete");
-      formData.append("CategorieType", item.categorieType);
+      formData.append("CategorieType", deletedItem.categorieType);
+  
       axios
         .post(ALL_FILES_UPLOAD, formData)
         .then((response) => {
           console.log("Data deleted successfully:", response.data);
+  
+          // Add the deleted item to the trashData array with necessary information
+          const deletedWithInfo = {
+            id: id,
+            deletedDate: new Date(),
+            name: deletedItem.name,
+            categorieType: deletedItem.categorieType,
+            fileType:deletedItem.fileType , // Set this to "Not available" when the source is not available
+            fileSize: deletedItem.fileSize, // Retrieve and store the file size
+            // You may add other properties here as needed
+          };
+  
+          setTrashData(deletedWithInfo);
+          console.log("data moved to trash");
+  
+          // Update the gridData to exclude the deleted item
           const updatedGridData = gridData.filter((item) => item.id !== id);
           setGridData(updatedGridData);
           setTableData(updatedGridData);
@@ -191,8 +211,42 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           // Handle error
           console.error("Error deleting data:", error);
         });
-    });
-  };
+    }
+  }
+  
+  useEffect(()=>{
+let data = JSON.stringify({
+  "trashId": trashData.id,
+  "fileName": trashData.name,
+  "fileLocation": trashData.fileType,
+  "dateDeleted": trashData.deletedDate,
+  "fileSize": trashData.fileSize,
+  "itemType": trashData.categorieType,
+  "dateModified": '',
+  "operation": "Insert"
+});
+
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: 'http://192.168.1.219/api/Trash/AddTrash',
+  headers: { 
+    'Content-Type': 'application/json'
+  },
+  data : data
+};
+
+axios.request(config)
+.then((response) => {
+  console.log(JSON.stringify(response.data,'response.data'));
+})
+.catch((error) => {
+  console.log(error);
+});
+  })
+  console.log(trashData,'trashData');
+  
+ 
   // select All checkbox
   const [selectAll, setSelectAll] = useState(false);
   const handleSelectAll = () => {
@@ -217,86 +271,64 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   // }, [location.state]);
 
   // New folder
-  //   const [folderId, setFolderId] = useState(null);
-  //   const folderName = 'DefaultFolderName';
-  //   const createNewFolder = () => {
-  //     const folderName = 'DefaultFolderName';
-  //   }
-  // axios
-  //     .post(
-  //       ALL_FILES_UPLOAD,
-  //       { name: folderName },
-  //       {
-  //         headers: {
-  //           'Content-Type': 'application/json', // Specify JSON content type
-  //         },
-  //       }
-  //     )
-  //     .then((response) => {
-  //       console.log("New folder created:", response.data);
-  //       setFolderId(response.data.id);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error creating folder:", error.response);
-  //     });
+  const [newFolderName, setNewFolderName] = useState('');
+  const [folders, setFolders] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  //   const insertDataIntoFolder = (folderId, data) => {
-  //     const formData = new FormData();
-  //     formData.append("File", data);
-  //     formData.append("operation", "Insert");
-  //     formData.append("CategorieType", "Image");
-
-  //     axios
-  //       .post(
-  //         ALL_FILES_UPLOAD,
-  //         formData, // Use the FormData object as the request data
-  //         {
-  //           headers: {
-  //             'Content-Type': 'multipart/form-data', // Specify the correct content type for form data
-  //           },
-  //           params: {
-  //             folderId: folderId, // Include folderId as a URL parameter if required
-  //           },
-  //         }
-  //       )
-  //       .then((response) => {
-  //         // Handle the success response here
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error inserting data:", error);
-  //       });
-  //   };
-
-  //   useEffect(() => {
-  //     // Check if folderId is defined before using it
-  //     if (folderId !== null) {
-  //       // Insert data into the created folder
-  //       const dataToInsert = { /* Your data object */ };
-  //       insertDataIntoFolder(folderId, dataToInsert);
-  //     }
-  //   }, [folderId]);
-
-  const createFolder = async () => {
-    try {
-      const folderData = {
-        name: "New Folder Name",
-        description: "Optional description"
-      };
-
-      const response = await axios.post(ALL_FILES_UPLOAD, folderData, {
-        headers: {
-          'Content-Type': 'application/json',
-          // Include any authentication headers if required
+  const createNewFolder = (folderName) => {
+    // Make an API request to create a new folder with the specified folderName
+    // You should implement this API endpoint on your server
+    axios
+      .post('ALL_FILES_UPLOAD', { name: folderName })
+      .then((response) => {
+        // Handle success, e.g., update your folder list
+        const createdFolder = response.data;
+        setFolders([...folders, createdFolder]);
+      })
+      .catch((error) => {
+        if (error.response) {
+          // The request was made, but the server responded with an error status code
+          console.error('Server responded with an error:', error.response.data);
+        } else if (error.request) {
+          // The request was made, but no response was received
+          console.error('No response received from the server:', error.request);
+        } else {
+          // Something else went wrong
+          console.error('Error creating folder:', error.message);
         }
       });
-
-      console.log("New folder created:", response.data);
-    } catch (error) {
-      console.error("Error creating folder:", error.response);
-    }
   };
+  const handleFileUpload = () => {
+    const formData = new FormData();
+    const fileDetails = 'file details'
+    formData.append('File', selectedFile);
+    formData.append('operation', 'Insert');
+    formData.append('CategorieType', "Image");
+    formData.append('details', fileDetails);
 
-
+  
+    // Check if a folder was selected or a new folder name was entered
+    if (selectedFile) {
+      formData.append('folderId', selectedFile.id);
+    } else if (newFolderName) {
+     
+      createNewFolder(newFolderName);
+    
+    }
+  
+    // Make your API request with formData
+    axios
+      .post('ALL_FILES_UPLOAD', formData)
+      .then((response) => {
+        // Handle success
+        console.log('File uploaded:', response.data);
+      })
+      .catch((error) => {
+        // Handle error
+        console.error('Error uploading file:', error);
+      });
+  };
+  
   return (
     <>
       <div className="flex border-b border-gray">
@@ -313,7 +345,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               <div className=" flex-wrap flex  lg:mt-0 md:mt-0 sm:mt-3">
                 <button
                   className=" dashboard-btn  flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                  onClick={createFolder}
+                  onClick={handleFileUpload}
                 >
                   <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
                   New Folder
@@ -610,6 +642,36 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
+            <div>
+          
+            {/* Folder selection dropdown */}
+<select onChange={(e) => setSelectedFolder(e.target.value)}>
+<option value="">Select Folder</option>
+{folders.map((folder) => (
+  <option key={folder.id} value={folder.id}>
+    {folder.name}
+  </option>
+))}
+</select>
+
+{/* OR */}
+
+{/* Input for entering a new folder name */}
+<input
+type="text"
+placeholder="New Folder Name"
+value={newFolderName}
+onChange={(e) => setNewFolderName(e.target.value)}
+/>
+      
+            {/* Render your folders here */}
+            <ul>
+              {folders.map((folder) => (
+                <li key={folder.id}>{folder.name}</li>
+              ))}
+            </ul>
+          </div>
+            
             {/*End of grid view */}
 
             {/*start List View */}
@@ -850,6 +912,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
 
             {/*End of List View */}
+            <h2>Trash</h2>
+           
+          
+
 
             {/* sucess popup */}
 

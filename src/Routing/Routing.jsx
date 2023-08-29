@@ -35,6 +35,7 @@ import CancelReport from "../Components/Reports/CancelReport";
 import EventEditor from "../Components/Schedule/EventEditor";
 import Unsplash from "../Components/Assests/Unsplash";
 import Userrole from "../Components/Settings/Userrole";
+import Trash from "../Components/Trash";
 const Routing = () => {
   //for screen resize sidebar open close
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -350,6 +351,16 @@ const Routing = () => {
           path="/eventedit"
           element={
             <EventEditor
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
+
+        <Route
+          path="/trash"
+          element={
+            <Trash
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
             />

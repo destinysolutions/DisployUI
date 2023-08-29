@@ -159,6 +159,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         formData.append("operation", "Insert");
         formData.append("CategorieType", CategorieType);
         formData.append("details", details);
+        
 
         const response = await axios.post(ALL_FILES_UPLOAD, formData, {
           onUploadProgress: (progressEvent) => {
