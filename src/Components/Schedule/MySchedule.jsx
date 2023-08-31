@@ -15,11 +15,39 @@ import { useState } from "react";
 import "../../Styles/schedule.css";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import Footer from "../Footer";
+import { GET_ALL_SCHEDULE } from "../../Pages/Api";
+import { useEffect } from "react";
+import axios from "axios";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //for action popup
   const [showActionBox, setShowActionBox] = useState(false);
   const [addScreenModal, setAddScreenModal] = useState(false);
+  const [scheduleAsset, setScheduleAsset] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(GET_ALL_SCHEDULE)
+      .then((response) => {
+        const fetchedData = response.data.data;
+        setScheduleAsset(fetchedData);
+        console.log(fetchedData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  function formatDate(date) {
+    const formattedDate = date.toLocaleDateString();
+    return formattedDate;
+  }
+
+  function formatTime(date) {
+    const formattedTime = date.toLocaleTimeString();
+    return formattedTime;
+  }
+
   return (
     <>
       {/* navbar and sidebar start */}
@@ -62,7 +90,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
           <div className="Schedule-table bg-white rounded-xl mt-8 shadow">
-            <table className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto" cellPadding={20}>
+            <table
+              className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+              cellPadding={20}
+            >
               <thead>
                 <tr className="border-b border-lightgray">
                   <th className="font-medium text-[14px]">
@@ -104,127 +135,108 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 </tr>
               </thead>
               <tbody>
-                <tr className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2">
-                  <td className="flex items-center ">
-                    <input type="checkbox" className="mr-3" />
-                    <div>
+                {scheduleAsset.map((assetData) => (
+                  <tr
+                    className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                    key={assetData.scheduleId}
+                  >
+                    <td className="flex items-center ">
+                      <input type="checkbox" className="mr-3" />
                       <div>
-                        <Link to="/screensplayer">Schedule Name</Link>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="break-words w-[108px] p-2 text-center">
-                    10 May 2023 10:30AM
-                  </td>
-                  <td className="break-words w-[108px] p-2 text-center">
-                    05 June 2023 01:30PM
-                  </td>
-
-                  <td className="break-words w-[108px] p-2 text-center">
-                    25 June 2023 03:30PM
-                  </td>
-                  <td className="p-2 text-center">1</td>
-                  <td className="p-2 flex items-center justify-center max-auto">
-                    Tags, Tags{" "}
-                    <div className="relative">
-                      <button
-                        className="ml-3"
-                        onClick={() => setShowActionBox(!showActionBox)}
-                      >
-                        <HiDotsVertical />
-                      </button>
-                      {/* action popup start */}
-                      {showActionBox && (
-                        <div className="scheduleAction z-10 ">
-                          <div className="my-1">
-                            <Link to="/addschedule">
-                              <button>Edit Schedule</button>
-                            </Link>
-                          </div>
-                          <div className=" mb-1">
-                            <button onClick={() => setAddScreenModal(true)}>
-                              Add Screens
-                            </button>
-                          </div>
-                          <div className="mb-1 border border-[#F2F0F9]"></div>
-                          <div className=" mb-1 text-[#D30000]">
-                            <button>Delete</button>
-                          </div>
+                        <div>
+                          <Link to="/screensplayer">{assetData.title}</Link>
                         </div>
-                      )}
-                      {/* action popup end */}
-                      {/* add screen modal start */}
-                      {addScreenModal && (
-                        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                          <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
-                                <div className="flex items-center">
-                                  <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                                    Select the Screen you want Schedule Content
-                                  </h3>
-                                </div>
-                                <button
-                                  className="p-1 text-xl ml-8"
-                                  onClick={() => setAddScreenModal(false)}
-                                >
-                                  <AiOutlineCloseCircle className="text-2xl" />
-                                </button>
-                              </div>
-                              <div className="flex justify-center p-9 ">
-                                <p className="break-words w-[280px] text-base text-black">
-                                  New schedule would be applied. Do you want to
-                                  proceed?
-                                </p>
-                              </div>
-                              <div className="pb-6 flex justify-center">
-                                <Link to="/saveassignscreenmodal">
-                                  <button className="bg-primary text-white px-8 py-2 rounded-full">
-                                    OK
+                      </div>
+                    </td>
+                    <td className="break-words w-[108px] p-2 text-center">
+                      {formatDate(new Date(assetData.createdDate))}
+                    </td>
+                    <td className="break-words w-[108px] p-2 text-center">
+                      {formatDate(new Date(assetData.startDate))}
+                    </td>
+
+                    <td className="break-words w-[108px] p-2 text-center">
+                      {formatDate(new Date(assetData.endDate))}
+                    </td>
+                    <td className="p-2 text-center">
+                      {assetData.screenAssigned}
+                    </td>
+                    <td className="p-2 flex items-center justify-center max-auto">
+                      {assetData.tags}
+                      <div className="relative">
+                        <button
+                          className="ml-3"
+                          onClick={() => setShowActionBox(!showActionBox)}
+                        >
+                          <HiDotsVertical />
+                        </button>
+                        {/* action popup start */}
+                        {showActionBox && (
+                          <div className="scheduleAction z-10 ">
+                            <div className="my-1">
+                              <Link to="/addschedule">
+                                <button>Edit Schedule</button>
+                              </Link>
+                            </div>
+                            <div className=" mb-1">
+                              <button onClick={() => setAddScreenModal(true)}>
+                                Add Screens
+                              </button>
+                            </div>
+                            <div className="mb-1 border border-[#F2F0F9]"></div>
+                            <div className=" mb-1 text-[#D30000]">
+                              <button>Delete</button>
+                            </div>
+                          </div>
+                        )}
+                        {/* action popup end */}
+                        {/* add screen modal start */}
+                        {addScreenModal && (
+                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                            <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                                  <div className="flex items-center">
+                                    <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
+                                      Select the Screen you want Schedule
+                                      Content
+                                    </h3>
+                                  </div>
+                                  <button
+                                    className="p-1 text-xl ml-8"
+                                    onClick={() => setAddScreenModal(false)}
+                                  >
+                                    <AiOutlineCloseCircle className="text-2xl" />
                                   </button>
-                                </Link>
-                                <button
-                                  className="bg-primary text-white px-4 py-2 rounded-full ml-3"
-                                  onClick={() => setAddScreenModal(false)}
-                                >
-                                  Cancel
-                                </button>
+                                </div>
+                                <div className="flex justify-center p-9 ">
+                                  <p className="break-words w-[280px] text-base text-black">
+                                    New schedule would be applied. Do you want
+                                    to proceed?
+                                  </p>
+                                </div>
+                                <div className="pb-6 flex justify-center">
+                                  <Link to="/saveassignscreenmodal">
+                                    <button className="bg-primary text-white px-8 py-2 rounded-full">
+                                      OK
+                                    </button>
+                                  </Link>
+                                  <button
+                                    className="bg-primary text-white px-4 py-2 rounded-full ml-3"
+                                    onClick={() => setAddScreenModal(false)}
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      )}
-                      {/* add screen modal end */}
-                    </div>
-                  </td>
-                </tr>
-                <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] px-5 py-2">
-                  <td className="flex items-center ">
-                    <input type="checkbox" className="mr-3" />
-                    <div>
-                      <div>
-                        <Link to="/screensplayer">Schedule Name</Link>
+                        )}
+                        {/* add screen modal end */}
                       </div>
-                    </div>
-                  </td>
-                  <td className="break-words w-[108px] p-2 text-center">
-                    10 May 2023 10:30AM
-                  </td>
-                  <td className="break-words w-[108px] p-2 text-center">
-                    05 June 2023 01:30PM
-                  </td>
-
-                  <td className="break-words w-[108px] p-2 text-center">
-                    25 June 2023 03:30PM
-                  </td>
-                  <td className="p-2 text-center">1</td>
-                  <td className="p-2 flex items-center justify-center max-auto">
-                    Tags, Tags{" "}
-                    <button className="ml-3">
-                      <HiDotsVertical />
-                    </button>
-                  </td>
-                </tr>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

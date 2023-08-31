@@ -117,7 +117,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [gridData, setGridData] = useState([]);
   const [tableData, setTableData] = useState([]);
 
-  
   const fetchData = () => {
     axios
       .get(GET_ALL_FILES)
@@ -168,7 +167,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       setGridData(originalData.doc ? originalData.doc : []);
       setTableData(originalData.doc ? originalData.doc : []);
     } else if (btnNumber === 5) {
-      
     }
   };
   // Delete API
@@ -176,32 +174,32 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [trashData, setTrashData] = useState([]); // Array to store deleted items
   const handelDeletedata = (id) => {
     const deletedItem = gridData.find((item) => item.id === id); // Find the item to be deleted
-  
+
     if (deletedItem) {
       const formData = new FormData();
       formData.append("Id", id);
       formData.append("operation", "Delete");
       formData.append("CategorieType", deletedItem.categorieType);
-  
+
       axios
         .post(ALL_FILES_UPLOAD, formData)
         .then((response) => {
           console.log("Data deleted successfully:", response.data);
-  
+
           // Add the deleted item to the trashData array with necessary information
           const deletedWithInfo = {
             id: id,
             deletedDate: new Date(),
             name: deletedItem.name,
             categorieType: deletedItem.categorieType,
-            fileType:deletedItem.fileType , // Set this to "Not available" when the source is not available
+            fileType: deletedItem.fileType, // Set this to "Not available" when the source is not available
             fileSize: deletedItem.fileSize, // Retrieve and store the file size
             // You may add other properties here as needed
           };
-  
+
           setTrashData(deletedWithInfo);
           console.log("data moved to trash");
-  
+
           // Update the gridData to exclude the deleted item
           const updatedGridData = gridData.filter((item) => item.id !== id);
           setGridData(updatedGridData);
@@ -212,41 +210,41 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           console.error("Error deleting data:", error);
         });
     }
-  }
-  
-  useEffect(()=>{
-let data = JSON.stringify({
-  "trashId": trashData.id,
-  "fileName": trashData.name,
-  "fileLocation": trashData.fileType,
-  "dateDeleted": trashData.deletedDate,
-  "fileSize": trashData.fileSize,
-  "itemType": trashData.categorieType,
-  "dateModified": '',
-  "operation": "Insert"
-});
+  };
 
-let config = {
-  method: 'post',
-  maxBodyLength: Infinity,
-  url: 'http://192.168.1.219/api/Trash/AddTrash',
-  headers: { 
-    'Content-Type': 'application/json'
-  },
-  data : data
-};
+  useEffect(() => {
+    let data = JSON.stringify({
+      trashId: trashData.id,
+      fileName: trashData.name,
+      fileLocation: trashData.fileType,
+      dateDeleted: trashData.deletedDate,
+      fileSize: trashData.fileSize,
+      itemType: trashData.categorieType,
+      dateModified: "",
+      operation: "Insert",
+    });
 
-axios.request(config)
-.then((response) => {
-  console.log(JSON.stringify(response.data,'response.data'));
-})
-.catch((error) => {
-  console.log(error);
-});
-  })
-  console.log(trashData,'trashData');
-  
- 
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://disployapi.thedestinysolutions.com/api/Trash/AddTrash",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data, "response.data"));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  });
+  console.log(trashData, "trashData");
+
   // select All checkbox
   const [selectAll, setSelectAll] = useState(false);
   const handleSelectAll = () => {
@@ -271,7 +269,7 @@ axios.request(config)
   // }, [location.state]);
 
   // New folder
-  const [newFolderName, setNewFolderName] = useState('');
+  const [newFolderName, setNewFolderName] = useState("");
   const [folders, setFolders] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -279,7 +277,7 @@ axios.request(config)
     // Make an API request to create a new folder with the specified folderName
     // You should implement this API endpoint on your server
     axios
-      .post('ALL_FILES_UPLOAD', { name: folderName })
+      .post("ALL_FILES_UPLOAD", { name: folderName })
       .then((response) => {
         // Handle success, e.g., update your folder list
         const createdFolder = response.data;
@@ -288,47 +286,44 @@ axios.request(config)
       .catch((error) => {
         if (error.response) {
           // The request was made, but the server responded with an error status code
-          console.error('Server responded with an error:', error.response.data);
+          console.error("Server responded with an error:", error.response.data);
         } else if (error.request) {
           // The request was made, but no response was received
-          console.error('No response received from the server:', error.request);
+          console.error("No response received from the server:", error.request);
         } else {
           // Something else went wrong
-          console.error('Error creating folder:', error.message);
+          console.error("Error creating folder:", error.message);
         }
       });
   };
   const handleFileUpload = () => {
     const formData = new FormData();
-    const fileDetails = 'file details'
-    formData.append('File', selectedFile);
-    formData.append('operation', 'Insert');
-    formData.append('CategorieType', "Image");
-    formData.append('details', fileDetails);
+    const fileDetails = "file details";
+    formData.append("File", selectedFile);
+    formData.append("operation", "Insert");
+    formData.append("CategorieType", "Image");
+    formData.append("details", fileDetails);
 
-  
     // Check if a folder was selected or a new folder name was entered
     if (selectedFile) {
-      formData.append('folderId', selectedFile.id);
+      formData.append("folderId", selectedFile.id);
     } else if (newFolderName) {
-     
       createNewFolder(newFolderName);
-    
     }
-  
+
     // Make your API request with formData
     axios
-      .post('ALL_FILES_UPLOAD', formData)
+      .post("ALL_FILES_UPLOAD", formData)
       .then((response) => {
         // Handle success
-        console.log('File uploaded:', response.data);
+        console.log("File uploaded:", response.data);
       })
       .catch((error) => {
         // Handle error
-        console.error('Error uploading file:', error);
+        console.error("Error uploading file:", error);
       });
   };
-  
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -416,7 +411,7 @@ axios.request(config)
               </button>
               <button
                 className={activetab === 5 ? "tabactivebtn " : "tabbtn"}
-              // onClick={() => handleActiveBtnClick(5)}
+                // onClick={() => handleActiveBtnClick(5)}
               >
                 App
               </button>
@@ -432,7 +427,9 @@ axios.request(config)
               }
             >
               <div
-                className={"page-content grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section"}
+                className={
+                  "page-content grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section"
+                }
               >
                 {gridData.length > 0 ? (
                   gridData.map((item, index) => (
@@ -444,10 +441,11 @@ axios.request(config)
                         <img
                           src={item.fileType}
                           alt={item.name}
-                          className={`imagebox relative ${selectedItems.includes(item)
-                            ? "active opacity-1 w-full rounded-2xl"
-                            : "opacity-1 w-full rounded-2xl"
-                            }`}
+                          className={`imagebox relative ${
+                            selectedItems.includes(item)
+                              ? "active opacity-1 w-full rounded-2xl"
+                              : "opacity-1 w-full rounded-2xl"
+                          }`}
                         />
                       )}
 
@@ -465,10 +463,11 @@ axios.request(config)
                             <img
                               src={item.fileType}
                               alt={item.name}
-                              className={`imagebox relative ${selectedItems.includes(item)
-                                ? "active opacity-1 w-full rounded-2xl"
-                                : "opacity-100 w-full rounded-2xl"
-                                }`}
+                              className={`imagebox relative ${
+                                selectedItems.includes(item)
+                                  ? "active opacity-1 w-full rounded-2xl"
+                                  : "opacity-100 w-full rounded-2xl"
+                              }`}
                             />
                           )}
                         </>
@@ -643,35 +642,34 @@ axios.request(config)
             </div>
 
             <div>
-          
-            {/* Folder selection dropdown */}
-<select onChange={(e) => setSelectedFolder(e.target.value)}>
-<option value="">Select Folder</option>
-{folders.map((folder) => (
-  <option key={folder.id} value={folder.id}>
-    {folder.name}
-  </option>
-))}
-</select>
+              {/* Folder selection dropdown */}
+              <select onChange={(e) => setSelectedFolder(e.target.value)}>
+                <option value="">Select Folder</option>
+                {folders.map((folder) => (
+                  <option key={folder.id} value={folder.id}>
+                    {folder.name}
+                  </option>
+                ))}
+              </select>
 
-{/* OR */}
+              {/* OR */}
 
-{/* Input for entering a new folder name */}
-<input
-type="text"
-placeholder="New Folder Name"
-value={newFolderName}
-onChange={(e) => setNewFolderName(e.target.value)}
-/>
-      
-            {/* Render your folders here */}
-            <ul>
-              {folders.map((folder) => (
-                <li key={folder.id}>{folder.name}</li>
-              ))}
-            </ul>
-          </div>
-            
+              {/* Input for entering a new folder name */}
+              <input
+                type="text"
+                placeholder="New Folder Name"
+                value={newFolderName}
+                onChange={(e) => setNewFolderName(e.target.value)}
+              />
+
+              {/* Render your folders here */}
+              <ul>
+                {folders.map((folder) => (
+                  <li key={folder.id}>{folder.name}</li>
+                ))}
+              </ul>
+            </div>
+
             {/*End of grid view */}
 
             {/*start List View */}
@@ -913,13 +911,8 @@ onChange={(e) => setNewFolderName(e.target.value)}
 
             {/*End of List View */}
             <h2>Trash</h2>
-           
-          
-
 
             {/* sucess popup */}
-
-
           </div>
         </div>
       }
