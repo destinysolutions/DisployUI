@@ -41,6 +41,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [scheduleAsset, setScheduleAsset] = useState([]);
+  const [assetData, setAssetData] = useState([]);
+  const [allAssets, setAllAssets] = useState([]);
 
   // State to store repeat settings for the currently edited event
   const [currentEventRepeatSettings, setCurrentEventRepeatSettings] =
@@ -82,17 +84,45 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   }, []);
 
+  // Function to handle event drag and drop
+  const handleEventDrop = ({ event, start, end }) => {
+    const previousSelectedAsset = allAssets.find(
+      (asset) => asset.id === event.asset
+    );
+    const updatedEventData = {
+      ...event,
+      start,
+      end,
+      asset: previousSelectedAsset,
+    };
+    handleSaveEvent(updatedEventData.id, updatedEventData);
+  };
+
+  // Function to handle event resize
+  const handleEventResize = ({ event, start, end }) => {
+    const previousSelectedAsset = allAssets.find(
+      (asset) => asset.id === event.asset
+    );
+    const resizedEvent = {
+      ...event,
+      start,
+      end,
+      asset: previousSelectedAsset,
+    };
+    handleSaveEvent(resizedEvent.id, resizedEvent);
+  };
+
   const handleSaveEvent = (eventId, eventData) => {
-    console.log(eventData, "eventData");
     let data = {
       startDate: eventData.start,
       endDate: eventData.end,
       asset: eventData.asset.id,
       title: eventData.title,
       color: eventData.color,
+      repeatDay: eventData.repeatDay,
       operation: eventId ? "Update" : "Insert",
     };
-
+console.log(data);
     if (eventId) {
       data.scheduleId = eventId;
     }
@@ -109,18 +139,16 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data, "update");
         const updatedEvent = {
           ...eventData,
           scheduleId: response.data.data.model.scheduleId,
-          repeatSettings: currentEventRepeatSettings,
+          repeatDay: currentEventRepeatSettings,
         };
 
         if (eventId) {
           const updatedEvents = myEvents.map((event) =>
             event.id === eventId ? updatedEvent : event
           );
-          console.log(updatedEvents, "updatedEvents");
           setEvents(updatedEvents);
         } else {
           setEvents((prev) => [...prev, updatedEvent]);
@@ -151,30 +179,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       setCreatePopupOpen(false);
     }
   };
-
-  // Function to handle event drag and drop
-  const handleEventDrop = ({ event, start, end }) => {
-    const updatedEvent = {
-      ...event,
-      start,
-      end,
-    };
-    handleSaveEvent(updatedEvent.id, updatedEvent);
-  };
-
-  // Function to handle event resize
-  const handleEventResize = ({ event, start, end }) => {
-    const resizedEvent = {
-      ...event,
-      start,
-      end,
-    };
-    console.log(resizedEvent, "eventeventevent");
-    handleSaveEvent(resizedEvent.id, resizedEvent);
-  };
-
-  const [assetData, setAssetData] = useState([]);
-  const [allAssets, setAllAssets] = useState([]);
 
   useEffect(() => {
     axios
@@ -287,6 +291,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   setAssetData={setAssetData}
                   allAssets={allAssets}
                   setSelectedEvent={setSelectedEvent}
+                  handleAssetChange={handleAssetChange}
+                  scheduleAsset={scheduleAsset}
                 />
               </div>
               <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">

@@ -49,8 +49,11 @@ const EventEditor = ({
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
   useEffect(() => {
     if (isOpen && selectedEvent) {
-      console.log(selectedEvent, "selectedEvent");
-      setSelectedAsset(selectedEvent.asset);
+      const previousSelectedAsset = allAssets.find(
+        (asset) => asset.id === selectedEvent.asset
+      );
+      setSelectedAsset(previousSelectedAsset);
+      setAssetPreview(previousSelectedAsset);
       setTitle(selectedEvent.title);
       setSelectedColor(selectedEvent.color);
       setEditedStartDate(formatDate(selectedEvent.start));
@@ -59,6 +62,7 @@ const EventEditor = ({
       setEditedEndTime(formatTime(selectedEvent.end));
     } else if (isOpen && selectedSlot) {
       setSelectedAsset("");
+      setAssetPreview(null);
       setTitle("");
       setSelectedColor("");
       setEditedStartDate(formatDate(selectedSlot.start));
@@ -150,16 +154,21 @@ const EventEditor = ({
           const eventEnd = new Date(currentDate);
           eventEnd.setHours(end.getHours(), end.getMinutes());
 
+          const selectedDaysInNumber = selectedDays
+            .map((isSelected, index) => (isSelected ? index : null))
+            .filter((index) => index !== null);
+
           events.push({
+            scheduleId: selectedEvent.id,
             title: title,
             start: eventStart,
             end: eventEnd,
             color: selectedColor,
             asset: selectedAsset,
-            repeat: [], // Add repeat information here if needed
+            repeatDay: selectedDaysInNumber,
           });
         }
-
+        console.log(events, "selectedDaysInNumber");
         // Move to the next day
         currentDate.setDate(currentDate.getDate() + 1);
       }
@@ -177,7 +186,7 @@ const EventEditor = ({
         end: end,
         color: selectedColor,
         asset: selectedAsset,
-        repeat: [], // Initialize the repeat array
+        repeatDay: [],
       };
 
       // Check if the selected event is present and has the same data as the form data
