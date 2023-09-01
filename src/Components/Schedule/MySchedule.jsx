@@ -144,7 +144,9 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       <input type="checkbox" className="mr-3" />
                       <div>
                         <div>
-                          <Link to="/screensplayer">{assetData.title}</Link>
+                          <Link to="/screensplayer">
+                            {assetData.scheduleName}
+                          </Link>
                         </div>
                       </div>
                     </td>
