@@ -4,7 +4,11 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { SketchPicker } from "react-color";
-import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
+import {
+  AiOutlineCloseCircle,
+  AiOutlineEye,
+  AiOutlineSearch,
+} from "react-icons/ai";
 import ReactModal from "react-modal";
 import { ADD_SCHEDULE } from "../../Pages/Api";
 
@@ -20,6 +24,7 @@ const EventEditor = ({
   allAssets,
 }) => {
   const [title, setTitle] = useState("");
+  const [scheduleName, setScheduleName] = useState("");
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
   const [editedStartDate, setEditedStartDate] = useState("");
   const [editedStartTime, setEditedStartTime] = useState("");
@@ -55,6 +60,7 @@ const EventEditor = ({
       setSelectedAsset(previousSelectedAsset);
       setAssetPreview(previousSelectedAsset);
       setTitle(selectedEvent.title);
+      setScheduleName(selectedEvent.scheduleName);
       setSelectedColor(selectedEvent.color);
       setEditedStartDate(formatDate(selectedEvent.start));
       setEditedStartTime(formatTime(selectedEvent.start));
@@ -64,6 +70,7 @@ const EventEditor = ({
       setSelectedAsset("");
       setAssetPreview(null);
       setTitle("");
+      setScheduleName("");
       setSelectedColor("");
       setEditedStartDate(formatDate(selectedSlot.start));
       setEditedStartTime(formatTime(selectedSlot.start));
@@ -74,6 +81,10 @@ const EventEditor = ({
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
+  };
+
+  const handleScheduleNameChange = (e) => {
+    setScheduleName(e.target.value);
   };
 
   const handleStartDateChange = (e) => {
@@ -119,6 +130,14 @@ const EventEditor = ({
     return count;
   };
 
+  const countAllDaysInRange = () => {
+    if (selectAllDays) {
+      return dayDifference + 1; // All days in the date range
+    } else {
+      return countRepeatedDaysInRange(); // Only selected days
+    }
+  };
+
   // Helper function to check if a given day is within the start and end date range
   const isDayInRange = (dayIndex) => {
     const currentDate = new Date(startDate);
@@ -135,6 +154,10 @@ const EventEditor = ({
     // Convert edited dates and times to actual Date objects
     const start = new Date(editedStartDate + " " + editedStartTime);
     const end = new Date(editedEndDate + " " + editedEndTime);
+
+    const selectedDaysInNumber = selectedDays
+      .map((isSelected, index) => (isSelected ? index : null))
+      .filter((index) => index !== null);
 
     // Determine if any specific days are selected (excluding the "Repeat for All Day" option)
     const areSpecificDaysSelected = selectedDays.some(
@@ -154,18 +177,14 @@ const EventEditor = ({
           const eventEnd = new Date(currentDate);
           eventEnd.setHours(end.getHours(), end.getMinutes());
 
-          const selectedDaysInNumber = selectedDays
-            .map((isSelected, index) => (isSelected ? index : null))
-            .filter((index) => index !== null);
-
           events.push({
-            scheduleId: selectedEvent.id,
             title: title,
             start: eventStart,
             end: eventEnd,
             color: selectedColor,
             asset: selectedAsset,
             repeatDay: selectedDaysInNumber,
+            scheduleName: scheduleName,
           });
         }
         console.log(events, "selectedDaysInNumber");
@@ -187,6 +206,7 @@ const EventEditor = ({
         color: selectedColor,
         asset: selectedAsset,
         repeatDay: [],
+        scheduleName: scheduleName,
       };
 
       // Check if the selected event is present and has the same data as the form data
@@ -196,6 +216,7 @@ const EventEditor = ({
         selectedEvent.start.getTime() === start.getTime() &&
         selectedEvent.end.getTime() === end.getTime() &&
         selectedEvent.color === selectedColor &&
+        selectedEvent.scheduleName === scheduleName &&
         selectedEvent.asset === selectedAsset
       ) {
         onClose();
@@ -269,7 +290,7 @@ const EventEditor = ({
       >
         <div>
           <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl xs:text-xs text-[#001737] border-b border-lightgray pb-2  ">
-            Select Assets and Shedule Time
+            Select Assets and Schedule Time
           </h1>
 
           <div className="grid grid-cols-12 my-6">
@@ -293,29 +314,34 @@ const EventEditor = ({
                     >
                       <thead>
                         <tr className="bg-lightgray text-left">
-                          <th className="min-w-[220px] py-4 px-4 font-medium text-black md:pl-10">
+                          <th className="min-w-[220px] py-4 px-4 font-semibold text-black md:pl-10">
                             Assets
                           </th>
-                          <th className="min-w-[220px] py-4 px-4 font-medium text-black">
-                            Assets
+                          <th className="min-w-[220px] py-4 px-4 font-semibold text-black">
+                            Assets Name
                           </th>
-                          <th className="min-w-[150px] py-4 px-4 font-medium text-black">
+                          <th className="min-w-[150px] py-4 px-4 font-semibold text-black">
                             Date Added
                           </th>
-                          <th className="min-w-[120px] py-4 px-4 font-medium text-black">
+                          <th className="min-w-[120px] py-4 px-4 font-semibold text-black">
                             Associated Schedule
                           </th>
-                          <th className="py-4 px-4 font-medium text-black">
+                          <th className="py-4 px-4 font-semibold text-black">
                             Resolution
                           </th>
-                          <th className="py-4 px-4 font-medium text-black">
+                          <th className="py-4 px-4 font-semibold text-black">
                             Tags
                           </th>
                         </tr>
                       </thead>
                       <tbody>
                         {assetData.map((item) => (
-                          <tr key={item.id}>
+                          <tr
+                            key={item.id}
+                            className={`${
+                              selectedAsset === item ? "bg-[#f3c953]" : ""
+                            } border-b border-[#eee] `}
+                          >
                             <td
                               className="border-b border-[#eee]"
                               onClick={() => {
@@ -329,7 +355,7 @@ const EventEditor = ({
                                     <div className="relative videobox">
                                       <video
                                         controls
-                                        className="w-full rounded-2xl relative"
+                                        className="w-full rounded-2xl relative "
                                       >
                                         <source
                                           src={item.fileType}
@@ -343,7 +369,7 @@ const EventEditor = ({
                                     <div className="imagebox relative">
                                       <img
                                         src={item.fileType}
-                                        className="rounded-2xl"
+                                        className="rounded-2xl h-24 w-28"
                                       />
                                     </div>
                                   )}
@@ -353,7 +379,7 @@ const EventEditor = ({
                                 <img
                                   src={item.fileType}
                                   alt={item.name}
-                                  className="imagebox relative"
+                                  className="imagebox relative h-24 w-28"
                                 />
                               )}
                               {item.categorieType === "Video" && (
@@ -385,27 +411,30 @@ const EventEditor = ({
                                 className="font-medium text-black cursor-pointer"
                                 onClick={() => {
                                   handleAssetAdd(item);
-                                  setAssetPreviewPopup(true);
                                 }}
                               >
                                 {item.name}
                               </h5>
                             </td>
                             <td className="border-b border-[#eee]">
-                              <p className="text-black">
+                              <p className="text-black font-medium">
                                 {moment(item.createdDate).format("YYYY-MM-DD")}
                               </p>
                             </td>
                             <td className="border-b border-[#eee]">
-                              <p className="text-black ">
+                              <p className="text-black font-medium">
                                 Schedule Name Till 28 June 2023
                               </p>
                             </td>
                             <td className="border-b border-[#eee]">
-                              <p className="text-black">{item.resolutions}</p>
+                              <p className="text-black font-medium">
+                                {item.resolutions}
+                              </p>
                             </td>
                             <td className="border-b border-[#eee]">
-                              <p className="text-black">Tags, Tags</p>
+                              <p className="text-black font-medium">
+                                Tags, Tags
+                              </p>
                             </td>
                           </tr>
                         ))}
@@ -537,7 +566,7 @@ const EventEditor = ({
                 </div>
 
                 <div className="mt-5 text-black font-medium text-lg">
-                  <label>Repeating {countRepeatedDaysInRange()} Day(s)</label>
+                  <label>Repeating {countAllDaysInRange()} Day(s)</label>
                 </div>
 
                 <div className="flex mt-5">
@@ -584,7 +613,7 @@ const EventEditor = ({
                       className={`daysbtn ${
                         (selectAllDays || selectedDays[index]) &&
                         isDayInRange(index)
-                          ? " bg-SlateBlue border-white"
+                          ? "bg-SlateBlue border-white"
                           : ""
                       }`}
                       key={index}
@@ -606,28 +635,50 @@ const EventEditor = ({
               <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0">
                 <div className="bg-white shadow-2xl">
                   <div className="p-3">
-                    <input
-                      type="text"
-                      value={title}
-                      onChange={handleTitleChange}
-                      placeholder="Enter Title"
-                    />
-                  </div>
-                  <div className="border-b-2 border-lightgray"></div>
-                  <div className="p-3">
-                    <input
-                      type="text"
-                      value={selectedAsset ? selectedAsset.name : "Set Media"}
-                      readOnly
-                      className="bg-lightgray rounded-full px-3 py-2 w-full"
-                      onClick={() => setAssetPreviewPopup(true)}
-                    />
-                    <button
-                      className="border border-primary rounded-full px-4 py-1 ml-3 mt-2"
-                      onClick={() => setSelectedAsset(null)}
-                    >
-                      Clear Media
-                    </button>
+                    <div>
+                      <ul className="border-2 border-lightgray rounded">
+                        <li className="border-b-2 border-lightgray p-3">
+                          <h3>Title :</h3>
+                          <div className="mt-2">
+                            <input
+                              type="text"
+                              value={title}
+                              onChange={handleTitleChange}
+                              placeholder="Enter Title"
+                              className="bg-lightgray rounded-full px-3 py-2 w-full"
+                            />
+                          </div>
+                        </li>
+                        <li className="border-b-2 border-lightgray p-3">
+                          <h3>Schedule Name :</h3>
+                          <div className="mt-2">
+                            <input
+                              type="text"
+                              value={scheduleName}
+                              onChange={handleScheduleNameChange}
+                              placeholder="Enter Schedule Name"
+                              className="bg-lightgray rounded-full px-3 py-2 w-full"
+                            />
+                          </div>
+                        </li>
+                        <li className="border-b-2 border-lightgray p-3">
+                          <h3>Asset :</h3>
+                          <div className="mt-2">
+                            <div className="bg-lightgray rounded-full px-4 py-2 w-full ">
+                              {selectedAsset ? selectedAsset.name : "Set Media"}
+                            </div>
+                            <div className="flex items-center justify-center mt-4">
+                              <button
+                                className="border border-primary rounded-full px-4 py-1 "
+                                onClick={() => setAssetPreviewPopup(true)}
+                              >
+                                Preview
+                              </button>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                   <div className="border-b-2 border-lightgray"></div>
                   <div className="p-3">
@@ -647,13 +698,8 @@ const EventEditor = ({
                         </li>
                         <li className="border-b-2 border-lightgray p-3">
                           <h3>End Date:</h3>
-                          <div className="mt-2">
-                            <input
-                              type="date"
-                              value={editedStartDate}
-                              readOnly
-                              className="bg-lightgray rounded-full px-3 py-2 w-full"
-                            />
+                          <div className="mt-2 bg-lightgray rounded-full px-3 py-2 w-full">
+                            {editedStartDate}
                           </div>
                         </li>
                         <li className="border-b-2 border-lightgray p-3">
@@ -697,13 +743,15 @@ const EventEditor = ({
                 <div className="bg-white shadow-2xl mt-4 ">
                   <div className="p-3 w-full">
                     <h3>Select Color :</h3>
-                    <div className="mt-2">
-                      <SketchPicker
-                        color={selectedColor}
-                        onChange={(color) => setSelectedColor(color.hex)}
-                        className="sketch-picker"
-                      />
-                    </div>
+                    {selectedColor !== null && (
+                      <div className="mt-2">
+                        <SketchPicker
+                          color={selectedColor}
+                          onChange={(color) => setSelectedColor(color.hex)}
+                          className="sketch-picker"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

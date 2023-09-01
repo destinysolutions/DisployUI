@@ -72,6 +72,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             end: new Date(item.endDate),
             color: item.color,
             asset: item.asset,
+            scheduleName: item.scheduleName,
           }));
 
           setEvents(fetchedEvents);
@@ -113,16 +114,17 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleSaveEvent = (eventId, eventData) => {
-    let data = {
+        let data = {
       startDate: eventData.start,
       endDate: eventData.end,
       asset: eventData.asset.id,
       title: eventData.title,
       color: eventData.color,
       repeatDay: eventData.repeatDay,
+      scheduleName: eventData.scheduleName,
       operation: eventId ? "Update" : "Insert",
     };
-console.log(data);
+    console.log(data, "data");
     if (eventId) {
       data.scheduleId = eventId;
     }
@@ -139,7 +141,7 @@ console.log(data);
     axios
       .request(config)
       .then((response) => {
-        const updatedEvent = {
+                const updatedEvent = {
           ...eventData,
           scheduleId: response.data.data.model.scheduleId,
           repeatDay: currentEventRepeatSettings,
@@ -297,9 +299,14 @@ console.log(data);
               </div>
               <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
                 <div className="p-3">
-                  <span className="lg:text-lg md:text-md sm:text-sm xs:text-sm ">
-                    Schedule Name
-                  </span>
+                  {scheduleAsset.map((Schedule) => (
+                    <span
+                      className="lg:text-lg md:text-md sm:text-sm xs:text-sm"
+                      key={Schedule.scheduleId}
+                    >
+                      {Schedule.scheduleName}
+                    </span>
+                  ))}
                 </div>
                 <div className="border-b-2 border-lightgray"></div>
                 <div className="p-3">
