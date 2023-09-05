@@ -62,7 +62,7 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
       const details = "Some Details about the file";
       formData.append("FileType", image.urls.full);
       formData.append("operation", "Insert");
-      formData.append("CategorieType", "Online");
+      formData.append("CategorieType", "OnlineImage");
       formData.append("details", details);
       formData.append("name", image.alt_description);
       setImageUploadProgress((prevProgress) => ({
@@ -99,7 +99,9 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
         })
         .finally(() => {
           if (
-            selectedImages.every((img) => imageUploadStatus[img.id] === "success")
+            selectedImages.every(
+              (img) => imageUploadStatus[img.id] === "success"
+            )
           ) {
             setUploadInProgress(false);
           }
@@ -124,7 +126,6 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
       prevSelected.filter((img) => img.id !== imageId)
     );
   };
-
 
   return (
     <>
@@ -175,23 +176,21 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
 
           {/* Display selected image previews with name and size */}
 
-
-
           {/* Display progress bars */}
           <div className="  bg-white shadow-2xl max-w-xs">
-
             {uploadInProgress && (
               <div className="bg-white shadow-2xl max-w-xs flex ">
                 {/* Conditionally render individual image upload spinners */}
                 {selectedImages.map((image) => (
-                  <div key={image.id} className="image-upload-progress progress-container">
+                  <div
+                    key={image.id}
+                    className="image-upload-progress progress-container"
+                  >
                     <div className="progress flex items-center">
                       <div
                         className="progress-bar"
                         style={{ width: `${imageUploadProgress[image.id]}%` }}
-                      >
-
-                      </div>
+                      ></div>
                       {imageUploadProgress[image.id]}%
                     </div>
                   </div>
@@ -199,10 +198,6 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
               </div>
             )}
           </div>
-
-
-
-
 
           <div className="text-center ">
             <div className="text-center ">
@@ -228,7 +223,7 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
             </button>
           </div>
 
-          { /* <div className="selected-images mt-3">
+          {/* <div className="selected-images mt-3">
             {selectedImages.map((image) => (
               <div key={image.id} className="selected-image flex bg-white p-2 rounded-sm shadow-inner items-center  justify-between">
                 <div className="flex items-center">
@@ -250,10 +245,6 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
             ))}
             </div> */}
         </div>
-
-
-
-
       </div>
     </>
   );

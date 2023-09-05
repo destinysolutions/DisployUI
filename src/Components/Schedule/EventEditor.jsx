@@ -4,11 +4,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { SketchPicker } from "react-color";
-import {
-  AiOutlineCloseCircle,
-  AiOutlineEye,
-  AiOutlineSearch,
-} from "react-icons/ai";
+import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
 import ReactModal from "react-modal";
 import { ADD_SCHEDULE } from "../../Pages/Api";
 
@@ -24,14 +20,13 @@ const EventEditor = ({
   allAssets,
 }) => {
   const [title, setTitle] = useState("");
-  const [scheduleName, setScheduleName] = useState("");
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
   const [editedStartDate, setEditedStartDate] = useState("");
   const [editedStartTime, setEditedStartTime] = useState("");
   const [editedEndDate, setEditedEndDate] = useState("");
   const [editedEndTime, setEditedEndTime] = useState("");
-  const [selectedAsset, setSelectedAsset] = useState(null);
-  const [assetPreview, setAssetPreview] = useState(null);
+  const [selectedAsset, setSelectedAsset] = useState("");
+  const [assetPreview, setAssetPreview] = useState("");
 
   // State to keep track of repeat settings modal
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
@@ -54,13 +49,14 @@ const EventEditor = ({
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
   useEffect(() => {
     if (isOpen && selectedEvent) {
+      // console.log(selectedEvent, "eventDataeventDataeventDataeventData");
       const previousSelectedAsset = allAssets.find(
         (asset) => asset.id === selectedEvent.asset
       );
+      console.log(previousSelectedAsset, "previousSelectedAsset");
       setSelectedAsset(previousSelectedAsset);
       setAssetPreview(previousSelectedAsset);
       setTitle(selectedEvent.title);
-      setScheduleName(selectedEvent.scheduleName);
       setSelectedColor(selectedEvent.color);
       setEditedStartDate(formatDate(selectedEvent.start));
       setEditedStartTime(formatTime(selectedEvent.start));
@@ -70,21 +66,16 @@ const EventEditor = ({
       setSelectedAsset("");
       setAssetPreview(null);
       setTitle("");
-      setScheduleName("");
       setSelectedColor("");
       setEditedStartDate(formatDate(selectedSlot.start));
       setEditedStartTime(formatTime(selectedSlot.start));
       setEditedEndDate(formatDate(selectedSlot.end));
       setEditedEndTime(formatTime(selectedSlot.end));
     }
-  }, [isOpen, selectedEvent, selectedSlot]);
+  }, [isOpen, selectedEvent, selectedSlot, allAssets]);
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
-  };
-
-  const handleScheduleNameChange = (e) => {
-    setScheduleName(e.target.value);
   };
 
   const handleStartDateChange = (e) => {
@@ -184,7 +175,6 @@ const EventEditor = ({
             color: selectedColor,
             asset: selectedAsset,
             repeatDay: selectedDaysInNumber,
-            scheduleName: scheduleName,
           });
         }
         console.log(events, "selectedDaysInNumber");
@@ -194,7 +184,6 @@ const EventEditor = ({
 
       // Save the generated events
       events.forEach((event) => {
-        event.asset = selectedAsset;
         onSave(null, event);
       });
     } else {
@@ -206,7 +195,6 @@ const EventEditor = ({
         color: selectedColor,
         asset: selectedAsset,
         repeatDay: [],
-        scheduleName: scheduleName,
       };
 
       // Check if the selected event is present and has the same data as the form data
@@ -216,7 +204,6 @@ const EventEditor = ({
         selectedEvent.start.getTime() === start.getTime() &&
         selectedEvent.end.getTime() === end.getTime() &&
         selectedEvent.color === selectedColor &&
-        selectedEvent.scheduleName === scheduleName &&
         selectedEvent.asset === selectedAsset
       ) {
         onClose();
@@ -232,7 +219,7 @@ const EventEditor = ({
   };
 
   const [searchAsset, setSearchAsset] = useState("");
-  function handleFilter(event) {
+  const handleFilter = (event) => {
     const searchQuery = event.target.value.toLowerCase();
     setSearchAsset(searchQuery);
 
@@ -245,12 +232,12 @@ const EventEditor = ({
       });
       setAssetData(filteredData);
     }
-  }
+  };
 
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
   const handelDeletedata = () => {
     let data = JSON.stringify({
-      scheduleId: selectedEvent.id,
+      eventId: selectedEvent.id,
       operation: "Delete",
     });
 
@@ -349,31 +336,25 @@ const EventEditor = ({
                                 setAssetPreviewPopup(true);
                               }}
                             >
-                              {item.categorieType === "Online" && (
-                                <>
-                                  {item.details === "Video" ? (
-                                    <div className="relative videobox">
-                                      <video
-                                        controls
-                                        className="w-full rounded-2xl relative "
-                                      >
-                                        <source
-                                          src={item.fileType}
-                                          type="video/mp4"
-                                        />
-                                        Your browser does not support the video
-                                        tag.
-                                      </video>
-                                    </div>
-                                  ) : (
-                                    <div className="imagebox relative">
-                                      <img
-                                        src={item.fileType}
-                                        className="rounded-2xl h-24 w-28"
-                                      />
-                                    </div>
-                                  )}
-                                </>
+                              {item.categorieType === "OnlineImage" && (
+                                <img
+                                  src={item.fileType}
+                                  alt={item.name}
+                                  className="imagebox relative h-24 w-28"
+                                />
+                              )}
+
+                              {item.categorieType === "OnlineVideo" && (
+                                <video
+                                  controls
+                                  className="w-full rounded-2xl relative h-56"
+                                >
+                                  <source
+                                    src={item.fileType}
+                                    type="video/mp4"
+                                  />
+                                  Your browser does not support the video tag.
+                                </video>
                               )}
                               {item.categorieType === "Image" && (
                                 <img
@@ -649,18 +630,7 @@ const EventEditor = ({
                             />
                           </div>
                         </li>
-                        <li className="border-b-2 border-lightgray p-3">
-                          <h3>Schedule Name :</h3>
-                          <div className="mt-2">
-                            <input
-                              type="text"
-                              value={scheduleName}
-                              onChange={handleScheduleNameChange}
-                              placeholder="Enter Schedule Name"
-                              className="bg-lightgray rounded-full px-3 py-2 w-full"
-                            />
-                          </div>
-                        </li>
+
                         <li className="border-b-2 border-lightgray p-3">
                           <h3>Asset :</h3>
                           <div className="mt-2">

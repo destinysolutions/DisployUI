@@ -66,13 +66,12 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         setScheduleAsset(response.data.data);
         if (Array.isArray(fetchedData)) {
           const fetchedEvents = fetchedData.map((item) => ({
-            id: item.scheduleId,
+            id: item.eventId,
             title: item.title,
             start: new Date(item.startDate),
             end: new Date(item.endDate),
             color: item.color,
             asset: item.asset,
-            scheduleName: item.scheduleName,
           }));
 
           setEvents(fetchedEvents);
@@ -114,19 +113,18 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleSaveEvent = (eventId, eventData) => {
-        let data = {
+    let data = {
       startDate: eventData.start,
       endDate: eventData.end,
       asset: eventData.asset.id,
       title: eventData.title,
       color: eventData.color,
       repeatDay: eventData.repeatDay,
-      scheduleName: eventData.scheduleName,
       operation: eventId ? "Update" : "Insert",
     };
     console.log(data, "data");
     if (eventId) {
-      data.scheduleId = eventId;
+      data.eventId = eventId;
     }
 
     let config = {
@@ -141,12 +139,26 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-                const updatedEvent = {
+        const updatedEvent = {
           ...eventData,
-          scheduleId: response.data.data.model.scheduleId,
+          eventId: response.data.data.model.eventId,
           repeatDay: currentEventRepeatSettings,
         };
+        const updatedAllAssets = allAssets.map((asset) => {
+          if (asset.id === eventData.asset) {
+            // Update the asset data here
+            return {
+              ...asset,
+              // Update asset properties as needed
+            };
+          }
+          return asset;
+        });
 
+        // Update the allAssets state to reflect the changes
+        setAllAssets(updatedAllAssets);
+        console.log(updatedAllAssets, "updatedAllAssets");
+        console.log(updatedEvent);
         if (eventId) {
           const updatedEvents = myEvents.map((event) =>
             event.id === eventId ? updatedEvent : event
@@ -191,7 +203,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.image ? fetchedData.image : []),
           ...(fetchedData.video ? fetchedData.video : []),
           ...(fetchedData.doc ? fetchedData.doc : []),
-          ...(fetchedData.images ? fetchedData.images : []),
+          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
+          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
         ];
         setAssetData(allAssets);
         setAllAssets(allAssets);
@@ -298,16 +311,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 />
               </div>
               <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
-                <div className="p-3">
-                  {scheduleAsset.map((Schedule) => (
-                    <span
-                      className="lg:text-lg md:text-md sm:text-sm xs:text-sm"
-                      key={Schedule.scheduleId}
-                    >
-                      {Schedule.scheduleName}
-                    </span>
-                  ))}
-                </div>
+                <div className="p-3">scheduleName</div>
                 <div className="border-b-2 border-lightgray"></div>
                 <div className="p-3">
                   <div className="mb-2">Schedule Date time</div>
@@ -347,30 +351,24 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
                       {selectedAsset && (
                         <>
-                          {selectedAsset.categorieType === "Online" && (
-                            <>
-                              {selectedAsset.details === "Video" ? (
-                                <div className="relative videobox">
-                                  <video
-                                    controls
-                                    className="w-full rounded-2xl relative"
-                                  >
-                                    <source
-                                      src={selectedAsset.fileType}
-                                      type="video/mp4"
-                                    />
-                                    Your browser does not support the video tag.
-                                  </video>
-                                </div>
-                              ) : (
-                                <div className="imagebox relative p-3">
-                                  <img
-                                    src={selectedAsset.fileType}
-                                    className="rounded-2xl"
-                                  />
-                                </div>
-                              )}
-                            </>
+                          {selectedAsset.categorieType === "OnlineImage" && (
+                            <img
+                              src={selectedAsset.fileType}
+                              alt={selectedAsset.name}
+                              className="imagebox relative"
+                            />
+                          )}
+                          {selectedAsset.categorieType === "OnlineVideo" && (
+                            <video
+                              controls
+                              className="w-full rounded-2xl relative h-56"
+                            >
+                              <source
+                                src={selectedAsset.fileType}
+                                type="video/mp4"
+                              />
+                              Your browser does not support the video tag.
+                            </video>
                           )}
                           {selectedAsset.categorieType === "Image" && (
                             <img
