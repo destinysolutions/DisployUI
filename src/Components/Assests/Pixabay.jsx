@@ -23,7 +23,6 @@ const Pixabay = ({ closeModal }) => {
     axios
       .get(url)
       .then((response) => {
-
         if (currentPage === 1) {
           setImages(response.data.hits);
         } else {
@@ -65,11 +64,12 @@ const Pixabay = ({ closeModal }) => {
   const handleImageUpload = () => {
     setUploadInProgress(true);
     selectedImages.forEach((image) => {
+      console.log(image, "image");
       const formData = new FormData();
       const details = "Some Details about the file";
-      formData.append("FileType", image.webformatURL);
+      formData.append("FileType", image.largeImageURL);
       formData.append("operation", "Insert");
-      formData.append("CategorieType", "Online");
+      formData.append("CategorieType", "OnlineImage");
       formData.append("details", details);
       formData.append(
         "resolutions",
@@ -96,25 +96,25 @@ const Pixabay = ({ closeModal }) => {
           console.error("Upload Error:", error);
         })
         .finally(() => {
-
-          if (selectedImages.every((img) => imageUploadProgress[img.id] === 100)) {
-
+          if (
+            selectedImages.every((img) => imageUploadProgress[img.id] === 100)
+          ) {
             setUploadInProgress(false);
           }
         });
     });
   };
   useEffect(() => {
-    const allImagesUploaded = selectedImages.every((img) => imageUploadProgress[img.id] === 100);
+    const allImagesUploaded = selectedImages.every(
+      (img) => imageUploadProgress[img.id] === 100
+    );
 
     if (allImagesUploaded) {
       // Introduce a delay before setting uploadInProgress to false
       setTimeout(() => {
         setUploadInProgress(false);
       }, 5000);
-
     }
-
   }, [selectedImages, imageUploadProgress]);
   return (
     <>
@@ -154,7 +154,7 @@ const Pixabay = ({ closeModal }) => {
                 }}
               >
                 <img
-                  src={image.webformatURL}
+                  src={image.largeImageURL}
                   alt={image.tags}
                   className=" h-full w-full object-cover"
                 />
@@ -183,19 +183,19 @@ const Pixabay = ({ closeModal }) => {
           )}
 
           <div className="  bg-white shadow-2xl max-w-xs">
-
             {uploadInProgress && (
               <div className="bg-white shadow-2xl max-w-xs flex ">
                 {/* Conditionally render individual image upload spinners */}
                 {selectedImages.map((image) => (
-                  <div key={image.id} className="image-upload-progress progress-container">
+                  <div
+                    key={image.id}
+                    className="image-upload-progress progress-container"
+                  >
                     <div className="progress flex items-center">
                       <div
                         className="progress-bar"
                         style={{ width: `${imageUploadProgress[image.id]}%` }}
-                      >
-
-                      </div>
+                      ></div>
                       {imageUploadProgress[image.id]}%
                     </div>
                   </div>
@@ -203,7 +203,6 @@ const Pixabay = ({ closeModal }) => {
               </div>
             )}
           </div>
-
         </div>
       </div>
     </>

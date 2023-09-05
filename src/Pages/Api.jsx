@@ -19,6 +19,8 @@ export const GET_ALL_FILES =
 export const ALL_FILES_UPLOAD =
   "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/ImageVideoDocUpload";
 export const GET_ALL_SCHEDULE =
-  "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/GetAllSchedule";
+  "https://disployapi.thedestinysolutions.com/api/EventMaster/GetAllEvent";
 export const ADD_SCHEDULE =
-  "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/AddSchedule";
+  "https://disployapi.thedestinysolutions.com/api/EventMaster/AddEvent";
+
+//http://192.168.1.219

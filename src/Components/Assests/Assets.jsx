@@ -128,7 +128,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.image ? fetchedData.image : []),
           ...(fetchedData.video ? fetchedData.video : []),
           ...(fetchedData.doc ? fetchedData.doc : []),
-          ...(fetchedData.images ? fetchedData.images : []),
+          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
+          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
         ];
         setGridData(allAssets);
         setTableData(allAssets);
@@ -145,7 +146,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleActiveBtnClick = (btnNumber) => {
     setActivetab(btnNumber);
-
+    const gridData = [];
+    const tableData = [];
     // Ensure that originalData is available before updating tabitems
     if (btnNumber === 1) {
       // Merge all types of assets into a single array
@@ -153,16 +155,35 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         ...(originalData.image ? originalData.image : []),
         ...(originalData.video ? originalData.video : []),
         ...(originalData.doc ? originalData.doc : []),
-        ...(originalData.images ? originalData.images : []),
+        ...(originalData.onlineimages ? originalData.onlineimages : []),
+        ...(originalData.onlinevideo ? originalData.onlinevideo : []),
       ];
       setGridData(allAssets);
       setTableData(allAssets);
     } else if (btnNumber === 2) {
-      setGridData(originalData.image ? originalData.image : []);
-      setTableData(originalData.image ? originalData.image : []);
+      if (originalData.image) {
+        gridData.push(...originalData.image);
+        tableData.push(...originalData.image);
+      }
+
+      if (originalData.onlineimages) {
+        gridData.push(...originalData.onlineimages);
+        tableData.push(...originalData.onlineimages);
+      }
+      setGridData(gridData);
+      setTableData(tableData);
     } else if (btnNumber === 3) {
-      setGridData(originalData.video ? originalData.video : []);
-      setTableData(originalData.video ? originalData.video : []);
+      if (originalData.video) {
+        gridData.push(...originalData.video);
+        tableData.push(...originalData.video);
+      }
+
+      if (originalData.onlinevideo) {
+        gridData.push(...originalData.onlinevideo);
+        tableData.push(...originalData.onlinevideo);
+      }
+      setGridData(gridData);
+      setTableData(tableData);
     } else if (btnNumber === 4) {
       setGridData(originalData.doc ? originalData.doc : []);
       setTableData(originalData.doc ? originalData.doc : []);
@@ -243,7 +264,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   });
-  console.log(trashData, "trashData");
+  //console.log(trashData, "trashData");
 
   // select All checkbox
   const [selectAll, setSelectAll] = useState(false);
@@ -449,28 +470,26 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         />
                       )}
 
-                      {item.categorieType === "Online" && (
-                        <>
-                          {item.details === "Video" ? (
-                            <video
-                              controls
-                              className="w-full rounded-2xl relative h-56"
-                            >
-                              <source src={item.fileType} type="video/mp4" />
-                              Your browser does not support the video tag.
-                            </video>
-                          ) : (
-                            <img
-                              src={item.fileType}
-                              alt={item.name}
-                              className={`imagebox relative ${
-                                selectedItems.includes(item)
-                                  ? "active opacity-1 w-full rounded-2xl"
-                                  : "opacity-100 w-full rounded-2xl"
-                              }`}
-                            />
-                          )}
-                        </>
+                      {item.categorieType === "OnlineImage" && (
+                        <img
+                          src={item.fileType}
+                          alt={item.name}
+                          className={`imagebox relative ${
+                            selectedItems.includes(item)
+                              ? "active opacity-1 w-full rounded-2xl"
+                              : "opacity-1 w-full rounded-2xl"
+                          }`}
+                        />
+                      )}
+
+                      {item.categorieType === "OnlineVideo" && (
+                        <video
+                          controls
+                          className="w-full rounded-2xl relative h-56"
+                        >
+                          <source src={item.fileType} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
                       )}
 
                       {item.categorieType === "Video" && (
@@ -492,16 +511,16 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         {item.categorieType === "Image" && (
                           <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
                         )}
-                        {item.categorieType === "Online" && (
-                          <>
-                            {item.details === "Video" ? (
-                              <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
-                            ) : (
-                              <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
-                            )}
-                          </>
-                        )}
+
                         {item.categorieType === "Video" && (
+                          <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                        )}
+
+                        {item.categorieType === "OnlineImage" && (
+                          <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                        )}
+
+                        {item.categorieType === "OnlineVideo" && (
                           <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
                         )}
                       </div>
@@ -560,26 +579,25 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   </a>
                                 </li>
                               )}
-                              {item.categorieType === "Online" && (
-                                <>
-                                  {item.details === "Video" ? (
-                                    <li className="flex text-sm items-center">
-                                      <FiDownload className="mr-2 text-lg" />
-                                      <a href={item.fileType} download>
-                                        Download
-                                      </a>
-                                    </li>
-                                  ) : (
-                                    <li className="flex text-sm items-center">
-                                      <FiDownload className="mr-2 text-lg" />
-                                      <a href={item.fileType} download>
-                                        Download
-                                      </a>
-                                    </li>
-                                  )}
-                                </>
-                              )}
+
                               {item.categorieType === "Video" && (
+                                <li className="flex text-sm items-center">
+                                  <FiDownload className="mr-2 text-lg" />
+                                  <a href={item.fileType} download>
+                                    Download
+                                  </a>
+                                </li>
+                              )}
+                              {item.categorieType === "OnlineImage" && (
+                                <li className="flex text-sm items-center">
+                                  <FiDownload className="mr-2 text-lg" />
+                                  <a href={item.fileType} download>
+                                    Download
+                                  </a>
+                                </li>
+                              )}
+
+                              {item.categorieType === "OnlineVideo" && (
                                 <li className="flex text-sm items-center">
                                   <FiDownload className="mr-2 text-lg" />
                                   <a href={item.fileType} download>
@@ -643,31 +661,31 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
             <div>
               {/* Folder selection dropdown */}
-              <select onChange={(e) => setSelectedFolder(e.target.value)}>
+              {/* <select onChange={(e) => setSelectedFolder(e.target.value)}>
                 <option value="">Select Folder</option>
                 {folders.map((folder) => (
                   <option key={folder.id} value={folder.id}>
                     {folder.name}
                   </option>
                 ))}
-              </select>
+              </select> */}
 
               {/* OR */}
 
               {/* Input for entering a new folder name */}
-              <input
+              {/* <input
                 type="text"
                 placeholder="New Folder Name"
                 value={newFolderName}
                 onChange={(e) => setNewFolderName(e.target.value)}
-              />
+              /> */}
 
               {/* Render your folders here */}
-              <ul>
+              {/* <ul>
                 {folders.map((folder) => (
                   <li key={folder.id}>{folder.name}</li>
                 ))}
-              </ul>
+              </ul> */}
             </div>
 
             {/*End of grid view */}
@@ -782,43 +800,42 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                               </div>
                             )}
-                            {item.categorieType === "Online" && (
-                              <>
-                                {item.details === "Video" ? (
-                                  <div className="relative videobox">
-                                    <video
-                                      controls
-                                      className="w-full rounded-2xl relative"
-                                    >
-                                      <source
-                                        src={item.fileType}
-                                        type="video/mp4"
-                                      />
-                                      Your browser does not support the video
-                                      tag.
-                                    </video>
-                                    <div className="tabicon text-center absolute right-0 bottom-[25px]">
-                                      {item.details === "Video" && (
-                                        <HiOutlineVideoCamera className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
-                                      )}
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="imagebox relative">
-                                    <img
-                                      src={item.fileType}
-                                      className="rounded-2xl"
-                                    />
-                                    <div className="tabicon text-center absolute right-0 bottom-[25px]">
-                                      {item.categorieType === "Online" && (
-                                        <RiGalleryFill className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
-                                      )}
-                                    </div>
-                                  </div>
-                                )}
-                              </>
-                            )}
+
                             {item.categorieType === "Video" && (
+                              <div className="relative videobox">
+                                <video
+                                  controls
+                                  className="w-full rounded-2xl relative"
+                                >
+                                  <source
+                                    src={item.fileType}
+                                    type="video/mp4"
+                                  />
+                                  Your browser does not support the video tag.
+                                </video>
+                                <div className="tabicon text-center absolute left-10 top-3">
+                                  {item.categorieType === "Video" && (
+                                    <HiOutlineVideoCamera className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                            {item.categorieType === "OnlineImage" && (
+                              <div className="imagebox relative">
+                                <img
+                                  src={item.fileType}
+                                  className="rounded-2xl"
+                                />
+                                <div className="tabicon text-center absolute right-0 bottom-[25px]">
+                                  {item.categorieType === "Image" && (
+                                    <RiGalleryFill className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
+                            {item.categorieType === "OnlineVideo" && (
                               <div className="relative videobox">
                                 <video
                                   controls
@@ -910,7 +927,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
 
             {/*End of List View */}
-            <h2>Trash</h2>
+            {/* <h2>Trash</h2> */}
 
             {/* sucess popup */}
           </div>

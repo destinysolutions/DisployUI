@@ -12,7 +12,7 @@ const Pexels = ({ closeModal }) => {
   const [searchQuery, setSearchQuery] = useState("Nature");
 
   const [uploadInProgress, setUploadInProgress] = useState(false);
-  const [imageUploadProgress, setImageUploadProgress] = useState({})
+  const [imageUploadProgress, setImageUploadProgress] = useState({});
   const [videoUploadProgress, setVideoUploadProgress] = useState({});
   const navigate = useNavigate();
   const [selectedMedia, setSelectedMedia] = useState({
@@ -57,9 +57,6 @@ const Pexels = ({ closeModal }) => {
         )
         .then((response) => {
           setMedia((prevMedia) => [...prevMedia, ...response.data.videos]);
-
-
-
         })
         .catch((error) => {
           console.error("Error fetching videos:", error);
@@ -94,13 +91,15 @@ const Pexels = ({ closeModal }) => {
   };
 
   const handleMediaUpload = () => {
+    //debugger;
     setUploadInProgress(true);
     selectedMedia.images.forEach((image) => {
+      console.log(image, "image");
       const formData = new FormData();
       const details = "Some Details about the file";
       formData.append("FileType", image.src.original);
       formData.append("operation", "Insert");
-      formData.append("CategorieType", "Online");
+      formData.append("CategorieType", "OnlineImage");
       formData.append("details", details);
       formData.append("name", image.alt);
       formData.append("resolutions", `${image.height}*${image.width}`);
@@ -120,25 +119,29 @@ const Pexels = ({ closeModal }) => {
         .then((response) => {
           console.log("Upload Success:", response.data);
           navigate("/assets");
-
         })
         .catch((error) => {
           console.error("Upload Error:", error);
         })
         .finally(() => {
-
           const allImagesUploaded = selectedMedia.images.every(
             (image) => imageUploadProgress[image.id] === 100
           );
 
           // Check if all images and videos have completed uploading
-          if (allImagesUploaded && selectedMedia.videos.every((video) => videoUploadProgress[video.id] === 100)) {
+          if (
+            allImagesUploaded &&
+            selectedMedia.videos.every(
+              (video) => videoUploadProgress[video.id] === 100
+            )
+          ) {
             setUploadInProgress(false);
           }
         });
     });
 
     selectedMedia.videos.forEach((video) => {
+      console.log(video, "video");
       // Split the URL by '/'
       const urlParts = video.image.split("/");
 
@@ -154,8 +157,8 @@ const Pexels = ({ closeModal }) => {
       const details = "Some Details about the file";
       formData.append("FileType", video.video_files[0].link);
       formData.append("operation", "Insert");
-      formData.append("CategorieType", "Online");
-      formData.append("details", "Video");
+      formData.append("CategorieType", "OnlineVideo");
+      formData.append("details", details);
       formData.append(
         "resolutions",
         `${video.video_files[0].height}*${video.video_files[0].width}`
@@ -185,15 +188,17 @@ const Pexels = ({ closeModal }) => {
           const allVideosUploaded = selectedMedia.videos.every(
             (video) => videoUploadProgress[video.id] === 100
           );
-          if (allVideosUploaded && selectedMedia.images.every((image) => imageUploadProgress[image.id] === 100)) {
+          if (
+            allVideosUploaded &&
+            selectedMedia.images.every(
+              (image) => imageUploadProgress[image.id] === 100
+            )
+          ) {
             setUploadInProgress(false);
           }
         });
     });
-
-
   };
-
 
   return (
     <>
@@ -302,16 +307,20 @@ const Pexels = ({ closeModal }) => {
               </div>
 
               <div className="  bg-white shadow-2xl max-w-xs">
-
                 {uploadInProgress && (
                   <>
                     {/* For Images */}
                     {selectedMedia.images.map((image) => (
-                      <div key={image.id} className="image-upload-progress progress-container">
+                      <div
+                        key={image.id}
+                        className="image-upload-progress progress-container"
+                      >
                         <div className="progress flex items-center">
                           <div
                             className="progress-bar"
-                            style={{ width: `${imageUploadProgress[image.id]}%` }}
+                            style={{
+                              width: `${imageUploadProgress[image.id]}%`,
+                            }}
                           ></div>
                           {imageUploadProgress[image.id]}%
                         </div>
@@ -320,11 +329,16 @@ const Pexels = ({ closeModal }) => {
 
                     {/* For Videos */}
                     {selectedMedia.videos.map((video) => (
-                      <div key={video.id} className="video-upload-progress progress-container">
+                      <div
+                        key={video.id}
+                        className="video-upload-progress progress-container"
+                      >
                         <div className="progress flex items-center">
                           <div
                             className="progress-bar"
-                            style={{ width: `${videoUploadProgress[video.id]}%` }}
+                            style={{
+                              width: `${videoUploadProgress[video.id]}%`,
+                            }}
                           ></div>
                           {videoUploadProgress[video.id]}%
                         </div>
@@ -332,13 +346,7 @@ const Pexels = ({ closeModal }) => {
                     ))}
                   </>
                 )}
-
-
-
-
-
               </div>
-
 
               {/* Display selected media as uploaded */}
               {uploadedMedia.images.length > 0 && (
@@ -386,7 +394,7 @@ const Pexels = ({ closeModal }) => {
             </div>
           </div>
         </div>
-      </div >
+      </div>
     </>
   );
 };
