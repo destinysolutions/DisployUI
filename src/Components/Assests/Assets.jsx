@@ -24,6 +24,7 @@ import { RiGalleryFill } from "react-icons/ri";
 import { HiDocumentDuplicate } from "react-icons/hi";
 import { ALL_FILES_UPLOAD, GET_ALL_FILES } from "../../Pages/Api";
 import Trash from "../Trash";
+import { FcOpenedFolder } from "react-icons/fc";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -271,80 +272,115 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
   };
-  // Image uploaded logic
-  // const location = useLocation();
-  // const [showSpinner, setShowSpinner] = useState(false);
 
-  // useEffect(() => {
-  //   const uploadSuccessFromStorage = localStorage.getItem("uploadSuccess");
-  //   const { uploadSuccess } = location.state || {};
+// New folder 
+const CREATE_FOLDER_ENDPOINT = "http://192.168.1.219/api/NewScreen/CreateFolder";
+const FETCH_FOLDER_ENDPOINT = "http://192.168.1.219/api/NewScreen/GetAllFolder";
+const [newFolder, setNewfolder] = useState([]);
+const [folderName, setFolderName] = useState('New Folder');
+const [folderCounter, setFolderCounter] = useState(1);
+const [editableFolderId, setEditableFolderId] = useState(null);
+// Define the fetchFolderDetails function
+const fetchFolderDetails = () => {
+  axios
+    .get(FETCH_FOLDER_ENDPOINT)
+    .then((response) => {
+      const fetchedData = response.data.data;
+      setNewfolder(fetchedData);
+      console.log(fetchedData);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
 
-  //   if (uploadSuccessFromStorage === "true" && uploadSuccess) {
-  //     setShowSpinner(true);
+useEffect(() => {
+  fetchFolderDetails(); 
+}, []);
 
-  //     setTimeout(() => {
-  //       setShowSpinner(false);
-  //       localStorage.removeItem("uploadSuccess"); // Clear the storage after showing spinner
-  //     }, 3000);
-  //   }
-  // }, [location.state]);
+const createFolder = () => {
+  const newFolderName = folderName + `(${folderCounter})`;
+  const formData = new FormData();
+  formData.append("operation", "Insert");
+  formData.append("folderName", newFolderName);
+  axios
+    .post(CREATE_FOLDER_ENDPOINT, formData, { headers: { 'Content-Type': 'application/json' } })
+    .then((response) => {
+      console.log('Folder created:', response.data);
 
-  // New folder
-  const [newFolderName, setNewFolderName] = useState("");
-  const [folders, setFolders] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
+      const newFolderData = response.data;
+      setFolderCounter(folderCounter + 1);
+      setFolderName('New Folder');
+      fetchFolderDetails(); 
 
-  const createNewFolder = (folderName) => {
-    // Make an API request to create a new folder with the specified folderName
-    // You should implement this API endpoint on your server
-    axios
-      .post("ALL_FILES_UPLOAD", { name: folderName })
-      .then((response) => {
-        // Handle success, e.g., update your folder list
-        const createdFolder = response.data;
-        setFolders([...folders, createdFolder]);
-      })
-      .catch((error) => {
-        if (error.response) {
-          // The request was made, but the server responded with an error status code
-          console.error("Server responded with an error:", error.response.data);
-        } else if (error.request) {
-          // The request was made, but no response was received
-          console.error("No response received from the server:", error.request);
-        } else {
-          // Something else went wrong
-          console.error("Error creating folder:", error.message);
-        }
-      });
-  };
-  const handleFileUpload = () => {
-    const formData = new FormData();
-    const fileDetails = "file details";
-    formData.append("File", selectedFile);
-    formData.append("operation", "Insert");
-    formData.append("CategorieType", "Image");
-    formData.append("details", fileDetails);
+    })
+    .catch((error) => {
+      console.error('Error creating folder:', error);
+    });
+};
 
-    // Check if a folder was selected or a new folder name was entered
-    if (selectedFile) {
-      formData.append("folderId", selectedFile.id);
-    } else if (newFolderName) {
-      createNewFolder(newFolderName);
-    }
+const handleFolderNameDoubleClick = (folderId) => {
+  setEditableFolderId(folderId);
+};
 
-    // Make your API request with formData
-    axios
-      .post("ALL_FILES_UPLOAD", formData)
-      .then((response) => {
-        // Handle success
-        console.log("File uploaded:", response.data);
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error uploading file:", error);
-      });
-  };
+const handleFolderNameChange = (event, folderId) => {
+  const updatedFolderName = event.target.value;
+  // Send a request to update the folder name in the backend
+  // Update the folder name in the UI if the request is successful
+  // You can use axios.put or axios.patch here
+  // After updating, setEditableFolderId(null) to exit edit mode
+};
 
+//Delete new folder
+const DeleteFolder = (folderID) => {
+ let data = JSON.stringify({
+  "folderID": folderID,
+  "operation": "Delete"
+});
+
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: 'http://192.168.1.219/api/NewScreen/CreateFolder',
+  headers: { 
+    'Content-Type': 'application/json'
+  },
+  data : data
+};
+
+axios.request(config)
+.then((response) => {
+  const updatedFolder = newFolder.filter((folder) => folder.folderID !== folderID);
+  setNewfolder(updatedFolder);
+  console.log(JSON.stringify(response.data));
+})
+.catch((error) => {
+  console.log(error);
+});
+};
+
+// new folder dropdown
+const [openAssetsdwId, setOpenAssetsdwId] = useState(null);
+const toggleAssetsdw = (folderId) => {
+  if (openAssetsdwId === folderId) {
+
+    setOpenAssetsdwId(null);
+  } else {
+    
+    setOpenAssetsdwId(folderId);
+  }
+};
+
+const [openAssetsdwIdList, setOpenAssetsdwIdList] = useState(null);
+const toggleAssetsdwList = (folderId) => {
+  if (openAssetsdwIdList === folderId) {
+
+    setOpenAssetsdwIdList(null);
+  } else {
+    
+    setOpenAssetsdwIdList(folderId);
+  }
+};
   return (
     <>
       <div className="flex border-b border-gray">
@@ -359,14 +395,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                 Assets
               </h1>
               <div className=" flex-wrap flex  lg:mt-0 md:mt-0 sm:mt-3">
-                <button
-                  className=" dashboard-btn  flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                  onClick={handleFileUpload}
-                >
+                <button className=" dashboard-btn  flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                onClick={createFolder}>
                   <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
                   New Folder
                 </button>
-
+            
                 <button className=" dashboard-btn flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                   <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
                   <Link to={"/FileUpload"}> Upload </Link>
@@ -447,13 +481,79 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   : "togglecontent"
               }
             >
+
+
               <div
                 className={
                   "page-content grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section"
                 }
               >
+
+              {/*new folder*/}
+                
+              {newFolder.map((folder) => (
+                <li
+                key={`folder-${folder.id}`}
+                className="text-center relative list-none bg-lightgray rounded-md px-3 py-7"
+              >
+                <FcOpenedFolder className="text-8xl text-center mx-auto" />
+                {editableFolderId === folder.id ? (
+                  // Render an input field for editing when in edit mode
+                  <input
+                    type="text"
+                    value={folder.folderName}
+                    onChange={(event) => handleFolderNameChange(event, folder.id)}
+                    onBlur={() => setEditableFolderId(null)} // Exit edit mode on blur
+                    autoFocus
+                  />
+                ) : (
+                  // Display folder name as text and make it double-clickable to enter edit mode
+                  <span
+                    onDoubleClick={() => handleFolderNameDoubleClick(folder.id)}
+                  >
+                    {folder.folderName}
+                  </span>
+                )}
+                  <button onClick={() => toggleAssetsdw(folder.id)} className="absolute right-4 top-2">
+                  <BsThreeDots className="text-2xl relative" />
+                </button>
+                {openAssetsdwId === folder.id && (
+                  <div className="assetsdw">
+                    <ul>
+                      <li className="flex text-sm items-center">
+                        <FiUpload className="mr-2 text-lg" />
+                        Set to Screen
+                      </li>
+                      <li className="flex text-sm items-center">
+                        <MdPlaylistPlay className="mr-2 text-lg" />
+                        Add to Playlist
+                      </li>
+                   
+                        <li className="flex text-sm items-center">
+                          <FiDownload className="mr-2 text-lg" />
+                          <a href="#">
+                            Download
+                          </a>
+                        </li>
+                   <li className="flex text-sm items-center">
+                        <CgMoveRight className="mr-2 text-lg" />
+                        Move to
+                      </li>
+                      <li>
+                        <button className="flex text-sm items-center" onClick={() => DeleteFolder(folder.folderID)}>
+                          <RiDeleteBin5Line className="mr-2 text-lg" />
+                          Move to Trash
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                )}
+                </li>
+              ))}
+             
                 {gridData.length > 0 ? (
                   gridData.map((item, index) => (
+                    
                     <li
                       key={`tabitem-grid-${item.id}-${index}`}
                       className="relative list-none assetsbox"
@@ -651,41 +751,20 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           )}
                         </div>
                       )}
+
+                    
                     </li>
+                   
                   ))
                 ) : (
                   <p>Loading data...</p>
                 )}
+
               </div>
-            </div>
-
-            <div>
-              {/* Folder selection dropdown */}
-              {/* <select onChange={(e) => setSelectedFolder(e.target.value)}>
-                <option value="">Select Folder</option>
-                {folders.map((folder) => (
-                  <option key={folder.id} value={folder.id}>
-                    {folder.name}
-                  </option>
-                ))}
-              </select> */}
-
-              {/* OR */}
-
-              {/* Input for entering a new folder name */}
-              {/* <input
-                type="text"
-                placeholder="New Folder Name"
-                value={newFolderName}
-                onChange={(e) => setNewFolderName(e.target.value)}
-              /> */}
-
-              {/* Render your folders here */}
-              {/* <ul>
-                {folders.map((folder) => (
-                  <li key={folder.id}>{folder.name}</li>
-                ))}
-              </ul> */}
+             <div>
+               
+             </div> 
+             
             </div>
 
             {/*End of grid view */}
@@ -712,72 +791,72 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {tableRows.map((folder, id) => (
-                      <React.Fragment key={folder.id}>
-                        <tr className="bg-white rounded-lg font-normal text-[14px] text-[#5E5E5E] shadow-sm newfolder">
+                    {newFolder.map((folder) => (
+                      <>
+                        <tr key={`folder-${folder.id}`} className="bg-white rounded-lg font-normal text-[14px] text-[#5E5E5E] shadow-sm newfolder">
                           <td className="flex items-center relative">
                             <div>
-                              <SlFolderAlt className="text-5xl font-medium text-primary" />
+                            <FcOpenedFolder className="text-8xl text-center mx-auto" />
                             </div>
                             <div className="ml-3">
                               <h1 className="font-medium text-base">
-                                New Folder
+                              {folder.folderName}
                               </h1>
-                              <p className="max-w-[250px]">Item 1</p>
+                              
                             </div>
                           </td>
                           <td></td>
                           <td></td>
-                          <td>Video</td>
-                          <td>155KB</td>
+                          <td></td>
+                          <td>{folder.fileSize}</td>
                           <td>
                             <input
                               type="checkbox"
                               className="w-[20px] h-[20px]"
                             />
                           </td>
-                          <td className="relative w-[40px]">
-                            <button onClick={() => updateassetsdw3(id)}>
-                              <BsThreeDotsVertical className="text-2xl relative" />
-                            </button>
-                            {assetsdw3 === id && (
-                              <div className="assetsdw">
-                                <ul>
-                                  <li className="flex text-sm items-center">
-                                    <FiUpload className="mr-2 text-lg" />
-                                    Set to Screen
-                                  </li>
-                                  <li className="flex text-sm items-center">
-                                    <MdPlaylistPlay className="mr-2 text-lg" />
-                                    Add to Playlist
-                                  </li>
+                        <td className="relative w-[40px]">
+                        <button onClick={() => toggleAssetsdwList(folder.id)} className="absolute right-4 top-[37%]">
+                        <BsThreeDotsVertical className="text-2xl relative" />
+                      </button>
+                          {openAssetsdwIdList === folder.id && (
+                            <div className="assetsdw bottom-[-90px]">
+                              <ul>
+                                <li className="flex text-sm items-center">
+                                  <FiUpload className="mr-2 text-lg" />
+                                  Set to Screen
+                                </li>
+                                <li className="flex text-sm items-center">
+                                  <MdPlaylistPlay className="mr-2 text-lg" />
+                                  Add to Playlist
+                                </li>
+                             
                                   <li className="flex text-sm items-center">
                                     <FiDownload className="mr-2 text-lg" />
-                                    Download
+                                    <a href="#">
+                                      Download
+                                    </a>
                                   </li>
-                                  <li className="flex text-sm items-center">
-                                    <CgMoveRight className="mr-2 text-lg" />
-                                    Move to
-                                  </li>
-                                  <li>
-                                    <button
-                                      onClick={() => handelDeletedata(id)}
-                                      className="flex text-sm items-center"
-                                    >
-                                      <RiDeleteBin5Line className="mr-2 text-lg" />
-                                      Move to Trash
-                                    </button>
-                                  </li>
-                                </ul>
-                              </div>
-                            )}
+                             <li className="flex text-sm items-center">
+                                  <CgMoveRight className="mr-2 text-lg" />
+                                  Move to
+                                </li>
+                                <li>
+                                  <button className="flex text-sm items-center" onClick={() => DeleteFolder(folder.folderID)}>
+                                    <RiDeleteBin5Line className="mr-2 text-lg" />
+                                    Move to Trash
+                                  </button>
+                                </li>
+                              </ul>
+                            </div>
+                          )}
                           </td>
                         </tr>
 
                         <tr>
                           <div className="mb-2"></div>
                         </tr>
-                      </React.Fragment>
+                      </>
                     ))}
 
                     {tableData.length > 0 ? (
