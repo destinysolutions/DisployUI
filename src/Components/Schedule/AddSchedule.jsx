@@ -43,10 +43,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [scheduleAsset, setScheduleAsset] = useState([]);
   const [assetData, setAssetData] = useState([]);
   const [allAssets, setAllAssets] = useState([]);
-
-  // State to store repeat settings for the currently edited event
-  const [currentEventRepeatSettings, setCurrentEventRepeatSettings] =
-    useState(null);
+  const [allSchedule, setAllSchedule] = useState([]);
+  const [selectedScheduleName, setSelectedScheduleName] = useState("");
+  const [selectedScheduleId, setSelectedScheduleId] = useState("");
 
   const handleSelectSlot = useCallback(({ start, end }) => {
     setSelectedSlot({ start, end });
@@ -57,6 +56,92 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedEvent(event);
     setCreatePopupOpen(true);
   }, []);
+
+  useEffect(() => {
+    axios
+      .get(
+        "https://disployapi.thedestinysolutions.com/api/Schedule/GetAllSchedule"
+      )
+      .then((response) => {
+        const fetchedData = response.data.data;
+        setAllSchedule(fetchedData);
+        console.log(fetchedData, "fetchedData");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  // const handleScheduleNameChange = (event) => {
+  //   const selectedScheduleName = event.target.value;
+  //   console.log(selectedScheduleName, "selectedScheduleName");
+
+  //   // Find the selected schedule by name and retrieve its ID
+  //   const selectedSchedule = allSchedule.find(
+  //     (schedule) => schedule.scheduleName === selectedScheduleName
+  //   );
+  //   console.log(selectedSchedule, "selectedScheduleselectedSchedule");
+  //   if (selectedSchedule) {
+  //     const selectedScheduleId = selectedSchedule.scheduleId;
+  //     setSelectedScheduleName(selectedScheduleId);
+  //     console.log(selectedScheduleId, "selectedScheduleId");
+  //   }
+  // };
+
+  const handleScheduleNameChange = (event) => {
+    const selectedScheduleName = event.target.value;
+    console.log(selectedScheduleName, "selectedScheduleName");
+
+    // Find the selected schedule by name and retrieve its ID
+    const selectedSchedule = allSchedule.find(
+      (schedule) => schedule.scheduleName === selectedScheduleName
+    );
+    console.log(selectedSchedule, "selectedScheduleselectedSchedule");
+    if (selectedSchedule) {
+      const selectedScheduleId = selectedSchedule.scheduleId;
+      setSelectedScheduleName(selectedScheduleName); // Corrected line
+      console.log(selectedScheduleId, "selectedScheduleId");
+    }
+  };
+
+  const [isCreatingNewSchedule, setIsCreatingNewSchedule] = useState(false);
+  const [newScheduleNameInput, setNewScheduleNameInput] = useState(""); // Added state to track the input field
+
+  const handleCreateNewSchedule = (e) => {
+    setIsCreatingNewSchedule(true);
+    setNewScheduleNameInput(e.target.value);
+  };
+
+  // Function to handle saving the new schedule
+  const handleSaveNewSchedule = () => {
+    // Check if the entered schedule name is not empty
+    if (newScheduleNameInput.trim() !== "") {
+      axios
+        .post(
+          "https://disployapi.thedestinysolutions.com/api/Schedule/AddSchedule",
+          {
+            scheduleName: newScheduleNameInput,
+            startDate: dayStartTime,
+            endDate: dayEndTime,
+            operation: "Insert",
+          }
+        )
+        .then((response) => {
+          const newScheduleId = response.data.data.model.scheduleId;
+          setSelectedScheduleName(response.data.data.model.scheduleName);
+          setSelectedScheduleId(newScheduleId);
+          setAllSchedule([...allSchedule, response.data.data.model]);
+          setNewScheduleNameInput("");
+          setIsCreatingNewSchedule(false);
+        })
+        .catch((error) => {
+          console.error("Error creating a new schedule:", error);
+        });
+    } else {
+      // Handle the case where the user entered an empty schedule name or canceled
+      // You can display an error message or take appropriate action
+    }
+  };
 
   useEffect(() => {
     axios
@@ -86,21 +171,17 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Function to handle event drag and drop
   const handleEventDrop = ({ event, start, end }) => {
-    const assetId = event.asset;
     const previousSelectedAsset = allAssets.find(
-      (asset) => asset.id === assetId
+      (asset) => asset.id === event.asset
     );
-    if (previousSelectedAsset) {
-      const updatedEventData = {
-        ...event,
-        start,
-        end,
-        asset: previousSelectedAsset,
-      };
-      handleSaveEvent(updatedEventData.id, updatedEventData);
-    } else {
-      console.log("Asset not found for ID:", assetId);
-    }
+
+    const updatedEventData = {
+      ...event,
+      start,
+      end,
+      asset: previousSelectedAsset,
+    };
+    handleSaveEvent(updatedEventData.id, updatedEventData);
   };
 
   // Function to handle event resize
@@ -119,7 +200,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Function to handle saving or updating events
   const handleSaveEvent = (eventId, eventData) => {
-    //debugger;
     let data = {
       startDate: eventData.start,
       endDate: eventData.end,
@@ -128,6 +208,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       color: eventData.color,
       repeatDay: eventData.repeatDay,
       operation: eventId ? "Update" : "Insert",
+      //scheduleName: selectedScheduleName,
     };
     if (eventId) {
       data.eventId = eventId;
@@ -145,15 +226,13 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
+        console.log(response.data, "response");
         const updatedEvent = {
           ...eventData,
-          startDate: response.data.data.model.startDate,
-          endDate: response.data.data.model.endDate,
           asset: response.data.data.model.asset,
-          title: response.data.data.model.title,
-          color: response.data.data.model.color,
           id: eventId || response.data.data.model.eventId,
-          repeatDay: currentEventRepeatSettings,
+          repeatDay: response.data.data.model.repeatDay,
+          //scheduleName: response.data.data.model.scheduleName,
         };
 
         if (eventId) {
@@ -179,7 +258,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
     setSelectedSlot(null);
     setSelectedEvent(null);
-    setCurrentEventRepeatSettings(null);
     setCreatePopupOpen(false);
   };
 
@@ -316,8 +394,50 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 />
               </div>
               <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
-                <div className="p-3">scheduleName</div>
-                <div className="border-b-2 border-lightgray"></div>
+                <div className="p-3">schedule Name</div>
+
+                {isCreatingNewSchedule ? (
+                  <div className="px-3">
+                    <input
+                      type="text"
+                      className="w-full paymentlabel relative border border-gray-300 rounded-md px-2 py-1"
+                      placeholder="Enter new schedule name"
+                      value={newScheduleNameInput}
+                      onChange={handleCreateNewSchedule}
+                    />
+                    <button
+                      className=" text-black px-2 py-1 rounded border border-primary mt-3 ml-1"
+                      onClick={handleSaveNewSchedule}
+                    >
+                      Save
+                    </button>
+                  </div>
+                ) : (
+                  <div className="px-3">
+                    <select
+                      className="w-full paymentlabel relative "
+                      onChange={handleScheduleNameChange}
+                      value={selectedScheduleName}
+                    >
+                      <option value="">Select an schedule Name</option>
+                      {allSchedule.map((schedule) => (
+                        <option
+                          value={schedule.scheduleName}
+                          key={schedule.scheduleId}
+                        >
+                          {schedule.scheduleName}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      className=" text-black px-2 py-1 rounded border border-primary mt-3 ml-2"
+                      onClick={handleCreateNewSchedule}
+                    >
+                      Create New
+                    </button>
+                  </div>
+                )}
+                <div className="border-b-2 border-lightgray mt-3"></div>
                 <div className="p-3">
                   <div className="mb-2">Schedule Date time</div>
                   <div>
