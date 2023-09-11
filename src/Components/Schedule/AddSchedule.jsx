@@ -86,16 +86,21 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Function to handle event drag and drop
   const handleEventDrop = ({ event, start, end }) => {
+    const assetId = event.asset;
     const previousSelectedAsset = allAssets.find(
-      (asset) => asset.id === event.asset
+      (asset) => asset.id === assetId
     );
-    const updatedEventData = {
-      ...event,
-      start,
-      end,
-      asset: previousSelectedAsset,
-    };
-    handleSaveEvent(updatedEventData.id, updatedEventData);
+    if (previousSelectedAsset) {
+      const updatedEventData = {
+        ...event,
+        start,
+        end,
+        asset: previousSelectedAsset,
+      };
+      handleSaveEvent(updatedEventData.id, updatedEventData);
+    } else {
+      console.log("Asset not found for ID:", assetId);
+    }
   };
 
   // Function to handle event resize
@@ -112,7 +117,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     handleSaveEvent(resizedEvent.id, resizedEvent);
   };
 
+  // Function to handle saving or updating events
   const handleSaveEvent = (eventId, eventData) => {
+    //debugger;
     let data = {
       startDate: eventData.start,
       endDate: eventData.end,
@@ -122,7 +129,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       repeatDay: eventData.repeatDay,
       operation: eventId ? "Update" : "Insert",
     };
-    console.log(data, "data");
     if (eventId) {
       data.eventId = eventId;
     }
@@ -141,30 +147,29 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         const updatedEvent = {
           ...eventData,
-          eventId: response.data.data.model.eventId,
+          startDate: response.data.data.model.startDate,
+          endDate: response.data.data.model.endDate,
+          asset: response.data.data.model.asset,
+          title: response.data.data.model.title,
+          color: response.data.data.model.color,
+          id: eventId || response.data.data.model.eventId,
           repeatDay: currentEventRepeatSettings,
         };
-        const updatedAllAssets = allAssets.map((asset) => {
-          if (asset.id === eventData.asset) {
-            // Update the asset data here
-            return {
-              ...asset,
-              // Update asset properties as needed
-            };
-          }
-          return asset;
-        });
 
-        // Update the allAssets state to reflect the changes
-        setAllAssets(updatedAllAssets);
-        console.log(updatedAllAssets, "updatedAllAssets");
-        console.log(updatedEvent);
         if (eventId) {
+          // Update the event with the provided eventId
           const updatedEvents = myEvents.map((event) =>
             event.id === eventId ? updatedEvent : event
           );
           setEvents(updatedEvents);
+
+          // If this is the selectedEvent, update it as well
+          if (selectedEvent && selectedEvent.eventId === eventId) {
+            setSelectedEvent(updatedEvent);
+          }
         } else {
+          // Insert the new event into myEvents
+
           setEvents((prev) => [...prev, updatedEvent]);
         }
       })

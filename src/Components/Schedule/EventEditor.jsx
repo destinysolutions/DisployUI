@@ -48,29 +48,37 @@ const EventEditor = ({
 
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
   useEffect(() => {
-    if (isOpen && selectedEvent) {
-      // console.log(selectedEvent, "eventDataeventDataeventDataeventData");
-      const previousSelectedAsset = allAssets.find(
-        (asset) => asset.id === selectedEvent.asset
-      );
-      console.log(previousSelectedAsset, "previousSelectedAsset");
-      setSelectedAsset(previousSelectedAsset);
-      setAssetPreview(previousSelectedAsset);
-      setTitle(selectedEvent.title);
-      setSelectedColor(selectedEvent.color);
-      setEditedStartDate(formatDate(selectedEvent.start));
-      setEditedStartTime(formatTime(selectedEvent.start));
-      setEditedEndDate(formatDate(selectedEvent.end));
-      setEditedEndTime(formatTime(selectedEvent.end));
-    } else if (isOpen && selectedSlot) {
-      setSelectedAsset("");
-      setAssetPreview(null);
-      setTitle("");
-      setSelectedColor("");
-      setEditedStartDate(formatDate(selectedSlot.start));
-      setEditedStartTime(formatTime(selectedSlot.start));
-      setEditedEndDate(formatDate(selectedSlot.end));
-      setEditedEndTime(formatTime(selectedSlot.end));
+    if (isOpen) {
+      if (selectedEvent) {
+        let assetId;
+        if (selectedEvent?.asset?.id != undefined) {
+          assetId = selectedEvent?.asset?.id;
+        } else {
+          assetId = selectedEvent.asset;
+        }
+        const previousSelectedAsset = allAssets.find(
+          (asset) => asset.id === assetId
+        );
+        if (previousSelectedAsset) {
+          setSelectedAsset(previousSelectedAsset);
+        }
+        setTitle(selectedEvent.title);
+        setSelectedColor(selectedEvent.color);
+        setEditedStartDate(formatDate(selectedEvent.start));
+        setEditedStartTime(formatTime(selectedEvent.start));
+        setEditedEndDate(formatDate(selectedEvent.end));
+        setEditedEndTime(formatTime(selectedEvent.end));
+      } else if (selectedSlot) {
+        setSelectedAsset(null);
+        setSelectedAsset("");
+        setAssetPreview(null);
+        setTitle("");
+        setSelectedColor("");
+        setEditedStartDate(formatDate(selectedSlot.start));
+        setEditedStartTime(formatTime(selectedSlot.start));
+        setEditedEndDate(formatDate(selectedSlot.end));
+        setEditedEndTime(formatTime(selectedSlot.end));
+      }
     }
   }, [isOpen, selectedEvent, selectedSlot, allAssets]);
 
@@ -177,7 +185,6 @@ const EventEditor = ({
             repeatDay: selectedDaysInNumber,
           });
         }
-        console.log(events, "selectedDaysInNumber");
         // Move to the next day
         currentDate.setDate(currentDate.getDate() + 1);
       }
@@ -196,7 +203,6 @@ const EventEditor = ({
         asset: selectedAsset,
         repeatDay: [],
       };
-
       // Check if the selected event is present and has the same data as the form data
       if (
         selectedEvent &&
@@ -209,7 +215,7 @@ const EventEditor = ({
         onClose();
       } else {
         if (selectedEvent) {
-          onSave(selectedEvent.id, eventData);
+          onSave(selectedEvent?.id || selectedEvent?.eventId, eventData);
         } else {
           onSave(null, eventData);
         }
@@ -253,7 +259,6 @@ const EventEditor = ({
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
         onDelete(selectedEvent.id);
         onClose();
       })
