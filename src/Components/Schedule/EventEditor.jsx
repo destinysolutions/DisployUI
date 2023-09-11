@@ -27,7 +27,13 @@ const EventEditor = ({
   const [editedEndTime, setEditedEndTime] = useState("");
   const [selectedAsset, setSelectedAsset] = useState("");
   const [assetPreview, setAssetPreview] = useState("");
-
+  const buttons = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+  const [selectAllDays, setSelectAllDays] = useState(false);
+  const [selectedDays, setSelectedDays] = useState(
+    new Array(buttons.length).fill(false)
+  );
+  const [repeatDay, setRepeatDay] = useState("");
+  //console.log(repeatDay, "repeatDay");
   // State to keep track of repeat settings modal
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
 
@@ -47,6 +53,7 @@ const EventEditor = ({
   };
 
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
+  //console.log(selectedEvent);
   useEffect(() => {
     if (isOpen) {
       if (selectedEvent) {
@@ -62,6 +69,7 @@ const EventEditor = ({
         if (previousSelectedAsset) {
           setSelectedAsset(previousSelectedAsset);
         }
+        setRepeatDay(selectedEvent.repeatDay);
         setTitle(selectedEvent.title);
         setSelectedColor(selectedEvent.color);
         setEditedStartDate(formatDate(selectedEvent.start));
@@ -69,9 +77,8 @@ const EventEditor = ({
         setEditedEndDate(formatDate(selectedEvent.end));
         setEditedEndTime(formatTime(selectedEvent.end));
       } else if (selectedSlot) {
+        setRepeatDay("");
         setSelectedAsset(null);
-        setSelectedAsset("");
-        setAssetPreview(null);
         setTitle("");
         setSelectedColor("");
         setEditedStartDate(formatDate(selectedSlot.start));
@@ -109,12 +116,6 @@ const EventEditor = ({
   const endDate = new Date(editedEndDate);
   const dayDifference = Math.floor(
     (endDate - startDate) / (1000 * 60 * 60 * 24)
-  );
-
-  const buttons = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-  const [selectAllDays, setSelectAllDays] = useState(false);
-  const [selectedDays, setSelectedDays] = useState(
-    new Array(buttons.length).fill(false)
   );
 
   // Count the repeated days within the selected date range
@@ -167,6 +168,10 @@ const EventEditor = ({
       // Create events for selected days within the date range
       const events = [];
       let currentDate = new Date(start);
+      const selectedRepeatDay = selectAllDays
+        ? buttons.map((_, index) => index)
+        : selectedDaysInNumber;
+      setRepeatDay(selectedRepeatDay);
 
       while (currentDate <= end) {
         if (selectAllDays || selectedDays[currentDate.getDay()]) {
@@ -182,7 +187,7 @@ const EventEditor = ({
             end: eventEnd,
             color: selectedColor,
             asset: selectedAsset,
-            repeatDay: selectedDaysInNumber,
+            repeatDay: repeatDay,
           });
         }
         // Move to the next day
@@ -201,7 +206,7 @@ const EventEditor = ({
         end: end,
         color: selectedColor,
         asset: selectedAsset,
-        repeatDay: [],
+        repeatDay: repeatDay,
       };
       // Check if the selected event is present and has the same data as the form data
       if (
@@ -210,7 +215,8 @@ const EventEditor = ({
         selectedEvent.start.getTime() === start.getTime() &&
         selectedEvent.end.getTime() === end.getTime() &&
         selectedEvent.color === selectedColor &&
-        selectedEvent.asset === selectedAsset
+        selectedEvent.asset === selectedAsset &&
+        selectedEvent.repeatDay === repeatDay
       ) {
         onClose();
       } else {
@@ -445,47 +451,16 @@ const EventEditor = ({
                                         {assetPreview && (
                                           <>
                                             {assetPreview.categorieType ===
-                                              "Online" && (
-                                              <>
-                                                {assetPreview.details ===
-                                                "Video" ? (
-                                                  <div className="relative videobox">
-                                                    <video
-                                                      controls
-                                                      className="w-full rounded-2xl relative"
-                                                    >
-                                                      <source
-                                                        src={
-                                                          assetPreview.fileType
-                                                        }
-                                                        type="video/mp4"
-                                                      />
-                                                      Your browser does not
-                                                      support the video tag.
-                                                    </video>
-                                                  </div>
-                                                ) : (
-                                                  <div className="imagebox relative p-3">
-                                                    <img
-                                                      src={
-                                                        assetPreview.fileType
-                                                      }
-                                                      className="rounded-2xl"
-                                                    />
-                                                  </div>
-                                                )}
-                                              </>
-                                            )}
-                                            {assetPreview.categorieType ===
-                                              "Image" && (
+                                              "OnlineImage" && (
                                               <img
                                                 src={assetPreview.fileType}
                                                 alt={assetPreview.name}
-                                                className="imagebox relative"
+                                                className="imagebox relative h-24 w-28"
                                               />
                                             )}
+
                                             {assetPreview.categorieType ===
-                                              "Video" && (
+                                              "OnlineVideo" && (
                                               <video
                                                 controls
                                                 className="w-full rounded-2xl relative h-56"
@@ -497,6 +472,30 @@ const EventEditor = ({
                                                 Your browser does not support
                                                 the video tag.
                                               </video>
+                                            )}
+                                            {assetPreview.categorieType ===
+                                              "Image" && (
+                                              <img
+                                                src={assetPreview.fileType}
+                                                alt={assetPreview.name}
+                                                className="imagebox relative h-24 w-28"
+                                              />
+                                            )}
+                                            {assetPreview.categorieType ===
+                                              "Video" && (
+                                              <div className="relative videobox">
+                                                <video
+                                                  controls
+                                                  className="w-full rounded-2xl relative"
+                                                >
+                                                  <source
+                                                    src={assetPreview.fileType}
+                                                    type="video/mp4"
+                                                  />
+                                                  Your browser does not support
+                                                  the video tag.
+                                                </video>
+                                              </div>
                                             )}
                                             {assetPreview.categorieType ===
                                               "DOC" && (
