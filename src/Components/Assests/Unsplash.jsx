@@ -65,6 +65,7 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
       formData.append("CategorieType", "OnlineImage");
       formData.append("details", details);
       formData.append("name", image.alt_description);
+      formData.append("resolutions", `${image.height}*${image.width}`);
       setImageUploadProgress((prevProgress) => ({
         ...prevProgress,
         [image.id]: 0,

@@ -32,8 +32,8 @@ const EventEditor = ({
   const [selectedDays, setSelectedDays] = useState(
     new Array(buttons.length).fill(false)
   );
-  const [repeatDay, setRepeatDay] = useState("");
-  //console.log(repeatDay, "repeatDay");
+  const [selectedRepeatDay, setSelectedRepeatDay] = useState("");
+  //console.log(selectedRepeatDay, "selectedRepeatDay");
   // State to keep track of repeat settings modal
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
 
@@ -57,6 +57,7 @@ const EventEditor = ({
   useEffect(() => {
     if (isOpen) {
       if (selectedEvent) {
+        console.log(selectedEvent, "selectedEvent");
         let assetId;
         if (selectedEvent?.asset?.id != undefined) {
           assetId = selectedEvent?.asset?.id;
@@ -69,7 +70,7 @@ const EventEditor = ({
         if (previousSelectedAsset) {
           setSelectedAsset(previousSelectedAsset);
         }
-        setRepeatDay(selectedEvent.repeatDay);
+        setSelectedRepeatDay(selectedEvent.repeatDay);
         setTitle(selectedEvent.title);
         setSelectedColor(selectedEvent.color);
         setEditedStartDate(formatDate(selectedEvent.start));
@@ -77,7 +78,7 @@ const EventEditor = ({
         setEditedEndDate(formatDate(selectedEvent.end));
         setEditedEndTime(formatTime(selectedEvent.end));
       } else if (selectedSlot) {
-        setRepeatDay("");
+        setSelectedRepeatDay("");
         setSelectedAsset(null);
         setTitle("");
         setSelectedColor("");
@@ -163,15 +164,14 @@ const EventEditor = ({
     const areSpecificDaysSelected = selectedDays.some(
       (isSelected) => isSelected
     );
-
+    let repeatDayValue = null;
     if (areSpecificDaysSelected || selectAllDays) {
-      // Create events for selected days within the date range
-      const events = [];
-      let currentDate = new Date(start);
-      const selectedRepeatDay = selectAllDays
+      repeatDayValue = selectAllDays
         ? buttons.map((_, index) => index)
         : selectedDaysInNumber;
-      setRepeatDay(selectedRepeatDay);
+      setSelectedRepeatDay(repeatDayValue);
+      const events = [];
+      let currentDate = new Date(start);
 
       while (currentDate <= end) {
         if (selectAllDays || selectedDays[currentDate.getDay()]) {
@@ -187,7 +187,8 @@ const EventEditor = ({
             end: eventEnd,
             color: selectedColor,
             asset: selectedAsset,
-            repeatDay: repeatDay,
+            repeatDay: repeatDayValue,
+            
           });
         }
         // Move to the next day
@@ -206,7 +207,7 @@ const EventEditor = ({
         end: end,
         color: selectedColor,
         asset: selectedAsset,
-        repeatDay: repeatDay,
+        repeatDay: repeatDayValue,
       };
       // Check if the selected event is present and has the same data as the form data
       if (
@@ -216,7 +217,7 @@ const EventEditor = ({
         selectedEvent.end.getTime() === end.getTime() &&
         selectedEvent.color === selectedColor &&
         selectedEvent.asset === selectedAsset &&
-        selectedEvent.repeatDay === repeatDay
+        selectedEvent.repeatDay === selectedRepeatDay
       ) {
         onClose();
       } else {
@@ -229,6 +230,62 @@ const EventEditor = ({
       }
     }
   };
+
+  // const handleSave = () => {
+  //   // Convert edited dates and times to actual Date objects
+  //   const start = new Date(editedStartDate + " " + editedStartTime);
+  //   const end = new Date(editedEndDate + " " + editedEndTime);
+
+  //   const selectedDaysInNumber = selectedDays
+  //     .map((isSelected, index) => (isSelected ? index : null))
+  //     .filter((index) => index !== null);
+
+  //   // Determine if any specific days are selected (excluding the "Repeat for All Day" option)
+  //   const areSpecificDaysSelected = selectedDays.some(
+  //     (isSelected) => isSelected
+  //   );
+
+  //   let repeatDayValue = null;
+  //   if (areSpecificDaysSelected || selectAllDays) {
+  //     repeatDayValue = selectAllDays
+  //       ? buttons.map((_, index) => index)
+  //       : selectedDaysInNumber;
+  //     setSelectedRepeatDay(repeatDayValue);
+  //   }
+
+  //   const eventData = {
+  //     title: title,
+  //     start: start,
+  //     end: end,
+  //     color: selectedColor,
+  //     asset: selectedAsset,
+  //   };
+
+  //   if (areSpecificDaysSelected) {
+  //     // Add repeatDay to eventData if specific days are selected
+  //     eventData.repeatDay = repeatDayValue;
+  //   }
+
+  //   // Check if the selected event is present and has the same data as the form data
+  //   if (
+  //     selectedEvent &&
+  //     selectedEvent.title === title &&
+  //     selectedEvent.start.getTime() === start.getTime() &&
+  //     selectedEvent.end.getTime() === end.getTime() &&
+  //     selectedEvent.color === selectedColor &&
+  //     selectedEvent.asset === selectedAsset &&
+  //     selectedEvent.repeatDay === selectedRepeatDay
+  //   ) {
+  //     onClose();
+  //   } else {
+  //     if (selectedEvent) {
+  //       onSave(selectedEvent?.id || selectedEvent?.eventId, eventData);
+  //     } else {
+  //       onSave(null, eventData);
+  //     }
+  //     onClose();
+  //   }
+  // };
 
   const [searchAsset, setSearchAsset] = useState("");
   const handleFilter = (event) => {
@@ -264,7 +321,7 @@ const EventEditor = ({
 
     axios
       .request(config)
-      .then((response) => {
+      .then(() => {
         onDelete(selectedEvent.id);
         onClose();
       })
@@ -673,7 +730,8 @@ const EventEditor = ({
                         <li className="border-b-2 border-lightgray p-3">
                           <h3>End Date:</h3>
                           <div className="mt-2 bg-lightgray rounded-full px-3 py-2 w-full">
-                            {editedStartDate}
+                            {moment(editedStartDate).format("DD-MM-YYYY")}
+                            {/* {editedStartDate} */}
                           </div>
                         </li>
                         <li className="border-b-2 border-lightgray p-3">

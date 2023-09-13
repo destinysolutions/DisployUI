@@ -18,12 +18,14 @@ import Footer from "../Footer";
 import { GET_ALL_SCHEDULE } from "../../Pages/Api";
 import { useEffect } from "react";
 import axios from "axios";
+import SaveAssignScreenModal from "./SaveAssignScreenModal";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //for action popup
   const [showActionBox, setShowActionBox] = useState(false);
   const [addScreenModal, setAddScreenModal] = useState(false);
   const [scheduleAsset, setScheduleAsset] = useState([]);
+  const [selectScreenModal, setSelectScreenModal] = useState(false);
 
   useEffect(() => {
     axios
@@ -43,10 +45,41 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     return formattedDate;
   }
 
-  function formatTime(date) {
-    const formattedTime = date.toLocaleTimeString();
-    return formattedTime;
-  }
+  // Initialize state for the "Select All" checkbox
+  const [selectAll, setSelectAll] = useState(false);
+
+  // Function to handle the "Select All" checkbox change
+  const handleSelectAll = () => {
+    const updatedScheduleAsset = scheduleAsset.map((assetData) => ({
+      ...assetData,
+      isChecked: !selectAll,
+    }));
+    setScheduleAsset(updatedScheduleAsset);
+    setSelectAll(!selectAll);
+  };
+
+  const handleCheckboxChange = (eventId) => {
+    const updatedScheduleAsset = scheduleAsset.map((assetData) =>
+      assetData.eventId === eventId
+        ? { ...assetData, isChecked: !assetData.isChecked }
+        : assetData
+    );
+    setScheduleAsset(updatedScheduleAsset);
+
+    // Check if all checkboxes are checked or not
+    const allChecked = updatedScheduleAsset.every(
+      (assetData) => assetData.isChecked
+    );
+    setSelectAll(allChecked);
+  };
+
+  const handleScheduleItemClick = (eventId) => {
+    // Toggle the action menu for the clicked schedule item
+    setShowActionBox((prevState) => ({
+      ...prevState,
+      [eventId]: !prevState[eventId] || false,
+    }));
+  };
 
   return (
     <>
@@ -85,7 +118,12 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 <HiMagnifyingGlass className="text-lg" />
               </button>
               <button className="sm:ml-2 xs:ml-1 mt-1">
-                <input type="checkbox" className="h-7 w-7 " />
+                <input
+                  type="checkbox"
+                  className="h-7 w-7 "
+                  checked={selectAll}
+                  onChange={handleSelectAll}
+                />
               </button>
             </div>
           </div>
@@ -141,7 +179,12 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     key={assetData.eventId}
                   >
                     <td className="flex items-center ">
-                      <input type="checkbox" className="mr-3" />
+                      <input
+                        type="checkbox"
+                        className="mr-3"
+                        checked={assetData.isChecked || false}
+                        onChange={() => handleCheckboxChange(assetData.eventId)}
+                      />
                       <div>
                         <div>
                           <Link to="/screensplayer">
@@ -168,12 +211,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       <div className="relative">
                         <button
                           className="ml-3"
-                          onClick={() => setShowActionBox(!showActionBox)}
+                          onClick={() =>
+                            handleScheduleItemClick(assetData.eventId)
+                          }
                         >
                           <HiDotsVertical />
                         </button>
                         {/* action popup start */}
-                        {showActionBox && (
+                        {showActionBox[assetData.eventId] && (
                           <div className="scheduleAction z-10 ">
                             <div className="my-1">
                               <Link to="/addschedule">
@@ -218,11 +263,13 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                   </p>
                                 </div>
                                 <div className="pb-6 flex justify-center">
-                                  <Link to="/saveassignscreenmodal">
-                                    <button className="bg-primary text-white px-8 py-2 rounded-full">
-                                      OK
-                                    </button>
-                                  </Link>
+                                  <button
+                                    className="bg-primary text-white px-8 py-2 rounded-full"
+                                    onClick={() => setSelectScreenModal(true)}
+                                  >
+                                    OK
+                                  </button>
+
                                   <button
                                     className="bg-primary text-white px-4 py-2 rounded-full ml-3"
                                     onClick={() => setAddScreenModal(false)}
@@ -235,6 +282,11 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
                         )}
                         {/* add screen modal end */}
+                        {selectScreenModal && (
+                          <SaveAssignScreenModal
+                            setSelectScreenModal={setSelectScreenModal}
+                          />
+                        )}
                       </div>
                     </td>
                   </tr>

@@ -14,13 +14,11 @@ export const GET_SELECT_BY_STATE =
   "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByState";
 export const GET_SELECT_BY_CITY =
   "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByCity";
-export const GET_ALL_FILES =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/GetAll";
+export const GET_ALL_FILES = "http://192.168.1.219/api/ImageVideoDoc/GetAll";
 export const ALL_FILES_UPLOAD =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/ImageVideoDocUpload";
+  "http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload";
 export const GET_ALL_SCHEDULE =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/GetAllEvent";
-export const ADD_SCHEDULE =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/AddEvent";
+  "http://192.168.1.219/api/EventMaster/GetAllEvent";
+export const ADD_SCHEDULE = "http://192.168.1.219/api/EventMaster/AddEvent";
 
 //http://192.168.1.219

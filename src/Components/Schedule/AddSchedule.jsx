@@ -14,6 +14,7 @@ import "../../Styles/schedule.css";
 import { ADD_SCHEDULE, GET_ALL_FILES, GET_ALL_SCHEDULE } from "../../Pages/Api";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
+import SaveAssignScreenModal from "./SaveAssignScreenModal";
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
@@ -46,6 +47,65 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [allSchedule, setAllSchedule] = useState([]);
   const [selectedScheduleName, setSelectedScheduleName] = useState("");
   const [selectedScheduleId, setSelectedScheduleId] = useState("");
+  const [isEditingSchedule, setIsEditingSchedule] = useState(false);
+  const [isCreatingNewSchedule, setIsCreatingNewSchedule] = useState(false);
+  const [newScheduleNameInput, setNewScheduleNameInput] = useState("");
+
+  // Function to start editing an existing schedule
+  const startEditingSchedule = () => {
+    setIsEditingSchedule(true);
+  };
+  const handleScheduleNameChange = (event) => {
+    const selectedScheduleName = event.target.value;
+    //console.log(selectedScheduleName, "selectedScheduleName");
+
+    // Find the selected schedule by name and retrieve its ID
+    const selectedSchedule = allSchedule.find(
+      (schedule) => schedule.scheduleName === selectedScheduleName
+    );
+    console.log(selectedSchedule, "selectedScheduleselectedSchedule");
+    if (selectedSchedule) {
+      const selectedScheduleId = selectedSchedule.scheduleId;
+      setSelectedScheduleName(selectedScheduleName);
+      setSelectedScheduleId(selectedScheduleId);
+      //console.log(selectedScheduleId, "selectedScheduleId");
+    }
+  };
+  // Function to save changes when editing an existing schedule
+  const saveEditedSchedule = () => {
+    //debugger;
+    console.log(selectedScheduleId, "selectedScheduleIdselectedScheduleId");
+    let data = JSON.stringify({
+      scheduleId: 17,
+      scheduleName: selectedScheduleName,
+      // "screenAssigned": "string",
+      // "tags": "string",
+      // "startDate": "2023-09-13T12:47:34.476Z",
+      // "endDate": "2023-09-13T12:47:34.476Z",
+      // "createdDate": "2023-09-13T12:47:34.476Z",
+      operation: "Update",
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "http://192.168.1.219/api/Schedule/AddSchedule",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    setIsEditingSchedule(false); // Exit edit mode
+  };
 
   const handleSelectSlot = useCallback(({ start, end }) => {
     setSelectedSlot({ start, end });
@@ -59,9 +119,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     axios
-      .get(
-        "https://disployapi.thedestinysolutions.com/api/Schedule/GetAllSchedule"
-      )
+      .get("http://192.168.1.219/api/Schedule/GetAllSchedule")
       .then((response) => {
         const fetchedData = response.data.data;
         setAllSchedule(fetchedData);
@@ -72,43 +130,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   }, []);
 
-  // const handleScheduleNameChange = (event) => {
-  //   const selectedScheduleName = event.target.value;
-  //   console.log(selectedScheduleName, "selectedScheduleName");
-
-  //   // Find the selected schedule by name and retrieve its ID
-  //   const selectedSchedule = allSchedule.find(
-  //     (schedule) => schedule.scheduleName === selectedScheduleName
-  //   );
-  //   console.log(selectedSchedule, "selectedScheduleselectedSchedule");
-  //   if (selectedSchedule) {
-  //     const selectedScheduleId = selectedSchedule.scheduleId;
-  //     setSelectedScheduleName(selectedScheduleId);
-  //     console.log(selectedScheduleId, "selectedScheduleId");
-  //   }
-  // };
-
-  const handleScheduleNameChange = (event) => {
-    const selectedScheduleName = event.target.value;
-    console.log(selectedScheduleName, "selectedScheduleName");
-
-    // Find the selected schedule by name and retrieve its ID
-    const selectedSchedule = allSchedule.find(
-      (schedule) => schedule.scheduleName === selectedScheduleName
-    );
-    console.log(selectedSchedule, "selectedScheduleselectedSchedule");
-    if (selectedSchedule) {
-      const selectedScheduleId = selectedSchedule.scheduleId;
-      setSelectedScheduleName(selectedScheduleName); // Corrected line
-      console.log(selectedScheduleId, "selectedScheduleId");
-    }
-  };
-
-  const [isCreatingNewSchedule, setIsCreatingNewSchedule] = useState(false);
-  const [newScheduleNameInput, setNewScheduleNameInput] = useState(""); // Added state to track the input field
-
   const handleCreateNewSchedule = (e) => {
-    setIsCreatingNewSchedule(true);
+    //setIsCreatingNewSchedule(true);
     setNewScheduleNameInput(e.target.value);
   };
 
@@ -117,15 +140,12 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     // Check if the entered schedule name is not empty
     if (newScheduleNameInput.trim() !== "") {
       axios
-        .post(
-          "https://disployapi.thedestinysolutions.com/api/Schedule/AddSchedule",
-          {
-            scheduleName: newScheduleNameInput,
-            startDate: dayStartTime,
-            endDate: dayEndTime,
-            operation: "Insert",
-          }
-        )
+        .post("http://192.168.1.219/api/Schedule/AddSchedule", {
+          scheduleName: newScheduleNameInput,
+          startDate: dayStartTime,
+          endDate: dayEndTime,
+          operation: "Insert",
+        })
         .then((response) => {
           const newScheduleId = response.data.data.model.scheduleId;
           setSelectedScheduleName(response.data.data.model.scheduleName);
@@ -208,7 +228,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       color: eventData.color,
       repeatDay: eventData.repeatDay,
       operation: eventId ? "Update" : "Insert",
-      //scheduleName: selectedScheduleName,
+      //scheduleName: selectedScheduleId,
     };
     if (eventId) {
       data.eventId = eventId;
@@ -234,18 +254,20 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           repeatDay: response.data.data.model.repeatDay,
           //scheduleName: response.data.data.model.scheduleName,
         };
-
+        console.log(updatedEvent, "updatedEventupdatedEvent====");
         if (eventId) {
           // Update the event with the provided eventId
           const updatedEvents = myEvents.map((event) =>
             event.id === eventId ? updatedEvent : event
           );
           setEvents(updatedEvents);
-
+          console.log(updatedEvents, "updatedEvents====");
           // If this is the selectedEvent, update it as well
           if (selectedEvent && selectedEvent.eventId === eventId) {
+            console.log(selectedEvent, "selectedEvent====");
             setSelectedEvent(updatedEvent);
           }
+          console.log(selectedEvent, "selectedEvent====");
         } else {
           // Insert the new event into myEvents
 
@@ -396,47 +418,80 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
                 <div className="p-3">schedule Name</div>
 
-                {isCreatingNewSchedule ? (
-                  <div className="px-3">
-                    <input
-                      type="text"
-                      className="w-full paymentlabel relative border border-gray-300 rounded-md px-2 py-1"
-                      placeholder="Enter new schedule name"
-                      value={newScheduleNameInput}
-                      onChange={handleCreateNewSchedule}
-                    />
-                    <button
-                      className=" text-black px-2 py-1 rounded border border-primary mt-3 ml-1"
-                      onClick={handleSaveNewSchedule}
-                    >
-                      Save
-                    </button>
-                  </div>
-                ) : (
-                  <div className="px-3">
-                    <select
-                      className="w-full paymentlabel relative "
-                      onChange={handleScheduleNameChange}
-                      value={selectedScheduleName}
-                    >
-                      <option value="">Select an schedule Name</option>
-                      {allSchedule.map((schedule) => (
-                        <option
-                          value={schedule.scheduleName}
-                          key={schedule.scheduleId}
+                <div className="px-3">
+                  {isCreatingNewSchedule ? (
+                    <div>
+                      <input
+                        type="text"
+                        className="w-full paymentlabel relative border border-gray-300 rounded-md px-2 py-1"
+                        placeholder="Enter new schedule name"
+                        value={newScheduleNameInput}
+                        onChange={handleCreateNewSchedule}
+                      />
+                      <button
+                        className="text-black px-2 py-1 rounded border border-primary mt-3 ml-1"
+                        onClick={handleSaveNewSchedule}
+                      >
+                        Save
+                      </button>
+                    </div>
+                  ) : (
+                    <div>
+                      {selectedScheduleName ? (
+                        <div>
+                          <input
+                            type="text"
+                            className="w-full paymentlabel relative border border-gray-300 rounded-md px-2 py-1 mt-3"
+                            value={selectedScheduleName}
+                            onChange={(e) =>
+                              setSelectedScheduleName(e.target.value)
+                            }
+                          />
+                          <button
+                            className="text-black px-2 py-1 rounded border border-primary mt-3 ml-2"
+                            onClick={saveEditedSchedule}
+                          >
+                            Edit
+                          </button>
+                        </div>
+                      ) : (
+                        <select
+                          className="w-full paymentlabel relative"
+                          // onChange={(e) => {
+                          //   const selectedValue = e.target.value;
+                          //   if (selectedValue === "") {
+                          //     // If an empty option is selected, enter create mode
+                          //     setIsCreatingNewSchedule(true);
+                          //   } else {
+                          //     // Otherwise, enter edit mode with  the selected value
+                          //     setIsCreatingNewSchedule(false);
+                          //     setSelectedScheduleName(selectedValue); // Update the selected schedule name
+                          //   }
+                          // }}
+                          onChange={handleScheduleNameChange}
+                          value={selectedScheduleName}
                         >
-                          {schedule.scheduleName}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      className=" text-black px-2 py-1 rounded border border-primary mt-3 ml-2"
-                      onClick={handleCreateNewSchedule}
-                    >
-                      Create New
-                    </button>
-                  </div>
-                )}
+                          <option value="">Select a schedule Name</option>
+                          {allSchedule.map((schedule) => (
+                            <option
+                              value={schedule.scheduleName}
+                              key={schedule.scheduleId}
+                            >
+                              {schedule.scheduleName}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                      <button
+                        className="text-black px-2 py-1 rounded border border-primary mt-3 ml-2"
+                        onClick={() => setIsCreatingNewSchedule(true)}
+                      >
+                        Create New
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <div className="border-b-2 border-lightgray mt-3"></div>
                 <div className="p-3">
                   <div className="mb-2">Schedule Date time</div>
