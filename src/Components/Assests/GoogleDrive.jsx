@@ -54,7 +54,7 @@ const GoogleDrive = () => {
         "1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com", // Your client ID
       developerKey: "AIzaSyCbWICmzquQqKHgCDNEFCBUgpH8VGe2ezo", // Your developer key
       viewId: "DOCS",
-      token: "ya29.a0AfB_byCTibrZxH29vNr3dUoA42OiyOGvBb6JKwTWFlKPzQSI_wR6InJiIvmHwywlwb_mon5QOz7MHY3n03M_J2yhWTveFf5jfvdeXIphZfooA4V7J3jyZmzozJpjiMW96sIhoxsqYpzrIYlsQJjAAwMEA4kEr48jZmki2WtJaCgYKATASARESFQHsvYlsottgIHcIWwV-hQMe6vVYkw0175",
+      token: "ya29.a0AfB_byAbT3BnJ4fwm6OlVzGtNsnSjxlh7e1hicQcMJHu6OqRjf2MbaUPfXu7SiI5utcp_LhgpXEhXsg3FOMcjwlnJkpmR6OPTq9XHNGO2T9amVupAN7qsEKmR30SsPwhEWhMCX4_5HxrFPIlJGA6brcfaAN_TMY58AaCgYKAdgSARESFQGOcNnCijAtgKzW5D9V1CXNtCVfyA0169",
       showUploadView: true,
       showUploadFolders: true,
       supportDrives: true,
@@ -71,7 +71,7 @@ const GoogleDrive = () => {
             "1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com",
           client_secret: "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",
           refresh_token:
-            "1//04Dtd0g_28aUKCgYIARAAGAQSNwF-L9Ire70-KN2bssn84uT3UDr0WJa_vBnU0KmznaqLilmQFox5EHi-Ee904CEFVNWEvaOt5B0",
+          "1//045RUoVpH0dcBCgYIARAAGAQSNwF-L9IrRKMlBDMVShHZXrs5g0V3TBQ3Yq6m0J82R4F-E90fP4nfCYMiz1F6clUDHUDO_NBjt9s",
           grant_type: "refresh_token",
         })
       );
