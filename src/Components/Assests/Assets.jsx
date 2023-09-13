@@ -15,7 +15,7 @@ import { FiDownload } from "react-icons/fi";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { CgMoveRight } from "react-icons/cg";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { SlFolderAlt } from "react-icons/sl";
+
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import Footer from "../Footer";
@@ -23,7 +23,7 @@ import { HiOutlineVideoCamera } from "react-icons/hi2";
 import { RiGalleryFill } from "react-icons/ri";
 import { HiDocumentDuplicate } from "react-icons/hi";
 import { ALL_FILES_UPLOAD, GET_ALL_FILES } from "../../Pages/Api";
-import Trash from "../Trash";
+import NewFolderDialog from "./NewFolderDialog ";
 import { FcOpenedFolder } from "react-icons/fc";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
@@ -74,31 +74,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  {
-    /*New Folder */
-  }
-
-  const [tableRows, setTableRows] = useState([]);
-
-  // const handleNewFolder = () => {
-  //   const newFolder = {
-  //     id: tableRows.length + 1,
-  //     name: newFolderName,
-  //   };
-  //   setTableRows([...tableRows, newFolder]);
-  //   setNewFolderName("");
-  // };
-  {
-    /*newfolder threedot dwopdown */
-  }
-  const [assetsdw3, setassetsdw3] = useState(null);
-  const updateassetsdw3 = (id) => {
-    if (assetsdw3 === id) {
-      setassetsdw3(null);
-    } else {
-      setassetsdw3(id);
-    }
-  };
   {
     /*checkedbox */
   }
@@ -269,6 +244,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   // select All checkbox
   const [selectAll, setSelectAll] = useState(false);
+
+
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
   };
@@ -279,7 +256,9 @@ const FETCH_FOLDER_ENDPOINT = "http://192.168.1.219/api/NewScreen/GetAllFolder";
 const [newFolder, setNewfolder] = useState([]);
 const [folderName, setFolderName] = useState('New Folder');
 const [folderCounter, setFolderCounter] = useState(1);
-const [editableFolderId, setEditableFolderId] = useState(null);
+const [folderNames, setFolderNames] = useState([]);
+
+const [folderModals, setFolderModals] = useState({});
 // Define the fetchFolderDetails function
 const fetchFolderDetails = () => {
   axios
@@ -287,6 +266,7 @@ const fetchFolderDetails = () => {
     .then((response) => {
       const fetchedData = response.data.data;
       setNewfolder(fetchedData);
+      setFolderNames(fetchedData.map((folder) => folder.folderName));
       console.log(fetchedData);
     })
     .catch((error) => {
@@ -317,20 +297,7 @@ const createFolder = () => {
     .catch((error) => {
       console.error('Error creating folder:', error);
     });
-};
-
-const handleFolderNameDoubleClick = (folderId) => {
-  setEditableFolderId(folderId);
-};
-
-const handleFolderNameChange = (event, folderId) => {
-  const updatedFolderName = event.target.value;
-  // Send a request to update the folder name in the backend
-  // Update the folder name in the UI if the request is successful
-  // You can use axios.put or axios.patch here
-  // After updating, setEditableFolderId(null) to exit edit mode
-};
-
+}; 
 //Delete new folder
 const DeleteFolder = (folderID) => {
  let data = JSON.stringify({
@@ -381,6 +348,62 @@ const toggleAssetsdwList = (folderId) => {
     setOpenAssetsdwIdList(folderId);
   }
 };
+
+// edit folder Name
+
+const [editMode, setEditMode] = useState(null);
+
+const handleKeyDown = (e, folderID) => {
+  if (e.key === 'Enter') {
+    // Save the folder name on Enter key press
+    saveFolderName(folderID, folderName);
+  } else if (e.key === 'Escape') {
+    // Cancel editing on Escape key press
+    setEditMode(null);
+  }
+};
+const updateFolderNameInAPI = async (folderID, newName) => {
+  try {
+    const UPDATE_FOLDER_ENDPOINT = `http://192.168.1.219/api/NewScreen/CreateFolder`;
+    const formData = new FormData();
+    formData.append("folderID", folderID);
+    formData.append("operation", "Update");
+    formData.append("folderName", newName);
+
+    const response = await axios.post(UPDATE_FOLDER_ENDPOINT, formData, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+   console.log('Folder name updated:', response.data);
+  } catch (error) {
+    console.error('Error updating folder name:', error);
+  }
+};
+const saveFolderName = (folderID, newName) => {
+  updateFolderNameInAPI(folderID, newName); // Use newName instead of folderName
+  setEditMode(null);
+};
+
+// open and close new folder
+const openModal = (folderId) => {
+  setFolderModals({
+    ...folderModals,
+    [folderId]: true,
+  });
+};
+
+const closeModal = (folderId) => {
+  setFolderModals({
+    ...folderModals,
+    [folderId]: false,
+  });
+};
+
+// move to data in folder
+const [isMoveToOpen, setIsMoveToOpen] = useState(false);
+const toggleMoveTo = () => {
+  setIsMoveToOpen(!isMoveToOpen);
+};
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -491,33 +514,44 @@ const toggleAssetsdwList = (folderId) => {
 
               {/*new folder*/}
                 
-              {newFolder.map((folder) => (
+              {newFolder.map((folder) => {
+                const index = folderNames.findIndex((name) => name === folder.folderName);
+
+              return (
                 <li
-                key={`folder-${folder.id}`}
+                key={`folder-${folder.folderID}`}
                 className="text-center relative list-none bg-lightgray rounded-md px-3 py-7"
-              >
-                <FcOpenedFolder className="text-8xl text-center mx-auto" />
-                {editableFolderId === folder.id ? (
-                  // Render an input field for editing when in edit mode
+                >
+                <FcOpenedFolder className="text-8xl text-center mx-auto" onClick={() => openModal(folder.folderID)}/>
+               
+                {editMode === folder.folderID ? (
                   <input
                     type="text"
-                    value={folder.folderName}
-                    onChange={(event) => handleFolderNameChange(event, folder.id)}
-                    onBlur={() => setEditableFolderId(null)} // Exit edit mode on blur
+                    value={folderNames[index]} // Use folderNames[index] instead of folderName
+                    onChange={(e) => {
+                      const newFolderNames = [...folderNames];
+                      newFolderNames[index] = e.target.value;
+                      setFolderNames(newFolderNames);
+                     
+                    }}
+                    onBlur={() => saveFolderName(folder.folderID, folderNames[index])}
+                    onKeyDown={(e) => handleKeyDown(e, folder.folderID)}
                     autoFocus
                   />
                 ) : (
-                  // Display folder name as text and make it double-clickable to enter edit mode
-                  <span
-                    onDoubleClick={() => handleFolderNameDoubleClick(folder.id)}
-                  >
-                    {folder.folderName}
-                  </span>
-                )}
-                  <button onClick={() => toggleAssetsdw(folder.id)} className="absolute right-4 top-2">
+                  <>
+                    <span
+                      onClick={() => {
+                        setEditMode(folder.folderID);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      {folderNames[index]}
+                    </span>
+                <button onClick={() => toggleAssetsdw(folder.folderID)} className="absolute right-4 top-2">
                   <BsThreeDots className="text-2xl relative" />
                 </button>
-                {openAssetsdwId === folder.id && (
+                {openAssetsdwId === folder.folderID && (
                   <div className="assetsdw">
                     <ul>
                       <li className="flex text-sm items-center">
@@ -536,8 +570,10 @@ const toggleAssetsdwList = (folderId) => {
                           </a>
                         </li>
                    <li className="flex text-sm items-center">
+               
                         <CgMoveRight className="mr-2 text-lg" />
                         Move to
+                    
                       </li>
                       <li>
                         <button className="flex text-sm items-center" onClick={() => DeleteFolder(folder.folderID)}>
@@ -548,8 +584,20 @@ const toggleAssetsdwList = (folderId) => {
                     </ul>
                   </div>
                 )}
+                </>
+                )}
+                {folderModals[folder.folderID] && (
+                  <NewFolderDialog
+                    onClose={() => closeModal(folder.folderID)}
+                   
+                 onCreate={(folderName) => {
+
+                      closeModal(folder.folderID);
+                    }}
+                  />
+                  )}
                 </li>
-              ))}
+              )})}
              
                 {gridData.length > 0 ? (
                   gridData.map((item, index) => (
@@ -713,9 +761,25 @@ const toggleAssetsdwList = (folderId) => {
                                   </a>
                                 </li>
                               )}
-                              <li className="flex text-sm items-center">
+                              <li className="flex text-sm items-center relative">
+                              <button className="flex text-sm items-center relative" onClick={toggleMoveTo}>
                                 <CgMoveRight className="mr-2 text-lg" />
                                 Move to
+                                </button>
+
+                                {isMoveToOpen && (
+                                  <div className="move-to-dropdown">
+                                    <ul>
+                                      {newFolder.map((folder) => (
+                                        <li key={folder.folderID}>
+                                          <button onClick={() => moveImageToFolder(imageId, folder.folderID)}>
+                                            {folder.folderName}
+                                          </button>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
                               </li>
                               <li>
                                 <button
@@ -793,7 +857,7 @@ const toggleAssetsdwList = (folderId) => {
                   <tbody>
                     {newFolder.map((folder) => (
                       <>
-                        <tr key={`folder-${folder.id}`} className="bg-white rounded-lg font-normal text-[14px] text-[#5E5E5E] shadow-sm newfolder">
+                        <tr key={`folder-${folder.folderID}`} className="bg-white rounded-lg font-normal text-[14px] text-[#5E5E5E] shadow-sm newfolder">
                           <td className="flex items-center relative">
                             <div>
                             <FcOpenedFolder className="text-8xl text-center mx-auto" />
@@ -816,10 +880,10 @@ const toggleAssetsdwList = (folderId) => {
                             />
                           </td>
                         <td className="relative w-[40px]">
-                        <button onClick={() => toggleAssetsdwList(folder.id)} className="absolute right-4 top-[37%]">
+                        <button onClick={() => toggleAssetsdwList(folder.folderID)} className="absolute right-4 top-[37%]">
                         <BsThreeDotsVertical className="text-2xl relative" />
                       </button>
-                          {openAssetsdwIdList === folder.id && (
+                          {openAssetsdwIdList === folder.folderID && (
                             <div className="assetsdw bottom-[-90px]">
                               <ul>
                                 <li className="flex text-sm items-center">
