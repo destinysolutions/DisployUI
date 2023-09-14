@@ -141,7 +141,9 @@ const Pixabay = ({ closeModal }) => {
               />
             </div>
           </div>
-          <div className="grid grid-cols-12 px-3 gap-4 unsplash-section bg-white rounded-lg">
+
+          <div className="unsplash-section bg-white rounded-lg">
+          <div className="grid grid-cols-12 px-3 gap-4 ">
             {images.map((image) => (
               <div
                 key={image.id}
@@ -165,22 +167,24 @@ const Pixabay = ({ closeModal }) => {
             <div className="mt-4 text-center">
               <button
                 onClick={handleLoadMore}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md"
+                className="text-white py-3 px-3 rounded-md fs-3 my-4 flex items-center justify-center mx-auto bg-SlateBlue hover:bg-black"
               >
                 Load More
               </button>
             </div>
           )}
-          {selectedImages.length > 0 && (
+          </div>
+          
+        
             <div className="mt-4 text-center">
               <button
                 onClick={handleImageUpload}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md"
+                className="text-white py-3 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
               >
-                Upload Selected Images
+                Upload Images
               </button>
             </div>
-          )}
+         
 
           <div className="  bg-white shadow-2xl max-w-xs">
             {uploadInProgress && (

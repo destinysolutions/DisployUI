@@ -151,7 +151,8 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
             />
           </div>
           <div className="container mx-auto">
-            <div className="grid grid-cols-12 px-3 gap-4 unsplash-section bg-white rounded-lg">
+          <div className="unsplash-section bg-white rounded-lg">
+            <div className="grid grid-cols-12 px-3 gap-4 ">
               {res.map((val) => {
                 return (
                   <div
@@ -173,6 +174,20 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
                 );
               })}
             </div>
+            <div className="text-center ">
+            {res.length > 0 && (
+              <button
+                type="button"
+                onClick={handleLoadMore}
+                className="text-white py-3 px-3 rounded-md fs-3 my-4 flex items-center justify-center mx-auto bg-SlateBlue hover:bg-black"
+              >
+                <BiLoaderCircle /> Load More
+              </button>
+            )}
+          </div>
+            </div>
+
+           
           </div>
 
           {/* Display selected image previews with name and size */}
@@ -200,25 +215,13 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
             )}
           </div>
 
-          <div className="text-center ">
-            <div className="text-center ">
-              {res.length > 0 && (
-                <button
-                  type="button"
-                  onClick={handleLoadMore}
-                  className="text-[#8d8c8c] fs-3 my-4 flex items-center justify-center mx-auto"
-                >
-                  <BiLoaderCircle /> Load More
-                </button>
-              )}
-            </div>
-          </div>
+         
 
           <div className="text-center mt-5">
             <button
               type="button"
               onClick={handleImageUpload}
-              className="bg-primary text-center p-2 rounded-md text-white fs-3"
+              className="text-white py-5 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
             >
               Upload Images
             </button>

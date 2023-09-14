@@ -43,12 +43,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   };
   const [fileSuccessModal, setfileSuccessModal] = useState(false);
   const [fileErrorModal, setfileErrorModal] = useState(false);
-
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState('');
-  const [imageSelected, setImageSelected] = useState(false);
-  const [selectedFileName, setSelectedFileName] = useState("");
-  const [selectedFileSize, setSelectedFileSize] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
 
 
@@ -88,108 +82,174 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   // file upload
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const fileInputRef = useRef(null);
+  
+  const [overallUploadProgress, setOverallUploadProgress] = useState(0);
   const navigate = useNavigate();
-  const onFileChange = (e) => {
-    const files = Array.from(e.target.files);
+  // const onFileChange = (e) => {
+  //   const files = Array.from(e.target.files);
 
-    if (files.length > 0) {
-      const newImages = [...selectedImages];
+  //   if (files.length > 0) {
+  //     const newImages = [...selectedImages];
 
-      files.forEach((file) => {
-        const fileSizeKB = Math.round(file.size / 1024);
+  //     files.forEach((file) => {
+  //       const fileSizeKB = Math.round(file.size / 1024);
 
-        if (file.type.startsWith('image/')) {
-          // Handle images
-          newImages.push({
-            file,
-            name: file.name,
-            size: fileSizeKB + ' KB',
-            preview: URL.createObjectURL(file),
-          });
-        } else if (file.type.startsWith('video/')) {
-          // Handle videos
-          newImages.push({
-            file,
-            name: file.name,
-            size: fileSizeKB + ' KB',
-            isVideo: true,
-          });
-        } else if (file.type.startsWith('application/pdf')) {
-          // Handle PDFs (you can add more document types as needed)
-          newImages.push({
-            file,
-            name: file.name,
-            size: fileSizeKB + ' KB',
-            isDocument: true,
-          });
-        } else {
-          // Handle other document types (e.g., Word documents)
-          newImages.push({
-            file,
-            name: file.name,
-            size: fileSizeKB + ' KB',
-            isDocument: true,
-          });
-        }
-      });
+  //       if (file.type.startsWith('image/')) {
+  //         // Handle images
+  //         newImages.push({
+  //           file,
+  //           name: file.name,
+  //           size: fileSizeKB + ' KB',
+  //           preview: URL.createObjectURL(file),
+  //         });
+  //       } else if (file.type.startsWith('video/')) {
+  //         // Handle videos
+  //         newImages.push({
+  //           file,
+  //           name: file.name,
+  //           size: fileSizeKB + ' KB',
+  //           isVideo: true,
+  //         });
+  //       } else if (file.type.startsWith('application/pdf')) {
+  //         // Handle PDFs (you can add more document types as needed)
+  //         newImages.push({
+  //           file,
+  //           name: file.name,
+  //           size: fileSizeKB + ' KB',
+  //           isDocument: true,
+  //         });
+  //       } else {
+  //         // Handle other document types (e.g., Word documents)
+  //         newImages.push({
+  //           file,
+  //           name: file.name,
+  //           size: fileSizeKB + ' KB',
+  //           isDocument: true,
+  //         });
+  //       }
+  //     });
 
-      setSelectedImages(newImages);
+  //     setSelectedImages(newImages);
+  //   }
+  // };
+
+  const onFileChange = (event) => {
+    const files = event.target.files;
+    const newSelectedImages = [...selectedImages];
+  
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const isVideo = file.type.startsWith("video");
+      const isDocument =
+        file.type.startsWith("application/pdf") ||
+        file.type.startsWith("application/msword") ||
+        file.type.startsWith(
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        );
+  
+      const item = {
+        file,
+        name: file.name,
+        size: formatFileSize(file.size),
+        isVideo,
+        isDocument,
+        preview: isVideo ? null : URL.createObjectURL(file),
+        progress: 0, // Initialize progress for each image
+      };
+  
+      newSelectedImages.push(item);
     }
+  
+    // Set the selected images to the updated array
+    setSelectedImages(newSelectedImages);
+    setUploadProgress([]); // Initialize progress state for each image
+    setUploading(true); // Start uploading
   };
-
-
-
-
-
-  const uploadData = async () => {
-    if (selectedImages.length === 0) {
-      alert("Please select at least one image to upload.");
-      return;
+  
+  
+useEffect(() => {
+    // Call uploadData only when there are selected images
+    if (selectedImages.length > 0) {
+      uploadData();
     }
+  }, [selectedImages]);
+  // Function to format file size for display
+const formatFileSize = (bytes) => {
+  if (bytes === 0) return '0 Bytes';
 
-    setUploading(true);
-    setUploadProgress(0);
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-    try {
-      const uploadPromises = selectedImages.map(async (image) => {
-        const CategorieType = getContentType(image.file.type);
-        const details = "Some Details about the file";
-        const formData = new FormData();
-        formData.append("File", image.file);
-        formData.append("operation", "Insert");
-        formData.append("CategorieType", CategorieType);
-        formData.append("details", details);
-        
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
 
+
+
+const uploadData = async () => {
+  try {
+    // Initialize an overall progress variable
+    let overallProgress = 0;
+
+    // Create an array to hold all the promises for image uploads
+    const uploadPromises = selectedImages.map(async (image, index) => {
+      const CategorieType = getContentType(image.file.type);
+      const details = "Some Details about the file";
+      const formData = new FormData();
+      formData.append("File", image.file);
+      formData.append("operation", "Insert");
+      formData.append("CategorieType", CategorieType);
+      formData.append("details", details);
+
+      try {
         const response = await axios.post(ALL_FILES_UPLOAD, formData, {
           onUploadProgress: (progressEvent) => {
             const progress = Math.round(
               (progressEvent.loaded / progressEvent.total) * 100
             );
-            setUploadProgress(progress);
+
+            // Update the progress of the corresponding image
+            selectedImages[index].progress = progress;
+
+            // Calculate overall progress
+            overallProgress =
+              ((index + 1) / selectedImages.length) * 100 +
+              (progress / selectedImages.length);
+
+            // Update the overall progress state
+            setOverallUploadProgress(overallProgress);
+
+            // Update the progress state for this image
+            const updatedProgress = [...uploadProgress];
+            updatedProgress[index] = progress;
+            setUploadProgress(updatedProgress);
           },
         });
 
         if (response.status === 200) {
           console.log(`File ${image.name} uploaded successfully.`);
-          navigate("/assets");
         } else {
           console.error(`Upload failed for file ${image.name}`);
         }
-      });
+      } catch (error) {
+        console.error(`Upload failed for file ${image.name}:`, error);
+      }
+    });
 
-      await Promise.all(uploadPromises);
+    // Use Promise.all to execute all uploads concurrently
+    await Promise.all(uploadPromises);
 
-    } catch (error) {
-      console.error("An error occurred during upload:", error);
-    } finally {
-      setUploading(false);
-    }
-  };
+    // Once all files are uploaded, navigate to the desired location
+    navigate("/assets");
+  } catch (error) {
+    console.error("An error occurred during upload:", error);
+  } finally {
+    setUploading(false); // Mark the upload as finished
+  }
+};
 
-
-
-  const getFileType = (fileName, mimeType) => {
+const getFileType = (fileName, mimeType) => {
     const extension = fileName.split(".").pop().toLowerCase();
 
     if (extension === "jpg" || extension === "jpeg" || extension === "png") {
@@ -234,10 +294,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
       return "file content type not found";
     }
   };
-
-
-
-  // unsplash code
+// unsplash code
   const [showUnsplash, setShowUnsplash] = useState(false);
   const [uploadedImages, setUploadedImages] = useState([]);
 
@@ -525,17 +582,17 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                     Drop your first video, photo or document here
                   </p>
                 </div>
-                <div className=" relative z-10 text-center ">
+               {/* <div className=" relative z-10 text-center ">
                   <button
                     className="bg-SlateBlue text-white px-7 py-2 rounded mt-4 z-10"
                     onClick={uploadData}
                     disabled={uploading} >
                     Upload
                   </button>
-                </div>
+              </div>*/}
 
 
-                <div className="relative max-w-[750px] text-center mt-5">
+               {/* <div className="relative max-w-[750px] text-center mt-5">
                   {selectedImages.map((item, index) => (
                     <div key={index} className="image-item flex  justify-between items-center bg-white p-2 rounded-sm shadow-inner">
                       <div className="image-item flex  items-center">
@@ -552,7 +609,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                         ) : item.isDocument ? ( // Check if it's a document
                           <div className="flex" >
                             <FcFile size={40} color="red" /> {/* Render the document icon */}
-                            <div className="ml-2 text-left">
+                            {/*<div className="ml-2 text-left">
                               <p className="text-base">{item.name}</p>
                               <p className="text-sm"><span className="font-medium text-base">Size:</span> {item.size}</p>
                             </div>
@@ -571,7 +628,8 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                     </div>
                   ))}
 
-                </div>
+                </div> */}
+
               </div>
 
 
@@ -580,7 +638,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
             </div>
           </div>
 
-          {uploading && (
+        {/*  {uploading && (
             <div className="progressbar-popup bg-white shadow-2xl">
               <div className="flex justify-between items-center bg-white w-96 p-10">
                 <div>
@@ -594,7 +652,24 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               </div>
             </div>
           )}
-
+        */}
+        {selectedImages.map((image, index) => (
+          <div key={index} className="shadow-inner bg-lightgray rounded-md m-5 w-100 p-2">
+            <h2>{image.name}</h2>
+            <div className="flex justify-between items-center">
+           
+            <progress value={image.progress} max={100}  className="w-full custom-progress bg-SlateBlue rounded-sm"/>
+            <p className="ml-2">{image.progress}%</p>
+            
+            </div>
+            <p className="text-sm"><span className="font-medium text-base">Size:</span> {image.size}</p>
+          </div>
+        ))}
+        
+       
+        
+        
+          
 
 
           {fileList.length > 0 ? (
@@ -615,7 +690,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 </div>
               ))}
             </div>
-          ) : null}
+              ) : null} 
 
 
 

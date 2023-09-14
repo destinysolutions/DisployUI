@@ -79,13 +79,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   }
   const [selectedItems, setSelectedItems] = useState([]);
 
-  const handleCheckboxChange = (itemId) => {
-    if (selectedItems.includes(itemId)) {
-      setSelectedItems(selectedItems.filter((id) => id !== itemId));
+  const handleCheckboxChange = (item) => {
+    if (selectedItems.includes(item)) {
+      setSelectedItems(selectedItems.filter((selectedItem) => selectedItem !== item));
     } else {
-      setSelectedItems([...selectedItems, itemId]);
+      setSelectedItems([...selectedItems, item]);
     }
   };
+  
   /*API */
 
   const [activetab, setActivetab] = useState(1);
@@ -171,18 +172,18 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [trashData, setTrashData] = useState([]); // Array to store deleted items
   const handelDeletedata = (id) => {
     const deletedItem = gridData.find((item) => item.id === id); // Find the item to be deleted
-
+  
     if (deletedItem) {
       const formData = new FormData();
       formData.append("Id", id);
       formData.append("operation", "Delete");
       formData.append("CategorieType", deletedItem.categorieType);
-
+  
       axios
         .post(ALL_FILES_UPLOAD, formData)
         .then((response) => {
           console.log("Data deleted successfully:", response.data);
-
+  
           // Add the deleted item to the trashData array with necessary information
           const deletedWithInfo = {
             id: id,
@@ -193,10 +194,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
             fileSize: deletedItem.fileSize, // Retrieve and store the file size
             // You may add other properties here as needed
           };
-
-          setTrashData(deletedWithInfo);
+  
+          // Move the deleted item to the trash component by adding it to the trashData state
+          setTrashData([...trashData, deletedWithInfo]);
           console.log("data moved to trash");
-
+  
           // Update the gridData to exclude the deleted item
           const updatedGridData = gridData.filter((item) => item.id !== id);
           setGridData(updatedGridData);
@@ -208,6 +210,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         });
     }
   };
+  
 
   useEffect(() => {
     let data = JSON.stringify({
@@ -243,13 +246,40 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   //console.log(trashData, "trashData");
 
   // select All checkbox
+
+
   const [selectAll, setSelectAll] = useState(false);
 
+  
 
   const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems([...gridData]);
+    }
     setSelectAll(!selectAll);
   };
+  
+  const handleDelete = async () => {
+    try {
+      for (const item of selectedItems) {
+        await handelDeletedata(item.id);
+      }
+  
+      // After all items are deleted, clear the selected items and uncheck "Select All"
+      setSelectedItems([]);
+      setSelectAll(false);
+    } catch (error) {
+      console.error("Error deleting items:", error);
+    }
+  };
+  
+  
+  
+  
 
+ 
 // New folder 
 const CREATE_FOLDER_ENDPOINT = "http://192.168.1.219/api/NewScreen/CreateFolder";
 const FETCH_FOLDER_ENDPOINT = "http://192.168.1.219/api/NewScreen/GetAllFolder";
@@ -399,10 +429,47 @@ const closeModal = (folderId) => {
 };
 
 // move to data in folder
+
 const [isMoveToOpen, setIsMoveToOpen] = useState(false);
+const [dataItems, setDataItems] = useState([]);
+const [selectedDataItemId, setSelectedDataItemId] = useState(null);
 const toggleMoveTo = () => {
   setIsMoveToOpen(!isMoveToOpen);
 };
+const moveDataToFolder = (dataId, folderId) => {
+  
+  axios.post("http://192.168.1.219/api/ImageVideoDoc/Move", {
+    id: dataId,
+    folderID: folderId,
+    operation: "Insert"
+  })
+  .then((response) => {
+    
+    console.log('Data moved successfully:', response.data);
+   
+  })
+  .catch((error) => {
+    console.error('Error moving data:', error);
+  });
+};
+
+
+const handleDataItemClick = (dataId) => {
+  setSelectedDataItemId(dataId);
+};
+
+const handleMoveTo = (folderId) => {
+  if (selectedDataItemId !== null) {
+    // Call the moveDataToFolder function with the selected folder ID and data item ID
+    moveDataToFolder(selectedDataItemId, folderId);
+    console.log(selectedDataItemId);
+    // Reset the selectedDataItemId after moving
+    setSelectedDataItemId(null);
+  } else {
+    console.warn('No data item selected to move.');
+  }
+};
+
 
   return (
     <>
@@ -459,6 +526,12 @@ const toggleMoveTo = () => {
                     readOnly
                   />
                 </button>
+                
+                {selectedItems.length > 0 && (
+                  <button onClick={handleDelete} className="rounded-full px-2 py-2 m-1 text-center border hover:text-white hover:bg-red hover:border-red">
+                    <RiDeleteBin5Line className=" text-lg" />
+                  </button>
+                )}
               </div>
             </div>
 
@@ -570,11 +643,9 @@ const toggleMoveTo = () => {
                           </a>
                         </li>
                    <li className="flex text-sm items-center">
-               
                         <CgMoveRight className="mr-2 text-lg" />
                         Move to
-                    
-                      </li>
+                   </li>
                       <li>
                         <button className="flex text-sm items-center" onClick={() => DeleteFolder(folder.folderID)}>
                           <RiDeleteBin5Line className="mr-2 text-lg" />
@@ -678,18 +749,36 @@ const toggleMoveTo = () => {
                         <div className="vdetails">
                           <div className="flex justify-end">
                             <div className="storage mb-1">
-                              <span className="bg-white text-primary rounded-sm p-1 text-sm">
+                             {/* <span className="bg-white text-primary rounded-sm p-1 text-sm">
                                 {item.fileSize}
-                              </span>
+                              </span> */}
                             </div>
                           </div>
                           <div className="text-center clickdetail">
                             <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs  mb-1">
                               {item.name}
                             </h3>
-                            <p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light">
+                            {/*<p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
                               {item.details}
-                            </p>
+                            </p> */}
+                            <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light">
+                            {item.createdDate}
+                          </h6>
+                          <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                          {item.categorieType}
+                          
+                        </span>
+                        <span>,</span>
+                        <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                          {item.fileSize}
+                        
+                        </h6>
+                      
+                            <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                            {item.resolutions}
+                          </span>
+                         
+                         
                           </div>
                         </div>
                       )}
@@ -762,21 +851,29 @@ const toggleMoveTo = () => {
                                 </li>
                               )}
                               <li className="flex text-sm items-center relative">
-                              <button className="flex text-sm items-center relative" onClick={toggleMoveTo}>
+                              <button className="flex text-sm items-center relative" onClick={toggleMoveTo} >
                                 <CgMoveRight className="mr-2 text-lg" />
                                 Move to
                                 </button>
 
+                                {dataItems.map((item) => (
+                                  <div key={item.id}>
+                                    <span>{item.name}</span>
+                                    <button onClick={() => handleDataItemClick(item.id)}>Select</button>
+                                  </div>
+                                ))}
+                                
+
                                 {isMoveToOpen && (
                                   <div className="move-to-dropdown">
                                     <ul>
-                                      {newFolder.map((folder) => (
-                                        <li key={folder.folderID}>
-                                          <button onClick={() => moveImageToFolder(imageId, folder.folderID)}>
-                                            {folder.folderName}
-                                          </button>
-                                        </li>
-                                      ))}
+                                    {newFolder.map((folder) => (
+                                      <li key={folder.folderID}>
+                                        <button onClick={() => handleMoveTo(folder.folderID)}>
+                                          {folder.folderName}
+                                        </button>
+                                      </li>
+                                    ))}
                                     </ul>
                                   </div>
                                 )}
