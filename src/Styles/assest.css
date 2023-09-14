@@ -367,9 +367,10 @@ td .tabicon svg {
 }
 
 .custom-progress {
-  width: 300px !important;
+  width: 100% !important;
   background: #e4aa07 !important;
   border-radius: 20px !important;
+  margin:0 auto;
 }
 
 .custom-progress::-webkit-progress-value {

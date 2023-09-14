@@ -235,6 +235,7 @@ const Pexels = ({ closeModal }) => {
           {/* Conditional rendering based on selected media type */}
           <div className="container mx-auto">
             <div>
+            <div className="unsplash-section bg-white rounded-lg">
               {selectedMediaType === "images" ? (
                 <div className="grid grid-cols-12 px-3 gap-4 unsplash-section bg-white rounded-lg">
                   {photos.map((photo, index) => (
@@ -285,21 +286,23 @@ const Pexels = ({ closeModal }) => {
                   ))}
                 </div>
               )}
-
               <div className="text-center mt-5">
-                <button
-                  onClick={handleLoadMore}
-                  className="text-[#8d8c8c] fs-3 my-4 flex items-center justify-center mx-auto"
-                >
-                  <BiLoaderCircle /> Load More
-                </button>
+              <button
+                onClick={handleLoadMore}
+                className="text-white py-3 px-3 rounded-md fs-3 my-4 flex items-center justify-center mx-auto bg-SlateBlue hover:bg-black"
+              >
+                <BiLoaderCircle /> Load More
+              </button>
+            </div>
               </div>
+
+             
 
               <div className="text-center mt-5">
                 <Link to="/assets">
                   <button
                     onClick={handleMediaUpload}
-                    className="bg-primary text-center p-2 rounded-md text-white fs-3"
+                    className="text-white py-3 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
                   >
                     Upload Media
                   </button>
