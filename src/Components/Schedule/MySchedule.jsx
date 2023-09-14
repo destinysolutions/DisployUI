@@ -15,7 +15,7 @@ import { useState } from "react";
 import "../../Styles/schedule.css";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import Footer from "../Footer";
-import { GET_ALL_SCHEDULE } from "../../Pages/Api";
+import { ADD_SCHEDULE, GET_ALL_SCHEDULE } from "../../Pages/Api";
 import { useEffect } from "react";
 import axios from "axios";
 import SaveAssignScreenModal from "./SaveAssignScreenModal";
@@ -24,7 +24,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //for action popup
   const [showActionBox, setShowActionBox] = useState(false);
   const [addScreenModal, setAddScreenModal] = useState(false);
-  const [scheduleAsset, setScheduleAsset] = useState([]);
+  const [scheduleData, setScheduleData] = useState([]);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .get(GET_ALL_SCHEDULE)
       .then((response) => {
         const fetchedData = response.data.data;
-        setScheduleAsset(fetchedData);
+        setScheduleData(fetchedData);
         console.log(fetchedData);
       })
       .catch((error) => {
@@ -50,35 +50,88 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Function to handle the "Select All" checkbox change
   const handleSelectAll = () => {
-    const updatedScheduleAsset = scheduleAsset.map((assetData) => ({
-      ...assetData,
+    const updatedScheduleAsset = scheduleData.map((schedule) => ({
+      ...schedule,
       isChecked: !selectAll,
     }));
-    setScheduleAsset(updatedScheduleAsset);
+    setScheduleData(updatedScheduleAsset);
     setSelectAll(!selectAll);
   };
 
-  const handleCheckboxChange = (eventId) => {
-    const updatedScheduleAsset = scheduleAsset.map((assetData) =>
-      assetData.eventId === eventId
-        ? { ...assetData, isChecked: !assetData.isChecked }
-        : assetData
+  const handleCheckboxChange = (scheduleId) => {
+    const updatedScheduleAsset = scheduleData.map((schedule) =>
+      schedule.scheduleId === scheduleId
+        ? { ...schedule, isChecked: !schedule.isChecked }
+        : schedule
     );
-    setScheduleAsset(updatedScheduleAsset);
+    setScheduleData(updatedScheduleAsset);
 
     // Check if all checkboxes are checked or not
     const allChecked = updatedScheduleAsset.every(
-      (assetData) => assetData.isChecked
+      (schedule) => schedule.isChecked
     );
     setSelectAll(allChecked);
   };
 
-  const handleScheduleItemClick = (eventId) => {
+  const handleScheduleItemClick = (scheduleId) => {
     // Toggle the action menu for the clicked schedule item
     setShowActionBox((prevState) => ({
       ...prevState,
-      [eventId]: !prevState[eventId] || false,
+      [scheduleId]: !prevState[scheduleId] || false,
     }));
+  };
+
+  const handelDeleteSchedule = (scheduleId) => {
+    let data = JSON.stringify({
+      scheduleId: scheduleId,
+      operation: "Delete",
+    });
+
+    let config = {
+      method: "post",
+      url: ADD_SCHEDULE,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response, "response");
+        const updatedScheduleData = scheduleData.filter(
+          (scheduleData) => scheduleData.scheduleId !== scheduleId
+        );
+        setScheduleData(updatedScheduleData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handelDeleteAllSchedule = () => {
+    let data = JSON.stringify({
+      operation: "ALLDelete",
+    });
+
+    let config = {
+      method: "post",
+      url: ADD_SCHEDULE,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data, "response");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -111,7 +164,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               <button className="sm:ml-2 xs:ml-1 flex align-middle border-gray items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <FiUpload className="text-lg" />
               </button>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle border-gray items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button
+                className="sm:ml-2 xs:ml-1 flex align-middle border-gray items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                onClick={handelDeleteAllSchedule}
+              >
                 <RiDeleteBin5Line className="text-lg" />
               </button>
               <button className="sm:ml-2 xs:ml-1 flex align-middle border-gray items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
@@ -173,55 +229,59 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 </tr>
               </thead>
               <tbody>
-                {scheduleAsset.map((assetData) => (
+                {scheduleData.map((schedule) => (
                   <tr
                     className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                    key={assetData.eventId}
+                    key={schedule.scheduleId}
                   >
                     <td className="flex items-center ">
                       <input
                         type="checkbox"
                         className="mr-3"
-                        checked={assetData.isChecked || false}
-                        onChange={() => handleCheckboxChange(assetData.eventId)}
+                        checked={schedule.isChecked || false}
+                        onChange={() =>
+                          handleCheckboxChange(schedule.scheduleId)
+                        }
                       />
                       <div>
                         <div>
                           <Link to="/screensplayer">
-                            {assetData.scheduleName}
+                            {schedule.scheduleName}
                           </Link>
                         </div>
                       </div>
                     </td>
                     <td className="break-words w-[108px] p-2 text-center">
-                      {formatDate(new Date(assetData.createdDate))}
+                      {formatDate(new Date(schedule.createdDate))}
                     </td>
                     <td className="break-words w-[108px] p-2 text-center">
-                      {formatDate(new Date(assetData.startDate))}
+                      {formatDate(new Date(schedule.startDate))}
                     </td>
 
                     <td className="break-words w-[108px] p-2 text-center">
-                      {formatDate(new Date(assetData.endDate))}
+                      {formatDate(new Date(schedule.endDate))}
                     </td>
                     <td className="p-2 text-center">
-                      {assetData.screenAssigned}
+                      {schedule.screenAssigned}
                     </td>
                     <td className="p-2 flex items-center justify-center max-auto">
-                      {assetData.tags}
+                      {schedule.tags}
                       <div className="relative">
                         <button
                           className="ml-3"
                           onClick={() =>
-                            handleScheduleItemClick(assetData.eventId)
+                            handleScheduleItemClick(schedule.scheduleId)
                           }
                         >
                           <HiDotsVertical />
                         </button>
                         {/* action popup start */}
-                        {showActionBox[assetData.eventId] && (
+                        {showActionBox[schedule.scheduleId] && (
                           <div className="scheduleAction z-10 ">
                             <div className="my-1">
-                              <Link to="/addschedule">
+                              <Link
+                                to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}`}
+                              >
                                 <button>Edit Schedule</button>
                               </Link>
                             </div>
@@ -232,7 +292,13 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                             <div className="mb-1 border border-[#F2F0F9]"></div>
                             <div className=" mb-1 text-[#D30000]">
-                              <button>Delete</button>
+                              <button
+                                onClick={() =>
+                                  handelDeleteSchedule(schedule.scheduleId)
+                                }
+                              >
+                                Delete
+                              </button>
                             </div>
                           </div>
                         )}
