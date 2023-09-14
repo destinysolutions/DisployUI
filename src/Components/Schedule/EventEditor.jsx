@@ -6,7 +6,7 @@ import { useState } from "react";
 import { SketchPicker } from "react-color";
 import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
 import ReactModal from "react-modal";
-import { ADD_SCHEDULE } from "../../Pages/Api";
+import { ADD_EVENT } from "../../Pages/Api";
 
 const EventEditor = ({
   isOpen,
@@ -312,7 +312,7 @@ const EventEditor = ({
 
     let config = {
       method: "post",
-      url: ADD_SCHEDULE,
+      url: ADD_EVENT,
       headers: {
         "Content-Type": "application/json",
       },

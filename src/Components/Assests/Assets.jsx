@@ -81,12 +81,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleCheckboxChange = (item) => {
     if (selectedItems.includes(item)) {
-      setSelectedItems(selectedItems.filter((selectedItem) => selectedItem !== item));
+      setSelectedItems(
+        selectedItems.filter((selectedItem) => selectedItem !== item)
+      );
     } else {
       setSelectedItems([...selectedItems, item]);
     }
   };
-  
+
   /*API */
 
   const [activetab, setActivetab] = useState(1);
@@ -172,18 +174,18 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [trashData, setTrashData] = useState([]); // Array to store deleted items
   const handelDeletedata = (id) => {
     const deletedItem = gridData.find((item) => item.id === id); // Find the item to be deleted
-  
+
     if (deletedItem) {
       const formData = new FormData();
       formData.append("Id", id);
       formData.append("operation", "Delete");
       formData.append("CategorieType", deletedItem.categorieType);
-  
+
       axios
         .post(ALL_FILES_UPLOAD, formData)
         .then((response) => {
           console.log("Data deleted successfully:", response.data);
-  
+
           // Add the deleted item to the trashData array with necessary information
           const deletedWithInfo = {
             id: id,
@@ -194,11 +196,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
             fileSize: deletedItem.fileSize, // Retrieve and store the file size
             // You may add other properties here as needed
           };
-  
+
           // Move the deleted item to the trash component by adding it to the trashData state
           setTrashData([...trashData, deletedWithInfo]);
           console.log("data moved to trash");
-  
+
           // Update the gridData to exclude the deleted item
           const updatedGridData = gridData.filter((item) => item.id !== id);
           setGridData(updatedGridData);
@@ -210,7 +212,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         });
     }
   };
-  
 
   useEffect(() => {
     let data = JSON.stringify({
@@ -247,10 +248,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   // select All checkbox
 
-
   const [selectAll, setSelectAll] = useState(false);
-
-  
 
   const handleSelectAll = () => {
     if (selectAll) {
@@ -260,13 +258,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
     setSelectAll(!selectAll);
   };
-  
+
   const handleDelete = async () => {
     try {
       for (const item of selectedItems) {
         await handelDeletedata(item.id);
       }
-  
+
       // After all items are deleted, clear the selected items and uncheck "Select All"
       setSelectedItems([]);
       setSelectAll(false);
@@ -274,202 +272,198 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       console.error("Error deleting items:", error);
     }
   };
-  
-  
-  
-  
 
- 
-// New folder 
-const CREATE_FOLDER_ENDPOINT = "http://192.168.1.219/api/NewScreen/CreateFolder";
-const FETCH_FOLDER_ENDPOINT = "http://192.168.1.219/api/NewScreen/GetAllFolder";
-const [newFolder, setNewfolder] = useState([]);
-const [folderName, setFolderName] = useState('New Folder');
-const [folderCounter, setFolderCounter] = useState(1);
-const [folderNames, setFolderNames] = useState([]);
+  // New folder
+  const CREATE_FOLDER_ENDPOINT =
+    "https://disployapi.thedestinysolutions.com/api/NewScreen/CreateFolder";
+  const FETCH_FOLDER_ENDPOINT =
+    "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllFolder";
+  const [newFolder, setNewfolder] = useState([]);
+  const [folderName, setFolderName] = useState("New Folder");
+  const [folderCounter, setFolderCounter] = useState(1);
+  const [folderNames, setFolderNames] = useState([]);
 
-const [folderModals, setFolderModals] = useState({});
-// Define the fetchFolderDetails function
-const fetchFolderDetails = () => {
-  axios
-    .get(FETCH_FOLDER_ENDPOINT)
-    .then((response) => {
-      const fetchedData = response.data.data;
-      setNewfolder(fetchedData);
-      setFolderNames(fetchedData.map((folder) => folder.folderName));
-      console.log(fetchedData);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
+  const [folderModals, setFolderModals] = useState({});
+  // Define the fetchFolderDetails function
+  const fetchFolderDetails = () => {
+    axios
+      .get(FETCH_FOLDER_ENDPOINT)
+      .then((response) => {
+        const fetchedData = response.data.data;
+        setNewfolder(fetchedData);
+        setFolderNames(fetchedData.map((folder) => folder.folderName));
+        console.log(fetchedData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-useEffect(() => {
-  fetchFolderDetails(); 
-}, []);
+  useEffect(() => {
+    fetchFolderDetails();
+  }, []);
 
-const createFolder = () => {
-  const newFolderName = folderName + `(${folderCounter})`;
-  const formData = new FormData();
-  formData.append("operation", "Insert");
-  formData.append("folderName", newFolderName);
-  axios
-    .post(CREATE_FOLDER_ENDPOINT, formData, { headers: { 'Content-Type': 'application/json' } })
-    .then((response) => {
-      console.log('Folder created:', response.data);
-
-      const newFolderData = response.data;
-      setFolderCounter(folderCounter + 1);
-      setFolderName('New Folder');
-      fetchFolderDetails(); 
-
-    })
-    .catch((error) => {
-      console.error('Error creating folder:', error);
-    });
-}; 
-//Delete new folder
-const DeleteFolder = (folderID) => {
- let data = JSON.stringify({
-  "folderID": folderID,
-  "operation": "Delete"
-});
-
-let config = {
-  method: 'post',
-  maxBodyLength: Infinity,
-  url: 'http://192.168.1.219/api/NewScreen/CreateFolder',
-  headers: { 
-    'Content-Type': 'application/json'
-  },
-  data : data
-};
-
-axios.request(config)
-.then((response) => {
-  const updatedFolder = newFolder.filter((folder) => folder.folderID !== folderID);
-  setNewfolder(updatedFolder);
-  console.log(JSON.stringify(response.data));
-})
-.catch((error) => {
-  console.log(error);
-});
-};
-
-// new folder dropdown
-const [openAssetsdwId, setOpenAssetsdwId] = useState(null);
-const toggleAssetsdw = (folderId) => {
-  if (openAssetsdwId === folderId) {
-
-    setOpenAssetsdwId(null);
-  } else {
-    
-    setOpenAssetsdwId(folderId);
-  }
-};
-
-const [openAssetsdwIdList, setOpenAssetsdwIdList] = useState(null);
-const toggleAssetsdwList = (folderId) => {
-  if (openAssetsdwIdList === folderId) {
-
-    setOpenAssetsdwIdList(null);
-  } else {
-    
-    setOpenAssetsdwIdList(folderId);
-  }
-};
-
-// edit folder Name
-
-const [editMode, setEditMode] = useState(null);
-
-const handleKeyDown = (e, folderID) => {
-  if (e.key === 'Enter') {
-    // Save the folder name on Enter key press
-    saveFolderName(folderID, folderName);
-  } else if (e.key === 'Escape') {
-    // Cancel editing on Escape key press
-    setEditMode(null);
-  }
-};
-const updateFolderNameInAPI = async (folderID, newName) => {
-  try {
-    const UPDATE_FOLDER_ENDPOINT = `http://192.168.1.219/api/NewScreen/CreateFolder`;
+  const createFolder = () => {
+    const newFolderName = folderName + `(${folderCounter})`;
     const formData = new FormData();
-    formData.append("folderID", folderID);
-    formData.append("operation", "Update");
-    formData.append("folderName", newName);
+    formData.append("operation", "Insert");
+    formData.append("folderName", newFolderName);
+    axios
+      .post(CREATE_FOLDER_ENDPOINT, formData, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => {
+        console.log("Folder created:", response.data);
 
-    const response = await axios.post(UPDATE_FOLDER_ENDPOINT, formData, {
-      headers: { 'Content-Type': 'application/json' }
+        const newFolderData = response.data;
+        setFolderCounter(folderCounter + 1);
+        setFolderName("New Folder");
+        fetchFolderDetails();
+      })
+      .catch((error) => {
+        console.error("Error creating folder:", error);
+      });
+  };
+  //Delete new folder
+  const DeleteFolder = (folderID) => {
+    let data = JSON.stringify({
+      folderID: folderID,
+      operation: "Delete",
     });
-   console.log('Folder name updated:', response.data);
-  } catch (error) {
-    console.error('Error updating folder name:', error);
-  }
-};
-const saveFolderName = (folderID, newName) => {
-  updateFolderNameInAPI(folderID, newName); // Use newName instead of folderName
-  setEditMode(null);
-};
 
-// open and close new folder
-const openModal = (folderId) => {
-  setFolderModals({
-    ...folderModals,
-    [folderId]: true,
-  });
-};
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://disployapi.thedestinysolutions.com/api/NewScreen/CreateFolder",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
 
-const closeModal = (folderId) => {
-  setFolderModals({
-    ...folderModals,
-    [folderId]: false,
-  });
-};
+    axios
+      .request(config)
+      .then((response) => {
+        const updatedFolder = newFolder.filter(
+          (folder) => folder.folderID !== folderID
+        );
+        setNewfolder(updatedFolder);
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-// move to data in folder
+  // new folder dropdown
+  const [openAssetsdwId, setOpenAssetsdwId] = useState(null);
+  const toggleAssetsdw = (folderId) => {
+    if (openAssetsdwId === folderId) {
+      setOpenAssetsdwId(null);
+    } else {
+      setOpenAssetsdwId(folderId);
+    }
+  };
 
-const [isMoveToOpen, setIsMoveToOpen] = useState(false);
-const [dataItems, setDataItems] = useState([]);
-const [selectedDataItemId, setSelectedDataItemId] = useState(null);
-const toggleMoveTo = () => {
-  setIsMoveToOpen(!isMoveToOpen);
-};
-const moveDataToFolder = (dataId, folderId) => {
-  
-  axios.post("http://192.168.1.219/api/ImageVideoDoc/Move", {
-    id: dataId,
-    folderID: folderId,
-    operation: "Insert"
-  })
-  .then((response) => {
-    
-    console.log('Data moved successfully:', response.data);
-   
-  })
-  .catch((error) => {
-    console.error('Error moving data:', error);
-  });
-};
+  const [openAssetsdwIdList, setOpenAssetsdwIdList] = useState(null);
+  const toggleAssetsdwList = (folderId) => {
+    if (openAssetsdwIdList === folderId) {
+      setOpenAssetsdwIdList(null);
+    } else {
+      setOpenAssetsdwIdList(folderId);
+    }
+  };
 
+  // edit folder Name
 
-const handleDataItemClick = (dataId) => {
-  setSelectedDataItemId(dataId);
-};
+  const [editMode, setEditMode] = useState(null);
 
-const handleMoveTo = (folderId) => {
-  if (selectedDataItemId !== null) {
-    // Call the moveDataToFolder function with the selected folder ID and data item ID
-    moveDataToFolder(selectedDataItemId, folderId);
-    console.log(selectedDataItemId);
-    // Reset the selectedDataItemId after moving
-    setSelectedDataItemId(null);
-  } else {
-    console.warn('No data item selected to move.');
-  }
-};
+  const handleKeyDown = (e, folderID) => {
+    if (e.key === "Enter") {
+      // Save the folder name on Enter key press
+      saveFolderName(folderID, folderName);
+    } else if (e.key === "Escape") {
+      // Cancel editing on Escape key press
+      setEditMode(null);
+    }
+  };
+  const updateFolderNameInAPI = async (folderID, newName) => {
+    try {
+      const UPDATE_FOLDER_ENDPOINT = `https://disployapi.thedestinysolutions.com/api/NewScreen/CreateFolder`;
+      const formData = new FormData();
+      formData.append("folderID", folderID);
+      formData.append("operation", "Update");
+      formData.append("folderName", newName);
 
+      const response = await axios.post(UPDATE_FOLDER_ENDPOINT, formData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log("Folder name updated:", response.data);
+    } catch (error) {
+      console.error("Error updating folder name:", error);
+    }
+  };
+  const saveFolderName = (folderID, newName) => {
+    updateFolderNameInAPI(folderID, newName); // Use newName instead of folderName
+    setEditMode(null);
+  };
+
+  // open and close new folder
+  const openModal = (folderId) => {
+    setFolderModals({
+      ...folderModals,
+      [folderId]: true,
+    });
+  };
+
+  const closeModal = (folderId) => {
+    setFolderModals({
+      ...folderModals,
+      [folderId]: false,
+    });
+  };
+
+  // move to data in folder
+
+  const [isMoveToOpen, setIsMoveToOpen] = useState(false);
+  const [dataItems, setDataItems] = useState([]);
+  const [selectedDataItemId, setSelectedDataItemId] = useState(null);
+  const toggleMoveTo = () => {
+    setIsMoveToOpen(!isMoveToOpen);
+  };
+  const moveDataToFolder = (dataId, folderId) => {
+    axios
+      .post(
+        "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/Move",
+        {
+          id: dataId,
+          folderID: folderId,
+          operation: "Insert",
+        }
+      )
+      .then((response) => {
+        console.log("Data moved successfully:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error moving data:", error);
+      });
+  };
+
+  const handleDataItemClick = (dataId) => {
+    setSelectedDataItemId(dataId);
+  };
+
+  const handleMoveTo = (folderId) => {
+    if (selectedDataItemId !== null) {
+      // Call the moveDataToFolder function with the selected folder ID and data item ID
+      moveDataToFolder(selectedDataItemId, folderId);
+      console.log(selectedDataItemId);
+      // Reset the selectedDataItemId after moving
+      setSelectedDataItemId(null);
+    } else {
+      console.warn("No data item selected to move.");
+    }
+  };
 
   return (
     <>
@@ -485,12 +479,14 @@ const handleMoveTo = (folderId) => {
                 Assets
               </h1>
               <div className=" flex-wrap flex  lg:mt-0 md:mt-0 sm:mt-3">
-                <button className=" dashboard-btn  flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                onClick={createFolder}>
+                <button
+                  className=" dashboard-btn  flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  onClick={createFolder}
+                >
                   <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
                   New Folder
                 </button>
-            
+
                 <button className=" dashboard-btn flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                   <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
                   <Link to={"/FileUpload"}> Upload </Link>
@@ -526,9 +522,12 @@ const handleMoveTo = (folderId) => {
                     readOnly
                   />
                 </button>
-                
+
                 {selectedItems.length > 0 && (
-                  <button onClick={handleDelete} className="rounded-full px-2 py-2 m-1 text-center border hover:text-white hover:bg-red hover:border-red">
+                  <button
+                    onClick={handleDelete}
+                    className="rounded-full px-2 py-2 m-1 text-center border hover:text-white hover:bg-red hover:border-red"
+                  >
                     <RiDeleteBin5Line className=" text-lg" />
                   </button>
                 )}
@@ -577,102 +576,109 @@ const handleMoveTo = (folderId) => {
                   : "togglecontent"
               }
             >
-
-
               <div
                 className={
                   "page-content grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section"
                 }
               >
+                {/*new folder*/}
 
-              {/*new folder*/}
-                
-              {newFolder.map((folder) => {
-                const index = folderNames.findIndex((name) => name === folder.folderName);
+                {newFolder.map((folder) => {
+                  const index = folderNames.findIndex(
+                    (name) => name === folder.folderName
+                  );
 
-              return (
-                <li
-                key={`folder-${folder.folderID}`}
-                className="text-center relative list-none bg-lightgray rounded-md px-3 py-7"
-                >
-                <FcOpenedFolder className="text-8xl text-center mx-auto" onClick={() => openModal(folder.folderID)}/>
-               
-                {editMode === folder.folderID ? (
-                  <input
-                    type="text"
-                    value={folderNames[index]} // Use folderNames[index] instead of folderName
-                    onChange={(e) => {
-                      const newFolderNames = [...folderNames];
-                      newFolderNames[index] = e.target.value;
-                      setFolderNames(newFolderNames);
-                     
-                    }}
-                    onBlur={() => saveFolderName(folder.folderID, folderNames[index])}
-                    onKeyDown={(e) => handleKeyDown(e, folder.folderID)}
-                    autoFocus
-                  />
-                ) : (
-                  <>
-                    <span
-                      onClick={() => {
-                        setEditMode(folder.folderID);
-                      }}
-                      className="cursor-pointer"
+                  return (
+                    <li
+                      key={`folder-${folder.folderID}`}
+                      className="text-center relative list-none bg-lightgray rounded-md px-3 py-7"
                     >
-                      {folderNames[index]}
-                    </span>
-                <button onClick={() => toggleAssetsdw(folder.folderID)} className="absolute right-4 top-2">
-                  <BsThreeDots className="text-2xl relative" />
-                </button>
-                {openAssetsdwId === folder.folderID && (
-                  <div className="assetsdw">
-                    <ul>
-                      <li className="flex text-sm items-center">
-                        <FiUpload className="mr-2 text-lg" />
-                        Set to Screen
-                      </li>
-                      <li className="flex text-sm items-center">
-                        <MdPlaylistPlay className="mr-2 text-lg" />
-                        Add to Playlist
-                      </li>
-                   
-                        <li className="flex text-sm items-center">
-                          <FiDownload className="mr-2 text-lg" />
-                          <a href="#">
-                            Download
-                          </a>
-                        </li>
-                   <li className="flex text-sm items-center">
-                        <CgMoveRight className="mr-2 text-lg" />
-                        Move to
-                   </li>
-                      <li>
-                        <button className="flex text-sm items-center" onClick={() => DeleteFolder(folder.folderID)}>
-                          <RiDeleteBin5Line className="mr-2 text-lg" />
-                          Move to Trash
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                )}
-                </>
-                )}
-                {folderModals[folder.folderID] && (
-                  <NewFolderDialog
-                    onClose={() => closeModal(folder.folderID)}
-                   
-                 onCreate={(folderName) => {
+                      <FcOpenedFolder
+                        className="text-8xl text-center mx-auto"
+                        onClick={() => openModal(folder.folderID)}
+                      />
 
-                      closeModal(folder.folderID);
-                    }}
-                  />
-                  )}
-                </li>
-              )})}
-             
+                      {editMode === folder.folderID ? (
+                        <input
+                          type="text"
+                          value={folderNames[index]} // Use folderNames[index] instead of folderName
+                          onChange={(e) => {
+                            const newFolderNames = [...folderNames];
+                            newFolderNames[index] = e.target.value;
+                            setFolderNames(newFolderNames);
+                          }}
+                          onBlur={() =>
+                            saveFolderName(folder.folderID, folderNames[index])
+                          }
+                          onKeyDown={(e) => handleKeyDown(e, folder.folderID)}
+                          autoFocus
+                        />
+                      ) : (
+                        <>
+                          <span
+                            onClick={() => {
+                              setEditMode(folder.folderID);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            {folderNames[index]}
+                          </span>
+                          <button
+                            onClick={() => toggleAssetsdw(folder.folderID)}
+                            className="absolute right-4 top-2"
+                          >
+                            <BsThreeDots className="text-2xl relative" />
+                          </button>
+                          {openAssetsdwId === folder.folderID && (
+                            <div className="assetsdw">
+                              <ul>
+                                <li className="flex text-sm items-center">
+                                  <FiUpload className="mr-2 text-lg" />
+                                  Set to Screen
+                                </li>
+                                <li className="flex text-sm items-center">
+                                  <MdPlaylistPlay className="mr-2 text-lg" />
+                                  Add to Playlist
+                                </li>
+
+                                <li className="flex text-sm items-center">
+                                  <FiDownload className="mr-2 text-lg" />
+                                  <a href="#">Download</a>
+                                </li>
+                                <li className="flex text-sm items-center">
+                                  <CgMoveRight className="mr-2 text-lg" />
+                                  Move to
+                                </li>
+                                <li>
+                                  <button
+                                    className="flex text-sm items-center"
+                                    onClick={() =>
+                                      DeleteFolder(folder.folderID)
+                                    }
+                                  >
+                                    <RiDeleteBin5Line className="mr-2 text-lg" />
+                                    Move to Trash
+                                  </button>
+                                </li>
+                              </ul>
+                            </div>
+                          )}
+                        </>
+                      )}
+                      {folderModals[folder.folderID] && (
+                        <NewFolderDialog
+                          onClose={() => closeModal(folder.folderID)}
+                          onCreate={(folderName) => {
+                            closeModal(folder.folderID);
+                          }}
+                        />
+                      )}
+                    </li>
+                  );
+                })}
+
                 {gridData.length > 0 ? (
                   gridData.map((item, index) => (
-                    
                     <li
                       key={`tabitem-grid-${item.id}-${index}`}
                       className="relative list-none assetsbox"
@@ -749,7 +755,7 @@ const handleMoveTo = (folderId) => {
                         <div className="vdetails">
                           <div className="flex justify-end">
                             <div className="storage mb-1">
-                             {/* <span className="bg-white text-primary rounded-sm p-1 text-sm">
+                              {/* <span className="bg-white text-primary rounded-sm p-1 text-sm">
                                 {item.fileSize}
                               </span> */}
                             </div>
@@ -762,23 +768,19 @@ const handleMoveTo = (folderId) => {
                               {item.details}
                             </p> */}
                             <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light">
-                            {item.createdDate}
-                          </h6>
-                          <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                          {item.categorieType}
-                          
-                        </span>
-                        <span>,</span>
-                        <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                          {item.fileSize}
-                        
-                        </h6>
-                      
+                              {item.createdDate}
+                            </h6>
                             <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                            {item.resolutions}
-                          </span>
-                         
-                         
+                              {item.categorieType}
+                            </span>
+                            <span>,</span>
+                            <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                              {item.fileSize}
+                            </h6>
+
+                            <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                              {item.resolutions}
+                            </span>
                           </div>
                         </div>
                       )}
@@ -851,29 +853,41 @@ const handleMoveTo = (folderId) => {
                                 </li>
                               )}
                               <li className="flex text-sm items-center relative">
-                              <button className="flex text-sm items-center relative" onClick={toggleMoveTo} >
-                                <CgMoveRight className="mr-2 text-lg" />
-                                Move to
+                                <button
+                                  className="flex text-sm items-center relative"
+                                  onClick={toggleMoveTo}
+                                >
+                                  <CgMoveRight className="mr-2 text-lg" />
+                                  Move to
                                 </button>
 
                                 {dataItems.map((item) => (
                                   <div key={item.id}>
                                     <span>{item.name}</span>
-                                    <button onClick={() => handleDataItemClick(item.id)}>Select</button>
+                                    <button
+                                      onClick={() =>
+                                        handleDataItemClick(item.id)
+                                      }
+                                    >
+                                      Select
+                                    </button>
                                   </div>
                                 ))}
-                                
 
                                 {isMoveToOpen && (
                                   <div className="move-to-dropdown">
                                     <ul>
-                                    {newFolder.map((folder) => (
-                                      <li key={folder.folderID}>
-                                        <button onClick={() => handleMoveTo(folder.folderID)}>
-                                          {folder.folderName}
-                                        </button>
-                                      </li>
-                                    ))}
+                                      {newFolder.map((folder) => (
+                                        <li key={folder.folderID}>
+                                          <button
+                                            onClick={() =>
+                                              handleMoveTo(folder.folderID)
+                                            }
+                                          >
+                                            {folder.folderName}
+                                          </button>
+                                        </li>
+                                      ))}
                                     </ul>
                                   </div>
                                 )}
@@ -912,20 +926,13 @@ const handleMoveTo = (folderId) => {
                           )}
                         </div>
                       )}
-
-                    
                     </li>
-                   
                   ))
                 ) : (
                   <p>Loading data...</p>
                 )}
-
               </div>
-             <div>
-               
-             </div> 
-             
+              <div></div>
             </div>
 
             {/*End of grid view */}
@@ -954,16 +961,18 @@ const handleMoveTo = (folderId) => {
                   <tbody>
                     {newFolder.map((folder) => (
                       <>
-                        <tr key={`folder-${folder.folderID}`} className="bg-white rounded-lg font-normal text-[14px] text-[#5E5E5E] shadow-sm newfolder">
+                        <tr
+                          key={`folder-${folder.folderID}`}
+                          className="bg-white rounded-lg font-normal text-[14px] text-[#5E5E5E] shadow-sm newfolder"
+                        >
                           <td className="flex items-center relative">
                             <div>
-                            <FcOpenedFolder className="text-8xl text-center mx-auto" />
+                              <FcOpenedFolder className="text-8xl text-center mx-auto" />
                             </div>
                             <div className="ml-3">
                               <h1 className="font-medium text-base">
-                              {folder.folderName}
+                                {folder.folderName}
                               </h1>
-                              
                             </div>
                           </td>
                           <td></td>
@@ -976,41 +985,49 @@ const handleMoveTo = (folderId) => {
                               className="w-[20px] h-[20px]"
                             />
                           </td>
-                        <td className="relative w-[40px]">
-                        <button onClick={() => toggleAssetsdwList(folder.folderID)} className="absolute right-4 top-[37%]">
-                        <BsThreeDotsVertical className="text-2xl relative" />
-                      </button>
-                          {openAssetsdwIdList === folder.folderID && (
-                            <div className="assetsdw bottom-[-90px]">
-                              <ul>
-                                <li className="flex text-sm items-center">
-                                  <FiUpload className="mr-2 text-lg" />
-                                  Set to Screen
-                                </li>
-                                <li className="flex text-sm items-center">
-                                  <MdPlaylistPlay className="mr-2 text-lg" />
-                                  Add to Playlist
-                                </li>
-                             
+                          <td className="relative w-[40px]">
+                            <button
+                              onClick={() =>
+                                toggleAssetsdwList(folder.folderID)
+                              }
+                              className="absolute right-4 top-[37%]"
+                            >
+                              <BsThreeDotsVertical className="text-2xl relative" />
+                            </button>
+                            {openAssetsdwIdList === folder.folderID && (
+                              <div className="assetsdw bottom-[-90px]">
+                                <ul>
+                                  <li className="flex text-sm items-center">
+                                    <FiUpload className="mr-2 text-lg" />
+                                    Set to Screen
+                                  </li>
+                                  <li className="flex text-sm items-center">
+                                    <MdPlaylistPlay className="mr-2 text-lg" />
+                                    Add to Playlist
+                                  </li>
+
                                   <li className="flex text-sm items-center">
                                     <FiDownload className="mr-2 text-lg" />
-                                    <a href="#">
-                                      Download
-                                    </a>
+                                    <a href="#">Download</a>
                                   </li>
-                             <li className="flex text-sm items-center">
-                                  <CgMoveRight className="mr-2 text-lg" />
-                                  Move to
-                                </li>
-                                <li>
-                                  <button className="flex text-sm items-center" onClick={() => DeleteFolder(folder.folderID)}>
-                                    <RiDeleteBin5Line className="mr-2 text-lg" />
-                                    Move to Trash
-                                  </button>
-                                </li>
-                              </ul>
-                            </div>
-                          )}
+                                  <li className="flex text-sm items-center">
+                                    <CgMoveRight className="mr-2 text-lg" />
+                                    Move to
+                                  </li>
+                                  <li>
+                                    <button
+                                      className="flex text-sm items-center"
+                                      onClick={() =>
+                                        DeleteFolder(folder.folderID)
+                                      }
+                                    >
+                                      <RiDeleteBin5Line className="mr-2 text-lg" />
+                                      Move to Trash
+                                    </button>
+                                  </li>
+                                </ul>
+                              </div>
+                            )}
                           </td>
                         </tr>
 
