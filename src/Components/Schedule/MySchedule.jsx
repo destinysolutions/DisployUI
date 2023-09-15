@@ -127,7 +127,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data, "response");
+        setScheduleData([]);
       })
       .catch((error) => {
         console.log(error);
@@ -167,6 +167,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               <button
                 className="sm:ml-2 xs:ml-1 flex align-middle border-gray items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 onClick={handelDeleteAllSchedule}
+                style={{ display: selectAll ? "block" : "none" }}
               >
                 <RiDeleteBin5Line className="text-lg" />
               </button>
