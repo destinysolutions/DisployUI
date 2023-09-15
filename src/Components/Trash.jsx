@@ -6,6 +6,7 @@ import Navbar from "./Navbar";
 import PropTypes from "prop-types";
 import { AiOutlineFile, AiOutlineFolder } from "react-icons/ai";
 import { BiImageAlt } from "react-icons/bi";
+import { GET_ALL_TRASHDATA } from "../Pages/Api";
 
 const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   Trash.propTypes = {
@@ -16,7 +17,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     axios
-      .get("https://disployapi.thedestinysolutions.com/api/Trash/GetAllTrash")
+      .get(GET_ALL_TRASHDATA)
       .then((response) => {
         setDeletedData(response.data.data);
         console.log(response.data);
