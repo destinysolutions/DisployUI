@@ -21,6 +21,7 @@ import {
   GET_ALL_FILES,
   GET_ALL_EVENTS,
   ADD_SCHEDULE,
+  SCHEDULE_SELECT_BY_ID,
 } from "../../Pages/Api";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
@@ -82,11 +83,16 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const handleSaveNewSchedule = () => {
     // Check if the entered schedule name is not empty
     if (newScheduleNameInput.trim() !== "") {
+      const currentDateTime = new Date();
+
+      // Format the current date and time as a string
+      const formattedDateTime = currentDateTime.toISOString();
+
       axios
         .post(ADD_SCHEDULE, {
           scheduleName: newScheduleNameInput,
-          startDate: dayStartTime,
-          endDate: dayEndTime,
+          startDate: formattedDateTime,
+          endDate: formattedDateTime,
           operation: "Insert",
         })
         .then((response) => {
@@ -104,7 +110,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const saveEditedSchedule = () => {
-    //console.log(selectedScheduleId, "selectedScheduleIdselectedScheduleId");
     let data = JSON.stringify({
       scheduleId: getScheduleId,
       scheduleName: editScheduleName,
@@ -124,7 +129,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        setEditScheduleName(response.data.data.model.scheduleName);
+        const updatedScheduleName = response.data.data.model.scheduleName;
+        setEditScheduleName(updatedScheduleName);
+        setShowScheduleName(true);
         console.log(JSON.stringify(response.data));
       })
       .catch((error) => {
@@ -132,9 +139,10 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  useEffect(() => {
+  const loadEventsForSchedule = (scheduleId) => {
+    // Fetch events associated with the scheduleId
     axios
-      .get(GET_ALL_EVENTS)
+      .get(`${SCHEDULE_SELECT_BY_ID}?ID=${scheduleId}`)
       .then((response) => {
         const fetchedData = response.data.data;
         setScheduleAsset(response.data.data);
@@ -146,6 +154,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             end: new Date(item.endDate),
             color: item.color,
             asset: item.asset,
+            repeatDay: item.repeatDay,
           }));
 
           setEvents(fetchedEvents);
@@ -156,10 +165,23 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    if (getScheduleId) {
+      // If "scheduleId" is present in the URL, load events for the selected schedule
+      loadEventsForSchedule(getScheduleId);
+    } else {
+      // If "scheduleId" is not present or falsy, set events to an empty array
+      setEvents([]);
+    }
+  }, [getScheduleId]);
 
   // Function to handle event drag and drop
   const handleEventDrop = ({ event, start, end }) => {
+    const scheduleIdToUse = isEditingSchedule
+      ? getScheduleId
+      : createdScheduleId;
     const previousSelectedAsset = allAssets.find(
       (asset) => asset.id === event.asset
     );
@@ -169,12 +191,16 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       start,
       end,
       asset: previousSelectedAsset,
+      scheduleName: scheduleIdToUse,
     };
     handleSaveEvent(updatedEventData.id, updatedEventData);
   };
 
   // Function to handle event resize
   const handleEventResize = ({ event, start, end }) => {
+    const scheduleIdToUse = isEditingSchedule
+      ? getScheduleId
+      : createdScheduleId;
     const previousSelectedAsset = allAssets.find(
       (asset) => asset.id === event.asset
     );
@@ -183,13 +209,19 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       start,
       end,
       asset: previousSelectedAsset,
+      scheduleName: scheduleIdToUse,
     };
     handleSaveEvent(resizedEvent.id, resizedEvent);
   };
 
   // Function to handle saving or updating events
   const handleSaveEvent = (eventId, eventData) => {
-    let data = {
+    // Ensure you're using the correct scheduleId (createdScheduleId or getScheduleId)
+    const scheduleIdToUse = isEditingSchedule
+      ? getScheduleId
+      : createdScheduleId;
+
+    const data = {
       startDate: eventData.start,
       endDate: eventData.end,
       asset: eventData.asset.id,
@@ -197,13 +229,14 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       color: eventData.color,
       repeatDay: eventData.repeatDay,
       operation: eventId ? "Update" : "Insert",
-      //scheduleName: selectedScheduleId,
+      scheduleName: scheduleIdToUse, // Use the appropriate scheduleId
     };
+
     if (eventId) {
       data.eventId = eventId;
     }
 
-    let config = {
+    const config = {
       method: "post",
       url: ADD_EVENT,
       headers: {
@@ -221,7 +254,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           asset: response.data.data.model.asset,
           id: eventId || response.data.data.model.eventId,
           repeatDay: response.data.data.model.repeatDay,
-          //scheduleName: response.data.data.model.scheduleName,
+          scheduleName: scheduleIdToUse, // Use the appropriate scheduleId
         };
         console.log(updatedEvent, "updatedEventupdatedEvent====");
         if (eventId) {
@@ -237,7 +270,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           }
         } else {
           // Insert the new event into myEvents
-
           setEvents((prev) => [...prev, updatedEvent]);
         }
       })
@@ -292,44 +324,38 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedAsset(selectedAsset);
   };
 
-  const getEarliestStartTime = (events) => {
+  const getOverallEventTimes = (events) => {
     if (events.length === 0) return null;
-    return events.reduce((earliest, event) => {
-      return event.start < earliest ? event.start : earliest;
-    }, events[0].start);
-  };
 
-  const getLatestEndTime = (events) => {
-    if (events.length === 0) return null;
-    return events.reduce((latest, event) => {
-      return event.end > latest ? event.end : latest;
-    }, events[0].end);
-  };
+    let earliestStartTime = events[0].start;
+    let latestEndTime = events[0].end;
 
-  const today = new Date();
-  const eventsForToday = myEvents.filter((event) =>
-    moment(event.start).isSame(today, "day")
-  );
-  const getDayEventTimes = (events, selectedDate) => {
-    const eventsForSelectedDay = events.filter(
-      (event) =>
-        moment(event.start).isSame(selectedDate, "day") ||
-        moment(event.end).isSame(selectedDate, "day")
-    );
+    for (const event of events) {
+      if (event.start < earliestStartTime) {
+        earliestStartTime = event.start;
+      }
 
-    const earliestStartTime = getEarliestStartTime(eventsForSelectedDay);
-    const latestEndTime = getLatestEndTime(eventsForSelectedDay);
+      if (event.end > latestEndTime) {
+        latestEndTime = event.end;
+      }
+    }
 
     return {
       earliestStartTime,
       latestEndTime,
     };
   };
-  const dayStartTime = getDayEventTimes(
-    eventsForToday,
-    today
-  ).earliestStartTime;
-  const dayEndTime = getDayEventTimes(eventsForToday, today).latestEndTime;
+  const overallEventTimes = getOverallEventTimes(myEvents);
+
+  if (overallEventTimes) {
+    const earliestStartTime = overallEventTimes.earliestStartTime;
+    const latestEndTime = overallEventTimes.latestEndTime;
+    console.log(`Overall Event Times:`);
+    console.log(`Earliest Start Time: ${earliestStartTime}`);
+    console.log(`Latest End Time: ${latestEndTime}`);
+  } else {
+    console.log(`No events found.`);
+  }
 
   return (
     <>
@@ -338,223 +364,247 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       <div className=" px-5 page-contain ">
-        <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
-          <div className="">
-            <div className="flex justify-between">
-              <div className="flex items-center mt-5">
-                <h1 className="text-xl font-semibold ">Create Schedule</h1>
-                <button className="ml-3 text-sm">
-                  <BsPencilFill />
-                </button>
-              </div>
+        <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
+          <div className="grid grid-cols-12 mt-5">
+            <div className="lg:col-span-9 md:col-span-7 sm:col-span-6 xs:col-span-12 flex items-center">
+              <h1 className="text-xl font-semibold ">Create Schedule</h1>
+              <button className="ml-3 text-sm">
+                <BsPencilFill />
+              </button>
             </div>
+            <div className="lg:col-span-3 md:col-span-5 sm:col-span-6 xs:col-span-12">
+              <select className="w-full paymentlabel relative">
+                <option value="">Select Time Zones</option>
+                <option value=""> Hawaii–Aleutian Time Zone. </option>
+                <option value="">Alaska Time Zone. </option>
+                <option value="">Contiguous USA Time Zones. </option>
+                <option value="">Pacific Time Zone (PT) </option>
+                <option value="">Mountain Time Zone (MT) </option>
+                <option value="">
+                  Central Time Zone (CT) Central Standard Time (CST) UTC − 6 h;
+                  Central Daylight Time (CDT) UTC − 5 h.
+                </option>
+                <option value="">Eastern Time Zone (ET)</option>
+              </select>
+            </div>
+          </div>
 
-            <div className="grid grid-cols-12 mt-5">
-              <div className="lg:col-span-10 md:col-span-8 sm:col-span-12 xs:col-span-12 ">
-                <DragAndDropCalendar
-                  selectable
-                  localizer={localizer}
-                  events={myEvents}
-                  defaultView={Views.DAY}
-                  startAccessor="start"
-                  endAccessor="end"
-                  onEventDrop={handleEventDrop}
-                  resizable
-                  onEventResize={handleEventResize}
-                  step={30}
-                  showMultiDayTimes
-                  onSelectEvent={handleSelectEvent}
-                  onSelectSlot={handleSelectSlot}
-                  eventPropGetter={eventStyleGetter}
-                />
-                <EventEditor
-                  isOpen={isCreatePopupOpen}
-                  onClose={handleCloseCreatePopup}
-                  onSave={handleSaveEvent}
-                  onDelete={handleEventDelete}
-                  selectedSlot={selectedSlot}
-                  selectedEvent={selectedEvent}
-                  assetData={assetData}
-                  setAssetData={setAssetData}
-                  allAssets={allAssets}
-                  setSelectedEvent={setSelectedEvent}
-                  handleAssetChange={handleAssetChange}
-                  scheduleAsset={scheduleAsset}
-                />
-              </div>
-              <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-2 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
-                <div className="flex justify-center my-3">schedule Name</div>
+          <div className="grid grid-cols-12 mt-5">
+            <div className="bg-white lg:col-span-9 md:col-span-7 sm:col-span-12 xs:col-span-12 p-3 ">
+              <DragAndDropCalendar
+                selectable
+                localizer={localizer}
+                events={myEvents}
+                defaultView={Views.DAY}
+                startAccessor="start"
+                endAccessor="end"
+                onEventDrop={handleEventDrop}
+                resizable
+                onEventResize={handleEventResize}
+                step={30}
+                showMultiDayTimes
+                onSelectEvent={handleSelectEvent}
+                onSelectSlot={handleSelectSlot}
+                eventPropGetter={eventStyleGetter}
+              />
+              <EventEditor
+                isOpen={isCreatePopupOpen}
+                onClose={handleCloseCreatePopup}
+                onSave={handleSaveEvent}
+                onDelete={handleEventDelete}
+                selectedSlot={selectedSlot}
+                selectedEvent={selectedEvent}
+                assetData={assetData}
+                setAssetData={setAssetData}
+                allAssets={allAssets}
+                setSelectedEvent={setSelectedEvent}
+                handleAssetChange={handleAssetChange}
+                scheduleAsset={scheduleAsset}
+              />
+            </div>
+            <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
+              <div className="flex justify-center my-3">schedule Name</div>
 
-                {isEditingSchedule ? (
-                  <div className="px-3">
-                    <input
-                      type="text"
-                      className="w-full paymentlabel relative border border-gray-300 rounded-md px-2 py-1 mt-3"
-                      value={editScheduleName}
-                      onChange={(e) => setEditScheduleName(e.target.value)}
-                    />
-                    <button
-                      className="text-black px-2 py-1 rounded border border-primary mt-3"
-                      onClick={saveEditedSchedule}
-                    >
-                      Edit
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    {showScheduleName ? (
-                      <h1 className="flex justify-center text-3xl">
-                        {newScheduleNameInput}
-                      </h1>
-                    ) : (
-                      <div className="px-3">
-                        <input
-                          type="text"
-                          className="w-full paymentlabel relative border border-gray-300 rounded-md px-2 py-1"
-                          placeholder="Enter new schedule name"
-                          value={newScheduleNameInput}
-                          onChange={handleCreateNewSchedule}
-                        />
-                        <button
-                          className="text-black px-2 py-1 rounded border border-primary mt-3 ml-1"
-                          onClick={handleSaveNewSchedule}
-                        >
-                          Save
-                        </button>
-                      </div>
-                    )}
-                  </>
-                )}
-
-                <div className="border-b-2 border-lightgray mt-3"></div>
-                <div className="p-3">
-                  <div className="mb-2">Schedule Date time</div>
-                  <div>
-                    <ul className="border-2 border-lightgray">
-                      <li className="border-b-2 border-lightgray p-3">
-                        <h3>Start Date & Time:</h3>
-                        <div className="bg-lightgray rounded-full px-3 py-2 mt-2">
-                          {dayStartTime?.toLocaleString()}
-                        </div>
-                      </li>
-                      <li className="border-b-2 border-lightgray p-3">
-                        <h3>End Date & Time:</h3>
-                        <div className="bg-lightgray rounded-full px-3 py-2 mt-2">
-                          {dayEndTime?.toLocaleString()}
-                        </div>
-                      </li>
-                      <li className="p-3">
-                        <select
-                          className="w-full paymentlabel relative"
-                          onChange={handleAssetChange}
-                        >
-                          <option value="">Select an asset</option>
-                          {scheduleAsset
-                            .filter(
-                              (asset, index, self) =>
-                                self.findIndex((a) => a.id === asset.id) ===
-                                index
-                            )
-                            .map((asset) => (
-                              <option key={asset.id} value={asset.name}>
-                                {asset.name}
-                              </option>
-                            ))}
-                        </select>
-                      </li>
-
-                      {selectedAsset && (
-                        <>
-                          {selectedAsset.categorieType === "OnlineImage" && (
-                            <img
-                              src={selectedAsset.fileType}
-                              alt={selectedAsset.name}
-                              className="imagebox relative"
-                            />
-                          )}
-                          {selectedAsset.categorieType === "OnlineVideo" && (
-                            <video
-                              controls
-                              className="w-full rounded-2xl relative h-56"
-                            >
-                              <source
-                                src={selectedAsset.fileType}
-                                type="video/mp4"
-                              />
-                              Your browser does not support the video tag.
-                            </video>
-                          )}
-                          {selectedAsset.categorieType === "Image" && (
-                            <img
-                              src={selectedAsset.fileType}
-                              alt={selectedAsset.name}
-                              className="imagebox relative"
-                            />
-                          )}
-                          {selectedAsset.categorieType === "Video" && (
-                            <video
-                              controls
-                              className="w-full rounded-2xl relative h-56"
-                            >
-                              <source
-                                src={selectedAsset.fileType}
-                                type="video/mp4"
-                              />
-                              Your browser does not support the video tag.
-                            </video>
-                          )}
-                          {selectedAsset.categorieType === "DOC" && (
-                            <a
-                              href={selectedAsset.fileType}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {selectedAsset.name}
-                            </a>
-                          )}
-                        </>
-                      )}
-                    </ul>
-                  </div>
-                  {assetData.length === 0 && (
-                    <div className="flex mt-4">
-                      <div className="mt-1">
-                        <button>
-                          <IoArrowBackOutline />
-                        </button>
-                      </div>
-                      <p className="mx-3">
-                        No Associated Assets. Start by selecting a date & time
-                        on the calendar.
-                      </p>
+              {isEditingSchedule ? (
+                <>
+                  {showScheduleName ? (
+                    <h1 className="flex justify-center text-3xl">
+                      {editScheduleName}
+                    </h1>
+                  ) : (
+                    <div className="px-3">
+                      <input
+                        type="text"
+                        className="w-full relative border border-gray-300 rounded-md px-2 py-1 mt-3"
+                        value={editScheduleName}
+                        onChange={(e) => setEditScheduleName(e.target.value)}
+                      />
+                      <button
+                        className="text-black px-2 py-1 rounded border border-primary mt-3"
+                        onClick={saveEditedSchedule}
+                      >
+                        Edit
+                      </button>
                     </div>
                   )}
+                </>
+              ) : (
+                <>
+                  {showScheduleName ? (
+                    <h1 className="flex justify-center text-3xl">
+                      {newScheduleNameInput}
+                    </h1>
+                  ) : (
+                    <div className="px-3">
+                      <input
+                        type="text"
+                        className="w-full paymentlabel relative border border-gray-300 rounded-md px-2 py-1"
+                        placeholder="Enter new schedule name"
+                        value={newScheduleNameInput}
+                        onChange={handleCreateNewSchedule}
+                      />
+                      <button
+                        className="text-black px-2 py-1 rounded border border-primary mt-3 ml-1"
+                        onClick={handleSaveNewSchedule}
+                      >
+                        Save
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+
+              <div className="border-b-2 border-lightgray mt-3"></div>
+              <div className="p-3">
+                <div className="mb-2">Schedule Date time</div>
+                <div>
+                  <ul className="border-2 border-lightgray">
+                    <li className="border-b-2 border-lightgray p-3">
+                      <h3>Start Date & Time:</h3>
+                      <div className="bg-lightgray rounded-full px-3 py-2 mt-2">
+                        {overallEventTimes
+                          ? overallEventTimes.earliestStartTime.toLocaleString()
+                          : "No events found"}
+                      </div>
+                    </li>
+                    <li className="border-b-2 border-lightgray p-3">
+                      <h3>End Date & Time:</h3>
+                      <div className="bg-lightgray rounded-full px-3 py-2 mt-2">
+                        {overallEventTimes
+                          ? overallEventTimes.latestEndTime.toLocaleString()
+                          : "No events found"}
+                      </div>
+                    </li>
+                    <li className="p-3">
+                      <select
+                        className="w-full paymentlabel relative"
+                        onChange={handleAssetChange}
+                      >
+                        <option value="">Select an asset</option>
+                        {scheduleAsset
+                          .filter(
+                            (asset, index, self) =>
+                              self.findIndex((a) => a.id === asset.id) === index
+                          )
+                          .map((asset) => (
+                            <option key={asset.id} value={asset.name}>
+                              {asset.name}
+                            </option>
+                          ))}
+                      </select>
+                    </li>
+
+                    {selectedAsset && (
+                      <>
+                        {selectedAsset.categorieType === "OnlineImage" && (
+                          <img
+                            src={selectedAsset.fileType}
+                            alt={selectedAsset.name}
+                            className="imagebox relative"
+                          />
+                        )}
+                        {selectedAsset.categorieType === "OnlineVideo" && (
+                          <video
+                            controls
+                            className="w-full rounded-2xl relative h-56"
+                          >
+                            <source
+                              src={selectedAsset.fileType}
+                              type="video/mp4"
+                            />
+                            Your browser does not support the video tag.
+                          </video>
+                        )}
+                        {selectedAsset.categorieType === "Image" && (
+                          <img
+                            src={selectedAsset.fileType}
+                            alt={selectedAsset.name}
+                            className="imagebox relative"
+                          />
+                        )}
+                        {selectedAsset.categorieType === "Video" && (
+                          <video
+                            controls
+                            className="w-full rounded-2xl relative h-56"
+                          >
+                            <source
+                              src={selectedAsset.fileType}
+                              type="video/mp4"
+                            />
+                            Your browser does not support the video tag.
+                          </video>
+                        )}
+                        {selectedAsset.categorieType === "DOC" && (
+                          <a
+                            href={selectedAsset.fileType}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {selectedAsset.name}
+                          </a>
+                        )}
+                      </>
+                    )}
+                  </ul>
                 </div>
+                {assetData.length === 0 && (
+                  <div className="flex mt-4">
+                    <div className="mt-1">
+                      <button>
+                        <IoArrowBackOutline />
+                      </button>
+                    </div>
+                    <p className="mx-3">
+                      No Associated Assets. Start by selecting a date & time on
+                      the calendar.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
-            <div className="flex justify-center mt-5">
-              <Link to="/myschedule">
-                <button className="border-2 border-gray bg-lightgray hover:bg-primary hover:text-white  px-5 py-2 rounded-full">
-                  Cancel
-                </button>{" "}
-              </Link>
-              <Link to="/myschedule">
-                <button className="border-2 border-gray bg-lightgray hover:bg-primary hover:text-white  px-6 py-2 rounded-full ml-3">
-                  Save
-                </button>
-              </Link>
-              <button
-                className="border-2 border-lightgray bg-SlateBlue text-white hover:bg-primary hover:text-white   px-4 py-2 rounded-full ml-3"
-                onClick={() => setSelectScreenModal(true)}
-              >
-                Save & Assign screen
+          </div>
+          <div className="flex justify-center flex-wrap mt-5">
+            <Link to="/myschedule">
+              <button className="mb-3 border-2 border-gray bg-lightgray hover:bg-primary hover:text-white  px-5 py-2 rounded-full">
+                Cancel
+              </button>{" "}
+            </Link>
+            <Link to="/myschedule">
+              <button className="mb-3 border-2 border-gray bg-lightgray hover:bg-primary hover:text-white  px-6 py-2 rounded-full ml-3">
+                Save
               </button>
-              {selectScreenModal && (
-                <SaveAssignScreenModal
-                  setSelectScreenModal={setSelectScreenModal}
-                />
-              )}
-            </div>
+            </Link>
+            <button
+              className="mb-3 border-2 border-lightgray bg-SlateBlue text-white hover:bg-primary hover:text-white   px-4 py-2 rounded-full ml-3"
+              onClick={() => setSelectScreenModal(true)}
+            >
+              Save & Assign screen
+            </button>
+            {selectScreenModal && (
+              <SaveAssignScreenModal
+                setSelectScreenModal={setSelectScreenModal}
+              />
+            )}
           </div>
         </div>
       </div>

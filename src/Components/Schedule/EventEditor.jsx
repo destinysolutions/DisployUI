@@ -188,17 +188,17 @@ const EventEditor = ({
             color: selectedColor,
             asset: selectedAsset,
             repeatDay: repeatDayValue,
-            
           });
         }
         // Move to the next day
         currentDate.setDate(currentDate.getDate() + 1);
       }
-
+      console.log(events, "events=====");
       // Save the generated events
-      events.forEach((event) => {
-        onSave(null, event);
-      });
+      // events.forEach((event) => {
+
+      // });
+      onSave(null, events);
     } else {
       // If no specific days are selected, treat it as a one-time event and save it
       const eventData = {
