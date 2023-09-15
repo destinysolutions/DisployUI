@@ -14,17 +14,28 @@ export const GET_SELECT_BY_STATE =
   "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByState";
 export const GET_SELECT_BY_CITY =
   "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByCity";
-export const GET_ALL_FILES =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/GetAll";
+
+export const GET_ALL_FILES = "http://192.168.1.219/api/ImageVideoDoc/GetAll";
 export const ALL_FILES_UPLOAD =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/ImageVideoDocUpload";
+  "http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload";
+
 export const GET_ALL_EVENTS =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/GetAllEvent";
-export const ADD_EVENT =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/AddEvent";
+  "http://192.168.1.219/api/EventMaster/GetAllEvent";
+export const ADD_EVENT = "http://192.168.1.219/api/EventMaster/AddEvent";
 export const GET_ALL_SCHEDULE =
-  "https://disployapi.thedestinysolutions.com/api/Schedule/GetAllSchedule";
-export const ADD_SCHEDULE =
-  "https://disployapi.thedestinysolutions.com/api/Schedule/AddSchedule";
+  "http://192.168.1.219/api/Schedule/GetAllSchedule";
+export const ADD_SCHEDULE = "http://192.168.1.219/api/Schedule/AddSchedule";
+
+export const GET_ALL_TRASHDATA =
+  "https://disployapi.thedestinysolutions.com/api/Trash/GetAllTrash";
+export const ADD_TRASH =
+  "https://disployapi.thedestinysolutions.com/api/Trash/AddTrash";
+
+export const CREATE_NEW_FOLDER =
+  "https://disployapi.thedestinysolutions.com/api/NewScreen/CreateFolder";
+export const GET_ALL_NEW_FOLDER =
+  "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllFolder";
+export const MOVE_TO_FOLDER =
+  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/Move";
 
 //http://192.168.1.219

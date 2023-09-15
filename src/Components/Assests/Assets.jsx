@@ -22,7 +22,14 @@ import Footer from "../Footer";
 import { HiOutlineVideoCamera } from "react-icons/hi2";
 import { RiGalleryFill } from "react-icons/ri";
 import { HiDocumentDuplicate } from "react-icons/hi";
-import { ALL_FILES_UPLOAD, GET_ALL_FILES } from "../../Pages/Api";
+import {
+  ADD_TRASH,
+  ALL_FILES_UPLOAD,
+  CREATE_NEW_FOLDER,
+  GET_ALL_FILES,
+  GET_ALL_NEW_FOLDER,
+  MOVE_TO_FOLDER,
+} from "../../Pages/Api";
 import NewFolderDialog from "./NewFolderDialog ";
 import { FcOpenedFolder } from "react-icons/fc";
 
@@ -228,7 +235,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/Trash/AddTrash",
+      url: ADD_TRASH,
       headers: {
         "Content-Type": "application/json",
       },
@@ -274,10 +281,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   // New folder
-  const CREATE_FOLDER_ENDPOINT =
-    "https://disployapi.thedestinysolutions.com/api/NewScreen/CreateFolder";
-  const FETCH_FOLDER_ENDPOINT =
-    "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllFolder";
   const [newFolder, setNewfolder] = useState([]);
   const [folderName, setFolderName] = useState("New Folder");
   const [folderCounter, setFolderCounter] = useState(1);
@@ -287,7 +290,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   // Define the fetchFolderDetails function
   const fetchFolderDetails = () => {
     axios
-      .get(FETCH_FOLDER_ENDPOINT)
+      .get(GET_ALL_NEW_FOLDER)
       .then((response) => {
         const fetchedData = response.data.data;
         setNewfolder(fetchedData);
@@ -309,7 +312,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     formData.append("operation", "Insert");
     formData.append("folderName", newFolderName);
     axios
-      .post(CREATE_FOLDER_ENDPOINT, formData, {
+      .post(CREATE_NEW_FOLDER, formData, {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
@@ -334,7 +337,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/NewScreen/CreateFolder",
+      url: CREATE_NEW_FOLDER,
       headers: {
         "Content-Type": "application/json",
       },
@@ -389,13 +392,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const updateFolderNameInAPI = async (folderID, newName) => {
     try {
-      const UPDATE_FOLDER_ENDPOINT = `https://disployapi.thedestinysolutions.com/api/NewScreen/CreateFolder`;
       const formData = new FormData();
       formData.append("folderID", folderID);
       formData.append("operation", "Update");
       formData.append("folderName", newName);
 
-      const response = await axios.post(UPDATE_FOLDER_ENDPOINT, formData, {
+      const response = await axios.post(CREATE_NEW_FOLDER, formData, {
         headers: { "Content-Type": "application/json" },
       });
       console.log("Folder name updated:", response.data);
@@ -433,14 +435,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const moveDataToFolder = (dataId, folderId) => {
     axios
-      .post(
-        "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/Move",
-        {
-          id: dataId,
-          folderID: folderId,
-          operation: "Insert",
-        }
-      )
+      .post(MOVE_TO_FOLDER, {
+        id: dataId,
+        folderID: folderId,
+        operation: "Insert",
+      })
       .then((response) => {
         console.log("Data moved successfully:", response.data);
       })
@@ -486,11 +485,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
                   New Folder
                 </button>
-
-                <button className=" dashboard-btn flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                  <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
-                  <Link to={"/FileUpload"}> Upload </Link>
-                </button>
+                <Link to={"/FileUpload"}>
+                  <button className=" dashboard-btn flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                    <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
+                    Upload
+                  </button>
+                </Link>
 
                 <ul className="flex items-center xs:mt-2 sm:mt-0 md:mt-0  lg:mt-0  xs:mr-1  mr-3  rounded-full  border border-primary">
                   <li className="flex items-center ">
