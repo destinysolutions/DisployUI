@@ -481,3 +481,7 @@ td .tabicon svg {
   border-radius: 5px;
   box-shadow: 0px 10px 20px #ccc;
 }
+.drag-over {
+  background-color: #a0c4ff; /* Change the background color when hovered over */
+}
+
