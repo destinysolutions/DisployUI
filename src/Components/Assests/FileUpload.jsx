@@ -236,14 +236,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
       // Use Promise.all to execute all uploads concurrently
       await Promise.all(uploadPromises);
 
-      // Once all files are uploaded, navigate to the desired location
-      navigate("/assets");
-    } catch (error) {
-      console.error("An error occurred during upload:", error);
-    } finally {
-      setUploading(false); // Mark the upload as finished
-    }
-  };
+
 
   const getFileType = (fileName, mimeType) => {
     const extension = fileName.split(".").pop().toLowerCase();

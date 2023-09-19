@@ -36,6 +36,7 @@ import EventEditor from "../Components/Schedule/EventEditor";
 import Unsplash from "../Components/Assests/Unsplash";
 import Userrole from "../Components/Settings/Userrole";
 import Trash from "../Components/Trash";
+import NewFolderDialog from "../Components/Assests/NewFolderDialog ";
 const Routing = () => {
   //for screen resize sidebar open close
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -358,14 +359,24 @@ const Routing = () => {
         />
 
         <Route
-          path="/trash"
+          path="/NewFolderDialog"
           element={
-            <Trash
+            <NewFolderDialog
               sidebarOpen={sidebarOpen}
               setSidebarOpen={setSidebarOpen}
             />
           }
         />
+
+        <Route
+        path="/trash"
+        element={
+          <Trash
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+          />
+        }
+      />
 
         {/*Event Editors */}
 
