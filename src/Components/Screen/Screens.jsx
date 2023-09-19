@@ -84,7 +84,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       <div className="pt-6 px-5 page-contain">
-        <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
+        <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
               Screens
@@ -184,8 +184,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   <div
                     id="tooltip-bottom"
                     role="tooltip"
-                    className={`absolute z-10 visible inline-block px-3 py-2 text-sm font-medium text-white bg-SlateBlue rounded-lg shadow-sm opacity-100 tooltip bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full dark:bg-gray-700 ${selectActiveTooltipVisible ? "" : "hidden"
-                      }`}
+                    className={`absolute z-10 visible inline-block px-3 py-2 text-sm font-medium text-white bg-SlateBlue rounded-lg shadow-sm opacity-100 tooltip bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full dark:bg-gray-700 ${
+                      selectActiveTooltipVisible ? "" : "hidden"
+                    }`}
                   >
                     {screenStatus === "live" ? "Deactivate" : "Activate"}
                   </div>
@@ -194,10 +195,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   <div
                     id="tooltip-bottom"
                     role="tooltip"
-                    className={`absolute z-10 visible inline-block px-3 py-2 text-sm font-medium text-white bg-SlateBlue rounded-lg shadow-sm opacity-100 tooltip bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full dark:bg-gray-700 ${selectActiveTooltipVisible && screenStatus === "live"
-                      ? "hidden"
-                      : ""
-                      }`}
+                    className={`absolute z-10 visible inline-block px-3 py-2 text-sm font-medium text-white bg-SlateBlue rounded-lg shadow-sm opacity-100 tooltip bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full dark:bg-gray-700 ${
+                      selectActiveTooltipVisible && screenStatus === "live"
+                        ? "hidden"
+                        : ""
+                    }`}
                   >
                     {screenStatus === "live" ? "First select screen" : ""}
                   </div>
@@ -330,7 +332,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
           <div className="overflow-x-auto bg-white rounded-xl mt-8 shadow">
-            <table className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto" cellPadding={20}>
+            <table
+              className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+              cellPadding={20}
+            >
               <thead>
                 <tr className="border-b border-lightgray">
                   <th className=" font-medium text-[14px]">
@@ -410,8 +415,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   )}
                   <td className="p-2 text-center">
                     <button
-                      className={`rounded-full px-6 py-1 text-white text-center bg-${screenStatus === "live" ? "[#3AB700]" : "red"
-                        }`}
+                      className={`rounded-full px-6 py-1 text-white text-center bg-${
+                        screenStatus === "live" ? "[#3AB700]" : "red"
+                      }`}
                     >
                       {screenStatus === "live" ? "Live" : "Offline"}
                     </button>
@@ -421,7 +427,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     <button
                       onClick={() => setShowAssetModal(true)}
                       className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                    > Asset Name
+                    >
+                      {" "}
+                      Asset Name
                       <AiOutlineCloudUpload className="ml-2 text-lg" />
                     </button>
                     {showAssetModal ? (
@@ -462,8 +470,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   )}
                   <td className="p-2 text-center">
                     <button
-                      className={`rounded-full px-6 py-1 text-white text-center bg-${screenStatus === "live" ? "[#3AB700]" : "red"
-                        }`}
+                      className={`rounded-full px-6 py-1 text-white text-center bg-${
+                        screenStatus === "live" ? "[#3AB700]" : "red"
+                      }`}
                     >
                       {screenStatus === "live" ? "Live" : "Offline"}
                     </button>
@@ -473,7 +482,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     <button
                       onClick={() => setShowAssetModal(true)}
                       className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                    > Asset Name
+                    >
+                      {" "}
+                      Asset Name
                       <AiOutlineCloudUpload className="ml-2 text-lg" />
                     </button>
                     {showAssetModal ? (

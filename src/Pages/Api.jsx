@@ -14,7 +14,8 @@ export const GET_SELECT_BY_STATE =
   "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByState";
 export const GET_SELECT_BY_CITY =
   "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByCity";
-
+export const GET_TIMEZONE =
+  "https://disployapi.thedestinysolutions.com/api/NewScreen/timezones";
 export const GET_ALL_FILES =
   "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/GetAll";
 export const ALL_FILES_UPLOAD =

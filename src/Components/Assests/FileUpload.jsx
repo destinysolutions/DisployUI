@@ -45,7 +45,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   const [fileErrorModal, setfileErrorModal] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
 
-
   {
     /* google drive */
   }
@@ -83,7 +82,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef(null);
-  
+
   const [overallUploadProgress, setOverallUploadProgress] = useState(0);
   const navigate = useNavigate();
   // const onFileChange = (e) => {
@@ -137,7 +136,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   const onFileChange = (event) => {
     const files = event.target.files;
     const newSelectedImages = [...selectedImages];
-  
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const isVideo = file.type.startsWith("video");
@@ -147,7 +146,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         file.type.startsWith(
           "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         );
-  
+
       const item = {
         file,
         name: file.name,
@@ -157,99 +156,89 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         preview: isVideo ? null : URL.createObjectURL(file),
         progress: 0, // Initialize progress for each image
       };
-  
+
       newSelectedImages.push(item);
     }
-  
+
     // Set the selected images to the updated array
     setSelectedImages(newSelectedImages);
     setUploadProgress([]); // Initialize progress state for each image
     setUploading(true); // Start uploading
   };
-  
-  
-useEffect(() => {
+
+  useEffect(() => {
     // Call uploadData only when there are selected images
     if (selectedImages.length > 0) {
       uploadData();
     }
   }, [selectedImages]);
   // Function to format file size for display
-const formatFileSize = (bytes) => {
-  if (bytes === 0) return '0 Bytes';
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return "0 Bytes";
 
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-};
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  };
 
+  const uploadData = async () => {
+    try {
+      // Initialize an overall progress variable
+      let overallProgress = 0;
 
+      // Create an array to hold all the promises for image uploads
+      const uploadPromises = selectedImages.map(async (image, index) => {
+        const CategorieType = getContentType(image.file.type);
+        const details = "Some Details about the file";
+        const formData = new FormData();
+        formData.append("File", image.file);
+        formData.append("operation", "Insert");
+        formData.append("CategorieType", CategorieType);
+        formData.append("details", details);
 
-const uploadData = async () => {
-  try {
-    // Initialize an overall progress variable
-    let overallProgress = 0;
+        try {
+          const response = await axios.post(ALL_FILES_UPLOAD, formData, {
+            onUploadProgress: (progressEvent) => {
+              const progress = Math.round(
+                (progressEvent.loaded / progressEvent.total) * 100
+              );
 
-    // Create an array to hold all the promises for image uploads
-    const uploadPromises = selectedImages.map(async (image, index) => {
-      const CategorieType = getContentType(image.file.type);
-      const details = "Some Details about the file";
-      const formData = new FormData();
-      formData.append("File", image.file);
-      formData.append("operation", "Insert");
-      formData.append("CategorieType", CategorieType);
-      formData.append("details", details);
-      
-      try {
-        const response = await axios.post(ALL_FILES_UPLOAD, formData, {
-          onUploadProgress: (progressEvent) => {
-            const progress = Math.round(
-              (progressEvent.loaded / progressEvent.total) * 100
-            );
+              // Update the progress of the corresponding image
+              selectedImages[index].progress = progress;
 
-            // Update the progress of the corresponding image
-            selectedImages[index].progress = progress;
+              // Calculate overall progress
+              overallProgress =
+                ((index + 1) / selectedImages.length) * 100 +
+                progress / selectedImages.length;
 
-            // Calculate overall progress
-            overallProgress =
-              ((index + 1) / selectedImages.length) * 100 +
-              (progress / selectedImages.length);
+              // Update the overall progress state
+              setOverallUploadProgress(overallProgress);
 
-            // Update the overall progress state
-            setOverallUploadProgress(overallProgress);
+              // Update the progress state for this image
+              const updatedProgress = [...uploadProgress];
+              updatedProgress[index] = progress;
+              setUploadProgress(updatedProgress);
+            },
+          });
 
-            // Update the progress state for this image
-            const updatedProgress = [...uploadProgress];
-            updatedProgress[index] = progress;
-            setUploadProgress(updatedProgress);
-          },
-        });
-
-        if (response.status === 200) {
-          console.log(`File ${image.name} uploaded successfully.`);
-        } else {
-          console.error(`Upload failed for file ${image.name}`);
+          if (response.status === 200) {
+            console.log(`File ${image.name} uploaded successfully.`);
+          } else {
+            console.error(`Upload failed for file ${image.name}`);
+          }
+        } catch (error) {
+          console.error(`Upload failed for file ${image.name}:`, error);
         }
-      } catch (error) {
-        console.error(`Upload failed for file ${image.name}:`, error);
-      }
-    });
+      });
 
-    // Use Promise.all to execute all uploads concurrently
-    await Promise.all(uploadPromises);
+      // Use Promise.all to execute all uploads concurrently
+      await Promise.all(uploadPromises);
 
-    // Once all files are uploaded, navigate to the desired location
-    navigate("/assets");
-  } catch (error) {
-    console.error("An error occurred during upload:", error);
-  } finally {
-    setUploading(false); // Mark the upload as finished
-  }
-};
 
-const getFileType = (fileName, mimeType) => {
+
+  const getFileType = (fileName, mimeType) => {
     const extension = fileName.split(".").pop().toLowerCase();
 
     if (extension === "jpg" || extension === "jpeg" || extension === "png") {
@@ -267,7 +256,7 @@ const getFileType = (fileName, mimeType) => {
         mimeType === "application/msword" ||
         mimeType === "application/vnd.ms-excel" ||
         mimeType ===
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     ) {
       return "DOC";
     } else {
@@ -287,14 +276,14 @@ const getFileType = (fileName, mimeType) => {
         mime === "application/msword" ||
         mime === "application/vnd.ms-excel" ||
         mime ===
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     ) {
       return "DOC";
     } else {
       return "file content type not found";
     }
   };
-// unsplash code
+  // unsplash code
   const [showUnsplash, setShowUnsplash] = useState(false);
   const [uploadedImages, setUploadedImages] = useState([]);
 
@@ -373,7 +362,9 @@ const getFileType = (fileName, mimeType) => {
   // end video
 
   const handleDelete = (indexToDelete) => {
-    const updatedImages = selectedImages.filter((_, index) => index !== indexToDelete);
+    const updatedImages = selectedImages.filter(
+      (_, index) => index !== indexToDelete
+    );
     setSelectedImages(updatedImages);
   };
   return (
@@ -383,7 +374,7 @@ const getFileType = (fileName, mimeType) => {
         <Navbar />
       </div>
       <div className="pt-6 px-5 page-contain">
-        <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
+        <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between md:justify-between sm:justify-between sm:flex flex-wrap items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4">
               Media Upload
@@ -564,7 +555,6 @@ const getFileType = (fileName, mimeType) => {
           >
             <div className="relative">
               <div className=" relative flex-col flex  items-center justify-center min-h-full lg:py-16 md:py-10 sm:py-32 xs:pb-32 xs:pt-14 px-2  bg-lightgray lg:mt-14 md:mt-14 sm:mt-5 xs:mt-5  border-2 rounded-[20px] border-SlateBlue border-dashed">
-
                 <div className=" relative text-center max-auto">
                   <FiUploadCloud className="text-SlateBlue md:mb-7 sm:mb-3 xs:mb-2 lg:text-[150px] md:text-[100px] sm:text-[80px] xs:text-[45px] mx-auto text-center" />
                   <input
@@ -582,7 +572,7 @@ const getFileType = (fileName, mimeType) => {
                     Drop your first video, photo or document here
                   </p>
                 </div>
-               {/* <div className=" relative z-10 text-center ">
+                {/* <div className=" relative z-10 text-center ">
                   <button
                     className="bg-SlateBlue text-white px-7 py-2 rounded mt-4 z-10"
                     onClick={uploadData}
@@ -591,8 +581,7 @@ const getFileType = (fileName, mimeType) => {
                   </button>
               </div>*/}
 
-
-               {/* <div className="relative max-w-[750px] text-center mt-5">
+                {/* <div className="relative max-w-[750px] text-center mt-5">
                   {selectedImages.map((item, index) => (
                     <div key={index} className="image-item flex  justify-between items-center bg-white p-2 rounded-sm shadow-inner">
                       <div className="image-item flex  items-center">
@@ -609,7 +598,7 @@ const getFileType = (fileName, mimeType) => {
                         ) : item.isDocument ? ( // Check if it's a document
                           <div className="flex" >
                             <FcFile size={40} color="red" /> {/* Render the document icon */}
-                            {/*<div className="ml-2 text-left">
+                {/*<div className="ml-2 text-left">
                               <p className="text-base">{item.name}</p>
                               <p className="text-sm"><span className="font-medium text-base">Size:</span> {item.size}</p>
                             </div>
@@ -629,16 +618,11 @@ const getFileType = (fileName, mimeType) => {
                   ))}
 
                 </div> */}
-
               </div>
-
-
-
-
             </div>
           </div>
 
-        {/*  {uploading && (
+          {/*  {uploading && (
             <div className="progressbar-popup bg-white shadow-2xl">
               <div className="flex justify-between items-center bg-white w-96 p-10">
                 <div>
@@ -653,24 +637,26 @@ const getFileType = (fileName, mimeType) => {
             </div>
           )}
         */}
-        {selectedImages.map((image, index) => (
-          <div key={index} className="shadow-inner bg-lightgray rounded-md m-5 w-100 p-2">
-            <h2>{image.name}</h2>
-            <div className="flex justify-between items-center">
-           
-            <progress value={image.progress} max={100}  className="w-full custom-progress bg-SlateBlue rounded-sm"/>
-            <p className="ml-2">{image.progress}%</p>
-            
+          {selectedImages.map((image, index) => (
+            <div
+              key={index}
+              className="shadow-inner bg-lightgray rounded-md m-5 w-100 p-2"
+            >
+              <h2>{image.name}</h2>
+              <div className="flex justify-between items-center">
+                <progress
+                  value={image.progress}
+                  max={100}
+                  className="w-full custom-progress bg-SlateBlue rounded-sm"
+                />
+                <p className="ml-2">{image.progress}%</p>
+              </div>
+              <p className="text-sm">
+                <span className="font-medium text-base">Size:</span>{" "}
+                {image.size}
+              </p>
             </div>
-            <p className="text-sm"><span className="font-medium text-base">Size:</span> {image.size}</p>
-          </div>
-        ))}
-        
-       
-        
-        
-          
-
+          ))}
 
           {fileList.length > 0 ? (
             <div className="drop-file-preview">
@@ -690,9 +676,7 @@ const getFileType = (fileName, mimeType) => {
                 </div>
               ))}
             </div>
-              ) : null} 
-
-
+          ) : null}
 
           {/* End of  Dropbox*/}
           {/* ... start camera */}
@@ -711,8 +695,6 @@ const getFileType = (fileName, mimeType) => {
             ))}
           </div>
           {/* ... end camera */}
-
-
 
           {fileSuccessModal ? (
             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
