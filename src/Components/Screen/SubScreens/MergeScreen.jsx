@@ -29,8 +29,6 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-
-
   const handleMouseOut = () => {
     setIsHovering(false);
   };
@@ -39,7 +37,6 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     setIsHovering(false);
   };
 
-
   return (
     <>
       <div className="flex border-b border-gray">
@@ -47,7 +44,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       <div className="pt-6 px-5 page-contain">
-        <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
+        <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="justify-between lg:flex md:flex items-center sm:block">
             <div className="section-title">
               <h1 className="not-italic font-medium text-2xl text-[#001737]">
@@ -78,13 +75,15 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
 
           <div className="accordions mt-5">
-            <div className="section shadow-md p-5 rounded-md bg-white  lg:flex md:flex  sm:block items-center justify-between" onMouseOver={handleMouseOver}
-              onMouseOut={handleMouseOut}>
+            <div
+              className="section shadow-md p-5 rounded-md bg-white  lg:flex md:flex  sm:block items-center justify-between"
+              onMouseOver={handleMouseOver}
+              onMouseOut={handleMouseOut}
+            >
               <h1 className="text-lg">Merged Screen Name1</h1>
               <div className="flex items-center">
                 {isHovering && (
                   <div className="flex items-center flex-wrap">
-
                     <button className="rounded-full mx-1 border hover:bg-SlateBlue">
                       <TbScanEye className="text-2xl p-1 hover:text-white" />
                     </button>
@@ -109,7 +108,6 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                       <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
                         Preview
                       </button>{" "}
-
                       <button className="rounded-full mx-1 border hover:bg-SlateBlue">
                         <TbUpload className="text-2xl p-1 hover:text-white" />
                       </button>
@@ -122,10 +120,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                       </button>
                     </>
                   )}
-                  <button
-                    className="showicon"
-                    onClick={handleDropupClick}
-                  >
+                  <button className="showicon" onClick={handleDropupClick}>
                     {" "}
                     {showdata ? (
                       <IoIosArrowDropup className="text-3xl" />
@@ -139,7 +134,10 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
 
             {showdata && (
               <div className="overflow-x-auto">
-                <table className="mt-9 w-full sm:mt-3 lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white" cellPadding={20}>
+                <table
+                  className="mt-9 w-full sm:mt-3 lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white"
+                  cellPadding={20}
+                >
                   <thead>
                     <tr className="border-b border-lightgray">
                       <th className="p-3 font-medium text-[14px]">
@@ -329,7 +327,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         <button
                           onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                        > Asset Name
+                        >
+                          {" "}
+                          Asset Name
                           <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
                       </td>
@@ -352,7 +352,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         <button
                           onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                        > Asset Name
+                        >
+                          {" "}
+                          Asset Name
                           <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
                       </td>
@@ -375,7 +377,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         <button
                           onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                        > Asset Name
+                        >
+                          {" "}
+                          Asset Name
                           <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
                       </td>
@@ -390,7 +394,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
             )}
           </div>
         </div>
-      </div >
+      </div>
       <Footer />
     </>
   );

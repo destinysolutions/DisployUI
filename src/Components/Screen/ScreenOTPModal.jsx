@@ -5,8 +5,8 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
   return (
     <>
       <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-[9999] outline-none focus:outline-none">
-        <div className="relative w-auto my-6 lg:mx-auto md:mx-auto lg:max-w-xl md:max-w-xl sm:max-w-lg xs:w-full  sm:mx-3 xs:mx-3">
-          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+        <div className="relative w-auto my-6 lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full  sm:mx-3 xs:mx-3">
+          <div className="border-0 rounded-xl shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
               <h3 className="text-xl font-medium">New Screen</h3>
               <button
@@ -16,91 +16,86 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                 <AiOutlineCloseCircle className="text-3xl text-primary" />
               </button>
             </div>
-
-            <div className="relative lg:p-10 md:p-10 sm:p-5 xs:p-3 flex-auto">
+            <div className="relative lg:p-5 md:p-5 sm:p-3 xs:p-2 flex-auto">
               <div className="flex items-center justify-center mb-4">
                 <img src="/DisployImg/BlackLogo.svg" />
               </div>
 
-              <div className="bg-white rounded-[20px] newscreenpopup  lg:p-5 md:p-5 sm:p-5 xs:p-2 xs:py-5">
-                <div className="container mx-auto">
-                  <div className="max-w-sm mx-auto md:max-w-lg">
-                    <div className="w-full">
-                      <div className="bg-white   rounded text-center">
-                        <div className="flex flex-col">
-                          <div className="font-normal lg:text-lg md:text-lg sm:text-base xs:text-sm text-[#000000]">
-                            Enter the 6-character pairing code?
-                          </div>
-                        </div>
+              <div className="flex w-7/12 mx-auto items-center justify-center relative mb-4">
+                <img src="/ScreenImg/disploy-tv-img.png" alt="" />
+              </div>
 
-                        <div
-                          id="otp"
-                          className="flex flex-row justify-center text-center px-2 mt-5"
-                        >
-                          <input
-                            className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
-                            type="text"
-                            id="first"
-                            maxLength="1"
-                          />
-                          <input
-                            className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
-                            type="text"
-                            id="second"
-                            maxLength="1"
-                          />
-                          <input
-                            className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
-                            type="text"
-                            id="third"
-                            maxLength="1"
-                          />
-                          <input
-                            className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
-                            type="text"
-                            id="fourth"
-                            maxLength="1"
-                          />
-                          <input
-                            className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
-                            type="text"
-                            id="fifth"
-                            maxLength="1"
-                          />
-                          <input
-                            className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
-                            type="text"
-                            id="sixth"
-                            maxLength="1"
-                          />
-                        </div>
+              <div className="container mx-auto">
+                <div className="w-full">
+                  <div className="font-normal lg:text-lg md:text-lg sm:text-base xs:text-sm text-[#000000] text-center">
+                    Enter the 6-character pairing code?
+                  </div>
 
-                        <div className="flex justify-center text-center mt-5">
-                          <input type="checkbox" />
-                          <p className="ml-2 text-[#515151] lg:text-[13px] md:text-[13px] sm:text-[12px] xs:text-[12px] ">
-                            Start screen in Preview Mode
-                          </p>
-                        </div>
-                        <div className="flex justify-center text-center lg:mt-5 md:mt-5 sm:mt-3  xs:mt-3">
-                          <p className="text-[#515151] text-[12px] max-w-[400px]">
-                            To get pair code, please install Disploy app on your
-                            Players (Android, LG, Samsung, FireStick, Raspberry
-                            Pi, etc.)
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+                  <div
+                    id="otp"
+                    className="flex flex-row justify-center text-center px-2"
+                  >
+                    <input
+                      className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
+                      type="text"
+                      id="first"
+                      maxLength="1"
+                    />
+                    <input
+                      className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
+                      type="text"
+                      id="second"
+                      maxLength="1"
+                    />
+                    <input
+                      className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
+                      type="text"
+                      id="third"
+                      maxLength="1"
+                    />
+                    <input
+                      className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
+                      type="text"
+                      id="fourth"
+                      maxLength="1"
+                    />
+                    <input
+                      className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
+                      type="text"
+                      id="fifth"
+                      maxLength="1"
+                    />
+                    <input
+                      className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
+                      type="text"
+                      id="sixth"
+                      maxLength="1"
+                    />
+                  </div>
+
+                  <div className="flex justify-center text-center">
+                    <input type="checkbox" />
+                    <p className="ml-2 text-[#515151] ">
+                      Start screen in Preview Mode
+                    </p>
+                  </div>
+                  <div className="flex justify-center text-center">
+                    <p className="text-[#515151]">
+                      To get pair code, please install Disploy app on your
+                      Players (Android, LG, Samsung, FireStick, Raspberry Pi,
+                      etc.)
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-center pb-7">
+            <div className="flex items-center justify-center pb-4">
               <Link to="/newscreendetail">
                 <button
                   className="text-white bg-[#00072E] font-semibold   lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-lg md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
                   type="button"
-                //onClick={() => setShowOTPVerifyModal(true)}
+                  //onClick={() => setShowOTPVerifyModal(true)}
                 >
                   Continue
                 </button>

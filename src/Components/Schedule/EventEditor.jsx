@@ -27,14 +27,21 @@ const EventEditor = ({
   const [editedEndTime, setEditedEndTime] = useState("");
   const [selectedAsset, setSelectedAsset] = useState("");
   const [assetPreview, setAssetPreview] = useState("");
-  const buttons = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+  const buttons = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const [selectAllDays, setSelectAllDays] = useState(false);
   const [selectedDays, setSelectedDays] = useState(
     new Array(buttons.length).fill(false)
   );
   const [selectedRepeatDay, setSelectedRepeatDay] = useState("");
-  //console.log(selectedRepeatDay, "selectedRepeatDay");
-  // State to keep track of repeat settings modal
+
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
 
   const handleOpenRepeatSettings = () => {
@@ -53,7 +60,6 @@ const EventEditor = ({
   };
 
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
-  //console.log(selectedEvent);
   useEffect(() => {
     if (isOpen) {
       if (selectedEvent) {
@@ -145,6 +151,28 @@ const EventEditor = ({
     currentDate.setDate(startDate.getDate() + dayIndex);
     return currentDate >= startDate && currentDate <= endDate;
   };
+  const handleCheckboxChange = () => {
+    const newSelectAllDays = !selectAllDays;
+    setSelectAllDays(newSelectAllDays);
+    const newSelectedDays = newSelectAllDays
+      ? Array(buttons.length).fill(true)
+      : Array(buttons.length).fill(false);
+    setSelectedDays(newSelectedDays);
+  };
+  const handleDayButtonClick = (index) => {
+    if (isDayInRange(index)) {
+      const newSelectedDays = [...selectedDays];
+      newSelectedDays[index] = !selectedDays[index];
+      setSelectedDays(newSelectedDays);
+
+      // Check if all individual days are selected, then check the "Repeat for All Day" checkbox.
+      if (newSelectedDays.every((day) => day === true)) {
+        setSelectAllDays(true);
+      } else {
+        setSelectAllDays(false);
+      }
+    }
+  };
 
   const handleAssetAdd = (asset) => {
     setSelectedAsset(asset);
@@ -159,133 +187,55 @@ const EventEditor = ({
     const selectedDaysInNumber = selectedDays
       .map((isSelected, index) => (isSelected ? index : null))
       .filter((index) => index !== null);
-
+    const selectedDaysInString = selectedDaysInNumber.map(
+      (index) => buttons[index]
+    );
     // Determine if any specific days are selected (excluding the "Repeat for All Day" option)
     const areSpecificDaysSelected = selectedDays.some(
       (isSelected) => isSelected
     );
+
     let repeatDayValue = null;
     if (areSpecificDaysSelected || selectAllDays) {
       repeatDayValue = selectAllDays
         ? buttons.map((_, index) => index)
-        : selectedDaysInNumber;
+        : selectedDaysInString;
       setSelectedRepeatDay(repeatDayValue);
-      const events = [];
-      let currentDate = new Date(start);
+    }
 
-      while (currentDate <= end) {
-        if (selectAllDays || selectedDays[currentDate.getDay()]) {
-          const eventStart = new Date(currentDate);
-          eventStart.setHours(start.getHours(), start.getMinutes());
+    const eventData = {
+      title: title,
+      start: start,
+      end: end,
+      color: selectedColor,
+      asset: selectedAsset,
+    };
 
-          const eventEnd = new Date(currentDate);
-          eventEnd.setHours(end.getHours(), end.getMinutes());
+    if (areSpecificDaysSelected) {
+      // Add repeatDay to eventData if specific days are selected
+      eventData.repeatDay = repeatDayValue;
+    }
 
-          events.push({
-            title: title,
-            start: eventStart,
-            end: eventEnd,
-            color: selectedColor,
-            asset: selectedAsset,
-            repeatDay: repeatDayValue,
-          });
-        }
-        // Move to the next day
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-      console.log(events, "events=====");
-      // Save the generated events
-      // events.forEach((event) => {
-
-      // });
-      onSave(null, events);
+    // Check if the selected event is present and has the same data as the form data
+    if (
+      selectedEvent &&
+      selectedEvent.title === title &&
+      selectedEvent.start.getTime() === start.getTime() &&
+      selectedEvent.end.getTime() === end.getTime() &&
+      selectedEvent.color === selectedColor &&
+      selectedEvent.asset === selectedAsset &&
+      selectedEvent.repeatDay === selectedRepeatDay
+    ) {
+      onClose();
     } else {
-      // If no specific days are selected, treat it as a one-time event and save it
-      const eventData = {
-        title: title,
-        start: start,
-        end: end,
-        color: selectedColor,
-        asset: selectedAsset,
-        repeatDay: repeatDayValue,
-      };
-      // Check if the selected event is present and has the same data as the form data
-      if (
-        selectedEvent &&
-        selectedEvent.title === title &&
-        selectedEvent.start.getTime() === start.getTime() &&
-        selectedEvent.end.getTime() === end.getTime() &&
-        selectedEvent.color === selectedColor &&
-        selectedEvent.asset === selectedAsset &&
-        selectedEvent.repeatDay === selectedRepeatDay
-      ) {
-        onClose();
+      if (selectedEvent) {
+        onSave(selectedEvent?.id || selectedEvent?.eventId, eventData);
       } else {
-        if (selectedEvent) {
-          onSave(selectedEvent?.id || selectedEvent?.eventId, eventData);
-        } else {
-          onSave(null, eventData);
-        }
-        onClose();
+        onSave(null, eventData);
       }
+      onClose();
     }
   };
-
-  // const handleSave = () => {
-  //   // Convert edited dates and times to actual Date objects
-  //   const start = new Date(editedStartDate + " " + editedStartTime);
-  //   const end = new Date(editedEndDate + " " + editedEndTime);
-
-  //   const selectedDaysInNumber = selectedDays
-  //     .map((isSelected, index) => (isSelected ? index : null))
-  //     .filter((index) => index !== null);
-
-  //   // Determine if any specific days are selected (excluding the "Repeat for All Day" option)
-  //   const areSpecificDaysSelected = selectedDays.some(
-  //     (isSelected) => isSelected
-  //   );
-
-  //   let repeatDayValue = null;
-  //   if (areSpecificDaysSelected || selectAllDays) {
-  //     repeatDayValue = selectAllDays
-  //       ? buttons.map((_, index) => index)
-  //       : selectedDaysInNumber;
-  //     setSelectedRepeatDay(repeatDayValue);
-  //   }
-
-  //   const eventData = {
-  //     title: title,
-  //     start: start,
-  //     end: end,
-  //     color: selectedColor,
-  //     asset: selectedAsset,
-  //   };
-
-  //   if (areSpecificDaysSelected) {
-  //     // Add repeatDay to eventData if specific days are selected
-  //     eventData.repeatDay = repeatDayValue;
-  //   }
-
-  //   // Check if the selected event is present and has the same data as the form data
-  //   if (
-  //     selectedEvent &&
-  //     selectedEvent.title === title &&
-  //     selectedEvent.start.getTime() === start.getTime() &&
-  //     selectedEvent.end.getTime() === end.getTime() &&
-  //     selectedEvent.color === selectedColor &&
-  //     selectedEvent.asset === selectedAsset &&
-  //     selectedEvent.repeatDay === selectedRepeatDay
-  //   ) {
-  //     onClose();
-  //   } else {
-  //     if (selectedEvent) {
-  //       onSave(selectedEvent?.id || selectedEvent?.eventId, eventData);
-  //     } else {
-  //       onSave(null, eventData);
-  //     }
-  //     onClose();
-  //   }
-  // };
 
   const [searchAsset, setSearchAsset] = useState("");
   const handleFilter = (event) => {
@@ -360,11 +310,11 @@ const EventEditor = ({
                   onChange={handleFilter}
                 />
               </div>
-              <div className="overflow-x-auto">
-                <div className="rounded-sm bg-white  shadow-2xl md:pb-1">
-                  <div className="max-w-full overflow-x-auto max-h-[1122px]">
+              <div className="overflow-auto">
+                <div className="rounded-sm bg-white shadow-2xl md:pb-1">
+                  <div className="max-w-full overflow-auto max-h-[1340px]">
                     <table
-                      className="w-full table-fixed text-sm break-words"
+                      className="w-full lg:table-fixed md:table-fixed sm:table-auto xs:table-auto text-sm break-words "
                       cellPadding={10}
                     >
                       <thead>
@@ -405,24 +355,28 @@ const EventEditor = ({
                               }}
                             >
                               {item.categorieType === "OnlineImage" && (
-                                <img
-                                  src={item.fileType}
-                                  alt={item.name}
-                                  className="imagebox relative h-24 w-28"
-                                />
+                                <div className="imagebox relative">
+                                  <img
+                                    src={item.fileType}
+                                    alt={item.name}
+                                    className="rounded-2xl h-24 w-28"
+                                  />
+                                </div>
                               )}
 
                               {item.categorieType === "OnlineVideo" && (
-                                <video
-                                  controls
-                                  className="w-full rounded-2xl relative h-56"
-                                >
-                                  <source
-                                    src={item.fileType}
-                                    type="video/mp4"
-                                  />
-                                  Your browser does not support the video tag.
-                                </video>
+                                <div className="relative videobox">
+                                  <video
+                                    controls
+                                    className="w-full rounded-2xl relative"
+                                  >
+                                    <source
+                                      src={item.fileType}
+                                      type="video/mp4"
+                                    />
+                                    Your browser does not support the video tag.
+                                  </video>
+                                </div>
                               )}
                               {item.categorieType === "Image" && (
                                 <img
@@ -509,37 +463,17 @@ const EventEditor = ({
                                           <>
                                             {assetPreview.categorieType ===
                                               "OnlineImage" && (
-                                              <img
-                                                src={assetPreview.fileType}
-                                                alt={assetPreview.name}
-                                                className="imagebox relative h-24 w-28"
-                                              />
+                                              <div className="imagebox relative p-3">
+                                                <img
+                                                  src={assetPreview.fileType}
+                                                  alt={assetPreview.name}
+                                                  className="rounded-2xl"
+                                                />
+                                              </div>
                                             )}
 
                                             {assetPreview.categorieType ===
                                               "OnlineVideo" && (
-                                              <video
-                                                controls
-                                                className="w-full rounded-2xl relative h-56"
-                                              >
-                                                <source
-                                                  src={assetPreview.fileType}
-                                                  type="video/mp4"
-                                                />
-                                                Your browser does not support
-                                                the video tag.
-                                              </video>
-                                            )}
-                                            {assetPreview.categorieType ===
-                                              "Image" && (
-                                              <img
-                                                src={assetPreview.fileType}
-                                                alt={assetPreview.name}
-                                                className="imagebox relative h-24 w-28"
-                                              />
-                                            )}
-                                            {assetPreview.categorieType ===
-                                              "Video" && (
                                               <div className="relative videobox">
                                                 <video
                                                   controls
@@ -553,6 +487,28 @@ const EventEditor = ({
                                                   the video tag.
                                                 </video>
                                               </div>
+                                            )}
+                                            {assetPreview.categorieType ===
+                                              "Image" && (
+                                              <img
+                                                src={assetPreview.fileType}
+                                                alt={assetPreview.name}
+                                                className="imagebox relative"
+                                              />
+                                            )}
+                                            {assetPreview.categorieType ===
+                                              "Video" && (
+                                              <video
+                                                controls
+                                                className="w-full rounded-2xl relative h-56"
+                                              >
+                                                <source
+                                                  src={assetPreview.fileType}
+                                                  type="video/mp4"
+                                                />
+                                                Your browser does not support
+                                                the video tag.
+                                              </video>
                                             )}
                                             {assetPreview.categorieType ===
                                               "DOC" && (
@@ -582,7 +538,7 @@ const EventEditor = ({
             </div>
             {showRepeatSettings ? (
               <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0 bg-white shadow-2xl p-4">
-                <div className="">
+                <div>
                   <div className="flex mt-5 items-center">
                     <label>Start Date:</label>
                     <div className="ml-3">
@@ -644,7 +600,7 @@ const EventEditor = ({
                   <input
                     type="checkbox"
                     checked={selectAllDays}
-                    onChange={() => setSelectAllDays(!selectAllDays)}
+                    onChange={handleCheckboxChange}
                   />
                   <label className="ml-3">Repeat for All Day</label>
                 </div>
@@ -652,7 +608,7 @@ const EventEditor = ({
                 <div>
                   {buttons.map((label, index) => (
                     <button
-                      className={`daysbtn ${
+                      className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
                         (selectAllDays || selectedDays[index]) &&
                         isDayInRange(index)
                           ? "bg-SlateBlue border-white"
@@ -660,13 +616,7 @@ const EventEditor = ({
                       }`}
                       key={index}
                       disabled={!isDayInRange(index)}
-                      onClick={() => {
-                        if (isDayInRange(index)) {
-                          const newSelectedDays = [...selectedDays];
-                          newSelectedDays[index] = !newSelectedDays[index];
-                          setSelectedDays(newSelectedDays);
-                        }
-                      }}
+                      onClick={() => handleDayButtonClick(index)}
                     >
                       {label}
                     </button>
@@ -731,7 +681,6 @@ const EventEditor = ({
                           <h3>End Date:</h3>
                           <div className="mt-2 bg-lightgray rounded-full px-3 py-2 w-full">
                             {moment(editedStartDate).format("DD-MM-YYYY")}
-                            {/* {editedStartDate} */}
                           </div>
                         </li>
                         <li className="border-b-2 border-lightgray p-3">
@@ -789,7 +738,7 @@ const EventEditor = ({
               </div>
             )}
           </div>
-          <div className="flex justify-center mt-16">
+          <div className="flex justify-center">
             <button
               className="border-2 border-lightgray hover:bg-primary hover:text-white   px-5 py-2 rounded-full"
               onClick={() => {

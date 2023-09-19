@@ -62,7 +62,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       {
         <div className="pt-6 lg:px-5 md:px-5 sm:px-2 xs:px-1">
-          <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
+          <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
             <div className="justify-between flex items-center xs-block">
               <div className="section-title">
                 <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl sm:mb-4  text-[#001737]">
@@ -328,10 +328,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   onClick={() => {
                                     setEnabled(!enabled);
                                   }}
-                                  className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled
-                                    ? " bg-gray text-left pl-2 text-white text-sm"
-                                    : "bg-gray text-right pr-2 text-white text-sm"
-                                    }`}
+                                  className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
+                                    enabled
+                                      ? " bg-gray text-left pl-2 text-white text-sm"
+                                      : "bg-gray text-right pr-2 text-white text-sm"
+                                  }`}
                                 >
                                   {enabled ? "On" : "Off"}
                                 </div>
@@ -753,10 +754,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                           onClick={() => {
                                             setEnabled(!enabled);
                                           }}
-                                          className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled
-                                            ? " bg-gray text-left pl-2 text-white text-sm"
-                                            : "bg-gray text-right pr-2 text-white text-sm"
-                                            }`}
+                                          className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
+                                            enabled
+                                              ? " bg-gray text-left pl-2 text-white text-sm"
+                                              : "bg-gray text-right pr-2 text-white text-sm"
+                                          }`}
                                         >
                                           {enabled ? "On" : "Off"}
                                         </div>
@@ -899,10 +901,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                         onClick={() => {
                                           setEnabled(!enabled);
                                         }}
-                                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${enabled
-                                          ? " bg-gray text-left pl-2 text-white text-sm"
-                                          : "bg-gray text-right pr-2 text-white text-sm"
-                                          }`}
+                                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
+                                          enabled
+                                            ? " bg-gray text-left pl-2 text-white text-sm"
+                                            : "bg-gray text-right pr-2 text-white text-sm"
+                                        }`}
                                       >
                                         {enabled ? "On" : "Off"}
                                       </div>

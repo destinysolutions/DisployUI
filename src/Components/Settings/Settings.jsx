@@ -233,7 +233,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
 
       <div className="pt-6 px-5 page-contain">
-        <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
+        <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex justify-between sm:flex xs:block  items-center mb-5 ">
             <div className=" lg:mb-0 md:mb-0 sm:mb-4">
               <h1 className="not-italic font-medium lg:text-2xl  md:text-2xl sm:text-xl xs:text-xs text-[#001737]  ">

@@ -126,7 +126,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
     axios
       .request(config)
-      .then((response) => {
+      .then(() => {
         setScheduleData([]);
       })
       .catch((error) => {
@@ -143,7 +143,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       {/* navbar and sidebar end */}
       <div className="pt-6 px-5 page-contain ">
-        <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
+        <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
               My Schedule

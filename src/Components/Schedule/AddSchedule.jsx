@@ -22,6 +22,7 @@ import {
   GET_ALL_EVENTS,
   ADD_SCHEDULE,
   SCHEDULE_SELECT_BY_ID,
+  GET_TIMEZONE,
 } from "../../Pages/Api";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
@@ -63,6 +64,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const isEditingSchedule = !!getScheduleId;
   const getScheduleName = searchParams.get("scheduleName");
   const [editScheduleName, setEditScheduleName] = useState(getScheduleName);
+  const [getTimezone, setTimezone] = useState([]);
 
   console.log(getScheduleId, "getScheduleId");
   const handleSelectSlot = useCallback(({ start, end }) => {
@@ -75,44 +77,29 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setCreatePopupOpen(true);
   }, []);
 
-  const handleCreateNewSchedule = (e) => {
-    setNewScheduleNameInput(e.target.value);
-  };
-
   // Function to handle saving the new schedule
   const handleSaveNewSchedule = () => {
-    // Check if the entered schedule name is not empty
-    if (newScheduleNameInput.trim() !== "") {
-      const currentDateTime = new Date();
-
-      // Format the current date and time as a string
-      const formattedDateTime = currentDateTime.toISOString();
-
-      axios
-        .post(ADD_SCHEDULE, {
-          scheduleName: newScheduleNameInput,
-          startDate: formattedDateTime,
-          endDate: formattedDateTime,
-          operation: "Insert",
-        })
-        .then((response) => {
-          const newScheduleId = response.data.data.model.scheduleId;
-          setCreatedScheduleId(newScheduleId);
-          setShowScheduleName(true);
-        })
-        .catch((error) => {
-          console.error("Error creating a new schedule:", error);
-        });
-    } else {
-      // Handle the case where the user entered an empty schedule name or canceled
-      // You can display an error message or take appropriate action
-    }
+    axios
+      .post(ADD_SCHEDULE, {
+        scheduleName: newScheduleNameInput,
+        operation: "Insert",
+      })
+      .then((response) => {
+        const newScheduleId = response.data.data.model.scheduleId;
+        setCreatedScheduleId(newScheduleId);
+        setShowScheduleName(true);
+      })
+      .catch((error) => {
+        console.error("Error creating a new schedule:", error);
+      });
   };
 
   const saveEditedSchedule = () => {
     let data = JSON.stringify({
       scheduleId: getScheduleId,
       scheduleName: editScheduleName,
+      startDate: overallEventTimes.earliestStartTime.toLocaleString(),
+      endDate: overallEventTimes.latestEndTime.toLocaleString(),
       operation: "Update",
     });
     console.log(getScheduleId, "scheduleIdscheduleIdscheduleIdscheduleId");
@@ -145,13 +132,14 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .get(`${SCHEDULE_SELECT_BY_ID}?ID=${scheduleId}`)
       .then((response) => {
         const fetchedData = response.data.data;
+        console.log(response.data.data, "fetchedData");
         setScheduleAsset(response.data.data);
         if (Array.isArray(fetchedData)) {
           const fetchedEvents = fetchedData.map((item) => ({
             id: item.eventId,
             title: item.title,
-            start: new Date(item.startDate),
-            end: new Date(item.endDate),
+            start: new Date(item.cStartDate),
+            end: new Date(item.cEndDate),
             color: item.color,
             asset: item.asset,
             repeatDay: item.repeatDay,
@@ -177,6 +165,18 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [getScheduleId]);
 
+  useEffect(() => {
+    axios
+      .get(GET_TIMEZONE)
+      .then((response) => {
+        console.log(response);
+        setTimezone(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   // Function to handle event drag and drop
   const handleEventDrop = ({ event, start, end }) => {
     const scheduleIdToUse = isEditingSchedule
@@ -191,7 +191,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       start,
       end,
       asset: previousSelectedAsset,
-      scheduleName: scheduleIdToUse,
+      scheduleId: scheduleIdToUse,
     };
     handleSaveEvent(updatedEventData.id, updatedEventData);
   };
@@ -209,13 +209,14 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       start,
       end,
       asset: previousSelectedAsset,
-      scheduleName: scheduleIdToUse,
+      scheduleId: scheduleIdToUse,
     };
     handleSaveEvent(resizedEvent.id, resizedEvent);
   };
 
   // Function to handle saving or updating events
   const handleSaveEvent = (eventId, eventData) => {
+    //debugger;
     // Ensure you're using the correct scheduleId (createdScheduleId or getScheduleId)
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
@@ -224,12 +225,12 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     const data = {
       startDate: eventData.start,
       endDate: eventData.end,
-      asset: eventData.asset.id,
+      asset: eventData.asset ? eventData.asset.id : null,
       title: eventData.title,
       color: eventData.color,
       repeatDay: eventData.repeatDay,
       operation: eventId ? "Update" : "Insert",
-      scheduleName: scheduleIdToUse, // Use the appropriate scheduleId
+      scheduleId: scheduleIdToUse, // Use the appropriate scheduleId
     };
 
     if (eventId) {
@@ -248,13 +249,17 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
+        //window.location.href = `/addschedule?scheduleId=${response.data.data.eventTables.scheduleId}`;
         console.log(response.data, "response");
+
         const updatedEvent = {
           ...eventData,
-          asset: response.data.data.model.asset,
-          id: eventId || response.data.data.model.eventId,
-          repeatDay: response.data.data.model.repeatDay,
-          scheduleName: scheduleIdToUse, // Use the appropriate scheduleId
+          asset: response.data.data.eventTables.asset,
+          id: eventId || response.data.data.eventTables.eventId,
+          repeatDay: response.data.data.eventTables.repeatDay,
+          startDate: response.data.data.eventTables.start,
+          endDate: response.data.data.eventTables.end,
+          scheduleId: scheduleIdToUse, // Use the appropriate scheduleId
         };
         console.log(updatedEvent, "updatedEventupdatedEvent====");
         if (eventId) {
@@ -374,8 +379,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             <div className="lg:col-span-3 md:col-span-5 sm:col-span-6 xs:col-span-12">
               <select className="w-full paymentlabel relative">
-                <option value="">Select Time Zones</option>
-                <option value=""> Hawaii–Aleutian Time Zone. </option>
+                <option value=""> {getTimezone} </option>
+                {/* {getTimezone.map((timezone)=>{
+ <option value=""> {timezone} </option>
+                })} */}
+                {/* <option value=""> Hawaii–Aleutian Time Zone. </option>
                 <option value="">Alaska Time Zone. </option>
                 <option value="">Contiguous USA Time Zones. </option>
                 <option value="">Pacific Time Zone (PT) </option>
@@ -384,7 +392,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   Central Time Zone (CT) Central Standard Time (CST) UTC − 6 h;
                   Central Daylight Time (CDT) UTC − 5 h.
                 </option>
-                <option value="">Eastern Time Zone (ET)</option>
+                <option value="">Eastern Time Zone (ET)</option> */}
               </select>
             </div>
           </div>
@@ -423,7 +431,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               />
             </div>
             <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
-              <div className="flex justify-center my-3">schedule Name</div>
+              <div className="flex justify-center my-3 text-black font-semibold text-xl">
+                Schedule Name
+              </div>
 
               {isEditingSchedule ? (
                 <>
@@ -432,15 +442,15 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       {editScheduleName}
                     </h1>
                   ) : (
-                    <div className="px-3">
+                    <div className="flex justify-center items-center px-5">
                       <input
                         type="text"
-                        className="w-full relative border border-gray-300 rounded-md px-2 py-1 mt-3"
+                        className="w-full border border-primary rounded-md px-2 py-1"
                         value={editScheduleName}
                         onChange={(e) => setEditScheduleName(e.target.value)}
                       />
                       <button
-                        className="text-black px-2 py-1 rounded border border-primary mt-3"
+                        className="text-black px-2 py-1 rounded border border-primary ml-1"
                         onClick={saveEditedSchedule}
                       >
                         Edit
@@ -455,16 +465,18 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       {newScheduleNameInput}
                     </h1>
                   ) : (
-                    <div className="px-3">
+                    <div className="flex justify-center items-center px-5">
                       <input
                         type="text"
-                        className="w-full paymentlabel relative border border-gray-300 rounded-md px-2 py-1"
-                        placeholder="Enter new schedule name"
+                        className="w-full border border-primary rounded-md px-2 py-1"
+                        placeholder="Enter schedule name"
                         value={newScheduleNameInput}
-                        onChange={handleCreateNewSchedule}
+                        onChange={(e) =>
+                          setNewScheduleNameInput(e.target.value)
+                        }
                       />
                       <button
-                        className="text-black px-2 py-1 rounded border border-primary mt-3 ml-1"
+                        className="text-black px-2 py-1 rounded border border-primary ml-1"
                         onClick={handleSaveNewSchedule}
                       >
                         Save
@@ -501,16 +513,29 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         onChange={handleAssetChange}
                       >
                         <option value="">Select an asset</option>
-                        {scheduleAsset
-                          .filter(
-                            (asset, index, self) =>
-                              self.findIndex((a) => a.id === asset.id) === index
+
+                        {Array.from(
+                          new Set(
+                            Array.isArray(scheduleAsset) // Check if scheduleAsset is an array
+                              ? scheduleAsset.map((asset) => asset.asset)
+                              : [scheduleAsset] // Convert to an array with a single item
                           )
-                          .map((asset) => (
-                            <option key={asset.id} value={asset.name}>
-                              {asset.name}
-                            </option>
-                          ))}
+                        ).map((uniqueId, index) => {
+                          // Find the asset with the uniqueId in allAssets
+                          const foundAsset = allAssets.find(
+                            (asset) => asset.id === uniqueId
+                          );
+
+                          if (foundAsset) {
+                            return (
+                              <option key={index} value={foundAsset.name}>
+                                {foundAsset.name}
+                              </option>
+                            );
+                          }
+
+                          return null; // Handle the case where no asset is found with the id
+                        })}
                       </select>
                     </li>
 

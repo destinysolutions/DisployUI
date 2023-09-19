@@ -46,7 +46,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       <div className="pt-6 px-5 page-contain">
-        <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
+        <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="justify-between lg:flex md:flex items-center sm:block">
             <div className="section-title">
               <h1 className="not-italic font-medium text-2xl text-[#001737]">
@@ -143,7 +143,10 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
             {showdata && (
               <div className="overflow-x-auto">
-                <table className="mt-9 w-full sm:mt-3 bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto" cellPadding={20}>
+                <table
+                  className="mt-9 w-full sm:mt-3 bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+                  cellPadding={20}
+                >
                   <thead>
                     <tr className="border-b border-lightgray ">
                       <th className="p-3 font-medium text-[14px]">
@@ -336,7 +339,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                         <button
                           onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                        > Asset Name
+                        >
+                          {" "}
+                          Asset Name
                           <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
                       </td>
@@ -362,7 +367,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                         <button
                           onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                        > Asset Name
+                        >
+                          {" "}
+                          Asset Name
                           <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
                       </td>
@@ -389,7 +396,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                         <button
                           onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                        > Asset Name
+                        >
+                          {" "}
+                          Asset Name
                           <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
                       </td>
