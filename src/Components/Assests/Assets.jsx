@@ -16,12 +16,14 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import { CgMoveRight } from "react-icons/cg";
 import { BsThreeDotsVertical } from "react-icons/bs";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Footer from "../Footer";
 import { HiOutlineVideoCamera } from "react-icons/hi2";
 import { RiGalleryFill } from "react-icons/ri";
 import { HiDocumentDuplicate } from "react-icons/hi";
+
+
 import {
   ADD_TRASH,
   ALL_FILES_UPLOAD,
@@ -38,6 +40,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+  const history = useNavigate();
+
   {
     /* video btn */
   }
@@ -307,7 +311,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
   
   const createFolder = () => {
-    // Calculate the next unique folder name based on fetched folder names
+   
     let nextFolderName = folderName;
     let counter = 1;
     
@@ -326,7 +330,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         console.log("Folder created:", response.data);
   
-        // Refresh the folder data after creation
         fetchFolderDetails();
       })
       .catch((error) => {
@@ -383,11 +386,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   
 // new folder dropdown
   const [openAssetsdwId, setOpenAssetsdwId] = useState(null);
-  const toggleAssetsdw = (folderId) => {
+    const toggleAssetsdw = (folderId) => {
     if (openAssetsdwId === folderId) {
       setOpenAssetsdwId(null);
     } else {
       setOpenAssetsdwId(folderId);
+      
     }
   };
 
@@ -450,51 +454,98 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   // move to data in folder
 
   const [isMoveToOpen, setIsMoveToOpen] = useState(false);
- 
   const toggleMoveTo = () => {
     setIsMoveToOpen(!isMoveToOpen);
   };
   const moveDataToFolder = async (dataId, folderId) => {
+    let data = JSON.stringify({
+      "folderID": folderId,
+      "asset": dataId,
+      "operation": "Insert"
+    });
+  
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: MOVE_TO_FOLDER,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+  
     try {
-      // Send the API request to move the data to the folder
-      const response = await axios.post(MOVE_TO_FOLDER, {
-        asset: dataId,
-        folderID: folderId,
-        operation: "Insert",
-      });
-        console.log("Data moved successfully:", response.data);
+      const response = await axios.request(config);
+      console.log(JSON.stringify(response.data));
+  
+      // Update the folderImages state to add the image only to the selected folder
+      setFolderImages((prevImages) => ({
+        ...prevImages,
+        [folderId]: [...(prevImages[folderId] || []), dataId],
+      }));
         updateFolderContent(folderId);
+   
+      
     } catch (error) {
-      console.error("Error moving data:", error);
+      console.log(error);
     }
   };
-  const handleMoveTo = (folderId) => {
+   const handleMoveTo = (folderId) => {
     selectedItems.forEach((item) => {
       moveDataToFolder(item.id, folderId);
       
       setGridData((prevGridData) => prevGridData.filter((image) => image.id !== item.id));
     });
-  
-  
-    setSelectedItems([]);
-    setIsMoveToOpen(false);
+    
+  //  setIsMoveToOpen(false);
   };
-  const updateFolderContent = async (folderId) => {
+const updateFolderContent =  (folderId) => {
     try {
-     const response = await axios.get(GET_FOLDER_CONTENT_ENDPOINT, {
-        params: {
-          folderId: folderId,
-        },
-      });
-     setGridData(response.data); 
+     axios.get(`http://192.168.1.219/api/ImageVideoDoc/SelectByFolder?ID=${folderId}`)
+     .then((response)=>{
+      console.log(response.data);
+      setGridData(response.data); 
+     })
+     
     } catch (error) {
       console.error("Error updating folder content:", error);
     }
   };
 
-  
+  // drag and drop
+  const [draggedItemId, setDraggedItemId] = useState(null);
+const [dragOverFolderId, setDragOverFolderId] = useState(null);
+const [draggedItems, setDraggedItems] = useState([]);
 
-  return (
+const handleDragStart = (itemId) => {
+  setDraggedItems([...draggedItems, itemId]);
+};
+
+
+const handleDragEnter = (folderId) => {
+  console.log("Drag entered folder ID:", folderId);
+  setDragOverFolderId(folderId);
+};
+
+const handleDragLeave = () => {
+  console.log("Drag left folder");
+  setDragOverFolderId(null);
+};
+
+const handleDrop = (folderId) => {
+  if (draggedItemId && folderId !== null) {
+    moveDataToFolder(draggedItemId, folderId);
+    setDraggedItems(draggedItems.filter((item) => item !== draggedItemId));
+    setDraggedItemId(null);
+    setDragOverFolderId(null);
+  }
+};
+
+const navigateToFolder = (folderId) => {
+  history(`/NewFolderDialog/${folderId}`);
+};
+
+ return (
     <>
       <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
@@ -502,7 +553,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       {
         <div className="pt-6 px-5 page-contain">
-          <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
+          <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
             <div className="lg:flex lg:justify-between sm:block items-center">
               <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
                 Assets
@@ -618,14 +669,21 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                 
                   return (
                     <li
-                      key={`folder-${folder.folderID}`}
-                      className="text-center relative list-none bg-lightgray rounded-md px-3 py-7"
-                    >
+    key={`folder-${folder.folderID}`} onClick={() => navigateToFolder(folder.folderID)}
+    className={`text-center relative list-none bg-lightgray rounded-md px-3 py-7 ${
+      folder.folderID === dragOverFolderId ? 'drag-over' : ''
+    }`}
+    onDragEnter={() => handleDragEnter(folder.folderID)}
+    onDragLeave={handleDragLeave}
+    onDrop={() => handleDrop(folder.folderID)}
+  >
+
+
                       <FcOpenedFolder
                         className="text-8xl text-center mx-auto"
-                        onClick={() => openModal(folder.folderID)}
+                        // onClick={() => openModal(folder.folderID)}
                       />
-                
+                     
                       {editMode === folder.folderID ? (
                         <input
                           type="text"
@@ -694,14 +752,20 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           )}
                         </>
                       )}
-                      {folderModals[folder.folderID] && (
+                    
+                   {/* {folderModals[folder.folderID] && (
+                       
                         <NewFolderDialog
                           onClose={() => closeModal(folder.folderID)}
+                          folderId={folder.folderID}
                           onCreate={(folderName) => {
                             closeModal(folder.folderID);
                           }}
-                        />
-                      )}
+                          selectedData={selectedItems}
+                          />
+                       
+                        )} */}
+                      
                     </li>
                   );
                 })}
@@ -710,7 +774,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                 {gridData.length > 0 ? (
                   gridData.map((item, index) => (
                     <li
-                      key={`tabitem-grid-${item.id}-${index}`}
+                      key={`tabitem-grid-${item.id}-${index}`} draggable
+                      onDragStart={() => handleDragStart(item.id)}
                       className="relative list-none assetsbox"
                     >
                       {item.categorieType === "Image" && (
