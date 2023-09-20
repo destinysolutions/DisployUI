@@ -236,7 +236,14 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
       // Use Promise.all to execute all uploads concurrently
       await Promise.all(uploadPromises);
 
-
+      // Once all files are uploaded, navigate to the desired location
+      navigate("/assets");
+    } catch (error) {
+      console.error("An error occurred during upload:", error);
+    } finally {
+      setUploading(false); // Mark the upload as finished
+    }
+  };
 
   const getFileType = (fileName, mimeType) => {
     const extension = fileName.split(".").pop().toLowerCase();
@@ -374,7 +381,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         <Navbar />
       </div>
       <div className="pt-6 px-5 page-contain">
-        <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
+        <div className={`${sidebarOpen ? "ml-52" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between md:justify-between sm:justify-between sm:flex flex-wrap items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4">
               Media Upload
