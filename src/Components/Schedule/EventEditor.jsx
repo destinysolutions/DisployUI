@@ -75,8 +75,9 @@ const EventEditor = ({
         );
         if (previousSelectedAsset) {
           setSelectedAsset(previousSelectedAsset);
+          setAssetPreview(previousSelectedAsset);
         }
-        setSelectedRepeatDay(selectedEvent.repeatDay);
+        //setSelectedRepeatDay(selectedEvent.repeatDay);
         setTitle(selectedEvent.title);
         setSelectedColor(selectedEvent.color);
         setEditedStartDate(formatDate(selectedEvent.start));
@@ -84,14 +85,15 @@ const EventEditor = ({
         setEditedEndDate(formatDate(selectedEvent.end));
         setEditedEndTime(formatTime(selectedEvent.end));
       } else if (selectedSlot) {
-        setSelectedRepeatDay("");
+        //setSelectedRepeatDay("");
         setSelectedAsset(null);
+        setAssetPreview(null);
         setTitle("");
         setSelectedColor("");
-        setEditedStartDate(formatDate(selectedSlot.start));
-        setEditedStartTime(formatTime(selectedSlot.start));
-        setEditedEndDate(formatDate(selectedSlot.end));
-        setEditedEndTime(formatTime(selectedSlot.end));
+        setEditedStartDate(moment(selectedSlot.start).format("YYYY-MM-DD"));
+        setEditedStartTime(moment(selectedSlot.start).format("HH:MM"));
+        setEditedEndDate(moment(selectedSlot.end).format("YYYY-MM-DD"));
+        setEditedEndTime(moment(selectedSlot.end).format("HH:MM"));
       }
     }
   }, [isOpen, selectedEvent, selectedSlot, allAssets]);
@@ -100,20 +102,41 @@ const EventEditor = ({
     setTitle(e.target.value);
   };
 
-  const handleStartDateChange = (e) => {
-    setEditedStartDate(e.target.value);
-  };
-
   const handleStartTimeChange = (e) => {
     setEditedStartTime(e.target.value);
   };
 
-  const handleEndDateChange = (e) => {
-    setEditedEndDate(e.target.value);
-  };
-
   const handleEndTimeChange = (e) => {
     setEditedEndTime(e.target.value);
+  };
+
+  const handleStartDateChange = (e) => {
+    const newStartDate = e.target.value;
+    setEditedStartDate(newStartDate);
+
+    // Calculate and update the end date based on the new start date
+    const newEndDate = calculateEndDate(newStartDate, editedStartTime);
+    setEditedEndDate(newEndDate);
+  };
+
+  const handleEndDateChange = (e) => {
+    const newEndDate = e.target.value;
+    setEditedEndDate(newEndDate);
+  };
+
+  // Function to calculate the end date based on start date and time
+  const calculateEndDate = (startDate, startTime) => {
+    // Parse the start date and time to create a new Date object
+    const startDateObj = new Date(startDate + "T" + startTime);
+
+    // Calculate the end date by adding a default duration (e.g., 1 hour)
+    const endDateObj = new Date(startDateObj);
+    endDateObj.setHours(startDateObj.getHours() + 1); // You can adjust this as needed
+
+    // Format the end date to match your desired format
+    const formattedEndDate = formatDate(endDateObj);
+
+    return formattedEndDate;
   };
 
   // Create a variable to check if the modal is in "edit" mode
@@ -159,6 +182,7 @@ const EventEditor = ({
       : Array(buttons.length).fill(false);
     setSelectedDays(newSelectedDays);
   };
+
   const handleDayButtonClick = (index) => {
     if (isDayInRange(index)) {
       const newSelectedDays = [...selectedDays];
@@ -198,12 +222,12 @@ const EventEditor = ({
     let repeatDayValue = null;
     if (areSpecificDaysSelected || selectAllDays) {
       repeatDayValue = selectAllDays
-        ? buttons.map((_, index) => index)
+        ? buttons.map((dayName) => dayName)
         : selectedDaysInString;
-      setSelectedRepeatDay(repeatDayValue);
+      //setSelectedRepeatDay(repeatDayValue);
     }
 
-    const eventData = {
+    let eventData = {
       title: title,
       start: start,
       end: end,
@@ -211,10 +235,11 @@ const EventEditor = ({
       asset: selectedAsset,
     };
 
-    if (areSpecificDaysSelected) {
-      // Add repeatDay to eventData if specific days are selected
+    if (areSpecificDaysSelected || selectAllDays) {
       eventData.repeatDay = repeatDayValue;
     }
+
+    console.log(eventData, "evv", areSpecificDaysSelected);
 
     // Check if the selected event is present and has the same data as the form data
     if (
@@ -223,8 +248,8 @@ const EventEditor = ({
       selectedEvent.start.getTime() === start.getTime() &&
       selectedEvent.end.getTime() === end.getTime() &&
       selectedEvent.color === selectedColor &&
-      selectedEvent.asset === selectedAsset &&
-      selectedEvent.repeatDay === selectedRepeatDay
+      selectedEvent.asset === selectedAsset
+      //selectedEvent.repeatDay === selectedRepeatDay
     ) {
       onClose();
     } else {
@@ -271,7 +296,8 @@ const EventEditor = ({
 
     axios
       .request(config)
-      .then(() => {
+      .then((response) => {
+        console.log(response, "responsedelete");
         onDelete(selectedEvent.id);
         onClose();
       })
@@ -661,6 +687,7 @@ const EventEditor = ({
                       </ul>
                     </div>
                   </div>
+
                   <div className="border-b-2 border-lightgray"></div>
                   <div className="p-3">
                     <div className="mb-2">Schedule Date time</div>

@@ -184,48 +184,54 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             </div>
           </div>
-          <div className="Schedule-table bg-white rounded-xl mt-8 shadow">
+          <div className="overflow-x-auto bg-white rounded-xl mt-8 shadow">
             <table
               className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
               cellPadding={20}
             >
               <thead>
-                <tr className="border-b border-lightgray">
+                <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
                   <th className="font-medium text-[14px]">
-                    <button className=" flex  items-center justify-center">
+                    <div className="flex items-center">
                       <TbCalendarTime className="mr-2 text-xl" />
                       Schedule Name
-                    </button>
+                    </div>
                   </th>
                   <th className="font-medium text-[14px]">
-                    <button className=" flex  items-center justify-center mx-auto">
+                    <div className="flex items-center">
+                      <TbCalendarTime className="mr-2 text-xl" />
+                      Time Zones
+                    </div>
+                  </th>
+                  <th className="font-medium text-[14px]">
+                    <div className=" flex  items-center justify-center mx-auto">
                       <VscCalendar className="mr-2 text-xl" />
                       Date Added
-                    </button>
+                    </div>
                   </th>
                   <th className="font-medium text-[14px]">
-                    <button className=" flex  items-center justify-center mx-auto">
+                    <div className=" flex  items-center justify-center mx-auto">
                       <TbCalendarStats className="mr-2 text-xl" />
                       start date
-                    </button>
+                    </div>
                   </th>
                   <th className="font-medium text-[14px]">
-                    <button className=" flex  items-center justify-center mx-auto">
+                    <div className=" flex  items-center justify-center mx-auto">
                       <TbCalendarStats className="mr-2 text-xl" />
                       End date
-                    </button>
+                    </div>
                   </th>
                   <th className="font-medium text-[14px]">
-                    <button className=" flex  items-center justify-center mx-auto">
+                    <div className=" flex  items-center justify-center mx-auto">
                       <RiComputerLine className="mr-2 text-xl" />
                       screens Assigned
-                    </button>
+                    </div>
                   </th>
                   <th className="font-medium text-[14px]">
-                    <button className=" flex  items-center justify-center mx-auto">
+                    <div className=" flex  items-center justify-center mx-auto">
                       <BsTags className="mr-2 text-xl" />
                       Tags
-                    </button>
+                    </div>
                   </th>
                 </tr>
               </thead>
