@@ -5,12 +5,7 @@ import { Calendar, Views, momentLocalizer } from "react-big-calendar";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import { BsPencilFill } from "react-icons/bs";
 import { IoArrowBackOutline } from "react-icons/io5";
-import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import EventEditor from "./EventEditor";
@@ -19,9 +14,8 @@ import "../../Styles/schedule.css";
 import {
   ADD_EVENT,
   GET_ALL_FILES,
-  GET_ALL_EVENTS,
   ADD_SCHEDULE,
-  SCHEDULE_SELECT_BY_ID,
+  SCHEDULE_EVENT_SELECT_BY_ID,
   GET_TIMEZONE,
 } from "../../Pages/Api";
 import Sidebar from "../Sidebar";
@@ -65,8 +59,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const getScheduleName = searchParams.get("scheduleName");
   const [editScheduleName, setEditScheduleName] = useState(getScheduleName);
   const [getTimezone, setTimezone] = useState([]);
+  const [selectedTimezoneId, setSelectedTimezoneId] = useState("");
 
-  console.log(getScheduleId, "getScheduleId");
+  console.log(selectedTimezoneId, "selectedTimezone");
   const handleSelectSlot = useCallback(({ start, end }) => {
     setSelectedSlot({ start, end });
     setCreatePopupOpen(true);
@@ -126,29 +121,24 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
+  // Fetch events associated with the scheduleId
   const loadEventsForSchedule = (scheduleId) => {
-    // Fetch events associated with the scheduleId
     axios
-      .get(`${SCHEDULE_SELECT_BY_ID}?ID=${scheduleId}`)
+      .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`)
       .then((response) => {
         const fetchedData = response.data.data;
         console.log(response.data.data, "fetchedData");
         setScheduleAsset(response.data.data);
-        if (Array.isArray(fetchedData)) {
-          const fetchedEvents = fetchedData.map((item) => ({
-            id: item.eventId,
-            title: item.title,
-            start: new Date(item.cStartDate),
-            end: new Date(item.cEndDate),
-            color: item.color,
-            asset: item.asset,
-            repeatDay: item.repeatDay,
-          }));
-
-          setEvents(fetchedEvents);
-        } else {
-          console.log("Fetched data is not an array:", fetchedData);
-        }
+        const fetchedEvents = fetchedData.map((item) => ({
+          id: item.eventId,
+          title: item.title,
+          start: new Date(item.cStartDate),
+          end: new Date(item.cEndDate),
+          color: item.color,
+          asset: item.asset,
+          repeatDay: item.repeatDay,
+        }));
+        setEvents(fetchedEvents);
       })
       .catch((error) => {
         console.log(error);
@@ -157,10 +147,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     if (getScheduleId) {
-      // If "scheduleId" is present in the URL, load events for the selected schedule
       loadEventsForSchedule(getScheduleId);
     } else {
-      // If "scheduleId" is not present or falsy, set events to an empty array
       setEvents([]);
     }
   }, [getScheduleId]);
@@ -169,8 +157,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .get(GET_TIMEZONE)
       .then((response) => {
-        console.log(response);
-        setTimezone(response.data);
+        console.log(response.data.data);
+        setTimezone(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -192,6 +180,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       end,
       asset: previousSelectedAsset,
       scheduleId: scheduleIdToUse,
+      //timeZoneId: selectedTimezoneId,
     };
     handleSaveEvent(updatedEventData.id, updatedEventData);
   };
@@ -216,11 +205,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Function to handle saving or updating events
   const handleSaveEvent = (eventId, eventData) => {
-    //debugger;
-    // Ensure you're using the correct scheduleId (createdScheduleId or getScheduleId)
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
+
+    console.log(eventData, "eventtt");
 
     const data = {
       startDate: eventData.start,
@@ -230,7 +219,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       color: eventData.color,
       repeatDay: eventData.repeatDay,
       operation: eventId ? "Update" : "Insert",
-      scheduleId: scheduleIdToUse, // Use the appropriate scheduleId
+      scheduleId: scheduleIdToUse,
+      //timeZoneId: selectedTimezoneId,
     };
 
     if (eventId) {
@@ -249,32 +239,27 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        //window.location.href = `/addschedule?scheduleId=${response.data.data.eventTables.scheduleId}`;
-        console.log(response.data, "response");
-
+        console.log(response.data.data, "response");
         const updatedEvent = {
           ...eventData,
-          asset: response.data.data.eventTables.asset,
-          id: eventId || response.data.data.eventTables.eventId,
-          repeatDay: response.data.data.eventTables.repeatDay,
-          startDate: response.data.data.eventTables.start,
-          endDate: response.data.data.eventTables.end,
+          asset: response.data.data.model.asset,
+          id: eventId || response.data.data.model.eventId,
+          repeatDay: response.data.data.model.repeatDay,
+          //timeZoneId: response.data.data.model.timeZoneId,
+          // cEndDate: response.data.data.eventTables.cEndDate,
+          // cStartDate: response.data.data.eventTables.cStartDate,
           scheduleId: scheduleIdToUse, // Use the appropriate scheduleId
         };
         console.log(updatedEvent, "updatedEventupdatedEvent====");
         if (eventId) {
-          // Update the event with the provided eventId
           const updatedEvents = myEvents.map((event) =>
             event.id === eventId ? updatedEvent : event
           );
           setEvents(updatedEvents);
-
-          // If this is the selectedEvent, update it as well
           if (selectedEvent && selectedEvent.eventId === eventId) {
             setSelectedEvent(updatedEvent);
           }
         } else {
-          // Insert the new event into myEvents
           setEvents((prev) => [...prev, updatedEvent]);
         }
       })
@@ -351,17 +336,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     };
   };
   const overallEventTimes = getOverallEventTimes(myEvents);
-
-  if (overallEventTimes) {
-    const earliestStartTime = overallEventTimes.earliestStartTime;
-    const latestEndTime = overallEventTimes.latestEndTime;
-    console.log(`Overall Event Times:`);
-    console.log(`Earliest Start Time: ${earliestStartTime}`);
-    console.log(`Latest End Time: ${latestEndTime}`);
-  } else {
-    console.log(`No events found.`);
-  }
-
   return (
     <>
       <div className="flex border-b border-gray bg-white">
@@ -378,21 +352,16 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             </div>
             <div className="lg:col-span-3 md:col-span-5 sm:col-span-6 xs:col-span-12">
-              <select className="w-full paymentlabel relative">
-                <option value=""> {getTimezone} </option>
-                {/* {getTimezone.map((timezone)=>{
- <option value=""> {timezone} </option>
-                })} */}
-                {/* <option value=""> Hawaii–Aleutian Time Zone. </option>
-                <option value="">Alaska Time Zone. </option>
-                <option value="">Contiguous USA Time Zones. </option>
-                <option value="">Pacific Time Zone (PT) </option>
-                <option value="">Mountain Time Zone (MT) </option>
-                <option value="">
-                  Central Time Zone (CT) Central Standard Time (CST) UTC − 6 h;
-                  Central Daylight Time (CDT) UTC − 5 h.
-                </option>
-                <option value="">Eastern Time Zone (ET)</option> */}
+              <select
+                className="w-full paymentlabel relative"
+                value={selectedTimezoneId}
+                onChange={(e) => setSelectedTimezoneId(e.target.value)}
+              >
+                {getTimezone.map((timezone) => (
+                  <option value={timezone.timeZoneId} key={timezone.timeZoneId}>
+                    {timezone.timeZoneName}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -612,7 +581,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             <Link to="/myschedule">
               <button className="mb-3 border-2 border-gray bg-lightgray hover:bg-primary hover:text-white  px-5 py-2 rounded-full">
                 Cancel
-              </button>{" "}
+              </button>
             </Link>
             <Link to="/myschedule">
               <button className="mb-3 border-2 border-gray bg-lightgray hover:bg-primary hover:text-white  px-6 py-2 rounded-full ml-3">
