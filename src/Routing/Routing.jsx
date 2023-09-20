@@ -359,7 +359,7 @@ const Routing = () => {
         />
 
         <Route
-          path="/NewFolderDialog"
+          path="/NewFolderDialog/:folderId" component={NewFolderDialog}
           element={
             <NewFolderDialog
               sidebarOpen={sidebarOpen}

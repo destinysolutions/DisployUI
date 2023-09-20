@@ -289,7 +289,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [folderName, setFolderName] = useState("New Folder");
   const [folderCounter, setFolderCounter] = useState(1);
   const [folderNames, setFolderNames] = useState([]);
-
+  const [folderImages, setFolderImages] = useState({});
+  
   const [folderModals, setFolderModals] = useState({});
   // Define the fetchFolderDetails function
   const fetchFolderDetails = () => {
@@ -437,12 +438,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   // open and close new folder
-  const openModal = (folderId) => {
-    setFolderModals({
-      ...folderModals,
-      [folderId]: true,
-    });
-  };
+  // const openModal = (folderId) => {
+  //   setFolderModals({
+  //     ...folderModals,
+  //     [folderId]: true,
+  //   });
+  // };
 
   const closeModal = (folderId) => {
     setFolderModals({
@@ -459,9 +460,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const moveDataToFolder = async (dataId, folderId) => {
     let data = JSON.stringify({
-      "folderID": folderId,
-      "asset": dataId,
-      "operation": "Insert"
+      folderID: folderId,
+      asset: dataId,
+      operation: "Insert",
     });
   
     let config = {
@@ -469,9 +470,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       maxBodyLength: Infinity,
       url: MOVE_TO_FOLDER,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      data: data
+      data: data,
     };
   
     try {
@@ -483,13 +484,24 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         ...prevImages,
         [folderId]: [...(prevImages[folderId] || []), dataId],
       }));
-        updateFolderContent(folderId);
-   
-      
+  
+      // Remove the data from other folders if it was present
+      for (const key in prevImages) {
+        if (key !== folderId && prevImages[key].includes(dataId)) {
+          setFolderImages((prevImages) => ({
+            ...prevImages,
+            [key]: prevImages[key].filter((id) => id !== dataId),
+          }));
+        }
+      }
+  
+      updateFolderContent(folderId);
     } catch (error) {
       console.log(error);
     }
   };
+  
+
    const handleMoveTo = (folderId) => {
     selectedItems.forEach((item) => {
       moveDataToFolder(item.id, folderId);
@@ -501,7 +513,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 const updateFolderContent =  (folderId) => {
     try {
-     axios.get(`http://192.168.1.219/api/ImageVideoDoc/SelectByFolder?ID=${folderId}`)
+      axios.get(`http://192.168.1.219/api/ImageVideoDoc/SelectByFolder?ID=${folderId}`)
      .then((response)=>{
       console.log(response.data);
       setGridData(response.data); 
@@ -511,40 +523,13 @@ const updateFolderContent =  (folderId) => {
       console.error("Error updating folder content:", error);
     }
   };
+const navigateToFolder = (folderId, selectedData) => {
+  console.log('selectedData before navigation:', selectedData);
+  history(`/NewFolderDialog/${folderId}`, { selectedData });
 
-  // drag and drop
-  const [draggedItemId, setDraggedItemId] = useState(null);
-const [dragOverFolderId, setDragOverFolderId] = useState(null);
-const [draggedItems, setDraggedItems] = useState([]);
-
-const handleDragStart = (itemId) => {
-  setDraggedItems([...draggedItems, itemId]);
 };
 
-
-const handleDragEnter = (folderId) => {
-  console.log("Drag entered folder ID:", folderId);
-  setDragOverFolderId(folderId);
-};
-
-const handleDragLeave = () => {
-  console.log("Drag left folder");
-  setDragOverFolderId(null);
-};
-
-const handleDrop = (folderId) => {
-  if (draggedItemId && folderId !== null) {
-    moveDataToFolder(draggedItemId, folderId);
-    setDraggedItems(draggedItems.filter((item) => item !== draggedItemId));
-    setDraggedItemId(null);
-    setDragOverFolderId(null);
-  }
-};
-
-const navigateToFolder = (folderId) => {
-  history(`/NewFolderDialog/${folderId}`);
-};
-
+ 
  return (
     <>
       <div className="flex border-b border-gray">
@@ -669,7 +654,7 @@ const navigateToFolder = (folderId) => {
                 
                   return (
                     <li
-    key={`folder-${folder.folderID}`} onClick={() => navigateToFolder(folder.folderID)}
+    key={`folder-${folder.folderID}`}
     className={`text-center relative list-none bg-lightgray rounded-md px-3 py-7 ${
       folder.folderID === dragOverFolderId ? 'drag-over' : ''
     }`}
@@ -681,7 +666,7 @@ const navigateToFolder = (folderId) => {
 
                       <FcOpenedFolder
                         className="text-8xl text-center mx-auto"
-                        // onClick={() => openModal(folder.folderID)}
+                        onClick={() => navigateToFolder(folder.folderID)}
                       />
                      
                       {editMode === folder.folderID ? (
@@ -765,6 +750,7 @@ const navigateToFolder = (folderId) => {
                           />
                        
                         )} */}
+                        
                       
                     </li>
                   );
