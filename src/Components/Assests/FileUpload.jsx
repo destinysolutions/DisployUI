@@ -32,7 +32,7 @@ import videoimg from "../../../public/Assets/camera.png";
 import pixabayimg from "../../../public/Assets/pixabay.png";
 import { useNavigate } from "react-router-dom";
 import { FcFile } from "react-icons/fc";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import {AiOutlineAppstore } from "react-icons/ai";
 {
   /* end of video*/
 }
@@ -551,6 +551,30 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               {showPexabay && <Pixabay closeModal={handleClosePexabaysModal} />}
               {/* end pixabay */}
             </span>
+            {/*start app*/}
+            <Link to={"/apps"} className="bg-white text-SlateBlue px-3 leading-none  rounded-[45px] fileUploadIcon relative">
+         
+          <Tooltip
+            content="More App"
+            placement="bottom-end"
+            className=" bg-SlateBlue text-white z-10 ml-5"
+            animate={{
+              mount: { scale: 1, y: 0 },
+              unmount: { scale: 1, y: 10 },
+            }}
+          >
+            <button
+              
+              className="relative"
+            >
+              <AiOutlineAppstore className="relative text-3xl" />
+            </button>
+          </Tooltip>
+          </Link>
+          {/* end pixabay */}
+        
+          
+         {/*End app*/}
           </div>
           <div className="flex w-full flex-col gap-4"></div>
           <div
@@ -628,6 +652,10 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               </div>
             </div>
           </div>
+
+          
+
+        
 
           {/*  {uploading && (
             <div className="progressbar-popup bg-white shadow-2xl">

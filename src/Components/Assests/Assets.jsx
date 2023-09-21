@@ -437,20 +437,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     setEditMode(null);
   };
 
-  // open and close new folder
-  // const openModal = (folderId) => {
-  //   setFolderModals({
-  //     ...folderModals,
-  //     [folderId]: true,
-  //   });
-  // };
-
-  const closeModal = (folderId) => {
-    setFolderModals({
-      ...folderModals,
-      [folderId]: false,
-    });
-  };
 
   // move to data in folder
 
@@ -503,7 +489,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   
 
    const handleMoveTo = (folderId) => {
+    debugger;
     selectedItems.forEach((item) => {
+      console.log(item,'itemitemitem');
       moveDataToFolder(item.id, folderId);
       
       setGridData((prevGridData) => prevGridData.filter((image) => image.id !== item.id));
@@ -528,8 +516,67 @@ const navigateToFolder = (folderId, selectedData) => {
   history(`/NewFolderDialog/${folderId}`, { selectedData });
 
 };
+// dragdrop
+const handleDataItemSelect = (dataId) => {
+  // Check if the item is already selected
+  if (selectedItems.includes(dataId)) {
+    // Deselect the item
+    setSelectedItems((prevSelectedItems) =>
+      prevSelectedItems.filter((id) => id !== dataId)
+    );
+  } else {
+    // Select the item
+    setSelectedItems((prevSelectedItems) => [...prevSelectedItems, dataId]);
+  }
+};
+const handleDragStart = (dataId) => {
+  
+  event.dataTransfer.setData("text/plain", dataId);
+};
+const handleDrop = (event, folderId) => {
+  event.preventDefault();
+  const data = JSON.parse(event.dataTransfer.getData("text/plain"));
+  const dataId = data.dataId;
 
- 
+  if (dataId) {
+    // Remove the data item from its existing position (source folder)
+    removeDataFromFolder(dataId, sourceFolderId); // Implement this function
+    
+    // Move the data item to the new folder
+    moveDataToFolder(dataId, folderId); // Call your API to move data to the folder
+  }
+};
+
+
+
+const handleDragOver = (event) => {
+  event.preventDefault();
+};
+
+const removeDataFromFolder = async (dataId, sourceFolderId) => {
+  try {
+      const requestData = {
+      folderID: sourceFolderId,
+      asset: dataId,
+      operation: "Delete", 
+    };
+
+    const response = await axios.post(MOVE_TO_FOLDER, requestData, {
+      headers: { "Content-Type": "application/json" },
+    });
+console.log(response.data);
+ setFolderImages((prevImages) => ({
+      ...prevImages,
+      [sourceFolderId]: prevImages[sourceFolderId].filter((id) => id !== dataId),
+    }));
+
+    updateFolderContent(sourceFolderId);
+  } catch (error) {
+    console.error("Error removing data from folder:", error);
+  }
+};
+
+
  return (
     <>
       <div className="flex border-b border-gray">
@@ -649,22 +696,13 @@ const navigateToFolder = (folderId, selectedData) => {
               >
                 {/*new folder*/}
 
-                {newFolder.map((folder) => {
-                  const index = folderNames.findIndex((name) => name === folder.folderName);
+                {newFolder.map((folder,index) => {
+                  // const index = folderNames.findIndex((name) => name === folder.folderName);
                 
                   return (
-                    <li
-    key={`folder-${folder.folderID}`}
-    className={`text-center relative list-none bg-lightgray rounded-md px-3 py-7 ${
-      folder.folderID === dragOverFolderId ? 'drag-over' : ''
-    }`}
-    onDragEnter={() => handleDragEnter(folder.folderID)}
-    onDragLeave={handleDragLeave}
-    onDrop={() => handleDrop(folder.folderID)}
-  >
-
-
-                      <FcOpenedFolder
+                    <li key={`folder-${folder.folderID}`} onDrop={(event) => handleDrop(event, folder.folderID)} // Handle drop into the folder
+                    onDragOver={handleDragOver} className="text-center relative list-none bg-lightgray rounded-md px-3 py-7">
+                    <FcOpenedFolder
                         className="text-8xl text-center mx-auto"
                         onClick={() => navigateToFolder(folder.folderID)}
                       />
@@ -761,7 +799,9 @@ const navigateToFolder = (folderId, selectedData) => {
                   gridData.map((item, index) => (
                     <li
                       key={`tabitem-grid-${item.id}-${index}`} draggable
-                      onDragStart={() => handleDragStart(item.id)}
+                      onDragStart={(event) => handleDragStart(event, item.id)} // Handle drag start
+                      onDrop={(event) => handleDrop(event, item.id)} // Handle drop
+                      onDragOver={(event) => handleDragOver(event)}
                       className="relative list-none assetsbox"
                     >
                       {item.categorieType === "Image" && (
