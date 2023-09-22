@@ -13,12 +13,13 @@ import { AiOutlineClose } from "react-icons/ai";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { LOGIN_URL } from "./Api";
-import video from '../../public/DisployImg/iStock-1137481126.mp4'
+import video from "../../public/DisployImg/iStock-1137481126.mp4";
+import { useUser } from "../UserContext";
 
 const Login = () => {
   //using for routing
   const history = useNavigate();
-
+  const { loginUser } = useUser();
   //using show or hide password field
   const [showPassword, setShowPassword] = useState(false);
 
@@ -80,6 +81,8 @@ const Login = () => {
         )
         .then((response) => {
           const token = response.data.data.token;
+          const userData = response.data;
+          loginUser(userData);
           setCookie("token", token, { path: "/" });
           if (response.data.status === 401) {
             setErrorMessge(response.data.message);
@@ -158,7 +161,6 @@ const Login = () => {
                   onSubmit={formik.handleSubmit}
                 >
                   <div className="relative">
-
                     <input
                       type="email"
                       name="emailID"
@@ -175,7 +177,6 @@ const Login = () => {
                     )}
                   </div>
                   <div className="relative">
-
                     <div className="relative">
                       <input
                         type={showPassword ? "text" : "password"}

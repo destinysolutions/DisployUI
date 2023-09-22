@@ -37,6 +37,7 @@ import Unsplash from "../Components/Assests/Unsplash";
 import Userrole from "../Components/Settings/Userrole";
 import Trash from "../Components/Trash";
 import NewFolderDialog from "../Components/Assests/NewFolderDialog ";
+import { UserProvider } from "../UserContext";
 const Routing = () => {
   //for screen resize sidebar open close
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -67,322 +68,318 @@ const Routing = () => {
 
   return (
     <>
-      <Routes>
-        {/* login register route */}
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Registration />} />
-
-        {/* forgotpassword and termsconditions route */}
-        <Route
-          path="/forgotpassword"
-          element={
-            <ForgotPassword
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/termsconditions"
-          element={
-            <TermsConditions
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-
-        {/* Dashboard component route */}
-        <Route
-          path="/dashboard"
-          element={
-            <Dashboard
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/screens"
-          element={
-            <Screens
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/edituser"
-          element={
-            <EditUser
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/viewuserprofile"
-          element={
-            <ViewUserProfile
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-
-        {/* screen component route */}
-        <Route
-          path="/mergescreen"
-          element={
-            <MergeScreen
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/newscreengroup"
-          element={
-            <NewScreenGroup
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/screensplayer"
-          element={
-            <Screensplayer
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/newscreendetail"
-          element={
-            <NewScreenDetail
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-
-        {/* Assests component route */}
-        <Route
-          path="/fileupload"
-          element={
-            <FileUpload
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/assets"
-          element={
-            <Assets sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-          }
-        />
-
-        {/* Apps component route */}
-        <Route
-          path="/apps"
-          element={
-            <Apps sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-          }
-        />
-        <Route
-          path="/appdetail"
-          element={
-            <AppDetail
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/appinstance"
-          element={
-            <AppInstance
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-
-        {/* Playlist component route */}
-        <Route
-          path="/myplaylist"
-          element={
-            <MyPlaylist
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-
-        {/* DisployStudio component route */}
-        <Route
-          path="/disploystudio"
-          element={
-            <DisployStudio
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-
-        {/* Reports component route */}
-        <Route
-          path="/reports"
-          element={
-            <Report sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-          }
-        />
-        <Route
-          path="/uptimereport"
-          element={
-            <Uptimereport
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/auditlogreport"
-          element={
-            <Auditlogreport
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/salesreport"
-          element={
-            <SalesReport
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/cancelreport"
-          element={
-            <CancelReport
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/mediareport"
-          element={
-            <Mediareport
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        {/* Schedule component route */}
-        <Route
-          path="/myschedule"
-          element={
-            <MySchedule
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/weatherschedule"
-          element={
-            <WeatherSchedule
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/addschedule"
-          element={
-            <AddSchedule
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        <Route
-          path="/saveassignscreenmodal"
-          element={<SaveAssignScreenModal />}
-        />
-        {/* Approval component route */}
-        <Route
-          path="/approval"
-          element={
-            <Approval
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        {/* Settings component route */}
-        <Route
-          path="/settings"
-          element={
-            <Settings
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-
-        <Route
-          path="/userrole"
-          element={
-            <Userrole
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-        {/*Event Editors */}
-        <Route
-          path="/eventedit"
-          element={
-            <EventEditor
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-
-        <Route
-          path="/NewFolderDialog/:folderId" component={NewFolderDialog}
-          element={
-            <NewFolderDialog
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-            />
-          }
-        />
-
-        <Route
-        path="/trash"
-        element={
-          <Trash
-            sidebarOpen={sidebarOpen}
-            setSidebarOpen={setSidebarOpen}
+      <UserProvider>
+        <Routes>
+          {/* login register route */}
+          <Route path="/" element={<Login />} />{" "}
+          <Route path="/register" element={<Registration />} />
+          {/* forgotpassword and termsconditions route */}
+          <Route
+            path="/forgotpassword"
+            element={
+              <ForgotPassword
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
           />
-        }
-      />
-
-        {/*Event Editors */}
-
-        {/* error page route */}
-        <Route path="*" element={<ErrorPage />} />
-      </Routes>
+          <Route
+            path="/termsconditions"
+            element={
+              <TermsConditions
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          {/* Dashboard component route */}
+          <Route
+            path="/dashboard"
+            element={
+              <Dashboard
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/screens"
+            element={
+              <Screens
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/edituser"
+            element={
+              <EditUser
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/viewuserprofile"
+            element={
+              <ViewUserProfile
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          {/* screen component route */}
+          <Route
+            path="/mergescreen"
+            element={
+              <MergeScreen
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/newscreengroup"
+            element={
+              <NewScreenGroup
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/screensplayer"
+            element={
+              <Screensplayer
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/newscreendetail"
+            element={
+              <NewScreenDetail
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          {/* Assests component route */}
+          <Route
+            path="/fileupload"
+            element={
+              <FileUpload
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/assets"
+            element={
+              <Assets
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          {/* Apps component route */}
+          <Route
+            path="/apps"
+            element={
+              <Apps sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+            }
+          />
+          <Route
+            path="/appdetail"
+            element={
+              <AppDetail
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/appinstance"
+            element={
+              <AppInstance
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          {/* Playlist component route */}
+          <Route
+            path="/myplaylist"
+            element={
+              <MyPlaylist
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          {/* DisployStudio component route */}
+          <Route
+            path="/disploystudio"
+            element={
+              <DisployStudio
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          {/* Reports component route */}
+          <Route
+            path="/reports"
+            element={
+              <Report
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/uptimereport"
+            element={
+              <Uptimereport
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/auditlogreport"
+            element={
+              <Auditlogreport
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/salesreport"
+            element={
+              <SalesReport
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/cancelreport"
+            element={
+              <CancelReport
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/mediareport"
+            element={
+              <Mediareport
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          {/* Schedule component route */}
+          <Route
+            path="/myschedule"
+            element={
+              <MySchedule
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/weatherschedule"
+            element={
+              <WeatherSchedule
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/addschedule"
+            element={
+              <AddSchedule
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/saveassignscreenmodal"
+            element={<SaveAssignScreenModal />}
+          />
+          {/* Approval component route */}
+          <Route
+            path="/approval"
+            element={
+              <Approval
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          {/* Settings component route */}
+          <Route
+            path="/settings"
+            element={
+              <Settings
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/userrole"
+            element={
+              <Userrole
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          {/*Event Editors */}
+          <Route
+            path="/eventedit"
+            element={
+              <EventEditor
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/NewFolderDialog/:folderId"
+            component={NewFolderDialog}
+            element={
+              <NewFolderDialog
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/trash"
+            element={
+              <Trash
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          {/*Event Editors */}
+          {/* error page route */}
+          <Route path="*" element={<ErrorPage />} />
+        </Routes>
+      </UserProvider>
     </>
   );
 };
