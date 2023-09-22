@@ -59,9 +59,10 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const getScheduleName = searchParams.get("scheduleName");
   const [editScheduleName, setEditScheduleName] = useState(getScheduleName);
   const [getTimezone, setTimezone] = useState([]);
-  const [selectedTimezoneId, setSelectedTimezoneId] = useState("");
+  const [selectedTimezoneName, setSelectedTimezoneName] = useState("");
+  const [addedTimezoneName, setAddedTimezoneName] = useState("");
 
-  console.log(selectedTimezoneId, "selectedTimezone");
+  console.log(selectedTimezoneName, "selectedTimezone");
   const handleSelectSlot = useCallback(({ start, end }) => {
     setSelectedSlot({ start, end });
     setCreatePopupOpen(true);
@@ -127,7 +128,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`)
       .then((response) => {
         const fetchedData = response.data.data;
-        console.log(response.data.data, "fetchedData");
+        const previousTimezone = fetchedData.map((item) => item.timeZoneName);
+        setAddedTimezoneName(previousTimezone[0]);
+        console.log(previousTimezone[0], "fetchedData");
         setScheduleAsset(response.data.data);
         const fetchedEvents = fetchedData.map((item) => ({
           id: item.eventId,
@@ -173,14 +176,12 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     const previousSelectedAsset = allAssets.find(
       (asset) => asset.id === event.asset
     );
-
     const updatedEventData = {
       ...event,
       start,
       end,
       asset: previousSelectedAsset,
       scheduleId: scheduleIdToUse,
-      //timeZoneId: selectedTimezoneId,
     };
     handleSaveEvent(updatedEventData.id, updatedEventData);
   };
@@ -208,7 +209,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
-
+    const timezoneNameToUse = isEditingSchedule
+      ? addedTimezoneName
+      : selectedTimezoneName;
     console.log(eventData, "eventtt");
 
     const data = {
@@ -220,7 +223,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       repeatDay: eventData.repeatDay,
       operation: eventId ? "Update" : "Insert",
       scheduleId: scheduleIdToUse,
-      //timeZoneId: selectedTimezoneId,
+      timeZoneName: timezoneNameToUse,
     };
 
     if (eventId) {
@@ -245,7 +248,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           asset: response.data.data.model.asset,
           id: eventId || response.data.data.model.eventId,
           repeatDay: response.data.data.model.repeatDay,
-          //timeZoneId: response.data.data.model.timeZoneId,
+          timeZoneName: timezoneNameToUse,
           // cEndDate: response.data.data.eventTables.cEndDate,
           // cStartDate: response.data.data.eventTables.cStartDate,
           scheduleId: scheduleIdToUse, // Use the appropriate scheduleId
@@ -336,6 +339,15 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     };
   };
   const overallEventTimes = getOverallEventTimes(myEvents);
+
+  const handleTimezoneChange = (e) => {
+    if (isEditingSchedule) {
+      setSelectedTimezoneName(addedTimezoneName);
+    } else {
+      setSelectedTimezoneName(e.target.value);
+    }
+  };
+
   return (
     <>
       <div className="flex border-b border-gray bg-white">
@@ -354,11 +366,16 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             <div className="lg:col-span-3 md:col-span-5 sm:col-span-6 xs:col-span-12">
               <select
                 className="w-full paymentlabel relative"
-                value={selectedTimezoneId}
-                onChange={(e) => setSelectedTimezoneId(e.target.value)}
+                value={
+                  isEditingSchedule ? addedTimezoneName : selectedTimezoneName
+                }
+                onChange={handleTimezoneChange}
               >
                 {getTimezone.map((timezone) => (
-                  <option value={timezone.timeZoneId} key={timezone.timeZoneId}>
+                  <option
+                    value={timezone.timeZoneName}
+                    key={timezone.timeZoneId}
+                  >
                     {timezone.timeZoneName}
                   </option>
                 ))}

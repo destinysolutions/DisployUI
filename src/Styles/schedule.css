@@ -7,8 +7,8 @@
   font-size: 16px;
   width: 140px;
   border: 1px solid #ccc;
-  transform: translate(2%, 21px);
-  right: -50%;
+  transform: translate(-80%, 15%);
+  left: 50%;
   top: 50%;
 }
 
@@ -41,7 +41,7 @@
   height: 400px;
 }
 
-@media(max-width:767px) {
+@media (max-width: 767px) {
   .Schedule-table {
     overflow-x: auto;
   }
@@ -49,9 +49,7 @@
 
 .rbc-toolbar button:active,
 .rbc-toolbar button.rbc-active {
-
   background-color: #e4aa07 !important;
-
 }
 
 .rbc-time-view {

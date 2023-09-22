@@ -228,9 +228,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
                   </th>
                   <th className="font-medium text-[14px]">
-                    <div className=" flex  items-center justify-center mx-auto">
+                    <div className="flex  items-center justify-center mx-auto">
                       <BsTags className="mr-2 text-xl" />
                       Tags
+                    </div>
+                  </th>
+                  <th className="font-medium text-[14px]">
+                    <div className="flex items-center justify-center mx-auto">
+                      Action
                     </div>
                   </th>
                 </tr>
@@ -258,24 +263,25 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       </div>
                     </td>
-                    <td className="break-words w-[108px] p-2 text-center">
+                    <td className="text-center"></td>
+                    <td className="text-center">
                       {formatDate(new Date(schedule.createdDate))}
                     </td>
-                    <td className="break-words w-[108px] p-2 text-center">
+                    <td className="text-center">
                       {formatDate(new Date(schedule.startDate))}
                     </td>
 
-                    <td className="break-words w-[108px] p-2 text-center">
+                    <td className="text-center">
                       {formatDate(new Date(schedule.endDate))}
                     </td>
                     <td className="p-2 text-center">
                       {schedule.screenAssigned}
                     </td>
-                    <td className="p-2 flex items-center justify-center max-auto">
-                      {schedule.tags}
+                    <td className="p-2 text-center">{schedule.tags}</td>
+                    <td className="p-2 text-center relative">
                       <div className="relative">
                         <button
-                          className="ml-3"
+                          className="ml-3 relative"
                           onClick={() =>
                             handleScheduleItemClick(schedule.scheduleId)
                           }

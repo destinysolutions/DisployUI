@@ -1,7 +1,47 @@
+import { Input } from "@material-tailwind/react";
+import axios from "axios";
+import { useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { Link } from "react-router-dom";
 
 const ScreenOTPModal = ({ setShowOTPModal }) => {
+  const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
+  // const [otpValues, setOtpValues] = useState("");
+  const handleOtpChange = (index, value) => {
+    const updatedOtpValues = [...otpValues];
+    updatedOtpValues[index] = value;
+    setOtpValues(updatedOtpValues);
+  };
+
+  const completeOtp = otpValues.join("");
+  console.log(completeOtp, "enterOTP");
+
+  const verifyOTP = () => {
+    let data = JSON.stringify({
+      enterdOtp: completeOtp,
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "http://192.168.1.219/api/NewScreen/NewScreenVerify",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie:
+          ".AspNetCore.Session=CfDJ8PtYquvKK0BEg7itPCU9O2LqZyj6CqnrU7hMtDwSqNM6JyxKW5gIpB0xMl69UqZaXiHfDHZeH1C9uKKExpUSt4GWngkfpjs20BLqu9rhwszU6SZjhySu1U8ZPOzkfUdBvr6miksq3UH4j%2BUOdilU9QRE7vXlg0%2BjaDcNOnUiOa4j",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <>
       <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-[9999] outline-none focus:outline-none">
@@ -35,42 +75,20 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                     id="otp"
                     className="flex flex-row justify-center text-center px-2"
                   >
-                    <input
-                      className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
-                      type="text"
-                      id="first"
-                      maxLength="1"
-                    />
-                    <input
-                      className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
-                      type="text"
-                      id="second"
-                      maxLength="1"
-                    />
-                    <input
-                      className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
-                      type="text"
-                      id="third"
-                      maxLength="1"
-                    />
-                    <input
-                      className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
-                      type="text"
-                      id="fourth"
-                      maxLength="1"
-                    />
-                    <input
-                      className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
-                      type="text"
-                      id="fifth"
-                      maxLength="1"
-                    />
-                    <input
-                      className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
-                      type="text"
-                      id="sixth"
-                      maxLength="1"
-                    />
+                    {/* <input onChange={(e) => setOtpValues(e.target.value)} /> */}
+                    {otpValues.map((value, index) => (
+                      <>
+                        <input
+                          className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
+                          type="text"
+                          value={value}
+                          maxLength="1"
+                          onChange={(e) =>
+                            handleOtpChange(index, e.target.value)
+                          }
+                        />
+                      </>
+                    ))}
                   </div>
 
                   <div className="flex justify-center text-center">
@@ -91,15 +109,15 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
             </div>
 
             <div className="flex items-center justify-center pb-4">
-              <Link to="/newscreendetail">
-                <button
-                  className="text-white bg-[#00072E] font-semibold   lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-lg md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
-                  type="button"
-                  //onClick={() => setShowOTPVerifyModal(true)}
-                >
-                  Continue
-                </button>
-              </Link>
+              {/* <Link to="/newscreendetail"> */}
+              <button
+                className="text-white bg-[#00072E] font-semibold   lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-lg md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
+                type="button"
+                onClick={verifyOTP}
+              >
+                Continue
+              </button>
+              {/* </Link> */}
             </div>
           </div>
         </div>

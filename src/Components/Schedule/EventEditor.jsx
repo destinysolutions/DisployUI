@@ -391,10 +391,10 @@ const EventEditor = ({
                               )}
 
                               {item.categorieType === "OnlineVideo" && (
-                                <div className="relative videobox">
+                                <div className="imagebox relative">
                                   <video
                                     controls
-                                    className="w-full rounded-2xl relative"
+                                    className="rounded-2xl h-24 w-28"
                                   >
                                     <source
                                       src={item.fileType}
