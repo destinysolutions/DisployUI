@@ -233,11 +233,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       Tags
                     </div>
                   </th>
-                  <th className="font-medium text-[14px]">
-                    <div className="flex items-center justify-center mx-auto">
-                      Action
-                    </div>
-                  </th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>

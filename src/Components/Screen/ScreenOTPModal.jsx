@@ -1,12 +1,18 @@
-import { Input } from "@material-tailwind/react";
 import axios from "axios";
 import { useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../../UserContext";
+import { OTP_VERIFY } from "../../Pages/Api";
 
 const ScreenOTPModal = ({ setShowOTPModal }) => {
+  const { user } = useUser();
+  const userId = user ? user.userID : null;
+  console.log(user);
+  const history = useNavigate();
+  const [errorMessge, setErrorMessge] = useState(false);
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
-  // const [otpValues, setOtpValues] = useState("");
+
   const handleOtpChange = (index, value) => {
     const updatedOtpValues = [...otpValues];
     updatedOtpValues[index] = value;
@@ -14,21 +20,19 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
   };
 
   const completeOtp = otpValues.join("");
-  console.log(completeOtp, "enterOTP");
 
   const verifyOTP = () => {
     let data = JSON.stringify({
       enterdOtp: completeOtp,
+      userID: userId,
     });
 
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.219/api/NewScreen/NewScreenVerify",
+      url: OTP_VERIFY,
       headers: {
         "Content-Type": "application/json",
-        Cookie:
-          ".AspNetCore.Session=CfDJ8PtYquvKK0BEg7itPCU9O2LqZyj6CqnrU7hMtDwSqNM6JyxKW5gIpB0xMl69UqZaXiHfDHZeH1C9uKKExpUSt4GWngkfpjs20BLqu9rhwszU6SZjhySu1U8ZPOzkfUdBvr6miksq3UH4j%2BUOdilU9QRE7vXlg0%2BjaDcNOnUiOa4j",
       },
       data: data,
     };
@@ -36,7 +40,12 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
+        console.log(response);
+        if (response.data.status === 200) {
+          history("/newscreendetail");
+        } else {
+          setErrorMessge(response.data.message);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -45,7 +54,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
   return (
     <>
       <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-[9999] outline-none focus:outline-none">
-        <div className="relative w-auto my-6 lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full  sm:mx-3 xs:mx-3">
+        <div className="relative w-auto my-6 lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full sm:mx-3 xs:mx-3">
           <div className="border-0 rounded-xl shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
               <h3 className="text-xl font-medium">New Screen</h3>
@@ -75,9 +84,8 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                     id="otp"
                     className="flex flex-row justify-center text-center px-2"
                   >
-                    {/* <input onChange={(e) => setOtpValues(e.target.value)} /> */}
                     {otpValues.map((value, index) => (
-                      <>
+                      <div>
                         <input
                           className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
                           type="text"
@@ -87,10 +95,12 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                             handleOtpChange(index, e.target.value)
                           }
                         />
-                      </>
+                      </div>
                     ))}
                   </div>
-
+                  <div className="flex justify-center text-center text-red text-xl my-3 font-semibold">
+                    {errorMessge}
+                  </div>
                   <div className="flex justify-center text-center">
                     <input type="checkbox" />
                     <p className="ml-2 text-[#515151] ">
@@ -109,7 +119,6 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
             </div>
 
             <div className="flex items-center justify-center pb-4">
-              {/* <Link to="/newscreendetail"> */}
               <button
                 className="text-white bg-[#00072E] font-semibold   lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-lg md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
                 type="button"
@@ -117,7 +126,6 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
               >
                 Continue
               </button>
-              {/* </Link> */}
             </div>
           </div>
         </div>
