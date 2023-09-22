@@ -100,7 +100,6 @@ input::placeholder {
 }
 
 @media (max-width: 767px) {
-
   .screen-details,
   .screen-details tr,
   .screen-details td {
@@ -245,7 +244,6 @@ button.tabsyncshow.tabsyncactive {
 }
 
 @media (max-width: 767px) {
-
   table.sync-table.w-full,
   table.sync-table.w-full tr,
   table.sync-table.w-full td,
@@ -462,6 +460,10 @@ button.daysbtn {
   height: 50px;
   border: 1px solid #8e94a9;
   color: #000000;
+}
+
+.table-head-bg {
+  background: #e6e6e6;
 }
 
 @media (max-width: 1244px) {

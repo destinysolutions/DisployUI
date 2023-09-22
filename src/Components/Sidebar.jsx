@@ -26,7 +26,7 @@ const Sidebar = ({ sidebarOpen }) => {
         <img
           src="/MenuIcons/dashboard_icon.svg"
           alt="Dashboard"
-          className="fill-white w-4"
+          className="fill-white w-6"
         />
       ),
     },
@@ -35,7 +35,7 @@ const Sidebar = ({ sidebarOpen }) => {
       cName: "nav-text link-items",
       path: "/screens",
       icon: (
-        <img src="/MenuIcons/screens_icon.svg" alt="Screens" className="w-4" />
+        <img src="/MenuIcons/screens_icon.svg" alt="Screens" className="w-6" />
       ),
       subMenus: [
         {
@@ -65,7 +65,7 @@ const Sidebar = ({ sidebarOpen }) => {
       cName: "nav-text link-items",
       path: "/assets",
       icon: (
-        <img src="/MenuIcons/assets_icon.svg" alt="Assets" className=" w-4" />
+        <img src="/MenuIcons/assets_icon.svg" alt="Assets" className="w-6" />
       ),
     },
     {
@@ -76,7 +76,7 @@ const Sidebar = ({ sidebarOpen }) => {
         <img
           src="/MenuIcons/playlist_icon.svg"
           alt="Playlist"
-          className=" w-4"
+          className="w-6"
         />
       ),
     },
@@ -88,7 +88,7 @@ const Sidebar = ({ sidebarOpen }) => {
         <img
           src="/MenuIcons/disploy_studio_icon.svg"
           alt="Disploy_Studio"
-          className=" w-4"
+          className="w-6"
         />
       ),
     },
@@ -100,7 +100,7 @@ const Sidebar = ({ sidebarOpen }) => {
         <img
           src="/MenuIcons/schedule_icon.svg"
           alt="My_Schedule"
-          className=" w-4"
+          className="w-6"
         />
       ),
     },
@@ -108,14 +108,14 @@ const Sidebar = ({ sidebarOpen }) => {
       title: "Apps",
       cName: "nav-text link-items",
       path: "/apps",
-      icon: <img src="/MenuIcons/apps_icon.svg" alt="Apps" className=" w-4" />,
+      icon: <img src="/MenuIcons/apps_icon.svg" alt="Apps" className="w-6" />,
     },
     {
       title: "Reports",
       cName: "nav-text link-items",
       path: "/reports",
       icon: (
-        <img src="/MenuIcons/reports_icon.svg" alt="Reports" className=" w-4" />
+        <img src="/MenuIcons/reports_icon.svg" alt="Reports" className="w-6" />
       ),
     },
     {
@@ -126,7 +126,19 @@ const Sidebar = ({ sidebarOpen }) => {
         <img
           src="/MenuIcons/approval_icon.svg"
           alt="Approval"
-          className=" w-4"
+          className="w-6"
+        />
+      ),
+    },
+    {
+      title: "Social Media Tools",
+      cName: "nav-text link-items",
+      path: "/Social_Media_Tools",
+      icon: (
+        <img
+          src="/MenuIcons/social-media-tools-icon.svg"
+          alt="Social Media Tools"
+          className="w-6"
         />
       ),
     },
@@ -136,31 +148,43 @@ const Sidebar = ({ sidebarOpen }) => {
       title: "Support",
       cName: "nav-text link-items",
       path: "/support",
-      icon: <img src="/MenuIcons/support_icon.svg" alt="Support" />,
+      icon: (
+        <img src="/MenuIcons/support_icon.svg" alt="Support" className="w-6" />
+      ),
     },
     {
       title: "Settings",
       cName: "nav-text link-items",
       path: "/settings",
-      icon: <img src="/MenuIcons/setting_icon.svg" alt="Settings" />,
+      icon: (
+        <img src="/MenuIcons/setting_icon.svg" alt="Settings" className="w-6" />
+      ),
     },
     {
       title: "Take Tour",
       cName: "nav-text link-items",
       path: "/taketour",
-      icon: <img src="/MenuIcons/take_tour_icon.svg" alt="Take_Tour" />,
+      icon: (
+        <img
+          src="/MenuIcons/take_tour_icon.svg"
+          alt="Take_Tour"
+          className="w-6"
+        />
+      ),
     },
     {
       title: "Trash",
       cName: "nav-text link-items",
       path: "/trash",
-      icon: <img src="/MenuIcons/Trash_icon.svg" alt="Trash" />,
+      icon: <img src="/MenuIcons/Trash_icon.svg" alt="Trash" className="w-6" />,
     },
     {
       title: "Log Out",
       cName: "nav-text link-items",
       path: "/logout",
-      icon: <img src="/MenuIcons/logout_icon.svg" alt="LogOut" />,
+      icon: (
+        <img src="/MenuIcons/logout_icon.svg" alt="LogOut" className="w-6" />
+      ),
     },
   ];
 
