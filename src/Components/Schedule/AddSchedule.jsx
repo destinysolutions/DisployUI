@@ -60,9 +60,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [editScheduleName, setEditScheduleName] = useState(getScheduleName);
   const [getTimezone, setTimezone] = useState([]);
   const [selectedTimezoneName, setSelectedTimezoneName] = useState("");
-  const [addedTimezoneName, setAddedTimezoneName] = useState("");
+  const addedTimezoneName = searchParams.get("timeZoneName");
 
-  console.log(selectedTimezoneName, "selectedTimezone");
+  console.log(addedTimezoneName, "selectedTimezone");
   const handleSelectSlot = useCallback(({ start, end }) => {
     setSelectedSlot({ start, end });
     setCreatePopupOpen(true);
@@ -78,12 +78,14 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .post(ADD_SCHEDULE, {
         scheduleName: newScheduleNameInput,
+        timeZoneName: selectedTimezoneName,
         operation: "Insert",
       })
       .then((response) => {
         const newScheduleId = response.data.data.model.scheduleId;
         setCreatedScheduleId(newScheduleId);
         setShowScheduleName(true);
+        console.log(response.data);
       })
       .catch((error) => {
         console.error("Error creating a new schedule:", error);
@@ -91,14 +93,17 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const saveEditedSchedule = () => {
+    const timezoneNameToUse = isEditingSchedule
+      ? addedTimezoneName
+      : selectedTimezoneName;
     let data = JSON.stringify({
       scheduleId: getScheduleId,
       scheduleName: editScheduleName,
+      timeZoneName: timezoneNameToUse,
       startDate: overallEventTimes.earliestStartTime.toLocaleString(),
       endDate: overallEventTimes.latestEndTime.toLocaleString(),
       operation: "Update",
     });
-    console.log(getScheduleId, "scheduleIdscheduleIdscheduleIdscheduleId");
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -108,7 +113,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       },
       data: data,
     };
-
     axios
       .request(config)
       .then((response) => {
@@ -128,9 +132,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`)
       .then((response) => {
         const fetchedData = response.data.data;
-        const previousTimezone = fetchedData.map((item) => item.timeZoneName);
-        setAddedTimezoneName(previousTimezone[0]);
-        console.log(previousTimezone[0], "fetchedData");
         setScheduleAsset(response.data.data);
         const fetchedEvents = fetchedData.map((item) => ({
           id: item.eventId,
@@ -160,7 +161,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .get(GET_TIMEZONE)
       .then((response) => {
-        console.log(response.data.data);
         setTimezone(response.data.data);
       })
       .catch((error) => {
@@ -209,10 +209,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
-    const timezoneNameToUse = isEditingSchedule
-      ? addedTimezoneName
-      : selectedTimezoneName;
-    console.log(eventData, "eventtt");
 
     const data = {
       startDate: eventData.start,
@@ -223,7 +219,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       repeatDay: eventData.repeatDay,
       operation: eventId ? "Update" : "Insert",
       scheduleId: scheduleIdToUse,
-      timeZoneName: timezoneNameToUse,
     };
 
     if (eventId) {
@@ -243,12 +238,15 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         console.log(response.data.data, "response");
+        if (response.data.errors.scheduleId) {
+          console.log("not inserted");
+        }
         const updatedEvent = {
           ...eventData,
           asset: response.data.data.model.asset,
           id: eventId || response.data.data.model.eventId,
           repeatDay: response.data.data.model.repeatDay,
-          timeZoneName: timezoneNameToUse,
+          //timeZoneName: timezoneNameToUse,
           // cEndDate: response.data.data.eventTables.cEndDate,
           // cStartDate: response.data.data.eventTables.cStartDate,
           scheduleId: scheduleIdToUse, // Use the appropriate scheduleId
@@ -340,14 +338,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const overallEventTimes = getOverallEventTimes(myEvents);
 
-  const handleTimezoneChange = (e) => {
-    if (isEditingSchedule) {
-      setSelectedTimezoneName(addedTimezoneName);
-    } else {
-      setSelectedTimezoneName(e.target.value);
-    }
-  };
-
   return (
     <>
       <div className="flex border-b border-gray bg-white">
@@ -369,7 +359,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 value={
                   isEditingSchedule ? addedTimezoneName : selectedTimezoneName
                 }
-                onChange={handleTimezoneChange}
+                onChange={(e) => setSelectedTimezoneName(e.target.value)}
               >
                 {getTimezone.map((timezone) => (
                   <option

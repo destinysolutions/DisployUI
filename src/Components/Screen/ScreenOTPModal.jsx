@@ -42,7 +42,10 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
       .then((response) => {
         console.log(response);
         if (response.data.status === 200) {
-          history("/newscreendetail");
+          // history("/newscreendetail");
+          history("/newscreendetail", {
+            state: { otpData: response.data.data },
+          });
         } else {
           setErrorMessge(response.data.message);
         }
@@ -131,80 +134,6 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
         </div>
       </div>
       <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-      {/* {showOTPVerifyModal ? (
-                  <>
-                    <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto bg-black bg-opacity-50 fixed inset-0 z-50 outline-none focus:outline-none">
-                      <div className="relative w-auto my-6 mx-auto max-w-3xl">
-                        <div className="border-0 rounded-[20px] shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none p-5">
-                          <div className="relative">
-                            <div className="text-lg font-normal  text-center text-md relative">
-                              Enter the Verification Code <br />
-                              to Validate New Screen.
-                            </div>
-                            <button
-                              className="text-2xl absolute  top-[-9px] right-[-12px]"
-                              onClick={() => setShowOTPVerifyModal(false)}
-                            >
-                              <AiOutlineCloseCircle />
-                            </button>
-                          </div>
-
-                          <div
-                            id="otp"
-                            className="flex flex-row justify-center text-center px-2 mt-4 opacity-10"
-                          >
-                            <input
-                              className="m-2 border h-8 w-8 text-center form-control rounded"
-                              type="text"
-                              id="first"
-                              maxLength="1"
-                            />
-                            <input
-                              className="m-2 border h-8 w-8 text-center form-control rounded"
-                              type="text"
-                              id="second"
-                              maxLength="1"
-                            />
-                            <input
-                              className="m-2 border h-8 w-8 text-center form-control rounded"
-                              type="text"
-                              id="third"
-                              maxLength="1"
-                            />
-                            <input
-                              className="m-2 border h-8 w-8 text-center form-control rounded"
-                              type="text"
-                              id="fourth"
-                              maxLength="1"
-                            />
-                            <input
-                              className="m-2 border h-8 w-8 text-center form-control rounded"
-                              type="text"
-                              id="fifth"
-                              maxLength="1"
-                            />
-                            <input
-                              className="m-2 border h-8 w-8 text-center form-control rounded"
-                              type="text"
-                              id="sixth"
-                              maxLength="1"
-                            />
-                          </div>
-
-                          <div className="flex items-center justify-center mt-5">
-                            <button
-                              className="text-white bg-[#00072E] font-semibold  px-8 py-2 text-sm rounded-[45px]"
-                              type="button"
-                            >
-                              Verify
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
-                  </>
-                ) : null} */}
     </>
   );
 };
