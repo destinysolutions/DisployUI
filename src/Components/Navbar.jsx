@@ -115,7 +115,7 @@ const Navbar = () => {
 
                 {showProfileBox && (
                   <>
-                    <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-10 loginpopup">
+                    <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
                       <div className="flex items-center space-x-3 cursor-pointer p-2">
                         <img
                           src="/NavbarIcons/profile.svg"
