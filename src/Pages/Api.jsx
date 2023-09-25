@@ -42,9 +42,9 @@ export const ADD_TRASH =
   "https://disployapi.thedestinysolutions.com/api/Trash/AddTrash";
 
 export const CREATE_NEW_FOLDER =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/CreateFolder";
+  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/CreateFolder";
 export const GET_ALL_NEW_FOLDER =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllFolder";
+  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/GetAllFolder";
 export const MOVE_TO_FOLDER =
   "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/Move";
 export const FetchdataFormFolder =
