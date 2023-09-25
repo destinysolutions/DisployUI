@@ -259,7 +259,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       </div>
                     </td>
-                    <td className="text-center"></td>
+                    <td className="text-center">{schedule.timeZoneName}</td>
                     <td className="text-center">
                       {formatDate(new Date(schedule.createdDate))}
                     </td>
@@ -289,7 +289,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                           <div className="scheduleAction z-10 ">
                             <div className="my-1">
                               <Link
-                                to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}`}
+                                to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
                               >
                                 <button>Edit Schedule</button>
                               </Link>
