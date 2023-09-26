@@ -77,7 +77,14 @@ const EventEditor = ({
           setSelectedAsset(previousSelectedAsset);
           setAssetPreview(previousSelectedAsset);
         }
-        //setSelectedRepeatDay(selectedEvent.repeatDay);
+        const previousSelectedDay = selectedEvent.repeatDay;
+        // console.log(previousSelectedDay, "previousSelectedDay");
+        // const previousSelectedDayss = buttons.find((previousSelected) => {
+        //   return previousSelected === previousSelectedDay;
+        // });
+        // console.log(previousSelectedDayss, "previousSelectedDay");
+
+        setSelectedRepeatDay(previousSelectedDay);
         setTitle(selectedEvent.title);
         setSelectedColor(selectedEvent.color);
         setEditedStartDate(formatDate(selectedEvent.start));
@@ -85,7 +92,7 @@ const EventEditor = ({
         setEditedEndDate(formatDate(selectedEvent.end));
         setEditedEndTime(formatTime(selectedEvent.end));
       } else if (selectedSlot) {
-        //setSelectedRepeatDay("");
+        setSelectedRepeatDay("");
         setSelectedAsset(null);
         setAssetPreview(null);
         setTitle("");
@@ -224,7 +231,7 @@ const EventEditor = ({
       repeatDayValue = selectAllDays
         ? buttons.map((dayName) => dayName)
         : selectedDaysInString;
-      //setSelectedRepeatDay(repeatDayValue);
+      setSelectedRepeatDay(repeatDayValue);
     }
 
     let eventData = {
@@ -239,8 +246,6 @@ const EventEditor = ({
       eventData.repeatDay = repeatDayValue;
     }
 
-    console.log(eventData, "evv", areSpecificDaysSelected);
-
     // Check if the selected event is present and has the same data as the form data
     if (
       selectedEvent &&
@@ -248,8 +253,8 @@ const EventEditor = ({
       selectedEvent.start.getTime() === start.getTime() &&
       selectedEvent.end.getTime() === end.getTime() &&
       selectedEvent.color === selectedColor &&
-      selectedEvent.asset === selectedAsset
-      //selectedEvent.repeatDay === selectedRepeatDay
+      selectedEvent.asset === selectedAsset &&
+      selectedEvent.repeatDay === selectedRepeatDay
     ) {
       onClose();
     } else {
@@ -372,14 +377,12 @@ const EventEditor = ({
                             className={`${
                               selectedAsset === item ? "bg-[#f3c953]" : ""
                             } border-b border-[#eee] `}
+                            onClick={() => {
+                              handleAssetAdd(item);
+                              setAssetPreviewPopup(true);
+                            }}
                           >
-                            <td
-                              className="border-b border-[#eee]"
-                              onClick={() => {
-                                handleAssetAdd(item);
-                                setAssetPreviewPopup(true);
-                              }}
-                            >
+                            <td className="border-b border-[#eee]">
                               {item.categorieType === "OnlineImage" && (
                                 <div className="imagebox relative">
                                   <img
@@ -484,7 +487,7 @@ const EventEditor = ({
                                           <AiOutlineCloseCircle className="text-2xl" />
                                         </button>
                                       </div>
-                                      <div className="p-3">
+                                      <div className="p-3 flex justify-center  items-center min-w-[300px] max-w-[300px] min-h-[300px] max-h-[300px]">
                                         {assetPreview && (
                                           <>
                                             {assetPreview.categorieType ===
@@ -493,7 +496,7 @@ const EventEditor = ({
                                                 <img
                                                   src={assetPreview.fileType}
                                                   alt={assetPreview.name}
-                                                  className="rounded-2xl"
+                                                  className="rounded-2xl "
                                                 />
                                               </div>
                                             )}
@@ -519,7 +522,7 @@ const EventEditor = ({
                                               <img
                                                 src={assetPreview.fileType}
                                                 alt={assetPreview.name}
-                                                className="imagebox relative"
+                                                className="imagebox relative flex justify-center  items-center min-w-[250px] max-w-[250px] min-h-[250px] max-h-[250px]"
                                               />
                                             )}
                                             {assetPreview.categorieType ===
