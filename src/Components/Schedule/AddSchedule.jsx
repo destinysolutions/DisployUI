@@ -11,6 +11,7 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import EventEditor from "./EventEditor";
 import axios from "axios";
 import "../../Styles/schedule.css";
+import { BsFillInfoCircleFill } from "react-icons/bs";
 import {
   ADD_EVENT,
   GET_ALL_FILES,
@@ -21,6 +22,8 @@ import {
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import SaveAssignScreenModal from "./SaveAssignScreenModal";
+import { Alert } from "@material-tailwind/react";
+import { AiOutlineClose } from "react-icons/ai";
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
@@ -41,7 +44,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       style,
     };
   };
-
+  const [scheduleMessage, setScheduleMessage] = useState("");
+  const [scheduleMessageVisible, setScheduleMessageVisible] = useState(false);
   const [myEvents, setEvents] = useState([]);
   const [isCreatePopupOpen, setCreatePopupOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -62,7 +66,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedTimezoneName, setSelectedTimezoneName] = useState("");
   const addedTimezoneName = searchParams.get("timeZoneName");
 
-  console.log(addedTimezoneName, "selectedTimezone");
+  //console.log(scheduleMessage, "scheduleMessage");
   const handleSelectSlot = useCallback(({ start, end }) => {
     setSelectedSlot({ start, end });
     setCreatePopupOpen(true);
@@ -126,37 +130,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  // Fetch events associated with the scheduleId
-  const loadEventsForSchedule = (scheduleId) => {
-    axios
-      .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`)
-      .then((response) => {
-        const fetchedData = response.data.data;
-        setScheduleAsset(response.data.data);
-        const fetchedEvents = fetchedData.map((item) => ({
-          id: item.eventId,
-          title: item.title,
-          start: new Date(item.cStartDate),
-          end: new Date(item.cEndDate),
-          color: item.color,
-          asset: item.asset,
-          repeatDay: item.repeatDay,
-        }));
-        setEvents(fetchedEvents);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  useEffect(() => {
-    if (getScheduleId) {
-      loadEventsForSchedule(getScheduleId);
-    } else {
-      setEvents([]);
-    }
-  }, [getScheduleId]);
-
   useEffect(() => {
     axios
       .get(GET_TIMEZONE)
@@ -204,7 +177,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     handleSaveEvent(resizedEvent.id, resizedEvent);
   };
 
-  // Function to handle saving or updating events
   const handleSaveEvent = (eventId, eventData) => {
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
@@ -225,6 +197,18 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       data.eventId = eventId;
     }
 
+    if (data.scheduleId == "") {
+      let messge = "Please Insert Schedule Name";
+      setScheduleMessage(messge);
+      setScheduleMessageVisible(true);
+    }
+
+    if (data.asset == null) {
+      let messge = "Please Select Asset";
+      setScheduleMessage(messge);
+      setScheduleMessageVisible(true);
+    }
+
     const config = {
       method: "post",
       url: ADD_EVENT,
@@ -237,31 +221,39 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data.data, "response");
-        if (response.data.errors.scheduleId) {
-          console.log("not inserted");
-        }
-        const updatedEvent = {
-          ...eventData,
-          asset: response.data.data.model.asset,
-          id: eventId || response.data.data.model.eventId,
-          repeatDay: response.data.data.model.repeatDay,
-          //timeZoneName: timezoneNameToUse,
-          // cEndDate: response.data.data.eventTables.cEndDate,
-          // cStartDate: response.data.data.eventTables.cStartDate,
-          scheduleId: scheduleIdToUse, // Use the appropriate scheduleId
-        };
-        console.log(updatedEvent, "updatedEventupdatedEvent====");
-        if (eventId) {
+        console.log(response.data, "response");
+        const fetchedData = response.data.data.eventTables;
+
+        const updatedEvent = fetchedData.map((item) => ({
+          id: item.eventId,
+          title: item.title,
+          start: new Date(item.cStartDate),
+          end: new Date(item.cEndDate),
+          color: item.color,
+          asset: item.asset,
+          repeatDay: item.repeatDay,
+          day: item.day,
+        }));
+
+        if (updatedEvent.id) {
+          // debugger;
           const updatedEvents = myEvents.map((event) =>
             event.id === eventId ? updatedEvent : event
           );
+          console.log(updatedEvents, "updatedEventupdatedEvent====");
           setEvents(updatedEvents);
+          console.log(myEvents, "updatedEventupdatedEvent====");
+          // setEvents((prevEvents) =>
+          //   prevEvents.map((prevEvent) =>
+          //     prevEvent.id === updatedEvent.id ? updatedEvent : prevEvent
+          //   )
+          // );
+          // setEvents((prevEvents) => [...prevEvents, ...updatedEvents]);
           if (selectedEvent && selectedEvent.eventId === eventId) {
             setSelectedEvent(updatedEvent);
           }
         } else {
-          setEvents((prev) => [...prev, updatedEvent]);
+          setEvents((prevEvents) => [...prevEvents, ...updatedEvent]);
         }
       })
       .catch((error) => {
@@ -273,6 +265,37 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setCreatePopupOpen(false);
   };
 
+  // Fetch events associated with the scheduleId
+  const loadEventsForSchedule = (scheduleId) => {
+    axios
+      .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`)
+      .then((response) => {
+        const fetchedData = response.data.data;
+        // console.log(fetchedData, "load--event--fetchedData");
+        setScheduleAsset(response.data.data);
+        const fetchedEvents = fetchedData.map((item) => ({
+          id: item.eventId,
+          title: item.title,
+          start: new Date(item.cStartDate),
+          end: new Date(item.cEndDate),
+          color: item.color,
+          asset: item.asset,
+          repeatDay: item.repeatDay,
+        }));
+        setEvents(fetchedEvents);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    if (getScheduleId) {
+      loadEventsForSchedule(getScheduleId);
+    } else {
+      setEvents([]);
+    }
+  }, [getScheduleId]);
   const handleCloseCreatePopup = () => {
     setSelectedSlot(null);
     setSelectedEvent(null);
@@ -344,6 +367,29 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
+      {scheduleMessageVisible && (
+        <div
+          className="bg-[#fff2cd] px-5 py-3 border-b-2 border-SlateBlue shadow-md"
+          style={{
+            position: "fixed",
+            top: "16px",
+            right: "20px",
+            zIndex: "999999",
+          }}
+        >
+          <div className="flex text-SlateBlue  text-base font-normal items-center relative">
+            <BsFillInfoCircleFill className="mr-1" />
+            {scheduleMessage}
+            <button
+              className="absolute top-[-26px] right-[-26px] bg-white rounded-full p-1 "
+              onClick={() => setScheduleMessageVisible(false)}
+            >
+              <AiOutlineClose className="text-xl  text-SlateBlue " />
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className=" px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="grid grid-cols-12 mt-5">
