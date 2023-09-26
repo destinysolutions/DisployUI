@@ -27,6 +27,7 @@ import {
   ADD_TRASH,
   ALL_FILES_UPLOAD,
   CREATE_NEW_FOLDER,
+  DeleteAllData,
   GET_ALL_FILES,
   GET_ALL_NEW_FOLDER,
   MOVE_TO_FOLDER,
@@ -269,19 +270,48 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectAll(!selectAll);
   };
 
-  const handleDelete = async () => {
-    try {
-      for (const item of selectedItems) {
-        await handelDeletedata(item.id);
-      }
+  // const handleDelete = async () => {
+  //   try {
+  //     for (const item of selectedItems) {
+  //       await handelDeletedata(item.id);
+  //     }
 
-      // After all items are deleted, clear the selected items and uncheck "Select All"
-      setSelectedItems([]);
-      setSelectAll(false);
-    } catch (error) {
-      console.error("Error deleting items:", error);
-    }
+  //     // After all items are deleted, clear the selected items and uncheck "Select All"
+  //     setSelectedItems([]);
+  //     setSelectAll(false);
+  //   } catch (error) {
+  //     console.error("Error deleting items:", error);
+  //   }
+  // };
+
+
+  const handleDelete = () => {
+    let data = JSON.stringify({
+      operation: "ALLDelete",
+    });
+
+    let config = {
+      method: "get",
+      url: DeleteAllData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then(() => {
+        setGridData([])
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
+
+
+  
+
 
   // New folder
   const [newFolder, setNewfolder] = useState([]);
@@ -685,10 +715,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             const newFolderNames = [...folderNames];
                             newFolderNames[index] = e.target.value;
                             setFolderNames(newFolderNames);
+                            console.log(newFolderNames);
                           }}
-                          onBlur={() =>
-                            saveFolderName(folder.folderID, folderNames[index])
-                          }
+                          onBlur={() => {
+                            saveFolderName(folder.folderID, folderNames[index]);
+                            setEditMode(null); // Exit edit mode
+                          }}
                           onKeyDown={(e) => handleKeyDown(e, folder.folderID)}
                           autoFocus
                         />
@@ -1003,7 +1035,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     </li>
                   ))
                 ) : (
-                  <p>Loading data...</p>
+                  <p>Not Assets Found</p>
                 )}
               </div>
               <div></div>
