@@ -1,55 +1,55 @@
 export const LOGIN_URL =
-  "http://192.168.1.219/api/Register/Login";
+  "https://disployapi.thedestinysolutions.com/api/Register/Login";
 export const ADD_REGISTER_URL =
-  "http://192.168.1.219/api/Register/AddRegister";
+  "https://disployapi.thedestinysolutions.com/api/Register/AddRegister";
 export const All_REGISTER_URL =
-  "http://192.168.1.219/api/Register/GetAllRegister";
+  "https://disployapi.thedestinysolutions.com/api/Register/GetAllRegister";
 export const ALL_SCREEN_URL =
-  "http://192.168.1.219/api/Screen/GetAllScreen";
+  "https://disployapi.thedestinysolutions.com/api/Screen/GetAllScreen";
 export const ALL_MAPSTORE_GET =
-  "http://192.168.1.219/api/Cascading/SelectByStore";
+  "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByStore";
 export const GET_ALL_COUNTRY =
-  "http://192.168.1.219/api/Cascading/GetAllCountry";
+  "https://disployapi.thedestinysolutions.com/api/Cascading/GetAllCountry";
 export const GET_SELECT_BY_STATE =
-  "http://192.168.1.219/api/Cascading/SelectByState";
+  "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByState";
 export const GET_SELECT_BY_CITY =
-  "http://192.168.1.219/api/Cascading/SelectByCity";
+  "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByCity";
 
 export const GET_TIMEZONE =
-  "http://192.168.1.219/api/EventMaster/GetAllTimeZone";
+  "https://disployapi.thedestinysolutions.com/api/EventMaster/GetAllTimeZone";
 export const GET_ALL_FILES =
-  "http://192.168.1.219/api/ImageVideoDoc/GetAll";
+  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/GetAll";
 export const ALL_FILES_UPLOAD =
-  "http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload";
+  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/ImageVideoDocUpload";
 export const OTP_VERIFY =
-  "http://192.168.1.219/api/NewScreen/NewScreenVerify";
+  "https://disployapi.thedestinysolutions.com/api/NewScreen/NewScreenVerify";
 export const GET_ALL_EVENTS =
-  "http://192.168.1.219/api/EventMaster/GetAllEvent";
+  "https://disployapi.thedestinysolutions.com/api/EventMaster/GetAllEvent";
 export const ADD_EVENT =
-  "http://192.168.1.219/api/EventMaster/AddEvent";
+  "https://disployapi.thedestinysolutions.com/api/EventMaster/AddEvent";
 export const GET_ALL_SCHEDULE =
-  "http://192.168.1.219/api/Schedule/GetAllSchedule";
+  "https://disployapi.thedestinysolutions.com/api/Schedule/GetAllSchedule";
 export const ADD_SCHEDULE =
-  "http://192.168.1.219/api/Schedule/AddSchedule";
+  "https://disployapi.thedestinysolutions.com/api/Schedule/AddSchedule";
 export const SCHEDULE_EVENT_SELECT_BY_ID =
-  "http://192.168.1.219/api/EventMaster/SelectByID";
+  "https://disployapi.thedestinysolutions.com/api/EventMaster/SelectByID";
 export const SCHEDULE_SELECT_BY_ID =
-  "http://192.168.1.219/api/Schedule/SelectByID";
+  "https://disployapi.thedestinysolutions.com/api/Schedule/SelectByID";
 
 export const GET_ALL_TRASHDATA =
-  "http://192.168.1.219/api/Trash/GetAllTrash";
+  "https://disployapi.thedestinysolutions.com/api/Trash/GetAllTrash";
 export const ADD_TRASH =
-  "http://192.168.1.219/api/Trash/AddTrash";
+  "https://disployapi.thedestinysolutions.com/api/Trash/AddTrash";
 
 export const CREATE_NEW_FOLDER =
-  "http://192.168.1.219/api/ImageVideoDoc/CreateFolder";
+  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/CreateFolder";
 export const GET_ALL_NEW_FOLDER =
-  "http://192.168.1.219/api/ImageVideoDoc/GetAllFolder";
+  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/GetAllFolder";
 export const MOVE_TO_FOLDER =
-  "http://192.168.1.219/api/ImageVideoDoc/Move";
+  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/Move";
 export const FetchdataFormFolder =
-  "http://192.168.1.219/api/ImageVideoDoc/SelectByFolder";
+  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/SelectByFolder";
 
-  export const DeleteAllData =
-  "http://192.168.1.219/api/ImageVideoDoc/DeleteAll";
+export const DeleteAllData =
+  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/DeleteAll";
 //http://192.168.1.219
