@@ -7,7 +7,7 @@ import { SketchPicker } from "react-color";
 import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
 import ReactModal from "react-modal";
 import { ADD_EVENT } from "../../Pages/Api";
-
+import { MdOutlineArrowBackIosNew } from "react-icons/md";
 const EventEditor = ({
   isOpen,
   onClose,
@@ -77,14 +77,17 @@ const EventEditor = ({
           setSelectedAsset(previousSelectedAsset);
           setAssetPreview(previousSelectedAsset);
         }
-        const previousSelectedDay = selectedEvent.repeatDay;
+        // const previousSelectedDay = selectedEvent.repeatDay;
+
+        // setSelectedRepeatDay(previousSelectedDay);
+
         // console.log(previousSelectedDay, "previousSelectedDay");
         // const previousSelectedDayss = buttons.find((previousSelected) => {
         //   return previousSelected === previousSelectedDay;
         // });
         // console.log(previousSelectedDayss, "previousSelectedDay");
 
-        setSelectedRepeatDay(previousSelectedDay);
+        // setSelectedRepeatDay(selectedEvent.repeatDay || "");
         setTitle(selectedEvent.title);
         setSelectedColor(selectedEvent.color);
         setEditedStartDate(formatDate(selectedEvent.start));
@@ -104,7 +107,7 @@ const EventEditor = ({
       }
     }
   }, [isOpen, selectedEvent, selectedSlot, allAssets]);
-
+  console.log(selectedRepeatDay, "previousSelectedDay ");
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
@@ -566,11 +569,19 @@ const EventEditor = ({
               </div>
             </div>
             {showRepeatSettings ? (
-              <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0 bg-white shadow-2xl p-4">
-                <div>
-                  <div className="flex mt-5 items-center">
+              <div className="relative md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0 bg-white shadow-2xl p-4">
+                <div className="backbtn absolute top-[5px] left-[-10px] ">
+                  <button
+                    className="border border-SlateBlue rounded-full p-1 bg-SlateBlue"
+                    onClick={() => setShowRepeatSettings(false)}
+                  >
+                    <MdOutlineArrowBackIosNew className="text-white" />
+                  </button>
+                </div>
+                <div className="mt-3">
+                  <div className="">
                     <label>Start Date:</label>
-                    <div className="ml-3">
+                    <div className="mt-1">
                       <input
                         type="date"
                         value={editedStartDate}
@@ -579,9 +590,9 @@ const EventEditor = ({
                       />
                     </div>
                   </div>
-                  <div className="flex mt-5 items-center">
+                  <div className=" mt-5">
                     <label>End Date:</label>
-                    <div className="ml-5">
+                    <div className="mt-1">
                       <input
                         type="date"
                         value={editedEndDate}
@@ -596,36 +607,33 @@ const EventEditor = ({
                   <label>Repeating {countAllDaysInRange()} Day(s)</label>
                 </div>
 
-                <div className="flex mt-5">
-                  <div>
+                <div className="lg:flex md:block sm:block xs:block items-center mt-5 lg:flex-nowrap md:flex-wrap sm:flex-wrap">
+                  <div className="mr-2 w-full">
+                    <label className="ml-2">Start Time</label>
                     <div>
-                      <label className="ml-2">Start Time</label>
-                      <div>
-                        <input
-                          type="time"
-                          value={editedStartTime}
-                          onChange={handleStartTimeChange}
-                          className="bg-lightgray rounded-full px-3 py-2 w-full"
-                        />
-                      </div>
+                      <input
+                        type="time"
+                        value={editedStartTime}
+                        onChange={handleStartTimeChange}
+                        className="bg-lightgray rounded-full px-3 py-2 w-full"
+                      />
                     </div>
                   </div>
-                  <div className="ml-9">
+
+                  <div className="w-full">
+                    <label className="ml-2">End Time</label>
                     <div>
-                      <label className="ml-2">End Time</label>
-                      <div>
-                        <input
-                          type="time"
-                          value={editedEndTime}
-                          onChange={handleEndTimeChange}
-                          className="bg-lightgray rounded-full px-3 py-2 w-full"
-                        />
-                      </div>
+                      <input
+                        type="time"
+                        value={editedEndTime}
+                        onChange={handleEndTimeChange}
+                        className="bg-lightgray rounded-full px-3 py-2 w-full"
+                      />
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-5 text-black font-medium text-lg">
+                <div className="mt-5 text-black font-medium text-lg mr-2">
                   <input
                     type="checkbox"
                     checked={selectAllDays}
@@ -673,8 +681,8 @@ const EventEditor = ({
 
                         <li className="border-b-2 border-lightgray p-3">
                           <h3>Asset :</h3>
-                          <div className="mt-2">
-                            <div className="bg-lightgray rounded-full px-4 py-2 w-full ">
+                          <div className="mt-2 ">
+                            <div className="bg-lightgray rounded-full px-4 py-2 w-full overflow-hidden whitespace-nowrap text-ellipsis">
                               {selectedAsset ? selectedAsset.name : "Set Media"}
                             </div>
                             <div className="flex items-center justify-center mt-4">
