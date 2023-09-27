@@ -6,7 +6,6 @@ import Navbar from "../Navbar";
 import { TiFolderOpen } from "react-icons/ti";
 import { AiOutlineCloudUpload, AiOutlineUnorderedList } from "react-icons/ai";
 import { RxDashboard } from "react-icons/rx";
-import { FiCheckCircle } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
 import "../../Styles/assest.css";
 import { FiUpload } from "react-icons/fi";
@@ -32,7 +31,6 @@ import {
   GET_ALL_NEW_FOLDER,
   MOVE_TO_FOLDER,
 } from "../../Pages/Api";
-import NewFolderDialog from "./NewFolderDialog ";
 import { FcOpenedFolder } from "react-icons/fc";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
@@ -255,7 +253,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   });
-  //console.log(trashData, "trashData");
+
 
   // select All checkbox
 
@@ -269,22 +267,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
     setSelectAll(!selectAll);
   };
-
-  // const handleDelete = async () => {
-  //   try {
-  //     for (const item of selectedItems) {
-  //       await handelDeletedata(item.id);
-  //     }
-
-  //     // After all items are deleted, clear the selected items and uncheck "Select All"
-  //     setSelectedItems([]);
-  //     setSelectAll(false);
-  //   } catch (error) {
-  //     console.error("Error deleting items:", error);
-  //   }
-  // };
-
-
   const handleDelete = () => {
     let data = JSON.stringify({
       operation: "ALLDelete",
@@ -310,25 +292,20 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
 
-  
-
-
   // New folder
   const [newFolder, setNewfolder] = useState([]);
-  const [folderName, setFolderName] = useState("New Folder");
-  const [folderCounter, setFolderCounter] = useState(1);
   const [folderNames, setFolderNames] = useState([]);
-  const [folderImages, setFolderImages] = useState({});
 
-  const [folderModals, setFolderModals] = useState({});
+  const folderName = "New Folder"
   // Define the fetchFolderDetails function
   const fetchFolderDetails = () => {
     axios
       .get(GET_ALL_NEW_FOLDER)
       .then((response) => {
-        const fetchedData = response.data.data;
+        const fetchedData = response.data.data.filter(folder => !folder.deleted);
         setNewfolder(fetchedData);
         setFolderNames(fetchedData.map((folder) => folder.folderName));
+
         console.log(fetchedData);
       })
       .catch((error) => {
@@ -348,7 +325,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       counter++;
       nextFolderName = `${folderName} ${counter}`;
     }
-
     const formData = new FormData();
     formData.append("operation", "Insert");
     formData.append("folderName", nextFolderName);
@@ -365,48 +341,24 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         console.error("Error creating folder:", error);
       });
   };
+
   //Delete new folder
-  const DeleteFolder = (folderID) => {
-    let data = JSON.stringify({
+  const deleteFolder = (folderID) => {
+    console.log(folderID, 'folderID');
+    const data = JSON.stringify({
       folderID: folderID,
       operation: "Delete",
     });
 
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: CREATE_NEW_FOLDER,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
     axios
-      .request(config)
+      .post(CREATE_NEW_FOLDER, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then((response) => {
-        // Remove the deleted folder from the state
-        const updatedFolder = newFolder.filter(
-          (folder) => folder.folderID !== folderID
-        );
-        setNewfolder(updatedFolder);
-
-        // Find the maximum counter value among the remaining folders
-        const maxCounter = updatedFolder.reduce((max, folder) => {
-          const folderNameParts = folder.folderName.split(" ");
-          if (folderNameParts.length === 0) {
-            const folderCounter = parseInt(folderNameParts[1]);
-            if (!isNaN(folderCounter) && folderCounter > max) {
-              return folderCounter;
-            }
-          }
-          return max;
-        }, 0);
-
-        // Set the folderCounter to the next unique value
-        setFolderCounter(maxCounter + 1);
-
-        console.log(JSON.stringify(response.data));
+        console.log(response, 'response');
+        fetchFolderDetails();
       })
       .catch((error) => {
         console.log(error);
@@ -435,16 +387,20 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   // edit folder Name
   const [editMode, setEditMode] = useState(null);
 
-  const handleKeyDown = (e, folderID) => {
+  const handleKeyDown = (e, folderID, index) => {
     if (e.key === "Enter") {
       // Save the folder name on Enter key press
-      saveFolderName(folderID, folderName);
+      const newName = folderNames[index];
+      saveFolderName(folderID, newName);
+
     } else if (e.key === "Escape") {
       // Cancel editing on Escape key press
       setEditMode(null);
     }
   };
   const updateFolderNameInAPI = async (folderID, newName) => {
+    console.log(folderID, 'folderIDfolderID');
+    console.log(newName, 'newNamenewName');
     try {
       const formData = new FormData();
       formData.append("folderID", folderID);
@@ -454,11 +410,28 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       const response = await axios.post(CREATE_NEW_FOLDER, formData, {
         headers: { "Content-Type": "application/json" },
       });
-      console.log("Folder name updated:", response.data);
+      const updatedFolder = response.data.data.model;
+      // Create a new array with updated folder names
+      const updatedNewFolder = newFolder.map((item) => {
+        if (item.folderID === updatedFolder.folderID) {
+          // Replace the folder name for the specific folder ID
+          return {
+            ...item,
+            folderName: updatedFolder.folderName,
+          };
+        } else {
+          return item;
+        }
+      });
+
+      // Set the updated array as the new state
+      setNewfolder(updatedNewFolder);
+      console.log("Folder name updated:", updatedFolder);
     } catch (error) {
       console.error("Error updating folder name:", error);
     }
   };
+
   const saveFolderName = (folderID, newName) => {
     updateFolderNameInAPI(folderID, newName); // Use newName instead of folderName
     setEditMode(null);
@@ -467,6 +440,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   // move to data in folder
 
   const [isMoveToOpen, setIsMoveToOpen] = useState(false);
+
   const toggleMoveTo = () => {
     setIsMoveToOpen(!isMoveToOpen);
   };
@@ -491,22 +465,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       const response = await axios.request(config);
       console.log(JSON.stringify(response.data));
 
-      // Update the folderImages state to add the image only to the selected folder
-      setFolderImages((prevImages) => ({
-        ...prevImages,
-        [folderId]: [...(prevImages[folderId] || []), dataId],
-      }));
-
-      // Remove the data from other folders if it was present
-      for (const key in prevImages) {
-        if (key !== folderId && prevImages[key].includes(dataId)) {
-          setFolderImages((prevImages) => ({
-            ...prevImages,
-            [key]: prevImages[key].filter((id) => id !== dataId),
-          }));
-        }
-      }
-
       updateFolderContent(folderId);
     } catch (error) {
       console.log(error);
@@ -520,14 +478,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         prevGridData.filter((image) => image.id !== item.id)
       );
     });
-
-    //  setIsMoveToOpen(false);
   };
   const updateFolderContent = (folderId) => {
     try {
       axios
         .get(
-          `http://192.168.1.219/api/ImageVideoDoc/SelectByFolder?ID=${folderId}`
+          `${FetchdataFormFolder}?ID=${folderId}`
         )
         .then((response) => {
           console.log(response.data);
@@ -547,30 +503,20 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     event.preventDefault();
   };
 
-  const removeDataFromFolder = async (dataId, sourceFolderId) => {
-    try {
-      const requestData = {
-        folderID: sourceFolderId,
-        asset: dataId,
-        operation: "Delete",
-      };
-
-      const response = await axios.post(MOVE_TO_FOLDER, requestData, {
-        headers: { "Content-Type": "application/json" },
-      });
-      console.log(response.data);
-      setFolderImages((prevImages) => ({
-        ...prevImages,
-        [sourceFolderId]: prevImages[sourceFolderId].filter(
-          (id) => id !== dataId
-        ),
-      }));
-
-      updateFolderContent(sourceFolderId);
-    } catch (error) {
-      console.error("Error removing data from folder:", error);
-    }
+  const handleDragStart = (event, itemId) => {
+    event.dataTransfer.setData("text/plain", itemId);
   };
+
+  // Function to handle drop into folder
+  const handleDrop = (event, folderId) => {
+    event.preventDefault();
+    const itemId = event.dataTransfer.getData("text/plain");
+    
+    // Move the data item to the folder (you'll need to implement this logic)
+    moveDataToFolder(itemId, folderId);
+  };
+
+
 
   return (
     <>
@@ -669,7 +615,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
               <button
                 className={activetab === 5 ? "tabactivebtn " : "tabbtn"}
-                // onClick={() => handleActiveBtnClick(5)}
+              // onClick={() => handleActiveBtnClick(5)}
               >
                 App
               </button>
@@ -696,10 +642,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
                   return (
                     <li
-                      key={`folder-${folder.folderID}`}
-                      onDrop={(event) => handleDrop(event, folder.folderID)} // Handle drop into the folder
-                      onDragOver={handleDragOver}
-                      className="text-center relative list-none bg-lightgray rounded-md px-3 py-7"
+                    key={`folder-${folder.folderID}`}
+                    onDragOver={handleDragOver} // Allow drops on folders
+                    onDrop={(event) => handleDrop(event, folder.folderID)} // Handle drop into folder
+                    className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col"
                     >
                       <FcOpenedFolder
                         className="text-8xl text-center mx-auto"
@@ -719,9 +665,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           }}
                           onBlur={() => {
                             saveFolderName(folder.folderID, folderNames[index]);
-                            setEditMode(null); // Exit edit mode
+                            setEditMode(null);
                           }}
-                          onKeyDown={(e) => handleKeyDown(e, folder.folderID)}
+                          onKeyDown={(e) => handleKeyDown(e, folder.folderID, index)}
                           autoFocus
                         />
                       ) : (
@@ -764,8 +710,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   <button
                                     className="flex text-sm items-center"
                                     onClick={() =>
-                                      DeleteFolder(folder.folderID)
-                                    }
+                                      deleteFolder(folder.folderID)}
+                                    
                                   >
                                     <RiDeleteBin5Line className="mr-2 text-lg" />
                                     Move to Trash
@@ -796,22 +742,19 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                 {gridData.length > 0 ? (
                   gridData.map((item, index) => (
                     <li
-                      key={`tabitem-grid-${item.id}-${index}`}
-                      draggable
-                      onDragStart={(event) => handleDragStart(event, item.id)} // Handle drag start
-                      onDrop={(event) => handleDrop(event, item.id)} // Handle drop
-                      onDragOver={(event) => handleDragOver(event)}
-                      className="relative list-none assetsbox"
+                    key={`tabitem-grid-${item.id}-${index}`}
+                    draggable
+                    onDragStart={(event) => handleDragStart(event, item.id)} // Initiate drag
+                    className="relative list-none assetsbox"
                     >
                       {item.categorieType === "Image" && (
                         <img
                           src={item.fileType}
                           alt={item.name}
-                          className={`imagebox relative ${
-                            selectedItems.includes(item)
+                          className={`imagebox relative ${selectedItems.includes(item)
                               ? "active opacity-1 w-full rounded-2xl"
                               : "opacity-1 w-full rounded-2xl"
-                          }`}
+                            }`}
                         />
                       )}
 
@@ -819,11 +762,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <img
                           src={item.fileType}
                           alt={item.name}
-                          className={`imagebox relative ${
-                            selectedItems.includes(item)
+                          className={`imagebox relative ${selectedItems.includes(item)
                               ? "active opacity-1 w-full rounded-2xl"
                               : "opacity-1 w-full rounded-2xl"
-                          }`}
+                            }`}
                         />
                       )}
 
@@ -978,6 +920,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     <button onClick={toggleMoveTo}>
                                       Move to
                                     </button>
+
+
                                     {isMoveToOpen && (
                                       <div className="move-to-dropdown">
                                         <ul>
