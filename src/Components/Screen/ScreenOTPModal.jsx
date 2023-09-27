@@ -29,7 +29,6 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
 
     let config = {
       method: "post",
-      maxBodyLength: Infinity,
       url: OTP_VERIFY,
       headers: {
         "Content-Type": "application/json",
@@ -42,7 +41,6 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
       .then((response) => {
         console.log(response);
         if (response.data.status === 200) {
-          // history("/newscreendetail");
           history("/newscreendetail", {
             state: { otpData: response.data.data },
           });

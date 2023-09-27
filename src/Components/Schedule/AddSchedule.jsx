@@ -143,12 +143,15 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Function to handle event drag and drop
   const handleEventDrop = ({ event, start, end }) => {
+    console.log(event, "eventdrop");
+
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
     const previousSelectedAsset = allAssets.find(
       (asset) => asset.id === event.asset
     );
+
     const updatedEventData = {
       ...event,
       start,
@@ -156,6 +159,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       asset: previousSelectedAsset,
       scheduleId: scheduleIdToUse,
     };
+    console.log(updatedEventData, "updatedEventData");
     handleSaveEvent(updatedEventData.id, updatedEventData);
   };
 
@@ -167,6 +171,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     const previousSelectedAsset = allAssets.find(
       (asset) => asset.id === event.asset
     );
+
     const resizedEvent = {
       ...event,
       start,
@@ -175,6 +180,29 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       scheduleId: scheduleIdToUse,
     };
     handleSaveEvent(resizedEvent.id, resizedEvent);
+  };
+  // Fetch events associated with the scheduleId
+  const loadEventsForSchedule = (scheduleId) => {
+    axios
+      .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`)
+      .then((response) => {
+        const fetchedData = response.data.data;
+        // console.log(fetchedData, "load--event--fetchedData");
+        setScheduleAsset(response.data.data);
+        const fetchedEvents = fetchedData.map((item) => ({
+          id: item.eventId,
+          title: item.title,
+          start: new Date(item.cStartDate),
+          end: new Date(item.cEndDate),
+          color: item.color,
+          asset: item.asset,
+          repeatDay: item.repeatDay,
+        }));
+        setEvents(fetchedEvents);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleSaveEvent = (eventId, eventData) => {
@@ -224,7 +252,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(response.data, "response");
         const fetchedData = response.data.data.eventTables;
 
-        const updatedEvent = fetchedData.map((item) => ({
+        const updateEvent = fetchedData.map((item) => ({
           id: item.eventId,
           title: item.title,
           start: new Date(item.cStartDate),
@@ -235,25 +263,22 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           day: item.day,
         }));
 
-        if (updatedEvent.id) {
-          // debugger;
-          const updatedEvents = myEvents.map((event) =>
-            event.id === eventId ? updatedEvent : event
+        if (eventId) {
+          const updatedEventsMap = Object.fromEntries(
+            updateEvent.map((event) => [event.id, event])
           );
-          console.log(updatedEvents, "updatedEventupdatedEvent====");
-          setEvents(updatedEvents);
-          console.log(myEvents, "updatedEventupdatedEvent====");
-          // setEvents((prevEvents) =>
-          //   prevEvents.map((prevEvent) =>
-          //     prevEvent.id === updatedEvent.id ? updatedEvent : prevEvent
-          //   )
-          // );
-          // setEvents((prevEvents) => [...prevEvents, ...updatedEvents]);
+          const updatedMyEvents = myEvents.map((event) => {
+            const updatedEvent = updatedEventsMap[event.id];
+            return updatedEvent ? { ...event, ...updatedEvent } : event;
+          });
+
+          setEvents(updatedMyEvents);
+
           if (selectedEvent && selectedEvent.eventId === eventId) {
-            setSelectedEvent(updatedEvent);
+            setSelectedEvent(updateEvent);
           }
         } else {
-          setEvents((prevEvents) => [...prevEvents, ...updatedEvent]);
+          setEvents((prevEvents) => [...prevEvents, ...updateEvent]);
         }
       })
       .catch((error) => {
@@ -265,30 +290,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setCreatePopupOpen(false);
   };
 
-  // Fetch events associated with the scheduleId
-  const loadEventsForSchedule = (scheduleId) => {
-    axios
-      .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`)
-      .then((response) => {
-        const fetchedData = response.data.data;
-        // console.log(fetchedData, "load--event--fetchedData");
-        setScheduleAsset(response.data.data);
-        const fetchedEvents = fetchedData.map((item) => ({
-          id: item.eventId,
-          title: item.title,
-          start: new Date(item.cStartDate),
-          end: new Date(item.cEndDate),
-          color: item.color,
-          asset: item.asset,
-          repeatDay: item.repeatDay,
-        }));
-        setEvents(fetchedEvents);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   useEffect(() => {
     if (getScheduleId) {
       loadEventsForSchedule(getScheduleId);
@@ -296,6 +297,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       setEvents([]);
     }
   }, [getScheduleId]);
+
   const handleCloseCreatePopup = () => {
     setSelectedSlot(null);
     setSelectedEvent(null);
@@ -399,7 +401,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 <BsPencilFill />
               </button>
             </div>
-            <div className="lg:col-span-3 md:col-span-5 sm:col-span-6 xs:col-span-12">
+            <div className="lg:col-span-3 md:col-span-5 sm:col-span-6 xs:col-span-12 ml-5">
               <select
                 className="w-full paymentlabel relative"
                 value={
@@ -452,7 +454,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 scheduleAsset={scheduleAsset}
               />
             </div>
-            <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
+            <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-5 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
               <div className="flex justify-center my-3 text-black font-semibold text-xl">
                 Schedule Name
               </div>
