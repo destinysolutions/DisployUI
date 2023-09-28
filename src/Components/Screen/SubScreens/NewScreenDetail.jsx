@@ -491,14 +491,14 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                   </button>
                                                 </Link>
                                               </div>
-                                              <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto">
+                                              <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover">
                                                 <table
                                                   style={{
                                                     borderCollapse: "separate",
                                                     borderSpacing: " 0 10px",
                                                   }}
                                                 >
-                                                  <thead>
+                                                  <thead className="sticky top-0">
                                                     <tr className="bg-lightgray">
                                                       <th className="p-3 w-80 text-left">
                                                         Media Name
@@ -671,7 +671,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                       Content will always be playing Confirm
                                     </p>
                                     <button
-                                      className="bg-primary text-white rounded-full px-5 py-2"
+                                      className="bg-primary text-white rounded-full px-5 py-2 hover:bg-SlateBlue"
                                       onClick={() => setShowAssetModal(false)}
                                     >
                                       Confirm
