@@ -113,14 +113,19 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(fetchedData);
         setOriginalData(fetchedData);
         const allAssets = [
+          
           ...(fetchedData.image ? fetchedData.image : []),
           ...(fetchedData.video ? fetchedData.video : []),
           ...(fetchedData.doc ? fetchedData.doc : []),
           ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
         ];
-        setGridData(allAssets);
-        setTableData(allAssets);
+        const sortedAssets = allAssets.sort((a, b) => {
+          return new Date(b.createdDate) - new Date(a.createdDate);
+        });
+        
+        setGridData(sortedAssets);
+        setTableData(sortedAssets);
       })
       .catch((error) => {
         console.log(error);
@@ -918,6 +923,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 {selectedItems.length > 0 && (
                                   <div className="move-to-button">
                                     <button onClick={toggleMoveTo}>
+                                    <CgMoveRight className="mr-2 text-lg" />
                                       Move to
                                     </button>
 
