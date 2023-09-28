@@ -7,12 +7,62 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { useEffect } from "react";
+import { GET_ALL_FILES } from "../../Pages/Api";
+import axios from "axios";
+import moment from "moment";
 
 const AssetModal = ({ setShowAssetModal }) => {
   AssetModal.propTypes = {
     setShowAssetModal: PropTypes.func.isRequired,
   };
   const [popupActiveTab, setPopupActiveTab] = useState(1);
+  const [assetData, setAssetData] = useState([]);
+  const [selectedAsset, setSelectedAsset] = useState("");
+  const [assetPreview, setAssetPreview] = useState("");
+  const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get(GET_ALL_FILES)
+      .then((response) => {
+        const fetchedData = response.data;
+        const allAssets = [
+          ...(fetchedData.image ? fetchedData.image : []),
+          ...(fetchedData.video ? fetchedData.video : []),
+          ...(fetchedData.doc ? fetchedData.doc : []),
+          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
+          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
+        ];
+        setAssetData(allAssets);
+        console.log(allAssets, "allAssets");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const handleAssetAdd = (asset) => {
+    setSelectedAsset(asset);
+    setAssetPreview(asset);
+  };
+
+  const [searchAsset, setSearchAsset] = useState("");
+  const handleFilter = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchAsset(searchQuery);
+
+    if (searchQuery === "") {
+      setAssetData(assetData);
+    } else {
+      const filteredData = assetData.filter((item) => {
+        const itemName = item.name ? item.name.toLowerCase() : "";
+        return itemName.includes(searchQuery);
+      });
+      setAssetData(filteredData);
+    }
+  };
+
   return (
     <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
       <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
@@ -42,15 +92,17 @@ const AssetModal = ({ setShowAssetModal }) => {
                     >
                       <button
                         type="button"
-                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 1 ? "active" : ""
-                          }`}
-                      // onClick={() => handleTabClick(1)}
+                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                          popupActiveTab === 1 ? "active" : ""
+                        }`}
+                        // onClick={() => handleTabClick(1)}
                       >
                         <span
-                          className={`p-1 rounded ${popupActiveTab === 1
-                            ? "bg-primary text-white"
-                            : "bg-lightgray"
-                            } `}
+                          className={`p-1 rounded ${
+                            popupActiveTab === 1
+                              ? "bg-primary text-white"
+                              : "bg-lightgray"
+                          } `}
                         >
                           <IoBarChartSharp size={15} />
                         </span>
@@ -58,15 +110,17 @@ const AssetModal = ({ setShowAssetModal }) => {
                       </button>
                       <button
                         type="button"
-                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 2 ? "active" : ""
-                          }`}
-                      //onClick={() => handleTabClick(2)}
+                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                          popupActiveTab === 2 ? "active" : ""
+                        }`}
+                        //onClick={() => handleTabClick(2)}
                       >
                         <span
-                          className={`p-1 rounded ${popupActiveTab === 2
-                            ? "bg-primary text-white"
-                            : "bg-lightgray"
-                            } `}
+                          className={`p-1 rounded ${
+                            popupActiveTab === 2
+                              ? "bg-primary text-white"
+                              : "bg-lightgray"
+                          } `}
                         >
                           <RiPlayListFill size={15} />
                         </span>
@@ -74,15 +128,17 @@ const AssetModal = ({ setShowAssetModal }) => {
                       </button>
                       <button
                         type="button"
-                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 3 ? "active" : ""
-                          }`}
-                      // onClick={() => handleTabClick(3)}
+                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                          popupActiveTab === 3 ? "active" : ""
+                        }`}
+                        // onClick={() => handleTabClick(3)}
                       >
                         <span
-                          className={`p-1 rounded ${popupActiveTab === 3
-                            ? "bg-primary text-white"
-                            : "bg-lightgray"
-                            } `}
+                          className={`p-1 rounded ${
+                            popupActiveTab === 3
+                              ? "bg-primary text-white"
+                              : "bg-lightgray"
+                          } `}
                         >
                           <BiAnchor size={15} />
                         </span>
@@ -90,15 +146,17 @@ const AssetModal = ({ setShowAssetModal }) => {
                       </button>
                       <button
                         type="button"
-                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 4 ? "active" : ""
-                          }`}
-                      // onClick={() => handleTabClick(4)}
+                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                          popupActiveTab === 4 ? "active" : ""
+                        }`}
+                        // onClick={() => handleTabClick(4)}
                       >
                         <span
-                          className={`p-1 rounded ${popupActiveTab === 4
-                            ? "bg-primary text-white"
-                            : "bg-lightgray"
-                            } `}
+                          className={`p-1 rounded ${
+                            popupActiveTab === 4
+                              ? "bg-primary text-white"
+                              : "bg-lightgray"
+                          } `}
                         >
                           <AiOutlineAppstoreAdd size={15} />
                         </span>
@@ -110,12 +168,14 @@ const AssetModal = ({ setShowAssetModal }) => {
                   <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
                     <div className={popupActiveTab === 1 ? "" : "hidden"}>
                       <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                        <div className="text-right mb-5 mr-5 flex items-end justify-end relative sm:mr-0">
-                          <AiOutlineSearch className="absolute top-[13px] right-[207px] z-10 text-gray searchicon" />
+                        <div className="mb-5 relative ">
+                          <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
                           <input
                             type="text"
-                            placeholder=" Search Users "
+                            placeholder=" Search by Name"
                             className="border border-primary rounded-full px-7 py-2 search-user"
+                            value={searchAsset}
+                            onChange={handleFilter}
                           />
                         </div>
                         <Link to="/fileupload">
@@ -139,28 +199,114 @@ const AssetModal = ({ setShowAssetModal }) => {
                               <th className="p-3">Type</th>
                             </tr>
                           </thead>
-
-                          <tbody>
-                            <tr className="bg-[#F8F8F8]">
-                              <td className="p-3">Name</td>
-                              <td className="p-3">25 May 2023</td>
-                              <td className="p-3">25 kb</td>
-                              <td className="p-3">Image</td>
-                            </tr>
-                            <tr className="bg-[#F8F8F8]">
-                              <td className="p-3">Name</td>
-                              <td className="p-3">25 May 2023</td>
-                              <td className="p-3">25 kb</td>
-                              <td className="p-3">Image</td>
-                            </tr>
-                            <tr className="bg-[#F8F8F8]">
-                              <td className="p-3">Name</td>
-                              <td className="p-3">25 May 2023</td>
-                              <td className="p-3">25 kb</td>
-                              <td className="p-3">Image</td>
-                            </tr>
-                          </tbody>
+                          {assetData.map((asset) => (
+                            <tbody key={asset.id}>
+                              <tr
+                                className={`${
+                                  selectedAsset === asset ? "bg-[#f3c953]" : ""
+                                } border-b border-[#eee] `}
+                                onClick={() => {
+                                  handleAssetAdd(asset);
+                                  setAssetPreviewPopup(true);
+                                }}
+                              >
+                                <td className="p-3">{asset.name}</td>
+                                <td className="p-3">
+                                  {moment(asset.createdDate).format(
+                                    "YYYY-MM-DD"
+                                  )}
+                                </td>
+                                <td className="p-3">{asset.fileSize}</td>
+                                <td className="p-3">{asset.categorieType}</td>
+                              </tr>
+                            </tbody>
+                          ))}
                         </table>
+                        {assetPreviewPopup && (
+                          <>
+                            <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-50 outline-none focus:outline-none">
+                              <div className="fixed top-1/2 left-1/2 asset-preview-popup">
+                                <div className="border-0 rounded-lg shadow-lg relative w-full bg-black outline-none focus:outline-none">
+                                  <div className="p-1  rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
+                                    <button
+                                      className="p-1 text-xl"
+                                      onClick={() =>
+                                        setAssetPreviewPopup(false)
+                                      }
+                                    >
+                                      <AiOutlineCloseCircle className="text-2xl" />
+                                    </button>
+                                  </div>
+                                  <div className="p-3 flex justify-center  items-center min-w-[300px] max-w-[300px] min-h-[300px] max-h-[300px]">
+                                    {assetPreview && (
+                                      <>
+                                        {assetPreview.categorieType ===
+                                          "OnlineImage" && (
+                                          <div className="imagebox relative p-3">
+                                            <img
+                                              src={assetPreview.fileType}
+                                              alt={assetPreview.name}
+                                              className="rounded-2xl "
+                                            />
+                                          </div>
+                                        )}
+
+                                        {assetPreview.categorieType ===
+                                          "OnlineVideo" && (
+                                          <div className="relative videobox">
+                                            <video
+                                              controls
+                                              className="w-full rounded-2xl relative"
+                                            >
+                                              <source
+                                                src={assetPreview.fileType}
+                                                type="video/mp4"
+                                              />
+                                              Your browser does not support the
+                                              video tag.
+                                            </video>
+                                          </div>
+                                        )}
+                                        {assetPreview.categorieType ===
+                                          "Image" && (
+                                          <img
+                                            src={assetPreview.fileType}
+                                            alt={assetPreview.name}
+                                            className="imagebox relative flex justify-center  items-center min-w-[250px] max-w-[250px] min-h-[250px] max-h-[250px]"
+                                          />
+                                        )}
+                                        {assetPreview.categorieType ===
+                                          "Video" && (
+                                          <video
+                                            controls
+                                            className="w-full rounded-2xl relative h-56"
+                                          >
+                                            <source
+                                              src={assetPreview.fileType}
+                                              type="video/mp4"
+                                            />
+                                            Your browser does not support the
+                                            video tag.
+                                          </video>
+                                        )}
+                                        {assetPreview.categorieType ===
+                                          "DOC" && (
+                                          <a
+                                            href={assetPreview.fileType}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                          >
+                                            {assetPreview.name}
+                                          </a>
+                                        )}
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>

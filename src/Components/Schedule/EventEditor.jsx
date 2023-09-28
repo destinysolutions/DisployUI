@@ -27,6 +27,7 @@ const EventEditor = ({
   const [editedEndTime, setEditedEndTime] = useState("");
   const [selectedAsset, setSelectedAsset] = useState("");
   const [assetPreview, setAssetPreview] = useState("");
+  const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
   const buttons = [
     "Sunday",
     "Monday",
@@ -286,7 +287,7 @@ const EventEditor = ({
     }
   };
 
-  const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
+
   const handelDeletedata = () => {
     let data = JSON.stringify({
       eventId: selectedEvent.id,
