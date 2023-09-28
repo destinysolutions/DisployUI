@@ -11,7 +11,7 @@ import Navbar from "../Navbar";
 import PropTypes from "prop-types";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { HiDocumentDuplicate } from "react-icons/hi";
-import { GET_ALL_FILES, FetchdataFormFolder } from "../../Pages/Api";
+import {FetchdataFormFolder, DeleteAllData, MOVE_TO_FOLDER } from "../../Pages/Api";
 const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   NewFolderDialog.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -32,46 +32,47 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
   const folderId = location.pathname.split("/").pop();
 
-  const fetchData = () => {
-    axios
-      .get(GET_ALL_FILES)
-      .then((response) => {
-        const fetchedData = response.data;
-        console.log(fetchedData,"fetchedData");
+  // const fetchData = () => {
+  //   axios
+  //     .get(GET_ALL_FILES)
+  //     .then((response) => {
+  //       const fetchedData = response.data;
+  //       console.log(fetchedData,"fetchedData");
 
-        // const folderImageIds = folderData.map((item) => item);
-        // console.log(folderImageIds,"folderImageIds");
+  //       // const folderImageIds = folderData.map((item) => item);
+  //       // console.log(folderImageIds,"folderImageIds");
 
-        // const matchingAssets = fetchedData.image.filter((item) =>
-        // folderImageIds.includes(item.id)
-        const allAssets = [
-          ...(fetchedData.image ? fetchedData.image : []),
-          ...(fetchedData.video ? fetchedData.video : []),
-          ...(fetchedData.doc ? fetchedData.doc : []),
-          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
-          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
-        ];
-        console.log(allAssets, "allAssets"); 
+  //       // const matchingAssets = fetchedData.image.filter((item) =>
+  //       // folderImageIds.includes(item.id)
+  //       const allAssets = [
+  //         ...(fetchedData.image ? fetchedData.image : []),
+  //         ...(fetchedData.video ? fetchedData.video : []),
+  //         ...(fetchedData.doc ? fetchedData.doc : []),
+  //         ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
+  //         ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
+  //       ];
+  //       console.log(allAssets, "allAssets"); 
        
-               const matchingAssets = folderData.map((id) =>
-               allAssets.find((item) => item.id === id)
-             );
-               setFolderAsset(matchingAssets);
+  //              const matchingAssets = folderData.map((id) =>
+  //              allAssets.find((item) => item.id === id)
+  //            );
+  //              setFolderAsset(matchingAssets);
    
-      console.log(matchingAssets, "matchingAssets"); 
+  //     console.log(matchingAssets, "matchingAssets"); 
     
-        setAssetData(fetchedData);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  };
+  //       setAssetData(fetchedData);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //     });
+  // };
 
   const loadEventsForSchedule = (folderId) => {
-    axios.get(`${FetchdataFormFolder}?ID=${folderId}`).then((response) => {
+    axios.get(`${FetchdataFormFolder}?Id=${folderId}`).then((response) => {
       const fetchedData = response.data.data;
-     const assetList = fetchedData.map((item)=>item.asset)
-      setFolderData(assetList);
+    const assetList = fetchedData.map((item)=>item.asset)
+      setFolderData(fetchedData);
+      //setFolderAsset(fetchedData);
       console.log(assetList, "assetList");
     });
   };
@@ -82,27 +83,11 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     }
   },[folderId]);
 
-  useEffect(() => {
-    if (folderData.length > 0) {
-      fetchData();
-    }
-  }, [folderData]);
-
-
-// useEffect(() => {
-//   if (folderData.length > 0) {
-//     const matchingAssets = folderData.map((id) =>
-//       assetData.find((item) => item.id === id)
-//     );
-//     setFolderAsset(matchingAssets);
-//   } else {
-//     setFolderAsset([]); 
-//   }
-// }, [folderData, assetData]);
+  
 console.log(folderAsset,'folderAsset');
 console.log(assetData,'assetData');
 console.log(folderData,';folderData');
-// folder wise show asset end end end 
+
 
 
   const [hoveredTabIcon, setHoveredTabIcon] = useState(null);
@@ -126,7 +111,7 @@ console.log(folderData,';folderData');
   };
 
   const [selectedItems, setSelectedItems] = useState([]);
-
+console.log(selectedItems,'selectedItems');
   const handleCheckboxChange = (item) => {
     if (selectedItems.includes(item)) {
       setSelectedItems(
@@ -137,6 +122,46 @@ console.log(folderData,';folderData');
     }
   };
   const [selectAll, setSelectAll] = useState(false);
+
+
+  // delete data
+
+
+
+
+  const handleMoveToTrash = (assetId) => {
+  
+   console.log(assetId,'ID');
+    let data = JSON.stringify({
+      "asset": assetId,
+      "operation": "Delete"
+      });
+      
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: MOVE_TO_FOLDER,
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+      
+      axios.request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        const updateAsset = folderData.filter((asset)=>asset.id !== assetId)
+        setFolderData(updateAsset);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  
+
+  
+
+
 
   return (
     <>
@@ -154,7 +179,7 @@ console.log(folderData,';folderData');
                 </Link>
                 <hr className="border-b border-lightgray" />
                 <div className=" page-content grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section">
-                {folderAsset.map((folderAsset) => (
+                {folderData.map((folderAsset) => (
                   <>
                   <div key={folderAsset.id} className="relative assetsbox">
                     {folderAsset.categorieType === "OnlineImage" && (
@@ -362,7 +387,7 @@ console.log(folderData,';folderData');
                     
                     <li>
                       <button
-                        onClick={() => handelDeletedata(folderAsset.id)}
+                        onClick={() =>handleMoveToTrash(folderAsset.id)}
                         className="flex text-sm items-center"
                       >
                         <RiDeleteBin5Line className="mr-2 text-lg" />
