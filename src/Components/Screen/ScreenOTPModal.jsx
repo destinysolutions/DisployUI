@@ -86,7 +86,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                     className="flex flex-row justify-center text-center px-2"
                   >
                     {otpValues.map((value, index) => (
-                      <div>
+                      <div key={index}>
                         <input
                           className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
                           type="text"
