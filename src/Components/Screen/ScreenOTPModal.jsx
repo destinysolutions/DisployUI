@@ -4,26 +4,29 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../UserContext";
 import { OTP_VERIFY } from "../../Pages/Api";
+import { useRef } from "react";
 
 const ScreenOTPModal = ({ setShowOTPModal }) => {
   const { user } = useUser();
   const userId = user ? user.userID : null;
-  console.log(user);
   const history = useNavigate();
   const [errorMessge, setErrorMessge] = useState(false);
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
-
+  const otpRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()]; // Create refs for each input field
   const handleOtpChange = (index, value) => {
     const updatedOtpValues = [...otpValues];
     updatedOtpValues[index] = value;
     setOtpValues(updatedOtpValues);
+    if (value.length === 1 && index < otpRefs.length - 1) {
+      otpRefs[index + 1].current.focus();
+    }
   };
 
   const completeOtp = otpValues.join("");
 
   const verifyOTP = () => {
     let data = JSON.stringify({
-      enterdOtp: completeOtp,
+      otp: completeOtp,
       userID: userId,
     });
 
@@ -42,7 +45,10 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
         console.log(response);
         if (response.data.status === 200) {
           history("/newscreendetail", {
-            state: { otpData: response.data.data },
+            state: {
+              otpData: response.data.data,
+              message: response.data.message,
+            },
           });
         } else {
           setErrorMessge(response.data.message);
@@ -88,6 +94,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                     {otpValues.map((value, index) => (
                       <div key={index}>
                         <input
+                          ref={otpRefs[index]}
                           className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
                           type="text"
                           value={value}
@@ -99,7 +106,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                       </div>
                     ))}
                   </div>
-                  <div className="flex justify-center text-center text-red text-xl my-3 font-semibold">
+                  <div className="flex justify-center text-center text-red text-xl my-2 font-semibold">
                     {errorMessge}
                   </div>
                   <div className="flex justify-center text-center">

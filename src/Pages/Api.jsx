@@ -16,6 +16,9 @@ export const UPDATE_NEW_SCREEN =
   "http://192.168.1.219/api/NewScreen/UpdateNewScreen";
 export const GET_SCREEN_TYPE =
   "http://192.168.1.219/api/NewScreen/GetAllScreenType";
+export const SELECT_BY_USER_SCREENDETAIL =
+  "http://192.168.1.219/api/NewScreen/SelectByUserScreen";
+
 export const GET_TIMEZONE =
   "http://192.168.1.219/api/EventMaster/GetAllTimeZone";
 export const GET_ALL_FILES = "http://192.168.1.219/api/ImageVideoDoc/GetAll";

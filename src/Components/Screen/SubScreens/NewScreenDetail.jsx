@@ -15,6 +15,7 @@ import {
 } from "../../../Pages/Api";
 import {
   AiOutlineAppstoreAdd,
+  AiOutlineClose,
   AiOutlineCloseCircle,
   AiOutlineSearch,
 } from "react-icons/ai";
@@ -22,6 +23,7 @@ import { IoBarChartSharp } from "react-icons/io5";
 import { RiPlayListFill } from "react-icons/ri";
 import { BiAnchor } from "react-icons/bi";
 import moment from "moment";
+import { BsFillInfoCircleFill } from "react-icons/bs";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
@@ -84,6 +86,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [showAssetModal, setShowAssetModal] = useState(false);
   const location = useLocation();
   const otpData = location?.state?.otpData || null;
+  const message = location?.state?.message || null;
+  const [otpMessageVisible, setOTPMessageVisible] = useState(false);
+  console.log(message, "successMessage");
 
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   const [assetData, setAssetData] = useState([]);
@@ -189,6 +194,29 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
+      {otpMessageVisible && (
+        <div
+          className="bg-[#fff2cd] px-5 py-3 border-b-2 border-SlateBlue shadow-md"
+          style={{
+            position: "fixed",
+            top: "16px",
+            right: "20px",
+            zIndex: "999999",
+          }}
+        >
+          <div className="flex text-SlateBlue  text-base font-normal items-center relative">
+            <BsFillInfoCircleFill className="mr-1" />
+            {message}
+            <button
+              className="absolute top-[-26px] right-[-26px] bg-white rounded-full p-1 "
+              onClick={() => setOTPMessageVisible(false)}
+            >
+              <AiOutlineClose className="text-xl  text-SlateBlue " />
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="pt-6 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">

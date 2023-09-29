@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../../Styles/screen.css";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import {
@@ -24,6 +24,9 @@ import Footer from "../Footer";
 import { BiFilterAlt } from "react-icons/bi";
 import { RxTimer } from "react-icons/rx";
 import { Tooltip } from "@material-tailwind/react";
+import { useUser } from "../../UserContext";
+import { SELECT_BY_USER_SCREENDETAIL } from "../../Pages/Api";
+import axios from "axios";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -52,6 +55,22 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       setMoreCheckboxClick(false);
     }
   };
+
+  const { user } = useUser();
+  const userId = user ? user.userID : null;
+
+  useEffect(() => {
+    axios
+      .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${userId}`)
+      .then((response) => {
+        const fetchedData = response.data.data;
+        console.log(fetchedData, "--fetchedData");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  });
+
   return (
     <>
       <div className="flex border-b border-gray">

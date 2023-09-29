@@ -187,7 +187,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`)
       .then((response) => {
         const fetchedData = response.data.data;
-        // console.log(fetchedData, "load--event--fetchedData");
+        console.log(fetchedData, "load--event--fetchedData");
         setScheduleAsset(response.data.data);
         const fetchedEvents = fetchedData.map((item) => ({
           id: item.eventId,
@@ -257,12 +257,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           title: item.title,
           start: new Date(item.cStartDate),
           end: new Date(item.cEndDate),
-          color: item.color,
-          asset: item.asset,
+          color: item.color, 
           repeatDay: item.repeatDay,
           day: item.day,
         }));
-
+        console.log(updateEvent, "updateEvent");
         if (eventId) {
           const updatedEventsMap = Object.fromEntries(
             updateEvent.map((event) => [event.id, event])
@@ -273,7 +272,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           });
 
           setEvents(updatedMyEvents);
-
+          console.log(updatedMyEvents, "updatedMyEvents");
           if (selectedEvent && selectedEvent.eventId === eventId) {
             setSelectedEvent(updateEvent);
           }
