@@ -108,7 +108,7 @@ const EventEditor = ({
       }
     }
   }, [isOpen, selectedEvent, selectedSlot, allAssets]);
-  console.log(selectedRepeatDay, "previousSelectedDay ");
+  // console.log(selectedRepeatDay, "previousSelectedDay ");
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
@@ -286,7 +286,6 @@ const EventEditor = ({
       setAssetData(filteredData);
     }
   };
-
 
   const handelDeletedata = () => {
     let data = JSON.stringify({

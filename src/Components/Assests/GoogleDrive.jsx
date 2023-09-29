@@ -5,6 +5,7 @@ import useDrivePicker from "react-google-drive-picker";
 import Googledrive from "../../../public/Assets/google-drive.png";
 import { Tooltip } from "@material-tailwind/react";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
+import { useNavigate } from "react-router-dom";
 const GoogleDrive = () => {
   const [openPicker, authResponse] = useDrivePicker();
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -54,7 +55,8 @@ const GoogleDrive = () => {
         "1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com", // Your client ID
       developerKey: "AIzaSyCbWICmzquQqKHgCDNEFCBUgpH8VGe2ezo", // Your developer key
       viewId: "DOCS",
-      token: "ya29.a0AfB_byAbT3BnJ4fwm6OlVzGtNsnSjxlh7e1hicQcMJHu6OqRjf2MbaUPfXu7SiI5utcp_LhgpXEhXsg3FOMcjwlnJkpmR6OPTq9XHNGO2T9amVupAN7qsEKmR30SsPwhEWhMCX4_5HxrFPIlJGA6brcfaAN_TMY58AaCgYKAdgSARESFQGOcNnCijAtgKzW5D9V1CXNtCVfyA0169",
+      token:
+        "ya29.a0AfB_byB-H3p1dg8VWZjZHxIqRdh8bEEQGFe9XUSmbzec9-b1zqb_-BMLYisFP5YIS6QRUquL1LJ9wfk2wYeseDyenmRgqmcamcb5zBtnSTdk7KPOqhD0w1Bydal46yz4K0N8yYSixsKSWXjdmqrkBRW4t5J9LeATdcx5aCgYKAcgSARESFQGOcNnCzeuIZDm6WHpU7DQ5awypLA0171",
       showUploadView: true,
       showUploadFolders: true,
       supportDrives: true,
@@ -71,7 +73,7 @@ const GoogleDrive = () => {
             "1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com",
           client_secret: "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",
           refresh_token:
-          "1//045RUoVpH0dcBCgYIARAAGAQSNwF-L9IrRKMlBDMVShHZXrs5g0V3TBQ3Yq6m0J82R4F-E90fP4nfCYMiz1F6clUDHUDO_NBjt9s",
+            "1//045RUoVpH0dcBCgYIARAAGAQSNwF-L9IrRKMlBDMVShHZXrs5g0V3TBQ3Yq6m0J82R4F-E90fP4nfCYMiz1F6clUDHUDO_NBjt9s",
           grant_type: "refresh_token",
         })
       );
@@ -131,29 +133,88 @@ const GoogleDrive = () => {
   //   }
   // };
 
-  const uploadDataToAPI = async () => {
-    try {
-      for (const file of selectedFiles) {
-        const CategorieType = getContentType(file.mimeType);
-        console.log("file", file);
-        // Fetch the file data
-        const response = await fetch(file.embedUrl);
-        const fileData = await response.blob();
+  // const uploadDataToAPI = async () => {
+  //   try {
+  //     for (const file of selectedFiles) {
+  //       const CategorieType = getContentType(file.mimeType);
+  //       console.log("file", file);
+  //       // Fetch the file data
+  //       const response = await fetch(file.embedUrl);
+  //       const fileData = await response.blob();
 
-        const formData = new FormData();
-        formData.append("FileType", fileData, file.name);
-        formData.append("operation", "Insert");
-        formData.append("CategorieType", CategorieType);
-        formData.append("details", "drive image");
+  //       const formData = new FormData();
+  //       formData.append("FileType", fileData, file.name);
+  //       formData.append("operation", "Insert");
+  //       formData.append("CategorieType", CategorieType);
+  //       formData.append("details", "drive image");
 
-        await axios.post(ALL_FILES_UPLOAD, formData);
-      }
-      console.log("Upload Success", response.data);
-    } catch (error) {
-      console.error("Upload Error:", error);
-    }
+  //       await axios.post(ALL_FILES_UPLOAD, formData);
+  //     }
+  //     console.log("Upload Success", response.data);
+  //   } catch (error) {
+  //     console.error("Upload Error:", error);
+  //   }
+  // };
+  const navigate = useNavigate();
+  const [uploadInProgress, setUploadInProgress] = useState(false);
+  const [imageUploadProgress, setImageUploadProgress] = useState({});
+
+  const uploadDataToAPI = (data) => {
+    console.log(data, "data");
+    setUploadInProgress(true);
+    data.forEach((image) => {
+      console.log(image, "image");
+      const formData = new FormData();
+      const details = "Some Details about the file";
+      formData.append("FileType", image.embedUrl);
+      formData.append("operation", "Insert");
+      formData.append("CategorieType", "OnlineVideo");
+      formData.append("details", details);
+      // formData.append(
+      //   "resolutions",
+      //   `${image.webformatHeight}*${image.webformatWidth}`
+      // );
+      formData.append("name", image.name);
+      axios
+        .post(ALL_FILES_UPLOAD, formData, {
+          onUploadProgress: (progressEvent) => {
+            const progress = Math.round(
+              (progressEvent.loaded / progressEvent.total) * 100
+            );
+            setImageUploadProgress((prevProgress) => ({
+              ...prevProgress,
+              [image.id]: progress,
+            }));
+          },
+        })
+        .then((response) => {
+          console.log("Upload Success:", response.data);
+          navigate("/assets");
+        })
+        .catch((error) => {
+          console.error("Upload Error:", error);
+        })
+        .finally(() => {
+          if (
+            selectedFiles.every((img) => imageUploadProgress[img.id] === 100)
+          ) {
+            setUploadInProgress(false);
+          }
+        });
+    });
   };
+  useEffect(() => {
+    const allImagesUploaded = selectedFiles.every(
+      (img) => imageUploadProgress[img.id] === 100
+    );
 
+    if (allImagesUploaded) {
+      // Introduce a delay before setting uploadInProgress to false
+      setTimeout(() => {
+        setUploadInProgress(false);
+      }, 5000);
+    }
+  }, [selectedFiles, imageUploadProgress]);
   return (
     <>
       <Tooltip

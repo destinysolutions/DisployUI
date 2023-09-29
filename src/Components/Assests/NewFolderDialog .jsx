@@ -11,7 +11,11 @@ import Navbar from "../Navbar";
 import PropTypes from "prop-types";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { HiDocumentDuplicate } from "react-icons/hi";
-import {FetchdataFormFolder, DeleteAllData, MOVE_TO_FOLDER } from "../../Pages/Api";
+import {
+  FetchdataFormFolder,
+  DeleteAllData,
+  MOVE_TO_FOLDER,
+} from "../../Pages/Api";
 const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   NewFolderDialog.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -20,9 +24,8 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const [folderName, setFolderName] = useState("New Folder");
   const [searchParams] = useSearchParams();
   // const folderId = searchParams.get("folderId");
- 
-  // const selectedData = location.state?.selectedData;
 
+  // const selectedData = location.state?.selectedData;
 
   // folder wise show asset
   const [folderData, setFolderData] = useState([]);
@@ -51,15 +54,15 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   //         ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
   //         ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
   //       ];
-  //       console.log(allAssets, "allAssets"); 
-       
+  //       console.log(allAssets, "allAssets");
+
   //              const matchingAssets = folderData.map((id) =>
   //              allAssets.find((item) => item.id === id)
   //            );
   //              setFolderAsset(matchingAssets);
-   
-  //     console.log(matchingAssets, "matchingAssets"); 
-    
+
+  //     console.log(matchingAssets, "matchingAssets");
+
   //       setAssetData(fetchedData);
   //     })
   //     .catch((error) => {
@@ -68,9 +71,9 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   // };
 
   const loadEventsForSchedule = (folderId) => {
-    axios.get(`${FetchdataFormFolder}?Id=${folderId}`).then((response) => {
+    axios.get(`${FetchdataFormFolder}?ID=${folderId}`).then((response) => {
       const fetchedData = response.data.data;
-    const assetList = fetchedData.map((item)=>item.asset)
+      const assetList = fetchedData.map((item) => item.asset);
       setFolderData(fetchedData);
       //setFolderAsset(fetchedData);
       console.log(assetList, "assetList");
@@ -81,14 +84,11 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     if (folderId) {
       loadEventsForSchedule(folderId);
     }
-  },[folderId]);
+  }, [folderId]);
 
-  
-console.log(folderAsset,'folderAsset');
-console.log(assetData,'assetData');
-console.log(folderData,';folderData');
-
-
+  console.log(folderAsset, "folderAsset");
+  console.log(assetData, "assetData");
+  console.log(folderData, ";folderData");
 
   const [hoveredTabIcon, setHoveredTabIcon] = useState(null);
   const handleIconClick = (item) => {
@@ -111,7 +111,7 @@ console.log(folderData,';folderData');
   };
 
   const [selectedItems, setSelectedItems] = useState([]);
-console.log(selectedItems,'selectedItems');
+  console.log(selectedItems, "selectedItems");
   const handleCheckboxChange = (item) => {
     if (selectedItems.includes(item)) {
       setSelectedItems(
@@ -123,45 +123,36 @@ console.log(selectedItems,'selectedItems');
   };
   const [selectAll, setSelectAll] = useState(false);
 
-
   // delete data
 
-
-
-
   const handleMoveToTrash = (assetId) => {
-  
-   console.log(assetId,'ID');
+    console.log(assetId, "ID");
     let data = JSON.stringify({
-      "asset": assetId,
-      "operation": "Delete"
-      });
-      
-      let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: MOVE_TO_FOLDER,
-        headers: { 
-          'Content-Type': 'application/json'
-        },
-        data : data
-      };
-      
-      axios.request(config)
+      asset: assetId,
+      operation: "Delete",
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: MOVE_TO_FOLDER,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
       .then((response) => {
         console.log(JSON.stringify(response.data));
-        const updateAsset = folderData.filter((asset)=>asset.id !== assetId)
+        const updateAsset = folderData.filter((asset) => asset.id !== assetId);
         setFolderData(updateAsset);
       })
       .catch((error) => {
         console.log(error);
       });
   };
-  
-
-  
-
-
 
   return (
     <>
@@ -179,236 +170,239 @@ console.log(selectedItems,'selectedItems');
                 </Link>
                 <hr className="border-b border-lightgray" />
                 <div className=" page-content grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section">
-                {folderData.map((folderAsset) => (
-                  <>
-                  <div key={folderAsset.id} className="relative assetsbox">
-                    {folderAsset.categorieType === "OnlineImage" && (
-                     <img
-                          src={folderAsset.fileType}
-                          alt={folderAsset.name}
-                          className="imagebox relative opacity-1 w-full rounded-2xl" />
-                      
-                    )}
-                    
-                    {folderAsset.categorieType === "OnlineVideo" && (
-                      <video
-                        controls
-                        className="w-full rounded-2xl relative imagebox"
-                      >
-                        <source
-                          src={folderAsset.fileType}
-                          type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    )}
-                    {folderAsset.categorieType === "Image" && (
-                      <img
-                        src={folderAsset.fileType}
-                        alt={folderAsset.name}
-                        className="imagebox relative opacity-1 w-full rounded-2xl" />
-                    )}
-                    {folderAsset.categorieType === "Video" && (
-                      <video
-                        controls
-                        className="w-full rounded-2xl relative h-56  list-none imagebox"
-                      >
-                        <source
-                          src={folderAsset.fileType}
-                          type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
-                    )}
-                    {folderAsset.categorieType === "DOC" && (
-                      <a
-                        href={folderAsset.fileType}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="imagebox relative opacity-1 w-full rounded-2xl"
-                      >
-                        {folderAsset.name}
-                      </a>
-                    )}
-
-                    <div
-                        className="tabicon text-center absolute left-2/4 bottom-[0px] z-10"
-                        onMouseEnter={() => setHoveredTabIcon(folderAsset)}
-                        onMouseLeave={() => setHoveredTabIcon(null)}
-                        onClick={() => handleIconClick(folderAsset)}
-                      >
-                        {folderAsset.categorieType === "Image" && (
-                          <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
-                        )}
-
-                        {folderAsset.categorieType === "Video" && (
-                          <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
-                        )}
-
+                  {folderData.map((folderAsset) => (
+                    <>
+                      <div key={folderAsset.id} className="relative assetsbox">
                         {folderAsset.categorieType === "OnlineImage" && (
-                          <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                          <img
+                            src={folderAsset.fileType}
+                            alt={folderAsset.name}
+                            className="imagebox relative opacity-1 w-full rounded-2xl"
+                          />
                         )}
 
                         {folderAsset.categorieType === "OnlineVideo" && (
-                          <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                          <video
+                            controls
+                            className="w-full rounded-2xl relative imagebox"
+                          >
+                            <source
+                              src={folderAsset.fileType}
+                              type="video/mp4"
+                            />
+                            Your browser does not support the video tag.
+                          </video>
                         )}
-                      </div>
+                        {folderAsset.categorieType === "Image" && (
+                          <img
+                            src={folderAsset.fileType}
+                            alt={folderAsset.name}
+                            className="imagebox relative opacity-1 w-full rounded-2xl"
+                          />
+                        )}
+                        {folderAsset.categorieType === "Video" && (
+                          <video
+                            controls
+                            className="w-full rounded-2xl relative h-56  list-none imagebox"
+                          >
+                            <source
+                              src={folderAsset.fileType}
+                              type="video/mp4"
+                            />
+                            Your browser does not support the video tag.
+                          </video>
+                        )}
+                        {folderAsset.categorieType === "DOC" && (
+                          <a
+                            href={folderAsset.fileType}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="imagebox relative opacity-1 w-full rounded-2xl"
+                          >
+                            {folderAsset.name}
+                          </a>
+                        )}
 
-                      {hoveredTabIcon === folderAsset && (
-                        <div className="vdetails">
-                          <div className="flex justify-end">
-                            <div className="storage mb-1">
-                              {/* <span className="bg-white text-primary rounded-sm p-1 text-sm">
+                        <div
+                          className="tabicon text-center absolute left-2/4 bottom-[0px] z-10"
+                          onMouseEnter={() => setHoveredTabIcon(folderAsset)}
+                          onMouseLeave={() => setHoveredTabIcon(null)}
+                          onClick={() => handleIconClick(folderAsset)}
+                        >
+                          {folderAsset.categorieType === "Image" && (
+                            <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                          )}
+
+                          {folderAsset.categorieType === "Video" && (
+                            <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                          )}
+
+                          {folderAsset.categorieType === "OnlineImage" && (
+                            <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                          )}
+
+                          {folderAsset.categorieType === "OnlineVideo" && (
+                            <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                          )}
+                        </div>
+
+                        {hoveredTabIcon === folderAsset && (
+                          <div className="vdetails">
+                            <div className="flex justify-end">
+                              <div className="storage mb-1">
+                                {/* <span className="bg-white text-primary rounded-sm p-1 text-sm">
                                 {item.fileSize}
                               </span> */}
+                              </div>
                             </div>
-                          </div>
-                          <div className="text-center clickdetail">
-                            <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs  mb-1">
-                              {folderAsset.name}
-                            </h3>
-                            {/*<p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                            <div className="text-center clickdetail">
+                              <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs  mb-1">
+                                {folderAsset.name}
+                              </h3>
+                              {/*<p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
                               {item.details}
                             </p> */}
-                            <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light">
-                              {folderAsset.createdDate}
-                            </h6>
-                            <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                              {folderAsset.categorieType}
-                            </span>
-                            <span>,</span>
-                            <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                              {folderAsset.fileSize}
-                            </h6>
+                              <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light">
+                                {folderAsset.createdDate}
+                              </h6>
+                              <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                                {folderAsset.categorieType}
+                              </span>
+                              <span>,</span>
+                              <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                                {folderAsset.fileSize}
+                              </h6>
 
-                            <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                              {folderAsset.resolutions}
-                            </span>
+                              <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                                {folderAsset.resolutions}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
                         {/*start hover icon details */}
-              {hoveredTabIcon === folderAsset && (
-                <div className="vdetails">
-                  <div className="flex justify-end">
-                    <div className="storage mb-1">
-                      {/* <span className="bg-white text-primary rounded-sm p-1 text-sm">
+                        {hoveredTabIcon === folderAsset && (
+                          <div className="vdetails">
+                            <div className="flex justify-end">
+                              <div className="storage mb-1">
+                                {/* <span className="bg-white text-primary rounded-sm p-1 text-sm">
                         {item.fileSize}
                       </span> */}
-                    </div>
-                  </div>
-                  <div className="text-center clickdetail">
-                    <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs  mb-1">
-                      {folderAsset.name}
-                    </h3>
-                    {/*<p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                              </div>
+                            </div>
+                            <div className="text-center clickdetail">
+                              <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs  mb-1">
+                                {folderAsset.name}
+                              </h3>
+                              {/*<p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
                       {folderAsset.details}
                     </p> */}
-                    <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light">
-                      {folderAsset.createdDate}
-                    </h6>
-                    <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                      {folderAsset.categorieType}
-                    </span>
-                    <span>,</span>
-                    <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                      {folderAsset.fileSize}
-                    </h6>
+                              <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light">
+                                {folderAsset.createdDate}
+                              </h6>
+                              <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                                {folderAsset.categorieType}
+                              </span>
+                              <span>,</span>
+                              <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                                {folderAsset.fileSize}
+                              </h6>
 
-                    <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                      {folderAsset.resolutions}
-                    </span>
-                  </div>
+                              <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                                {folderAsset.resolutions}
+                              </span>
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="checkbox flex justify-between absolute top-5 px-4 w-full">
+                          <input
+                            type="checkbox"
+                            className="w-[20px] h-[20px]"
+                            checked={
+                              selectAll || selectedItems.includes(folderAsset)
+                            }
+                            onChange={() => handleCheckboxChange(folderAsset)}
+                          />
+                          <button onClick={() => updateassetsdw(folderAsset)}>
+                            <BsThreeDots className="text-2xl" />
+                          </button>
+                          {assetsdw === folderAsset &&
+                            selectedItems.includes(folderAsset) && (
+                              <div className="assetsdw">
+                                <ul>
+                                  <li className="flex text-sm items-center">
+                                    <FiUpload className="mr-2 text-lg" />
+                                    Set to Screen
+                                  </li>
+                                  <li className="flex text-sm items-center">
+                                    <MdPlaylistPlay className="mr-2 text-lg" />
+                                    Add to Playlist
+                                  </li>
+                                  {folderAsset.categorieType === "Image" && (
+                                    <li className="flex text-sm items-center">
+                                      <FiDownload className="mr-2 text-lg" />
+                                      <a href={folderAsset.fileType} download>
+                                        Download
+                                      </a>
+                                    </li>
+                                  )}
+
+                                  {folderAsset.categorieType === "Video" && (
+                                    <li className="flex text-sm items-center">
+                                      <FiDownload className="mr-2 text-lg" />
+                                      <a href={folderAsset.fileType} download>
+                                        Download
+                                      </a>
+                                    </li>
+                                  )}
+                                  {folderAsset.categorieType ===
+                                    "OnlineImage" && (
+                                    <li className="flex text-sm items-center">
+                                      <FiDownload className="mr-2 text-lg" />
+                                      <a href={folderAsset.fileType} download>
+                                        Download
+                                      </a>
+                                    </li>
+                                  )}
+
+                                  {folderAsset.categorieType ===
+                                    "OnlineVideo" && (
+                                    <li className="flex text-sm items-center">
+                                      <FiDownload className="mr-2 text-lg" />
+                                      <a href={folderAsset.fileType} download>
+                                        Download
+                                      </a>
+                                    </li>
+                                  )}
+                                  {folderAsset.categorieType === "DOC" && (
+                                    <li className="flex text-sm items-center">
+                                      <FiDownload className="mr-2 text-lg" />
+                                      <a href={folderAsset.fileType} download>
+                                        Download
+                                      </a>
+                                    </li>
+                                  )}
+
+                                  <li>
+                                    <button
+                                      onClick={() =>
+                                        handleMoveToTrash(folderAsset.id)
+                                      }
+                                      className="flex text-sm items-center"
+                                    >
+                                      <RiDeleteBin5Line className="mr-2 text-lg" />
+                                      Move to Trash
+                                    </button>
+                                  </li>
+                                </ul>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                    </>
+                  ))}
                 </div>
-              )}
-
-              <div className="checkbox flex justify-between absolute top-5 px-4 w-full">
-              <input
-                type="checkbox"
-                className="w-[20px] h-[20px]"
-                checked={selectAll || selectedItems.includes(folderAsset)}
-                onChange={() => handleCheckboxChange(folderAsset)}
-              />
-              <button onClick={() => updateassetsdw(folderAsset)}>
-                <BsThreeDots className="text-2xl" />
-              </button>
-              {assetsdw === folderAsset && selectedItems.includes(folderAsset) && (
-                <div className="assetsdw">
-                  <ul>
-                    <li className="flex text-sm items-center">
-                      <FiUpload className="mr-2 text-lg" />
-                      Set to Screen
-                    </li>
-                    <li className="flex text-sm items-center">
-                      <MdPlaylistPlay className="mr-2 text-lg" />
-                      Add to Playlist
-                    </li>
-                    {folderAsset.categorieType === "Image" && (
-                      <li className="flex text-sm items-center">
-                        <FiDownload className="mr-2 text-lg" />
-                        <a href={folderAsset.fileType} download>
-                          Download
-                        </a>
-                      </li>
-                    )}
-
-                    {folderAsset.categorieType === "Video" && (
-                      <li className="flex text-sm items-center">
-                        <FiDownload className="mr-2 text-lg" />
-                        <a href={folderAsset.fileType} download>
-                          Download
-                        </a>
-                      </li>
-                    )}
-                    {folderAsset.categorieType === "OnlineImage" && (
-                      <li className="flex text-sm items-center">
-                        <FiDownload className="mr-2 text-lg" />
-                        <a href={folderAsset.fileType} download>
-                          Download
-                        </a>
-                      </li>
-                    )}
-
-                    {folderAsset.categorieType === "OnlineVideo" && (
-                      <li className="flex text-sm items-center">
-                        <FiDownload className="mr-2 text-lg" />
-                        <a href={folderAsset.fileType} download>
-                          Download
-                        </a>
-                      </li>
-                    )}
-                    {folderAsset.categorieType === "DOC" && (
-                      <li className="flex text-sm items-center">
-                        <FiDownload className="mr-2 text-lg" />
-                        <a href={folderAsset.fileType} download>
-                          Download
-                        </a>
-                      </li>
-                    )}
-                    
-                    <li>
-                      <button
-                        onClick={() =>handleMoveToTrash(folderAsset.id)}
-                        className="flex text-sm items-center"
-                      >
-                        <RiDeleteBin5Line className="mr-2 text-lg" />
-                        Move to Trash
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              )}
-              </div>
-
-                  
-                  </div>
-                 </>
-  
-                ))}
-
-             
-            
-            
-           </div>
               </div>
             </div>
           </div>
