@@ -1015,20 +1015,50 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {newFolder.map((folder) => (
+                  {newFolder.map((folder, index) => (
                       <>
                         <tr
-                          key={`folder-${folder.folderID}`}
+                          key={`folder-${folder.folderID}`} onDragOver={handleDragOver} // Allow drops on folders
+                          onDrop={(event) => handleDrop(event, folder.folderID)}
                           className="bg-white rounded-lg font-normal text-[14px] text-[#5E5E5E] shadow-sm newfolder"
                         >
                           <td className="flex items-center relative">
                             <div>
-                              <FcOpenedFolder className="text-8xl text-center mx-auto" />
+                              <FcOpenedFolder className="text-8xl text-center mx-auto" onClick={() => navigateToFolder(folder.folderID)}/>
                             </div>
                             <div className="ml-3">
-                              <h1 className="font-medium text-base">
-                                {folder.folderName}
-                              </h1>
+                            {editMode === folder.folderID ? (
+                              <input
+                                type="text"
+                                value={folderNames[index]}
+                                className="w-full"
+                                onChange={(e) => {
+                                  const newFolderNames = [...folderNames];
+                                  newFolderNames[index] = e.target.value;
+                                  setFolderNames(newFolderNames);
+                                  console.log(newFolderNames);
+                                }}
+                                onBlur={() => {
+                                  saveFolderName(folder.folderID, folderNames[index]);
+                                  setEditMode(null);
+                                }}
+                                onKeyDown={(e) => handleKeyDown(e, folder.folderID, index)}
+                                autoFocus
+                              />
+                            ) : (
+                              <>
+                                <span
+                                  onClick={() => {
+                                    setEditMode(folder.folderID);
+                                  }}
+                                  className="cursor-pointer"
+                                >
+                                  {folderNames[index]}
+                                </span>
+                                </>
+                            )
+                          }
+                            
                             </div>
                           </td>
                           <td></td>
@@ -1066,16 +1096,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     <FiDownload className="mr-2 text-lg" />
                                     <a href="#">Download</a>
                                   </li>
-                                  <li className="flex text-sm items-center">
-                                    <CgMoveRight className="mr-2 text-lg" />
-                                    Move to
-                                  </li>
+                                
                                   <li>
                                     <button
                                       className="flex text-sm items-center"
                                       onClick={() =>
-                                        DeleteFolder(folder.folderID)
-                                      }
+                                        deleteFolder(folder.folderID)}
                                     >
                                       <RiDeleteBin5Line className="mr-2 text-lg" />
                                       Move to Trash

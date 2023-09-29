@@ -82,3 +82,34 @@
     margin-top: 10px;
   }
 }
+.videoplayer,
+.videoinner{
+  width:100% !important;
+  min-height:100% !important;
+  max-height:100% !important;
+}
+.videoplayer{
+  border: 5px solid #000;
+  border-radius: 5px;
+}
+/* CSS for full-screen video */
+/* CSS for the dialog-like container */
+/* CSS for the dialog-like container */
+.video-preview {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-42%, -42%);
+  width: 85%;
+  max-height: 80%;
+  min-height: 80%;
+  background-color: #fff;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid #ccc;
+  z-index: 1000;
+  overflow: auto;
+}
+.previewinner{
+  width:100% !important;
+  height:80vh !important;
+}

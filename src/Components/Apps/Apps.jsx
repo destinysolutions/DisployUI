@@ -206,7 +206,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       )}
                     </div>
-                    <Link to="/appdetail">
+                    <Link to="/youtube">
                       <div className="text-center clear-both">
                         <img
                           src={app.Image}
