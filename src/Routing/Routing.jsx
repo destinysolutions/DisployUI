@@ -38,6 +38,7 @@ import Userrole from "../Components/Settings/Userrole";
 import Trash from "../Components/Trash";
 import NewFolderDialog from "../Components/Assests/NewFolderDialog ";
 import { UserProvider } from "../UserContext";
+import Youtube from "../Components/Apps/Youtube";
 const Routing = () => {
   //for screen resize sidebar open close
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -375,6 +376,17 @@ const Routing = () => {
               />
             }
           />
+
+          <Route
+            path="/youtube"
+            element={
+              <Youtube
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+
           {/*Event Editors */}
           {/* error page route */}
           <Route path="*" element={<ErrorPage />} />
