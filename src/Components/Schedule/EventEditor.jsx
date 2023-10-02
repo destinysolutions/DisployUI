@@ -42,9 +42,9 @@ const EventEditor = ({
     new Array(buttons.length).fill(false)
   );
   const [selectedRepeatDay, setSelectedRepeatDay] = useState("");
-
+  const [previousSetedRepeatDay, setPreviousSetedRepeatDay] = useState("");
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
-
+  console.log(previousSetedRepeatDay, "previousSetedRepeatDay");
   const handleOpenRepeatSettings = () => {
     setShowRepeatSettings(true);
   };
@@ -64,7 +64,7 @@ const EventEditor = ({
   useEffect(() => {
     if (isOpen) {
       if (selectedEvent) {
-        console.log(selectedEvent, "selectedEvent");
+        console.log(selectedEvent.repeatDay, "selectedEvent");
         let assetId;
         if (selectedEvent?.asset?.id != undefined) {
           assetId = selectedEvent?.asset?.id;
@@ -89,6 +89,10 @@ const EventEditor = ({
         // console.log(previousSelectedDayss, "previousSelectedDay");
 
         // setSelectedRepeatDay(selectedEvent.repeatDay || "");
+        if (selectedEvent.repeatDay !== "") {
+          setShowRepeatSettings(true);
+          setPreviousSetedRepeatDay(selectedEvent.repeatDay);
+        }
         setTitle(selectedEvent.title);
         setSelectedColor(selectedEvent.color);
         setEditedStartDate(formatDate(selectedEvent.start));
@@ -194,21 +198,48 @@ const EventEditor = ({
     setSelectedDays(newSelectedDays);
   };
 
+  // const handleDayButtonClick = (index) => {
+  //   if (isDayInRange(index)) {
+  //     const newSelectedDays = [...selectedDays];
+  //     newSelectedDays[index] = !selectedDays[index];
+  //     setSelectedDays(newSelectedDays);
+
+  //     // Check if all individual days are selected, then check the "Repeat for All Day" checkbox.
+  //     if (newSelectedDays.every((day) => day === true)) {
+  //       setSelectAllDays(true);
+  //     } else {
+  //       setSelectAllDays(false);
+  //     }
+  //   }
+  // };
   const handleDayButtonClick = (index) => {
     if (isDayInRange(index)) {
       const newSelectedDays = [...selectedDays];
       newSelectedDays[index] = !selectedDays[index];
-      setSelectedDays(newSelectedDays);
 
       // Check if all individual days are selected, then check the "Repeat for All Day" checkbox.
-      if (newSelectedDays.every((day) => day === true)) {
-        setSelectAllDays(true);
+      const newSelectAllDays = newSelectedDays.every((day) => day === true);
+
+      setSelectedDays(newSelectedDays);
+      setSelectAllDays(newSelectAllDays);
+
+      // Preserve the previously selected repeat days
+      const newPreviousSetedRepeatDay = [...previousSetedRepeatDay];
+      if (newSelectedDays[index]) {
+        newPreviousSetedRepeatDay.push(buttons[index]);
       } else {
-        setSelectAllDays(false);
+        const removeIndex = newPreviousSetedRepeatDay.indexOf(buttons[index]);
+        if (removeIndex !== -1) {
+          newPreviousSetedRepeatDay.splice(removeIndex, 1);
+        }
       }
+      if (newSelectAllDays) {
+        newPreviousSetedRepeatDay = [];
+      }
+
+      setPreviousSetedRepeatDay(newPreviousSetedRepeatDay);
     }
   };
-
   const handleAssetAdd = (asset) => {
     setSelectedAsset(asset);
     setAssetPreview(asset);
@@ -382,7 +413,7 @@ const EventEditor = ({
                             } border-b border-[#eee] `}
                             onClick={() => {
                               handleAssetAdd(item);
-                              setAssetPreviewPopup(true);
+                              // setAssetPreviewPopup(true);
                             }}
                           >
                             <td className="border-b border-[#eee]">
@@ -645,9 +676,22 @@ const EventEditor = ({
                 <div>
                   {buttons.map((label, index) => (
                     <button
-                      className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
+                      // className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
+                      //   (selectAllDays || selectedDays[index]) &&
+                      //   isDayInRange(index) &&
+                      //   previousSetedRepeatDay
+                      //     ? "bg-SlateBlue border-white"
+                      //     : ""
+                      // }`}
+                      className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full 
+                      
+                      ${
                         (selectAllDays || selectedDays[index]) &&
                         isDayInRange(index)
+                          ? "bg-SlateBlue border-white"
+                          : ""
+                      } ${
+                        previousSetedRepeatDay.includes(label)
                           ? "bg-SlateBlue border-white"
                           : ""
                       }`}
