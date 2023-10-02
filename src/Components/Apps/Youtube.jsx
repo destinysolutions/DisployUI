@@ -19,6 +19,10 @@ import {
 import { Link } from "react-router-dom";
 import Footer from "../Footer";
 import ReactPlayer from 'react-player'
+import {GET_ALL_YOUTUBEDATA, YOUTUBE_API_URL} from "../../Pages/Api";
+import axios from "axios";
+import { useEffect } from 'react';
+
 
 
 const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
@@ -34,6 +38,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
 const [YoutubeVideo , setYoutubeVideo] = useState('');
 const handleYoutubeChange = (e) => {
     setYoutubeVideo(e.target.value);
+    console.log(YoutubeVideo);
 }
 const [isMuted, setIsMuted] = useState(false);
 const [areSubtitlesOn, setAreSubtitlesOn] = useState(false);
@@ -41,10 +46,20 @@ const handleMuteChange = () => {
   setIsMuted(!isMuted);
 };
 const handleSubtitlesChange = () => {
+  
   setAreSubtitlesOn(!areSubtitlesOn);
 };
 const [maxVideos, setMaxVideos] = useState(10);
-const [appDuration, setAppDuration] = useState(720);
+console.log(maxVideos);
+
+// Intance Name
+const [instancename, setinstancename] = useState()
+const handleinstancenameChange = (e) => {
+  setinstancename(e.target.value);
+  console.log('instancename' && instancename)
+}
+
+// video preview
 function showVideoPreview() {
   const videoPreview = document.getElementById("videoPreview");
   videoPreview.style.display = "block";
@@ -54,7 +69,38 @@ function hideVideoPreview() {
   const videoPreview = document.getElementById("videoPreview");
   videoPreview.style.display = "none";
 }
+//Insert  API
+const addYoutubeApp = () => {
+ let data = JSON.stringify({
+  "instanceName": instancename,
+  "youTubeURL": YoutubeVideo,
+  "muteVideos": isMuted,
+  "toggleSubtitles": areSubtitlesOn,
+  "youTubePlaylist": maxVideos,
+  "operation": "Insert"
+});
 
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: 'https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddYoutubeApp',
+  headers: { 
+    'Content-Type': 'application/json'
+  },
+  data : data
+};
+
+axios.request(config)
+.then((response) => {
+  console.log(JSON.stringify(response.data));
+})
+.catch((error) => {
+  console.log(error);
+});
+  }
+
+  // get all api
+ 
 
     return (
       <>
@@ -75,7 +121,9 @@ function hideVideoPreview() {
                 <button className=" flex align-middle border-primary items-center border-2 rounded-full py-1 px-4 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50" onClick={showVideoPreview}>
                   Preview
                 </button>
-                <button className="sm:ml-2 xs:ml-1 flex align-middle bg-primary text-white items-center rounded-full py-1 px-4 text-base hover:shadow-lg hover:shadow-primary-500/50">
+                <button className="sm:ml-2 xs:ml-1 flex align-middle bg-primary text-white items-center rounded-full py-1 px-4 text-base hover:shadow-lg hover:shadow-primary-500/50" 
+                onClick={() =>
+                  addYoutubeApp()}>
                   Save
                 </button>
                 <div className="relative">
@@ -304,6 +352,12 @@ function hideVideoPreview() {
                       cellSpacing={10}
                     >
                       <tbody>
+                      <tr>
+                      <td>
+                      <label className="text-base font-normal">Enter Instance Name</label>
+                      </td>
+                      <td><input type="text" placeholder="Enter Instance Name"  onChange={handleinstancenameChange}/></td>
+                      </tr>
                         <tr>
                           <td>
                             <label className="text-base font-normal">
@@ -387,11 +441,16 @@ function hideVideoPreview() {
                   <div className="w-full videoplayer relative bg-white">
                 
                   <ReactPlayer
-                  url={YoutubeVideo}
-                  className="w-full relative z-20 videoinner"
-                  muted={isMuted}
-                  controls={areSubtitlesOn}
-                />
+  url={YoutubeVideo}
+  className="w-full relative z-20 videoinner"
+  muted={isMuted}
+  controls={true} // Enable video controls
+  captions={{
+    active: areSubtitlesOn, // Enable subtitles based on the areSubtitlesOn state
+    file: areSubtitlesOn ? 'URL_TO_SUBTITLE_FILE' : undefined, // Provide the URL to the subtitle file if subtitles are enabled
+  }}
+/>
+
                 </div>
                       <div className='absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-10'>
                           <img src="../../../public/Assets/img.png" />      

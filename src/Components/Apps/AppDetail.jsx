@@ -10,40 +10,17 @@ import { VscBook } from "react-icons/vsc";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import Footer from "../Footer";
+import { useEffect } from "react";
+import axios from "axios";
+import { GET_ALL_YOUTUBEDATA } from "../../Pages/Api";
+
 
 const AppDetail = ({ sidebarOpen, setSidebarOpen }) => {
   AppDetail.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const AppsSubPart = [
-    {
-      id: 1,
-      Image: "../../../AppsImg/youtube.svg",
-      appName: "Media Name1",
-    },
-    {
-      id: 2,
-      Image: "../../../AppsImg/youtube.svg",
-      appName: "Media Name2",
-    },
-    {
-      id: 3,
-      Image: "../../../AppsImg/youtube.svg",
-      appName: "Media Name3",
-    },
-    {
-      id: 4,
-      Image: "../../../AppsImg/youtube.svg",
-      appName: "Media Name4",
-    },
-    {
-      id: 5,
-      Image: "../../../AppsImg/youtube.svg",
-      appName: "Media Name5",
-    },
-  ];
-
+ 
   const [appCheckbox, setAppCheckbox] = useState(null);
   const handleCheckboxClick = (id) => {
     if (appCheckbox === id) {
@@ -54,6 +31,19 @@ const AppDetail = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const [appDetailModal, setAppDetailModal] = useState(false);
+// Getalldata
+const [youtubeData, setYoutubeData] = useState([]);
+  useEffect(() => {
+    axios
+      .get(GET_ALL_YOUTUBEDATA)
+      .then((response) => {
+        setYoutubeData(response.data.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching deleted data:", error);
+      });
+  }, []);
   return (
     <>
       <div className="flex border-b border-gray">
@@ -66,7 +56,7 @@ const AppDetail = ({ sidebarOpen, setSidebarOpen }) => {
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
               Apps
             </h1>
-            <Link to="/appinstance">
+            <Link to="/youtube">
               <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-5 py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <TbAppsFilled className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
                 New Instance
@@ -102,13 +92,12 @@ const AppDetail = ({ sidebarOpen, setSidebarOpen }) => {
                   </button>
                 </div>
               </div>
-              <div className="grid grid-cols-10 gap-4 mt-5">
-                {AppsSubPart.map((app, id) => (
-                  <div
-                    className="lg:col-span-2 md:col-span-5 sm:col-span-10 "
-                    key={id}
-                  >
-                    <div className="shadow-md bg-[#EFF3FF] rounded-lg">
+              <div className="">
+              {Array.isArray(youtubeData) && youtubeData.length > 0 ? (
+                <div className=" grid grid-cols-10 gap-4 mt-5">
+                {youtubeData.map((item) => (
+                  <div key={item.youtubeId} className="lg:col-span-2 md:col-span-5 sm:col-span-10">
+                    <div className="shadow-md bg-[#EFF3FF] rounded-lg" >
                       <div className="relative">
                         <button className="float-right p-2">
                           <input
@@ -117,7 +106,7 @@ const AppDetail = ({ sidebarOpen, setSidebarOpen }) => {
                             onClick={() => handleCheckboxClick(id)}
                           />
                         </button>
-                        {appCheckbox === id && appDetailModal && (
+                        {appCheckbox === item && appDetailModal && (
                           <>
                             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
                               <div className="relative w-auto my-6 mx-auto">
@@ -183,18 +172,22 @@ const AppDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                       <div className="text-center clear-both pb-8">
                         <img
-                          src={app.Image}
+                          src="../../../public/AppsImg/youtube.svg"
                           alt="Logo"
                           className="cursor-pointer mx-auto h-20 w-20"
                         />
                         <h4 className="text-lg font-medium mt-3">
-                          {app.appName}
+                          {item.instanceName}
                         </h4>
                         <h4 className="text-sm font-normal ">Add tags</h4>
                       </div>
                     </div>
                   </div>
                 ))}
+                </div>
+                ) : (
+                  <p>No YouTube data available.</p>
+                )}
               </div>
             </div>
           </div>

@@ -59,4 +59,9 @@ export const FetchdataFormFolder =
 
 export const DeleteAllData =
   "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/DeleteAll";
+
+  export const YOUTUBE_API_URL =
+  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddYoutubeApp";
+  export const GET_ALL_YOUTUBEDATA =
+  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/GetAllYoutubeApp";
 //http://192.168.1.219
