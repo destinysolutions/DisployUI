@@ -43,28 +43,53 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const [moreModal, setMoreModal] = useState(false);
-  const [moreCheckboxClick, setMoreCheckboxClick] = useState(false);
-  const [locCheckboxClick, setLocCheckboxClick] = useState(false);
-  const handleCheckboxClick = () => {
-    setLocCheckboxClick(!locCheckboxClick);
-  };
-  const handleUpdateButtonClick = () => {
-    if (locCheckboxClick) {
-      setMoreCheckboxClick(true);
-    } else {
-      setMoreCheckboxClick(false);
-    }
-  };
+  const [locCheckboxClick, setLocCheckboxClick] = useState(true);
+  const [screenCheckboxClick, setScreenCheckboxClick] = useState(true);
+  const [statusCheckboxClick, setStatusCheckboxClick] = useState(true);
+  const [lastSeenCheckboxClick, setLastSeenCheckboxClick] = useState(true);
+  const [nowPlayingCheckboxClick, setNowPlayingCheckboxClick] = useState(true);
+  const [currScheduleCheckboxClick, setCurrScheduleCheckboxClick] =
+    useState(true);
+  const [tagsCheckboxClick, setTagsCheckboxClick] = useState(true);
+
+  const [locContentVisible, setLocContentVisible] = useState(true);
+  const [screenContentVisible, setScreenContentVisible] = useState(true);
+  const [statusContentVisible, setStatusContentVisible] = useState(true);
+  const [lastSeenContentVisible, setLastSeenContentVisible] = useState(true);
+  const [nowPlayingContentVisible, setNowPlayingContentVisible] =
+    useState(true);
+  const [currScheduleContentVisible, setCurrScheduleContentVisible] =
+    useState(true);
+  const [tagsContentVisible, setTagsContentVisible] = useState(true);
+
+  useEffect(() => {
+    setLocContentVisible(locCheckboxClick);
+    setScreenContentVisible(screenCheckboxClick);
+    setStatusContentVisible(statusCheckboxClick);
+    setLastSeenContentVisible(lastSeenCheckboxClick);
+    setNowPlayingContentVisible(nowPlayingCheckboxClick);
+    setCurrScheduleContentVisible(currScheduleCheckboxClick);
+    setTagsContentVisible(tagsCheckboxClick);
+  }, [
+    locCheckboxClick,
+    screenCheckboxClick,
+    statusCheckboxClick,
+    lastSeenCheckboxClick,
+    nowPlayingCheckboxClick,
+    currScheduleCheckboxClick,
+    tagsCheckboxClick,
+  ]);
 
   const { user } = useUser();
   const userId = user ? user.userID : null;
-
+  const [screenData, setScreenData] = useState([]);
   useEffect(() => {
     axios
       .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${userId}`)
       .then((response) => {
         const fetchedData = response.data.data;
         console.log(fetchedData, "--fetchedData");
+        setScreenData(fetchedData);
       })
       .catch((error) => {
         console.log(error);
@@ -168,7 +193,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   <button
                     type="button"
                     className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
-                    onClick={() => setMoreModal(true)}
+                    onClick={() => setMoreModal(!moreModal)}
                   >
                     <RiArrowDownSLine className="p-1 text-3xl hover:text-white text-primary" />
                   </button>
@@ -180,7 +205,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <input
                           type="checkbox"
                           className="mr-2 text-lg"
-                          defaultChecked
+                          checked={screenCheckboxClick}
+                          onChange={() =>
+                            setScreenCheckboxClick(!screenCheckboxClick)
+                          }
                         />
                         Screen
                       </li>
@@ -188,7 +216,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <input
                           type="checkbox"
                           className="mr-2 text-lg"
-                          defaultChecked
+                          checked={statusCheckboxClick}
+                          onChange={() =>
+                            setStatusCheckboxClick(!statusCheckboxClick)
+                          }
                         />
                         Status
                       </li>
@@ -196,7 +227,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <input
                           type="checkbox"
                           className="mr-2 text-lg"
-                          defaultChecked
+                          checked={lastSeenCheckboxClick}
+                          onChange={() =>
+                            setLastSeenCheckboxClick(!lastSeenCheckboxClick)
+                          }
                         />
                         Last Seen
                       </li>
@@ -204,7 +238,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <input
                           type="checkbox"
                           className="mr-2 text-lg"
-                          defaultChecked
+                          checked={nowPlayingCheckboxClick}
+                          onChange={() =>
+                            setNowPlayingCheckboxClick(!nowPlayingCheckboxClick)
+                          }
                         />
                         Now Playing
                       </li>
@@ -212,7 +249,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <input
                           type="checkbox"
                           className="mr-2 text-lg"
-                          defaultChecked
+                          checked={currScheduleCheckboxClick}
+                          onChange={() =>
+                            setCurrScheduleCheckboxClick(
+                              !currScheduleCheckboxClick
+                            )
+                          }
                         />
                         Current Schedule
                       </li>
@@ -221,7 +263,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           type="checkbox"
                           className="mr-2 text-lg"
                           checked={locCheckboxClick}
-                          onChange={handleCheckboxClick}
+                          onChange={() =>
+                            setLocCheckboxClick(!locCheckboxClick)
+                          }
                         />
                         Google Location
                       </li>
@@ -229,14 +273,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <input
                           type="checkbox"
                           className="mr-2 text-lg"
-                          defaultChecked
+                          checked={tagsCheckboxClick}
+                          onChange={() =>
+                            setTagsCheckboxClick(!tagsCheckboxClick)
+                          }
                         />
                         Tags
                       </li>
                       <li className="flex text-sm justify-end mt-2 ">
                         <button
                           className="bg-lightgray text-primary px-4 py-2 rounded-full"
-                          onClick={handleUpdateButtonClick}
+                          onClick={() => setMoreModal(false)}
                         >
                           Update
                         </button>
@@ -268,13 +315,15 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             >
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                  <th className=" text-[#5A5881] text-base font-semibold">
-                    <div className="flex  items-center ">
-                      <SlScreenDesktop className="mr-2 text-xl" />
-                      Screen
-                    </div>
-                  </th>
-                  {moreCheckboxClick && (
+                  {screenContentVisible && (
+                    <th className=" text-[#5A5881] text-base font-semibold">
+                      <div className="flex  items-center ">
+                        <SlScreenDesktop className="mr-2 text-xl" />
+                        Screen
+                      </div>
+                    </th>
+                  )}
+                  {locContentVisible && (
                     <th className=" text-[#5A5881] text-base font-semibold">
                       <div className="flex  items-center justify-center ">
                         <HiOutlineLocationMarker className="mr-2 text-xl" />
@@ -282,137 +331,113 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                     </th>
                   )}
-                  <th className=" text-[#5A5881] text-base font-semibold">
-                    <div className="flex  items-center justify-center  mx-auto ">
-                      <MdLiveTv className="mr-2 text-xl" />
-                      status
-                      <BiFilterAlt className="ml-1 text-lg" />
-                    </div>
-                  </th>
-                  <th className=" text-[#5A5881] text-base font-semibold">
-                    <div className="flex  items-center justify-center   mx-auto">
-                      <RxTimer className="mr-2 text-xl" />
-                      Last Seen
-                      <BiFilterAlt className="ml-1 text-lg" />
-                    </div>
-                  </th>
-                  <th className=" text-[#5A5881] text-base font-semibold">
-                    <div className="flex  items-center justify-center  mx-auto">
-                      <BsCollectionPlay className="mr-2 text-xl" />
-                      Now Playing
-                    </div>
-                  </th>
-                  <th className=" text-[#5A5881] text-base font-semibold">
-                    <div className=" flex  items-center mx-auto justify-center">
-                      <MdOutlineCalendarMonth className="mr-2 text-xl" />
-                      Current Schedule
-                    </div>
-                  </th>
-                  <th className="text-[#5A5881] text-base font-semibold">
-                    <div className=" flex mx-auto items-center justify-center">
-                      <BsPencilSquare className="mr-2 text-xl" />
-                      Tags
-                      <BiFilterAlt className="ml-1 text-lg" />
-                    </div>
-                  </th>
+                  {statusContentVisible && (
+                    <th className=" text-[#5A5881] text-base font-semibold">
+                      <div className="flex  items-center justify-center  mx-auto ">
+                        <MdLiveTv className="mr-2 text-xl" />
+                        status
+                        <BiFilterAlt className="ml-1 text-lg" />
+                      </div>
+                    </th>
+                  )}
+                  {lastSeenContentVisible && (
+                    <th className=" text-[#5A5881] text-base font-semibold">
+                      <div className="flex  items-center justify-center   mx-auto">
+                        <RxTimer className="mr-2 text-xl" />
+                        Last Seen
+                        <BiFilterAlt className="ml-1 text-lg" />
+                      </div>
+                    </th>
+                  )}
+                  {nowPlayingContentVisible && (
+                    <th className=" text-[#5A5881] text-base font-semibold">
+                      <div className="flex  items-center justify-center  mx-auto">
+                        <BsCollectionPlay className="mr-2 text-xl" />
+                        Now Playing
+                      </div>
+                    </th>
+                  )}
+                  {currScheduleContentVisible && (
+                    <th className=" text-[#5A5881] text-base font-semibold">
+                      <div className=" flex  items-center mx-auto justify-center">
+                        <MdOutlineCalendarMonth className="mr-2 text-xl" />
+                        Current Schedule
+                      </div>
+                    </th>
+                  )}
+                  {tagsContentVisible && (
+                    <th className="text-[#5A5881] text-base font-semibold">
+                      <div className=" flex mx-auto items-center justify-center">
+                        <BsPencilSquare className="mr-2 text-xl" />
+                        Tags
+                        <BiFilterAlt className="ml-1 text-lg" />
+                      </div>
+                    </th>
+                  )}
                 </tr>
               </thead>
-              <tbody>
-                <tr className="border-b border-b-[#E4E6FF]">
-                  <td className="flex items-center ">
-                    <input
-                      type="checkbox"
-                      className="mr-3"
-                      checked={checkboxChecked}
-                      onChange={handleCheckboxChange}
-                    />
+              {screenData.map((screen) => (
+                <tbody key={screen.screenID}>
+                  <tr className="border-b border-b-[#E4E6FF]">
+                    {screenContentVisible && (
+                      <td className="flex items-center ">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          checked={checkboxChecked}
+                          onChange={handleCheckboxChange}
+                        />
 
-                    <div>
-                      <Link to="/screensplayer">My Screen 1</Link>
-                      <button>
-                        <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
-                      </button>
-                    </div>
-                  </td>
-                  {moreCheckboxClick && (
-                    <td className="p-2 break-words  w-[150px]">
-                      132, My Street, Kingston, New York 12401.
-                    </td>
-                  )}
-                  <td className="p-2 text-center">
-                    <button className="rounded-full px-6 py-1 text-white text-center bg-[#3AB700]">
-                      Live
-                    </button>
-                  </td>
-                  <td className="p-2 text-center">25 May 2023</td>
-                  <td className="p-2 text-center">
-                    <button
-                      onClick={() => setShowAssetModal(true)}
-                      className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                    >
-                      Asset Name
-                      <AiOutlineCloudUpload className="ml-2 text-lg" />
-                    </button>
-                    {showAssetModal ? (
-                      <>
-                        <AssetModal setShowAssetModal={setShowAssetModal} />
-                      </>
-                    ) : null}
-                  </td>
-                  <td className="break-words	w-[150px] p-2 text-center">
-                    Schedule Name Till 28 June 2023
-                  </td>
-                  <td className="p-2 text-center">Tags, Tags</td>
-                </tr>
-                <tr className="border-0">
-                  <td className="flex items-center ">
-                    <input
-                      type="checkbox"
-                      className="mr-3"
-                      checked={checkboxChecked}
-                      onChange={handleCheckboxChange}
-                    />
-                    <div>
-                      <div>
-                        <Link to="/screensplayer">My Screen 2</Link>
-                        <button>
-                          <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
+                        <div>
+                          <Link to="/screensplayer">{screen.screenName}</Link>
+                          <button>
+                            <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
+                          </button>
+                        </div>
+                      </td>
+                    )}
+                    {locContentVisible && (
+                      <td className="p-2 break-words w-[150px]">
+                        {screen.googleLocation}
+                      </td>
+                    )}
+                    {statusContentVisible && (
+                      <td className="p-2 text-center">
+                        <button className="rounded-full px-6 py-1 text-white text-center bg-[#3AB700]">
+                          Live
                         </button>
-                      </div>
-                    </div>
-                  </td>
-                  {moreCheckboxClick && (
-                    <td className="p-2 break-words  w-[150px]">
-                      132, My Street, Kingston, New York 12401.
-                    </td>
-                  )}
-                  <td className="p-2 text-center">
-                    <button className="rounded-full px-6 py-1 text-white text-center bg-[#3AB700]">
-                      Live
-                    </button>
-                  </td>
-                  <td className="p-1 text-center">25 May 2023</td>
-                  <td className="p-1 text-center">
-                    <button
-                      onClick={() => setShowAssetModal(true)}
-                      className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                    >
-                      {" "}
-                      Asset Name
-                      <AiOutlineCloudUpload className="ml-2 text-lg" />
-                    </button>
-                    {showAssetModal ? (
-                      <>
-                        <AssetModal setShowAssetModal={setShowAssetModal} />
-                      </>
-                    ) : null}
-                  </td>
-                  <td className="break-words	w-[150px] p-2 text-center">
-                    Schedule Name Till 28 June 2023
-                  </td>
-                  <td className="p-2 text-center">Tags, Tags</td>
-                </tr>
-              </tbody>
+                      </td>
+                    )}
+                    {lastSeenContentVisible && (
+                      <td className="p-2 text-center">25 May 2023</td>
+                    )}
+                    {nowPlayingContentVisible && (
+                      <td className="p-2 text-center">
+                        <button
+                          onClick={() => setShowAssetModal(true)}
+                          className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                        >
+                          Asset Name
+                          <AiOutlineCloudUpload className="ml-2 text-lg" />
+                        </button>
+                        {showAssetModal ? (
+                          <>
+                            <AssetModal setShowAssetModal={setShowAssetModal} />
+                          </>
+                        ) : null}
+                      </td>
+                    )}
+                    {currScheduleContentVisible && (
+                      <td className="break-words	w-[150px] p-2 text-center">
+                        Schedule Name Till 28 June 2023
+                      </td>
+                    )}
+                    {tagsContentVisible && (
+                      <td className="p-2 text-center">{screen.tags}</td>
+                    )}
+                  </tr>
+                </tbody>
+              ))}
             </table>
           </div>
         </div>

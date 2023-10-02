@@ -12,6 +12,7 @@ import EventEditor from "./EventEditor";
 import axios from "axios";
 import "../../Styles/schedule.css";
 import { BsFillInfoCircleFill } from "react-icons/bs";
+import { BiMessageSquareEdit } from "react-icons/bi";
 import {
   ADD_EVENT,
   GET_ALL_FILES,
@@ -54,7 +55,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [scheduleAsset, setScheduleAsset] = useState([]);
   const [assetData, setAssetData] = useState([]);
   const [allAssets, setAllAssets] = useState([]);
+  const [isScheduleEditMode, setIsScheduleEditMode] = useState(false);
   const [newScheduleNameInput, setNewScheduleNameInput] = useState("");
+
   const [showScheduleName, setShowScheduleName] = useState(false);
   const [createdScheduleId, setCreatedScheduleId] = useState("");
   const [searchParams] = useSearchParams();
@@ -77,11 +80,24 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setCreatePopupOpen(true);
   }, []);
 
+  // useEffect(() => {
+  //   // Check if in edit mode and newScheduleNameInput is not empty
+  //   if (isScheduleEditMode && newScheduleNameInput.trim() !== "") {
+  //     handleSaveNewSchedule();
+  //   } else if (!isScheduleEditMode) {
+  //     // Automatically set scheduleName to current date and time when not in edit mode
+  //     setNewScheduleNameInput(moment().format("YYYY-MM-DD HH:mm:ss A"));
+  //   }
+  // }, [newScheduleNameInput, isScheduleEditMode]);
+
   // Function to handle saving the new schedule
   const handleSaveNewSchedule = () => {
+    let scheduleName = isScheduleEditMode
+      ? newScheduleNameInput
+      : moment().format("YYYY-MM-DD HH:mm:ss A");
     axios
       .post(ADD_SCHEDULE, {
-        scheduleName: newScheduleNameInput,
+        scheduleName: scheduleName,
         timeZoneName: selectedTimezoneName,
         operation: "Insert",
       })
@@ -94,6 +110,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .catch((error) => {
         console.error("Error creating a new schedule:", error);
       });
+    setIsScheduleEditMode(!isScheduleEditMode);
   };
 
   const saveEditedSchedule = () => {
@@ -257,7 +274,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           title: item.title,
           start: new Date(item.cStartDate),
           end: new Date(item.cEndDate),
-          color: item.color, 
+          color: item.color,
           repeatDay: item.repeatDay,
           day: item.day,
         }));
@@ -459,56 +476,51 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
 
               {isEditingSchedule ? (
-                <>
-                  {showScheduleName ? (
-                    <h1 className="flex justify-center text-3xl">
-                      {editScheduleName}
-                    </h1>
-                  ) : (
-                    <div className="flex justify-center items-center px-5">
-                      <input
-                        type="text"
-                        className="w-full border border-primary rounded-md px-2 py-1"
-                        value={editScheduleName}
-                        onChange={(e) => setEditScheduleName(e.target.value)}
-                      />
-                      <button
-                        className="text-black px-2 py-1 rounded border border-primary ml-1"
-                        onClick={saveEditedSchedule}
-                      >
-                        Edit
-                      </button>
-                    </div>
-                  )}
-                </>
+                <div className="relative px-5">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      className="w-full border border-primary rounded-full px-4 py-2"
+                      value={editScheduleName}
+                      onChange={(e) => setEditScheduleName(e.target.value)}
+                    />
+                    <button className="icon" onClick={saveEditedSchedule}>
+                      <BiMessageSquareEdit className="text-xl" />
+                    </button>
+                  </div>
+                </div>
               ) : (
-                <>
-                  {showScheduleName ? (
-                    <h1 className="flex justify-center text-3xl">
-                      {newScheduleNameInput}
-                    </h1>
-                  ) : (
-                    <div className="flex justify-center items-center px-5">
-                      <input
-                        type="text"
-                        className="w-full border border-primary rounded-md px-2 py-1"
-                        placeholder="Enter schedule name"
-                        value={newScheduleNameInput}
-                        onChange={(e) =>
-                          setNewScheduleNameInput(e.target.value)
+                <div className="relative px-5">
+                  <div className="relative">
+                    <input
+                      type="text"
+                      className="w-full border border-primary rounded-full px-4 py-2"
+                      value={
+                        isScheduleEditMode
+                          ? newScheduleNameInput
+                          : moment().format("YYYY-MM-DD HH:mm:ss A")
+                      }
+                      onChange={(e) => setNewScheduleNameInput(e.target.value)}
+                      onBlur={() => {
+                        if (!isScheduleEditMode) {
+                          handleSaveNewSchedule();
                         }
-                      />
-                      <button
-                        className="text-black px-2 py-1 rounded border border-primary ml-1"
-                        onClick={handleSaveNewSchedule}
-                      >
-                        Save
-                      </button>
-                    </div>
-                  )}
-                </>
+                      }}
+                      readOnly={!isScheduleEditMode}
+                    />
+                    {/* <button
+                      className="icon"
+                      onClick={() => {
+                        !isScheduleEditMode
+                          ? setIsScheduleEditMode(true)
+                          : handleSaveNewSchedule();
+                      }}
+                    >
+                      <BiMessageSquareEdit className="text-xl" />
+                    </button> */}
+                  </div>
+                </div>
               )}
-
               <div className="border-b-2 border-lightgray mt-3"></div>
               <div className="p-3">
                 <div className="mb-2">Schedule Date time</div>

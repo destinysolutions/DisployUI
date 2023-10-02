@@ -10,7 +10,10 @@ import { useEffect } from "react";
 import axios from "axios";
 import {
   GET_ALL_FILES,
+  GET_ALL_SCREEN_ORIENTATION,
+  GET_ALL_SCREEN_RESOLUTION,
   GET_SCREEN_TYPE,
+  GET_TIMEZONE,
   UPDATE_NEW_SCREEN,
 } from "../../../Pages/Api";
 import {
@@ -30,52 +33,34 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const [selectedValue, setSelectedValue] = useState("");
 
-  const handleRadioChange = (event) => {
-    setSelectedValue(event.target.value);
-  };
-
-  const [showTagBox, setShowTagBox] = useState(false);
   const [tagName, setTagName] = useState("");
-  const [suggestedTags, setSuggestedTags] = useState([
-    "Corporate",
-    "DMB",
-    "Marketing",
-    "Lobby",
-    "Conference Room",
-  ]);
-
-  const handleTagBoxClick = () => {
-    setShowTagBox(!showTagBox);
-  };
 
   const handleTagNameChange = (event) => {
     setTagName(event.target.value);
   };
+  console.log(tagName, "tagName");
+  const [getSelectedScreenTypeOption, setGetSelectedScreenTypeOption] =
+    useState([]);
+  const [getTimezone, setTimezone] = useState([]);
+  const [selectedTimezoneName, setSelectedTimezoneName] = useState("");
+  const [getScreenOrientation, setScreenOrientation] = useState([]);
+  const [getScreenResolution, setScreenResolution] = useState([]);
+  const [selectedScreenTypeOption, setSelectedScreenTypeOption] = useState("");
+  const [selectScreenOrientation, setSelectScreenOrientation] = useState();
+  const [selectScreenResolution, setSelectScreenResolution] = useState();
 
-  const handleTagSelection = (selectedTag) => {
-    setTagName(selectedTag);
-    setShowTagBox(false);
-  };
+  function handleScreenOrientationRadio(e, optionId) {
+    setSelectScreenOrientation(optionId);
+  }
 
-  const handleAddCustomTag = () => {
-    if (tagName.trim() !== "" && !suggestedTags.includes(tagName)) {
-      setSuggestedTags([...suggestedTags, tagName]);
-    }
-    setTagName("");
-  };
+  function handleScreenResolutionRadio(e, optionId) {
+    setSelectScreenResolution(optionId);
+  }
 
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      handleAddCustomTag();
-    }
-  };
-  const [getSelectedOption, setGetSelectedOption] = useState([]);
-  const [selectedOption, setSelectedOption] = useState("");
-
+  console.log(selectScreenOrientation, "selectScreenOrientation");
   const handleOptionChange = (e) => {
-    setSelectedOption(e.target.value);
+    setSelectedScreenTypeOption(e.target.value);
   };
 
   // Trigger the file input click event programmatically
@@ -88,7 +73,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const otpData = location?.state?.otpData || null;
   const message = location?.state?.message || null;
   const [otpMessageVisible, setOTPMessageVisible] = useState(false);
-  console.log(message, "successMessage");
+  // console.log(message, "successMessage");
 
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   const [assetData, setAssetData] = useState([]);
@@ -98,10 +83,28 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenName, setScreenName] = useState("");
 
   useEffect(() => {
-    axios
-      .get(GET_ALL_FILES)
-      .then((response) => {
-        const fetchedData = response.data;
+    // Define an array of axios requests
+    const axiosRequests = [
+      axios.get(GET_ALL_FILES),
+      axios.get(GET_SCREEN_TYPE),
+      axios.get(GET_ALL_SCREEN_ORIENTATION),
+      axios.get(GET_ALL_SCREEN_RESOLUTION),
+      axios.get(GET_TIMEZONE),
+    ];
+
+    // Use Promise.all to send all requests concurrently
+    Promise.all(axiosRequests)
+      .then((responses) => {
+        const [
+          filesResponse,
+          screenTypeResponse,
+          screenOrientationResponse,
+          screenResolutionResponse,
+          timezoneResponse,
+        ] = responses;
+
+        // Process each response and set state accordingly
+        const fetchedData = filesResponse.data;
         const allAssets = [
           ...(fetchedData.image ? fetchedData.image : []),
           ...(fetchedData.video ? fetchedData.video : []),
@@ -109,10 +112,22 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
         ];
+
         setAssetData(allAssets);
+        setGetSelectedScreenTypeOption(screenTypeResponse.data.data);
+        setScreenOrientation(screenOrientationResponse.data.data);
+        setScreenResolution(screenResolutionResponse.data.data);
+        setTimezone(timezoneResponse.data.data);
+
+        // You can also log each response if needed
+        console.log(filesResponse.data);
+        console.log(screenTypeResponse.data);
+        console.log(screenOrientationResponse.data);
+        console.log(screenResolutionResponse.data);
+        console.log(timezoneResponse.data);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   }, []);
 
@@ -142,7 +157,10 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     let screen_id = getScreenID[0];
     let data = JSON.stringify({
       screenID: screen_id,
-      screenType: selectedOption,
+      screenOrientation: selectScreenOrientation,
+      screenResolution: selectScreenResolution,
+      timeZone: selectedTimezoneName,
+      screenType: selectedScreenTypeOption,
       tags: tagName,
       screenName: screenName,
       moduleID: selectedAsset.id,
@@ -168,25 +186,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-
-  useEffect(() => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: GET_SCREEN_TYPE,
-      headers: {},
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        setGetSelectedOption(response.data.data);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  });
 
   return (
     <>
@@ -268,9 +267,22 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </label>
                       </td>
                       <td>
-                        <h4 className="bg-gray-200 appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3">
-                          {otpData.TimeZone}
-                        </h4>
+                        <select
+                          className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                          value={selectedTimezoneName}
+                          onChange={(e) =>
+                            setSelectedTimezoneName(e.target.value)
+                          }
+                        >
+                          {getTimezone.map((timezone) => (
+                            <option
+                              value={timezone.timeZoneName}
+                              key={timezone.timeZoneId}
+                            >
+                              {timezone.timeZoneName}
+                            </option>
+                          ))}
+                        </select>
                       </td>
                     </tr>
                     <tr>
@@ -280,9 +292,32 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </label>
                       </td>
                       <td>
-                        <h4 className="bg-gray-200 appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3">
-                          {otpData.ScreenOrientation}
-                        </h4>
+                        <div className="border border-[#D5E3FF] rounded w-full px-3 py-2">
+                          {getScreenOrientation.map((option) => (
+                            <div
+                              key={option.screenOrientationId}
+                              className="flex"
+                            >
+                              <input
+                                type="radio"
+                                value={option.screenOrientationId}
+                                checked={
+                                  option.screenOrientationId ===
+                                  selectScreenOrientation
+                                }
+                                onChange={(e) =>
+                                  handleScreenOrientationRadio(
+                                    e,
+                                    option.screenOrientationId
+                                  )
+                                }
+                              />
+                              <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
+                                {option.screenOrientation}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -292,9 +327,29 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </label>
                       </td>
                       <td>
-                        <h4 className="bg-gray-200 appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3">
-                          {otpData.ScreenResolution}
-                        </h4>
+                        <div className="border border-[#D5E3FF] rounded w-full px-3 py-2">
+                          {getScreenResolution.map((option) => (
+                            <>
+                              <input
+                                type="radio"
+                                value={option.screenResolutionId}
+                                checked={
+                                  option.screenResolutionId ===
+                                  selectScreenResolution
+                                }
+                                onChange={(e) =>
+                                  handleScreenResolutionRadio(
+                                    e,
+                                    option.screenResolutionId
+                                  )
+                                }
+                              />
+                              <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
+                                {option.screenResolutionName}
+                              </label>
+                            </>
+                          ))}
+                        </div>
                       </td>
                     </tr>
                     <tr>
@@ -306,11 +361,11 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       <td>
                         <select
                           className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                          value={selectedOption}
+                          value={selectedScreenTypeOption}
                           onChange={handleOptionChange}
                         >
                           <option value="">Select Type</option>
-                          {getSelectedOption.map((option) => (
+                          {getSelectedScreenTypeOption.map((option) => (
                             <option
                               key={option.screenTypeId}
                               value={option.screenTypeId}
@@ -322,7 +377,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       </td>
                     </tr>
 
-                    {selectedOption === "1" && (
+                    {selectedScreenTypeOption === "1" && (
                       <>
                         <tr>
                           <td></td>
@@ -332,50 +387,31 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               value={selectedAsset.name}
                               placeholder="Asset"
                             />
-                            {/* <div className="flex items-center ml-5">
-                                <span
-                                  className="bg-lightgray p-2 rounded"
-                                  onClick={handleIconClick}
-                                >
-                                  <FiUploadCloud size={20} />
-                                </span>
-                                <input
-                                  id="file-input"
-                                  type="file"
-                                  style={{ display: "none" }}
-                                />
-                              </div> */}
-                            {/* </div> */}
 
-                            <div className="absolute left-[10%] bottom-[-3px]  text-[35px]  z-20">
-                              <img
-                                src="/DisployImg/Polygon.svg"
-                                alt="notification"
-                                className="cursor-pointer assestPopup"
-                              />
-                            </div>
-                            <div className="absolute left-[2%] bottom-[-74px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10  pr-16">
-                              <div
-                                className="text-sm mb-1 mt-2 ml-3 cursor-pointer"
-                                onClick={() => setShowAssetModal(true)}
-                              >
-                                Browse
-                              </div>
+                            {selectedAsset.name ? null : (
+                              <>
+                                <div className="absolute left-[10%] bottom-[-3px]  text-[35px]  z-20">
+                                  <img
+                                    src="/DisployImg/Polygon.svg"
+                                    alt="notification"
+                                    className="cursor-pointer assestPopup"
+                                  />
+                                </div>
+                                <div className="absolute left-[2%] bottom-[-74px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10  pr-16">
+                                  <div
+                                    className="text-sm mb-1 mt-2 ml-3 cursor-pointer"
+                                    onClick={() => setShowAssetModal(true)}
+                                  >
+                                    Browse
+                                  </div>
 
-                              <div className="text-sm mb-3 mt-3 ml-3 cursor-pointer">
-                                Default Assets
-                              </div>
-                            </div>
+                                  <div className="text-sm mb-3 mt-3 ml-3 cursor-pointer">
+                                    Default Assets
+                                  </div>
+                                </div>
+                              </>
+                            )}
                           </td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td></td>
                         </tr>
                       </>
                     )}
@@ -608,7 +644,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                                       alt={
                                                                         assetPreview.name
                                                                       }
-                                                                      className="rounded-2xl "
+                                                                      className="rounded-2xl"
                                                                     />
                                                                   </div>
                                                                 )}
@@ -712,7 +748,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         ) : null}
                       </td>
                     </tr>
-                    {selectedOption === "Playlist" && (
+                    {selectedScreenTypeOption === "Playlist" && (
                       <>
                         <tr>
                           <td></td>
@@ -780,7 +816,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </tr>
                       </>
                     )}
-                    {selectedOption === "Schedule" && (
+                    {selectedScreenTypeOption === "Schedule" && (
                       <>
                         <tr>
                           <td></td>
@@ -815,69 +851,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               placeholder="Enter tag..."
                               value={tagName}
                               onChange={handleTagNameChange}
-                              onKeyDown={handleKeyDown}
                             />
-                            <button
-                              type="button"
-                              onClick={handleTagBoxClick}
-                              className="ml-2"
-                            >
-                              <svg
-                                width="20"
-                                height="20"
-                                viewBox="0 0 20 20"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M4.34315 4.34315C5.84344 2.84285 7.87827 2 10 2C12.1217 2 14.1566 2.84285 15.6569 4.34315C17.1571 5.84344 18 7.87827 18 10C18 12.1217 17.1571 14.1566 15.6569 15.6569C14.1566 17.1571 12.1217 18 10 18C7.87827 18 5.84344 17.1571 4.34315 15.6569C2.84285 14.1566 2 12.1217 2 10C2 7.87827 2.84285 5.84344 4.34315 4.34315ZM10 0C7.34784 0 4.8043 1.05357 2.92893 2.92893C1.05357 4.8043 0 7.34784 0 10C0 12.6522 1.05357 15.1957 2.92893 17.0711C4.8043 18.9464 7.34784 20 10 20C12.6522 20 15.1957 18.9464 17.0711 17.0711C18.9464 15.1957 20 12.6522 20 10C20 7.34784 18.9464 4.8043 17.0711 2.92893C15.1957 1.05357 12.6522 0 10 0ZM11 11C11 10.4477 10.5523 10 10 10C9.44771 10 9 10.4477 9 11V14C9 14.5523 9.44771 15 10 15C10.5523 15 11 14.5523 11 14V11ZM9.94922 4.75C9.25886 4.75 8.69922 5.30964 8.69922 6C8.69922 6.69036 9.25886 7.25 9.94922 7.25H10.0492C10.7396 7.25 11.2992 6.69036 11.2992 6C11.2992 5.30964 10.7396 4.75 10.0492 4.75H9.94922Z"
-                                  fill="#515151"
-                                />
-                              </svg>
-                            </button>
-                            {showTagBox && (
-                              <>
-                                <div className=" tagname absolute top-[45px] right-[-8px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10 max-w-[250px]">
-                                  <div className="lg:flex md:flex sm:block">
-                                    <div className="p-2">
-                                      <h6 className="text-center text-sm mb-1">
-                                        Give a Tag Name Such
-                                      </h6>
-                                      <div className="flex flex-wrap">
-                                        {/* <div className="p-1 rounded bg-[#EFF5FF] m-1 text-sm font-light">
-                                        Corporate
-                                      </div>
-                                      <div className="p-1 rounded bg-[#EFF5FF] m-1 text-sm  font-light">
-                                        DMB
-                                      </div>
-                                      <div className="p-1 rounded bg-[#EFF5FF] m-1 text-sm font-light">
-                                        Marketing
-                                      </div>
-                                      <div className="p-1 rounded bg-[#EFF5FF] m-1 text-sm font-light">
-                                        Lobby
-                                      </div>
-                                      <div className="p-1 rounded bg-[#EFF5FF] m-1 text-sm font-light">
-                                        Conference Room
-                                      </div> */}
-                                        {suggestedTags.map((tag) => (
-                                          <div
-                                            key={tag}
-                                            className="p-1 rounded bg-[#EFF5FF] m-1 text-sm font-light cursor-pointer"
-                                            onClick={() =>
-                                              handleTagSelection(tag)
-                                            }
-                                          >
-                                            {tag}
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </>
-                            )}
                           </div>
                         </div>
                       </td>
