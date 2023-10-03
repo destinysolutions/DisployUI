@@ -21,7 +21,10 @@ export const GET_SCREEN_TYPE =
   "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllScreenType";
 export const SELECT_BY_USER_SCREENDETAIL =
   "https://disployapi.thedestinysolutions.com/api/NewScreen/SelectByUserScreen";
-
+export const GET_ALL_SCREEN_RESOLUTION =
+  "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllScreenResolution";
+export const GET_ALL_SCREEN_ORIENTATION =
+  "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllScreenOrientation";
 export const GET_TIMEZONE =
   "https://disployapi.thedestinysolutions.com/api/EventMaster/GetAllTimeZone";
 export const GET_ALL_FILES =
@@ -60,8 +63,10 @@ export const FetchdataFormFolder =
 export const DeleteAllData =
   "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/DeleteAll";
 
-  export const YOUTUBE_API_URL =
+export const YOUTUBE_API_URL =
   "https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddYoutubeApp";
-  export const GET_ALL_YOUTUBEDATA =
+export const GET_ALL_YOUTUBEDATA =
   "https://disployapi.thedestinysolutions.com/api/YoutubeApp/GetAllYoutubeApp";
+
 //http://192.168.1.219
+//https://disployapi.thedestinysolutions.com

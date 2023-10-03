@@ -19,7 +19,7 @@ const DropboxUpload = () => {
       ) {
         formData.append("FileType", image.link);
         formData.append("operation", "Insert");
-        formData.append("CategorieType", "Online");
+        formData.append("CategorieType", "OnlineImage");
         formData.append("details", details);
         formData.append("name", image.name);
 

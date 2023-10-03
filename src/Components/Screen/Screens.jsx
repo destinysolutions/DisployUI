@@ -88,7 +88,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${userId}`)
       .then((response) => {
         const fetchedData = response.data.data;
-        console.log(fetchedData, "--fetchedData");
         setScreenData(fetchedData);
       })
       .catch((error) => {

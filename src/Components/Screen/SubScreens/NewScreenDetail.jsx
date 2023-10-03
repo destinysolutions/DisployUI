@@ -3,7 +3,7 @@ import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
 import "../../../Styles/screen.css";
 import { GrScheduleNew } from "react-icons/gr";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Footer from "../../Footer";
 import { useEffect } from "react";
@@ -39,7 +39,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const handleTagNameChange = (event) => {
     setTagName(event.target.value);
   };
-  console.log(tagName, "tagName");
+
   const [getSelectedScreenTypeOption, setGetSelectedScreenTypeOption] =
     useState([]);
   const [getTimezone, setTimezone] = useState([]);
@@ -58,7 +58,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectScreenResolution(optionId);
   }
 
-  console.log(selectScreenOrientation, "selectScreenOrientation");
   const handleOptionChange = (e) => {
     setSelectedScreenTypeOption(e.target.value);
   };
@@ -73,7 +72,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const otpData = location?.state?.otpData || null;
   const message = location?.state?.message || null;
   const [otpMessageVisible, setOTPMessageVisible] = useState(false);
-  // console.log(message, "successMessage");
 
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   const [assetData, setAssetData] = useState([]);
@@ -118,13 +116,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         setScreenOrientation(screenOrientationResponse.data.data);
         setScreenResolution(screenResolutionResponse.data.data);
         setTimezone(timezoneResponse.data.data);
-
-        // You can also log each response if needed
-        console.log(filesResponse.data);
-        console.log(screenTypeResponse.data);
-        console.log(screenOrientationResponse.data);
-        console.log(screenResolutionResponse.data);
-        console.log(timezoneResponse.data);
       })
       .catch((error) => {
         console.error(error);
@@ -151,40 +142,53 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       setAssetData(filteredData);
     }
   };
-
+  const history = useNavigate();
+  const [screenNameError, setScreenNameError] = useState("");
   const handleScreenDetail = () => {
-    let getScreenID = otpData.map((item) => item.ScreenID);
-    let screen_id = getScreenID[0];
-    let data = JSON.stringify({
-      screenID: screen_id,
-      screenOrientation: selectScreenOrientation,
-      screenResolution: selectScreenResolution,
-      timeZone: selectedTimezoneName,
-      screenType: selectedScreenTypeOption,
-      tags: tagName,
-      screenName: screenName,
-      moduleID: selectedAsset.id,
-      operation: "Update",
-    });
+    if (screenName.trim() === "") {
+      // If screenName is empty, set an error message
+      setScreenNameError("Screen name is required");
+    } else {
+      // If screenName is not empty, clear any previous error message
+      setScreenNameError("");
 
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: UPDATE_NEW_SCREEN,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
+      // Continue with the API call or other logic here
+      let getScreenID = otpData.map((item) => item.ScreenID);
+      let screen_id = getScreenID[0];
 
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.log(error);
+      let data = JSON.stringify({
+        screenID: screen_id,
+        screenOrientation: selectScreenOrientation,
+        screenResolution: selectScreenResolution,
+        timeZone: selectedTimezoneName,
+        screenType: selectedScreenTypeOption,
+        tags: tagName,
+        screenName: screenName,
+        moduleID: selectedAsset.id,
+        operation: "Update",
       });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: UPDATE_NEW_SCREEN,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      axios
+        .request(config)
+        .then((response) => {
+          if (response.data.status === 200) {
+            history("/screens");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   return (
@@ -244,8 +248,14 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           className="bg-gray-200 appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3"
                           type="text"
                           placeholder="Screen Name"
-                          onChange={(e) => setScreenName(e.target.value)}
+                          onChange={(e) => {
+                            setScreenName(e.target.value);
+                            setScreenNameError("");
+                          }}
                         />
+                        {screenNameError && (
+                          <div className="text-red">{screenNameError}</div>
+                        )}
                       </td>
                     </tr>
                     <tr>
@@ -859,15 +869,13 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     <tr>
                       <td className=" lg:block md:block sm:hidden"></td>
                       <td>
-                        <Link to="/screens">
-                          <button
-                            className="shadow bg-primary focus:shadow-outline focus:outline-none text-white font-medium py-2 px-9 rounded-full hover:bg-SlateBlue"
-                            type="button"
-                            onClick={handleScreenDetail}
-                          >
-                            Save
-                          </button>
-                        </Link>
+                        <button
+                          className="shadow bg-primary focus:shadow-outline focus:outline-none text-white font-medium py-2 px-9 rounded-full hover:bg-SlateBlue"
+                          type="button"
+                          onClick={handleScreenDetail}
+                        >
+                          Save
+                        </button>
                       </td>
                     </tr>
                   </tbody>
