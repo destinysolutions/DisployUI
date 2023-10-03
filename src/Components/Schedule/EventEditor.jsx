@@ -198,6 +198,26 @@ const EventEditor = ({
     setSelectedDays(newSelectedDays);
   };
 
+  // const handleCheckboxChange = () => {
+  //   const newSelectAllDays = !selectAllDays;
+  //   setSelectAllDays(newSelectAllDays);
+
+  //   // Create an array to represent the selected days
+  //   const newSelectedDays = Array(buttons.length).fill(false);
+
+  //   if (newSelectAllDays) {
+  //     // Calculate the day index for the start date
+  //     const startDayIndex = startDate.getDay();
+
+  //     // Iterate through the date range and select the days
+  //     for (let i = 0; i <= dayDifference; i++) {
+  //       const dayIndex = (startDayIndex + i) % 7;
+  //       newSelectedDays[dayIndex] = true;
+  //     }
+  //   }
+
+  //   setSelectedDays(newSelectedDays);
+  // };
   // const handleDayButtonClick = (index) => {
   //   if (isDayInRange(index)) {
   //     const newSelectedDays = [...selectedDays];
@@ -224,7 +244,7 @@ const EventEditor = ({
       setSelectAllDays(newSelectAllDays);
 
       // Preserve the previously selected repeat days
-      const newPreviousSetedRepeatDay = [...previousSetedRepeatDay];
+      let newPreviousSetedRepeatDay = [...previousSetedRepeatDay];
       if (newSelectedDays[index]) {
         newPreviousSetedRepeatDay.push(buttons[index]);
       } else {

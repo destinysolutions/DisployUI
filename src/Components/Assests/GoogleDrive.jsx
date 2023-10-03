@@ -9,11 +9,13 @@ import { useNavigate } from "react-router-dom";
 const GoogleDrive = () => {
   const [openPicker, authResponse] = useDrivePicker();
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [accessToken, setAccessToken] = useState(null);
 
   const handleLoginSuccess = (response) => {
     const accessToken = response.accessToken;
     console.log("Access Token:", accessToken);
-    handleOpenPicker(accessToken); // Pass the access token to handleOpenPicker
+    handleOpenPicker(accessToken);
+    setAccessToken(accessToken);
   };
 
   const handleLoginFailure = (error) => {
@@ -22,7 +24,10 @@ const GoogleDrive = () => {
 
   const googleDriveLogin = () => {
     return new Promise((resolve, reject) => {
-      const response = { accessToken: "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" };
+      const response = {
+        accessToken:
+          "ya29.a0AfB_byDTsDaewpGQNRvwfpVMBzTQQamCihki_xbllX4fl-SFiTLwzlReuSs7g7AHMteUJPWoR9pI7_RWnmS1wGF3f-7YAm3lSf-ER-3ND_y-W0hLXpiDKinqqqF8Oev1kwIHAcBnBGPHxq6vwrdw3rJSuGrBVRqRBZJ-aCgYKAQcSARMSFQGOcNnCp4DlBDi_WkVw1LWePi6qWA0171",
+      };
       resolve(response);
     });
   };
@@ -52,11 +57,11 @@ const GoogleDrive = () => {
     };
     openPicker({
       clientId:
-        "1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com", // Your client ID
-      developerKey: "AIzaSyCbWICmzquQqKHgCDNEFCBUgpH8VGe2ezo", // Your developer key
+        "446535573289-eojjjpbqdp5jji7kvle6umhgdb84uknl.apps.googleusercontent.com", // Your client ID
+      developerKey: "AIzaSyCna-XLPlf5ouSNMndiYCajpqZpZutmG-8", // Your developer key
       viewId: "DOCS",
       token:
-        "ya29.a0AfB_byD_xHQpTy5dgS4ZluC8lfJ12odg8_AIYoABP9qsOyom7v6Q2dttoYdvsmZZmHrPP7KBxZEHpS-yCJ-MeZ82mDwGzj-VnsNrrrF0H4PrIT1YzL3RywFucPzK4ffzfJdZz6-2-EfFVbk8m5-Aeu7iY2kbVw3WarWaaCgYKAYwSARMSFQGOcNnCH1GMZv41H8wWQ-dAf70hFg0171",
+        "ya29.a0AfB_byDhxb3qQL0z-IX_EO23gHdixl1MdeqvARvEs8ZOKyBv7N4ZkaSkH8ZDTtz5_0p1-N7pfN8gP0JIYQgRCuYhf2ZiTt4iDv3lWLRDKDeD0698x4I_go4s3RxY82R4WCqTZkp9YBX_MOT93QHwfKH_vdrgl69iUdF7aCgYKAR8SARMSFQGOcNnCtq9UF4QRWgquhNFijJXuyQ0171",
       showUploadView: true,
       showUploadFolders: true,
       supportDrives: true,
@@ -70,10 +75,10 @@ const GoogleDrive = () => {
         "https://oauth2.googleapis.com/token",
         new URLSearchParams({
           client_id:
-            "1020941750014-qfinh8b437r6lvvt3rb7m24phf3v6vdi.apps.googleusercontent.com",
-          client_secret: "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",
+            "446535573289-eojjjpbqdp5jji7kvle6umhgdb84uknl.apps.googleusercontent.com",
+          client_secret: "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",
           refresh_token:
-            "1//045RUoVpH0dcBCgYIARAAGAQSNwF-L9IrRKMlBDMVShHZXrs5g0V3TBQ3Yq6m0J82R4F-E90fP4nfCYMiz1F6clUDHUDO_NBjt9s",
+            "1//04NkHr6e_wtPKCgYIARAAGAQSNwF-L9IrIbuZMjcgoM5dvCZbrum6ENsddXC3EMYtUZfbBMDxMYrmU9Sgil0-yRjuyUqHIj0aYjQ",
           grant_type: "refresh_token",
         })
       );
@@ -91,70 +96,6 @@ const GoogleDrive = () => {
   };
 
   // API
-  const getContentType = (mime) => {
-    if (mime.startsWith("image/")) {
-      return "Image";
-    } else if (mime.startsWith("video/")) {
-      return "Video";
-    } else if (
-      mime &&
-      (mime.startsWith("application/pdf") ||
-        mime.startsWith("text/") ||
-        mime === "application/msword" ||
-        mime === "application/vnd.ms-excel" ||
-        mime ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-    ) {
-      return "DOC";
-    } else {
-      return "file content type not found";
-    }
-  };
-
-  selectedFiles.forEach((files) => {
-    console.log(files, "files");
-  });
-
-  // const uploadDataToAPI = async () => {
-  //   try {
-  //     for (const file of selectedFiles) {
-  //       const formData = new FormData();
-  //       const details = "drive image";
-  //       const CategorieType = getContentType(file.mimeType);
-  //       formData.append("FileType", file.embedUrl);
-  //       formData.append("operation", "Insert");
-  //       formData.append("CategorieType", "Online");
-  //       formData.append("details", details);
-  //       const response = await axios.post(ALL_FILES_UPLOAD, formData);
-  //       console.log("Upload Success:", response.data);
-  //     }
-  //   } catch (error) {
-  //     console.error("Upload Error:", error);
-  //   }
-  // };
-
-  // const uploadDataToAPI = async () => {
-  //   try {
-  //     for (const file of selectedFiles) {
-  //       const CategorieType = getContentType(file.mimeType);
-  //       console.log("file", file);
-  //       // Fetch the file data
-  //       const response = await fetch(file.embedUrl);
-  //       const fileData = await response.blob();
-
-  //       const formData = new FormData();
-  //       formData.append("FileType", fileData, file.name);
-  //       formData.append("operation", "Insert");
-  //       formData.append("CategorieType", CategorieType);
-  //       formData.append("details", "drive image");
-
-  //       await axios.post(ALL_FILES_UPLOAD, formData);
-  //     }
-  //     console.log("Upload Success", response.data);
-  //   } catch (error) {
-  //     console.error("Upload Error:", error);
-  //   }
-  // };
   const navigate = useNavigate();
   const [uploadInProgress, setUploadInProgress] = useState(false);
   const [imageUploadProgress, setImageUploadProgress] = useState({});
@@ -162,28 +103,53 @@ const GoogleDrive = () => {
   const uploadDataToAPI = (data) => {
     console.log(data, "data");
     setUploadInProgress(true);
-    data.forEach((image) => {
+
+    data.forEach(async (image) => {
       console.log(image, "image");
+
+      const currentTime = Date.now() / 1000;
+      if (accessToken && accessToken.expiryTime - currentTime < 300) {
+        try {
+          const newAccessToken = await renewAccessTokenUsingRefreshToken(
+            accessToken.refreshToken
+          );
+          setAccessToken(newAccessToken);
+        } catch (error) {
+          console.error("Error renewing access token:", error);
+          return;
+        }
+      }
+      fetchImageFromGoogleDrive(image.embedUrl)
+        .then((base64Data) => {
+          if (base64Data) {
+            // Store the base64 data in your database or perform any other actions
+            console.log("Base64 Image Data:", base64Data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
       const formData = new FormData();
       const details = "Some Details about the file";
-      formData.append("FileType", image.embedUrl);
+
+      // Use the appropriate properties from the 'image' object
+      formData.append("FileType", image.embedUrl); // This might need adjustment
       formData.append("operation", "Insert");
-      formData.append("CategorieType", "OnlineVideo");
+      formData.append("CategorieType", "OnlineImage");
       formData.append("details", details);
-      // formData.append(
-      //   "resolutions",
-      //   `${image.webformatHeight}*${image.webformatWidth}`
-      // );
       formData.append("name", image.name);
+
       axios
         .post(ALL_FILES_UPLOAD, formData, {
           onUploadProgress: (progressEvent) => {
             const progress = Math.round(
               (progressEvent.loaded / progressEvent.total) * 100
             );
+
+            // Use 'image.embedUrl' or another appropriate identifier
             setImageUploadProgress((prevProgress) => ({
               ...prevProgress,
-              [image.id]: progress,
+              [image.embedUrl]: progress,
             }));
           },
         })
@@ -195,21 +161,45 @@ const GoogleDrive = () => {
           console.error("Upload Error:", error);
         })
         .finally(() => {
-          if (
-            selectedFiles.every((img) => imageUploadProgress[img.id] === 100)
-          ) {
+          const allImagesUploaded = data.every(
+            (img) => imageUploadProgress[img.embedUrl] === 100
+          );
+
+          if (allImagesUploaded) {
             setUploadInProgress(false);
           }
         });
     });
   };
+
+  const fetchImageFromGoogleDrive = async (embedUrl) => {
+    console.log(embedUrl, "embedUrl");
+    try {
+      const response = await fetch(embedUrl);
+      if (response.ok) {
+        const arrayBuffer = await response.arrayBuffer();
+        const base64Data = Buffer.from(arrayBuffer).toString("base64");
+        return base64Data;
+      } else {
+        console.error(
+          "Failed to fetch image:",
+          response.status,
+          response.statusText
+        );
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching image:", error);
+      return null;
+    }
+  };
+
   useEffect(() => {
     const allImagesUploaded = selectedFiles.every(
       (img) => imageUploadProgress[img.id] === 100
     );
 
     if (allImagesUploaded) {
-      // Introduce a delay before setting uploadInProgress to false
       setTimeout(() => {
         setUploadInProgress(false);
       }, 5000);
@@ -239,11 +229,7 @@ const GoogleDrive = () => {
       </Tooltip>
       <div className="selected-photos">
         {selectedFiles.map((file, index) => (
-          <img
-            key={index}
-            src={file.embedUrl} // Use the embedUrl property instead of url
-            alt={`Selected File ${index}`}
-          />
+          <img key={index} src={file.embedUrl} alt={`Selected File ${index}`} />
         ))}
       </div>
     </>
