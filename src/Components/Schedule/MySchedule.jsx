@@ -177,14 +177,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               <button className="sm:ml-2 xs:ml-1 mt-1">
                 <input
                   type="checkbox"
-                  className="h-7 w-7 "
+                  className="h-7 w-7"
                   checked={selectAll}
                   onChange={handleSelectAll}
                 />
               </button>
             </div>
           </div>
-          <div className="overflow-x-auto bg-white rounded-xl mt-8 shadow">
+          <div className="schedual-table bg-white rounded-xl mt-8 shadow">
             <table
               className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
               cellPadding={20}

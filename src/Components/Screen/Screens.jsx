@@ -17,7 +17,7 @@ import PropTypes from "prop-types";
 import ScreenOTPModal from "./ScreenOTPModal";
 import AssetModal from "../Assests/AssetModal";
 import { SlScreenDesktop } from "react-icons/sl";
-import { RiArrowDownSLine } from "react-icons/ri";
+import { RiArrowDownSLine, RiDeleteBin5Line } from "react-icons/ri";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { BsCollectionPlay, BsPencilSquare } from "react-icons/bs";
 import Footer from "../Footer";
@@ -25,7 +25,10 @@ import { BiFilterAlt } from "react-icons/bi";
 import { RxTimer } from "react-icons/rx";
 import { Tooltip } from "@material-tailwind/react";
 import { useUser } from "../../UserContext";
-import { SELECT_BY_USER_SCREENDETAIL } from "../../Pages/Api";
+import {
+  DELETE_SCREEN_BY_USERID,
+  SELECT_BY_USER_SCREENDETAIL,
+} from "../../Pages/Api";
 import axios from "axios";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
@@ -36,12 +39,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
-  const [checkboxChecked, setCheckboxChecked] = useState(false);
-
-  const handleCheckboxChange = (event) => {
-    setCheckboxChecked(event.target.checked);
-  };
-
   const [moreModal, setMoreModal] = useState(false);
   const [locCheckboxClick, setLocCheckboxClick] = useState(true);
   const [screenCheckboxClick, setScreenCheckboxClick] = useState(true);
@@ -79,7 +76,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     currScheduleCheckboxClick,
     tagsCheckboxClick,
   ]);
-
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [screenCheckboxes, setScreenCheckboxes] = useState({});
   const { user } = useUser();
   const userId = user ? user.userID : null;
   const [screenData, setScreenData] = useState([]);
@@ -89,11 +87,67 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         const fetchedData = response.data.data;
         setScreenData(fetchedData);
+        const initialCheckboxes = {};
+        fetchedData.forEach((screen) => {
+          initialCheckboxes[screen.screenID] = false;
+        });
+        setScreenCheckboxes(initialCheckboxes);
       })
       .catch((error) => {
         console.log(error);
       });
-  });
+  }, [userId]);
+
+  const handleScreenCheckboxChange = (screenID) => {
+    const updatedCheckboxes = { ...screenCheckboxes };
+    updatedCheckboxes[screenID] = !updatedCheckboxes[screenID];
+    setScreenCheckboxes(updatedCheckboxes);
+
+    // Check if any individual screen checkbox is unchecked
+    const allChecked = Object.values(updatedCheckboxes).every(
+      (isChecked) => isChecked
+    );
+
+    setSelectAllChecked(allChecked);
+  };
+
+  const handleSelectAllCheckboxChange = (e) => {
+    const checked = e.target.checked;
+    setSelectAllChecked(checked);
+
+    // Set the state of all individual screen checkboxes
+    const updatedCheckboxes = {};
+    for (const screenID in screenCheckboxes) {
+      updatedCheckboxes[screenID] = checked;
+    }
+    setScreenCheckboxes(updatedCheckboxes);
+  };
+
+  const handleDeleteAllScreen = () => {
+    let data = JSON.stringify({
+      userID: userId,
+      operation: "DeleteUserIdScreenOtp",
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: DELETE_SCREEN_BY_USERID,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then(() => {
+        setScreenData([]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -292,6 +346,24 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 )}
               </div>
               <Tooltip
+                content="Delete"
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-5"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
+                <button
+                  type="button"
+                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
+                  onClick={handleDeleteAllScreen}
+                  style={{ display: selectAllChecked ? "block" : "none" }}
+                >
+                  <RiDeleteBin5Line className="p-1 text-3xl hover:text-white text-primary" />
+                </button>
+              </Tooltip>
+              <Tooltip
                 content="Select All Screen"
                 placement="bottom-end"
                 className=" bg-SlateBlue text-white z-10 ml-5"
@@ -301,7 +373,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 }}
               >
                 <button type="button">
-                  <input type="checkbox" className="h-7 w-7" />
+                  <input
+                    type="checkbox"
+                    className="h-7 w-7"
+                    onChange={handleSelectAllCheckboxChange}
+                    checked={selectAllChecked}
+                  />
                 </button>
               </Tooltip>
             </div>
@@ -383,8 +460,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <input
                           type="checkbox"
                           className="mr-3"
-                          checked={checkboxChecked}
-                          onChange={handleCheckboxChange}
+                          onChange={() =>
+                            handleScreenCheckboxChange(screen.screenID)
+                          }
+                          checked={screenCheckboxes[screen.screenID]}
                         />
 
                         <div>
@@ -416,7 +495,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         >
-                          Asset Name
+                          Asset
                           <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
                         {showAssetModal ? (
