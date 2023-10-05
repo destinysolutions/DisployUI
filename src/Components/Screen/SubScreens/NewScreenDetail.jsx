@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import {
   GET_ALL_FILES,
+  GET_ALL_SCHEDULE,
   GET_ALL_SCREEN_ORIENTATION,
   GET_ALL_SCREEN_RESOLUTION,
   GET_SCREEN_TYPE,
@@ -23,10 +24,14 @@ import {
   AiOutlineSearch,
 } from "react-icons/ai";
 import { IoBarChartSharp } from "react-icons/io5";
-import { RiPlayListFill } from "react-icons/ri";
+import { RiComputerLine, RiPlayListFill } from "react-icons/ri";
 import { BiAnchor } from "react-icons/bi";
 import moment from "moment";
-import { BsFillInfoCircleFill } from "react-icons/bs";
+import { BsFillInfoCircleFill, BsTags } from "react-icons/bs";
+import { HiDotsVertical } from "react-icons/hi";
+import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
+import { VscCalendar } from "react-icons/vsc";
+
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
@@ -68,6 +73,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const [showAssetModal, setShowAssetModal] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
   const location = useLocation();
   const otpData = location?.state?.otpData || null;
   const message = location?.state?.message || null;
@@ -76,9 +82,13 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   const [assetData, setAssetData] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState("");
+  const [selectedSchedule, setSelectedSchedule] = useState({
+    scheduleName: "",
+  });
   const [assetPreview, setAssetPreview] = useState("");
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
   const [screenName, setScreenName] = useState("");
+  const [scheduleData, setScheduleData] = useState([]);
 
   useEffect(() => {
     // Define an array of axios requests
@@ -88,6 +98,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       axios.get(GET_ALL_SCREEN_ORIENTATION),
       axios.get(GET_ALL_SCREEN_RESOLUTION),
       axios.get(GET_TIMEZONE),
+      axios.get(GET_ALL_SCHEDULE),
     ];
 
     // Use Promise.all to send all requests concurrently
@@ -99,6 +110,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           screenOrientationResponse,
           screenResolutionResponse,
           timezoneResponse,
+          scheduleResponse,
         ] = responses;
 
         // Process each response and set state accordingly
@@ -116,6 +128,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         setScreenOrientation(screenOrientationResponse.data.data);
         setScreenResolution(screenResolutionResponse.data.data);
         setTimezone(timezoneResponse.data.data);
+        setScheduleData(scheduleResponse.data.data);
       })
       .catch((error) => {
         console.error(error);
@@ -125,6 +138,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const handleAssetAdd = (asset) => {
     setSelectedAsset(asset);
     setAssetPreview(asset);
+  };
+  const handleScheduleAdd = (schedule) => {
+    setSelectedSchedule(schedule);
   };
 
   const [searchAsset, setSearchAsset] = useState("");
@@ -146,16 +162,13 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenNameError, setScreenNameError] = useState("");
   const handleScreenDetail = () => {
     if (screenName.trim() === "") {
-      // If screenName is empty, set an error message
       setScreenNameError("Screen name is required");
     } else {
-      // If screenName is not empty, clear any previous error message
       setScreenNameError("");
 
-      // Continue with the API call or other logic here
       let getScreenID = otpData.map((item) => item.ScreenID);
       let screen_id = getScreenID[0];
-
+      let moduleID = selectedAsset.id || selectedSchedule.scheduleId;
       let data = JSON.stringify({
         screenID: screen_id,
         screenOrientation: selectScreenOrientation,
@@ -164,7 +177,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         screenType: selectedScreenTypeOption,
         tags: tagName,
         screenName: screenName,
-        moduleID: selectedAsset.id,
+        moduleID: moduleID,
         operation: "Update",
       });
 
@@ -182,7 +195,11 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         .request(config)
         .then((response) => {
           if (response.data.status === 200) {
-            history("/screens");
+            history("/screens", {
+              state: {
+                screenData: response.data.data.model,
+              },
+            });
           }
         })
         .catch((error) => {
@@ -339,7 +356,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       <td>
                         <div className="border border-[#D5E3FF] rounded w-full px-3 py-2">
                           {getScreenResolution.map((option) => (
-                            <>
+                            <div key={option.screenResolutionId}>
                               <input
                                 type="radio"
                                 value={option.screenResolutionId}
@@ -357,7 +374,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
                                 {option.screenResolutionName}
                               </label>
-                            </>
+                            </div>
                           ))}
                         </div>
                       </td>
@@ -427,7 +444,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     )}
                     <tr>
                       <td>
-                        {showAssetModal ? (
+                        {showAssetModal && (
                           <>
                             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
                               <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
@@ -755,10 +772,192 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               </div>
                             </div>
                           </>
-                        ) : null}
+                        )}
                       </td>
                     </tr>
-                    {selectedScreenTypeOption === "Playlist" && (
+
+                    {selectedScreenTypeOption === "2" && (
+                      <>
+                        <tr>
+                          <td></td>
+                          <td>
+                            <div className="flex">
+                              <input
+                                className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                value={selectedSchedule.scheduleName}
+                                placeholder="Set Schedule"
+                                onChange={(e) =>
+                                  setSelectedSchedule({
+                                    ...selectedSchedule,
+                                    scheduleName: e.target.value,
+                                  })
+                                }
+                              />
+                              <div className="flex items-center ml-5">
+                                <span className="bg-lightgray p-2 rounded cursor-pointer">
+                                  <GrScheduleNew
+                                    size={20}
+                                    onClick={() => setShowScheduleModal(true)}
+                                  />
+                                </span>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </>
+                    )}
+                    <tr>
+                      <td>
+                        {showScheduleModal && (
+                          <>
+                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                              <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                  <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                                    <div className="flex items-center">
+                                      <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                        Set Schedule
+                                      </h3>
+                                    </div>
+                                    <button
+                                      className="p-1 text-xl"
+                                      onClick={() =>
+                                        setShowScheduleModal(false)
+                                      }
+                                    >
+                                      <AiOutlineCloseCircle className="text-2xl" />
+                                    </button>
+                                  </div>
+                                  <div className="overflow-x-auto mt-8 px-5">
+                                    <table
+                                      className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+                                      cellPadding={20}
+                                    >
+                                      <thead>
+                                        <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                                          <th className="font-medium text-[14px]">
+                                            <div className="flex items-center">
+                                              <TbCalendarTime className="mr-2 text-xl" />
+                                              Schedule Name
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className="flex items-center">
+                                              <TbCalendarTime className="mr-2 text-xl" />
+                                              Time Zones
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <VscCalendar className="mr-2 text-xl" />
+                                              Date Added
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <TbCalendarStats className="mr-2 text-xl" />
+                                              start date
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <TbCalendarStats className="mr-2 text-xl" />
+                                              End date
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <RiComputerLine className="mr-2 text-xl" />
+                                              screens Assigned
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className="flex  items-center justify-center mx-auto">
+                                              <BsTags className="mr-2 text-xl" />
+                                              Tags
+                                            </div>
+                                          </th>
+                                          <th></th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {scheduleData.map((schedule) => (
+                                          <tr
+                                            className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                            key={schedule.scheduleId}
+                                          >
+                                            <td className="flex items-center ">
+                                              <input
+                                                type="checkbox"
+                                                className="mr-3"
+                                                onChange={() =>
+                                                  handleScheduleAdd(schedule)
+                                                }
+                                              />
+                                              <div>
+                                                <div>
+                                                  <Link to="/screensplayer">
+                                                    {schedule.scheduleName}
+                                                  </Link>
+                                                </div>
+                                              </div>
+                                            </td>
+                                            <td className="text-center">
+                                              {schedule.timeZoneName}
+                                            </td>
+                                            <td className="text-center">
+                                              {moment(
+                                                schedule.createdDate
+                                              ).format("YYYY-MM-DD")}
+                                            </td>
+                                            <td className="text-center">
+                                              {moment(
+                                                schedule.startDate
+                                              ).format("YYYY-MM-DD")}
+                                            </td>
+
+                                            <td className="text-center">
+                                              {moment(schedule.endDate).format(
+                                                "YYYY-MM-DD"
+                                              )}
+                                            </td>
+                                            <td className="p-2 text-center">
+                                              {schedule.screenAssigned}
+                                            </td>
+                                            <td className="p-2 text-center">
+                                              {schedule.tags}
+                                            </td>
+                                            <td className="text-center">
+                                              <Link to="/myschedule">
+                                                <button className="ml-3 relative">
+                                                  <HiDotsVertical />
+                                                </button>
+                                              </Link>
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
+
+                                  <div className="py-4 flex justify-center">
+                                    <button
+                                      onClick={() =>
+                                        setShowScheduleModal(false)
+                                      }
+                                      className="border-2 border-primary px-5 py-2 rounded-full ml-3"
+                                    >
+                                      Save
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </td>
+                    </tr>
+                    {selectedScreenTypeOption === "3" && (
                       <>
                         <tr>
                           <td></td>
@@ -826,26 +1025,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </tr>
                       </>
                     )}
-                    {selectedScreenTypeOption === "Schedule" && (
-                      <>
-                        <tr>
-                          <td></td>
-                          <td>
-                            <div className="flex">
-                              <span className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                                Set a schedule
-                              </span>
-                              <div className="flex items-center ml-5">
-                                <span className="bg-lightgray p-2 rounded">
-                                  <GrScheduleNew size={20} />
-                                </span>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      </>
-                    )}
-
                     <tr>
                       <td>
                         <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">

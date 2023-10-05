@@ -23,7 +23,6 @@ import {
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import SaveAssignScreenModal from "./SaveAssignScreenModal";
-import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);

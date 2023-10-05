@@ -26,7 +26,7 @@ const GoogleDrive = () => {
     return new Promise((resolve, reject) => {
       const response = {
         accessToken:
-          "ya29.a0AfB_byDTsDaewpGQNRvwfpVMBzTQQamCihki_xbllX4fl-SFiTLwzlReuSs7g7AHMteUJPWoR9pI7_RWnmS1wGF3f-7YAm3lSf-ER-3ND_y-W0hLXpiDKinqqqF8Oev1kwIHAcBnBGPHxq6vwrdw3rJSuGrBVRqRBZJ-aCgYKAQcSARMSFQGOcNnCp4DlBDi_WkVw1LWePi6qWA0171",
+          "ya29.a0AfB_byB2xrvJ54edRebVSPBG69GMJsYeHIxiJQiZqFXW9XQVdoAxDxeyO7y47NBxYlh6o8kllVVcvy3wlJBFmpNJR4Fqfea5K_SaLCxsz8lEoB3JHlHKam6nIbARroiyZrLfUAJzKzXm7eS2mM3FY2LwRYYSENvafC1xaCgYKAdASARMSFQGOcNnCpoqYGSaQC1aLtMgbkmR8nw0171",
       };
       resolve(response);
     });
@@ -61,7 +61,7 @@ const GoogleDrive = () => {
       developerKey: "AIzaSyCna-XLPlf5ouSNMndiYCajpqZpZutmG-8", // Your developer key
       viewId: "DOCS",
       token:
-        "ya29.a0AfB_byDhxb3qQL0z-IX_EO23gHdixl1MdeqvARvEs8ZOKyBv7N4ZkaSkH8ZDTtz5_0p1-N7pfN8gP0JIYQgRCuYhf2ZiTt4iDv3lWLRDKDeD0698x4I_go4s3RxY82R4WCqTZkp9YBX_MOT93QHwfKH_vdrgl69iUdF7aCgYKAR8SARMSFQGOcNnCtq9UF4QRWgquhNFijJXuyQ0171",
+        "ya29.a0AfB_byB2xrvJ54edRebVSPBG69GMJsYeHIxiJQiZqFXW9XQVdoAxDxeyO7y47NBxYlh6o8kllVVcvy3wlJBFmpNJR4Fqfea5K_SaLCxsz8lEoB3JHlHKam6nIbARroiyZrLfUAJzKzXm7eS2mM3FY2LwRYYSENvafC1xaCgYKAdASARMSFQGOcNnCpoqYGSaQC1aLtMgbkmR8nw0171",
       showUploadView: true,
       showUploadFolders: true,
       supportDrives: true,

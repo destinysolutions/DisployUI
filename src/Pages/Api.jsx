@@ -15,6 +15,8 @@ export const GET_SELECT_BY_STATE =
 export const GET_SELECT_BY_CITY =
   "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByCity";
 
+export const DELETE_SCREEN_BY_USERID =
+  "https://disployapi.thedestinysolutions.com/api/NewScreen/UpdateNewScreen";
 export const UPDATE_NEW_SCREEN =
   "https://disployapi.thedestinysolutions.com/api/NewScreen/UpdateNewScreen";
 export const GET_SCREEN_TYPE =
@@ -27,6 +29,7 @@ export const GET_ALL_SCREEN_ORIENTATION =
   "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllScreenOrientation";
 export const GET_TIMEZONE =
   "https://disployapi.thedestinysolutions.com/api/EventMaster/GetAllTimeZone";
+
 export const GET_ALL_FILES =
   "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/GetAll";
 export const ALL_FILES_UPLOAD =

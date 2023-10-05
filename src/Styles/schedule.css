@@ -76,3 +76,14 @@
   min-height: calc(100vh - 200px);
   max-height: calc(100vh - 200px);
 }
+.rbc-agenda-view {
+  display: block !important;
+  flex-direction: inherit !important;
+
+  overflow: inherit !important;
+}
+@media (max-width: 992px) {
+  .schedual-table {
+    overflow-x: auto !important ;
+  }
+}
