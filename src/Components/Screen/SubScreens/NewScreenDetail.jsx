@@ -32,7 +32,6 @@ import { HiDotsVertical } from "react-icons/hi";
 import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
 import { VscCalendar } from "react-icons/vsc";
 
-
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,

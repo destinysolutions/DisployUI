@@ -19,6 +19,7 @@ import { ADD_SCHEDULE, GET_ALL_SCHEDULE } from "../../Pages/Api";
 import { useEffect } from "react";
 import axios from "axios";
 import SaveAssignScreenModal from "./SaveAssignScreenModal";
+import moment from "moment";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //for action popup
@@ -39,11 +40,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   }, []);
-
-  function formatDate(date) {
-    const formattedDate = date.toLocaleDateString();
-    return formattedDate;
-  }
 
   // Initialize state for the "Select All" checkbox
   const [selectAll, setSelectAll] = useState(false);
@@ -252,23 +248,19 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         }
                       />
                       <div>
-                        <div>
-                          <Link to="/screensplayer">
-                            {schedule.scheduleName}
-                          </Link>
-                        </div>
+                        <div>{schedule.scheduleName}</div>
                       </div>
                     </td>
                     <td className="text-center">{schedule.timeZoneName}</td>
                     <td className="text-center">
-                      {formatDate(new Date(schedule.createdDate))}
+                      {moment(schedule.createdDate).format("YYYY-MM-DD")}
                     </td>
                     <td className="text-center">
-                      {formatDate(new Date(schedule.startDate))}
+                      {moment(schedule.startDate).format("YYYY-MM-DD")}
                     </td>
 
                     <td className="text-center">
-                      {formatDate(new Date(schedule.endDate))}
+                      {moment(schedule.endDate).format("YYYY-MM-DD")}
                     </td>
                     <td className="p-2 text-center">
                       {schedule.screenAssigned}
