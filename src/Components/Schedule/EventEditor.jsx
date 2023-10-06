@@ -44,27 +44,15 @@ const EventEditor = ({
   const [selectedRepeatDay, setSelectedRepeatDay] = useState("");
   const [previousSetedRepeatDay, setPreviousSetedRepeatDay] = useState("");
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
-  console.log(previousSetedRepeatDay, "previousSetedRepeatDay");
+
   const handleOpenRepeatSettings = () => {
     setShowRepeatSettings(true);
-  };
-
-  // Helper functions to format dates and times
-  const formatDate = (date) => {
-    return date.toISOString().slice(0, 10);
-  };
-
-  const formatTime = (date) => {
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
   };
 
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
   useEffect(() => {
     if (isOpen) {
       if (selectedEvent) {
-        console.log(selectedEvent.repeatDay, "selectedEvent");
         let assetId;
         if (selectedEvent?.asset?.id != undefined) {
           assetId = selectedEvent?.asset?.id;
@@ -95,10 +83,10 @@ const EventEditor = ({
         }
         setTitle(selectedEvent.title);
         setSelectedColor(selectedEvent.color);
-        setEditedStartDate(formatDate(selectedEvent.start));
-        setEditedStartTime(formatTime(selectedEvent.start));
-        setEditedEndDate(formatDate(selectedEvent.end));
-        setEditedEndTime(formatTime(selectedEvent.end));
+        setEditedStartDate(moment(selectedEvent.start).format("YYYY-MM-DD"));
+        setEditedStartTime(moment(selectedEvent.start).format("HH:MM"));
+        setEditedEndDate(moment(selectedEvent.end).format("YYYY-MM-DD"));
+        setEditedEndTime(moment(selectedEvent.end).format("HH:MM"));
       } else if (selectedSlot) {
         setSelectedRepeatDay("");
         setSelectedAsset(null);
@@ -112,7 +100,6 @@ const EventEditor = ({
       }
     }
   }, [isOpen, selectedEvent, selectedSlot, allAssets]);
-  // console.log(selectedRepeatDay, "previousSelectedDay ");
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
@@ -149,7 +136,7 @@ const EventEditor = ({
     endDateObj.setHours(startDateObj.getHours() + 1); // You can adjust this as needed
 
     // Format the end date to match your desired format
-    const formattedEndDate = formatDate(endDateObj);
+    const formattedEndDate = moment(endDateObj).format("YYYY-MM-DD");
 
     return formattedEndDate;
   };
@@ -619,158 +606,59 @@ const EventEditor = ({
                 </div>
               </div>
             </div>
-            {showRepeatSettings ? (
-              <div className="relative md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0 bg-white shadow-2xl p-4">
-                <div className="backbtn absolute top-[5px] left-[-10px] ">
-                  <button
-                    className="border border-SlateBlue rounded-full p-1 bg-SlateBlue"
-                    onClick={() => setShowRepeatSettings(false)}
-                  >
-                    <MdOutlineArrowBackIosNew className="text-white" />
-                  </button>
-                </div>
-                <div className="mt-3">
-                  <div className="">
-                    <label>Start Date:</label>
-                    <div className="mt-1">
-                      <input
-                        type="date"
-                        value={editedStartDate}
-                        onChange={handleStartDateChange}
-                        className="bg-lightgray rounded-full px-3 py-2 w-full"
-                      />
-                    </div>
-                  </div>
-                  <div className=" mt-5">
-                    <label>End Date:</label>
-                    <div className="mt-1">
-                      <input
-                        type="date"
-                        value={editedEndDate}
-                        onChange={handleEndDateChange}
-                        className="bg-lightgray rounded-full px-3 py-2 w-full"
-                      />
-                    </div>
-                  </div>
-                </div>
 
-                <div className="mt-5 text-black font-medium text-lg">
-                  <label>Repeating {countAllDaysInRange()} Day(s)</label>
-                </div>
+            <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0">
+              <div className="bg-white shadow-2xl">
+                <div className="p-3">
+                  <div>
+                    <ul className="border-2 border-lightgray rounded">
+                      <li className="border-b-2 border-lightgray p-3">
+                        <h3>Title :</h3>
+                        <div className="mt-2">
+                          <input
+                            type="text"
+                            value={title}
+                            onChange={handleTitleChange}
+                            placeholder="Enter Title"
+                            className="bg-lightgray rounded-full px-3 py-2 w-full"
+                          />
+                        </div>
+                      </li>
 
-                <div className="lg:flex md:block sm:block xs:block items-center mt-5 lg:flex-nowrap md:flex-wrap sm:flex-wrap">
-                  <div className="mr-2 w-full">
-                    <label className="ml-2">Start Time</label>
-                    <div>
-                      <input
-                        type="time"
-                        value={editedStartTime}
-                        onChange={handleStartTimeChange}
-                        className="bg-lightgray rounded-full px-3 py-2 w-full"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="w-full">
-                    <label className="ml-2">End Time</label>
-                    <div>
-                      <input
-                        type="time"
-                        value={editedEndTime}
-                        onChange={handleEndTimeChange}
-                        className="bg-lightgray rounded-full px-3 py-2 w-full"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-5 text-black font-medium text-lg mr-2">
-                  <input
-                    type="checkbox"
-                    checked={selectAllDays}
-                    onChange={handleCheckboxChange}
-                  />
-                  <label className="ml-3">Repeat for All Day</label>
-                </div>
-
-                <div>
-                  {buttons.map((label, index) => (
-                    <button
-                      // className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
-                      //   (selectAllDays || selectedDays[index]) &&
-                      //   isDayInRange(index) &&
-                      //   previousSetedRepeatDay
-                      //     ? "bg-SlateBlue border-white"
-                      //     : ""
-                      // }`}
-                      className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full 
-                      
-                      ${
-                        (selectAllDays || selectedDays[index]) &&
-                        isDayInRange(index)
-                          ? "bg-SlateBlue border-white"
-                          : ""
-                      } ${
-                        previousSetedRepeatDay.includes(label)
-                          ? "bg-SlateBlue border-white"
-                          : ""
-                      }`}
-                      key={index}
-                      disabled={!isDayInRange(index)}
-                      onClick={() => handleDayButtonClick(index)}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0">
-                <div className="bg-white shadow-2xl">
-                  <div className="p-3">
-                    <div>
-                      <ul className="border-2 border-lightgray rounded">
-                        <li className="border-b-2 border-lightgray p-3">
-                          <h3>Title :</h3>
-                          <div className="mt-2">
-                            <input
-                              type="text"
-                              value={title}
-                              onChange={handleTitleChange}
-                              placeholder="Enter Title"
-                              className="bg-lightgray rounded-full px-3 py-2 w-full"
-                            />
+                      <li className="border-b-2 border-lightgray p-3">
+                        <h3>Asset :</h3>
+                        <div className="mt-2 ">
+                          <div className="bg-lightgray rounded-full px-4 py-2 w-full overflow-hidden whitespace-nowrap text-ellipsis">
+                            {selectedAsset ? selectedAsset.name : "Set Media"}
                           </div>
-                        </li>
-
-                        <li className="border-b-2 border-lightgray p-3">
-                          <h3>Asset :</h3>
-                          <div className="mt-2 ">
-                            <div className="bg-lightgray rounded-full px-4 py-2 w-full overflow-hidden whitespace-nowrap text-ellipsis">
-                              {selectedAsset ? selectedAsset.name : "Set Media"}
-                            </div>
-                            <div className="flex items-center justify-center mt-4">
-                              <button
-                                className="border border-primary rounded-full px-4 py-1 "
-                                onClick={() => setAssetPreviewPopup(true)}
-                              >
-                                Preview
-                              </button>
-                            </div>
+                          <div className="flex items-center justify-center mt-4">
+                            <button
+                              className="border border-primary rounded-full px-4 py-1 "
+                              onClick={() => setAssetPreviewPopup(true)}
+                            >
+                              Preview
+                            </button>
                           </div>
-                        </li>
-                      </ul>
-                    </div>
+                        </div>
+                      </li>
+                    </ul>
                   </div>
-
-                  <div className="border-b-2 border-lightgray"></div>
-                  <div className="p-3">
-                    <div className="mb-2">Schedule Date time</div>
-                    <div>
-                      <ul className="border-2 border-lightgray rounded">
-                        <li className="border-b-2 border-lightgray p-3">
-                          <h3>Start Date:</h3>
-                          <div className="mt-2">
+                </div>
+                {showRepeatSettings ? (
+                  <>
+                    <div className="relative md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0  p-4">
+                      <div className="backbtn absolute top-[5px] left-[-10px] ">
+                        <button
+                          className="border border-SlateBlue rounded-full p-1 bg-SlateBlue"
+                          onClick={() => setShowRepeatSettings(false)}
+                        >
+                          <MdOutlineArrowBackIosNew className="text-white" />
+                        </button>
+                      </div>
+                      <div className="mt-3">
+                        <div className="">
+                          <label>Start Date:</label>
+                          <div className="mt-1">
                             <input
                               type="date"
                               value={editedStartDate}
@@ -778,16 +666,28 @@ const EventEditor = ({
                               className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
                           </div>
-                        </li>
-                        <li className="border-b-2 border-lightgray p-3">
-                          <h3>End Date:</h3>
-                          <div className="mt-2 bg-lightgray rounded-full px-3 py-2 w-full">
-                            {moment(editedStartDate).format("DD-MM-YYYY")}
+                        </div>
+                        <div className=" mt-5">
+                          <label>End Date:</label>
+                          <div className="mt-1">
+                            <input
+                              type="date"
+                              value={editedEndDate}
+                              onChange={handleEndDateChange}
+                              className="bg-lightgray rounded-full px-3 py-2 w-full"
+                            />
                           </div>
-                        </li>
-                        <li className="border-b-2 border-lightgray p-3">
-                          <h3>Start Time:</h3>
-                          <div className="mt-2">
+                        </div>
+                      </div>
+
+                      <div className="mt-5 text-black font-medium text-lg">
+                        <label>Repeating {countAllDaysInRange()} Day(s)</label>
+                      </div>
+
+                      <div className="lg:flex md:block sm:block xs:block items-center mt-5 lg:flex-nowrap md:flex-wrap sm:flex-wrap">
+                        <div className="mr-2 w-full">
+                          <label className="ml-2">Start Time</label>
+                          <div>
                             <input
                               type="time"
                               value={editedStartTime}
@@ -795,10 +695,11 @@ const EventEditor = ({
                               className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
                           </div>
-                        </li>
-                        <li className=" p-3">
-                          <h3>End Time:</h3>
-                          <div className="mt-2">
+                        </div>
+
+                        <div className="w-full">
+                          <label className="ml-2">End Time</label>
+                          <div>
                             <input
                               type="time"
                               value={editedEndTime}
@@ -806,23 +707,115 @@ const EventEditor = ({
                               className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
                           </div>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="p-3 flex justify-between items-center">
-                      <div>Repeat Multiple Day</div>
+                        </div>
+                      </div>
+
+                      <div className="mt-5 text-black font-medium text-lg mr-2">
+                        <input
+                          type="checkbox"
+                          checked={selectAllDays}
+                          onChange={handleCheckboxChange}
+                        />
+                        <label className="ml-3">Repeat for All Day</label>
+                      </div>
 
                       <div>
-                        <button
-                          onClick={handleOpenRepeatSettings}
-                          className="border border-primary rounded-full px-4 py-1"
-                        >
-                          Repeat
-                        </button>
+                        {buttons.map((label, index) => (
+                          <button
+                            // className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
+                            //   (selectAllDays || selectedDays[index]) &&
+                            //   isDayInRange(index) &&
+                            //   previousSetedRepeatDay
+                            //     ? "bg-SlateBlue border-white"
+                            //     : ""
+                            // }`}
+                            className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full 
+                      
+                      ${
+                        (selectAllDays || selectedDays[index]) &&
+                        isDayInRange(index)
+                          ? "bg-SlateBlue border-white"
+                          : ""
+                      } ${
+                              previousSetedRepeatDay.includes(label)
+                                ? "bg-SlateBlue border-white"
+                                : ""
+                            }`}
+                            key={index}
+                            disabled={!isDayInRange(index)}
+                            onClick={() => handleDayButtonClick(index)}
+                          >
+                            {label}
+                          </button>
+                        ))}
                       </div>
                     </div>
-                  </div>
-                </div>
+                    <div className="border-b-2 border-lightgray mt-2"></div>
+                  </>
+                ) : (
+                  <>
+                    <div className="border-b-2 border-lightgray mt-2"></div>
+                    <div className="p-3">
+                      <div className="mb-2">Schedule Date time</div>
+                      <div>
+                        <ul className="border-2 border-lightgray rounded">
+                          <li className="border-b-2 border-lightgray p-3">
+                            <h3>Start Date:</h3>
+                            <div className="mt-2">
+                              <input
+                                type="date"
+                                value={editedStartDate}
+                                onChange={handleStartDateChange}
+                                className="bg-lightgray rounded-full px-3 py-2 w-full"
+                              />
+                            </div>
+                          </li>
+                          <li className="border-b-2 border-lightgray p-3">
+                            <h3>End Date:</h3>
+                            <div className="mt-2 bg-lightgray rounded-full px-3 py-2 w-full">
+                              {moment(editedStartDate).format("DD-MM-YYYY")}
+                            </div>
+                          </li>
+                          <li className="border-b-2 border-lightgray p-3">
+                            <h3>Start Time:</h3>
+                            <div className="mt-2">
+                              <input
+                                type="time"
+                                value={editedStartTime}
+                                onChange={handleStartTimeChange}
+                                className="bg-lightgray rounded-full px-3 py-2 w-full"
+                              />
+                            </div>
+                          </li>
+                          <li className=" p-3">
+                            <h3>End Time:</h3>
+                            <div className="mt-2">
+                              <input
+                                type="time"
+                                value={editedEndTime}
+                                onChange={handleEndTimeChange}
+                                className="bg-lightgray rounded-full px-3 py-2 w-full"
+                              />
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                      <div className="p-3 flex justify-between items-center">
+                        <div>Repeat Multiple Day</div>
+
+                        <div>
+                          <button
+                            onClick={handleOpenRepeatSettings}
+                            className="border border-primary rounded-full px-4 py-1"
+                          >
+                            Repeat
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+                <div className="border-b-2 border-lightgray"></div>
                 <div className="bg-white shadow-2xl mt-4 ">
                   <div className="p-3 w-full">
                     <h3>Select Color :</h3>
@@ -838,7 +831,7 @@ const EventEditor = ({
                   </div>
                 </div>
               </div>
-            )}
+            </div>
           </div>
           <div className="flex justify-center">
             <button
