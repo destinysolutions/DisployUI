@@ -66,10 +66,12 @@ export const FetchdataFormFolder =
 export const DeleteAllData =
   "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/DeleteAll";
 
-export const YOUTUBE_API_URL =
+export const YOUTUBE_INSTANCE_ADD_URL =
   "https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddYoutubeApp";
 export const GET_ALL_YOUTUBEDATA =
   "https://disployapi.thedestinysolutions.com/api/YoutubeApp/GetAllYoutubeApp";
+export const YOUTUBEDATA_ALL_DELETE =
+  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/DeleteAllYoutubeApp";
 
 //http://192.168.1.219
 //https://disployapi.thedestinysolutions.com
