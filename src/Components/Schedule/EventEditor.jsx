@@ -84,9 +84,9 @@ const EventEditor = ({
         setTitle(selectedEvent.title);
         setSelectedColor(selectedEvent.color);
         setEditedStartDate(moment(selectedEvent.start).format("YYYY-MM-DD"));
-        setEditedStartTime(moment(selectedEvent.start).format("HH:MM"));
+        setEditedStartTime(moment(selectedEvent.start).format("HH:mm"));
         setEditedEndDate(moment(selectedEvent.end).format("YYYY-MM-DD"));
-        setEditedEndTime(moment(selectedEvent.end).format("HH:MM"));
+        setEditedEndTime(moment(selectedEvent.end).format("HH:mm"));
       } else if (selectedSlot) {
         setSelectedRepeatDay("");
         setSelectedAsset(null);
@@ -94,9 +94,9 @@ const EventEditor = ({
         setTitle("");
         setSelectedColor("");
         setEditedStartDate(moment(selectedSlot.start).format("YYYY-MM-DD"));
-        setEditedStartTime(moment(selectedSlot.start).format("HH:MM"));
+        setEditedStartTime(moment(selectedSlot.start).format("HH:mm"));
         setEditedEndDate(moment(selectedSlot.end).format("YYYY-MM-DD"));
-        setEditedEndTime(moment(selectedSlot.end).format("HH:MM"));
+        setEditedEndTime(moment(selectedSlot.end).format("HH:mm"));
       }
     }
   }, [isOpen, selectedEvent, selectedSlot, allAssets]);
@@ -219,6 +219,34 @@ const EventEditor = ({
   //     }
   //   }
   // };
+  // const handleDayButtonClick = (index) => {
+  //   if (isDayInRange(index)) {
+  //     const newSelectedDays = [...selectedDays];
+  //     newSelectedDays[index] = !selectedDays[index];
+
+  //     // Check if all individual days are selected, then check the "Repeat for All Day" checkbox.
+  //     const newSelectAllDays = newSelectedDays.every((day) => day === true);
+
+  //     setSelectedDays(newSelectedDays);
+  //     setSelectAllDays(newSelectAllDays);
+
+  //     // Preserve the previously selected repeat days
+  //     let newPreviousSetedRepeatDay = [...previousSetedRepeatDay];
+  //     if (newSelectedDays[index]) {
+  //       newPreviousSetedRepeatDay.push(buttons[index]);
+  //     } else {
+  //       const removeIndex = newPreviousSetedRepeatDay.indexOf(buttons[index]);
+  //       if (removeIndex !== -1) {
+  //         newPreviousSetedRepeatDay.splice(removeIndex, 1);
+  //       }
+  //     }
+  //     if (newSelectAllDays) {
+  //       newPreviousSetedRepeatDay = [];
+  //     }
+
+  //     setPreviousSetedRepeatDay(newPreviousSetedRepeatDay);
+  //   }
+  // };
   const handleDayButtonClick = (index) => {
     if (isDayInRange(index)) {
       const newSelectedDays = [...selectedDays];
@@ -230,18 +258,12 @@ const EventEditor = ({
       setSelectedDays(newSelectedDays);
       setSelectAllDays(newSelectAllDays);
 
-      // Preserve the previously selected repeat days
-      let newPreviousSetedRepeatDay = [...previousSetedRepeatDay];
-      if (newSelectedDays[index]) {
-        newPreviousSetedRepeatDay.push(buttons[index]);
-      } else {
-        const removeIndex = newPreviousSetedRepeatDay.indexOf(buttons[index]);
-        if (removeIndex !== -1) {
-          newPreviousSetedRepeatDay.splice(removeIndex, 1);
+      // Update previousSetedRepeatDay based on the selected days
+      let newPreviousSetedRepeatDay = [];
+      for (let i = 0; i < newSelectedDays.length; i++) {
+        if (newSelectedDays[i]) {
+          newPreviousSetedRepeatDay.push(buttons[i]);
         }
-      }
-      if (newSelectAllDays) {
-        newPreviousSetedRepeatDay = [];
       }
 
       setPreviousSetedRepeatDay(newPreviousSetedRepeatDay);
@@ -729,15 +751,13 @@ const EventEditor = ({
                             //     ? "bg-SlateBlue border-white"
                             //     : ""
                             // }`}
-                            className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full 
-                      
-                      ${
-                        (selectAllDays || selectedDays[index]) &&
-                        isDayInRange(index)
-                          ? "bg-SlateBlue border-white"
-                          : ""
-                      } ${
-                              previousSetedRepeatDay.includes(label)
+                            className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
+                              (selectAllDays || selectedDays[index]) &&
+                              isDayInRange(index)
+                                ? "bg-SlateBlue border-white"
+                                : ""
+                            } ${
+                              previousSetedRepeatDay.includes(label) // Check if label is in previousSetedRepeatDay
                                 ? "bg-SlateBlue border-white"
                                 : ""
                             }`}

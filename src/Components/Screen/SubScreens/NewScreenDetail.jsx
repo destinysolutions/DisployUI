@@ -80,7 +80,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   const [assetData, setAssetData] = useState([]);
-  const [selectedAsset, setSelectedAsset] = useState("");
+  const [selectedAsset, setSelectedAsset] = useState({ name: "" });
   const [selectedSchedule, setSelectedSchedule] = useState({
     scheduleName: "",
   });
@@ -412,6 +412,12 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                               value={selectedAsset.name}
                               placeholder="Asset"
+                              onChange={(e) =>
+                                setSelectedAsset({
+                                  ...selectedAsset,
+                                  name: e.target.value,
+                                })
+                              }
                             />
 
                             {selectedAsset.name ? null : (

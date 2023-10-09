@@ -143,6 +143,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then(() => {
         setScreenData([]);
+        setSelectAllChecked(false);
+        setScreenCheckboxes({});
       })
       .catch((error) => {
         console.log(error);
