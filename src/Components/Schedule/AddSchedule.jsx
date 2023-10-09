@@ -142,6 +142,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Function to handle event drag and drop
   const handleEventDrop = ({ event, start, end }) => {
+    console.log(event, "event");
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
@@ -162,6 +163,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Function to handle event resize
   const handleEventResize = ({ event, start, end }) => {
+  
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
@@ -201,7 +203,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const handleSaveEvent = async (eventId, eventData) => {
+  const handleSaveEvent = (eventId, eventData) => {
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
@@ -242,46 +244,50 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       data: data,
     };
 
-    try {
-      const response = await axios.request(config);
-      console.log(response.data, "response");
-      const fetchedData = response.data.data.eventTables;
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data, "response");
+        const fetchedData = response.data.data.eventTables;
 
-      // Use Promise.all to process and update all repeat day events concurrently
-      await Promise.all(
-        fetchedData.map(async (item) => {
-          let updatedEvent = {
-            id: item.eventId,
-            title: item.title,
-            start: new Date(item.cStartDate),
-            end: new Date(item.cEndDate),
-            color: item.color,
-            repeatDays: item.repeatDay,
-            day: item.day,
-          };
-          console.log(updatedEvent, "updatedEvent==");
+        const updateEvent = fetchedData.map((item) => ({
+          id: item.eventId,
+          title: item.title,
+          start: new Date(item.cStartDate),
+          end: new Date(item.cEndDate),
+          color: item.color,
+          repeatDay: item.repeatDay,
+          day: item.day,
+          asset: item.asset,
+        }));
+        console.log(updateEvent, "updateEvent");
+        if (eventId) {
+          const updatedEventsMap = Object.fromEntries(
+            updateEvent.map((event) => [event.id, event])
+          );
+          const updatedMyEvents = myEvents.map((event) => {
+            const updatedEvent = updatedEventsMap[event.id];
+            return updatedEvent ? { ...event, ...updatedEvent } : event;
+          });
 
-          if (eventId) {
-            // Update existing event if it exists
-            const updatedMyEvents = myEvents.map((event) =>
-              event.id === updatedEvent.id ? updatedEvent : event
+          setEvents(updatedMyEvents);
+
+          if (selectedEvent && selectedEvent.eventId === eventId) {
+            const updatedEvent = fetchedData.find(
+              (event) => event.eventId === eventId
             );
-            console.log(updatedMyEvents, "updatemyevents");
-            setEvents(updatedMyEvents);
-            if (selectedEvent && selectedEvent.eventId === eventId) {
-              console.log(selectedEvent, "selectedEvent");
+            if (updatedEvent) {
               setSelectedEvent(updatedEvent);
             }
-          } else {
-            // Add new event to events
-            setEvents((prevEvents) => [...prevEvents, updatedEvent]);
           }
-        })
-      );
-    } catch (error) {
-      console.log(error);
-    }
-
+        } else {
+          // Add new event to events
+          setEvents((prevEvents) => [...prevEvents, ...updateEvent]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     setSelectedSlot(null);
     setSelectedEvent(null);
     setCreatePopupOpen(false);
@@ -293,7 +299,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     } else {
       setEvents([]);
     }
-  }, [getScheduleId]);
+  }, [getScheduleId, myEvents]);
 
   const handleCloseCreatePopup = () => {
     setSelectedSlot(null);

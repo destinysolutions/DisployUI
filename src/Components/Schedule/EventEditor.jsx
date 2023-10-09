@@ -4,10 +4,15 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { SketchPicker } from "react-color";
-import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
+import {
+  AiOutlineClose,
+  AiOutlineCloseCircle,
+  AiOutlineSearch,
+} from "react-icons/ai";
 import ReactModal from "react-modal";
 import { ADD_EVENT } from "../../Pages/Api";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
+import { BsFillInfoCircleFill } from "react-icons/bs";
 const EventEditor = ({
   isOpen,
   onClose,
@@ -44,7 +49,9 @@ const EventEditor = ({
   const [selectedRepeatDay, setSelectedRepeatDay] = useState("");
   const [previousSetedRepeatDay, setPreviousSetedRepeatDay] = useState("");
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
-
+  const [repeatDayMessage, setRepeatDayMessage] = useState("");
+  const [repeatDayMessageVisible, setRepeatDayMessageVisible] = useState(false);
+  const [repeatDayMessageShown, setRepeatDayMessageShown] = useState(false);
   const handleOpenRepeatSettings = () => {
     setShowRepeatSettings(true);
   };
@@ -185,68 +192,6 @@ const EventEditor = ({
     setSelectedDays(newSelectedDays);
   };
 
-  // const handleCheckboxChange = () => {
-  //   const newSelectAllDays = !selectAllDays;
-  //   setSelectAllDays(newSelectAllDays);
-
-  //   // Create an array to represent the selected days
-  //   const newSelectedDays = Array(buttons.length).fill(false);
-
-  //   if (newSelectAllDays) {
-  //     // Calculate the day index for the start date
-  //     const startDayIndex = startDate.getDay();
-
-  //     // Iterate through the date range and select the days
-  //     for (let i = 0; i <= dayDifference; i++) {
-  //       const dayIndex = (startDayIndex + i) % 7;
-  //       newSelectedDays[dayIndex] = true;
-  //     }
-  //   }
-
-  //   setSelectedDays(newSelectedDays);
-  // };
-  // const handleDayButtonClick = (index) => {
-  //   if (isDayInRange(index)) {
-  //     const newSelectedDays = [...selectedDays];
-  //     newSelectedDays[index] = !selectedDays[index];
-  //     setSelectedDays(newSelectedDays);
-
-  //     // Check if all individual days are selected, then check the "Repeat for All Day" checkbox.
-  //     if (newSelectedDays.every((day) => day === true)) {
-  //       setSelectAllDays(true);
-  //     } else {
-  //       setSelectAllDays(false);
-  //     }
-  //   }
-  // };
-  // const handleDayButtonClick = (index) => {
-  //   if (isDayInRange(index)) {
-  //     const newSelectedDays = [...selectedDays];
-  //     newSelectedDays[index] = !selectedDays[index];
-
-  //     // Check if all individual days are selected, then check the "Repeat for All Day" checkbox.
-  //     const newSelectAllDays = newSelectedDays.every((day) => day === true);
-
-  //     setSelectedDays(newSelectedDays);
-  //     setSelectAllDays(newSelectAllDays);
-
-  //     // Preserve the previously selected repeat days
-  //     let newPreviousSetedRepeatDay = [...previousSetedRepeatDay];
-  //     if (newSelectedDays[index]) {
-  //       newPreviousSetedRepeatDay.push(buttons[index]);
-  //     } else {
-  //       const removeIndex = newPreviousSetedRepeatDay.indexOf(buttons[index]);
-  //       if (removeIndex !== -1) {
-  //         newPreviousSetedRepeatDay.splice(removeIndex, 1);
-  //       }
-  //     }
-  //     if (newSelectAllDays) {
-  //       newPreviousSetedRepeatDay = [];
-  //     }
-
-  //     setPreviousSetedRepeatDay(newPreviousSetedRepeatDay);
-  //   }
-  // };
   const handleDayButtonClick = (index) => {
     if (isDayInRange(index)) {
       const newSelectedDays = [...selectedDays];
@@ -265,10 +210,22 @@ const EventEditor = ({
           newPreviousSetedRepeatDay.push(buttons[i]);
         }
       }
-
+      // Compare the old and new values of newPreviousSetedRepeatDay
+      if (
+        JSON.stringify(newPreviousSetedRepeatDay) !==
+        JSON.stringify(previousSetedRepeatDay)
+      ) {
+        if (!repeatDayMessageShown) {
+          let messge = "RepeatDay has changed!";
+          setRepeatDayMessage(messge);
+          setRepeatDayMessageVisible(true);
+          setRepeatDayMessageShown(true); // Mark the message as shown
+        }
+      }
       setPreviousSetedRepeatDay(newPreviousSetedRepeatDay);
     }
   };
+
   const handleAssetAdd = (asset) => {
     setSelectedAsset(asset);
     setAssetPreview(asset);
@@ -628,6 +585,28 @@ const EventEditor = ({
                 </div>
               </div>
             </div>
+            {repeatDayMessageVisible && (
+              <div
+                className="bg-[#fff2cd] px-5 py-3 border-b-2 border-SlateBlue shadow-md"
+                style={{
+                  position: "fixed",
+                  top: "16px",
+                  right: "20px",
+                  zIndex: "999999",
+                }}
+              >
+                <div className="flex text-SlateBlue  text-base font-normal items-center relative">
+                  <BsFillInfoCircleFill className="mr-1" />
+                  {repeatDayMessage}
+                  <button
+                    className="absolute top-[-26px] right-[-26px] bg-white rounded-full p-1 "
+                    onClick={() => setRepeatDayMessageVisible(false)}
+                  >
+                    <AiOutlineClose className="text-xl  text-SlateBlue " />
+                  </button>
+                </div>
+              </div>
+            )}
 
             <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0">
               <div className="bg-white shadow-2xl">
