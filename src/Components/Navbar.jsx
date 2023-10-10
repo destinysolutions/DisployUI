@@ -16,8 +16,7 @@ const getInitials = (name) => {
   const nameLength = nameSplit.length;
   if (nameLength > 1) {
     initials =
-      nameSplit[0].substring(0, 1) +
-      nameSplit[nameLength - 1].substring(0, 1);
+      nameSplit[0].substring(0, 1) + nameSplit[nameLength - 1].substring(0, 1);
   } else if (nameLength === 1) {
     initials = nameSplit[0].substring(0, 1);
   } else return;
@@ -33,28 +32,28 @@ const getInitials = (name) => {
 //   }
 //   return color;
 // }
-const color = '#e4aa07';
+const color = "#e4aa07";
 export const createImageFromInitials = (size, name, color) => {
   if (name == null) return;
-  name = getInitials(name)
+  name = getInitials(name);
 
-  const canvas = document.createElement('canvas')
-  const context = canvas.getContext('2d')
-  canvas.width = canvas.height = size
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+  canvas.width = canvas.height = size;
 
-  context.fillStyle = "#000"
-  context.fillRect(0, 0, size, size)
+  context.fillStyle = "#000";
+  context.fillRect(0, 0, size, size);
 
   // context.fillStyle = `${color}50`
   // context.fillRect(0, 0, size, size)
 
   context.fillStyle = color;
-  context.textBaseline = 'middle'
-  context.textAlign = 'center'
-  context.font = `${size / 1.5}px Trirong`
-  context.fillText(name, (size / 2), (size / 2))
+  context.textBaseline = "middle";
+  context.textAlign = "center";
+  context.font = `${size / 1.5}px Trirong`;
+  context.fillText(name, size / 2, size / 2);
 
-  return canvas.toDataURL()
+  return canvas.toDataURL();
 };
 
 const Navbar = () => {
@@ -65,7 +64,6 @@ const Navbar = () => {
   const { user } = useUser();
   const userId = user ? user.userID : null;
   // console.log(user);
-
 
   const handleProfileClick = (e) => {
     e.stopPropagation();
@@ -93,7 +91,8 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(All_REGISTER_URL)
+    axios
+      .get(All_REGISTER_URL)
       .then((response) => {
         const fetchedData = response.data.data;
         setRegisterdata(fetchedData);
@@ -103,7 +102,6 @@ const Navbar = () => {
       });
   }, []);
 
-
   //used for apply navigation
   const history = useNavigate();
 
@@ -111,7 +109,7 @@ const Navbar = () => {
   const handleSignOut = () => {
     localStorage.removeItem("hasSeenMessage");
     localStorage.removeItem("userdata");
-    history('/')
+    history("/");
   };
 
   // const userid = (localStorage.getItem('userId'))
@@ -186,17 +184,21 @@ const Navbar = () => {
                   className="cursor-pointer profile"
                   onClick={handleProfileClick}
                 />
-                {showProfileBox && regsiterdata.map((data) => {
-                  const imgSrc = ''
-                  return (
-                    (userId === data.userID) ?
+                {showProfileBox &&
+                  regsiterdata.map((data) => {
+                    const imgSrc = "";
+                    return userId === data.userID ? (
                       <div key={data.userID}>
                         <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
                           <div className="flex items-center space-x-3 cursor-pointer p-2">
                             <img
                               src={
                                 imgSrc.length <= 0
-                                  ? createImageFromInitials(500, data.name, color)
+                                  ? createImageFromInitials(
+                                      500,
+                                      data.firstName,
+                                      color
+                                    )
                                   : imgSrc
                               }
                               alt="profile"
@@ -204,7 +206,7 @@ const Navbar = () => {
                             />
                             <div className="">
                               <div className="text-[#7C82A7] font-semibold text-lg">
-                                {data.name}
+                                {data.firstName}
                               </div>
                               {/* <div className="text-[#ACB0C7] font-medium text-base">
                                 Lead Developer
@@ -237,9 +239,11 @@ const Navbar = () => {
                             </button>
                           </div>
                         </div>
-                      </div> : ''
-                  )
-                })}
+                      </div>
+                    ) : (
+                      ""
+                    );
+                  })}
               </div>
               {/* profile box end */}
             </div>
