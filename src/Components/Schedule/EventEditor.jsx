@@ -51,6 +51,9 @@ const EventEditor = ({
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
   const [repeatDayMessage, setRepeatDayMessage] = useState("");
   const [repeatDayMessageVisible, setRepeatDayMessageVisible] = useState(false);
+  const [emptyTitleMessage, setEmptyTitleMessage] = useState("");
+  const [emptyTitleMessageVisible, setEmptyTitleMessageVisible] =
+    useState(false);
   const [repeatDayMessageShown, setRepeatDayMessageShown] = useState(false);
   const handleOpenRepeatSettings = () => {
     setShowRepeatSettings(true);
@@ -211,17 +214,17 @@ const EventEditor = ({
         }
       }
       // Compare the old and new values of newPreviousSetedRepeatDay
-      if (
-        JSON.stringify(newPreviousSetedRepeatDay) !==
-        JSON.stringify(previousSetedRepeatDay)
-      ) {
-        if (!repeatDayMessageShown) {
-          let messge = "RepeatDay has changed!";
-          setRepeatDayMessage(messge);
-          setRepeatDayMessageVisible(true);
-          setRepeatDayMessageShown(true); // Mark the message as shown
-        }
-      }
+      // if (
+      //   JSON.stringify(newPreviousSetedRepeatDay) !==
+      //   JSON.stringify(previousSetedRepeatDay)
+      // ) {
+      //   if (!repeatDayMessageShown) {
+      //     let messge = "RepeatDay has changed!";
+      //     setRepeatDayMessage(messge);
+      //     setRepeatDayMessageVisible(true);
+      //     setRepeatDayMessageShown(true); // Mark the message as shown
+      //   }
+      // }
       setPreviousSetedRepeatDay(newPreviousSetedRepeatDay);
     }
   };
@@ -232,6 +235,13 @@ const EventEditor = ({
   };
 
   const handleSave = () => {
+    // Check if the title is empty
+    if (!title) {
+      setEmptyTitleMessage("Please enter a title for the event.");
+      setEmptyTitleMessageVisible(true);
+      return;
+    }
+
     // Convert edited dates and times to actual Date objects
     const start = new Date(editedStartDate + " " + editedStartTime);
     const end = new Date(editedEndDate + " " + editedEndTime);
@@ -286,6 +296,18 @@ const EventEditor = ({
       }
       onClose();
     }
+    // Check if the repeat days have changed and show the message
+    if (
+      !JSON.stringify(selectedEvent?.repeatDay) ===
+      JSON.stringify(selectedRepeatDay)
+    ) {
+      let message = "Repeat Day has changed!";
+      setRepeatDayMessage(message);
+      setRepeatDayMessageVisible(true);
+    }
+    // Clear the selected repeat days after saving the event
+    setSelectAllDays(false);
+    setSelectedDays(new Array(buttons.length).fill(false));
   };
 
   const [searchAsset, setSearchAsset] = useState("");
@@ -585,6 +607,28 @@ const EventEditor = ({
                 </div>
               </div>
             </div>
+            {emptyTitleMessageVisible && (
+              <div
+                className="bg-[#fff2cd] px-5 py-3 border-b-2 border-SlateBlue shadow-md"
+                style={{
+                  position: "fixed",
+                  top: "16px",
+                  right: "20px",
+                  zIndex: "999999",
+                }}
+              >
+                <div className="flex text-SlateBlue  text-base font-normal items-center relative">
+                  <BsFillInfoCircleFill className="mr-1" />
+                  {emptyTitleMessage}
+                  <button
+                    className="absolute top-[-26px] right-[-26px] bg-white rounded-full p-1 "
+                    onClick={() => setEmptyTitleMessageVisible(false)}
+                  >
+                    <AiOutlineClose className="text-xl  text-SlateBlue " />
+                  </button>
+                </div>
+              </div>
+            )}
             {repeatDayMessageVisible && (
               <div
                 className="bg-[#fff2cd] px-5 py-3 border-b-2 border-SlateBlue shadow-md"
