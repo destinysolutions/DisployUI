@@ -66,10 +66,22 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedTimezoneName, setSelectedTimezoneName] = useState("");
   const addedTimezoneName = searchParams.get("timeZoneName");
 
-  const handleSelectSlot = useCallback(({ start, end }) => {
-    setSelectedSlot({ start, end });
-    setCreatePopupOpen(true);
-  }, []);
+  const handleSelectSlot = useCallback(
+    ({ start, end }) => {
+      if (getScheduleName) {
+        setSelectedSlot({ start, end });
+        setCreatePopupOpen(true);
+      } else if (!newScheduleNameInput) {
+        let messge = "Please Insert Schedule Name";
+        setScheduleMessage(messge);
+        setScheduleMessageVisible(true);
+      } else {
+        setSelectedSlot({ start, end });
+        setCreatePopupOpen(true);
+      }
+    },
+    [newScheduleNameInput]
+  );
 
   const handleSelectEvent = useCallback((event) => {
     setSelectedEvent(event);
@@ -163,7 +175,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Function to handle event resize
   const handleEventResize = ({ event, start, end }) => {
-  
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
@@ -223,13 +234,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       data.eventId = eventId;
     }
 
-    if (data.scheduleId == "") {
-      let messge = "Please Insert Schedule Name";
-      setScheduleMessage(messge);
-      setScheduleMessageVisible(true);
-    }
-
-    if (data.asset == null) {
+    if (data.asset === null) {
       let messge = "Please Select Asset";
       setScheduleMessage(messge);
       setScheduleMessageVisible(true);
@@ -296,8 +301,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     if (getScheduleId) {
       loadEventsForSchedule(getScheduleId);
-    } else {
-      setEvents([]);
     }
   }, [getScheduleId, myEvents]);
 
@@ -488,7 +491,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               ) : (
                 <>
                   {showScheduleName ? (
-                    <h1 className="flex justify-center text-3xl">
+                    <h1 className="flex justify-center items-center text-2xl">
                       {newScheduleNameInput}
                     </h1>
                   ) : (
