@@ -1,0 +1,48 @@
+.label_top {
+    background: #fff;
+    position: relative;
+    top: 10px;
+    left: 10px;
+    padding: 5px;
+    color: #515151;
+    font-weight: 500;
+}
+
+.input-bor-color {
+    border-color: #D5E3FF;
+}
+
+.bg-red-700 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(200 30 30/var(--tw-bg-opacity));
+}
+
+.text-white {
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255/var(--tw-text-opacity));
+}
+
+.text-gray-500 {
+    --tw-text-opacity: 1;
+    color: rgb(125 135 169 / var(--tw-text-opacity));
+}
+
+.space-x-2> :not([hidden])~ :not([hidden]) {
+    --tw-space-x-reverse: 0;
+    margin-right: calc(0.5rem * var(--tw-space-x-reverse));
+    margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+[data-hs-tab].active.hs-tab-active\:text-blue-600 {
+    --tw-text-opacity: 1;
+    color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.border-transparent {
+    border-color: transparent;
+}
+
+[data-hs-tab].active.hs-tab-active\:bg-blue-600 {
+    --tw-border-opacity: 1;
+    background-color: rgb(65 71 155 / var(--tw-border-opacity));
+}

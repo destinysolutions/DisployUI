@@ -7,7 +7,7 @@ import { BsGoogle } from "react-icons/bs";
 import { FaFacebookF } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useCookies } from "react-cookie";
+// import { useCookies } from "react-cookie";
 import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useFormik } from "formik";
@@ -21,6 +21,7 @@ const Login = () => {
   const history = useNavigate();
   const { loginUser } = useUser();
   //using show or hide password field
+
   const [showPassword, setShowPassword] = useState(false);
 
   //using for login faild or success meg display
@@ -36,6 +37,7 @@ const Login = () => {
       localStorage.setItem("hasSeenMessage", "true");
     }
   }, [message]);
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setMessageVisible(false);
@@ -45,7 +47,7 @@ const Login = () => {
   }, [errorMessge, messageVisible]);
 
   //using for save token
-  const [cookies, setCookie] = useCookies(["token"]);
+  // const [cookies, setCookie] = useCookies(["token"]);
 
   //using for validation and login api calling
   const validationSchema = Yup.object().shape({
@@ -82,8 +84,11 @@ const Login = () => {
         .then((response) => {
           const token = response.data.data.token;
           const userData = response.data;
+          console.log(userData);
           loginUser(userData);
-          setCookie("token", token, { path: "/" });
+          // setCookie("token", token);
+          localStorage.setItem('token', token)
+          localStorage.setItem('userId', userData.userID)
           if (response.data.status === 401) {
             setErrorMessge(response.data.message);
           } else {

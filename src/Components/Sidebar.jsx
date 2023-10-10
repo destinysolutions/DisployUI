@@ -1,17 +1,34 @@
 import { useEffect, useState } from "react";
 import "../Styles/sidebar.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as FiIcons from "react-icons/fi";
-import { AiOutlineCloseCircle } from "react-icons/ai";
+// import { AiOutlineCloseCircle } from "react-icons/ai";
 import { MdOutlineAddToQueue } from "react-icons/md";
 import { HiOutlineRectangleGroup } from "react-icons/hi2";
 import PropTypes from "prop-types";
-import * as FaIcons from "react-icons/fa";
+// import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import ScreenOTPModal from "./Screen/ScreenOTPModal";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 
 const Sidebar = ({ sidebarOpen }) => {
+
+  // const navigate = useNavigate()
+
+  // const handlelogout = () => {
+  //   // const token = localStorage.removeItem('token')
+  //   // console.log(token);
+  //   // navigate('/')
+  //   try {
+  //     localStorage.removeItem('userdata');
+
+  //     navigate('/');
+  //   } catch (error) {
+  //     console.error('Logout failed:', error);
+  //     // Handle the error (e.g., display an error message to the user)
+  //   }
+  // }
+
   Sidebar.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
   };
@@ -181,7 +198,6 @@ const Sidebar = ({ sidebarOpen }) => {
     {
       title: "Log Out",
       cName: "nav-text link-items",
-      path: "/logout",
       icon: (
         <img src="/MenuIcons/logout_icon.svg" alt="LogOut" className="w-6" />
       ),
@@ -252,9 +268,8 @@ const Sidebar = ({ sidebarOpen }) => {
                         {item.subMenus && (
                           <div className="ml-5 absolute right-0">
                             <FiIcons.FiChevronDown
-                              className={`${
-                                submenuIsOpen ? "transform rotate-180" : ""
-                              } transition-transform duration-300 text-white `}
+                              className={`${submenuIsOpen ? "transform rotate-180" : ""
+                                } transition-transform duration-300 text-white `}
                               onClick={(e) => {
                                 e.preventDefault();
                                 updateSubmenuState(item.title, !submenuIsOpen);
@@ -290,8 +305,36 @@ const Sidebar = ({ sidebarOpen }) => {
                       </Link>
                       {Menus.title}
                     </li>
-                  );
+                  )
+
+                  // if (item.title == 'Log Out') {
+                  //   return (
+                  //     <li key={MIindex} className={item.cName} onClick={handlelogout}>
+                  //       <Link to={item.path}>
+                  //         <div>{item.icon}</div>
+                  //         <span className="ml-5">{item.title}</span>
+                  //       </Link>
+                  //       {Menus.title}
+                  //     </li>
+                  //   );
+                  // }
                 })}
+
+                {/* {MenuIcons.map((item, MIindex) => (
+                  <li key={MIindex} className={item.cName}>
+                    <Link to={item.path}>
+                      <div>{item.icon}</div>
+                      <span className="ml-5">{item.title}</span>
+                    </Link>
+                    {item.title === 'Log Out' && (
+                      <div onClick={handlelogout}>
+                        <div>{item.icon}</div>
+                        <span className="ml-5">{item.title}</span>
+                      </div>
+                    )}
+                  </li>
+                ))} */}
+
               </ul>
             </div>
           </div>
@@ -300,9 +343,8 @@ const Sidebar = ({ sidebarOpen }) => {
         <div className="menu-bars self-center">
           <HiOutlineMenuAlt2
             onClick={handleSidebarToggle}
-            className={` text-SlateBlue text-3xl ${mobileSidebar && "hidden"} ${
-              mobileSidebar ? "ml-0" : "ml-5"
-            }`}
+            className={` text-SlateBlue text-3xl ${mobileSidebar && "hidden"} ${mobileSidebar ? "ml-0" : "ml-5"
+              }`}
           />
         </div>
       )}
@@ -337,9 +379,8 @@ const Sidebar = ({ sidebarOpen }) => {
                       {item.subMenus && (
                         <div className="ml-5 absolute right-0">
                           <FiIcons.FiChevronDown
-                            className={`${
-                              activeSubmenu ? "transform rotate-180" : ""
-                            } transition-transform duration-300 text-white 
+                            className={`${activeSubmenu ? "transform rotate-180" : ""
+                              } transition-transform duration-300 text-white 
                           `}
                             onClick={() => setActiveSubmenu(!activeSubmenu)}
                           />
@@ -365,6 +406,17 @@ const Sidebar = ({ sidebarOpen }) => {
                 <div className="dotline my-4"></div>
               </li>
               {MenuIcons.map((item, MIindex) => {
+                // if (item.title == 'Log Out') {
+                //   return (
+                //     <li key={MIindex} className={item.cName} onClick={handlelogout}>
+                //       <Link to={item.path}>
+                //         <div>{item.icon}</div>
+                //         <span className="ml-5">{item.title}</span>
+                //       </Link>
+                //       {Menus.title}
+                //     </li>
+                //   );
+                // }
                 return (
                   <li key={MIindex} className={item.cName}>
                     <Link to={item.path}>
@@ -373,7 +425,8 @@ const Sidebar = ({ sidebarOpen }) => {
                     </Link>
                     {Menus.title}
                   </li>
-                );
+                )
+
               })}
             </ul>
           </div>

@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { ADD_REGISTER_URL } from "./Api";
-import video from '../../public/DisployImg/iStock-1137481126.mp4'
+import video from "../../public/DisployImg/iStock-1137481126.mp4";
 const Registration = () => {
   //using show or hide password field
   const [showPassword, setShowPassword] = useState(false);
@@ -41,7 +41,7 @@ const Registration = () => {
         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
         "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
       ),
-    name: Yup.string().required("Name is required").max(50),
+    firstName: Yup.string().required("First Name is required").max(50),
     emailID: Yup.string()
       .required("Email is required")
       .email("E-mail must be a valid e-mail!"),
@@ -58,7 +58,7 @@ const Registration = () => {
     initialValues: {
       companyName: "",
       password: "",
-      name: "",
+      firstName: "",
       emailID: "",
       googleLocation: "",
       phoneNumber: "",
@@ -70,7 +70,7 @@ const Registration = () => {
         .post(ADD_REGISTER_URL, {
           companyName: values.companyName,
           password: values.password,
-          name: values.name,
+          firstName: values.firstName,
           emailID: values.emailID,
           googleLocation: values.googleLocation,
           phoneNumber: values.phoneNumber,
@@ -110,7 +110,7 @@ const Registration = () => {
         <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center loginbg  lg:px-6 md:px-6 sm:px-2 xs:px-2 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-2  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
             <div className="flex items-center pb-5">
-              <imgRe
+              <img
                 className="w-227 h-50"
                 src="/DisployImg/logo.svg"
                 alt="title"
@@ -168,16 +168,16 @@ const Registration = () => {
                     <label className="formLabel">Name</label>
                     <input
                       type="text"
-                      name="name"
-                      id="name"
-                      placeholder="Enter Your Name"
+                      name="firstName"
+                      id="firstName"
+                      placeholder="Enter Your First Name"
                       className="formInput"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.name}
+                      value={formik.values.firstName}
                     />
-                    {formik.errors.name && formik.touched.name && (
-                      <div className="error">{formik.errors.name}</div>
+                    {formik.errors.firstName && formik.touched.firstName && (
+                      <div className="error">{formik.errors.firstName}</div>
                     )}
                   </div>
                   <div className="relative">
