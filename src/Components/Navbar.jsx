@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineNavigateNext } from "react-icons/md";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import "././../Styles/sidebar.css";
 import axios from "axios";
 import { All_REGISTER_URL } from "../Pages/Api";
-import { data } from "autoprefixer";
+// import { data } from "autoprefixer";
 import { useUser } from "../UserContext";
-import { useId } from "react";
-import { useCookies } from "react-cookie";
+// import { useId } from "react";
+// import { useCookies } from "react-cookie";
 
 const getInitials = (name) => {
   let initials;
@@ -64,7 +64,7 @@ const Navbar = () => {
   const [regsiterdata, setRegisterdata] = useState([]);
   const { user } = useUser();
   const userId = user ? user.userID : null;
-  console.log(user);
+  // console.log(user);
 
 
   const handleProfileClick = (e) => {
@@ -110,12 +110,11 @@ const Navbar = () => {
   //for signout
   const handleSignOut = () => {
     localStorage.removeItem("hasSeenMessage");
-    localStorage.removeItem("token");
+    localStorage.removeItem("userdata");
     history('/')
   };
 
-
-
+  // const userid = (localStorage.getItem('userId'))
 
   return (
     // navbar component start
@@ -214,10 +213,12 @@ const Navbar = () => {
                           </div>
                           <div className="border-b-[1px] border-[#8E94A9]"></div>
                           <div className="p-2">
-                            <div className="text-base font-medium mb-1 flex justify-between items-center">
-                              My Account{" "}
-                              <MdOutlineNavigateNext className="text-2xl text-gray" />
-                            </div>
+                            <Link to="/viewuserprofile">
+                              <div className="text-base font-medium mb-1 flex justify-between items-center">
+                                My Account{" "}
+                                <MdOutlineNavigateNext className="text-2xl text-gray" />
+                              </div>
+                            </Link>
                             <div className="text-base font-medium mb-1 flex justify-between items-center">
                               Profile settings{" "}
                               <MdOutlineNavigateNext className="text-2xl text-gray" />

@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../Pages/Login";
 import Registration from "../Pages/Registration";
 import ForgotPassword from "../Pages/ForgotPassword";
@@ -39,6 +39,8 @@ import Trash from "../Components/Trash";
 import NewFolderDialog from "../Components/Assests/NewFolderDialog ";
 import { UserProvider } from "../UserContext";
 import Youtube from "../Components/Apps/Youtube";
+import Privateroute from "./Privateroute";
+
 
 const Routing = () => {
   //for screen resize sidebar open close
@@ -68,14 +70,13 @@ const Routing = () => {
     };
   }, [handleResize]);
 
+
+
   return (
     <>
       <UserProvider>
         <Routes>
-          {/* login register route */}
-          <Route path="/" element={<Login />} />{" "}
-          <Route path="/register" element={<Registration />} />
-          {/* forgotpassword and termsconditions route */}
+
           <Route
             path="/forgotpassword"
             element={
@@ -85,6 +86,7 @@ const Routing = () => {
               />
             }
           />
+
           <Route
             path="/termsconditions"
             element={
@@ -95,15 +97,13 @@ const Routing = () => {
             }
           />
           {/* Dashboard component route */}
-          <Route
-            path="/dashboard"
-            element={
-              <Dashboard
-                sidebarOpen={sidebarOpen}
-                setSidebarOpen={setSidebarOpen}
-              />
-            }
+
+          {/* <Route path="/dashboard" element={<Privateroute><Dashboard /></Privateroute>} /> */}
+          {/* <Route element={<Privateroute />}> */}
+          <Route path="/dashboard" element={<Dashboard sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />}
           />
+          {/* </Route> */}
+
           <Route
             path="/screens"
             element={
@@ -388,13 +388,16 @@ const Routing = () => {
             }
           />
 
-         
+          {/* login register route */}
+          <Route path="/" element={<Login />} />{" "}
+          <Route path="/register" element={<Registration />} />
+          {/* forgotpassword and termsconditions route */}
 
           {/*Event Editors */}
           {/* error page route */}
           <Route path="*" element={<ErrorPage />} />
         </Routes>
-      </UserProvider>
+      </UserProvider >
     </>
   );
 };
