@@ -306,18 +306,18 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
             {/*Tab*/}
             <div className="mainsettingtab  lg:col-span-2 md:col-span-3 sm:col-span-3 xs:col-span-12  p-0 ">
               <ul className="w-full">
-                <li className="">
+                <li>
                   <button
                     className={
                       STabs === 1 ? "stabshow settingtabactive" : "settingtab"
                     }
                     onClick={() => updateTab(1)}
                   >
-                    <BsInfoCircle className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />{" "}
+                    <BsInfoCircle className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
                     <span className="text-base text-primary">Company Info</span>
                   </button>
                 </li>
-                <li className="">
+                <li>
                   <button
                     className={
                       STabs === 2 ? "stabshow settingtabactive" : "settingtab"
@@ -328,46 +328,46 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                     <span className="text-base text-primary">User Role</span>
                   </button>
                 </li>
-                <li className="">
+                <li>
                   <button
                     className={
                       STabs === 10 ? "stabshow settingtabactive" : "settingtab"
                     }
                     onClick={() => updateTab(10)}
                   >
-                    <SiMediamarkt className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />{" "}
+                    <SiMediamarkt className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
                     <span className="text-base text-primary">
                       Approval Required
                     </span>
                   </button>
                 </li>
-                <li className="">
+                <li>
                   <button
                     className={
                       STabs === 3 ? "stabshow settingtabactive" : "settingtab"
                     }
                     onClick={() => updateTab(3)}
                   >
-                    <HiOutlineUsers className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />{" "}
+                    <HiOutlineUsers className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
                     <span className="text-base text-primary">Users</span>
                   </button>
                 </li>
 
-                <li className="">
+                <li>
                   <button
                     className={
                       STabs === 4 ? "stabshow settingtabactive" : "settingtab"
                     }
                     onClick={() => updateTab(4)}
                   >
-                    <FiUserCheck className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />{" "}
+                    <FiUserCheck className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
                     <span className="text-base text-primary">
                       Authorized Screen
                     </span>
                   </button>
                 </li>
 
-                <li className="">
+                <li>
                   <button
                     className={
                       STabs === 5 ? "stabshow settingtabactive" : "settingtab"
@@ -379,53 +379,52 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                   </button>
                 </li>
 
-                <li className="">
+                <li>
                   <button
                     className={
                       STabs === 6 ? "stabshow settingtabactive" : "settingtab"
                     }
                     onClick={() => updateTab(6)}
                   >
-                    <SlCalender className=" text-3xl  text-white bg-primary rounded-md p-2 mr-2" />{" "}
+                    <SlCalender className=" text-3xl  text-white bg-primary rounded-md p-2 mr-2" />
                     <span className="text-base text-primary"> My Plan</span>
                   </button>
                 </li>
 
-                <li className="">
+                <li>
                   <button
                     className={
                       STabs === 7 ? "stabshow settingtabactive" : "settingtab"
                     }
                     onClick={() => updateTab(7)}
                   >
-                    <MdOutlineDiscount className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />{" "}
+                    <MdOutlineDiscount className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
                     <span className="text-base text-primary">Discount</span>
                   </button>
                 </li>
 
-                <li className="">
+                <li>
                   <button
                     className={
                       STabs === 8 ? "stabshow settingtabactive" : "settingtab"
                     }
                     onClick={() => updateTab(8)}
                   >
-                    <MdOutlineStorage className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />{" "}
+                    <MdOutlineStorage className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
                     <span className="text-base text-primary">
-                      {" "}
                       Storage Limit
                     </span>
                   </button>
                 </li>
 
-                <li className="">
+                <li>
                   <button
                     className={
                       STabs === 9 ? "stabshow settingtabactive" : "settingtab"
                     }
                     onClick={() => updateTab(9)}
                   >
-                    <SiMediamarkt className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />{" "}
+                    <SiMediamarkt className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
                     <span className="text-base text-primary">
                       Default Media
                     </span>

@@ -5,14 +5,23 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../../UserContext";
 import { OTP_VERIFY } from "../../Pages/Api";
 import { useRef } from "react";
+import { useEffect } from "react";
 
 const ScreenOTPModal = ({ setShowOTPModal }) => {
-  const { user } = useUser();
-  const userId = user ? user.userID : null;
   const history = useNavigate();
   const [errorMessge, setErrorMessge] = useState(false);
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
-  const otpRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()]; // Create refs for each input field
+  const otpRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
+
+  const [loginUserID, setLoginUserID] = useState("");
+  useEffect(() => {
+    const userFromLocalStorage = localStorage.getItem("user");
+    if (userFromLocalStorage) {
+      const user = JSON.parse(userFromLocalStorage);
+      setLoginUserID(user.userID); // Use your context API method to set the user
+    }
+  }, []);
+
   const handleOtpChange = (index, value) => {
     const updatedOtpValues = [...otpValues];
     updatedOtpValues[index] = value;
@@ -27,7 +36,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
   const verifyOTP = () => {
     let data = JSON.stringify({
       otp: completeOtp,
-      userID: userId,
+      userID: loginUserID,
     });
 
     let config = {

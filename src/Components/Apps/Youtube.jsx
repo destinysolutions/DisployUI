@@ -470,7 +470,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
 
               {/* Add this container within your JSX */}
-              <div id="videoPreview" className="" style={{ display: "none" }}>
+              <div id="videoPreview" style={{ display: "none" }}>
                 {/* Place your video player here */}
                 <div className="video-preview">
                   <ReactPlayer

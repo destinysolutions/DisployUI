@@ -297,7 +297,7 @@ const MyPlaylist = ({ sidebarOpen, setSidebarOpen }) => {
 
                       <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
                         <div className="bg-white rounded-[30px]">
-                          <div className="">
+                          <div>
                             <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
                               <div>
                                 <nav

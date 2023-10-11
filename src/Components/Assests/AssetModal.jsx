@@ -81,7 +81,7 @@ const AssetModal = ({ setShowAssetModal }) => {
 
           <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
             <div className="bg-white rounded-[30px]">
-              <div className="">
+              <div>
                 <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
                   <div>
                     <nav
@@ -194,7 +194,7 @@ const AssetModal = ({ setShowAssetModal }) => {
                           <thead>
                             <tr className="bg-lightgray">
                               <th className="p-3 w-80 text-left">Media Name</th>
-                              <th className="">Date Added</th>
+                              <th>Date Added</th>
                               <th className="p-3">Size</th>
                               <th className="p-3">Type</th>
                             </tr>

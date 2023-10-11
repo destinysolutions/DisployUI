@@ -82,13 +82,9 @@ const Login = () => {
           }
         )
         .then((response) => {
-          const token = response.data.data.token;
           const userData = response.data;
-          console.log(userData);
           loginUser(userData);
-          // setCookie("token", token);
-          localStorage.setItem('token', token)
-          localStorage.setItem('userId', userData.userID)
+
           if (response.data.status === 401) {
             setErrorMessge(response.data.message);
           } else {

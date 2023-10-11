@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
@@ -113,7 +114,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(fetchedData);
         setOriginalData(fetchedData);
         const allAssets = [
-          
           ...(fetchedData.image ? fetchedData.image : []),
           ...(fetchedData.video ? fetchedData.video : []),
           ...(fetchedData.doc ? fetchedData.doc : []),
@@ -123,7 +123,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         const sortedAssets = allAssets.sort((a, b) => {
           return new Date(b.createdDate) - new Date(a.createdDate);
         });
-        
+
         setGridData(sortedAssets);
         setTableData(sortedAssets);
       })
@@ -259,7 +259,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       });
   });
 
-
   // select All checkbox
 
   const [selectAll, setSelectAll] = useState(false);
@@ -289,25 +288,26 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then(() => {
-        setGridData([])
+        setGridData([]);
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-
   // New folder
   const [newFolder, setNewfolder] = useState([]);
   const [folderNames, setFolderNames] = useState([]);
 
-  const folderName = "New Folder"
+  const folderName = "New Folder";
   // Define the fetchFolderDetails function
   const fetchFolderDetails = () => {
     axios
       .get(GET_ALL_NEW_FOLDER)
       .then((response) => {
-        const fetchedData = response.data.data.filter(folder => !folder.deleted);
+        const fetchedData = response.data.data.filter(
+          (folder) => !folder.deleted
+        );
         setNewfolder(fetchedData);
         setFolderNames(fetchedData.map((folder) => folder.folderName));
 
@@ -349,7 +349,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   //Delete new folder
   const deleteFolder = (folderID) => {
-    console.log(folderID, 'folderID');
+    console.log(folderID, "folderID");
     const data = JSON.stringify({
       folderID: folderID,
       operation: "Delete",
@@ -362,7 +362,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         },
       })
       .then((response) => {
-        console.log(response, 'response');
+        console.log(response, "response");
         fetchFolderDetails();
       })
       .catch((error) => {
@@ -397,15 +397,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       // Save the folder name on Enter key press
       const newName = folderNames[index];
       saveFolderName(folderID, newName);
-
     } else if (e.key === "Escape") {
       // Cancel editing on Escape key press
       setEditMode(null);
     }
   };
   const updateFolderNameInAPI = async (folderID, newName) => {
-    console.log(folderID, 'folderIDfolderID');
-    console.log(newName, 'newNamenewName');
+    console.log(folderID, "folderIDfolderID");
+    console.log(newName, "newNamenewName");
     try {
       const formData = new FormData();
       formData.append("folderID", folderID);
@@ -486,14 +485,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const updateFolderContent = (folderId) => {
     try {
-      axios
-        .get(
-          `${FetchdataFormFolder}?ID=${folderId}`
-        )
-        .then((response) => {
-          console.log(response.data);
-          setGridData(response.data);
-        });
+      axios.get(`${FetchdataFormFolder}?ID=${folderId}`).then((response) => {
+        console.log(response.data);
+        setGridData(response.data);
+      });
     } catch (error) {
       console.error("Error updating folder content:", error);
     }
@@ -516,12 +511,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const handleDrop = (event, folderId) => {
     event.preventDefault();
     const itemId = event.dataTransfer.getData("text/plain");
-    
+
     // Move the data item to the folder (you'll need to implement this logic)
     moveDataToFolder(itemId, folderId);
   };
-
-
 
   return (
     <>
@@ -620,7 +613,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
               <button
                 className={activetab === 5 ? "tabactivebtn " : "tabbtn"}
-              // onClick={() => handleActiveBtnClick(5)}
+                // onClick={() => handleActiveBtnClick(5)}
               >
                 App
               </button>
@@ -647,10 +640,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
                   return (
                     <li
-                    key={`folder-${folder.folderID}`}
-                    onDragOver={handleDragOver} // Allow drops on folders
-                    onDrop={(event) => handleDrop(event, folder.folderID)} // Handle drop into folder
-                    className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col"
+                      key={`folder-${folder.folderID}`}
+                      onDragOver={handleDragOver} // Allow drops on folders
+                      onDrop={(event) => handleDrop(event, folder.folderID)} // Handle drop into folder
+                      className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col"
                     >
                       <FcOpenedFolder
                         className="text-8xl text-center mx-auto"
@@ -672,7 +665,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             saveFolderName(folder.folderID, folderNames[index]);
                             setEditMode(null);
                           }}
-                          onKeyDown={(e) => handleKeyDown(e, folder.folderID, index)}
+                          onKeyDown={(e) =>
+                            handleKeyDown(e, folder.folderID, index)
+                          }
                           autoFocus
                         />
                       ) : (
@@ -715,8 +710,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   <button
                                     className="flex text-sm items-center"
                                     onClick={() =>
-                                      deleteFolder(folder.folderID)}
-                                    
+                                      deleteFolder(folder.folderID)
+                                    }
                                   >
                                     <RiDeleteBin5Line className="mr-2 text-lg" />
                                     Move to Trash
@@ -747,19 +742,20 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                 {gridData.length > 0 ? (
                   gridData.map((item, index) => (
                     <li
-                    key={`tabitem-grid-${item.id}-${index}`}
-                    draggable
-                    onDragStart={(event) => handleDragStart(event, item.id)} // Initiate drag
-                    className="relative list-none assetsbox"
+                      key={`tabitem-grid-${item.id}-${index}`}
+                      draggable
+                      onDragStart={(event) => handleDragStart(event, item.id)} // Initiate drag
+                      className="relative list-none assetsbox"
                     >
                       {item.categorieType === "Image" && (
                         <img
                           src={item.fileType}
                           alt={item.name}
-                          className={`imagebox relative ${selectedItems.includes(item)
+                          className={`imagebox relative ${
+                            selectedItems.includes(item)
                               ? "active opacity-1 w-full rounded-2xl"
                               : "opacity-1 w-full rounded-2xl"
-                            }`}
+                          }`}
                         />
                       )}
 
@@ -767,10 +763,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <img
                           src={item.fileType}
                           alt={item.name}
-                          className={`imagebox relative ${selectedItems.includes(item)
+                          className={`imagebox relative ${
+                            selectedItems.includes(item)
                               ? "active opacity-1 w-full rounded-2xl"
                               : "opacity-1 w-full rounded-2xl"
-                            }`}
+                          }`}
                         />
                       )}
 
@@ -923,10 +920,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 {selectedItems.length > 0 && (
                                   <div className="move-to-button">
                                     <button onClick={toggleMoveTo}>
-                                    <CgMoveRight className="mr-2 text-lg" />
+                                      <CgMoveRight className="mr-2 text-lg" />
                                       Move to
                                     </button>
-
 
                                     {isMoveToOpen && (
                                       <div className="move-to-dropdown">
@@ -1015,50 +1011,58 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     </tr>
                   </thead>
                   <tbody>
-                  {newFolder.map((folder, index) => (
-                      <>
+                    {newFolder.map((folder, index) => (
+                      <React.Fragment key={`folder-${folder.folderID}`}>
                         <tr
-                          key={`folder-${folder.folderID}`} onDragOver={handleDragOver} // Allow drops on folders
+                          onDragOver={handleDragOver} // Allow drops on folders
                           onDrop={(event) => handleDrop(event, folder.folderID)}
                           className="bg-white rounded-lg font-normal text-[14px] text-[#5E5E5E] shadow-sm newfolder"
                         >
                           <td className="flex items-center relative">
                             <div>
-                              <FcOpenedFolder className="text-8xl text-center mx-auto" onClick={() => navigateToFolder(folder.folderID)}/>
+                              <FcOpenedFolder
+                                className="text-8xl text-center mx-auto"
+                                onClick={() =>
+                                  navigateToFolder(folder.folderID)
+                                }
+                              />
                             </div>
                             <div className="ml-3">
-                            {editMode === folder.folderID ? (
-                              <input
-                                type="text"
-                                value={folderNames[index]}
-                                className="w-full"
-                                onChange={(e) => {
-                                  const newFolderNames = [...folderNames];
-                                  newFolderNames[index] = e.target.value;
-                                  setFolderNames(newFolderNames);
-                                  console.log(newFolderNames);
-                                }}
-                                onBlur={() => {
-                                  saveFolderName(folder.folderID, folderNames[index]);
-                                  setEditMode(null);
-                                }}
-                                onKeyDown={(e) => handleKeyDown(e, folder.folderID, index)}
-                                autoFocus
-                              />
-                            ) : (
-                              <>
-                                <span
-                                  onClick={() => {
-                                    setEditMode(folder.folderID);
+                              {editMode === folder.folderID ? (
+                                <input
+                                  type="text"
+                                  value={folderNames[index]}
+                                  className="w-full"
+                                  onChange={(e) => {
+                                    const newFolderNames = [...folderNames];
+                                    newFolderNames[index] = e.target.value;
+                                    setFolderNames(newFolderNames);
+                                    console.log(newFolderNames);
                                   }}
-                                  className="cursor-pointer"
-                                >
-                                  {folderNames[index]}
-                                </span>
+                                  onBlur={() => {
+                                    saveFolderName(
+                                      folder.folderID,
+                                      folderNames[index]
+                                    );
+                                    setEditMode(null);
+                                  }}
+                                  onKeyDown={(e) =>
+                                    handleKeyDown(e, folder.folderID, index)
+                                  }
+                                  autoFocus
+                                />
+                              ) : (
+                                <>
+                                  <span
+                                    onClick={() => {
+                                      setEditMode(folder.folderID);
+                                    }}
+                                    className="cursor-pointer"
+                                  >
+                                    {folderNames[index]}
+                                  </span>
                                 </>
-                            )
-                          }
-                            
+                              )}
                             </div>
                           </td>
                           <td></td>
@@ -1096,12 +1100,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     <FiDownload className="mr-2 text-lg" />
                                     <a href="#">Download</a>
                                   </li>
-                                
+
                                   <li>
                                     <button
                                       className="flex text-sm items-center"
                                       onClick={() =>
-                                        deleteFolder(folder.folderID)}
+                                        deleteFolder(folder.folderID)
+                                      }
                                     >
                                       <RiDeleteBin5Line className="mr-2 text-lg" />
                                       Move to Trash
@@ -1114,9 +1119,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         </tr>
 
                         <tr>
-                          <div className="mb-2"></div>
+                          <td className="mb-2"></td>
                         </tr>
-                      </>
+                      </React.Fragment>
                     ))}
 
                     {tableData.length > 0 ? (

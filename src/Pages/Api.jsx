@@ -4,6 +4,11 @@ export const ADD_REGISTER_URL =
   "https://disployapi.thedestinysolutions.com/api/Register/AddRegister";
 export const All_REGISTER_URL =
   "https://disployapi.thedestinysolutions.com/api/Register/GetAllRegister";
+export const GET_ALL_CURRENCIES =
+  "https://disployapi.thedestinysolutions.com/api/Register/GetAllCurrencies";
+export const GET_ALL_LANGUAGES =
+  "https://disployapi.thedestinysolutions.com/api/Register/GetAllLanguages";
+
 export const ALL_SCREEN_URL =
   "https://disployapi.thedestinysolutions.com/api/Screen/GetAllScreen";
 export const ALL_MAPSTORE_GET =

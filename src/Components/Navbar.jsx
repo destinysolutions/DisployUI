@@ -61,9 +61,14 @@ const Navbar = () => {
   const [showProfileBox, setShowProfileBox] = useState(false);
   const [showNotificationBox, setShowNotificationBox] = useState(false);
   const [regsiterdata, setRegisterdata] = useState([]);
-  const { user } = useUser();
-  const userId = user ? user.userID : null;
-  // console.log(user);
+  const [loginUserID, setLoginUserID] = useState("");
+  useEffect(() => {
+    const userFromLocalStorage = localStorage.getItem("user");
+    if (userFromLocalStorage) {
+      const user = JSON.parse(userFromLocalStorage);
+      setLoginUserID(user.userID);
+    }
+  }, []);
 
   const handleProfileClick = (e) => {
     e.stopPropagation();
@@ -108,11 +113,9 @@ const Navbar = () => {
   //for signout
   const handleSignOut = () => {
     localStorage.removeItem("hasSeenMessage");
-    localStorage.removeItem("userdata");
+    localStorage.removeItem("user");
     history("/");
   };
-
-  // const userid = (localStorage.getItem('userId'))
 
   return (
     // navbar component start
@@ -178,72 +181,83 @@ const Navbar = () => {
               {/* Notification box end */}
               {/* profile box start */}
               <div className="relative">
-                <img
-                  src="/NavbarIcons/profile.svg"
-                  alt="profile"
-                  className="cursor-pointer profile"
-                  onClick={handleProfileClick}
-                />
-                {showProfileBox &&
-                  regsiterdata.map((data) => {
-                    const imgSrc = "";
-                    return userId === data.userID ? (
+                {regsiterdata.map((data) => {
+                  const imgSrc = "";
+                  return (
+                    loginUserID === data.userID && (
                       <div key={data.userID}>
-                        <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
-                          <div className="flex items-center space-x-3 cursor-pointer p-2">
-                            <img
-                              src={
-                                imgSrc.length <= 0
-                                  ? createImageFromInitials(
-                                      500,
-                                      data.firstName,
-                                      color
-                                    )
-                                  : imgSrc
-                              }
-                              alt="profile"
-                              className="cursor-pointer profileBox p-0"
-                            />
-                            <div className="">
-                              <div className="text-[#7C82A7] font-semibold text-lg">
-                                {data.firstName}
-                              </div>
-                              {/* <div className="text-[#ACB0C7] font-medium text-base">
+                        <img
+                          src={
+                            imgSrc.length <= 0
+                              ? createImageFromInitials(
+                                  500,
+                                  data.firstName,
+                                  color
+                                )
+                              : imgSrc
+                          }
+                          alt="profile"
+                          className="cursor-pointer profile"
+                          onClick={handleProfileClick}
+                        />
+                        {showProfileBox && (
+                          <>
+                            <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
+                              <div className="flex items-center space-x-3 cursor-pointer p-2">
+                                <img
+                                  src={
+                                    imgSrc.length <= 0
+                                      ? createImageFromInitials(
+                                          500,
+                                          data.firstName,
+                                          color
+                                        )
+                                      : imgSrc
+                                  }
+                                  alt="profile"
+                                  className="cursor-pointer profileBox p-0"
+                                />
+                                <div>
+                                  <div className="text-[#7C82A7] font-semibold text-lg">
+                                    {data.firstName}
+                                  </div>
+                                  {/* <div className="text-[#ACB0C7] font-medium text-base">
                                 Lead Developer
                               </div> */}
-                            </div>
-                          </div>
-                          <div className="border-b-[1px] border-[#8E94A9]"></div>
-                          <div className="p-2">
-                            <Link to="/viewuserprofile">
-                              <div className="text-base font-medium mb-1 flex justify-between items-center">
-                                My Account{" "}
-                                <MdOutlineNavigateNext className="text-2xl text-gray" />
+                                </div>
                               </div>
-                            </Link>
-                            <div className="text-base font-medium mb-1 flex justify-between items-center">
-                              Profile settings{" "}
-                              <MdOutlineNavigateNext className="text-2xl text-gray" />
+                              <div className="border-b-[1px] border-[#8E94A9]"></div>
+                              <div className="p-2">
+                                <Link to="/viewuserprofile">
+                                  <div className="text-base font-medium mb-1 flex justify-between items-center">
+                                    My Account{" "}
+                                    <MdOutlineNavigateNext className="text-2xl text-gray" />
+                                  </div>
+                                </Link>
+                                <div className="text-base font-medium mb-1 flex justify-between items-center">
+                                  Profile settings{" "}
+                                  <MdOutlineNavigateNext className="text-2xl text-gray" />
+                                </div>
+                              </div>
+                              <div className="border-b-[1px] border-[#8E94A9]"></div>
+                              <div className="flex justify-center items-center p-2">
+                                <div className="mr-2">
+                                  <RiLogoutBoxRLine className="text-xl" />
+                                </div>
+                                <button
+                                  className="text-[#001737] font-bold text-base "
+                                  onClick={handleSignOut}
+                                >
+                                  Sign out
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                          <div className="border-b-[1px] border-[#8E94A9]"></div>
-                          <div className="flex justify-center items-center p-2">
-                            <div className="mr-2">
-                              <RiLogoutBoxRLine className="text-xl" />
-                            </div>
-                            <button
-                              className="text-[#001737] font-bold text-base "
-                              onClick={handleSignOut}
-                            >
-                              Sign out
-                            </button>
-                          </div>
-                        </div>
+                          </>
+                        )}
                       </div>
-                    ) : (
-                      ""
-                    );
-                  })}
+                    )
+                  );
+                })}
               </div>
               {/* profile box end */}
             </div>
