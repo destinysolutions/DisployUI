@@ -195,7 +195,7 @@ const Myplan = () => {
                                                         setshowdiscoupon(!discoupon)
                                                     }
                                                 >
-                                                    <label className=""> Select Discount coupon Codes </label>
+                                                    <label> Select Discount coupon Codes </label>
                                                     {discoupon ? (
                                                         <MdOutlineKeyboardArrowUp className="text-2xl font-black cursor-pointer" />
                                                     ) : (
@@ -212,7 +212,7 @@ const Myplan = () => {
                                                                 <div className="relative">
                                                                     <div className="relative">
                                                                         <span className="flex justify-between" onClick={() => setshowcouponcodes(!discouponcodes)}>
-                                                                            <label className=""> With coupon Codes </label>
+                                                                            <label> With coupon Codes </label>
                                                                             {discouponcodes ? (
                                                                                 <MdOutlineKeyboardArrowUp className="text-2xl font-black cursor-pointer" />
                                                                             ) : (
@@ -296,7 +296,7 @@ const Myplan = () => {
                                                             <li className="border border-[#D5E3FF] rounded-md p-3 mt-2">
                                                                 <div className="relative">
                                                                     <span className="flex justify-between">
-                                                                        <label className=""> Without coupon Codes </label>
+                                                                        <label> Without coupon Codes </label>
                                                                         <MdOutlineKeyboardArrowDown className=" text-xl font-black cursor-pointer" />
                                                                     </span>
                                                                 </div>

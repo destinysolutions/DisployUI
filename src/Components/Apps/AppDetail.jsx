@@ -189,7 +189,7 @@ const AppDetail = ({ sidebarOpen, setSidebarOpen }) => {
                   </button>
                 </div>
               </div>
-              <div className="">
+              <div>
                 {Array.isArray(youtubeData) && youtubeData.length > 0 ? (
                   <div className=" grid grid-cols-10 gap-4 mt-5">
                     {youtubeData.map((item) => (

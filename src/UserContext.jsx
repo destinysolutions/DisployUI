@@ -8,6 +8,7 @@ export function UserProvider({ children }) {
   // Function to set user information after login
   const loginUser = (userData) => {
     setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   // Function to log out user

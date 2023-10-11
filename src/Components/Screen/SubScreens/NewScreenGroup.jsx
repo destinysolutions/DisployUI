@@ -54,17 +54,17 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
               </h1>
             </div>
             <div className="icons flex  items-center sm:mt-3">
-              <div className="">
+              <div>
                 <button className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-primary hover:border-SlateBlue ">
                   <IoMdRefresh className="p-1 text-3xl text-primary hover:text-white " />
                 </button>
               </div>
-              <div className="">
+              <div>
                 <button className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-primary hover:border-SlateBlue">
                   <HiOutlineRectangleGroup className="p-1 text-3xl hover:text-white text-primary" />
                 </button>
               </div>
-              <div className="">
+              <div>
                 <button>
                   {" "}
                   <input type="checkbox" className=" w-6 h-6" />

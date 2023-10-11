@@ -18,16 +18,17 @@ import ScreenOTPModal from "./ScreenOTPModal";
 import AssetModal from "../Assests/AssetModal";
 import { SlScreenDesktop } from "react-icons/sl";
 import { RiArrowDownSLine, RiDeleteBin5Line } from "react-icons/ri";
-import { HiOutlineLocationMarker } from "react-icons/hi";
+import { HiDotsVertical, HiOutlineLocationMarker } from "react-icons/hi";
 import { BsCollectionPlay, BsPencilSquare } from "react-icons/bs";
 import Footer from "../Footer";
 import { BiFilterAlt } from "react-icons/bi";
 import { RxTimer } from "react-icons/rx";
 import { Tooltip } from "@material-tailwind/react";
-import { useUser } from "../../UserContext";
+
 import {
   DELETE_SCREEN_BY_USERID,
   SELECT_BY_USER_SCREENDETAIL,
+  UPDATE_NEW_SCREEN,
 } from "../../Pages/Api";
 import axios from "axios";
 
@@ -58,6 +59,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [currScheduleContentVisible, setCurrScheduleContentVisible] =
     useState(true);
   const [tagsContentVisible, setTagsContentVisible] = useState(true);
+  const [showActionBox, setShowActionBox] = useState(false);
 
   useEffect(() => {
     setLocContentVisible(locCheckboxClick);
@@ -78,25 +80,43 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   ]);
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
-  const { user } = useUser();
-  const userId = user ? user.userID : null;
+
   const [screenData, setScreenData] = useState([]);
+  const [loginUserID, setLoginUserID] = useState("");
   useEffect(() => {
-    axios
-      .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${userId}`)
-      .then((response) => {
-        const fetchedData = response.data.data;
-        setScreenData(fetchedData);
-        const initialCheckboxes = {};
-        fetchedData.forEach((screen) => {
-          initialCheckboxes[screen.screenID] = false;
+    const userFromLocalStorage = localStorage.getItem("user");
+    if (userFromLocalStorage) {
+      const user = JSON.parse(userFromLocalStorage);
+      setLoginUserID(user.userID);
+    }
+  }, []);
+  useEffect(() => {
+    if (loginUserID) {
+      axios
+        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${loginUserID}`)
+        .then((response) => {
+          const fetchedData = response.data.data;
+          setScreenData(fetchedData);
+          const initialCheckboxes = {};
+          if (Array.isArray(fetchedData)) {
+            fetchedData.forEach((screen) => {
+              initialCheckboxes[screen.screenID] = false;
+            });
+            setScreenCheckboxes(initialCheckboxes);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
         });
-        setScreenCheckboxes(initialCheckboxes);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [userId]);
+    }
+  }, [loginUserID]);
+  const handleScreenClick = (screenId) => {
+    // Toggle the action menu for the clicked schedule item
+    setShowActionBox((prevState) => ({
+      ...prevState,
+      [screenId]: !prevState[screenId] || false,
+    }));
+  };
 
   const handleScreenCheckboxChange = (screenID) => {
     const updatedCheckboxes = { ...screenCheckboxes };
@@ -125,7 +145,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleDeleteAllScreen = () => {
     let data = JSON.stringify({
-      userID: userId,
+      userID: loginUserID,
       operation: "DeleteUserIdScreenOtp",
     });
 
@@ -145,6 +165,34 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         setScreenData([]);
         setSelectAllChecked(false);
         setScreenCheckboxes({});
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handelDeleteScreen = (screenId) => {
+    let data = JSON.stringify({
+      screenID: screenId,
+      operation: "DeleteScreenOtp",
+    });
+
+    let config = {
+      method: "post",
+      url: UPDATE_NEW_SCREEN,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        const updatedScreenData = screenData.filter(
+          (screenData) => screenData.screenID !== screenId
+        );
+        setScreenData(updatedScreenData);
       })
       .catch((error) => {
         console.log(error);
@@ -452,72 +500,109 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                     </th>
                   )}
+                  <th></th>
                 </tr>
               </thead>
-              {screenData.map((screen) => (
-                <tbody key={screen.screenID}>
-                  <tr className="border-b border-b-[#E4E6FF]">
-                    {screenContentVisible && (
-                      <td className="flex items-center ">
-                        <input
-                          type="checkbox"
-                          className="mr-3"
-                          onChange={() =>
-                            handleScreenCheckboxChange(screen.screenID)
-                          }
-                          checked={screenCheckboxes[screen.screenID]}
-                        />
+              {Array.isArray(screenData) &&
+                screenData.map((screen) => (
+                  <tbody key={screen.screenID}>
+                    <tr className="border-b border-b-[#E4E6FF]">
+                      {screenContentVisible && (
+                        <td className="flex items-center ">
+                          <input
+                            type="checkbox"
+                            className="mr-3"
+                            onChange={() =>
+                              handleScreenCheckboxChange(screen.screenID)
+                            }
+                            checked={screenCheckboxes[screen.screenID]}
+                          />
 
-                        <div>
-                          <Link to="/screensplayer">{screen.screenName}</Link>
-                          <button>
-                            <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
+                          <div>
+                            <Link to="/screensplayer">{screen.screenName}</Link>
+                            <button>
+                              <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
+                            </button>
+                          </div>
+                        </td>
+                      )}
+                      {locContentVisible && (
+                        <td className="p-2 break-words w-[150px]">
+                          {screen.googleLocation}
+                        </td>
+                      )}
+                      {statusContentVisible && (
+                        <td className="p-2 text-center">
+                          <button className="rounded-full px-6 py-1 text-white text-center bg-[#3AB700]">
+                            Live
                           </button>
+                        </td>
+                      )}
+                      {lastSeenContentVisible && (
+                        <td className="p-2 text-center">25 May 2023</td>
+                      )}
+                      {nowPlayingContentVisible && (
+                        <td className="p-2 text-center">
+                          <button
+                            onClick={() => setShowAssetModal(true)}
+                            className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                          >
+                            Asset
+                            <AiOutlineCloudUpload className="ml-2 text-lg" />
+                          </button>
+                          {showAssetModal ? (
+                            <>
+                              <AssetModal
+                                setShowAssetModal={setShowAssetModal}
+                              />
+                            </>
+                          ) : null}
+                        </td>
+                      )}
+                      {currScheduleContentVisible && (
+                        <td className="break-words	w-[150px] p-2 text-center">
+                          Schedule Name Till 28 June 2023
+                        </td>
+                      )}
+                      {tagsContentVisible && (
+                        <td className="p-2 text-center">{screen.tags}</td>
+                      )}
+                      <td className="p-2 text-center relative">
+                        <div className="relative">
+                          <button
+                            className="ml-3 relative"
+                            onClick={() => handleScreenClick(screen.screenID)}
+                          >
+                            <HiDotsVertical />
+                          </button>
+                          {/* action popup start */}
+                          {showActionBox[screen.screenID] && (
+                            <div className="scheduleAction z-10 ">
+                              {/* <div className="my-1">
+                              <Link
+                                to={`/addschedule?scheduleId=${screen.screenID}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
+                              >
+                                <button>Edit Schedule</button>
+                              </Link>
+                            </div> */}
+
+                              {/* <div className="mb-1 border border-[#F2F0F9]"></div> */}
+                              <div className=" mb-1 text-[#D30000]">
+                                <button
+                                  onClick={() =>
+                                    handelDeleteScreen(screen.screenID)
+                                  }
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </td>
-                    )}
-                    {locContentVisible && (
-                      <td className="p-2 break-words w-[150px]">
-                        {screen.googleLocation}
-                      </td>
-                    )}
-                    {statusContentVisible && (
-                      <td className="p-2 text-center">
-                        <button className="rounded-full px-6 py-1 text-white text-center bg-[#3AB700]">
-                          Live
-                        </button>
-                      </td>
-                    )}
-                    {lastSeenContentVisible && (
-                      <td className="p-2 text-center">25 May 2023</td>
-                    )}
-                    {nowPlayingContentVisible && (
-                      <td className="p-2 text-center">
-                        <button
-                          onClick={() => setShowAssetModal(true)}
-                          className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                        >
-                          Asset
-                          <AiOutlineCloudUpload className="ml-2 text-lg" />
-                        </button>
-                        {showAssetModal ? (
-                          <>
-                            <AssetModal setShowAssetModal={setShowAssetModal} />
-                          </>
-                        ) : null}
-                      </td>
-                    )}
-                    {currScheduleContentVisible && (
-                      <td className="break-words	w-[150px] p-2 text-center">
-                        Schedule Name Till 28 June 2023
-                      </td>
-                    )}
-                    {tagsContentVisible && (
-                      <td className="p-2 text-center">{screen.tags}</td>
-                    )}
-                  </tr>
-                </tbody>
-              ))}
+                    </tr>
+                  </tbody>
+                ))}
             </table>
           </div>
         </div>

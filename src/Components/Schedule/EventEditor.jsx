@@ -701,7 +701,7 @@ const EventEditor = ({
                         </button>
                       </div>
                       <div className="mt-3">
-                        <div className="">
+                        <div>
                           <label>Start Date:</label>
                           <div className="mt-1">
                             <input

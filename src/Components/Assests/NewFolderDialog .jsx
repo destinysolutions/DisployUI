@@ -330,7 +330,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
         <div className="pt-6 px-5 page-contain">
           <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
             <div className="lg:flex lg:justify-between sm:block items-center">
-              <div className="">
+              <div>
                 <div className=" flex-wrap flex  lg:mt-0 md:mt-0 sm:mt-3">
                   <Link to={"/assets"}>
                     <MdArrowBackIosNew className="text-4xl rounded-full p-2 b order border-gray mb-2 hover:bg-SlateBlue hover:text-white" />

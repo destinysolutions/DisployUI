@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Login from "../Pages/Login";
 import Registration from "../Pages/Registration";
 import ForgotPassword from "../Pages/ForgotPassword";
@@ -33,21 +33,18 @@ import Auditlogreport from "../Components/Reports/Auditlogreport";
 import SalesReport from "../Components/Reports/SalesReport";
 import CancelReport from "../Components/Reports/CancelReport";
 import EventEditor from "../Components/Schedule/EventEditor";
-import Unsplash from "../Components/Assests/Unsplash";
 import Userrole from "../Components/Settings/Userrole";
 import Trash from "../Components/Trash";
 import NewFolderDialog from "../Components/Assests/NewFolderDialog ";
 import { UserProvider } from "../UserContext";
 import Youtube from "../Components/Apps/Youtube";
-import Privateroute from "./Privateroute";
-
 
 const Routing = () => {
   //for screen resize sidebar open close
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const handleResize = useCallback(() => {
     if (window.innerWidth < 780) {
-      setSidebarOpen(false);
+      setSidebarOpen(false); 
     } else if (!sidebarOpen) {
       setSidebarOpen(true);
     }
@@ -70,13 +67,10 @@ const Routing = () => {
     };
   }, [handleResize]);
 
-
-
   return (
     <>
       <UserProvider>
         <Routes>
-
           <Route
             path="/forgotpassword"
             element={
@@ -86,7 +80,6 @@ const Routing = () => {
               />
             }
           />
-
           <Route
             path="/termsconditions"
             element={
@@ -97,13 +90,18 @@ const Routing = () => {
             }
           />
           {/* Dashboard component route */}
-
           {/* <Route path="/dashboard" element={<Privateroute><Dashboard /></Privateroute>} /> */}
           {/* <Route element={<Privateroute />}> */}
-          <Route path="/dashboard" element={<Dashboard sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />}
+          <Route
+            path="/dashboard"
+            element={
+              <Dashboard
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
           />
           {/* </Route> */}
-
           <Route
             path="/screens"
             element={
@@ -377,7 +375,6 @@ const Routing = () => {
               />
             }
           />
-
           <Route
             path="/youtube"
             element={
@@ -387,17 +384,15 @@ const Routing = () => {
               />
             }
           />
-
           {/* login register route */}
           <Route path="/" element={<Login />} />{" "}
           <Route path="/register" element={<Registration />} />
           {/* forgotpassword and termsconditions route */}
-
           {/*Event Editors */}
           {/* error page route */}
           <Route path="*" element={<ErrorPage />} />
         </Routes>
-      </UserProvider >
+      </UserProvider>
     </>
   );
 };

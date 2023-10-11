@@ -297,7 +297,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
               onClick={() => handleReportClick("mediareport")}
             >
               <div className="reportbox text-center ">
-                <div className="">
+                <div>
                   <TbFileReport className="lg:text-6xl md:text-6xl sm:text-5xl xs:text-6xl text-primary text-center mx-auto bg-white rounded-2xl lg:p-2 md:p-2 sm:p-2 xs:p-2 drop-shadow-xl  " />
                 </div>
                 <div>
@@ -318,7 +318,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
               onClick={() => handleReportClick("uptime")}
             >
               <div className="reportbox text-center ">
-                <div className="">
+                <div>
                   <TbFileReport className="lg:text-6xl md:text-6xl sm:text-5xl xs:text-6xl text-primary text-center mx-auto bg-white rounded-2xl lg:p-2 md:p-2 sm:p-2 xs:p-2 drop-shadow-xl" />
                 </div>
                 <div>
@@ -340,7 +340,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
               onClick={() => handleReportClick("auditLogs")}
             >
               <div className="reportbox text-center ">
-                <div className="">
+                <div>
                   <TbFileReport className="lg:text-6xl md:text-6xl sm:text-5xl xs:text-6xl text-primary text-center mx-auto bg-white rounded-2xl lg:p-2 md:p-2 sm:p-2 xs:p-2 drop-shadow-xl  " />
                 </div>
                 <div>
@@ -360,7 +360,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
               onClick={() => handleReportClick("salesReport")}
             >
               <div className="reportbox text-center ">
-                <div className="">
+                <div>
                   <TbFileReport className="lg:text-6xl md:text-6xl sm:text-5xl xs:text-6xl text-primary text-center mx-auto bg-white rounded-2xl lg:p-2 md:p-2 sm:p-2 xs:p-2 drop-shadow-xl  " />
                 </div>
                 <div>
@@ -380,7 +380,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
               onClick={() => handleReportClick("cancelReport")}
             >
               <div className="reportbox text-center ">
-                <div className="">
+                <div>
                   <TbFileReport className="lg:text-6xl md:text-6xl sm:text-5xl xs:text-6xl text-primary text-center mx-auto bg-white rounded-2xl lg:p-2 md:p-2 sm:p-2 xs:p-2 drop-shadow-xl  " />
                 </div>
                 <div>

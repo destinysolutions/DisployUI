@@ -561,7 +561,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="flex justify-between"
                                         onClick={() => setshowhoursdw(!hoursdw)}
                                       >
-                                        <label className="">
+                                        <label>
                                           {" "}
                                           Operating Hours
                                         </label>
