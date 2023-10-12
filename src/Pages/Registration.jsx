@@ -65,26 +65,52 @@ const Registration = () => {
       terms: false,
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      axios
-        .post(ADD_REGISTER_URL, {
-          companyName: values.companyName,
-          password: values.password,
-          firstName: values.firstName,
-          emailID: values.emailID,
-          googleLocation: values.googleLocation,
-          phoneNumber: values.phoneNumber,
-          operation: "Insert",
-        })
-        .then(() => {
-          history("/", { state: { message: "Registration successfull !!" } });
-        })
-        .catch((error) => {
-          console.log(error);
-          setErrorMessge("Registration failed.");
-        });
+    onSubmit: (values, { setSubmitting }) => {
+      sendFormDataToServer(values, setSubmitting);
     },
   });
+
+  const sendFormDataToServer = async (values, setSubmitting) => {
+    // Create a new FormData instance
+    const data = new FormData();
+
+    data.append("CompanyName", values.companyName);
+    data.append("GoogleLocation", values.googleLocation);
+    data.append("FirstName", values.firstName);
+    data.append("PhoneNumber", values.phoneNumber);
+    data.append("EmailID", values.emailID);
+    data.append("Password", values.password);
+    data.append("Operation", "Insert");
+    data.append("Mode", "Insert");
+
+    // Define your request configuration
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: ADD_REGISTER_URL,
+      headers: {
+        "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
+      },
+      data: data,
+    };
+
+    try {
+      setSubmitting(true);
+
+      const response = await axios.request(config);
+      if (response.status === 200) {
+        history("/", { state: { message: "Registration successfull !!" } });
+      }
+
+      setSubmitting(false);
+    } catch (error) {
+      console.log(error);
+
+      setErrorMessge("Registration failed.");
+
+      setSubmitting(false);
+    }
+  };
 
   return (
     <>
@@ -170,7 +196,7 @@ const Registration = () => {
                       type="text"
                       name="firstName"
                       id="firstName"
-                      placeholder="Enter Your First Name"
+                      placeholder="Enter Your Name"
                       className="formInput"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}

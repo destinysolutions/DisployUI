@@ -44,7 +44,7 @@ const Routing = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const handleResize = useCallback(() => {
     if (window.innerWidth < 780) {
-      setSidebarOpen(false); 
+      setSidebarOpen(false);
     } else if (!sidebarOpen) {
       setSidebarOpen(true);
     }
