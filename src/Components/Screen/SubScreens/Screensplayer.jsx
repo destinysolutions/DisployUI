@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
 import "../../../Styles/screen.css";
@@ -8,20 +8,35 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import { HiOutlineChevronDown } from "react-icons/hi2";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { MdElectricBolt } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import ReactPlayer from "react-player";
 import { FiPlus } from "react-icons/fi";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import { select } from "@material-tailwind/react";
 import Footer from "../../Footer";
+import { SELECT_BY_SCREENID_SCREENDETAIL } from "../../../Pages/Api";
+import axios from "axios";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-
+  const [searchParams] = useSearchParams();
+  const getScreenID = searchParams.get("screenID");
+  const [screenData, setScreenData] = useState([]);
+  useEffect(() => {
+    axios
+      .get(`${SELECT_BY_SCREENID_SCREENDETAIL}?ScreenID=${getScreenID}`)
+      .then((response) => {
+        const fetchedData = response.data.data;
+        console.log(fetchedData, "fetchedData");
+        setScreenData(fetchedData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   const [toggle, setToggle] = useState(1);
   function updatetoggle(id) {
     setToggle(id);
@@ -54,6 +69,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const buttons = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
+  
   return (
     <>
       <div className="flex border-b border-gray">
@@ -176,141 +192,143 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       cellPadding={10}
                       className="w-full border-[#D5E3FF] border rounded-xl screen-status"
                     >
-                      <tbody>
-                        <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-right lg:w-2/4 md:w-2/4 sm:w-full">
-                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                              Screen Status:
-                            </p>
-                          </td>
-                          <td className="text-left">
-                            <button className="bg-gray py-2 px-8 rounded-full text-primary hover:bg-primary hover:text-white">
-                              Offline
-                            </button>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-right">
-                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                              Screen Details:
-                            </p>
-                          </td>
-                          <td className="text-left">
-                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                              Sony, S01-5000035, 5120 x 2880, (Ultrawide 5K)
-                            </p>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-right">
-                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                              Mac ID:
-                            </p>
-                          </td>
-                          <td className="text-left">
-                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                              4C : 7C : 5F : 0B : 54 : 05
-                            </p>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-right">
-                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                              Operating System:
-                            </p>
-                          </td>
-                          <td className="text-left">
-                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                              Apple TV
-                            </p>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-right">
-                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                              Google Location:
-                            </p>
-                          </td>
-                          <td className="text-left">
-                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                              132, My Street, Kingston, New York 12401.
-                            </p>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-right">
-                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                              Time Zone:
-                            </p>
-                          </td>
-                          <td className="text-left">
-                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                              Asia/Calcutta
-                            </p>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-right">
-                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                              Tags:
-                            </p>
-                          </td>
-                          <td className="text-left">
-                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                              Marketing
-                            </p>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-right">
-                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                              Connected Since:
-                            </p>
-                          </td>
-                          <td className="text-left">
-                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                              Jun 5, 2023, 8:16 PM
-                            </p>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-right">
-                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                              Connected By:
-                            </p>
-                          </td>
-                          <td className="text-left">
-                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                              User Name
-                            </p>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-right">
-                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                              Operating Hours:
-                            </p>
-                          </td>
-                          <td className="text-left">
-                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                              Always on
-                            </p>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-right">
-                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                              payment method:
-                            </p>
-                          </td>
-                          <td className="text-left">
-                            <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                              **** **** **** 2222
-                            </p>
-                          </td>
-                        </tr>
+                      {Array.isArray(screenData) &&
+                        screenData.map((screen) => (
+                          <tbody key={screen.screenID}>
+                            <tr className="border-b border-[#D5E3FF]">
+                              <td className="text-right lg:w-2/4 md:w-2/4 sm:w-full">
+                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                  Screen Status:
+                                </p>
+                              </td>
+                              <td className="text-left">
+                                <button className="bg-gray py-2 px-8 rounded-full text-primary hover:bg-primary hover:text-white">
+                                  Offline
+                                </button>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-[#D5E3FF]">
+                              <td className="text-right">
+                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                  Screen Details:
+                                </p>
+                              </td>
+                              <td className="text-left">
+                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                  Sony, S01-5000035, 5120 x 2880, (Ultrawide 5K)
+                                </p>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-[#D5E3FF]">
+                              <td className="text-right">
+                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                  Mac ID:
+                                </p>
+                              </td>
+                              <td className="text-left">
+                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                  {screen.macid}
+                                </p>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-[#D5E3FF]">
+                              <td className="text-right">
+                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                  Operating System:
+                                </p>
+                              </td>
+                              <td className="text-left">
+                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                  Apple TV
+                                </p>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-[#D5E3FF]">
+                              <td className="text-right">
+                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                  Google Location:
+                                </p>
+                              </td>
+                              <td className="text-left">
+                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                  {screen.googleLocation}
+                                </p>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-[#D5E3FF]">
+                              <td className="text-right">
+                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                  Time Zone:
+                                </p>
+                              </td>
+                              <td className="text-left">
+                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                  {screen.timeZone}
+                                </p>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-[#D5E3FF]">
+                              <td className="text-right">
+                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                  Tags:
+                                </p>
+                              </td>
+                              <td className="text-left">
+                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                  {screen.tags}
+                                </p>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-[#D5E3FF]">
+                              <td className="text-right">
+                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                  Connected Since:
+                                </p>
+                              </td>
+                              <td className="text-left">
+                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                  Jun 5, 2023, 8:16 PM
+                                </p>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-[#D5E3FF]">
+                              <td className="text-right">
+                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                  Connected By:
+                                </p>
+                              </td>
+                              <td className="text-left">
+                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                  User Name
+                                </p>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-[#D5E3FF]">
+                              <td className="text-right">
+                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                  Operating Hours:
+                                </p>
+                              </td>
+                              <td className="text-left">
+                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                  Always on
+                                </p>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-[#D5E3FF]">
+                              <td className="text-right">
+                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                  payment method:
+                                </p>
+                              </td>
+                              <td className="text-left">
+                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                  **** **** **** 2222
+                                </p>
+                              </td>
+                            </tr>
 
-                        <tr>
+                            {/* <tr>
                           <td colSpan={2}>
                             <div className="flex items-center justify-center">
                               {" "}
@@ -339,8 +357,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               </label>
                             </div>
                           </td>
-                        </tr>
-                      </tbody>
+                        </tr> */}
+                          </tbody>
+                        ))}
                     </table>
                     <div className="text-right my-5">
                       <button className="bg-primary text-base px-5 py-2 rounded-full text-white">
@@ -561,10 +580,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="flex justify-between"
                                         onClick={() => setshowhoursdw(!hoursdw)}
                                       >
-                                        <label>
-                                          {" "}
-                                          Operating Hours
-                                        </label>
+                                        <label> Operating Hours</label>
                                         <MdOutlineKeyboardArrowDown className=" text-xl font-black cursor-pointer" />
                                       </span>
                                     </div>
@@ -862,7 +878,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   <select className="relative">
                                     <option>Always On</option>
                                     <option>
-                                      {" "}
+                                     
                                       <button>Custom</button>
                                     </option>
                                   </select>

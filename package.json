@@ -16,6 +16,7 @@
     "@microsoft/signalr": "^7.0.11",
     "axios": "^1.4.0",
     "formik": "^2.4.2",
+    "gapi-script": "^1.2.0",
     "googleapis": "^122.0.0",
     "leaflet": "^1.9.4",
     "moment": "^2.29.4",
