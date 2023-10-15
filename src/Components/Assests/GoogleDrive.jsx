@@ -7,61 +7,30 @@ import { Tooltip } from "@material-tailwind/react";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import { useNavigate } from "react-router-dom";
 const GoogleDrive = () => {
-  const [openPicker, authResponse] = useDrivePicker();
+  const [loginUserID, setLoginUserID] = useState("");
+  const [openPicker] = useDrivePicker();
   const [selectedFiles, setSelectedFiles] = useState([]);
-  const [accessToken, setAccessToken] = useState(null);
+  // const [accessToken, setAccessToken] = useState("");
 
-  const handleLoginSuccess = (response) => {
-    const accessToken = response.accessToken;
-    console.log("Access Token:", accessToken);
-    handleOpenPicker(accessToken);
-    setAccessToken(accessToken);
-  };
+  const handleFileUpload = async (data) => {
+    if (data.action === "picked") {
+      const selectedImages = data.docs.filter((file) => file.isShared);
 
-  const handleLoginFailure = (error) => {
-    console.log("Login Failed:", error);
-  };
+      // Get public image URLs
+      const publicURLs = selectedImages.map((file) => file.embedUrl);
 
-  const googleDriveLogin = () => {
-    return new Promise((resolve, reject) => {
-      const response = {
-        accessToken:
-          "ya29.a0AfB_byB2xrvJ54edRebVSPBG69GMJsYeHIxiJQiZqFXW9XQVdoAxDxeyO7y47NBxYlh6o8kllVVcvy3wlJBFmpNJR4Fqfea5K_SaLCxsz8lEoB3JHlHKam6nIbARroiyZrLfUAJzKzXm7eS2mM3FY2LwRYYSENvafC1xaCgYKAdASARMSFQGOcNnCpoqYGSaQC1aLtMgbkmR8nw0171",
-      };
-      resolve(response);
-    });
+      // Store the public image URLs in state
+      setSelectedFiles(publicURLs);
+    }
   };
 
   const handleOpenPicker = async (accessToken) => {
-    const currentTime = Date.now() / 1000; // Convert to seconds
-    if (accessToken.expiryTime - currentTime < 300) {
-      // Check if token will expire in less than 5 minutes
-      try {
-        const newAccessToken = await renewAccessTokenUsingRefreshToken(
-          accessToken.refreshToken
-        );
-        accessToken = newAccessToken; // Update the access token
-      } catch (error) {
-        console.error("Error renewing access token:", error);
-        return;
-      }
-    }
-    const handleFileUpload = async (data) => {
-      if (data.action === "picked") {
-        console.log("Selected Files:", data.docs);
-        setSelectedFiles(data.docs);
-
-        // Upload selected files to the API
-        await uploadDataToAPI(data.docs);
-      }
-    };
     openPicker({
       clientId:
-        "446535573289-eojjjpbqdp5jji7kvle6umhgdb84uknl.apps.googleusercontent.com", // Your client ID
-      developerKey: "AIzaSyCna-XLPlf5ouSNMndiYCajpqZpZutmG-8", // Your developer key
+        "590831956653-vp5g9p3htik4i23u9a1tkd83dvigvrlv.apps.googleusercontent.com", // Your client ID
+      developerKey: "AIzaSyCUW6ROiE0g71U2svkXUrVdvMriVoKKAaY", // Your developer key
       viewId: "DOCS",
-      token:
-        "ya29.a0AfB_byB2xrvJ54edRebVSPBG69GMJsYeHIxiJQiZqFXW9XQVdoAxDxeyO7y47NBxYlh6o8kllVVcvy3wlJBFmpNJR4Fqfea5K_SaLCxsz8lEoB3JHlHKam6nIbARroiyZrLfUAJzKzXm7eS2mM3FY2LwRYYSENvafC1xaCgYKAdASARMSFQGOcNnCpoqYGSaQC1aLtMgbkmR8nw0171",
+      token: accessToken,
       showUploadView: true,
       showUploadFolders: true,
       supportDrives: true,
@@ -69,142 +38,86 @@ const GoogleDrive = () => {
       callbackFunction: handleFileUpload,
     });
   };
-  const renewAccessTokenUsingRefreshToken = async (refreshToken) => {
-    try {
-      const response = await axios.post(
-        "https://oauth2.googleapis.com/token",
-        new URLSearchParams({
-          client_id:
-            "446535573289-eojjjpbqdp5jji7kvle6umhgdb84uknl.apps.googleusercontent.com",
-          client_secret: "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",
-          refresh_token:
-            "1//04NkHr6e_wtPKCgYIARAAGAQSNwF-L9IrIbuZMjcgoM5dvCZbrum6ENsddXC3EMYtUZfbBMDxMYrmU9Sgil0-yRjuyUqHIj0aYjQ",
-          grant_type: "refresh_token",
-        })
-      );
-
-      const newAccessToken = {
-        accessToken: response.data.access_token,
-        expiryTime: Date.now() / 1000 + response.data.expires_in,
-        refreshToken: refreshToken,
-      };
-
-      return newAccessToken;
-    } catch (error) {
-      throw error;
+  useEffect(() => {
+    const userFromLocalStorage = localStorage.getItem("user");
+    if (userFromLocalStorage) {
+      const user = JSON.parse(userFromLocalStorage);
+      setLoginUserID(user.userID); // Use your context API method to set the user
     }
-  };
+  }, []);
 
-  // API
-  const navigate = useNavigate();
-  const [uploadInProgress, setUploadInProgress] = useState(false);
-  const [imageUploadProgress, setImageUploadProgress] = useState({});
-
-  const uploadDataToAPI = (data) => {
-    console.log(data, "data");
-    setUploadInProgress(true);
-
-    data.forEach(async (image) => {
-      console.log(image, "image");
-
-      const currentTime = Date.now() / 1000;
-      if (accessToken && accessToken.expiryTime - currentTime < 300) {
-        try {
-          const newAccessToken = await renewAccessTokenUsingRefreshToken(
-            accessToken.refreshToken
-          );
-          setAccessToken(newAccessToken);
-        } catch (error) {
-          console.error("Error renewing access token:", error);
-          return;
-        }
-      }
-      fetchImageFromGoogleDrive(image.embedUrl)
-        .then((base64Data) => {
-          if (base64Data) {
-            // Store the base64 data in your database or perform any other actions
-            console.log("Base64 Image Data:", base64Data);
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-      const formData = new FormData();
-      const details = "Some Details about the file";
-
-      // Use the appropriate properties from the 'image' object
-      formData.append("FileType", image.embedUrl); // This might need adjustment
-      formData.append("operation", "Insert");
-      formData.append("CategorieType", "OnlineImage");
-      formData.append("details", details);
-      formData.append("name", image.name);
-
-      axios
-        .post(ALL_FILES_UPLOAD, formData, {
-          onUploadProgress: (progressEvent) => {
-            const progress = Math.round(
-              (progressEvent.loaded / progressEvent.total) * 100
-            );
-
-            // Use 'image.embedUrl' or another appropriate identifier
-            setImageUploadProgress((prevProgress) => ({
-              ...prevProgress,
-              [image.embedUrl]: progress,
-            }));
-          },
-        })
-        .then((response) => {
-          console.log("Upload Success:", response.data);
-          navigate("/assets");
-        })
-        .catch((error) => {
-          console.error("Upload Error:", error);
-        })
-        .finally(() => {
-          const allImagesUploaded = data.every(
-            (img) => imageUploadProgress[img.embedUrl] === 100
-          );
-
-          if (allImagesUploaded) {
-            setUploadInProgress(false);
-          }
-        });
+  const handleGet = () => {
+    let data = JSON.stringify({
+      userId: loginUserID,
+      operation: "CheckExists",
+      mode: "CheckAuthToken",
+      type: "GoogleDrive",
     });
-  };
 
-  const fetchImageFromGoogleDrive = async (embedUrl) => {
-    console.log(embedUrl, "embedUrl");
-    try {
-      const response = await fetch(embedUrl);
-      if (response.ok) {
-        const arrayBuffer = await response.arrayBuffer();
-        const base64Data = Buffer.from(arrayBuffer).toString("base64");
-        return base64Data;
-      } else {
-        console.error(
-          "Failed to fetch image:",
-          response.status,
-          response.statusText
-        );
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching image:", error);
-      return null;
-    }
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "http://192.168.1.219/api/GoogleDrive/GoogleDrive",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data);
+        const googleAuthURL = response.data.Data[0].URL;
+        if (googleAuthURL) {
+          // Redirect to the Google authentication URL
+          window.location.href = googleAuthURL;
+        } else {
+          //setAccessToken(response.data.Data[0].AuthToken);
+          handleOpenPicker(response.data.Data[0].AuthToken);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   useEffect(() => {
-    const allImagesUploaded = selectedFiles.every(
-      (img) => imageUploadProgress[img.id] === 100
-    );
+    const urlParams = new URLSearchParams(window.location.search);
+    const authorizationCode = urlParams.get("code");
+    if (authorizationCode) {
+      let data = JSON.stringify({
+        userId: loginUserID,
+        operation: "GetAuthToken",
+        mode: "Insert",
+        code: authorizationCode,
+        type: "GoogleDrive",
+      });
 
-    if (allImagesUploaded) {
-      setTimeout(() => {
-        setUploadInProgress(false);
-      }, 5000);
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: "http://192.168.1.219/api/GoogleDrive/GoogleDrive",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      axios
+        .request(config)
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      console.log("Authorization code not found in the URL.");
     }
-  }, [selectedFiles, imageUploadProgress]);
+  });
+
+  console.log(selectedFiles, "dfsdf");
   return (
     <>
       <Tooltip
@@ -216,20 +129,15 @@ const GoogleDrive = () => {
           unmount: { scale: 1, y: 10 },
         }}
       >
-        <button
-          className="fileUploadIcon"
-          onClick={() =>
-            googleDriveLogin()
-              .then(handleLoginSuccess)
-              .catch(handleLoginFailure)
-          }
-        >
+        <button className="fileUploadIcon" onClick={handleGet}>
           <img src={Googledrive} className="w-9" alt="Google Drive Icon" />
         </button>
       </Tooltip>
       <div className="selected-photos">
-        {selectedFiles.map((file, index) => (
-          <img key={index} src={file.embedUrl} alt={`Selected File ${index}`} />
+        {selectedFiles.map((url, index) => (
+          <div key={index}>
+            <img src={url} alt={`Selected Public Image ${index}`} />
+          </div>
         ))}
       </div>
     </>

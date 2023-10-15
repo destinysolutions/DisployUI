@@ -45,9 +45,10 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   const [fileErrorModal, setfileErrorModal] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
 
-  {
+
     /* google drive */
-  }
+
+
 
   {
     /*camera */

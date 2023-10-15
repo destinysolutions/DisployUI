@@ -23,6 +23,8 @@ import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import SaveAssignScreenModal from "./SaveAssignScreenModal";
 import { AiOutlineClose } from "react-icons/ai";
+import Lobby from "../../Lobby";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
@@ -30,12 +32,12 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectScreenModal, setSelectScreenModal] = useState(false);
 
   const eventStyleGetter = (event) => {
-    const backgroundColor = event.color;
+    const backgroundColor = event.color || "#4A90E2";
     const style = {
       backgroundColor,
       borderRadius: "5px",
       opacity: 0.8,
-      color: "white",
+      color: "Black",
       border: "0px",
       display: "block",
     };
@@ -369,6 +371,64 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const overallEventTimes = getOverallEventTimes(myEvents);
 
+  //socket signal-RRR
+  const [connection, setConnection] = useState(null);
+
+  // Initialize the connection when the component mounts
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl("https://disployapi.thedestinysolutions.com/chatHub")
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    newConnection.on("ReceiveMessage", (user, AssetURL, Type) => {
+      console.log("message received:", user);
+      console.log("AssetURL:", AssetURL);
+      console.log("Type:", Type);
+    });
+
+    // Start the connection
+    newConnection
+      .start()
+      .then(() => {
+        console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
+    // Cleanup the connection when the component unmounts
+    return () => {
+      if (connection) {
+        connection
+          .stop()
+          .then(() => {
+            console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  }, []);
+
+  const SendMessage = (user, AssetURL, Type) => {
+    if (connection) {
+      // Invoke the SendMessage method on the existing connection
+      connection
+        .invoke("SendMessage", user, AssetURL, Type)
+        .then(() => {
+          console.log("Message sent:", user, AssetURL, Type);
+        })
+        .catch((error) => {
+          console.error("Error sending message:", error);
+        });
+    } else {
+      console.warn("Connection is not established yet.");
+    }
+  };
+
   return (
     <>
       <div className="flex border-b border-gray bg-white">
@@ -397,7 +457,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       )}
-
+      <Lobby SendMessage={SendMessage} />
       <div className=" px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="grid grid-cols-12 mt-5">
@@ -444,6 +504,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 onSelectEvent={handleSelectEvent}
                 onSelectSlot={handleSelectSlot}
                 eventPropGetter={eventStyleGetter}
+                length={31}
               />
               <EventEditor
                 isOpen={isCreatePopupOpen}
