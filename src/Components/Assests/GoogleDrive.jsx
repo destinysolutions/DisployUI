@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import useDrivePicker from "react-google-drive-picker";
 import Googledrive from "../../../public/Assets/google-drive.png";
 import { Tooltip } from "@material-tailwind/react";
-import { ALL_FILES_UPLOAD } from "../../Pages/Api";
+import { ALL_FILES_UPLOAD, GOOGLE_DRIVE } from "../../Pages/Api";
 import { useNavigate } from "react-router-dom";
 const GoogleDrive = () => {
   const [loginUserID, setLoginUserID] = useState("");
@@ -57,7 +57,7 @@ const GoogleDrive = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.219/api/GoogleDrive/GoogleDrive",
+      url: GOOGLE_DRIVE,
       headers: {
         "Content-Type": "application/json",
       },
@@ -97,7 +97,7 @@ const GoogleDrive = () => {
       let config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: "http://192.168.1.219/api/GoogleDrive/GoogleDrive",
+        url: GOOGLE_DRIVE,
         headers: {
           "Content-Type": "application/json",
         },

@@ -86,53 +86,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
 
   const [overallUploadProgress, setOverallUploadProgress] = useState(0);
   const navigate = useNavigate();
-  // const onFileChange = (e) => {
-  //   const files = Array.from(e.target.files);
-
-  //   if (files.length > 0) {
-  //     const newImages = [...selectedImages];
-
-  //     files.forEach((file) => {
-  //       const fileSizeKB = Math.round(file.size / 1024);
-
-  //       if (file.type.startsWith('image/')) {
-  //         // Handle images
-  //         newImages.push({
-  //           file,
-  //           name: file.name,
-  //           size: fileSizeKB + ' KB',
-  //           preview: URL.createObjectURL(file),
-  //         });
-  //       } else if (file.type.startsWith('video/')) {
-  //         // Handle videos
-  //         newImages.push({
-  //           file,
-  //           name: file.name,
-  //           size: fileSizeKB + ' KB',
-  //           isVideo: true,
-  //         });
-  //       } else if (file.type.startsWith('application/pdf')) {
-  //         // Handle PDFs (you can add more document types as needed)
-  //         newImages.push({
-  //           file,
-  //           name: file.name,
-  //           size: fileSizeKB + ' KB',
-  //           isDocument: true,
-  //         });
-  //       } else {
-  //         // Handle other document types (e.g., Word documents)
-  //         newImages.push({
-  //           file,
-  //           name: file.name,
-  //           size: fileSizeKB + ' KB',
-  //           isDocument: true,
-  //         });
-  //       }
-  //     });
-
-  //     setSelectedImages(newImages);
-  //   }
-  // };
 
   const onFileChange = (event) => {
     const files = event.target.files;

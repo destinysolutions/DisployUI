@@ -19,7 +19,6 @@ import AppInstance from "../Components/Apps/AppInstance";
 import DisployStudio from "../Components/DisployStudio/DisployStudio";
 import Report from "../Components/Reports/Report";
 import EditUser from "../Pages/EditUser";
-import ViewUserProfile from "../Pages/ViewUserProfile";
 import Mediareport from "../Components/Reports/Mediareport";
 import Uptimereport from "../Components/Reports/Uptimereport";
 import Settings from "../Components/Settings/Settings";
@@ -38,6 +37,7 @@ import Trash from "../Components/Trash";
 import NewFolderDialog from "../Components/Assests/NewFolderDialog ";
 import { UserProvider } from "../UserContext";
 import Youtube from "../Components/Apps/Youtube";
+import UserProfile from "../Pages/Profile/UserProfile";
 
 const Routing = () => {
   //for screen resize sidebar open close
@@ -121,9 +121,9 @@ const Routing = () => {
             }
           />
           <Route
-            path="/viewuserprofile"
+            path="/userprofile"
             element={
-              <ViewUserProfile
+              <UserProfile
                 sidebarOpen={sidebarOpen}
                 setSidebarOpen={setSidebarOpen}
               />
