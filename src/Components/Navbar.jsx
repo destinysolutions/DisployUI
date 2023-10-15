@@ -228,7 +228,7 @@ const Navbar = () => {
                               </div>
                               <div className="border-b-[1px] border-[#8E94A9]"></div>
                               <div className="p-2">
-                                <Link to="/viewuserprofile">
+                                <Link to="/userprofile">
                                   <div className="text-base font-medium mb-1 flex justify-between items-center">
                                     My Account{" "}
                                     <MdOutlineNavigateNext className="text-2xl text-gray" />
