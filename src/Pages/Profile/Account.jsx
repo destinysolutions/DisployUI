@@ -34,11 +34,13 @@ const Account = () => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [isImageUploaded, setIsImageUploaded] = useState(false);
-  const handleChange = (e) => {
-    console.log(e.target.files);
-    setFile(URL.createObjectURL(e.target.files[0]));
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
     setIsImageUploaded(true);
   };
+  console.log(file, "file");
   const handleImageReset = () => {
     setFile(null); // Reset the file state
     setIsImageUploaded(false); // Set the image uploaded state to false
@@ -72,6 +74,8 @@ const Account = () => {
           countriesResponse,
           timezoneResponse,
         ] = responses;
+        console.log(currenciesResponse, "currenciesResponse");
+        console.log(languageResponse, "languageResponse");
         setCountries(countriesResponse.data.data);
         setTimezone(timezoneResponse.data.data);
       })
@@ -117,6 +121,7 @@ const Account = () => {
   const updateUser = async (values, setSubmitting) => {
     let data = new FormData();
 
+    data.append("UserID", loginUserID);
     data.append("GoogleLocation", address);
     data.append("FirstName", firstName);
     data.append("LastName", lastName);
@@ -126,8 +131,8 @@ const Account = () => {
     data.append("State", selectedState);
     data.append("Country", selectedCountry);
     data.append("ZipCode", values.zipCode);
-    data.append("Language", "language");
-    data.append("Currency", "currency");
+    data.append("Language", "English");
+    data.append("Currency", "Indian");
     data.append("TimeZone", selectedTimezoneName);
     data.append("Mode", "Update");
     data.append("Operation", "Update");
@@ -140,7 +145,7 @@ const Account = () => {
     console.log("PhoneNumber", values.phoneNumber);
     console.log("EmailID", values.email);
     console.log("Organization", organization);
-    console.log("State", values.selectedState);
+    console.log("State", selectedState);
     console.log("Country", selectedCountry);
     console.log("ZipCode", values.zipCode);
     console.log("Language", "language");
@@ -202,7 +207,11 @@ const Account = () => {
         <div className="flex items-center border-b border-b-[#E4E6FF] p-5">
           <div className="layout-img me-5">
             {isImageUploaded ? (
-              <img src={file} alt="Uploaded" className="w-32 rounded-lg" />
+              <img
+                src={URL.createObjectURL(file)}
+                alt="Uploaded"
+                className="w-32 rounded-lg"
+              />
             ) : (
               <MdOutlinePhotoCamera className="w-32 h-32 text-gray" />
             )}
@@ -220,7 +229,7 @@ const Account = () => {
                 id="upload-button"
                 style={{ display: "none" }}
                 ref={hiddenFileInput}
-                onChange={handleChange}
+                onChange={(e) => handleFileChange(e)}
               />
               {isImageUploaded ? (
                 <button

@@ -5,6 +5,7 @@ import Security from "./Security";
 import BillingsPlans from "./Billings_&_Plans";
 import Notifications from "./Notifications";
 import Connection from "./Connection";
+
 import {
   Tabs,
   TabsHeader,
@@ -15,6 +16,10 @@ import {
 import Sidebar from "../../Components/Sidebar";
 import Navbar from "../../Components/Navbar";
 import Footer from "../../Components/Footer";
+import { AiFillSave, AiOutlineLink, AiOutlineUser } from "react-icons/ai";
+import { CiLock } from "react-icons/ci";
+import { BsSdCard } from "react-icons/bs";
+import { IoIosNotificationsOutline } from "react-icons/io";
 
 const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
   UserProfile.propTypes = {
@@ -27,27 +32,32 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
       label: "Account",
       value: "account",
       desc: <Account />,
+      icon: <AiOutlineUser />,
     },
     {
       label: "Security",
       value: "security",
       desc: <Security />,
+      icon: <CiLock />,
     },
 
     {
       label: "Billing & Plans",
       value: "billing_plans",
       desc: <BillingsPlans />,
+      icon: <BsSdCard />,
     },
     {
       label: "Notifications",
       value: "notifications",
       desc: <Notifications />,
+      icon: <IoIosNotificationsOutline />,
     },
     {
       label: "Connections",
       value: "connections",
       desc: <Connection />,
+      icon: <AiOutlineLink />,
     },
   ];
   return (
@@ -65,19 +75,22 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <div className="mt-5 page-contain">
             <Tabs value={activeTab}>
-              <TabsHeader className="border-b rounded-none border-lightgray p-0 mb-5 text-[#A7AFB7]  ">
-                {data.map(({ label, value }) => (
+              <TabsHeader className="p-0 mb-5 text-[#A7AFB7]">
+                {data.map(({ icon, label, value }) => (
                   <Tab
                     key={value}
                     value={value}
                     onClick={() => setActiveTab(value)}
                     className={`${
                       activeTab === value
-                        ? "text-SlateBlue border-b-2 border-SlateBlue  "
+                        ? "text-blue-600 items-center rounded-full bg-blue-600 "
                         : ""
-                    } p-2 pb-2 w-auto font-semibold `}
+                    } py-4 px-5 w-auto`}
                   >
-                    {label}
+                    <div className="flex items-center">
+                      <span className="mr-3 text-xl">{icon}</span>
+                      {label}
+                    </div>
                   </Tab>
                 ))}
               </TabsHeader>

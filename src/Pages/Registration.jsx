@@ -14,6 +14,7 @@ import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { ADD_REGISTER_URL } from "./Api";
 import video from "../../public/DisployImg/iStock-1137481126.mp4";
+import { auth } from "../firebase/firebase";
 const Registration = () => {
   //using show or hide password field
   const [showPassword, setShowPassword] = useState(false);
@@ -65,52 +66,75 @@ const Registration = () => {
       terms: false,
     },
     validationSchema: validationSchema,
-    onSubmit: (values, { setSubmitting }) => {
-      sendFormDataToServer(values, setSubmitting);
+    onSubmit: (values) => {
+      // axios
+      //   .post(ADD_REGISTER_URL, {
+      //     companyName: values.companyName,
+      //     password: values.password,
+      //     firstName: values.firstName,
+      //     emailID: values.emailID,
+      //     googleLocation: values.googleLocation,
+      //     phoneNumber: values.phoneNumber,
+      //     operation: "Insert",
+      //   })
+      //   .then(() => {
+      //     history("/", { state: { message: "Registration successfull !!" } });
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //     setErrorMessge("Registration failed.");
+      //   });
+      auth
+        .createUserWithEmailAndPassword(values.emailID, values.password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log("created", user);
+          user
+            .sendEmailVerification()
+            .then(() => {
+              // Email verification sent
+              console.log("Verification email sent.");
+              alert("Verification email sent.");
+              auth.signOut();
+              
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        })
+        .catch((error) => {
+          var errorMessage = JSON.parse(error.message);
+
+          switch (errorMessage.error.message) {
+            case "ERROR_INVALID_EMAIL":
+              alert("Your email address appears to be malformed.");
+              console.log("ERROR_INVALID_EMAI");
+              break;
+            case "ERROR_WRONG_PASSWORD":
+              alert("Your password is wrong.");
+              break;
+            case "ERROR_USER_NOT_FOUND":
+              alert("User with this email doesn't exist.");
+              break;
+            case "ERROR_USER_DISABLED":
+              alert("User with this email has been disabled.");
+              break;
+            case "ERROR_TOO_MANY_REQUESTS":
+              alert("Too many requests. Try again later.");
+              break;
+            case "ERROR_OPERATION_NOT_ALLOWED":
+              alert("Signing in with Email and Password is not enabled.");
+              break;
+            case "INVALID_LOGIN_CREDENTIALS":
+              alert("Invaild Email Or Password");
+              break;
+            default:
+              alert("An undefined Error happened.");
+          }
+        });
     },
   });
-
-  const sendFormDataToServer = async (values, setSubmitting) => {
-    // Create a new FormData instance
-    const data = new FormData();
-
-    data.append("CompanyName", values.companyName);
-    data.append("GoogleLocation", values.googleLocation);
-    data.append("FirstName", values.firstName);
-    data.append("PhoneNumber", values.phoneNumber);
-    data.append("EmailID", values.emailID);
-    data.append("Password", values.password);
-    data.append("Operation", "Insert");
-    data.append("Mode", "Insert");
-
-    // Define your request configuration
-    const config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: ADD_REGISTER_URL,
-      headers: {
-        "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
-      },
-      data: data,
-    };
-
-    try {
-      setSubmitting(true);
-
-      const response = await axios.request(config);
-      if (response.status === 200) {
-        history("/", { state: { message: "Registration successfull !!" } });
-      }
-
-      setSubmitting(false);
-    } catch (error) {
-      console.log(error);
-
-      setErrorMessge("Registration failed.");
-
-      setSubmitting(false);
-    }
-  };
 
   return (
     <>
@@ -196,7 +220,7 @@ const Registration = () => {
                       type="text"
                       name="firstName"
                       id="firstName"
-                      placeholder="Enter Your Name"
+                      placeholder="Enter Your First Name"
                       className="formInput"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
