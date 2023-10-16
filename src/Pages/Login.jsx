@@ -15,11 +15,12 @@ import * as Yup from "yup";
 import { LOGIN_URL } from "./Api";
 import video from "../../public/DisployImg/iStock-1137481126.mp4";
 import { useUser } from "../UserContext";
+import { auth } from "../firebase/firebase";
 
 const Login = () => {
   //using for routing
   const history = useNavigate();
-  const { loginUser } = useUser();
+  // const { loginUser } = useUser();
   //using show or hide password field
 
   const [showPassword, setShowPassword] = useState(false);
@@ -68,33 +69,72 @@ const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      axios
-        .post(
-          LOGIN_URL,
-          {
-            password: values.password,
-            emailID: values.emailID,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((response) => {
-          const userData = response.data;
-          loginUser(userData);
+      // axios
+      //   .post(
+      //     LOGIN_URL,
+      //     {
+      //       password: values.password,
+      //       emailID: values.emailID,
+      //     },
+      //     {
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //     }
+      //   )
+      //   .then((response) => {
+      //     const userData = response.data;
+      //     // loginUser(userData);
 
-          if (response.data.status === 401) {
-            setErrorMessge(response.data.message);
-          } else {
-            history("/dashboard", {
-              state: { message: response.data.message },
-            });
+      //     if (response.data.status === 401) {
+      //       setErrorMessge(response.data.message);
+      //     } else {
+      //       history("/dashboard", {
+      //         state: { message: response.data.message },
+      //       });
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
+      auth
+        .signInWithEmailAndPassword(values.emailID, values.password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          if (!user.emailVerified) {
+            alert("please Verify your email");
           }
         })
         .catch((error) => {
-          console.log(error);
+          var errorMessage = JSON.parse(error.message);
+
+          switch (errorMessage.error.message) {
+            case "ERROR_INVALID_EMAIL":
+              alert("Your email address appears to be malformed.");
+              console.log("ERROR_INVALID_EMAI");
+              break;
+            case "ERROR_WRONG_PASSWORD":
+              alert("Your password is wrong.");
+              break;
+            case "ERROR_USER_NOT_FOUND":
+              alert("User with this email doesn't exist.");
+              break;
+            case "ERROR_USER_DISABLED":
+              alert("User with this email has been disabled.");
+              break;
+            case "ERROR_TOO_MANY_REQUESTS":
+              alert("Too many requests. Try again later.");
+              break;
+            case "ERROR_OPERATION_NOT_ALLOWED":
+              alert("Signing in with Email and Password is not enabled.");
+              break;
+            case "INVALID_LOGIN_CREDENTIALS":
+              alert("Invaild Email Or Password");
+              break;
+
+            default:
+              alert("Something went wrong");
+          }
         });
     },
   });

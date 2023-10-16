@@ -7,6 +7,7 @@ import axios from "axios";
 import { All_REGISTER_URL } from "../Pages/Api";
 // import { data } from "autoprefixer";
 import { useUser } from "../UserContext";
+import { auth } from "../firebase/firebase";
 // import { useId } from "react";
 // import { useCookies } from "react-cookie";
 
@@ -115,6 +116,7 @@ const Navbar = () => {
     localStorage.removeItem("hasSeenMessage");
     localStorage.removeItem("user");
     history("/");
+    auth.signOut();
   };
 
   return (
@@ -258,6 +260,13 @@ const Navbar = () => {
                     )
                   );
                 })}
+
+                <button
+                  className="text-[#001737] font-bold text-base "
+                  onClick={handleSignOut}
+                >
+                  Sign out
+                </button>
               </div>
               {/* profile box end */}
             </div>
