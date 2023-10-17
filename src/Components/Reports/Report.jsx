@@ -9,8 +9,8 @@ import "../../Styles/Report.css";
 import { useDateSelect } from "react-ymd-date-select";
 import { useNavigate } from "react-router-dom";
 import Footer from "../Footer";
-import Lobby from "../../Lobby";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+
+
 
 {
   /*popup datepicker */
@@ -220,63 +220,6 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  //socket signal-RRR
-  const [connection, setConnection] = useState(null);
-
-  // Initialize the connection when the component mounts
-  useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl("https://disployapi.thedestinysolutions.com/chatHub")
-      .configureLogging(LogLevel.Information)
-      .build();
-
-    newConnection.on("ReceiveMessage", (user, AssetURL, Type) => {
-      console.log("message received:", user);
-      console.log("AssetURL:", AssetURL);
-      console.log("Type:", Type);
-    });
-
-    // Start the connection
-    newConnection
-      .start()
-      .then(() => {
-        console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    // Cleanup the connection when the component unmounts
-    return () => {
-      if (connection) {
-        connection
-          .stop()
-          .then(() => {
-            console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
-  }, []);
-
-  const SendMessage = (user, AssetURL, Type) => {
-    if (connection) {
-      // Invoke the SendMessage method on the existing connection
-      connection
-        .invoke("SendMessage", user, AssetURL, Type)
-        .then(() => {
-          console.log("Message sent:", user, AssetURL, Type);
-        })
-        .catch((error) => {
-          console.error("Error sending message:", error);
-        });
-    } else {
-      console.warn("Connection is not established yet.");
-    }
-  };
   return (
     <>
       <div className="flex border-b border-gray">
@@ -290,7 +233,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
               Reports
             </h1>
           </div>
-          <Lobby SendMessage={SendMessage} />
+
           <div className="grid grid-cols-12 gap-4 mt-5">
             <div
               className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5"

@@ -14,6 +14,13 @@ import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { ADD_REGISTER_URL } from "./Api";
 import video from "../../public/DisployImg/iStock-1137481126.mp4";
+import {
+  Googleauthprovider,
+  appleProvider,
+  auth,
+  facebookProvider,
+  microsoftProvider,
+} from "../firebase/firebase";
 const Registration = () => {
   //using show or hide password field
   const [showPassword, setShowPassword] = useState(false);
@@ -66,25 +73,162 @@ const Registration = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
+      auth
+        .createUserWithEmailAndPassword(values.emailID, values.password)
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log("created", user);
+          user
+            .sendEmailVerification()
+            .then(() => {
+              // Email verification sent
+              console.log("Verification email sent.");
+              alert("Verification email sent.");
+              axios
+                .post(ADD_REGISTER_URL, {
+                  companyName: values.companyName,
+                  password: values.password,
+                  firstName: values.firstName,
+                  emailID: values.emailID,
+                  googleLocation: values.googleLocation,
+                  phoneNumber: values.phoneNumber,
+                  operation: "Insert",
+                })
+                .then(() => {
+                  history("/", {
+                    state: { message: "Registration successfull !!" },
+                  });
+                  auth.signOut();
+                })
+                .catch((error) => {
+                  console.log(error);
+                  setErrorMessge("Registration failed.");
+                });
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        })
+        .catch((error) => {
+          var errorMessage = JSON.parse(error.message);
+
+          switch (errorMessage.error.message) {
+            case "ERROR_INVALID_EMAIL":
+              alert("Your email address appears to be malformed.");
+              console.log("ERROR_INVALID_EMAI");
+              break;
+            case "ERROR_WRONG_PASSWORD":
+              alert("Your password is wrong.");
+              break;
+            case "ERROR_USER_NOT_FOUND":
+              alert("User with this email doesn't exist.");
+              break;
+            case "ERROR_USER_DISABLED":
+              alert("User with this email has been disabled.");
+              break;
+            case "ERROR_TOO_MANY_REQUESTS":
+              alert("Too many requests. Try again later.");
+              break;
+            case "ERROR_OPERATION_NOT_ALLOWED":
+              alert("Signing in with Email and Password is not enabled.");
+              break;
+            case "INVALID_LOGIN_CREDENTIALS":
+              alert("Invaild Email Or Password");
+              break;
+            default:
+              alert("An undefined Error happened.");
+          }
+        });
+    },
+  });
+  const SignInWithGoogle = async () => {
+    try {
+      const res = await auth.signInWithPopup(Googleauthprovider);
+      const user = res.user;
       axios
         .post(ADD_REGISTER_URL, {
-          companyName: values.companyName,
-          password: values.password,
-          firstName: values.firstName,
-          emailID: values.emailID,
-          googleLocation: values.googleLocation,
-          phoneNumber: values.phoneNumber,
+          companyName: null,
+          password: null,
+          firstName: null,
+          emailID: user.email,
+          googleLocation: null,
+          phoneNumber: null,
           operation: "Insert",
         })
         .then(() => {
-          history("/", { state: { message: "Registration successfull !!" } });
+          history("/", {
+            state: { message: "Registration successfull !!" },
+          });
         })
         .catch((error) => {
           console.log(error);
           setErrorMessge("Registration failed.");
         });
-    },
-  });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const SignInFaceBook = async () => {
+    try {
+      const res = await auth.signInWithPopup(facebookProvider);
+      const user = res.user;
+      // onclose();
+      axios
+        .post(ADD_REGISTER_URL, {
+          companyName: null,
+          password: null,
+          firstName: null,
+          emailID: user.email,
+          googleLocation: null,
+          phoneNumber: null,
+          operation: "Insert",
+        })
+        .then(() => {
+          history("/", {
+            state: { message: "Registration successfull !!" },
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorMessge("Registration failed.");
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const SignInapple = async () => {
+    try {
+      const res = await auth.signInWithPopup(appleProvider);
+      const user = res.user;
+      // onclose();
+      console.log("user", user);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const SignInMicroSoft = async () => {
+    microsoftProvider.setCustomParameters({
+      prompt: "consent",
+      tenant: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
+    });
+    try {
+      const res = await auth.signInWithPopup(microsoftProvider);
+      const user = res.user;
+      // onclose();
+      console.log("user", user);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  //for signup
+  const handleRegister = () => {
+    history("/register");
+    localStorage.removeItem("hasSeenMessage");
+  };
 
   return (
     <>
@@ -289,22 +433,22 @@ const Registration = () => {
             </div>
             <div className="flex items-center justify-center mt-4">
               <div className="socialIcon socialIcon1">
-                <button>
+                <button onClick={SignInWithGoogle}>
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
                 </button>
               </div>
               <div className="socialIcon socialIcon2">
-                <button>
+                <button onClick={SignInFaceBook}>
                   <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
                 </button>
               </div>
               <div className="socialIcon socialIcon3">
-                <button>
+                <button onClick={SignInapple}>
                   <BsApple className="text-2xl text-white bg-primary rounded-full p-1" />
                 </button>
               </div>
               <div className="socialIcon socialIcon4">
-                <button>
+                <button onClick={SignInMicroSoft}>
                   <BsMicrosoft className="text-lg text-primary" />
                 </button>
               </div>

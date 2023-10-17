@@ -7,8 +7,7 @@
     color: #515151;
     font-weight: 500;
 }
-
-.input-bor-color {
+.input-bor-color{
     border-color: #D5E3FF;
 }
 
@@ -16,33 +15,64 @@
     --tw-bg-opacity: 1;
     background-color: rgb(200 30 30/var(--tw-bg-opacity));
 }
-
 .text-white {
     --tw-text-opacity: 1;
     color: rgb(255 255 255/var(--tw-text-opacity));
 }
-
 .text-gray-500 {
     --tw-text-opacity: 1;
     color: rgb(125 135 169 / var(--tw-text-opacity));
 }
-
-.space-x-2> :not([hidden])~ :not([hidden]) {
+.space-x-2 > :not([hidden]) ~ :not([hidden]) {
     --tw-space-x-reverse: 0;
     margin-right: calc(0.5rem * var(--tw-space-x-reverse));
     margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
-[data-hs-tab].active.hs-tab-active\:text-blue-600 {
+.text-blue-600 {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity));
 }
-
 .border-transparent {
     border-color: transparent;
 }
-
-[data-hs-tab].active.hs-tab-active\:bg-blue-600 {
+.bg-blue-600 {
     --tw-border-opacity: 1;
     background-color: rgb(65 71 155 / var(--tw-border-opacity));
+}
+.card_btn_detail .edit-btn{
+    background-color: #D5E3FF;
+    color: #41479B;
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 400;
+    border-radius: 1.25rem;
+    padding: 0.5rem 1.5rem;
+}
+.card_btn_detail .delete-btn{
+    color: #7D87A9;
+    font-size: 0.75rem;
+    font-style: normal;
+    font-weight: 400;
+    border-radius: 1.25rem;
+    background: #D1D5DB;
+    padding: 0.5rem 1.5rem;    
+}
+.user-name {
+    color: #41479b;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+.card-shadow {
+    border-radius: 0.5rem;
+    background: #FFF;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
+    padding: 15px;
+}
+.bg-light-red {
+    border-radius: 0.375rem;
+    background: #FFEFE1;
+    color: #FF9E43;
+    font-size: 1.125rem;
+    font-weight: 400;
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "../../Styles/screen.css";
-import { AiOutlineCloudUpload } from "react-icons/ai";
+import { AiOutlineCloudUpload, AiOutlineSave } from "react-icons/ai";
 import {
   MdLiveTv,
   MdOutlineCalendarMonth,
@@ -60,6 +60,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     useState(true);
   const [tagsContentVisible, setTagsContentVisible] = useState(true);
   const [showActionBox, setShowActionBox] = useState(false);
+  const [isEditingScreen, setIsEditingScreen] = useState(false);
 
   useEffect(() => {
     setLocContentVisible(locCheckboxClick);
@@ -83,6 +84,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [screenData, setScreenData] = useState([]);
   const [loginUserID, setLoginUserID] = useState("");
+
+  const [editedScreenName, setEditedScreenName] = useState("");
+
+  const [editingScreenID, setEditingScreenID] = useState(null);
   useEffect(() => {
     const userFromLocalStorage = localStorage.getItem("user");
     if (userFromLocalStorage) {
@@ -96,6 +101,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${loginUserID}`)
         .then((response) => {
           const fetchedData = response.data.data;
+          console.log(fetchedData, "dsdsdsdsds");
           setScreenData(fetchedData);
           const initialCheckboxes = {};
           if (Array.isArray(fetchedData)) {
@@ -110,12 +116,16 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         });
     }
   }, [loginUserID]);
+
   const handleScreenClick = (screenId) => {
     // Toggle the action menu for the clicked schedule item
     setShowActionBox((prevState) => ({
       ...prevState,
       [screenId]: !prevState[screenId] || false,
     }));
+  };
+  const handleScreenNameClick = (screenId) => {
+    setEditingScreenID(screenId);
   };
 
   const handleScreenCheckboxChange = (screenID) => {
@@ -197,6 +207,90 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const handleScreenNameUpdate = (screenId) => {
+    const screenToUpdate = screenData.find(
+      (screen) => screen.screenID === screenId
+    );
+
+    if (screenToUpdate) {
+      const {
+        otp,
+        googleLocation,
+        timeZone,
+        screenOrientation,
+        screenResolution,
+        macid,
+        ipAddress,
+        postalCode,
+        latitude,
+        longitude,
+        userID,
+        screenType,
+        tags,
+        moduleID,
+        tvTimeZone,
+        tvScreenOrientation,
+        tvScreenResolution,
+      } = screenToUpdate;
+
+      let data = JSON.stringify({
+        screenID: screenId,
+        otp,
+        googleLocation,
+        timeZone,
+        screenOrientation,
+        screenResolution,
+        macid,
+        ipAddress,
+        postalCode,
+        latitude,
+        longitude,
+        userID,
+        screenType,
+        tags,
+        moduleID,
+        tvTimeZone,
+        tvScreenOrientation,
+        tvScreenResolution,
+        screenName: editedScreenName,
+        operation: "Update",
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: UPDATE_NEW_SCREEN,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      axios
+        .request(config)
+        .then((response) => {
+          console.log(response.data);
+          const updatedScreenData = screenData.map((screen) => {
+            if (screen.screenID === screenId) {
+              return {
+                ...screen,
+                screenName: editedScreenName,
+              };
+            }
+            return screen;
+          });
+
+          setScreenData(updatedScreenData);
+          setIsEditingScreen(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      console.error("Screen not found for update");
+    }
   };
 
   return (
@@ -518,16 +612,47 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             checked={screenCheckboxes[screen.screenID]}
                           />
 
-                          <div>
-                            <Link to="/screensplayer">{screen.screenName}</Link>
-                            <button>
-                              <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
-                            </button>
-                          </div>
+                          {isEditingScreen &&
+                          editingScreenID === screen.screenID ? (
+                            <div className="flex items-center">
+                              <input
+                                type="text"
+                                className="border border-primary rounded-md w-full"
+                                value={editedScreenName}
+                                onChange={(e) =>
+                                  setEditedScreenName(e.target.value)
+                                }
+                              />
+                              <button
+                                onClick={() => {
+                                  handleScreenNameUpdate(screen.screenID);
+                                  setEditingScreenID(null);
+                                }}
+                              >
+                                <AiOutlineSave className="text-2xl ml-1 hover:text-primary" />
+                              </button>
+                            </div>
+                          ) : (
+                            <div>
+                              <Link
+                                to={`/screensplayer?screenID=${screen.screenID}`}
+                              >
+                                {screen.screenName}
+                              </Link>
+                              <button
+                                onClick={() => {
+                                  setIsEditingScreen(true);
+                                  handleScreenNameClick(screen.screenID);
+                                }}
+                              >
+                                <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
+                              </button>
+                            </div>
+                          )}
                         </td>
                       )}
                       {locContentVisible && (
-                        <td className="p-2 break-words w-[150px]">
+                        <td className="p-2 break-words w-[150px] text-center">
                           {screen.googleLocation}
                         </td>
                       )}

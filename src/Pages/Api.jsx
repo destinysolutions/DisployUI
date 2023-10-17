@@ -1,82 +1,75 @@
-export const LOGIN_URL =
-  "https://disployapi.thedestinysolutions.com/api/Register/Login";
+export const LOGIN_URL = "http://192.168.1.219/api/Register/Login";
 export const ADD_REGISTER_URL =
-  "https://disployapi.thedestinysolutions.com/api/Register/AddRegister";
+  "https://localhost:5001/api/Register/AddRegister";
 export const All_REGISTER_URL =
-  "https://disployapi.thedestinysolutions.com/api/Register/GetAllRegister";
+  "http://192.168.1.219/api/Register/GetAllRegister";
 export const GET_ALL_CURRENCIES =
-  "https://disployapi.thedestinysolutions.com/api/Register/GetAllCurrencies";
+  "http://192.168.1.219/api/Register/GetAllCurrency";
 export const GET_ALL_LANGUAGES =
-  "https://disployapi.thedestinysolutions.com/api/Register/GetAllLanguages";
+  "http://192.168.1.219/api/Register/GetAllLanguage";
 
-export const ALL_SCREEN_URL =
-  "https://disployapi.thedestinysolutions.com/api/Screen/GetAllScreen";
+export const ALL_SCREEN_URL = "http://192.168.1.219/api/Screen/GetAllScreen";
 export const ALL_MAPSTORE_GET =
-  "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByStore";
+  "http://192.168.1.219/api/Cascading/SelectByStore";
 export const GET_ALL_COUNTRY =
-  "https://disployapi.thedestinysolutions.com/api/Cascading/GetAllCountry";
+  "http://192.168.1.219/api/Cascading/GetAllCountry";
 export const GET_SELECT_BY_STATE =
-  "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByState";
+  "http://192.168.1.219/api/Cascading/SelectByState";
 export const GET_SELECT_BY_CITY =
-  "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByCity";
+  "http://192.168.1.219/api/Cascading/SelectByCity";
 
 export const DELETE_SCREEN_BY_USERID =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/UpdateNewScreen";
+  "http://192.168.1.219/api/NewScreen/UpdateNewScreen";
 export const UPDATE_NEW_SCREEN =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/UpdateNewScreen";
+  "http://192.168.1.219/api/NewScreen/UpdateNewScreen";
 export const GET_SCREEN_TYPE =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllScreenType";
+  "http://192.168.1.219/api/NewScreen/GetAllScreenType";
 export const SELECT_BY_USER_SCREENDETAIL =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/SelectByUserScreen";
+  "http://192.168.1.219/api/NewScreen/SelectByUserScreen";
+export const SELECT_BY_SCREENID_SCREENDETAIL =
+  "http://192.168.1.219/api/NewScreen/SelectByScreen";
 export const GET_ALL_SCREEN_RESOLUTION =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllScreenResolution";
+  "http://192.168.1.219/api/NewScreen/GetAllScreenResolution";
 export const GET_ALL_SCREEN_ORIENTATION =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllScreenOrientation";
+  "http://192.168.1.219/api/NewScreen/GetAllScreenOrientation";
 export const GET_TIMEZONE =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/GetAllTimeZone";
+  "http://192.168.1.219/api/EventMaster/GetAllTimeZone";
 
-export const GET_ALL_FILES =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/GetAll";
+export const GET_ALL_FILES = "http://192.168.1.219/api/ImageVideoDoc/GetAll";
 export const ALL_FILES_UPLOAD =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/ImageVideoDocUpload";
-export const OTP_VERIFY =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/NewScreenVerify";
+  "http://192.168.1.219/api/ImageVideoDoc/ImageVideoDocUpload";
+export const GOOGLE_DRIVE = "http://192.168.1.219/api/GoogleDrive/GoogleDrive";
+export const OTP_VERIFY = "http://192.168.1.219/api/NewScreen/NewScreenVerify";
 export const GET_ALL_EVENTS =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/GetAllEvent";
-export const ADD_EVENT =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/AddEvent";
+  "http://192.168.1.219/api/EventMaster/GetAllEvent";
+export const ADD_EVENT = "http://192.168.1.219/api/EventMaster/AddEvent";
 export const GET_ALL_SCHEDULE =
-  "https://disployapi.thedestinysolutions.com/api/Schedule/GetAllSchedule";
-export const ADD_SCHEDULE =
-  "https://disployapi.thedestinysolutions.com/api/Schedule/AddSchedule";
+  "http://192.168.1.219/api/Schedule/GetAllSchedule";
+export const ADD_SCHEDULE = "http://192.168.1.219/api/Schedule/AddSchedule";
 export const SCHEDULE_EVENT_SELECT_BY_ID =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/SelectByID";
+  "http://192.168.1.219/api/EventMaster/SelectByID";
 export const SCHEDULE_SELECT_BY_ID =
-  "https://disployapi.thedestinysolutions.com/api/Schedule/SelectByID";
+  "http://192.168.1.219/api/Schedule/SelectByID";
 
-export const GET_ALL_TRASHDATA =
-  "https://disployapi.thedestinysolutions.com/api/Trash/GetAllTrash";
-export const ADD_TRASH =
-  "https://disployapi.thedestinysolutions.com/api/Trash/AddTrash";
+export const GET_ALL_TRASHDATA = "http://192.168.1.219/api/Trash/GetAllTrash";
+export const ADD_TRASH = "http://192.168.1.219/api/Trash/AddTrash";
 
 export const CREATE_NEW_FOLDER =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/CreateFolder";
+  "http://192.168.1.219/api/ImageVideoDoc/CreateFolder";
 export const GET_ALL_NEW_FOLDER =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/GetAllFolder";
-export const MOVE_TO_FOLDER =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/Move";
+  "http://192.168.1.219/api/ImageVideoDoc/GetAllFolder";
+export const MOVE_TO_FOLDER = "http://192.168.1.219/api/ImageVideoDoc/Move";
 export const FetchdataFormFolder =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/SelectByFolder";
+  "http://192.168.1.219/api/ImageVideoDoc/SelectByFolder";
 
-export const DeleteAllData =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/DeleteAll";
+export const DeleteAllData = "http://192.168.1.219/api/ImageVideoDoc/DeleteAll";
 
 export const YOUTUBE_INSTANCE_ADD_URL =
-  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddYoutubeApp";
+  "http://192.168.1.219/api/YoutubeApp/AddYoutubeApp";
 export const GET_ALL_YOUTUBEDATA =
-  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/GetAllYoutubeApp";
+  "http://192.168.1.219/api/YoutubeApp/GetAllYoutubeApp";
 export const YOUTUBEDATA_ALL_DELETE =
-  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/DeleteAllYoutubeApp";
+  "http://192.168.1.219/api/YoutubeApp/DeleteAllYoutubeApp";
 
 //http://192.168.1.219
 //https://disployapi.thedestinysolutions.com

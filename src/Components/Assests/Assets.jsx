@@ -28,6 +28,7 @@ import {
   ALL_FILES_UPLOAD,
   CREATE_NEW_FOLDER,
   DeleteAllData,
+  FetchdataFormFolder,
   GET_ALL_FILES,
   GET_ALL_NEW_FOLDER,
   MOVE_TO_FOLDER,
@@ -309,6 +310,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           (folder) => !folder.deleted
         );
         setNewfolder(fetchedData);
+        console.log(response.data.data, "res");
         setFolderNames(fetchedData.map((folder) => folder.folderName));
 
         console.log(fetchedData);
@@ -488,6 +490,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       axios.get(`${FetchdataFormFolder}?ID=${folderId}`).then((response) => {
         console.log(response.data);
         setGridData(response.data);
+        fetchData();
       });
     } catch (error) {
       console.error("Error updating folder content:", error);
@@ -919,7 +922,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               <li className="flex text-sm items-center relative">
                                 {selectedItems.length > 0 && (
                                   <div className="move-to-button">
-                                    <button onClick={toggleMoveTo}>
+                                    <button onClick={toggleMoveTo} className="flex">
                                       <CgMoveRight className="mr-2 text-lg" />
                                       Move to
                                     </button>

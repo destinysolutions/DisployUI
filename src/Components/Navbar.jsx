@@ -7,6 +7,7 @@ import axios from "axios";
 import { All_REGISTER_URL } from "../Pages/Api";
 // import { data } from "autoprefixer";
 import { useUser } from "../UserContext";
+import { auth } from "../firebase/firebase";
 // import { useId } from "react";
 // import { useCookies } from "react-cookie";
 
@@ -66,7 +67,8 @@ const Navbar = () => {
     const userFromLocalStorage = localStorage.getItem("user");
     if (userFromLocalStorage) {
       const user = JSON.parse(userFromLocalStorage);
-      setLoginUserID(user.userID);
+      console.log("userFromLocalStorage", user);
+      setLoginUserID(user.uid);
     }
   }, []);
 
@@ -115,6 +117,7 @@ const Navbar = () => {
     localStorage.removeItem("hasSeenMessage");
     localStorage.removeItem("user");
     history("/");
+    auth.signOut();
   };
 
   return (
@@ -228,7 +231,7 @@ const Navbar = () => {
                               </div>
                               <div className="border-b-[1px] border-[#8E94A9]"></div>
                               <div className="p-2">
-                                <Link to="/viewuserprofile">
+                                <Link to="/userprofile">
                                   <div className="text-base font-medium mb-1 flex justify-between items-center">
                                     My Account{" "}
                                     <MdOutlineNavigateNext className="text-2xl text-gray" />
@@ -258,6 +261,13 @@ const Navbar = () => {
                     )
                   );
                 })}
+
+                <button
+                  className="text-[#001737] font-bold text-base "
+                  onClick={handleSignOut}
+                >
+                  Sign out
+                </button>
               </div>
               {/* profile box end */}
             </div>
