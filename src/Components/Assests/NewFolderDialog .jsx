@@ -31,19 +31,22 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const location = useLocation();
   const folderId = location.pathname.split("/").pop();
   const history = useNavigate();
-  const loadEventsForSchedule = (folderId) => {
+  const loadFolderByID = (folderId) => {
     axios.get(`${FetchdataFormFolder}?ID=${folderId}`).then((response) => {
       const fetchedData = response.data.data;
       setNestedNewFolder(fetchedData);
       setFolderData(fetchedData);
-      setFolderNames(fetchedData.map((folder) => folder.folderName));
+      setFolderNames(
+        Array.isArray(fetchedData) &&
+          fetchedData.map((folder) => folder.folderName)
+      );
       console.log(fetchedData, "fetchedData");
     });
   };
 
   useEffect(() => {
     if (folderId) {
-      loadEventsForSchedule(folderId);
+      loadFolderByID(folderId);
     }
   }, [folderId]);
 
@@ -137,7 +140,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         console.log(response.data);
-        //loadFolderByID(folderId);
+        loadFolderByID(folderId);
       })
       .catch((error) => {
         console.log(error);
@@ -210,12 +213,13 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   // Handle going back to the parent folder
   const navigateBack = () => {
     if (folderData.length > 0) {
-      const parentFolderId = folderData[0].folderID;
+      const parentFolderId = folderData[0].parentFolderId;
       console.log(parentFolderId, "parentFolderId");
       if (parentFolderId) {
+        console.log(parentFolderId, "parentFolderId");
         // If there is a parent folder, navigate to it
-        //history(`/NewFolderDialog/${parentFolderId}`);
-        history("/assets");
+        history(`/NewFolderDialog/${parentFolderId}`);
+        //history("/assets");
       } else {
         // If there is no parent folder, navigate to the main assets page
         history("/assets");
@@ -306,280 +310,285 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <hr className="border-b border-lightgray" />
                 <div className=" page-content grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section mt-4">
-                  {folderData.map((folderAsset, index) => (
-                    <div key={folderAsset.id}>
-                      <div className="relative assetsbox">
-                        {folderAsset.categorieType === "OnlineImage" && (
-                          <img
-                            src={folderAsset.fileType}
-                            alt={folderAsset.name}
-                            className="imagebox relative opacity-1 w-full rounded-2xl"
-                          />
-                        )}
-
-                        {folderAsset.categorieType === "OnlineVideo" && (
-                          <video
-                            controls
-                            className="w-full rounded-2xl relative imagebox"
-                          >
-                            <source
-                              src={folderAsset.fileType}
-                              type="video/mp4"
-                            />
-                            Your browser does not support the video tag.
-                          </video>
-                        )}
-                        {folderAsset.categorieType === "Image" && (
-                          <img
-                            src={folderAsset.fileType}
-                            alt={folderAsset.name}
-                            className="imagebox relative opacity-1 w-full rounded-2xl"
-                          />
-                        )}
-                        {folderAsset.categorieType === "Video" && (
-                          <video
-                            controls
-                            className="w-full rounded-2xl relative h-56  list-none imagebox"
-                          >
-                            <source
-                              src={folderAsset.fileType}
-                              type="video/mp4"
-                            />
-                            Your browser does not support the video tag.
-                          </video>
-                        )}
-                        {folderAsset.categorieType === "DOC" && (
-                          <a
-                            href={folderAsset.fileType}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="imagebox relative opacity-1 w-full rounded-2xl"
-                          >
-                            {folderAsset.name}
-                          </a>
-                        )}
-                        {folderAsset.type === "Folder" && (
-                          <li
-                            onDragOver={handleDragOver}
-                            onDrop={(event) =>
-                              handleDrop(event, folderAsset.id)
-                            }
-                            className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col"
-                          >
-                            <FcOpenedFolder
-                              className="text-8xl text-center mx-auto"
-                              onClick={() => navigateToFolder(folderAsset.id)}
-                            />
-
-                            {editMode === folderAsset.id ? (
-                              <input
-                                type="text"
-                                value={folderNames[index]}
-                                className="w-full"
-                                onChange={(e) => {
-                                  const newFolderNames = [...folderNames];
-                                  newFolderNames[index] = e.target.value;
-                                  setFolderNames(newFolderNames);
-                                }}
-                                onBlur={() => {
-                                  saveFolderName(
-                                    folderAsset.id,
-                                    folderNames[index]
-                                  );
-                                  setEditMode(null);
-                                }}
-                                onKeyDown={(e) =>
-                                  handleKeyDown(e, folderAsset.id, index)
-                                }
-                                autoFocus
-                              />
-                            ) : (
-                              <span
-                                onClick={() => {
-                                  setEditMode(folderAsset.id);
-                                }}
-                                className="cursor-pointer"
-                              >
-                                {folderNames[index]}
-                              </span>
-                            )}
-                          </li>
-                        )}
-
-                        <div
-                          className="tabicon text-center absolute left-2/4 bottom-[0px] z-10"
-                          onMouseEnter={() => setHoveredTabIcon(folderAsset)}
-                          onMouseLeave={() => setHoveredTabIcon(null)}
-                          onClick={() => handleIconClick(folderAsset)}
-                        >
-                          {folderAsset.categorieType === "Image" && (
-                            <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
-                          )}
-
-                          {folderAsset.categorieType === "Video" && (
-                            <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
-                          )}
-
+                  {Array.isArray(folderData) &&
+                    folderData.map((folderAsset, index) => (
+                      <div key={folderAsset.id}>
+                        <div className="relative assetsbox">
                           {folderAsset.categorieType === "OnlineImage" && (
-                            <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                            <img
+                              src={folderAsset.fileType}
+                              alt={folderAsset.name}
+                              className="imagebox relative opacity-1 w-full rounded-2xl"
+                            />
                           )}
 
                           {folderAsset.categorieType === "OnlineVideo" && (
-                            <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                            <video
+                              controls
+                              className="w-full rounded-2xl relative imagebox"
+                            >
+                              <source
+                                src={folderAsset.fileType}
+                                type="video/mp4"
+                              />
+                              Your browser does not support the video tag.
+                            </video>
                           )}
-                        </div>
+                          {folderAsset.categorieType === "Image" && (
+                            <img
+                              src={folderAsset.fileType}
+                              alt={folderAsset.name}
+                              className="imagebox relative opacity-1 w-full rounded-2xl"
+                            />
+                          )}
+                          {folderAsset.categorieType === "Video" && (
+                            <video
+                              controls
+                              className="w-full rounded-2xl relative h-56  list-none imagebox"
+                            >
+                              <source
+                                src={folderAsset.fileType}
+                                type="video/mp4"
+                              />
+                              Your browser does not support the video tag.
+                            </video>
+                          )}
+                          {folderAsset.categorieType === "DOC" && (
+                            <a
+                              href={folderAsset.fileType}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="imagebox relative opacity-1 w-full rounded-2xl"
+                            >
+                              {folderAsset.name}
+                            </a>
+                          )}
+                          {folderAsset.type === "Folder" && (
+                            <li
+                              onDragOver={handleDragOver}
+                              onDrop={(event) =>
+                                handleDrop(event, folderAsset.id)
+                              }
+                              className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col"
+                            >
+                              <FcOpenedFolder
+                                className="text-8xl text-center mx-auto"
+                                onClick={() => navigateToFolder(folderAsset.id)}
+                              />
 
-                        {hoveredTabIcon === folderAsset && (
-                          <div className="vdetails">
-                            <div className="flex justify-end">
-                              <div className="storage mb-1">
-                                {/* <span className="bg-white text-primary rounded-sm p-1 text-sm">
+                              {editMode === folderAsset.id ? (
+                                <input
+                                  type="text"
+                                  value={folderNames[index]}
+                                  className="w-full"
+                                  onChange={(e) => {
+                                    const newFolderNames = [...folderNames];
+                                    newFolderNames[index] = e.target.value;
+                                    setFolderNames(newFolderNames);
+                                  }}
+                                  onBlur={() => {
+                                    saveFolderName(
+                                      folderAsset.id,
+                                      folderNames[index]
+                                    );
+                                    setEditMode(null);
+                                  }}
+                                  onKeyDown={(e) =>
+                                    handleKeyDown(e, folderAsset.id, index)
+                                  }
+                                  autoFocus
+                                />
+                              ) : (
+                                <span
+                                  onClick={() => {
+                                    setEditMode(folderAsset.id);
+                                  }}
+                                  className="cursor-pointer"
+                                >
+                                  {folderNames[index]}
+                                </span>
+                              )}
+                            </li>
+                          )}
+
+                          <div
+                            className="tabicon text-center absolute left-2/4 bottom-[0px] z-10"
+                            onMouseEnter={() => setHoveredTabIcon(folderAsset)}
+                            onMouseLeave={() => setHoveredTabIcon(null)}
+                            onClick={() => handleIconClick(folderAsset)}
+                          >
+                            {folderAsset.categorieType === "Image" && (
+                              <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                            )}
+
+                            {folderAsset.categorieType === "Video" && (
+                              <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                            )}
+
+                            {folderAsset.categorieType === "OnlineImage" && (
+                              <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                            )}
+
+                            {folderAsset.categorieType === "OnlineVideo" && (
+                              <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                            )}
+                          </div>
+
+                          {hoveredTabIcon === folderAsset && (
+                            <div className="vdetails">
+                              <div className="flex justify-end">
+                                <div className="storage mb-1">
+                                  {/* <span className="bg-white text-primary rounded-sm p-1 text-sm">
                                 {item.fileSize}
                               </span> */}
+                                </div>
                               </div>
-                            </div>
-                            <div className="text-center clickdetail">
-                              <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs  mb-1">
-                                {folderAsset.name}
-                              </h3>
-                              {/*<p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                              <div className="text-center clickdetail">
+                                <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs  mb-1">
+                                  {folderAsset.name}
+                                </h3>
+                                {/*<p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
                               {item.details}
                             </p> */}
-                              <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light">
-                                {folderAsset.createdDate}
-                              </h6>
-                              <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                                {folderAsset.categorieType}
-                              </span>
-                              <span>,</span>
-                              <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                                {folderAsset.fileSize}
-                              </h6>
+                                <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light">
+                                  {folderAsset.createdDate}
+                                </h6>
+                                <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                                  {folderAsset.categorieType}
+                                </span>
+                                <span>,</span>
+                                <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                                  {folderAsset.fileSize}
+                                </h6>
 
-                              <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                                {folderAsset.resolutions}
-                              </span>
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="checkbox flex justify-between absolute top-5 px-4 w-full">
-                          <input
-                            type="checkbox"
-                            className="w-[20px] h-[20px]"
-                            checked={
-                              selectAll || selectedItems.includes(folderAsset)
-                            }
-                            onChange={() => handleCheckboxChange(folderAsset)}
-                          />
-                          <button onClick={() => updateassetsdw(folderAsset)}>
-                            <BsThreeDots className="text-2xl" />
-                          </button>
-                          {assetsdw === folderAsset &&
-                            selectedItems.includes(folderAsset) && (
-                              <div className="assetsdw">
-                                <ul>
-                                  <li className="flex text-sm items-center">
-                                    <FiUpload className="mr-2 text-lg" />
-                                    Set to Screen
-                                  </li>
-                                  <li className="flex text-sm items-center">
-                                    <MdPlaylistPlay className="mr-2 text-lg" />
-                                    Add to Playlist
-                                  </li>
-                                  {folderAsset.categorieType === "Image" && (
-                                    <li className="flex text-sm items-center">
-                                      <FiDownload className="mr-2 text-lg" />
-                                      <a href={folderAsset.fileType} download>
-                                        Download
-                                      </a>
-                                    </li>
-                                  )}
-
-                                  {folderAsset.categorieType === "Video" && (
-                                    <li className="flex text-sm items-center">
-                                      <FiDownload className="mr-2 text-lg" />
-                                      <a href={folderAsset.fileType} download>
-                                        Download
-                                      </a>
-                                    </li>
-                                  )}
-                                  {folderAsset.categorieType ===
-                                    "OnlineImage" && (
-                                    <li className="flex text-sm items-center">
-                                      <FiDownload className="mr-2 text-lg" />
-                                      <a href={folderAsset.fileType} download>
-                                        Download
-                                      </a>
-                                    </li>
-                                  )}
-
-                                  {folderAsset.categorieType ===
-                                    "OnlineVideo" && (
-                                    <li className="flex text-sm items-center">
-                                      <FiDownload className="mr-2 text-lg" />
-                                      <a href={folderAsset.fileType} download>
-                                        Download
-                                      </a>
-                                    </li>
-                                  )}
-                                  {folderAsset.categorieType === "DOC" && (
-                                    <li className="flex text-sm items-center">
-                                      <FiDownload className="mr-2 text-lg" />
-                                      <a href={folderAsset.fileType} download>
-                                        Download
-                                      </a>
-                                    </li>
-                                  )}
-                                  <li className="flex text-sm items-center relative">
-                                    {selectedItems.length > 0 && (
-                                      <div className="move-to-button">
-                                        <button
-                                          onClick={toggleMoveTo}
-                                          className="flex"
-                                        >
-                                          <CgMoveRight className="mr-2 text-lg" />
-                                          Move to
-                                        </button>
-
-                                        {isMoveToOpen && (
-                                          <div className="move-to-dropdown">
-                                            <ul>
-                                              {NestedNewFolder.map((folder) => (
-                                                <li key={folder.id}>
-                                                  <button
-                                                    onClick={() =>
-                                                      handleMoveTo(folder.id)
-                                                    }
-                                                  >
-                                                    {folder.folderName}
-                                                  </button>
-                                                </li>
-                                              ))}
-                                            </ul>
-                                          </div>
-                                        )}
-                                      </div>
-                                    )}
-                                  </li>
-                                  <li>
-                                    <button
-                                      onClick={() =>
-                                        handleMoveToTrash(folderAsset.id)
-                                      }
-                                      className="flex text-sm items-center"
-                                    >
-                                      <RiDeleteBin5Line className="mr-2 text-lg" />
-                                      Move to Trash
-                                    </button>
-                                  </li>
-                                </ul>
+                                <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                                  {folderAsset.resolutions}
+                                </span>
                               </div>
-                            )}
+                            </div>
+                          )}
+
+                          <div className="checkbox flex justify-between absolute top-5 px-4 w-full">
+                            <input
+                              type="checkbox"
+                              className="w-[20px] h-[20px]"
+                              checked={
+                                selectAll || selectedItems.includes(folderAsset)
+                              }
+                              onChange={() => handleCheckboxChange(folderAsset)}
+                            />
+                            <button onClick={() => updateassetsdw(folderAsset)}>
+                              <BsThreeDots className="text-2xl" />
+                            </button>
+                            {assetsdw === folderAsset &&
+                              selectedItems.includes(folderAsset) && (
+                                <div className="assetsdw">
+                                  <ul>
+                                    <li className="flex text-sm items-center">
+                                      <FiUpload className="mr-2 text-lg" />
+                                      Set to Screen
+                                    </li>
+                                    <li className="flex text-sm items-center">
+                                      <MdPlaylistPlay className="mr-2 text-lg" />
+                                      Add to Playlist
+                                    </li>
+                                    {folderAsset.categorieType === "Image" && (
+                                      <li className="flex text-sm items-center">
+                                        <FiDownload className="mr-2 text-lg" />
+                                        <a href={folderAsset.fileType} download>
+                                          Download
+                                        </a>
+                                      </li>
+                                    )}
+
+                                    {folderAsset.categorieType === "Video" && (
+                                      <li className="flex text-sm items-center">
+                                        <FiDownload className="mr-2 text-lg" />
+                                        <a href={folderAsset.fileType} download>
+                                          Download
+                                        </a>
+                                      </li>
+                                    )}
+                                    {folderAsset.categorieType ===
+                                      "OnlineImage" && (
+                                      <li className="flex text-sm items-center">
+                                        <FiDownload className="mr-2 text-lg" />
+                                        <a href={folderAsset.fileType} download>
+                                          Download
+                                        </a>
+                                      </li>
+                                    )}
+
+                                    {folderAsset.categorieType ===
+                                      "OnlineVideo" && (
+                                      <li className="flex text-sm items-center">
+                                        <FiDownload className="mr-2 text-lg" />
+                                        <a href={folderAsset.fileType} download>
+                                          Download
+                                        </a>
+                                      </li>
+                                    )}
+                                    {folderAsset.categorieType === "DOC" && (
+                                      <li className="flex text-sm items-center">
+                                        <FiDownload className="mr-2 text-lg" />
+                                        <a href={folderAsset.fileType} download>
+                                          Download
+                                        </a>
+                                      </li>
+                                    )}
+                                    <li className="flex text-sm items-center relative">
+                                      {selectedItems.length > 0 && (
+                                        <div className="move-to-button">
+                                          <button
+                                            onClick={toggleMoveTo}
+                                            className="flex"
+                                          >
+                                            <CgMoveRight className="mr-2 text-lg" />
+                                            Move to
+                                          </button>
+
+                                          {isMoveToOpen && (
+                                            <div className="move-to-dropdown">
+                                              <ul>
+                                                {NestedNewFolder.map(
+                                                  (folder) => (
+                                                    <li key={folder.id}>
+                                                      <button
+                                                        onClick={() =>
+                                                          handleMoveTo(
+                                                            folder.id
+                                                          )
+                                                        }
+                                                      >
+                                                        {folder.folderName}
+                                                      </button>
+                                                    </li>
+                                                  )
+                                                )}
+                                              </ul>
+                                            </div>
+                                          )}
+                                        </div>
+                                      )}
+                                    </li>
+                                    <li>
+                                      <button
+                                        onClick={() =>
+                                          handleMoveToTrash(folderAsset.id)
+                                        }
+                                        className="flex text-sm items-center"
+                                      >
+                                        <RiDeleteBin5Line className="mr-2 text-lg" />
+                                        Move to Trash
+                                      </button>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </div>
             </div>

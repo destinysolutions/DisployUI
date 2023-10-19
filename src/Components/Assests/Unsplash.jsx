@@ -109,7 +109,19 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
         });
     });
   };
+  const generateDownloadLink = (image) => {
+    const link = document.createElement("a");
+    link.href = image.urls.full; // Set the image URL as the link's href
+    link.setAttribute("download", "image.jpg"); // Set the download attribute with a desired file name
+    link.style.display = "none"; // Hide the link
+    document.body.appendChild(link);
 
+    // Trigger a click event to download the image
+    link.click();
+
+    // Clean up the link element
+    document.body.removeChild(link);
+  };
   useEffect(() => {
     const allImagesUploaded = selectedImages.every(
       (img) => imageUploadProgress[img.id] === 100
@@ -151,43 +163,41 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
             />
           </div>
           <div className="container mx-auto">
-          <div className="unsplash-section bg-white rounded-lg">
-            <div className="grid grid-cols-12 px-3 gap-4 ">
-              {res.map((val) => {
-                return (
-                  <div
-                    key={val.id}
-                    className="lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-12 relative unsplash-box"
-                    onClick={() => handleImageSelect(val)}
-                    style={{
-                      border: selectedImages.includes(val)
-                        ? "2px solid blue"
-                        : "2px solid white",
-                    }}
+            <div className="unsplash-section bg-white rounded-lg">
+              <div className="grid grid-cols-12 px-3 gap-4 ">
+                {res.map((val) => {
+                  return (
+                    <div
+                      key={val.id}
+                      className="lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-12 relative unsplash-box"
+                      onClick={() => handleImageSelect(val)}
+                      style={{
+                        border: selectedImages.includes(val)
+                          ? "2px solid blue"
+                          : "2px solid white",
+                      }}
+                    >
+                      <img
+                        className="relative unsplash-img"
+                        src={val.urls.full}
+                        alt={val.alt_description}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="text-center ">
+                {res.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleLoadMore}
+                    className="text-white py-3 px-3 rounded-md fs-3 my-4 flex items-center justify-center mx-auto bg-SlateBlue hover:bg-black"
                   >
-                    <img
-                      className="relative unsplash-img"
-                      src={val.urls.full}
-                      alt={val.alt_description}
-                    />
-                  </div>
-                );
-              })}
+                    <BiLoaderCircle /> Load More
+                  </button>
+                )}
+              </div>
             </div>
-            <div className="text-center ">
-            {res.length > 0 && (
-              <button
-                type="button"
-                onClick={handleLoadMore}
-                className="text-white py-3 px-3 rounded-md fs-3 my-4 flex items-center justify-center mx-auto bg-SlateBlue hover:bg-black"
-              >
-                <BiLoaderCircle /> Load More
-              </button>
-            )}
-          </div>
-            </div>
-
-           
           </div>
 
           {/* Display selected image previews with name and size */}
@@ -215,15 +225,21 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
             )}
           </div>
 
-         
-
           <div className="text-center mt-5">
-            <button
+            {/* <button
               type="button"
               onClick={handleImageUpload}
               className="text-white py-5 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
             >
               Upload Images
+            </button> */}
+            <button
+              onClick={() => {
+                selectedImages.forEach((image) => generateDownloadLink(image));
+              }}
+              className="text-white py-3 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover-bg-black"
+            >
+              Download Selected Images
             </button>
           </div>
 

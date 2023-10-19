@@ -12,10 +12,16 @@ import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { LOGIN_URL } from "./Api";
+import { LOGIN_URL, ADD_REGISTER_URL } from "./Api";
 import video from "../../public/DisployImg/iStock-1137481126.mp4";
 import { useUser } from "../UserContext";
-import { auth } from "../firebase/firebase";
+import {
+  Googleauthprovider,
+  appleProvider,
+  auth,
+  facebookProvider,
+  microsoftProvider,
+} from "../firebase/firebase";
 
 const Login = () => {
   //using for routing
@@ -69,40 +75,45 @@ const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      // axios
-      //   .post(
-      //     LOGIN_URL,
-      //     {
-      //       password: values.password,
-      //       emailID: values.emailID,
-      //     },
-      //     {
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //     }
-      //   )
-      //   .then((response) => {
-      //     const userData = response.data;
-      //     // loginUser(userData);
-
-      //     if (response.data.status === 401) {
-      //       setErrorMessge(response.data.message);
-      //     } else {
-      //       history("/dashboard", {
-      //         state: { message: response.data.message },
-      //       });
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
       auth
         .signInWithEmailAndPassword(values.emailID, values.password)
         .then((userCredential) => {
           const user = userCredential.user;
           if (!user.emailVerified) {
             alert("please Verify your email");
+          } else {
+            let data = JSON.stringify({
+              emailID: values.emailID,
+              password: values.password,
+            });
+
+            let config = {
+              method: "post",
+              maxBodyLength: Infinity,
+              url: LOGIN_URL,
+              headers: {
+                "Content-Type": "application/json",
+              },
+              data: data,
+            };
+
+            axios
+              .request(config)
+              .then((response) => {
+                console.log(response.data);
+                const user_ID = response.data.userID;
+                localStorage.setItem("userID", JSON.stringify(user_ID));
+                if (response.data.status === 200) {
+                  history("/dashboard", {
+                    state: { message: response.data.message },
+                  });
+                } else {
+                  setErrorMessge(response.data.message);
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
           }
         })
         .catch((error) => {
@@ -111,7 +122,6 @@ const Login = () => {
           switch (errorMessage.error.message) {
             case "ERROR_INVALID_EMAIL":
               alert("Your email address appears to be malformed.");
-              console.log("ERROR_INVALID_EMAI");
               break;
             case "ERROR_WRONG_PASSWORD":
               alert("Your password is wrong.");
@@ -138,6 +148,89 @@ const Login = () => {
         });
     },
   });
+
+  const SignInWithGoogle = async () => {
+    try {
+      const res = await auth.signInWithPopup(Googleauthprovider);
+      const user = res.user;
+      axios
+        .post(ADD_REGISTER_URL, {
+          companyName: null,
+          password: null,
+          firstName: user.displayName,
+          emailID: user.email,
+          googleLocation: null,
+          phoneNumber: user.phoneNumber,
+          operation: "Insert",
+        })
+        .then(() => {
+          history("/", {
+            state: { message: "Registration successfull !!" },
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorMessge("Registration failed.");
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const SignInFaceBook = async () => {
+    try {
+      const res = await auth.signInWithPopup(facebookProvider);
+      const user = res.user;
+      // onclose();
+      axios
+        .post(ADD_REGISTER_URL, {
+          companyName: null,
+          password: null,
+          firstName: user.displayName,
+          emailID: user.email,
+          googleLocation: null,
+          phoneNumber: user.phoneNumber,
+          operation: "Insert",
+        })
+        .then(() => {
+          history("/", {
+            state: { message: "Registration successfull !!" },
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorMessge("Registration failed.");
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const SignInapple = async () => {
+    try {
+      const res = await auth.signInWithPopup(appleProvider);
+      const user = res.user;
+      // onclose();
+      console.log("user", user);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const SignInMicroSoft = async () => {
+    microsoftProvider.setCustomParameters({
+      prompt: "consent",
+      tenant: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
+    });
+    try {
+      const res = await auth.signInWithPopup(microsoftProvider);
+      const user = res.user;
+      // onclose();
+      console.log("user", user);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   //for signup
   const handleRegister = () => {
@@ -212,7 +305,7 @@ const Login = () => {
                       placeholder="Email"
                       className="formInput"
                     />
-                    {/*<label for="emailID">Email address</label> */}
+                    {/*<label >Email address</label> */}
                     {formik.errors.emailID && formik.touched.emailID && (
                       <div className="error">{formik.errors.emailID}</div>
                     )}
@@ -229,7 +322,7 @@ const Login = () => {
                         onBlur={formik.handleBlur}
                         value={formik.values.password}
                       />
-                      {/* <label for="password">Password</label>*/}
+                      {/* <label >Password</label>*/}
                       <div className="icon">
                         {showPassword ? (
                           <BsFillEyeFill
@@ -294,22 +387,22 @@ const Login = () => {
             </div>
             <div className="flex items-center justify-center mt-4">
               <div className="socialIcon socialIcon1">
-                <button>
+                <button onClick={SignInWithGoogle}>
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
                 </button>
               </div>
               <div className="socialIcon socialIcon2">
-                <button>
+                <button onClick={SignInFaceBook}>
                   <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
                 </button>
               </div>
               <div className="socialIcon socialIcon3">
-                <button>
+                <button onClick={SignInapple}>
                   <BsApple className="text-2xl text-white bg-primary rounded-full p-1" />
                 </button>
               </div>
               <div className="socialIcon socialIcon4">
-                <button>
+                <button onClick={SignInMicroSoft}>
                   <BsMicrosoft className="text-lg text-primary" />
                 </button>
               </div>

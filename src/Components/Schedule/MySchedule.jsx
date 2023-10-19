@@ -71,6 +71,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleScheduleItemClick = (scheduleId) => {
     // Toggle the action menu for the clicked schedule item
+
     setShowActionBox((prevState) => ({
       ...prevState,
       [scheduleId]: !prevState[scheduleId] || false,
@@ -270,9 +271,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       <div className="relative">
                         <button
                           className="ml-3 relative"
-                          onClick={() =>
-                            handleScheduleItemClick(schedule.scheduleId)
-                          }
+                          onClick={() => {
+                            setShowActionBox(false);
+                            handleScheduleItemClick(schedule.scheduleId);
+                          }}
                         >
                           <HiDotsVertical />
                         </button>

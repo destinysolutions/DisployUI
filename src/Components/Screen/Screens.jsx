@@ -89,10 +89,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [editingScreenID, setEditingScreenID] = useState(null);
   useEffect(() => {
-    const userFromLocalStorage = localStorage.getItem("user");
+    const userFromLocalStorage = localStorage.getItem("userID");
     if (userFromLocalStorage) {
-      const user = JSON.parse(userFromLocalStorage);
-      setLoginUserID(user.userID);
+      setLoginUserID(userFromLocalStorage);
     }
   }, []);
   useEffect(() => {

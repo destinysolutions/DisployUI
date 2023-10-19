@@ -14,7 +14,13 @@ import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { ADD_REGISTER_URL } from "./Api";
 import video from "../../public/DisployImg/iStock-1137481126.mp4";
-import { auth } from "../firebase/firebase";
+import {
+  Googleauthprovider,
+  appleProvider,
+  auth,
+  facebookProvider,
+  microsoftProvider,
+} from "../firebase/firebase";
 const Registration = () => {
   //using show or hide password field
   const [showPassword, setShowPassword] = useState(false);
@@ -67,37 +73,42 @@ const Registration = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      // axios
-      //   .post(ADD_REGISTER_URL, {
-      //     companyName: values.companyName,
-      //     password: values.password,
-      //     firstName: values.firstName,
-      //     emailID: values.emailID,
-      //     googleLocation: values.googleLocation,
-      //     phoneNumber: values.phoneNumber,
-      //     operation: "Insert",
-      //   })
-      //   .then(() => {
-      //     history("/", { state: { message: "Registration successfull !!" } });
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //     setErrorMessge("Registration failed.");
-      //   });
       auth
         .createUserWithEmailAndPassword(values.emailID, values.password)
         .then((userCredential) => {
-          // Signed in
           const user = userCredential.user;
           console.log("created", user);
           user
             .sendEmailVerification()
             .then(() => {
-              // Email verification sent
               console.log("Verification email sent.");
               alert("Verification email sent.");
-              auth.signOut();
-              
+
+              const formData = new FormData();
+
+              formData.append("companyName", values.companyName);
+              formData.append("password", values.password);
+              formData.append("firstName", values.firstName);
+              formData.append("emailID", values.emailID);
+              formData.append("googleLocation", values.googleLocation);
+              formData.append("phoneNumber", values.phoneNumber);
+              formData.append("operation", "Insert");
+              axios
+                .post(ADD_REGISTER_URL, formData, {
+                  headers: {
+                    "Content-Type": "multipart/form-data",
+                  },
+                })
+                .then(() => {
+                  history("/", {
+                    state: { message: "Registration successfull !!" },
+                  });
+                  auth.signOut();
+                })
+                .catch((error) => {
+                  console.log(error);
+                  setErrorMessge("Registration failed.");
+                });
             })
             .catch((error) => {
               console.error(error);
@@ -135,6 +146,96 @@ const Registration = () => {
         });
     },
   });
+  const SignInWithGoogle = async () => {
+    try {
+      const res = await auth.signInWithPopup(Googleauthprovider);
+      const user = res.user;
+      const formData = new FormData();
+
+      formData.append("firstName", user.displayName);
+      formData.append("emailID", user.email);
+
+      formData.append("phoneNumber", user.phoneNumber);
+      formData.append("operation", "Insert");
+      axios
+        .post(ADD_REGISTER_URL, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(() => {
+          history("/", {
+            state: { message: "Registration successfull !!" },
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorMessge("Registration failed.");
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const SignInFaceBook = async () => {
+    try {
+      const res = await auth.signInWithPopup(facebookProvider);
+      const user = res.user;
+      // onclose();
+      axios
+        .post(ADD_REGISTER_URL, {
+          companyName: null,
+          password: null,
+          firstName: user.displayName,
+          emailID: user.email,
+          googleLocation: null,
+          phoneNumber: user.phoneNumber,
+          operation: "Insert",
+        })
+        .then(() => {
+          history("/", {
+            state: { message: "Registration successfull !!" },
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorMessge("Registration failed.");
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const SignInapple = async () => {
+    try {
+      const res = await auth.signInWithPopup(appleProvider);
+      const user = res.user;
+      // onclose();
+      console.log("user", user);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const SignInMicroSoft = async () => {
+    microsoftProvider.setCustomParameters({
+      prompt: "consent",
+      tenant: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
+    });
+    try {
+      const res = await auth.signInWithPopup(microsoftProvider);
+      const user = res.user;
+      // onclose();
+      console.log("user", user);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  //for signup
+  const handleRegister = () => {
+    history("/register");
+    localStorage.removeItem("hasSeenMessage");
+  };
 
   return (
     <>
@@ -339,22 +440,22 @@ const Registration = () => {
             </div>
             <div className="flex items-center justify-center mt-4">
               <div className="socialIcon socialIcon1">
-                <button>
+                <button onClick={SignInWithGoogle}>
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
                 </button>
               </div>
               <div className="socialIcon socialIcon2">
-                <button>
+                <button onClick={SignInFaceBook}>
                   <FaFacebookF className="text-2xl text-white bg-primary rounded-full p-1" />
                 </button>
               </div>
               <div className="socialIcon socialIcon3">
-                <button>
+                <button onClick={SignInapple}>
                   <BsApple className="text-2xl text-white bg-primary rounded-full p-1" />
                 </button>
               </div>
               <div className="socialIcon socialIcon4">
-                <button>
+                <button onClick={SignInMicroSoft}>
                   <BsMicrosoft className="text-lg text-primary" />
                 </button>
               </div>

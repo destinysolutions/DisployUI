@@ -37,9 +37,9 @@ import Trash from "../Components/Trash";
 import NewFolderDialog from "../Components/Assests/NewFolderDialog ";
 import { UserProvider } from "../UserContext";
 import Youtube from "../Components/Apps/Youtube";
-import UserProfile from "../Pages/Profile/UserProfile";
 import { auth } from "../firebase/firebase";
 import LoginContainer from "./AuthRoutes";
+import UserProfile from "../Pages/Profile/UserProfile";
 
 const Routing = () => {
   //for screen resize sidebar open close
@@ -77,11 +77,14 @@ const Routing = () => {
         if (user) {
           if (user.emailVerified) {
             setisAuthicate(true);
+            localStorage.setItem("user", JSON.stringify(user));
           } else {
             setisAuthicate(false);
+            localStorage.setItem("user", null);
           }
         } else {
           setisAuthicate(false);
+          localStorage.setItem("user", null);
         }
       });
     };

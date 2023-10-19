@@ -14,14 +14,25 @@ const GoogleDrive = () => {
 
   const handleFileUpload = async (data) => {
     if (data.action === "picked") {
-      const selectedImages = data.docs.filter((file) => file.isShared);
+      const selectedImages = data.docs;
+      console.log(selectedImages, "selectedImages");
+      const downloadURLs = selectedImages.map((file) => file.url);
 
-      // Get public image URLs
-      const publicURLs = selectedImages.map((file) => file.embedUrl);
-
-      // Store the public image URLs in state
-      setSelectedFiles(publicURLs);
+      setSelectedFiles(downloadURLs);
     }
+  };
+
+  const downloadImages = () => {
+    selectedFiles.forEach((url, index) => {
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank";
+      link.download = `Image${index + 1}.jpg`;
+      link.click();
+
+      // Open the downloaded image in a new tab
+      window.open(url, "_blank");
+    });
   };
 
   const handleOpenPicker = async (accessToken) => {
@@ -39,10 +50,9 @@ const GoogleDrive = () => {
     });
   };
   useEffect(() => {
-    const userFromLocalStorage = localStorage.getItem("user");
+    const userFromLocalStorage = localStorage.getItem("userID");
     if (userFromLocalStorage) {
-      const user = JSON.parse(userFromLocalStorage);
-      setLoginUserID(user.userID); // Use your context API method to set the user
+      setLoginUserID(userFromLocalStorage);
     }
   }, []);
 
@@ -137,6 +147,9 @@ const GoogleDrive = () => {
         {selectedFiles.map((url, index) => (
           <div key={index}>
             <img src={url} alt={`Selected Public Image ${index}`} />
+            <button onClick={downloadImages} className="download-button">
+              Download Image {index + 1}
+            </button>
           </div>
         ))}
       </div>

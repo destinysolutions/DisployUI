@@ -704,7 +704,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                           <ul>
                                             <li className="flex items-center justify-between my-3 p-2  border-2 rounded-md border-[#E4E6FF] ">
                                               <label
-                                                for="1"
+                                               
                                                 className="lg:flex md:flex sm:block xs:block items-center lg:text-base md:text-sm sm:text-sm xs:text-xs"
                                               >
                                                 <img
@@ -721,7 +721,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                             </li>
                                             <li className="flex items-center justify-between my-3 p-2 border-2 rounded-md border-[#E4E6FF]">
                                               <label
-                                                for="2"
+                                              
                                                 className="lg:flex md:flex sm:block xs:block items-center lg:text-base md:text-sm sm:text-sm xs:text-xs"
                                               >
                                                 <img
