@@ -2,7 +2,6 @@ import axios from "axios";
 import { useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../../UserContext";
 import { OTP_VERIFY } from "../../Pages/Api";
 import { useRef } from "react";
 import { useEffect } from "react";
@@ -15,10 +14,9 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
 
   const [loginUserID, setLoginUserID] = useState("");
   useEffect(() => {
-    const userFromLocalStorage = localStorage.getItem("user");
+    const userFromLocalStorage = localStorage.getItem("userID");
     if (userFromLocalStorage) {
-      const user = JSON.parse(userFromLocalStorage);
-      setLoginUserID(user.userID); // Use your context API method to set the user
+      setLoginUserID(userFromLocalStorage);
     }
   }, []);
 

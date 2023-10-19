@@ -5,7 +5,7 @@ import { Calendar, Views, momentLocalizer } from "react-big-calendar";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import { BsPencilFill } from "react-icons/bs";
 import { IoArrowBackOutline } from "react-icons/io5";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import EventEditor from "./EventEditor";
@@ -18,12 +18,13 @@ import {
   ADD_SCHEDULE,
   SCHEDULE_EVENT_SELECT_BY_ID,
   GET_TIMEZONE,
+  UPDATED_SCHEDULE_DATA,
+  SIGNAL_R,
 } from "../../Pages/Api";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import SaveAssignScreenModal from "./SaveAssignScreenModal";
 import { AiOutlineClose } from "react-icons/ai";
-import Lobby from "../../Lobby";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
@@ -55,19 +56,26 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [scheduleAsset, setScheduleAsset] = useState([]);
   const [assetData, setAssetData] = useState([]);
   const [allAssets, setAllAssets] = useState([]);
-  const [newScheduleNameInput, setNewScheduleNameInput] = useState("");
-
-  const [showScheduleName, setShowScheduleName] = useState(false);
+  const current_date = new Date();
   const [createdScheduleId, setCreatedScheduleId] = useState("");
   const [searchParams] = useSearchParams();
   const getScheduleId = searchParams.get("scheduleId");
+
   const isEditingSchedule = !!getScheduleId;
+
   const getScheduleName = searchParams.get("scheduleName");
-  const [editScheduleName, setEditScheduleName] = useState(getScheduleName);
+
+  const [newScheduleNameInput, setNewScheduleNameInput] = useState(
+    getScheduleName
+      ? getScheduleName
+      : moment(current_date).format("YYYY-MM-DD hh:mm")
+  );
+
   const [getTimezone, setTimezone] = useState([]);
   const [selectedTimezoneName, setSelectedTimezoneName] = useState("");
-  const addedTimezoneName = searchParams.get("timeZoneName");
 
+  const addedTimezoneName = searchParams.get("timeZoneName");
+  const navigate = useNavigate();
   const handleSelectSlot = useCallback(
     ({ start, end }) => {
       if (getScheduleName) {
@@ -90,6 +98,21 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setCreatePopupOpen(true);
   }, []);
 
+  useEffect(() => {
+    if (!isEditingSchedule) {
+      handleSaveNewSchedule();
+    }
+  }, []);
+
+  const handleTimezoneChange = (e) => {
+    if (e.target.value != selectedTimezoneName && isEditingSchedule) {
+      alert("change");
+      setSelectedTimezoneName(e.target.value);
+    } else {
+      console.log("swdwdwqwwefrwfreftegt", e.target.value);
+      setSelectedTimezoneName(e.target.value);
+    }
+  };
   // Function to handle saving the new schedule
   const handleSaveNewSchedule = () => {
     axios
@@ -101,7 +124,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         const newScheduleId = response.data.data.model.scheduleId;
         setCreatedScheduleId(newScheduleId);
-        setShowScheduleName(true);
+
         console.log(response.data);
       })
       .catch((error) => {
@@ -115,7 +138,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       : selectedTimezoneName;
     let data = JSON.stringify({
       scheduleId: getScheduleId,
-      scheduleName: editScheduleName,
+      scheduleName: newScheduleNameInput,
       timeZoneName: timezoneNameToUse,
       startDate: overallEventTimes.earliestStartTime.toLocaleString(),
       endDate: overallEventTimes.latestEndTime.toLocaleString(),
@@ -133,10 +156,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        const updatedScheduleName = response.data.data.model.scheduleName;
-        setEditScheduleName(updatedScheduleName);
-        setShowScheduleName(true);
-        console.log(JSON.stringify(response.data));
+        if (response.data.status === 200) {
+          navigate("/myschedule");
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -216,6 +238,85 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
+  //socket signal-RRR
+  const [connection, setConnection] = useState(null);
+  const [fileType, setFileType] = useState();
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    newConnection.on("ReceiveMessage", (endDate, startDate, type) => {
+      console.log("end date", endDate);
+      console.log("start date:", startDate);
+      console.log("asset:", type);
+    });
+
+    newConnection
+      .start()
+      .then(() => {
+        console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
+    return () => {
+      if (newConnection) {
+        newConnection
+          .stop()
+          .then(() => {
+            console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: UPDATED_SCHEDULE_DATA,
+      headers: {},
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data, "response.data[0]");
+        if (
+          Array.isArray(response.data.data) &&
+          response.data.data.length > 0
+        ) {
+          const { cEndDate, cStartDate, fileType } = response.data.data[0];
+          setFileType(fileType);
+          if (connection) {
+            // Send the API response to SignalR when the connection is established
+            connection
+              .invoke("SendMessage", cEndDate, cStartDate, fileType)
+              .then(() => {
+                console.log("Message sent:", cEndDate, cStartDate, fileType);
+              })
+              .catch((error) => {
+                console.error("Error sending message:", error);
+              });
+          } else {
+            console.warn("Connection is not established yet.");
+          }
+        } else {
+          console.warn("No data in the response");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [connection]);
+
   const handleSaveEvent = (eventId, eventData) => {
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
@@ -268,6 +369,27 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           asset: item.asset,
         }));
         console.log(updateEvent, "updateEvent");
+        // Sending a SignalR message for the updated event
+        if (eventId) {
+          const updatedEvent = fetchedData.find(
+            (event) => event.eventId === eventId
+          );
+          if (updatedEvent && connection) {
+            connection
+              .invoke(
+                "SendMessage",
+                updatedEvent.cEndDate,
+                updatedEvent.cStartDate,
+                fileType
+              )
+              .then(() => {
+                console.log("SignalR message sent for updated event");
+              })
+              .catch((error) => {
+                console.error("Error sending SignalR message:", error);
+              });
+          }
+        }
         if (eventId) {
           const updatedEventsMap = Object.fromEntries(
             updateEvent.map((event) => [event.id, event])
@@ -371,64 +493,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const overallEventTimes = getOverallEventTimes(myEvents);
 
-  //socket signal-RRR
-  const [connection, setConnection] = useState(null);
-
-  // Initialize the connection when the component mounts
-  useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl("https://disployapi.thedestinysolutions.com/chatHub")
-      .configureLogging(LogLevel.Information)
-      .build();
-
-    newConnection.on("ReceiveMessage", (user, AssetURL, Type) => {
-      console.log("message received:", user);
-      console.log("AssetURL:", AssetURL);
-      console.log("Type:", Type);
-    });
-
-    // Start the connection
-    newConnection
-      .start()
-      .then(() => {
-        console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    // Cleanup the connection when the component unmounts
-    return () => {
-      if (connection) {
-        connection
-          .stop()
-          .then(() => {
-            console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
-  }, []);
-
-  const SendMessage = (user, AssetURL, Type) => {
-    if (connection) {
-      // Invoke the SendMessage method on the existing connection
-      connection
-        .invoke("SendMessage", user, AssetURL, Type)
-        .then(() => {
-          console.log("Message sent:", user, AssetURL, Type);
-        })
-        .catch((error) => {
-          console.error("Error sending message:", error);
-        });
-    } else {
-      console.warn("Connection is not established yet.");
-    }
-  };
-
   return (
     <>
       <div className="flex border-b border-gray bg-white">
@@ -457,7 +521,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       )}
-      <Lobby SendMessage={SendMessage} />
+
       <div className=" px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="grid grid-cols-12 mt-5">
@@ -467,13 +531,14 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 <BsPencilFill />
               </button>
             </div>
+
             <div className="lg:col-span-3 md:col-span-5 sm:col-span-6 xs:col-span-12 ml-5">
               <select
                 className="w-full paymentlabel relative"
                 value={
                   isEditingSchedule ? addedTimezoneName : selectedTimezoneName
                 }
-                onChange={(e) => setSelectedTimezoneName(e.target.value)}
+                onChange={(e) => handleTimezoneChange(e)}
               >
                 {getTimezone.map((timezone) => (
                   <option
@@ -526,56 +591,16 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 Schedule Name
               </div>
 
-              {isEditingSchedule ? (
-                <>
-                  {showScheduleName ? (
-                    <h1 className="flex justify-center text-3xl">
-                      {editScheduleName}
-                    </h1>
-                  ) : (
-                    <div className="flex justify-center items-center px-5">
-                      <input
-                        type="text"
-                        className="w-full border border-primary rounded-md px-2 py-1"
-                        value={editScheduleName}
-                        onChange={(e) => setEditScheduleName(e.target.value)}
-                      />
-                      <button
-                        className="text-black px-2 py-1 rounded border border-primary ml-1"
-                        onClick={saveEditedSchedule}
-                      >
-                        Edit
-                      </button>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <>
-                  {showScheduleName ? (
-                    <h1 className="flex justify-center items-center text-2xl">
-                      {newScheduleNameInput}
-                    </h1>
-                  ) : (
-                    <div className="flex justify-center items-center px-5">
-                      <input
-                        type="text"
-                        className="w-full border border-primary rounded-md px-2 py-1"
-                        placeholder="Enter schedule name"
-                        value={newScheduleNameInput}
-                        onChange={(e) =>
-                          setNewScheduleNameInput(e.target.value)
-                        }
-                      />
-                      <button
-                        className="text-black px-2 py-1 rounded border border-primary ml-1"
-                        onClick={handleSaveNewSchedule}
-                      >
-                        Save
-                      </button>
-                    </div>
-                  )}
-                </>
-              )}
+              <div className="flex justify-center items-center px-5">
+                <input
+                  type="text"
+                  className="w-full border border-primary rounded-md px-2 py-1"
+                  placeholder="Enter schedule name"
+                  value={newScheduleNameInput}
+                  onChange={(e) => setNewScheduleNameInput(e.target.value)}
+                />
+              </div>
+
               <div className="border-b-2 border-lightgray mt-3"></div>
               <div className="p-3">
                 <div className="mb-2">Schedule Date time</div>
@@ -703,11 +728,20 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 Cancel
               </button>
             </Link>
-            <Link to="/myschedule">
-              <button className="mb-3 border-2 border-gray bg-lightgray hover:bg-primary hover:text-white  px-6 py-2 rounded-full ml-3">
-                Save
-              </button>
-            </Link>
+
+            <button
+              className="mb-3 border-2 border-gray bg-lightgray hover:bg-primary hover:text-white  px-6 py-2 rounded-full ml-3"
+              onClick={() =>
+                isEditingSchedule
+                  ? saveEditedSchedule()
+                  : createdScheduleId
+                  ? navigate("/myschedule")
+                  : handleSaveNewSchedule()
+              }
+            >
+              Save
+            </button>
+
             <button
               className="mb-3 border-2 border-lightgray bg-SlateBlue text-white hover:bg-primary hover:text-white   px-4 py-2 rounded-full ml-3"
               onClick={() => setSelectScreenModal(true)}

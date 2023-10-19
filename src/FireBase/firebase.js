@@ -18,6 +18,15 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 var auth = firebase.auth();
-const storage = firebase.storage();
+var Googleauthprovider = new firebase.auth.GoogleAuthProvider();
+var facebookProvider = new firebase.auth.FacebookAuthProvider();
+var appleProvider = new firebase.auth.OAuthProvider("apple.com");
+var microsoftProvider = new firebase.auth.OAuthProvider("microsoft.com");
 
-export { auth, storage };
+export {
+  auth,
+  Googleauthprovider,
+  facebookProvider,
+  appleProvider,
+  microsoftProvider,
+};

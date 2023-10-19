@@ -4,12 +4,9 @@ import { MdOutlineNavigateNext } from "react-icons/md";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import "././../Styles/sidebar.css";
 import axios from "axios";
-import { All_REGISTER_URL } from "../Pages/Api";
-// import { data } from "autoprefixer";
-import { useUser } from "../UserContext";
+import { SELECT_BY_ID_USERDETAIL } from "../Pages/Api";
+
 import { auth } from "../firebase/firebase";
-// import { useId } from "react";
-// import { useCookies } from "react-cookie";
 
 const getInitials = (name) => {
   let initials;
@@ -25,14 +22,6 @@ const getInitials = (name) => {
   return initials.toUpperCase();
 };
 
-// export const getRandomColor = () => {
-//   var letters = '0123456789ABCDEF';
-//   var color = '#';
-//   for (var i = 0; i < 6; i++) {
-//     color += letters[Math.floor(Math.random() * 16)];
-//   }
-//   return color;
-// }
 const color = "#e4aa07";
 export const createImageFromInitials = (size, name, color) => {
   if (name == null) return;
@@ -44,9 +33,6 @@ export const createImageFromInitials = (size, name, color) => {
 
   context.fillStyle = "#000";
   context.fillRect(0, 0, size, size);
-
-  // context.fillStyle = `${color}50`
-  // context.fillRect(0, 0, size, size)
 
   context.fillStyle = color;
   context.textBaseline = "middle";
@@ -62,14 +48,6 @@ const Navbar = () => {
   const [showProfileBox, setShowProfileBox] = useState(false);
   const [showNotificationBox, setShowNotificationBox] = useState(false);
   const [regsiterdata, setRegisterdata] = useState([]);
-  const [loginUserID, setLoginUserID] = useState("");
-  useEffect(() => {
-    const userFromLocalStorage = localStorage.getItem("user");
-    if (userFromLocalStorage) {
-      const user = JSON.parse(userFromLocalStorage);
-      setLoginUserID(user.userID);
-    }
-  }, []);
 
   const handleProfileClick = (e) => {
     e.stopPropagation();
@@ -97,15 +75,18 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    axios
-      .get(All_REGISTER_URL)
-      .then((response) => {
-        const fetchedData = response.data.data;
-        setRegisterdata(fetchedData);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const userFromLocalStorage = localStorage.getItem("userID");
+    if (userFromLocalStorage) {
+      axios
+        .get(`${SELECT_BY_ID_USERDETAIL}?ID=${userFromLocalStorage}`)
+        .then((response) => {
+          setRegisterdata(response.data.data);
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }, []);
 
   //used for apply navigation
@@ -183,42 +164,62 @@ const Navbar = () => {
               {/* Notification box end */}
               {/* profile box start */}
               <div className="relative">
-                {regsiterdata.map((data) => {
-                  const imgSrc = "";
-                  return (
-                    loginUserID === data.userID && (
+                {Array.isArray(regsiterdata) &&
+                  regsiterdata.map((data) => {
+                    const imgSrc = "";
+                    return (
                       <div key={data.userID}>
-                        <img
-                          src={
-                            imgSrc.length <= 0
-                              ? createImageFromInitials(
-                                  500,
-                                  data.firstName,
-                                  color
-                                )
-                              : imgSrc
-                          }
-                          alt="profile"
-                          className="cursor-pointer profile"
-                          onClick={handleProfileClick}
-                        />
+                        {data.image == "" ? (
+                          <img
+                            src={
+                              imgSrc.length <= 0
+                                ? createImageFromInitials(
+                                    500,
+                                    data.firstName,
+                                    color
+                                  )
+                                : imgSrc
+                            }
+                            alt="profile"
+                            className="cursor-pointer profile"
+                            onClick={handleProfileClick}
+                          />
+                        ) : (
+                          <img
+                            src={data.image}
+                            alt="profile"
+                            className="cursor-pointer profile"
+                            onClick={handleProfileClick}
+                          />
+                        )}
+
                         {showProfileBox && (
                           <>
                             <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
                               <div className="flex items-center space-x-3 cursor-pointer p-2">
-                                <img
-                                  src={
-                                    imgSrc.length <= 0
-                                      ? createImageFromInitials(
-                                          500,
-                                          data.firstName,
-                                          color
-                                        )
-                                      : imgSrc
-                                  }
-                                  alt="profile"
-                                  className="cursor-pointer profileBox p-0"
-                                />
+                                {data.image == "" ? (
+                                  <img
+                                    src={
+                                      imgSrc.length <= 0
+                                        ? createImageFromInitials(
+                                            500,
+                                            data.firstName,
+                                            color
+                                          )
+                                        : imgSrc
+                                    }
+                                    alt="profile"
+                                    className="cursor-pointer profile"
+                                    onClick={handleProfileClick}
+                                  />
+                                ) : (
+                                  <img
+                                    src={data.image}
+                                    alt="profile"
+                                    className="cursor-pointer profile"
+                                    onClick={handleProfileClick}
+                                  />
+                                )}
                                 <div>
                                   <div className="text-[#7C82A7] font-semibold text-lg">
                                     {data.firstName}
@@ -232,12 +233,12 @@ const Navbar = () => {
                               <div className="p-2">
                                 <Link to="/userprofile">
                                   <div className="text-base font-medium mb-1 flex justify-between items-center">
-                                    My Account{" "}
+                                    My Account
                                     <MdOutlineNavigateNext className="text-2xl text-gray" />
                                   </div>
                                 </Link>
                                 <div className="text-base font-medium mb-1 flex justify-between items-center">
-                                  Profile settings{" "}
+                                  Profile settings
                                   <MdOutlineNavigateNext className="text-2xl text-gray" />
                                 </div>
                               </div>
@@ -257,17 +258,10 @@ const Navbar = () => {
                           </>
                         )}
                       </div>
-                    )
-                  );
-                })}
-
-                <button
-                  className="text-[#001737] font-bold text-base "
-                  onClick={handleSignOut}
-                >
-                  Sign out
-                </button>
+                    );
+                  })}
               </div>
+
               {/* profile box end */}
             </div>
           </div>

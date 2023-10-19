@@ -24,10 +24,12 @@ const Account = () => {
   const [address, setAddress] = useState("");
   const [organization, setOrganization] = useState("");
   const [zipCode, setZipCode] = useState("");
-  const [language, setLanguage] = useState("");
+  const [language, setLanguage] = useState([]);
   const [timezone, setTimezone] = useState([]);
   const [selectedTimezoneName, setSelectedTimezoneName] = useState("");
-  const [currency, setCurrency] = useState("");
+  const [selectedCurrencyName, setSelectedCurrencyName] = useState("");
+  const [selectedLanguageName, setSelectedLanguageName] = useState("");
+  const [currency, setCurrency] = useState([]);
   const hiddenFileInput = useRef(null);
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -40,7 +42,7 @@ const Account = () => {
     setFile(selectedFile);
     setIsImageUploaded(true);
   };
-  console.log(file, "file");
+
   const handleImageReset = () => {
     setFile(null); // Reset the file state
     setIsImageUploaded(false); // Set the image uploaded state to false
@@ -50,10 +52,9 @@ const Account = () => {
   };
   const [loginUserID, setLoginUserID] = useState("");
   useEffect(() => {
-    const userFromLocalStorage = localStorage.getItem("user");
+    const userFromLocalStorage = localStorage.getItem("userID");
     if (userFromLocalStorage) {
-      const user = JSON.parse(userFromLocalStorage);
-      setLoginUserID(user.userID);
+      setLoginUserID(userFromLocalStorage);
     }
   }, []);
 
@@ -76,6 +77,8 @@ const Account = () => {
         ] = responses;
         console.log(currenciesResponse, "currenciesResponse");
         console.log(languageResponse, "languageResponse");
+        setCurrency(currenciesResponse.data.data);
+        setLanguage(languageResponse.data.data);
         setCountries(countriesResponse.data.data);
         setTimezone(timezoneResponse.data.data);
       })
@@ -131,8 +134,8 @@ const Account = () => {
     data.append("State", selectedState);
     data.append("Country", selectedCountry);
     data.append("ZipCode", values.zipCode);
-    data.append("Language", "English");
-    data.append("Currency", "Indian");
+    data.append("Language", selectedLanguageName);
+    data.append("Currency", selectedCurrencyName);
     data.append("TimeZone", selectedTimezoneName);
     data.append("Mode", "Update");
     data.append("Operation", "Update");
@@ -148,8 +151,8 @@ const Account = () => {
     console.log("State", selectedState);
     console.log("Country", selectedCountry);
     console.log("ZipCode", values.zipCode);
-    console.log("Language", "language");
-    console.log("Currency", "currency");
+    console.log("Language", selectedLanguageName);
+    console.log("Currency", selectedCurrencyName);
     console.log("TimeZone", selectedTimezoneName);
     console.log("Mode", "Update");
     console.log("Operation", "Update");
@@ -169,9 +172,6 @@ const Account = () => {
       setSubmitting(true);
 
       const response = await axios.request(config);
-      // if (response.status === 200) {
-      //   history("/", { state: { message: "Registration successfull !!" } });
-      // }
       console.log(response.data);
       setSubmitting(false);
     } catch (error) {
@@ -193,7 +193,7 @@ const Account = () => {
     setAddress("");
     setOrganization("");
     setZipCode("");
-    setLanguage("");
+    setSelectedLanguageName("");
     setSelectedTimezoneName("");
     setCurrency("");
     setSelectedCountry("");
@@ -255,7 +255,6 @@ const Account = () => {
                 <label className="label_top text-xs">First Name*</label>
                 <input
                   className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                  id="company"
                   type="text"
                   placeholder="Harry"
                   value={firstName}
@@ -267,7 +266,6 @@ const Account = () => {
                 <label className="label_top text-xs">Last Name*</label>
                 <input
                   className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                  id="company"
                   type="text"
                   placeholder="McCall"
                   value={lastName}
@@ -279,7 +277,7 @@ const Account = () => {
                 <label className="label_top text-xs">Email*</label>
                 <input
                   className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                  id="title"
+               
                   type="email"
                   name="email"
                   placeholder="harrymc.call@gmail.com"
@@ -297,7 +295,6 @@ const Account = () => {
                 <label className="label_top text-xs">Phone Number*</label>
                 <input
                   className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                  id="application-link"
                   type="text"
                   placeholder="(397) 294-5153"
                   name="phoneNumber"
@@ -313,7 +310,6 @@ const Account = () => {
                 <label className="label_top text-xs">Address*</label>
                 <input
                   className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                  id="application-link"
                   type="text"
                   placeholder="132, My Street, Kingston, New York 12401."
                   value={address}
@@ -324,7 +320,7 @@ const Account = () => {
                 <label className="label_top text-xs">Organization*</label>
                 <input
                   className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                  id="title"
+         
                   type="text"
                   placeholder="Manager"
                   value={organization}
@@ -337,7 +333,6 @@ const Account = () => {
                 <label className="label_top text-xs">Zip Code*</label>
                 <input
                   className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-                  id="application-link"
                   type="text"
                   name="zipCode"
                   placeholder="10001"
@@ -354,7 +349,7 @@ const Account = () => {
                 <div>
                   <select
                     className="w-full bg-gray-200 border input-bor-color text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-                    id="job-type"
+               
                     onChange={(e) => setSelectedCountry(e.target.value)}
                     value={selectedCountry}
                   >
@@ -393,11 +388,18 @@ const Account = () => {
                 <div>
                   <select
                     className="w-full bg-gray-200 border input-bor-color text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-                    id="department"
+               
+                    value={selectedLanguageName}
+                    onChange={(e) => setSelectedLanguageName(e.target.value)}
                   >
-                    <option>English</option>
-                    <option>Hindi</option>
-                    <option>Customer Support</option>
+                    {language.map((language) => (
+                      <option
+                        value={language.languageName}
+                        key={language.languageId}
+                      >
+                        {language.languageName}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -425,11 +427,17 @@ const Account = () => {
                 <div>
                   <select
                     className="w-full bg-gray-200 border input-bor-color text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-                    id="job-type"
+                    value={selectedCurrencyName}
+                    onChange={(e) => setSelectedCurrencyName(e.target.value)}
                   >
-                    <option>USA</option>
-                    <option>India</option>
-                    <option>UK</option>
+                    {currency.map((currency) => (
+                      <option
+                        value={currency.currencyName}
+                        key={currency.currencyId}
+                      >
+                        {currency.currencyName}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
