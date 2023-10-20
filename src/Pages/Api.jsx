@@ -60,6 +60,8 @@ export const SCHEDULE_SELECT_BY_ID =
   "https://disployapi.thedestinysolutions.com/api/Schedule/SelectByID";
 export const UPDATED_SCHEDULE_DATA =
   "https://disployapi.thedestinysolutions.com/api/EventMaster/SelectAllGetSchedule";
+export const ADD_TIMEZONE =
+  "https://disployapi.thedestinysolutions.com/api/Schedule/AddTimeZone";
 export const SIGNAL_R = "https://disployapi.thedestinysolutions.com/chatHub";
 
 export const GET_ALL_TRASHDATA =
