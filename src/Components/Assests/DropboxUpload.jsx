@@ -11,7 +11,7 @@ const DropboxUpload = () => {
       const formData = new FormData();
       const details = "Dropbox file upload";
 
-      // You can check the file type here to make sure it's a video before uploading
+     
       if (
         image.link_type === "direct" &&
         image.is_dir === false &&

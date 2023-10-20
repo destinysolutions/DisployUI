@@ -20,6 +20,7 @@ import {
   GET_TIMEZONE,
   UPDATED_SCHEDULE_DATA,
   SIGNAL_R,
+  ADD_TIMEZONE,
 } from "../../Pages/Api";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
@@ -72,9 +73,10 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   );
 
   const [getTimezone, setTimezone] = useState([]);
-  const [selectedTimezoneName, setSelectedTimezoneName] = useState("");
+  const [selectedTimezoneName, setSelectedTimezoneName] = useState();
 
   const addedTimezoneName = searchParams.get("timeZoneName");
+
   const navigate = useNavigate();
   const handleSelectSlot = useCallback(
     ({ start, end }) => {
@@ -99,20 +101,183 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   useEffect(() => {
-    if (!isEditingSchedule) {
-      handleSaveNewSchedule();
-    }
+    axios
+      .get(GET_TIMEZONE)
+      .then((TIMEZONEresponse) => {
+        setTimezone(TIMEZONEresponse.data.data);
+        const timezone = isEditingSchedule
+          ? addedTimezoneName
+          : TIMEZONEresponse.data.data[92].timeZoneName;
+
+        setSelectedTimezoneName(timezone);
+        if (!isEditingSchedule) {
+          axios
+            .post(ADD_SCHEDULE, {
+              scheduleName: newScheduleNameInput,
+              timeZoneName: TIMEZONEresponse.data.data[92].timeZoneName,
+              operation: "Insert",
+            })
+            .then((response) => {
+              const newScheduleId = response.data.data.model.scheduleId;
+              setCreatedScheduleId(newScheduleId);
+            })
+            .catch((error) => {
+              console.error("Error creating a new schedule:", error);
+            });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
-  const handleTimezoneChange = (e) => {
+  useEffect(() => {
+    axios
+      .get(GET_ALL_FILES)
+      .then((response) => {
+        const fetchedData = response.data;
+        const allAssets = [
+          ...(fetchedData.image ? fetchedData.image : []),
+          ...(fetchedData.video ? fetchedData.video : []),
+          ...(fetchedData.doc ? fetchedData.doc : []),
+          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
+          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
+        ];
+        setAssetData(allAssets);
+        setAllAssets(allAssets);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  //socket signal-RRR
+  // const [connection, setConnection] = useState(null);
+  // const [fileType, setFileType] = useState();
+  // useEffect(() => {
+  //   const newConnection = new HubConnectionBuilder()
+  //     .withUrl(SIGNAL_R)
+  //     .configureLogging(LogLevel.Information)
+  //     .build();
+
+  //   newConnection.on("ReceiveMessage", (endDate, startDate, type) => {
+  //     console.log("end date", endDate);
+  //     console.log("start date:", startDate);
+  //     console.log("asset:", type);
+  //   });
+
+  //   newConnection
+  //     .start()
+  //     .then(() => {
+  //       console.log("Connection established");
+  //       setConnection(newConnection);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error starting connection:", error);
+  //     });
+
+  //   return () => {
+  //     if (newConnection) {
+  //       newConnection
+  //         .stop()
+  //         .then(() => {
+  //           console.log("Connection stopped");
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error stopping connection:", error);
+  //         });
+  //     }
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   let config = {
+  //     method: "get",
+  //     maxBodyLength: Infinity,
+  //     url: UPDATED_SCHEDULE_DATA,
+  //     headers: {},
+  //   };
+
+  //   axios
+  //     .request(config)
+  //     .then((response) => {
+  //       console.log(response.data, "response.data[0]");
+  //       if (
+  //         Array.isArray(response.data.data) &&
+  //         response.data.data.length > 0
+  //       ) {
+  //         const { cEndDate, cStartDate, fileType } = response.data.data[0];
+  //         setFileType(fileType);
+  //         if (connection) {
+  //           // Send the API response to SignalR when the connection is established
+  //           connection
+  //             .invoke("SendMessage", cEndDate, cStartDate, fileType)
+  //             .then(() => {
+  //               console.log("Message sent:", cEndDate, cStartDate, fileType);
+  //             })
+  //             .catch((error) => {
+  //               console.error("Error sending message:", error);
+  //             });
+  //         } else {
+  //           console.warn("Connection is not established yet.");
+  //         }
+  //       } else {
+  //         console.warn("No data in the response");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, [connection]);
+
+  useEffect(() => {
+    if (getScheduleId) {
+      loadEventsForSchedule(getScheduleId);
+    }
+  }, [getScheduleId, myEvents]);
+
+  const handleTimezoneSelect = (e) => {
     if (e.target.value != selectedTimezoneName && isEditingSchedule) {
       alert("change");
       setSelectedTimezoneName(e.target.value);
+      handleTimezone(e.target.value);
     } else {
-      console.log("swdwdwqwwefrwfreftegt", e.target.value);
       setSelectedTimezoneName(e.target.value);
+      handleTimezone(e.target.value);
     }
   };
+
+  const handleTimezone = (timezonename) => {
+    const scheduleIdToUse = isEditingSchedule
+      ? getScheduleId
+      : createdScheduleId;
+
+    let data = JSON.stringify({
+      scheduleId: scheduleIdToUse,
+      timeZoneName: timezonename,
+      operation: "Update",
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: ADD_TIMEZONE,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log("handleTimezone", JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   // Function to handle saving the new schedule
   const handleSaveNewSchedule = () => {
     axios
@@ -125,7 +290,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         const newScheduleId = response.data.data.model.scheduleId;
         setCreatedScheduleId(newScheduleId);
 
-        console.log(response.data);
+        return newScheduleId;
       })
       .catch((error) => {
         console.error("Error creating a new schedule:", error);
@@ -133,13 +298,10 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const saveEditedSchedule = () => {
-    const timezoneNameToUse = isEditingSchedule
-      ? addedTimezoneName
-      : selectedTimezoneName;
     let data = JSON.stringify({
       scheduleId: getScheduleId,
       scheduleName: newScheduleNameInput,
-      timeZoneName: timezoneNameToUse,
+
       startDate: overallEventTimes.earliestStartTime.toLocaleString(),
       endDate: overallEventTimes.latestEndTime.toLocaleString(),
       operation: "Update",
@@ -165,20 +327,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  useEffect(() => {
-    axios
-      .get(GET_TIMEZONE)
-      .then((response) => {
-        setTimezone(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
   // Function to handle event drag and drop
   const handleEventDrop = ({ event, start, end }) => {
-    console.log(event, "event");
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
@@ -238,85 +388,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  //socket signal-RRR
-  const [connection, setConnection] = useState(null);
-  const [fileType, setFileType] = useState();
-  useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
-
-    newConnection.on("ReceiveMessage", (endDate, startDate, type) => {
-      console.log("end date", endDate);
-      console.log("start date:", startDate);
-      console.log("asset:", type);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: UPDATED_SCHEDULE_DATA,
-      headers: {},
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(response.data, "response.data[0]");
-        if (
-          Array.isArray(response.data.data) &&
-          response.data.data.length > 0
-        ) {
-          const { cEndDate, cStartDate, fileType } = response.data.data[0];
-          setFileType(fileType);
-          if (connection) {
-            // Send the API response to SignalR when the connection is established
-            connection
-              .invoke("SendMessage", cEndDate, cStartDate, fileType)
-              .then(() => {
-                console.log("Message sent:", cEndDate, cStartDate, fileType);
-              })
-              .catch((error) => {
-                console.error("Error sending message:", error);
-              });
-          } else {
-            console.warn("Connection is not established yet.");
-          }
-        } else {
-          console.warn("No data in the response");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [connection]);
-
   const handleSaveEvent = (eventId, eventData) => {
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
@@ -355,7 +426,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data, "response");
         const fetchedData = response.data.data.eventTables;
 
         const updateEvent = fetchedData.map((item) => ({
@@ -368,28 +438,28 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           day: item.day,
           asset: item.asset,
         }));
-        console.log(updateEvent, "updateEvent");
-        // Sending a SignalR message for the updated event
-        if (eventId) {
-          const updatedEvent = fetchedData.find(
-            (event) => event.eventId === eventId
-          );
-          if (updatedEvent && connection) {
-            connection
-              .invoke(
-                "SendMessage",
-                updatedEvent.cEndDate,
-                updatedEvent.cStartDate,
-                fileType
-              )
-              .then(() => {
-                console.log("SignalR message sent for updated event");
-              })
-              .catch((error) => {
-                console.error("Error sending SignalR message:", error);
-              });
-          }
-        }
+
+        // // Sending a SignalR message for the updated event
+        // if (eventId) {
+        //   const updatedEvent = fetchedData.find(
+        //     (event) => event.eventId === eventId
+        //   );
+        //   if (updatedEvent && connection) {
+        //     connection
+        //       .invoke(
+        //         "SendMessage",
+        //         updatedEvent.cEndDate,
+        //         updatedEvent.cStartDate,
+        //         fileType
+        //       )
+        //       .then(() => {
+        //         console.log("SignalR message sent for updated event");
+        //       })
+        //       .catch((error) => {
+        //         console.error("Error sending SignalR message:", error);
+        //       });
+        //   }
+        // }
         if (eventId) {
           const updatedEventsMap = Object.fromEntries(
             updateEvent.map((event) => [event.id, event])
@@ -422,12 +492,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setCreatePopupOpen(false);
   };
 
-  useEffect(() => {
-    if (getScheduleId) {
-      loadEventsForSchedule(getScheduleId);
-    }
-  }, [getScheduleId, myEvents]);
-
   const handleCloseCreatePopup = () => {
     setSelectedSlot(null);
     setSelectedEvent(null);
@@ -443,26 +507,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       setCreatePopupOpen(false);
     }
   };
-
-  useEffect(() => {
-    axios
-      .get(GET_ALL_FILES)
-      .then((response) => {
-        const fetchedData = response.data;
-        const allAssets = [
-          ...(fetchedData.image ? fetchedData.image : []),
-          ...(fetchedData.video ? fetchedData.video : []),
-          ...(fetchedData.doc ? fetchedData.doc : []),
-          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
-          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
-        ];
-        setAssetData(allAssets);
-        setAllAssets(allAssets);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
 
   const handleAssetChange = (event) => {
     const selectedName = event.target.value;
@@ -535,10 +579,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             <div className="lg:col-span-3 md:col-span-5 sm:col-span-6 xs:col-span-12 ml-5">
               <select
                 className="w-full paymentlabel relative"
-                value={
-                  isEditingSchedule ? addedTimezoneName : selectedTimezoneName
-                }
-                onChange={(e) => handleTimezoneChange(e)}
+                value={selectedTimezoneName}
+                onChange={(e) => handleTimezoneSelect(e)}
               >
                 {getTimezone.map((timezone) => (
                   <option

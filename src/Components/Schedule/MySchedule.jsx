@@ -34,7 +34,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         const fetchedData = response.data.data;
         setScheduleData(fetchedData);
-        console.log(fetchedData);
+        // console.log(fetchedData);
       })
       .catch((error) => {
         console.log(error);
@@ -96,7 +96,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response, "response");
         const updatedScheduleData = scheduleData.filter(
           (scheduleData) => scheduleData.scheduleId !== scheduleId
         );
@@ -125,6 +124,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then(() => {
         setScheduleData([]);
+        setSelectAll(false);
       })
       .catch((error) => {
         console.log(error);

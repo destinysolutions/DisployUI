@@ -81,7 +81,7 @@ const Navbar = () => {
         .get(`${SELECT_BY_ID_USERDETAIL}?ID=${userFromLocalStorage}`)
         .then((response) => {
           setRegisterdata(response.data.data);
-          console.log(response.data);
+          // console.log(response.data);
         })
         .catch((error) => {
           console.log(error);
