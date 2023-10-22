@@ -7,6 +7,7 @@ import axios from "axios";
 import { SELECT_BY_ID_USERDETAIL } from "../Pages/Api";
 
 import { auth } from "../firebase/firebase";
+import { useSelector } from "react-redux";
 
 const getInitials = (name) => {
   let initials;
@@ -48,6 +49,7 @@ const Navbar = () => {
   const [showProfileBox, setShowProfileBox] = useState(false);
   const [showNotificationBox, setShowNotificationBox] = useState(false);
   const [regsiterdata, setRegisterdata] = useState([]);
+  const UserData = useSelector((Alldata) => Alldata.user);
 
   const handleProfileClick = (e) => {
     e.stopPropagation();
@@ -75,10 +77,9 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    const userFromLocalStorage = localStorage.getItem("userID");
-    if (userFromLocalStorage) {
+    if (UserData) {
       axios
-        .get(`${SELECT_BY_ID_USERDETAIL}?ID=${userFromLocalStorage}`)
+        .get(`${SELECT_BY_ID_USERDETAIL}?ID=${UserData.user?.userID}`)
         .then((response) => {
           setRegisterdata(response.data.data);
           // console.log(response.data);
@@ -96,6 +97,8 @@ const Navbar = () => {
   const handleSignOut = () => {
     localStorage.removeItem("hasSeenMessage");
     localStorage.removeItem("user");
+    localStorage.setItem("role_access", "");
+    window.location.reload();
     history("/");
     auth.signOut();
   };

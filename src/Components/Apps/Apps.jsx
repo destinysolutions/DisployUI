@@ -3,7 +3,7 @@ import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { TbBoxMultiple } from "react-icons/tb";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiUpload } from "react-icons/fi";
 import { MdPlaylistPlay } from "react-icons/md";
 import { MdOutlineWidgets } from "react-icons/md";
@@ -11,136 +11,26 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import "../../Styles/apps.css";
 import { Link } from "react-router-dom";
 import Footer from "../Footer";
+import { GET_ALL_APPS } from "../../Pages/Api";
+import axios from "axios";
 
 const Apps = ({ sidebarOpen, setSidebarOpen }) => {
   Apps.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-
-  const AddedApps = [
-    {
-      id: 1,
-      Image: "../../../AppsImg/youtube.svg",
-      appName: "YouTube",
-    },
-    {
-      id: 2,
-      Image: "../../../AppsImg/weather.svg",
-      appName: "Weather",
-    },
-    {
-      id: 3,
-      Image: "../../../AppsImg/coffee-tea.svg",
-      appName: "Coffee Tea",
-    },
-    {
-      id: 4,
-      Image: "../../../AppsImg/foods.svg",
-      appName: "Foods",
-    },
-    {
-      id: 5,
-      Image: "../../../AppsImg/noticeboard.svg",
-      appName: "Noticeboard",
-    },
-  ];
-
-  const MostPopularApps = [
-    {
-      id: 1,
-      Image: "../../../AppsImg/youtube.svg",
-      appName: "YouTube",
-    },
-    {
-      id: 2,
-      Image: "../../../AppsImg/weather.svg",
-      appName: "Weather",
-    },
-    {
-      id: 3,
-      Image: "../../../AppsImg/coffee-tea.svg",
-      appName: "Coffee Tea",
-    },
-  ];
-
-  const FeatuardApps = [
-    {
-      id: 1,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Slack",
-    },
-    {
-      id: 2,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Weather",
-    },
-    {
-      id: 3,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Coffee Tea",
-    },
-    {
-      id: 4,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Foods",
-    },
-    {
-      id: 5,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Noticeboard",
-    },
-    {
-      id: 6,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Slack",
-    },
-    {
-      id: 7,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Weather",
-    },
-    {
-      id: 8,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Coffee Tea",
-    },
-    {
-      id: 9,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Foods",
-    },
-    {
-      id: 10,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Noticeboard",
-    },
-    {
-      id: 11,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Slack",
-    },
-    {
-      id: 12,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Weather",
-    },
-    {
-      id: 13,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Coffee Tea",
-    },
-    {
-      id: 14,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Foods",
-    },
-    {
-      id: 15,
-      Image: "../../../AppsImg/slack.svg",
-      appName: "Noticeboard",
-    },
-  ];
+  const [appData, setAppData] = useState([]);
+  useEffect(() => {
+    axios
+      .get(GET_ALL_APPS)
+      .then((response) => {
+        const fetchedData = response.data.data;
+        setAppData(fetchedData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const [appDropDown, setAppDropDown] = useState(null);
   const handleAppDropDownClick = (id) => {
@@ -170,58 +60,63 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <div className="mt-5 mb-5">
             <div className="grid grid-cols-10 gap-4">
-              {AddedApps.map((app, id) => (
-                <div
-                  className="lg:col-span-2 md:col-span-5 sm:col-span-10 xs:col-span-10 "
-                  key={id}
-                >
-                  <div className="shadow-md bg-white rounded-lg p-3">
-                    <div className="relative">
-                      <button className="float-right">
-                        <BiDotsHorizontalRounded
-                          className="text-2xl"
-                          onClick={() => handleAppDropDownClick(id)}
-                        />
-                      </button>
-                      {appDropDown === id && (
-                        <div className="appdw">
-                          <ul>
-                            <li className="flex text-sm items-center">
-                              <FiUpload className="mr-2 text-lg" />
-                              Set to Screen
-                            </li>
-                            <li className="flex text-sm items-center">
-                              <MdPlaylistPlay className="mr-2 text-lg" />
-                              Add to Playlist
-                            </li>
-                            <li className="flex text-sm items-center">
-                              <TbBoxMultiple className="mr-2 text-lg" />
-                              Duplicate
-                            </li>
-                            <li className="flex text-sm items-center">
-                              <RiDeleteBin5Line className="mr-2 text-lg" />
-                              Delete App
-                            </li>
-                          </ul>
+              {appData.map(
+                (app) =>
+                  app.appType == "Apps" && (
+                    <div
+                      className="lg:col-span-2 md:col-span-5 sm:col-span-10 xs:col-span-10 "
+                      key={app.app_Id}
+                    >
+                      <div className="shadow-md bg-white rounded-lg p-3">
+                        <div className="relative">
+                          <button className="float-right">
+                            <BiDotsHorizontalRounded
+                              className="text-2xl"
+                              onClick={() => handleAppDropDownClick(app.app_Id)}
+                            />
+                          </button>
+                          {appDropDown === app.app_Id && (
+                            <div className="appdw">
+                              <ul>
+                                <li className="flex text-sm items-center">
+                                  <FiUpload className="mr-2 text-lg" />
+                                  Set to Screen
+                                </li>
+                                <li className="flex text-sm items-center">
+                                  <MdPlaylistPlay className="mr-2 text-lg" />
+                                  Add to Playlist
+                                </li>
+                                <li className="flex text-sm items-center">
+                                  <TbBoxMultiple className="mr-2 text-lg" />
+                                  Duplicate
+                                </li>
+                                <li className="flex text-sm items-center">
+                                  <RiDeleteBin5Line className="mr-2 text-lg" />
+                                  Delete App
+                                </li>
+                              </ul>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                    <Link to="/appdetail">
-                      <div className="text-center clear-both">
-                        <img
-                          src={app.Image}
-                          alt="Logo"
-                          className="cursor-pointer mx-auto h-20 w-20"
-                        />
-                        <h4 className="text-lg font-medium mt-3">
-                          {app.appName}
-                        </h4>
-                        <h4 className="text-sm font-normal ">Added</h4>
+                        <Link to="/appdetail">
+                          <div className="text-center clear-both">
+                            <img
+                              src={app.appPath}
+                              alt="Logo"
+                              className="cursor-pointer mx-auto h-20 w-20"
+                            />
+                            <h4 className="text-lg font-medium mt-3">
+                              {app.appName}
+                            </h4>
+                            <h4 className="text-sm font-normal ">
+                              {app.appUse}
+                            </h4>
+                          </div>
+                        </Link>
                       </div>
-                    </Link>
-                  </div>
-                </div>
-              ))}
+                    </div>
+                  )
+              )}
             </div>
           </div>
           <div className="mt-5 mb-5">
@@ -229,30 +124,33 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
               Featured Apps
             </h1>
             <div className="grid grid-cols-12 gap-4">
-              {FeatuardApps.map((featuardApp, id) => (
-                <div
-                  className="lg:col-span-4 md:col-span-6 sm:col-span-12 "
-                  key={id}
-                >
-                  <div className="shadow-md  bg-white rounded-lg p-5">
-                    <div className="lg:flex md:flex sm:flex xs:block ">
-                      <img
-                        src={featuardApp.Image}
-                        alt="Logo"
-                        className="cursor-pointer h-20 w-20"
-                      />
-                      <div className="lg:ml-5 sm:ml-5 xs:mt-6 sm:mt-0">
-                        <h4 className="text-lg font-medium mt-3">
-                          {featuardApp.appName}
-                        </h4>
-                        <h4 className="text-sm font-normal ">
-                          Internal Communications
-                        </h4>
+              {appData.map(
+                (featuardApp) =>
+                  featuardApp.appType == "Featured Apps" && (
+                    <div
+                      className="lg:col-span-4 md:col-span-6 sm:col-span-12 "
+                      key={featuardApp.app_Id}
+                    >
+                      <div className="shadow-md  bg-white rounded-lg p-5">
+                        <div className="lg:flex md:flex sm:flex xs:block ">
+                          <img
+                            src={featuardApp.appPath}
+                            alt="Logo"
+                            className="cursor-pointer h-20 w-20"
+                          />
+                          <div className="lg:ml-5 sm:ml-5 xs:mt-6 sm:mt-0">
+                            <h4 className="text-lg font-medium mt-3">
+                              {featuardApp.appName}
+                            </h4>
+                            <h4 className="text-sm font-normal ">
+                              {featuardApp.appUse}
+                            </h4>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  )
+              )}
             </div>
           </div>
           <div className="mt-5 mb-5">
@@ -260,30 +158,33 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
               Most Popular Apps
             </h1>
             <div className="grid grid-cols-12 gap-4">
-              {MostPopularApps.map((mostpopularApp, id) => (
-                <div
-                  className="lg:col-span-4 md:col-span-6 sm:col-span-12 "
-                  key={id}
-                >
-                  <div className="shadow-md  bg-white rounded-lg p-5">
-                    <div className="lg:flex md:flex sm:flex xs:block">
-                      <img
-                        src={mostpopularApp.Image}
-                        alt="Logo"
-                        className="cursor-pointer h-20 w-20"
-                      />
-                      <div className="lg:ml-5 sm:ml-5 xs:mt-6 sm:mt-0">
-                        <h4 className="text-lg font-medium mt-3">
-                          {mostpopularApp.appName}
-                        </h4>
-                        <h4 className="text-sm font-normal ">
-                          Internal Communications
-                        </h4>
+              {appData.map(
+                (most_popular_app) =>
+                  most_popular_app.appType == "Most Popular Apps" && (
+                    <div
+                      className="lg:col-span-4 md:col-span-6 sm:col-span-12 "
+                      key={most_popular_app.app_Id}
+                    >
+                      <div className="shadow-md  bg-white rounded-lg p-5">
+                        <div className="lg:flex md:flex sm:flex xs:block ">
+                          <img
+                            src={most_popular_app.appPath}
+                            alt="Logo"
+                            className="cursor-pointer h-20 w-20"
+                          />
+                          <div className="lg:ml-5 sm:ml-5 xs:mt-6 sm:mt-0">
+                            <h4 className="text-lg font-medium mt-3">
+                              {most_popular_app.appName}
+                            </h4>
+                            <h4 className="text-sm font-normal ">
+                              {most_popular_app.appUse}
+                            </h4>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  )
+              )}
             </div>
           </div>
         </div>

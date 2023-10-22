@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { OTP_VERIFY } from "../../Pages/Api";
 import { useRef } from "react";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const ScreenOTPModal = ({ setShowOTPModal }) => {
   const history = useNavigate();
@@ -12,14 +13,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
   const otpRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
 
-  const [loginUserID, setLoginUserID] = useState("");
-  useEffect(() => {
-    const userFromLocalStorage = localStorage.getItem("userID");
-    if (userFromLocalStorage) {
-      setLoginUserID(userFromLocalStorage);
-    }
-  }, []);
-
+  const UserData = useSelector((Alldata) => Alldata.user);
   const handleOtpChange = (index, value) => {
     const updatedOtpValues = [...otpValues];
     updatedOtpValues[index] = value;
@@ -34,7 +28,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
   const verifyOTP = () => {
     let data = JSON.stringify({
       otp: completeOtp,
-      userID: loginUserID,
+      userID: UserData.user?.userID,
     });
 
     let config = {

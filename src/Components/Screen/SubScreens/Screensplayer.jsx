@@ -69,7 +69,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const buttons = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
-  
   return (
     <>
       <div className="flex border-b border-gray">
@@ -703,10 +702,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                         <div className="payment-dropdown">
                                           <ul>
                                             <li className="flex items-center justify-between my-3 p-2  border-2 rounded-md border-[#E4E6FF] ">
-                                              <label
-                                               
-                                                className="lg:flex md:flex sm:block xs:block items-center lg:text-base md:text-sm sm:text-sm xs:text-xs"
-                                              >
+                                              <label className="lg:flex md:flex sm:block xs:block items-center lg:text-base md:text-sm sm:text-sm xs:text-xs">
                                                 <img
                                                   src="../../../../ScreenImg/logos_mastercard.png"
                                                   className="mr-3"
@@ -720,10 +716,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                               />
                                             </li>
                                             <li className="flex items-center justify-between my-3 p-2 border-2 rounded-md border-[#E4E6FF]">
-                                              <label
-                                              
-                                                className="lg:flex md:flex sm:block xs:block items-center lg:text-base md:text-sm sm:text-sm xs:text-xs"
-                                              >
+                                              <label className="lg:flex md:flex sm:block xs:block items-center lg:text-base md:text-sm sm:text-sm xs:text-xs">
                                                 <img
                                                   src="../../../../ScreenImg/Vector(3).png"
                                                   className="mr-3"
@@ -878,7 +871,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   <select className="relative">
                                     <option>Always On</option>
                                     <option>
-                                     
                                       <button>Custom</button>
                                     </option>
                                   </select>
@@ -901,7 +893,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               <tr>
                                 <td colSpan={2}>
                                   <div className="flex items-center justify-center">
-                                    {" "}
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base mr-2">
                                       Do you want to run the App at boot up time
                                       :

@@ -12,7 +12,6 @@ import ScreenOTPModal from "./Screen/ScreenOTPModal";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 
 const Sidebar = ({ sidebarOpen }) => {
-
   // const navigate = useNavigate()
 
   // const handlelogout = () => {
@@ -86,9 +85,9 @@ const Sidebar = ({ sidebarOpen }) => {
       ),
     },
     {
-      title: "Playlist ",
+      title: "My Composition",
       cName: "nav-text link-items",
-      path: "/myplaylist",
+      path: "/composition",
       icon: (
         <img
           src="/MenuIcons/playlist_icon.svg"
@@ -268,8 +267,9 @@ const Sidebar = ({ sidebarOpen }) => {
                         {item.subMenus && (
                           <div className="ml-5 absolute right-0">
                             <FiIcons.FiChevronDown
-                              className={`${submenuIsOpen ? "transform rotate-180" : ""
-                                } transition-transform duration-300 text-white `}
+                              className={`${
+                                submenuIsOpen ? "transform rotate-180" : ""
+                              } transition-transform duration-300 text-white `}
                               onClick={(e) => {
                                 e.preventDefault();
                                 updateSubmenuState(item.title, !submenuIsOpen);
@@ -305,7 +305,7 @@ const Sidebar = ({ sidebarOpen }) => {
                       </Link>
                       {Menus.title}
                     </li>
-                  )
+                  );
 
                   // if (item.title == 'Log Out') {
                   //   return (
@@ -334,7 +334,6 @@ const Sidebar = ({ sidebarOpen }) => {
                     )}
                   </li>
                 ))} */}
-
               </ul>
             </div>
           </div>
@@ -343,8 +342,9 @@ const Sidebar = ({ sidebarOpen }) => {
         <div className="menu-bars self-center">
           <HiOutlineMenuAlt2
             onClick={handleSidebarToggle}
-            className={` text-SlateBlue text-3xl ${mobileSidebar && "hidden"} ${mobileSidebar ? "ml-0" : "ml-5"
-              }`}
+            className={` text-SlateBlue text-3xl ${mobileSidebar && "hidden"} ${
+              mobileSidebar ? "ml-0" : "ml-5"
+            }`}
           />
         </div>
       )}
@@ -379,8 +379,9 @@ const Sidebar = ({ sidebarOpen }) => {
                       {item.subMenus && (
                         <div className="ml-5 absolute right-0">
                           <FiIcons.FiChevronDown
-                            className={`${activeSubmenu ? "transform rotate-180" : ""
-                              } transition-transform duration-300 text-white 
+                            className={`${
+                              activeSubmenu ? "transform rotate-180" : ""
+                            } transition-transform duration-300 text-white 
                           `}
                             onClick={() => setActiveSubmenu(!activeSubmenu)}
                           />
@@ -425,8 +426,7 @@ const Sidebar = ({ sidebarOpen }) => {
                     </Link>
                     {Menus.title}
                   </li>
-                )
-
+                );
               })}
             </ul>
           </div>
