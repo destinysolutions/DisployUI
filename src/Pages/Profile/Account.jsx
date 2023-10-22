@@ -14,6 +14,7 @@ import axios from "axios";
 import { MdOutlinePhotoCamera } from "react-icons/md";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useSelector } from "react-redux";
 
 const Account = () => {
   const [file, setFile] = useState();
@@ -36,7 +37,7 @@ const Account = () => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [isImageUploaded, setIsImageUploaded] = useState(false);
-
+  const UserData = useSelector((Alldata) => Alldata.user);
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
@@ -50,13 +51,6 @@ const Account = () => {
   const handleClick = (e) => {
     hiddenFileInput.current.click();
   };
-  const [loginUserID, setLoginUserID] = useState("");
-  useEffect(() => {
-    const userFromLocalStorage = localStorage.getItem("userID");
-    if (userFromLocalStorage) {
-      setLoginUserID(userFromLocalStorage);
-    }
-  }, []);
 
   useEffect(() => {
     const axiosRequests = [
@@ -124,7 +118,7 @@ const Account = () => {
   const updateUser = async (values, setSubmitting) => {
     let data = new FormData();
 
-    data.append("UserID", loginUserID);
+    data.append("UserID", UserData.user?.userID);
     data.append("GoogleLocation", address);
     data.append("FirstName", firstName);
     data.append("LastName", lastName);
@@ -141,7 +135,7 @@ const Account = () => {
     data.append("Operation", "Update");
     data.append("File", file);
 
-    console.log("UserID", loginUserID);
+    console.log("UserID", UserData.user?.userID);
     console.log("GoogleLocation", address);
     console.log("FirstName", firstName);
     console.log("LastName", lastName);
@@ -277,7 +271,6 @@ const Account = () => {
                 <label className="label_top text-xs">Email*</label>
                 <input
                   className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-               
                   type="email"
                   name="email"
                   placeholder="harrymc.call@gmail.com"
@@ -320,7 +313,6 @@ const Account = () => {
                 <label className="label_top text-xs">Organization*</label>
                 <input
                   className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
-         
                   type="text"
                   placeholder="Manager"
                   value={organization}
@@ -349,7 +341,6 @@ const Account = () => {
                 <div>
                   <select
                     className="w-full bg-gray-200 border input-bor-color text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-               
                     onChange={(e) => setSelectedCountry(e.target.value)}
                     value={selectedCountry}
                   >
@@ -388,7 +379,6 @@ const Account = () => {
                 <div>
                   <select
                     className="w-full bg-gray-200 border input-bor-color text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-               
                     value={selectedLanguageName}
                     onChange={(e) => setSelectedLanguageName(e.target.value)}
                   >

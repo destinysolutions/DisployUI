@@ -6,8 +6,9 @@ import Googledrive from "../../../public/Assets/google-drive.png";
 import { Tooltip } from "@material-tailwind/react";
 import { ALL_FILES_UPLOAD, GOOGLE_DRIVE } from "../../Pages/Api";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 const GoogleDrive = () => {
-  const [loginUserID, setLoginUserID] = useState("");
+  const UserData = useSelector((Alldata) => Alldata.user);
   const [openPicker] = useDrivePicker();
   const [selectedFiles, setSelectedFiles] = useState([]);
   // const [accessToken, setAccessToken] = useState("");
@@ -49,16 +50,10 @@ const GoogleDrive = () => {
       callbackFunction: handleFileUpload,
     });
   };
-  useEffect(() => {
-    const userFromLocalStorage = localStorage.getItem("userID");
-    if (userFromLocalStorage) {
-      setLoginUserID(userFromLocalStorage);
-    }
-  }, []);
 
   const handleGet = () => {
     let data = JSON.stringify({
-      userId: loginUserID,
+      userId: UserData.user?.userID,
       operation: "CheckExists",
       mode: "CheckAuthToken",
       type: "GoogleDrive",
@@ -97,7 +92,7 @@ const GoogleDrive = () => {
     const authorizationCode = urlParams.get("code");
     if (authorizationCode) {
       let data = JSON.stringify({
-        userId: loginUserID,
+        userId: UserData.user?.userID,
         operation: "GetAuthToken",
         mode: "Insert",
         code: authorizationCode,

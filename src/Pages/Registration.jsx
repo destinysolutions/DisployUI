@@ -115,6 +115,7 @@ const Registration = () => {
             });
         })
         .catch((error) => {
+          console.log("error", error);
           var errorMessage = JSON.parse(error.message);
 
           switch (errorMessage.error.message) {

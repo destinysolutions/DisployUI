@@ -279,7 +279,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                           <button className="border-2 border-primary px-4 py-2 rounded-full">
                             Add new Playlist
                           </button>
-                          <Link to="/myplaylist">
+                          <Link to="/composition">
                             <button className="bg-primary text-white px-4 py-2 rounded-full">
                               Save
                             </button>

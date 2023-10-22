@@ -22,12 +22,15 @@ import {
   facebookProvider,
   microsoftProvider,
 } from "../firebase/firebase";
+import { useDispatch } from "react-redux";
+import { loginUser, signUpUser } from "../Redux/useraction";
 
 const Login = () => {
   //using for routing
   const history = useNavigate();
   // const { loginUser } = useUser();
   //using show or hide password field
+  const dispatch = useDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -75,80 +78,101 @@ const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      auth
-        .signInWithEmailAndPassword(values.emailID, values.password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          if (!user.emailVerified) {
-            alert("please Verify your email");
+      let data = JSON.stringify({
+        emailID: values.emailID,
+        password: values.password,
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: LOGIN_URL,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      axios
+        .request(config)
+        .then((response) => {
+          if (response.data.status === 200) {
+            const userRole = response.data.role;
+            if (userRole == 1) {
+              // Admin login logic
+              // Direct login for admin
+              localStorage.setItem("userID", JSON.stringify(response.data));
+              localStorage.setItem("role_access", "ADMIN");
+              setTimeout(() => {
+                window.location.href = "/";
+              }, 500);
+            } else if (userRole == 2) {
+              // User login logic
+              auth
+                .signInWithEmailAndPassword(values.emailID, values.password)
+                .then((userCredential) => {
+                  const user = userCredential.user;
+                  if (!user.emailVerified) {
+                    alert("Please verify your email.");
+                  } else {
+                    const user_ID = response.data.userID;
+                    console.log("..", user_ID);
+                    localStorage.setItem(
+                      "userID",
+                      JSON.stringify(response.data)
+                    );
+                    localStorage.setItem("role_access", "USER");
+                    setTimeout(() => {
+                      window.location.href = "/";
+                    }, 500);
+                  }
+                })
+                .catch((error) => {
+                  var errorMessage = JSON.parse(error.message);
+                  console.log("errorMessage", errorMessage);
+                  switch (errorMessage.error.message) {
+                    case "ERROR_INVALID_EMAIL":
+                      alert("Your email address appears to be malformed.");
+                      break;
+                    case "ERROR_WRONG_PASSWORD":
+                      alert("Your password is wrong.");
+                      break;
+                    case "ERROR_USER_NOT_FOUND":
+                      alert("User with this email doesn't exist.");
+                      break;
+                    case "ERROR_USER_DISABLED":
+                      alert("User with this email has been disabled.");
+                      break;
+                    case "ERROR_TOO_MANY_REQUESTS":
+                      alert("Too many requests. Try again later.");
+                      break;
+                    case "ERROR_OPERATION_NOT_ALLOWED":
+                      alert(
+                        "Signing in with Email and Password is not enabled."
+                      );
+                      break;
+                    case "INVALID_LOGIN_CREDENTIALS":
+                      alert("Invaild Email Or Password");
+                      break;
+
+                    default:
+                      alert("Something went wrong");
+                  }
+                });
+            } else {
+              // Handle other roles or unknown roles
+              console.log("Unexpected role value:", userRole);
+              alert("Invalid role: " + userRole);
+            }
           } else {
-            let data = JSON.stringify({
-              emailID: values.emailID,
-              password: values.password,
-            });
-
-            let config = {
-              method: "post",
-              maxBodyLength: Infinity,
-              url: LOGIN_URL,
-              headers: {
-                "Content-Type": "application/json",
-              },
-              data: data,
-            };
-
-            axios
-              .request(config)
-              .then((response) => {
-                console.log(response.data);
-                const user_ID = response.data.userID;
-                localStorage.setItem("userID", JSON.stringify(user_ID));
-                if (response.data.status === 200) {
-                  history("/dashboard", {
-                    state: { message: response.data.message },
-                  });
-                } else {
-                  setErrorMessge(response.data.message);
-                }
-              })
-              .catch((error) => {
-                console.log(error);
-              });
+            setErrorMessge(response.data.message);
           }
         })
         .catch((error) => {
-          var errorMessage = JSON.parse(error.message);
-
-          switch (errorMessage.error.message) {
-            case "ERROR_INVALID_EMAIL":
-              alert("Your email address appears to be malformed.");
-              break;
-            case "ERROR_WRONG_PASSWORD":
-              alert("Your password is wrong.");
-              break;
-            case "ERROR_USER_NOT_FOUND":
-              alert("User with this email doesn't exist.");
-              break;
-            case "ERROR_USER_DISABLED":
-              alert("User with this email has been disabled.");
-              break;
-            case "ERROR_TOO_MANY_REQUESTS":
-              alert("Too many requests. Try again later.");
-              break;
-            case "ERROR_OPERATION_NOT_ALLOWED":
-              alert("Signing in with Email and Password is not enabled.");
-              break;
-            case "INVALID_LOGIN_CREDENTIALS":
-              alert("Invaild Email Or Password");
-              break;
-
-            default:
-              alert("Something went wrong");
-          }
+          console.log(error);
         });
     },
   });
-
   const SignInWithGoogle = async () => {
     try {
       const res = await auth.signInWithPopup(Googleauthprovider);
@@ -164,6 +188,8 @@ const Login = () => {
           operation: "Insert",
         })
         .then(() => {
+          // dispatch(loginUser(response.data));
+
           history("/", {
             state: { message: "Registration successfull !!" },
           });

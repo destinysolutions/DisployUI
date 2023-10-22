@@ -31,6 +31,7 @@ import {
   UPDATE_NEW_SCREEN,
 } from "../../Pages/Api";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -83,21 +84,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
 
   const [screenData, setScreenData] = useState([]);
-  const [loginUserID, setLoginUserID] = useState("");
 
   const [editedScreenName, setEditedScreenName] = useState("");
 
   const [editingScreenID, setEditingScreenID] = useState(null);
+
+  const UserData = useSelector((Alldata) => Alldata.user);
+  console.log(UserData.user?.userID, "UserData.user?.userID");
   useEffect(() => {
-    const userFromLocalStorage = localStorage.getItem("userID");
-    if (userFromLocalStorage) {
-      setLoginUserID(userFromLocalStorage);
-    }
-  }, []);
-  useEffect(() => {
-    if (loginUserID) {
+    if (UserData.user?.userID) {
       axios
-        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${loginUserID}`)
+        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${UserData.user?.userID}`)
         .then((response) => {
           const fetchedData = response.data.data;
           console.log(fetchedData, "dsdsdsdsds");
@@ -114,7 +111,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           console.log(error);
         });
     }
-  }, [loginUserID]);
+  }, [UserData.user?.userID]);
 
   const handleScreenClick = (screenId) => {
     // Toggle the action menu for the clicked schedule item
@@ -154,7 +151,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleDeleteAllScreen = () => {
     let data = JSON.stringify({
-      userID: loginUserID,
+      userID: UserData.user?.userID,
       operation: "DeleteUserIdScreenOtp",
     });
 

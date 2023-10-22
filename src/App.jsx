@@ -1,10 +1,14 @@
-import Routing from './Routing/Routing'
+import { Provider } from "react-redux";
+import Routing from "./Routing/Routing";
+import store from "./Redux/store";
 
 const App = () => {
   return (
-   <>
-   <Routing />
-   </>
+    <>
+      <Provider store={store}>
+        <Routing />
+      </Provider>
+    </>
   );
 };
 
