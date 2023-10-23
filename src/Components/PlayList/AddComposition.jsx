@@ -8,6 +8,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
+import { SELECT_BY_LIST } from "../../Pages/Api";
 
 const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
   AddComposition.propTypes = {
@@ -27,7 +28,7 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.219/api/Layout/SelectByList",
+      url: SELECT_BY_LIST,
       headers: {},
       data: "",
     };

@@ -7,7 +7,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { FabricJSCanvas, useFabricJSEditor } from "fabricjs-react";
 import { fabric } from "fabric";
 import axios from "axios";
-import { GET_ALL_FILES } from "../../Pages/Api";
+import { GET_ALL_FILES, SELECT_BY_LIST } from "../../Pages/Api";
 import AssetModal from "../Assests/AssetModal";
 import PreviewModal from "./PreviewModel";
 import { useLocation } from "react-router-dom";
@@ -48,7 +48,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `http://192.168.1.219/api/Layout/SelectByList?LayoutDtlID=${state}`,
+      url: `${SELECT_BY_LIST}?LayoutDtlID=${state}`,
       headers: {},
       data: "",
     };

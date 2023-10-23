@@ -1,81 +1,74 @@
-import React from "react";
-import { useState } from "react";
 import PropTypes from "prop-types";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-import { BiDotsHorizontalRounded } from "react-icons/bi";
-import { GoPencil } from "react-icons/go";
-import "../../Styles/apps.css";
+import { TbAppsFilled } from "react-icons/tb";
+import { useState } from "react";
+import { RiDeleteBin5Line, RiDeleteBinLine } from "react-icons/ri";
+import { BsCameraVideo } from "react-icons/bs";
+import { TbExclamationMark } from "react-icons/tb";
+import { VscBook } from "react-icons/vsc";
+import { AiOutlineCloseCircle } from "react-icons/ai";
+import { Link } from "react-router-dom";
+import Footer from "../Footer";
+import { useEffect } from "react";
+import axios, { all } from "axios";
+import {
+  GET_ALL_YOUTUBEDATA,
+  YOUTUBEDATA_ALL_DELETE,
+  YOUTUBE_INSTANCE_ADD_URL,
+} from "../../Pages/Api";
+import ReactPlayer from "react-player";
 import { FiUpload } from "react-icons/fi";
 import { MdPlaylistPlay } from "react-icons/md";
-import { TbBoxMultiple, TbCalendarTime } from "react-icons/tb";
-import { RiDeleteBin5Line } from "react-icons/ri";
-import {
-  AiOutlineClose,
-  AiOutlineCloseCircle,
-  AiOutlineSearch,
-} from "react-icons/ai";
-import { Link, useNavigate } from "react-router-dom";
-import Footer from "../Footer";
-import ReactPlayer from "react-player";
-import axios from "axios";
-import { YOUTUBE_INSTANCE_ADD_URL } from "../../Pages/Api";
+import { BiDotsHorizontalRounded } from "react-icons/bi";
 
 const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   Youtube.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const history = useNavigate();
-  const [enabled, setEnabled] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
-  const [showSetScreenModal, setShowSetScreenModal] = useState(false);
-  const [playlistDeleteModal, setPlaylistDeleteModal] = useState(false);
-  const [YoutubeVideo, setYoutubeVideo] = useState("");
-  const handleYoutubeChange = (e) => {
-    setYoutubeVideo(e.target.value);
-  };
-  const [isMuted, setIsMuted] = useState(false);
-  const [areSubtitlesOn, setAreSubtitlesOn] = useState(false);
-  const handleMuteChange = () => {
-    setIsMuted(!isMuted);
-  };
-  const handleSubtitlesChange = () => {
-    setAreSubtitlesOn(!areSubtitlesOn);
-  };
-  const [maxVideos, setMaxVideos] = useState(10);
 
-  // Intance Name
-  const [instancename, setinstancename] = useState();
-  const handleinstancenameChange = (e) => {
-    setinstancename(e.target.value);
+  const [appCheckbox, setAppCheckbox] = useState(null);
+  const handleCheckboxClick = (id) => {
+    if (appCheckbox === id) {
+      setAppCheckbox(null);
+    } else {
+      setAppCheckbox(id);
+    }
   };
 
-  // video preview
-  function showVideoPreview() {
-    const videoPreview = document.getElementById("videoPreview");
-    videoPreview.style.display = "block";
-  }
+  const [appDetailModal, setAppDetailModal] = useState(false);
+  // Getalldata
+  const [youtubeData, setYoutubeData] = useState([]);
+  // Initialize state for the "Select All" checkbox
+  const [selectAll, setSelectAll] = useState(false);
+  const [instanceCheckboxes, setInstanceCheckboxes] = useState({});
+  useEffect(() => {
+    axios
+      .get(GET_ALL_YOUTUBEDATA)
+      .then((response) => {
+        const fetchedData = response.data.data;
+        setYoutubeData(fetchedData);
+        console.log(fetchedData);
+        const initialCheckboxes = {};
+        fetchedData.forEach((instance) => {
+          initialCheckboxes[instance.youtubeId] = false;
+        });
+        setInstanceCheckboxes(initialCheckboxes);
+      })
+      .catch((error) => {
+        console.error("Error fetching deleted data:", error);
+      });
+  }, []);
 
-  function hideVideoPreview() {
-    const videoPreview = document.getElementById("videoPreview");
-    videoPreview.style.display = "none";
-  }
-
-  //Insert  API
-  const addYoutubeApp = () => {
+  const handelDeleteInstance = (youtubeId) => {
     let data = JSON.stringify({
-      instanceName: instancename,
-      youTubeURL: YoutubeVideo,
-      muteVideos: isMuted,
-      toggleSubtitles: areSubtitlesOn,
-      youTubePlaylist: maxVideos,
-      operation: "Insert",
+      youtubeId: youtubeId,
+      operation: "Delete",
     });
 
     let config = {
       method: "post",
-      maxBodyLength: Infinity,
       url: YOUTUBE_INSTANCE_ADD_URL,
       headers: {
         "Content-Type": "application/json",
@@ -86,13 +79,65 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        if (response.data.status === 200) {
-          history("/appdetail");
-        }
+        console.log(response, "response");
+        const updatedInstanceData = youtubeData.filter(
+          (instanceData) => instanceData.youtubeId !== youtubeId
+        );
+        setYoutubeData(updatedInstanceData);
       })
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const handleCheckboxChange = (instanceId) => {
+    const updatedInstance = { ...instanceCheckboxes };
+    updatedInstance[instanceId] = !updatedInstance[instanceId];
+    setInstanceCheckboxes(updatedInstance);
+
+    const allChecked = Object.values(updatedInstance).every(
+      (isChecked) => isChecked
+    );
+    setSelectAll(allChecked);
+  };
+  // Function to handle the "Select All" checkbox change
+  const handleSelectAll = (e) => {
+    const checked = e.target.checked;
+    setSelectAll(checked);
+    const updatedInstance = {};
+
+    for (const instanceId in instanceCheckboxes) {
+      updatedInstance[instanceId] = checked;
+    }
+    setInstanceCheckboxes(updatedInstance);
+  };
+
+  const handelDeleteAllInstance = () => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: YOUTUBEDATA_ALL_DELETE,
+      headers: {},
+    };
+
+    axios
+      .request(config)
+      .then(() => {
+        setInstanceCheckboxes({});
+        setSelectAll(false);
+        setYoutubeData([]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const [appDropDown, setAppDropDown] = useState(null);
+  const handleAppDropDownClick = (id) => {
+    if (appDropDown === id) {
+      setAppDropDown(null);
+    } else {
+      setAppDropDown(id);
+    }
   };
 
   return (
@@ -104,388 +149,183 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="pt-6 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block  items-center">
-            <div className="flex items-center">
-              <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
-                YouTube
-              </h1>
-              <GoPencil className="ml-4 text-lg" />
-            </div>
-            <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
-              <button
-                className=" flex align-middle border-primary items-center border-2 rounded-full py-1 px-4 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                onClick={showVideoPreview}
-              >
-                Preview
+            <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
+              Apps
+            </h1>
+            <Link to="/youtubedetail">
+              <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-5 py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                <TbAppsFilled className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
+                New Instance
               </button>
-              <button
-                className="sm:ml-2 xs:ml-1 flex align-middle bg-primary text-white items-center rounded-full py-1 px-4 text-base hover:shadow-lg hover:shadow-primary-500/50"
-                onClick={() => addYoutubeApp()}
-              >
-                Save
-              </button>
-              <div className="relative">
-                <button
-                  onClick={() => setShowPopup(!showPopup)}
-                  className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full py-[10px] px-[11px] text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                >
-                  <BiDotsHorizontalRounded />
-                </button>
-                {showPopup && (
-                  <div className="editdw">
-                    <ul>
-                      <li
-                        className="flex text-sm items-center cursor-pointer"
-                        onClick={() => setShowSetScreenModal(true)}
-                      >
-                        <FiUpload className="mr-2 text-lg" />
-                        Set to Screen
-                      </li>
-                      <li className="flex text-sm items-center mt-2">
-                        <MdPlaylistPlay className="mr-2 text-lg" />
-                        Add to Playlist
-                      </li>
-                      <li className="flex text-sm items-center mt-2">
-                        <TbBoxMultiple className="mr-2 text-lg" />
-                        Duplicate
-                      </li>
-                      <li className="flex text-sm items-center mt-2">
-                        <TbCalendarTime className="mr-2 text-lg" />
-                        Set availability
-                      </li>
-                      <li
-                        className="flex text-sm items-center mt-2 cursor-pointer"
-                        onClick={() => setPlaylistDeleteModal(true)}
-                      >
-                        <RiDeleteBin5Line className="mr-2 text-lg" />
-                        Delete
-                      </li>
-                    </ul>
-                  </div>
-                )}
-                {showSetScreenModal && (
-                  <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                    <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                      <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                        <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
-                          <div className="flex items-center">
-                            <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                              Select Screens to Playlist Name
-                            </h3>
-                          </div>
-                          <button
-                            className="p-1 text-xl ml-8"
-                            onClick={() => setShowSetScreenModal(false)}
-                          >
-                            <AiOutlineCloseCircle className="text-2xl" />
-                          </button>
-                        </div>
-                        <div className="flex justify-between items-center p-4">
-                          <div className="text-right mr-5 flex items-end justify-end relative sm:mr-0">
-                            <AiOutlineSearch className="absolute top-[13px] right-[233px] z-10 text-gray searchicon" />
-                            <input
-                              type="text"
-                              placeholder=" Search Playlist"
-                              className="border border-primary rounded-full px-7 py-2 search-user"
-                            />
-                          </div>
-                          <div className="flex items-center">
-                            <button className="bg-lightgray rounded-full px-4 py-2 text-SlateBlue">
-                              Tags
-                            </button>
-                            <button className="flex items-center bg-lightgray rounded-full px-4 py-2 text-SlateBlue ml-3">
-                              <input type="checkbox" className="w-5 h-5 mr-2" />
-                              All Clear
-                            </button>
-                          </div>
-                        </div>
-                        <div className="px-9">
-                          <div className="overflow-x-auto p-4 shadow-xl bg-white rounded-lg ">
-                            <table className=" w-full ">
-                              <thead>
-                                <tr className="flex justify-between items-center">
-                                  <th className="font-medium text-[14px]">
-                                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
-                                      Name
-                                    </button>
-                                  </th>
-                                  <th className="p-3 font-medium text-[14px]">
-                                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
-                                      Group
-                                    </button>
-                                  </th>
-                                  <th className="p-3 font-medium text-[14px]">
-                                    <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
-                                      Playing
-                                    </button>
-                                  </th>
-                                  <th className="p-3 font-medium text-[14px]">
-                                    <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
-                                      Status
-                                    </button>
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr className="mt-3 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
-                                  <td className="flex items-center ">
-                                    <input type="checkbox" className="mr-3" />
-                                    <div>
-                                      <div>Tv 1</div>
-                                    </div>
-                                  </td>
-                                  <td className="p-2">Marketing</td>
-                                  <td className="p-2">25 May 2023</td>
-                                  <td className="p-2">
-                                    <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
-                                      Live
-                                    </button>
-                                  </td>
-                                </tr>
-                                <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
-                                  <td className="flex items-center ">
-                                    <input type="checkbox" className="mr-3" />
-                                    <div>
-                                      <div>Tv 1</div>
-                                    </div>
-                                  </td>
-                                  <td className="p-2">Marketing</td>
-                                  <td className="p-2">25 May 2023</td>
-                                  <td className="p-2">
-                                    <button className="rounded-full px-6 py-1 text-white bg-[#D40000]">
-                                      Offline
-                                    </button>
-                                  </td>
-                                </tr>
-                                <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
-                                  <td className="flex items-center ">
-                                    <input type="checkbox" className="mr-3" />
-                                    <div>
-                                      <div>Tv 1</div>
-                                    </div>
-                                  </td>
-                                  <td className="p-2">Marketing</td>
-                                  <td className="p-2">25 May 2023</td>
-                                  <td className="p-2">
-                                    <button className="rounded-full px-6 py-1 text-white bg-[#D40000]">
-                                      Offline
-                                    </button>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                        <div className="flex justify-between p-6">
-                          <button className="border-2 border-primary px-4 py-2 rounded-full">
-                            Add new Playlist
-                          </button>
-                          <Link to="/composition">
-                            <button className="bg-primary text-white px-4 py-2 rounded-full">
-                              Save
-                            </button>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {playlistDeleteModal && (
-                  <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                    <div className="w-auto my-6 mx-auto lg:max-w-xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                      <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                        <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
-                          <div className="flex items-center">
-                            <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                              Delete Playlist Name?
-                            </h3>
-                          </div>
-                          <button
-                            className="p-1 text-xl ml-8"
-                            onClick={() => setPlaylistDeleteModal(false)}
-                          >
-                            <AiOutlineCloseCircle className="text-2xl" />
-                          </button>
-                        </div>
-                        <div className="p-5">
-                          <p>
-                            Playlist Name is being used elsewhere and will be
-                            removed when deleted. Please check before deleting.
-                          </p>
-                          <div className="flex mt-4">
-                            <label className="font-medium">Playlist : </label>
-                            <p className="ml-2">Ram Siya Ram</p>
-                          </div>
-                        </div>
-                        <div className="flex justify-center items-center pb-5">
-                          <button
-                            className="border-2 border-primary px-4 py-1.5 rounded-full"
-                            onClick={() => setPlaylistDeleteModal(false)}
-                          >
-                            Cencel
-                          </button>
-                          <Link to="/apps">
-                            <button className="bg-primary text-white ml-3 px-4 py-2 rounded-full">
-                              Delete
-                            </button>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <button
-                className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full px-[10px] text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                onClick={hideVideoPreview}
-              >
-                <AiOutlineClose />
-              </button>
-            </div>
+            </Link>
           </div>
-          <div className="mt-6">
-            <div className="grid grid-cols-12 gap-4">
-              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 shadow-md bg-white rounded-lg p-5  items-center">
-                <div className=" ">
-                  <table
-                    className="youtubetable w-full align-middle"
-                    cellPadding={10}
-                    cellSpacing={10}
+          <div className="mt-5 mb-5">
+            <div className="shadow-md bg-white rounded-lg p-5">
+              <div className="flex justify-between items-center">
+                <h1 className="not-italic font-medium text-xl text-[#001737] ">
+                  YouTube
+                </h1>
+                <div className="flex">
+                  <button
+                    onClick={() => setAppDetailModal(true)}
+                    className="rotate-180 ml-2 border-primary items-center border-2 rounded-full p-1 text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                   >
-                    <tbody>
-                      <tr>
-                        <td>
-                          <label className="text-base font-normal">
-                            Enter Instance Name
-                          </label>
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            placeholder="Enter Instance Name"
-                            onChange={handleinstancenameChange}
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <label className="text-base font-normal">
-                            YouTube URL:
-                          </label>
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            placeholder="e.g. https://youtu.be/dQw4w9WgXcQ"
-                            onChange={handleYoutubeChange}
-                          />
-                        </td>
-                      </tr>
+                    <TbExclamationMark />
+                  </button>
+                  {appDetailModal && (
+                    <>
+                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
+                        <div className="relative w-auto my-6 mx-auto">
+                          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                            <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
+                              <div className="flex items-center">
+                                <div>
+                                  <img
+                                    src="../../../AppsImg/youtube.svg"
+                                    className="w-10"
+                                  />
+                                </div>
+                                <div className="ml-3">
+                                  <h4 className="text-lg font-medium">
+                                    YouTube
+                                  </h4>
+                                  <h4 className="text-sm font-normal ">
+                                    Internal Communications
+                                  </h4>
+                                </div>
+                              </div>
+                              <button
+                                className="p-1 text-3xl"
+                                onClick={() => setAppDetailModal(false)}
+                              >
+                                <AiOutlineCloseCircle />
+                              </button>
+                            </div>
+                            <div className="p-2">
+                              <ReactPlayer
+                                url="https://www.youtube.com/watch?v=WKOYp_7P71Y"
+                                className="app-instance-preview"
+                              />
+                            </div>
+                            <p className="max-w-xl px-6">
+                              Lorem Ipsum is simply dummy text of the printing
+                              and typesetting industry. Lorem Ipsum has been the
+                              industry&apos;s standard dummy text ever since the
+                              1500s, when an unknown printer took a galley of
+                              type and scrambled it to make a type specimen
+                              book.
+                            </p>
+                            <div className="py-2 px-6">
+                              <p>- Add videos by YouTube URL</p>
+                              <p>- Mute videos</p>
+                              <p>- Choose to play with or without subtitles</p>
+                            </div>
+                            <div className="flex items-center justify-center p-5">
+                              <button className="border-primary border-2 text-primary py-1.5 px-5 rounded-full hover:bg-primary hover:text-white">
+                                App Guide
+                              </button>
+                              <button
+                                className="bg-primary text-white rounded-full py-2 px-5 ml-5"
+                                onClick={() => setAppDetailModal(false)}
+                              >
+                                Go to App
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  <button
+                    onClick={handelDeleteAllInstance}
+                    className=" ml-2 border-primary items-center border-2 rounded-full p-1 text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                    style={{ display: selectAll ? "block" : "none" }}
+                  >
+                    <RiDeleteBinLine className="text-lg" />
+                  </button>
 
-                      <tr className="mutebtn">
-                        <td>
-                          <span className="text-base font-normal">
-                            Mute videos:
-                          </span>
-                        </td>
-                        <td className="text-right  items-end">
-                          <label className="inline-flex relative items-center cursor-pointer">
-                            <input
-                              type="checkbox"
-                              className="sr-only peer"
-                              readOnly
-                              checked={isMuted}
-                              onChange={handleMuteChange}
-                            />
-                            <div
-                              onClick={() => {
-                                setEnabled(!enabled);
-                              }}
-                              className="w-11 h-6 bg-lightgray rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all "
-                            ></div>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr className="mutebtn">
-                        <td>
-                          <span className="text-base font-normal">
-                            Toggle subtitles:
-                          </span>
-                        </td>
-                        <td className="text-right">
-                          <label className="inline-flex relative items-center  cursor-pointer">
-                            <input
-                              type="checkbox"
-                              className="sr-only peer"
-                              readOnly
-                              checked={areSubtitlesOn}
-                              onChange={handleSubtitlesChange}
-                            />
-                            <div
-                              onClick={() => {
-                                setEnabled(!enabled);
-                              }}
-                              className="w-11 h-6 bg-lightgray rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all "
-                            ></div>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <label className="text-base font-normal">
-                            Max number of videos to play
-                            <br /> within a YouTube playlist:
-                          </label>
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            placeholder="e.g.10"
-                            value={maxVideos}
-                            onChange={(e) => setMaxVideos(e.target.value)}
-                          />
-                        </td>
-                      </tr>
-
-                      <tr></tr>
-                    </tbody>
-                  </table>
+                  <button className="sm:ml-2 xs:ml-1 mt-1">
+                    <input
+                      type="checkbox"
+                      className="h-7 w-7"
+                      checked={selectAll}
+                      onChange={handleSelectAll}
+                    />
+                  </button>
                 </div>
               </div>
-              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative">
-                <div className="w-full videoplayer relative bg-white">
-                  <ReactPlayer
-                    url={YoutubeVideo}
-                    className="w-full relative z-20 videoinner"
-                    muted={isMuted}
-                    controls={true} // Enable video controls
-                    captions={{
-                      active: areSubtitlesOn, // Enable subtitles based on the areSubtitlesOn state
-                      file: areSubtitlesOn ? "URL_TO_SUBTITLE_FILE" : undefined, // Provide the URL to the subtitle file if subtitles are enabled
-                    }}
-                  />
-                </div>
-                <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-10">
-                  <img src="../../../public/Assets/img.png" />
-                </div>
-              </div>
+              <div>
+                {Array.isArray(youtubeData) && youtubeData.length > 0 ? (
+                  <div className=" grid grid-cols-10 gap-4 mt-5">
+                    {youtubeData.map((item) => (
+                      <div
+                        key={item.youtubeId}
+                        className="lg:col-span-2 md:col-span-5 sm:col-span-10"
+                      >
+                        <div className="shadow-md bg-[#EFF3FF] rounded-lg">
+                          <div className="relative flex justify-between">
+                            <button className="float-right p-2">
+                              <input className="h-5 w-5" type="checkbox" />
+                            </button>
+                            <div className="relative">
+                              <button className="float-right">
+                                <BiDotsHorizontalRounded
+                                  className="text-2xl"
+                                  onClick={() =>
+                                    handleAppDropDownClick(item.youtubeId)
+                                  }
+                                />
+                              </button>
+                              {appDropDown === item.youtubeId && (
+                                <div className="appdw">
+                                  <ul>
+                                    <li className="flex text-sm items-center">
+                                      <FiUpload className="mr-2 text-lg" />
+                                      Set to Screen
+                                    </li>
+                                    <li className="flex text-sm items-center">
+                                      <MdPlaylistPlay className="mr-2 text-lg" />
+                                      Add to Playlist
+                                    </li>
 
-              {/* Add this container within your JSX */}
-              <div id="videoPreview" style={{ display: "none" }}>
-                {/* Place your video player here */}
-                <div className="video-preview">
-                  <ReactPlayer
-                    url={YoutubeVideo}
-                    className="w-full relative z-20 previewinner"
-                    muted={isMuted}
-                    controls={areSubtitlesOn}
-                  />
-                </div>
+                                    <li
+                                      className="flex text-sm items-center cursor-pointer"
+                                      onClick={() =>
+                                        handelDeleteInstance(item.youtubeId)
+                                      }
+                                    >
+                                      <RiDeleteBin5Line className="mr-2 text-lg" />
+                                      Delete
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <div className="text-center clear-both pb-8">
+                            
+                            <img
+                              src="../../../public/AppsImg/youtube.svg"
+                              alt="Logo"
+                              className="cursor-pointer mx-auto h-20 w-20"
+                            />
+                            <h4 className="text-lg font-medium mt-3">
+                              {item.instanceName}
+                            </h4>
+                            <h4 className="text-sm font-normal ">Add tags</h4>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>No YouTube data available.</p>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
-
       <Footer />
     </>
   );
