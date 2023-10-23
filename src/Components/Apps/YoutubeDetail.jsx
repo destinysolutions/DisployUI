@@ -1,10 +1,10 @@
+import React from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
-import { GrClose } from "react-icons/gr";
 import { GoPencil } from "react-icons/go";
-import { useState } from "react";
 import "../../Styles/apps.css";
 import { FiUpload } from "react-icons/fi";
 import { MdPlaylistPlay } from "react-icons/md";
@@ -15,18 +15,86 @@ import {
   AiOutlineCloseCircle,
   AiOutlineSearch,
 } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Footer from "../Footer";
+import ReactPlayer from "react-player";
+import axios from "axios";
+import { YOUTUBE_INSTANCE_ADD_URL } from "../../Pages/Api";
 
-const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
-  AppInstance.propTypes = {
+const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
+  YoutubeDetail.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+  const history = useNavigate();
   const [enabled, setEnabled] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [showSetScreenModal, setShowSetScreenModal] = useState(false);
   const [playlistDeleteModal, setPlaylistDeleteModal] = useState(false);
+  const [YoutubeVideo, setYoutubeVideo] = useState("");
+  const handleYoutubeChange = (e) => {
+    setYoutubeVideo(e.target.value);
+  };
+  const [isMuted, setIsMuted] = useState(false);
+  const [areSubtitlesOn, setAreSubtitlesOn] = useState(false);
+  const handleMuteChange = () => {
+    setIsMuted(!isMuted);
+  };
+  const handleSubtitlesChange = () => {
+    setAreSubtitlesOn(!areSubtitlesOn);
+  };
+  const [maxVideos, setMaxVideos] = useState(10);
+
+  // Intance Name
+  const [instancename, setinstancename] = useState();
+  const handleinstancenameChange = (e) => {
+    setinstancename(e.target.value);
+  };
+
+  // video preview
+  function showVideoPreview() {
+    const videoPreview = document.getElementById("videoPreview");
+    videoPreview.style.display = "block";
+  }
+
+  function hideVideoPreview() {
+    const videoPreview = document.getElementById("videoPreview");
+    videoPreview.style.display = "none";
+  }
+
+  //Insert  API
+  const addYoutubeApp = () => {
+    let data = JSON.stringify({
+      instanceName: instancename,
+      youTubeURL: YoutubeVideo,
+      muteVideos: isMuted,
+      toggleSubtitles: areSubtitlesOn,
+      youTubePlaylist: maxVideos,
+      operation: "Insert",
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: YOUTUBE_INSTANCE_ADD_URL,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        if (response.data.status === 200) {
+          history("/youtubedetail");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -43,10 +111,16 @@ const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
               <GoPencil className="ml-4 text-lg" />
             </div>
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
-              <button className=" flex align-middle border-primary items-center border-2 rounded-full py-1 px-4 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button
+                className=" flex align-middle border-primary items-center border-2 rounded-full py-1 px-4 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                onClick={showVideoPreview}
+              >
                 Preview
               </button>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle bg-primary text-white items-center rounded-full py-1 px-4 text-base hover:shadow-lg hover:shadow-primary-500/50">
+              <button
+                className="sm:ml-2 xs:ml-1 flex align-middle bg-primary text-white items-center rounded-full py-1 px-4 text-base hover:shadow-lg hover:shadow-primary-500/50"
+                onClick={() => addYoutubeApp()}
+              >
                 Save
               </button>
               <div className="relative">
@@ -260,14 +334,17 @@ const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 )}
               </div>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full px-[10px] text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button
+                className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full px-[10px] text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                onClick={hideVideoPreview}
+              >
                 <AiOutlineClose />
               </button>
             </div>
           </div>
           <div className="mt-6">
             <div className="grid grid-cols-12 gap-4">
-              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 shadow-md bg-white rounded-lg p-5">
+              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 shadow-md bg-white rounded-lg p-5  items-center">
                 <div className=" ">
                   <table
                     className="youtubetable w-full align-middle"
@@ -278,11 +355,29 @@ const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
                       <tr>
                         <td>
                           <label className="text-base font-normal">
+                            Enter Instance Name
+                          </label>
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            placeholder="Enter Instance Name"
+                            onChange={handleinstancenameChange}
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <label className="text-base font-normal">
                             YouTube URL:
                           </label>
                         </td>
                         <td>
-                          <input type="text" placeholder="www.youtube.com" />
+                          <input
+                            type="text"
+                            placeholder="e.g. https://youtu.be/dQw4w9WgXcQ"
+                            onChange={handleYoutubeChange}
+                          />
                         </td>
                       </tr>
 
@@ -297,8 +392,9 @@ const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
                             <input
                               type="checkbox"
                               className="sr-only peer"
-                              checked={enabled}
                               readOnly
+                              checked={isMuted}
+                              onChange={handleMuteChange}
                             />
                             <div
                               onClick={() => {
@@ -320,8 +416,9 @@ const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
                             <input
                               type="checkbox"
                               className="sr-only peer"
-                              checked={enabled}
                               readOnly
+                              checked={areSubtitlesOn}
+                              onChange={handleSubtitlesChange}
                             />
                             <div
                               onClick={() => {
@@ -340,36 +437,58 @@ const AppInstance = ({ sidebarOpen, setSidebarOpen }) => {
                           </label>
                         </td>
                         <td>
-                          <input type="text" placeholder="e.g.10" />
+                          <input
+                            type="text"
+                            placeholder="e.g.10"
+                            value={maxVideos}
+                            onChange={(e) => setMaxVideos(e.target.value)}
+                          />
                         </td>
                       </tr>
-                      <tr>
-                        <td>
-                          <label className="text-base font-normal">
-                            This app&apos;s duration on screen:
-                          </label>
-                        </td>
-                        <td>
-                          <input type="text" placeholder="720" />
-                        </td>
-                      </tr>
+
                       <tr></tr>
                     </tbody>
                   </table>
                 </div>
               </div>
-              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 shadow-md bg-white rounded-lg flex items-center">
-                <div>
-                  <img src="../../../ScreenImg/dragon.svg" className="w-full" />
+              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative">
+                <div className="w-full videoplayer relative bg-white">
+                  <ReactPlayer
+                    url={YoutubeVideo}
+                    className="w-full relative z-20 videoinner"
+                    muted={isMuted}
+                    controls={true} // Enable video controls
+                    captions={{
+                      active: areSubtitlesOn, // Enable subtitles based on the areSubtitlesOn state
+                      file: areSubtitlesOn ? "URL_TO_SUBTITLE_FILE" : undefined, // Provide the URL to the subtitle file if subtitles are enabled
+                    }}
+                  />
+                </div>
+                <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-10">
+                  <img src="../../../public/Assets/img.png" />
+                </div>
+              </div>
+
+              {/* Add this container within your JSX */}
+              <div id="videoPreview" style={{ display: "none" }}>
+                {/* Place your video player here */}
+                <div className="video-preview">
+                  <ReactPlayer
+                    url={YoutubeVideo}
+                    className="w-full relative z-20 previewinner"
+                    muted={isMuted}
+                    controls={areSubtitlesOn}
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
       <Footer />
     </>
   );
 };
 
-export default AppInstance;
+export default YoutubeDetail;

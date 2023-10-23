@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import "../../Styles/screen.css";
-import { AiOutlineCloudUpload, AiOutlineSave } from "react-icons/ai";
+import {
+  AiOutlineCloseCircle,
+  AiOutlineCloudUpload,
+  AiOutlineSave,
+} from "react-icons/ai";
 import {
   MdLiveTv,
   MdOutlineCalendarMonth,
@@ -27,6 +31,7 @@ import { Tooltip } from "@material-tailwind/react";
 
 import {
   DELETE_SCREEN_BY_USERID,
+  SCREEN_GROUP,
   SELECT_BY_USER_SCREENDETAIL,
   UPDATE_NEW_SCREEN,
 } from "../../Pages/Api";
@@ -90,7 +95,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [editingScreenID, setEditingScreenID] = useState(null);
 
   const UserData = useSelector((Alldata) => Alldata.user);
-  console.log(UserData.user?.userID, "UserData.user?.userID");
+  const [groupName, setGroupName] = useState("");
   useEffect(() => {
     if (UserData.user?.userID) {
       axios
@@ -288,7 +293,49 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       console.error("Screen not found for update");
     }
   };
+  const [showNewScreenGroupPopup, setShowNewScreenGroupPopup] = useState(false);
+  const [selectedCheckboxIDs, setSelectedCheckboxIDs] = useState([]);
 
+  const handleNewScreenGroupClick = () => {
+    const checkedIDs = Object.keys(screenCheckboxes).filter(
+      (screenID) => screenCheckboxes[screenID]
+    );
+    setSelectedCheckboxIDs(checkedIDs);
+
+    setShowNewScreenGroupPopup(!showNewScreenGroupPopup);
+  };
+
+  const selectedScreenIdsString = Array.isArray(selectedCheckboxIDs)
+    ? selectedCheckboxIDs.join(",")
+    : "";
+  console.log(selectedCheckboxIDs, "selectedCheckboxIDs");
+
+  const handleScreenGroup = () => {
+    let data = JSON.stringify({
+      GroupName: groupName,
+      ScreenIds: selectedScreenIdsString,
+      operation: "Insert",
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: SCREEN_GROUP,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <>
       <div className="flex border-b border-gray">
@@ -353,10 +400,46 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 <button
                   type="button"
                   className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
+                  onClick={handleNewScreenGroupClick}
                 >
                   <HiOutlineRectangleGroup className="p-1 text-3xl hover:text-white text-primary" />
                 </button>
               </Tooltip>
+              {showNewScreenGroupPopup && (
+                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                  <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
+                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                      <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                        <button
+                          className="p-1 text-xl"
+                          onClick={() => setShowNewScreenGroupPopup(false)}
+                        >
+                          <AiOutlineCloseCircle className="text-2xl" />
+                        </button>
+                      </div>
+                      <div className="p-3">
+                        <label>Enter Group Name : </label>
+                        <input
+                          type="text"
+                          onChange={(e) => {
+                            setGroupName(e.target.value);
+                          }}
+                          className="border border-primary m-5"
+                        />
+                      </div>
+                      <div className="flex justify-center">
+                        {" "}
+                        <button
+                          className="mb-4 border border-primary py-2 px-3"
+                          onClick={handleScreenGroup}
+                        >
+                          create
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               <Tooltip
                 content="Deactivate/Activate"
                 placement="bottom-end"
@@ -371,6 +454,24 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
                 >
                   <VscVmActive className="p-1 text-3xl hover:text-white text-primary" />
+                </button>
+              </Tooltip>
+              <Tooltip
+                content="Delete"
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-5"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
+                <button
+                  type="button"
+                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
+                  onClick={handleDeleteAllScreen}
+                  style={{ display: selectAllChecked ? "block" : "none" }}
+                >
+                  <RiDeleteBin5Line className="p-1 text-3xl hover:text-white text-primary" />
                 </button>
               </Tooltip>
               <div className="relative">
@@ -485,24 +586,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 )}
               </div>
-              <Tooltip
-                content="Delete"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
-              >
-                <button
-                  type="button"
-                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
-                  onClick={handleDeleteAllScreen}
-                  style={{ display: selectAllChecked ? "block" : "none" }}
-                >
-                  <RiDeleteBin5Line className="p-1 text-3xl hover:text-white text-primary" />
-                </button>
-              </Tooltip>
+
               <Tooltip
                 content="Select All Screen"
                 placement="bottom-end"
@@ -699,15 +783,15 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           {/* action popup start */}
                           {showActionBox[screen.screenID] && (
                             <div className="scheduleAction z-10 ">
-                              {/* <div className="my-1">
-                              <Link
-                                to={`/addschedule?scheduleId=${screen.screenID}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
-                              >
-                                <button>Edit Schedule</button>
-                              </Link>
-                            </div> */}
+                              <div className="my-1">
+                                <Link
+                                  to={`/screensplayer?screenID=${screen.screenID}`}
+                                >
+                                  <button>Edit Screen</button>
+                                </Link>
+                              </div>
 
-                              {/* <div className="mb-1 border border-[#F2F0F9]"></div> */}
+                              <div className="mb-1 border border-[#F2F0F9]"></div>
                               <div className=" mb-1 text-[#D30000]">
                                 <button
                                   onClick={() =>

@@ -15,6 +15,9 @@ import { TbScanEye } from "react-icons/tb";
 import PropTypes from "prop-types";
 import Footer from "../../Footer";
 import { AiOutlineCloudUpload } from "react-icons/ai";
+import { useEffect } from "react";
+import { SELECT_ALL_SCREENGROUP } from "../../../Pages/Api";
+import axios from "axios";
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenGroup.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -39,6 +42,16 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     setIsHovering(false);
   };
 
+  useEffect(() => {
+    axios
+      .get(SELECT_ALL_SCREENGROUP)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching deleted data:", error);
+      });
+  }, []);
   return (
     <>
       <div className="flex border-b border-gray">

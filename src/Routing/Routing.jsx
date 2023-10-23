@@ -1,11 +1,6 @@
 import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
-import Login from "../Pages/Login";
-import Registration from "../Pages/Registration";
-import ForgotPassword from "../Pages/ForgotPassword";
-import TermsConditions from "../Pages/TermsConditions";
 import Dashboard from "../Components/Dashboard/Dashboard";
 import Screens from "../Components/Screen/Screens";
-import ErrorPage from "../Pages/ErrorPage";
 import NewScreenGroup from "../Components/Screen/SubScreens/NewScreenGroup";
 import Screensplayer from "../Components/Screen/SubScreens/Screensplayer";
 import { useState, useEffect, useCallback } from "react";
@@ -13,8 +8,6 @@ import MergeScreen from "../Components/Screen/SubScreens/MergeScreen";
 import NewScreenDetail from "../Components/Screen/SubScreens/NewScreenDetail";
 import Assets from "../Components/Assests/Assets";
 import Apps from "../Components/Apps/Apps";
-import AppDetail from "../Components/Apps/AppDetail";
-import AppInstance from "../Components/Apps/AppInstance";
 import DisployStudio from "../Components/DisployStudio/DisployStudio";
 import Report from "../Components/Reports/Report";
 import EditUser from "../Pages/EditUser";
@@ -35,7 +28,7 @@ import Userrole from "../Components/Settings/Userrole";
 import Trash from "../Components/Trash";
 import NewFolderDialog from "../Components/Assests/NewFolderDialog ";
 import { UserProvider } from "../UserContext";
-import Youtube from "../Components/Apps/Youtube";
+
 import { auth } from "../firebase/firebase";
 import LoginContainer from "./AuthRoutes";
 import UserProfile from "../Pages/Profile/UserProfile";
@@ -43,8 +36,13 @@ import AdminContainer from "./AdminRoutes";
 import AddComposition from "../Components/PlayList/AddComposition";
 import SelectLayout from "../Components/PlayList/SelectedLayout";
 import Composition from "../Components/PlayList/Composition";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loginUser } from "../Redux/useraction";
+import Youtube from "../Components/Apps/Youtube";
+import YoutubeDetail from "../Components/Apps/YoutubeDetail";
+import Weather from "../Components/Apps/Weather";
+import TextScroll from "../Components/Apps/TextScroll";
+import TextScrollDetail from "../Components/Apps/TextScrollDetail";
 
 const Routing = () => {
   //for screen resize sidebar open close
@@ -114,16 +112,12 @@ const Routing = () => {
     );
   if (accessDetails === "USER" && isAuthicate) {
     const data = localStorage.getItem("userID");
-    console.log(JSON.parse(data));
     dispatch(loginUser(JSON.parse(data)));
 
     return (
       <UserProvider>
         <BrowserRouter>
           <Routes>
-            {/* Dashboard component route */}
-            {/* <Route path="/dashboard" element={<Privateroute><Dashboard /></Privateroute>} /> */}
-            {/* <Route element={<Privateroute />}> */}
             <Route path="/" element={<Navigate to="/dashboard" />} />
             <Route path="/register" element={<Navigate to="/dashboard" />} />
             <Route
@@ -135,7 +129,7 @@ const Routing = () => {
                 />
               }
             />
-            {/* </Route> */}
+
             <Route
               path="/screens"
               element={
@@ -230,18 +224,45 @@ const Routing = () => {
               }
             />
             <Route
-              path="/appdetail"
+              path="/youtube"
               element={
-                <AppDetail
+                <Youtube
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />
               }
             />
             <Route
-              path="/appinstance"
+              path="/youtubedetail"
               element={
-                <AppInstance
+                <YoutubeDetail
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/textscrolldetail"
+              element={
+                <TextScrollDetail
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/weather"
+              element={
+                <Weather
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/text-scroll"
+              element={
+                <TextScroll
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />
@@ -430,28 +451,13 @@ const Routing = () => {
                 />
               }
             />
-            <Route
-              path="/youtube"
-              element={
-                <Youtube
-                  sidebarOpen={sidebarOpen}
-                  setSidebarOpen={setSidebarOpen}
-                />
-              }
-            />
-            {/* login register route */}
-
-            {/* forgotpassword and termsconditions route */}
-            {/*Event Editors */}
-            {/* error page route */}
-            {/* <Route path="*" element={<ErrorPage />} /> */}
           </Routes>
         </BrowserRouter>
       </UserProvider>
     );
   }
 
-  return <div>Some thing went wrong</div>;
+  return <div>Loading..</div>;
 };
 
 export default Routing;

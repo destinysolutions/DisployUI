@@ -49,6 +49,8 @@ const Navbar = () => {
   const [showProfileBox, setShowProfileBox] = useState(false);
   const [showNotificationBox, setShowNotificationBox] = useState(false);
   const [regsiterdata, setRegisterdata] = useState([]);
+  const [userCreateDate, setUserCreateDate] = useState("");
+  const [userTrialDays, setUserTrialDays] = useState("");
   const UserData = useSelector((Alldata) => Alldata.user);
 
   const handleProfileClick = (e) => {
@@ -82,7 +84,9 @@ const Navbar = () => {
         .get(`${SELECT_BY_ID_USERDETAIL}?ID=${UserData.user?.userID}`)
         .then((response) => {
           setRegisterdata(response.data.data);
-          // console.log(response.data);
+          setUserCreateDate(response.data.data[0].createdDate);
+          setUserTrialDays(response.data.data[0].trialDays);
+          console.log(response.data);
         })
         .catch((error) => {
           console.log(error);
@@ -97,11 +101,26 @@ const Navbar = () => {
   const handleSignOut = () => {
     localStorage.removeItem("hasSeenMessage");
     localStorage.removeItem("user");
+    localStorage.removeItem("userID");
+
     localStorage.setItem("role_access", "");
     window.location.reload();
     history("/");
     auth.signOut();
   };
+
+  // Parse the createdDate and calculate the trial end date
+  const createdDate = new Date(userCreateDate);
+  const trialEndDate = new Date(createdDate);
+  trialEndDate.setDate(trialEndDate.getDate() + userTrialDays);
+
+  // Calculate the current date
+  const currentDate = new Date();
+
+  // Calculate the remaining days
+  const daysRemaining = Math.ceil(
+    (trialEndDate - currentDate) / (1000 * 60 * 60 * 24)
+  );
 
   return (
     // navbar component start
@@ -110,6 +129,13 @@ const Navbar = () => {
         <div className="flex-col flex">
           <div className="w-full">
             <div className=" justify-end items-center mx-auto px-4 flex relative">
+              <div className="mr-3">
+                {daysRemaining > 0 ? (
+                  <p>Trial Days Remaining : {daysRemaining}</p>
+                ) : (
+                  <p>Your trial has expired.</p>
+                )}
+              </div>
               <img
                 src="/NavbarIcons/Union.svg"
                 alt="Union"
