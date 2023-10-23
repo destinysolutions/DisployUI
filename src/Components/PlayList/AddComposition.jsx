@@ -6,6 +6,8 @@ import Navbar from "../Navbar";
 import Sidebar from "../Sidebar";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import axios from "axios";
 
 const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
   AddComposition.propTypes = {
@@ -15,9 +17,31 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
 
   const navigation = useNavigate();
 
-  const SelectLayout = () => {
-    navigation("/selectedlayout");
+  const [allcompositionData, setAllcompositionData] = useState([]);
+
+  const SelectLayout = (id) => {
+    navigation("/selectedlayout", { state: id });
   };
+
+  useEffect(() => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: "http://192.168.1.219/api/Layout/SelectByList",
+      headers: {},
+      data: "",
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data?.data));
+        setAllcompositionData(response.data?.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   return (
     <>
       <div className="flex bg-white py-3 border-b border-gray">
@@ -47,28 +71,35 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="rounded-xl mt-8 shadow bg-white p-5">
             <h4 className="text-lg font-medium mb-5">Standard</h4>
             <div className="grid grid-cols-3 gap-8">
-              <div className="relative">
-                <div className="layout-card block text-center cursor-pointer max-w-xs mx-auto">
-                  <img
-                    src="../../../composition/layout-1.png"
-                    alt="Logo"
-                    className=" mx-auto"
-                  />
-                  <div className="onhover_show">
-                    <div className="text">
-                      <h4 className="text-lg font-medium">Layout Name</h4>
-                      <p className="text-sm font-normal ">Total Section: 3</p>
+              {allcompositionData.map((item, index) => (
+                <div className="relative" key={index}>
+                  <div className="layout-card block text-center cursor-pointer max-w-xs mx-auto ">
+                    <img
+                      src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                        item.svg
+                      )}`}
+                      alt="Logo"
+                      className=" mx-auto"
+                    />
+                    <div className="onhover_show">
+                      <div className="text">
+                        <h4 className="text-lg font-medium">Layout Name</h4>
+                        <p className="text-sm font-normal ">
+                          Total Section: {item.lstLayloutModelList.length}
+                        </p>
+                      </div>
+                      <button
+                        className="bg-SlateBlue mx-auto text-white rounded-full px-4 py-2 hover:bg-primary hover:text-white text-sm hover:bg-primary-500"
+                        onClick={() => SelectLayout(item.layoutDtlID)}
+                      >
+                        Use This Layout
+                      </button>
                     </div>
-                    <button
-                      className="bg-SlateBlue mx-auto text-white rounded-full px-4 py-2 hover:bg-primary hover:text-white text-sm hover:bg-primary-500"
-                      onClick={SelectLayout}
-                    >
-                      Use This Layout
-                    </button>
                   </div>
                 </div>
-              </div>
-              <div className="relative">
+              ))}
+
+              {/* <div className="relative">
                 <div className="layout-card block text-center cursor-pointer max-w-xs mx-auto">
                   <img
                     src="../../../composition/layout-2.png"
@@ -139,9 +170,9 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
                     </button>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
-            <h4 className="text-lg font-medium my-5">Custom</h4>
+            {/* <h4 className="text-lg font-medium my-5">Custom</h4>
             <div className="grid grid-cols-3 gap-8">
               <div className="relative">
                 <div className="layout-card block text-center cursor-pointer max-w-xs mx-auto">
@@ -197,7 +228,7 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

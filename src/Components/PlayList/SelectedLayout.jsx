@@ -10,6 +10,7 @@ import axios from "axios";
 import { GET_ALL_FILES } from "../../Pages/Api";
 import AssetModal from "../Assests/AssetModal";
 import PreviewModal from "./PreviewModel";
+import { useLocation } from "react-router-dom";
 const DEFAULT_IMAGE = "";
 
 const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
@@ -18,6 +19,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
+  const { state } = useLocation();
   const [addCounter, setaddCounter] = useState(1);
   const [assetData, setAssetData] = useState([]);
   const [showAssetModal, setShowAssetModal] = useState(false);
@@ -29,6 +31,9 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   });
   const { selectedObjects, editor, onReady } = useFabricJSEditor();
   const [modalVisible, setModalVisible] = useState(false);
+  const [compositonData, setcompositonData] = useState([]);
+  const [currentSection, setcurrentSection] = useState(1);
+  const [Testasset, setTestasset] = useState([]);
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
@@ -38,6 +43,27 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       onReady(canvas);
     });
   };
+
+  useEffect(() => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `http://192.168.1.219/api/Layout/SelectByList?LayoutDtlID=${state}`,
+      headers: {},
+      data: "",
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        // console.log(JSON.stringify(response.data?.data[0]));
+        setcompositonData(response.data?.data[0]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   useEffect(() => {
     axios
       .get(GET_ALL_FILES)
@@ -50,7 +76,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
         ];
-        console.log(fetchedData);
         setAssetData(allAssets);
       })
       .catch((error) => {
@@ -138,12 +163,75 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     setjsondata(editor.canvas.toJSON());
   };
 
-  const addSeletedAsset = (data) => {
+  const addSeletedAsset = (data, currentSection, alldata) => {
     const newdata = [
       ...addAsset,
       { ...data, PlayDuration: 10, isEdited: true },
     ];
-    console.log("newdata", newdata);
+    // if (Testasset.length > 0) {
+    //   const newdata = Testasset.map((item, index, alldata) => {
+    //     if (Object.keys(item).includes(`section${currentSection}`)) {
+    //       return {
+    //         ...item,
+    //         [`section${currentSection}`]: [
+    //           ...item?.[`section${currentSection}`],
+    //           { ...data, PlayDuration: 10, isEdited: true },
+    //         ],
+    //       };
+    //     } else {
+    //       return [
+    //         ...alldata,
+    //         {
+    //           [`section${currentSection}`]: [
+    //             { ...data, PlayDuration: 10, isEdited: true },
+    //           ],
+    //         },
+    //       ];
+    //     }
+    //   });
+    //   console.log("newdata", newdata);
+    //   setTestasset(newdata);
+    // } else {
+    //   setTestasset([
+    //     { [`section${1}`]: [{ ...data, PlayDuration: 10, isEdited: true }] },
+    //   ]);
+    // }
+    console.log("cureentSection", currentSection);
+    const newdata2 = Testasset.reduce(
+      (t, item, ind) => {
+        var objectkey = `section${currentSection}`;
+        console.log("type", objectkey);
+        if (Object.keys(item).includes(objectkey)) {
+          return t.map((i, index) => {
+            if (ind == index) {
+              console.log("Trueeeeeeeee", ind == index);
+              return {
+                ...i,
+                [String("section" + currentSection)]: [
+                  ...i[String("section" + currentSection)],
+                  { ...data, PlayDuration: 10, isEdited: true },
+                ],
+              };
+            } else {
+              return i;
+            }
+          });
+        } else {
+          console.log("Falseeeeeeeeeeeeeeeeee");
+          return [
+            ...t,
+            {
+              [`section${currentSection}`]: [
+                { ...data, PlayDuration: 10, isEdited: true },
+              ],
+            },
+          ];
+        }
+      },
+      [{ [`section${1}`]: [{ ...data, PlayDuration: 10, isEdited: true }] }]
+    );
+    console.log("newdata2", newdata2);
+    setTestasset(newdata2);
     setAddAsset(newdata);
   };
 
@@ -176,7 +264,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     });
     setAddAsset(newData);
   };
-
   //   const image = `<svg
   //   xmlns="http://www.w3.org/2000/svg"
   //   xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -233,24 +320,24 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         left: 0,
         top: 0,
         width: 350,
-        height: 100,
-        fill: "red",
-        stroke: null,
+        height: 150,
+        fill: "#D9D9D9",
+        stroke: "null",
         strokeWidth: 1,
-        strokeDashArray: null,
+        strokeDashArray: "null",
         strokeLineCap: "butt",
         strokeDashOffset: 0,
         strokeLineJoin: "miter",
-        strokeUniform: false,
+        strokeUniform: "false",
         strokeMiterLimit: 4,
         scaleX: 1,
-        scaleY: 1.64,
+        scaleY: 1,
         angle: 0,
-        flipX: false,
-        flipY: false,
+        flipX: "false",
+        flipY: "false",
         opacity: 1,
-        shadow: null,
-        visible: true,
+        shadow: "null",
+        visible: "true",
         backgroundColor: "",
         fillRule: "nonzero",
         paintFirst: "fill",
@@ -267,25 +354,25 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         originY: "top",
         left: 350,
         top: 0,
-        width: 50,
+        width: 125,
         height: 268,
-        fill: "green",
-        stroke: null,
+        fill: "#D5E3FF",
+        stroke: "null",
         strokeWidth: 1,
-        strokeDashArray: null,
+        strokeDashArray: "null",
         strokeLineCap: "butt",
         strokeDashOffset: 0,
         strokeLineJoin: "miter",
-        strokeUniform: false,
+        strokeUniform: "false",
         strokeMiterLimit: 4,
-        scaleX: 2.47,
+        scaleX: 1,
         scaleY: 1,
         angle: 0,
-        flipX: false,
-        flipY: false,
+        flipX: "false",
+        flipY: "false",
         opacity: 1,
-        shadow: null,
-        visible: true,
+        shadow: "null",
+        visible: "true",
         backgroundColor: "",
         fillRule: "nonzero",
         paintFirst: "fill",
@@ -301,26 +388,26 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         originX: "left",
         originY: "top",
         left: 0,
-        top: 164.6,
+        top: 150,
         width: 350,
-        height: 100,
-        fill: "blue",
-        stroke: null,
+        height: 120,
+        fill: "#7D87A9",
+        stroke: "null",
         strokeWidth: 1,
-        strokeDashArray: null,
+        strokeDashArray: "null",
         strokeLineCap: "butt",
         strokeDashOffset: 0,
         strokeLineJoin: "miter",
-        strokeUniform: false,
+        strokeUniform: "false",
         strokeMiterLimit: 4,
         scaleX: 1,
-        scaleY: 1.08,
+        scaleY: 1,
         angle: 0,
-        flipX: false,
-        flipY: false,
+        flipX: "false",
+        flipY: "false",
         opacity: 1,
-        shadow: null,
-        visible: true,
+        shadow: "null",
+        visible: "true",
         backgroundColor: "",
         fillRule: "nonzero",
         paintFirst: "fill",
@@ -341,7 +428,24 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="pt-6 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
-            <div className="flex relative bg-SlateBlue justify-center items-center h-[268px] w-[476px]"></div>
+            <div className="flex relative justify-center items-center h-[268px] w-[476px]">
+              {compositonData?.lstLayloutModelList?.map((obj, index) => (
+                <div
+                  key={index}
+                  style={{
+                    position: "absolute",
+                    left: obj.left + "px",
+                    top: obj.top + "px",
+                    width: obj.width + "px",
+                    height: obj.height + "px",
+                    backgroundColor: obj.fill,
+                    // Apply other CSS properties as needed
+                  }}
+                >
+                  {/* You can add content or additional HTML elements within the div */}
+                </div>
+              ))}
+            </div>
           </PreviewModal>
           {/* <div className="lg:flex lg:justify-between sm:block xs:block items-center">
             <input
@@ -576,7 +680,9 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                     {assetData.map((assetdata) => (
                       <tr
                         className="border-b border-b-[#E4E6FF]"
-                        onClick={() => addSeletedAsset(assetdata)}
+                        onClick={() =>
+                          addSeletedAsset(assetdata, currentSection)
+                        }
                       >
                         <td className="flex"> {assetdata.name}</td>
                         <td className="p-2">PNG</td>
@@ -592,22 +698,41 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="flex border-b border-b-[#E4E6FF] pb-5">
                 <div className="layout-img me-5">
                   <img
-                    src="../../../composition/layout-2.png"
+                    src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                      compositonData.svg
+                    )}`}
                     alt="Logo"
                     className="w-32"
                   />
                 </div>
                 <div className="layout-detaills">
                   <h3 className="text-lg font-medium block mb-3">
-                    Duration:-<span>0 Sec</span>{" "}
+                    Duration:-<span>0 Sec</span>
                   </h3>
                   <div className="flex">
-                    <button className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3">
-                      Section 1
-                    </button>
-                    <button className=" px-5 py-2 border border-primary rounded-full text-primary">
+                    {Array(compositonData.lstLayloutModelList?.length)
+                      .fill(2)
+                      .map((item, index) => (
+                        <button
+                          className={`px-5 ${
+                            currentSection == index + 1
+                              ? "bg-primary"
+                              : "bg-white"
+                          } ${
+                            currentSection == index + 1
+                              ? "text-white"
+                              : "text-primary"
+                          }  rounded-full py-2 border border-primary me-3`}
+                          key={index}
+                          onClick={() => setcurrentSection(index + 1)}
+                        >
+                          Section {index + 1}
+                        </button>
+                      ))}
+
+                    {/* <button className=" px-5 py-2 border border-primary rounded-full">
                       Section 2
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>

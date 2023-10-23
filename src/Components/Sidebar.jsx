@@ -27,6 +27,7 @@ const Sidebar = ({ sidebarOpen }) => {
   //     // Handle the error (e.g., display an error message to the user)
   //   }
   // }
+  const navigation = useNavigate();
 
   Sidebar.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -299,11 +300,27 @@ const Sidebar = ({ sidebarOpen }) => {
                 {MenuIcons.map((item, MIindex) => {
                   return (
                     <li key={MIindex} className={item.cName}>
-                      <Link to={item.path}>
+                      {/* <Link to={item.path}> */}
+                      <div
+                        className="flex"
+                        onClick={() => {
+                          if ((item.title = "Log Out")) {
+                            localStorage.setItem("role_access", "");
+                            window.location.reload();
+                            navigation("/");
+                            auth.signOut();
+                          } else {
+                            navigation(item.path);
+                          }
+                        }}
+                      >
                         <div>{item.icon}</div>
-                        <span className="ml-5">{item.title}</span>
-                      </Link>
-                      {Menus.title}
+                        <span className="ml-5 text-[#8E94A9]">
+                          {item.title}
+                        </span>
+                        {/* </Link> */}
+                        {Menus.title}
+                      </div>
                     </li>
                   );
 
@@ -420,11 +437,25 @@ const Sidebar = ({ sidebarOpen }) => {
                 // }
                 return (
                   <li key={MIindex} className={item.cName}>
-                    <Link to={item.path}>
+                    {/* <Link to={item.path}> */}
+                    <div
+                      className="flex"
+                      onClick={() => {
+                        if ((item.title = "Log Out")) {
+                          localStorage.setItem("role_access", "");
+                          window.location.reload();
+                          navigation("/");
+                          auth.signOut();
+                        } else {
+                          navigation(item.path);
+                        }
+                      }}
+                    >
                       <div>{item.icon}</div>
-                      <span className="ml-5">{item.title}</span>
-                    </Link>
-                    {Menus.title}
+                      <span className="ml-5 text-[#8E94A9]">{item.title}</span>
+                      {/* </Link> */}
+                      {Menus.title}
+                    </div>
                   </li>
                 );
               })}
