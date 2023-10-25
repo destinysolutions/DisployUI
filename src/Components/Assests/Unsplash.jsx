@@ -8,7 +8,6 @@ import axios from "axios";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 
 import { useNavigate } from "react-router-dom";
-import { RiDeleteBin6Line } from "react-icons/ri";
 
 const Unsplash = ({ closeModal, onSelectedImages }) => {
   const [img, setImg] = useState("Natural");
@@ -109,19 +108,7 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
         });
     });
   };
-  const generateDownloadLink = (image) => {
-    const link = document.createElement("a");
-    link.href = image.urls.full; // Set the image URL as the link's href
-    link.setAttribute("download", "image.jpg"); // Set the download attribute with a desired file name
-    link.style.display = "none"; // Hide the link
-    document.body.appendChild(link);
 
-    // Trigger a click event to download the image
-    link.click();
-
-    // Clean up the link element
-    document.body.removeChild(link);
-  };
   useEffect(() => {
     const allImagesUploaded = selectedImages.every(
       (img) => imageUploadProgress[img.id] === 100
@@ -134,11 +121,6 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
       }, 5000);
     }
   }, [selectedImages, imageUploadProgress]);
-  const handleDeleteImage = (imageId) => {
-    setSelectedImages((prevSelected) =>
-      prevSelected.filter((img) => img.id !== imageId)
-    );
-  };
 
   return (
     <>
@@ -226,44 +208,14 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
           </div>
 
           <div className="text-center mt-5">
-            {/* <button
+            <button
               type="button"
               onClick={handleImageUpload}
               className="text-white py-5 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
             >
               Upload Images
-            </button> */}
-            <button
-              onClick={() => {
-                selectedImages.forEach((image) => generateDownloadLink(image));
-              }}
-              className="text-white py-3 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover-bg-black"
-            >
-              Download Selected Images
             </button>
           </div>
-
-          {/* <div className="selected-images mt-3">
-            {selectedImages.map((image) => (
-              <div key={image.id} className="selected-image flex bg-white p-2 rounded-sm shadow-inner items-center  justify-between">
-                <div className="flex items-center">
-                  <img src={image.urls.full} alt={image.alt_description} className="w-20  h-20 rounded-lg" />
-                  <div className="ml-2">
-                    <p className=" text-sm">Name: {image.alt_description}</p>
-                    <p className=" text-sm">Size: {image.file_size} KB</p>
-                  </div>
-                </div>
-                <div>
-                  <button
-                    className="delete-button"
-                    onClick={() => handleDeleteImage(image.id)}
-                  >
-                    <RiDeleteBin6Line className="text-red text-lg" />
-                  </button>
-                </div>
-              </div>
-            ))}
-            </div> */}
         </div>
       </div>
     </>
