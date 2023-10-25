@@ -116,23 +116,7 @@ const Pixabay = ({ closeModal }) => {
       }, 5000);
     }
   }, [selectedImages, imageUploadProgress]);
-  const generateDownloadLink = (image) => {
-    const link = document.createElement("a");
-    link.href = image; // Set the image URL as the link's href
-    link.setAttribute("download", "image.jpg"); // Set the download attribute with a desired file name
-    link.style.display = "none"; // Hide the link
-    document.body.appendChild(link);
 
-    // Trigger a click event to download the image
-    link.click();
-
-    // Clean up the link element
-    document.body.removeChild(link);
-  };
-  const downloadFile = () => {
-    window.location.href =
-      "https://cdn.pixabay.com/photo/2014/02/27/16/10/flowers-276014_640.jpg";
-  };
   return (
     <>
       <div className="backdrop">
@@ -192,28 +176,15 @@ const Pixabay = ({ closeModal }) => {
             )}
           </div>
 
-          {/* <div className="mt-4 text-center">
+          <div className="mt-4 text-center">
             <button
               onClick={handleImageUpload}
               className="text-white py-3 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
             >
               Upload Images
             </button>
-          </div> */}
-          <button
-            onClick={() => {
-              selectedImages.forEach((image) => generateDownloadLink(image));
-            }}
-            className="text-white py-3 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover-bg-black"
-          >
-            Download Selected Images
-          </button>
-          <button
-            onClick={downloadFile}
-            className="text-white py-3 px-3 rounded-md fs-3 my-4 flex items-center justify-center mx-auto bg-SlateBlue hover:bg-black"
-          >
-            down
-          </button>
+          </div>
+
           <div className="  bg-white shadow-2xl max-w-xs">
             {uploadInProgress && (
               <div className="bg-white shadow-2xl max-w-xs flex ">

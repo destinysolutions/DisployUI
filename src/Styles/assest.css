@@ -13,31 +13,30 @@
 .progress-error {
   width: 100%;
   height: 10px;
-
 }
 
 .progress-continue::-webkit-progress-value {
-  background-color: #41479B;
+  background-color: #41479b;
   border-radius: 5px;
 }
 
 .progress-continue::-webkit-progress-bar {
-  background-color: #ECEDFF;
+  background-color: #ecedff;
   border-radius: 5px;
 }
 
 .progress-success::-webkit-progress-value {
-  background-color: #73B172;
+  background-color: #73b172;
   border-radius: 5px;
 }
 
 .progress-success::-webkit-progress-bar {
-  background-color: #ECEDFF;
+  background-color: #ecedff;
   border-radius: 5px;
 }
 
 .progress-error::-webkit-progress-bar {
-  background-color: #ECEDFF;
+  background-color: #ecedff;
   border-radius: 5px;
 }
 
@@ -47,7 +46,6 @@
   transform: translate(-50%, 50%);
 }
 
-
 .tabactivebtn {
   background-color: #e4aa07;
   color: #fff;
@@ -56,11 +54,10 @@
   min-width: 120px;
   text-align: center;
   position: relative;
-
 }
 
 .tabactivebtn:before {
-  content: '';
+  content: "";
   position: absolute;
 
   bottom: -20px;
@@ -71,7 +68,6 @@
   border-top: 10px solid #e4aa07;
   border-bottom: 10px solid transparent;
 }
-
 
 .tabbtn {
   background: #ebebeb;
@@ -102,7 +98,7 @@
 }
 
 .assetsdw:before {
-  content: '';
+  content: "";
   position: absolute;
   width: 15px;
   height: 15px;
@@ -127,14 +123,14 @@
 }
 
 button.tabshow.tabassactive {
-  background: #E4E4E4;
+  background: #e4e4e4;
   padding: 10px 15px;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
 }
 
 button.tabshow.tabassactive.right {
-  background: #E4E4E4;
+  background: #e4e4e4;
   padding: 10px 15px;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
@@ -152,12 +148,10 @@ button.tabshow.tabassactive.right {
   /* margin-top: 150px; */
   z-index: 1;
   width: 100%;
-
-
 }
 
 .vdetails:before {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
@@ -167,14 +161,11 @@ button.tabshow.tabassactive.right {
   top: 0px;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
-
 }
-
 
 .videobox {
   height: 100%;
 }
-
 
 td .assetsdw {
   right: 6px;
@@ -199,7 +190,7 @@ td .tabicon svg {
   margin-bottom: 20px;
 }
 
-@media(max-width:992px) {
+@media (max-width: 992px) {
   .assetstable {
     overflow-x: auto;
   }
@@ -210,22 +201,21 @@ td .tabicon svg {
   }
 }
 
-@media(max-width:1760px) {
+@media (max-width: 1760px) {
   .text-center.clickdetail {
     margin-bottom: 40px;
   }
 }
 
-@media(max-width:1244px) {
+@media (max-width: 1244px) {
   .vdetails {
     padding: 10px;
   }
 }
 
-@media(max-width:767px) {
+@media (max-width: 767px) {
   .sm\:grid-cols-12 {
     grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
-
   }
 
   .tabbtn,
@@ -240,13 +230,11 @@ td .tabicon svg {
   .asstab,
   button.tabshow.tabassactive {
     padding: 10px 12px !important;
-
   }
 
   .media-icon span {
     margin: 3px;
   }
-
 
   .text-center.clickdetail {
     margin-bottom: 10px;
@@ -277,7 +265,6 @@ td .tabicon svg {
   width: 150px;
   height: 100px;
   min-height: 100px;
-
 }
 
 .assetstable .imagebox img,
@@ -303,7 +290,6 @@ td .tabicon svg {
   height: 100%;
   object-fit: cover;
   border-radius: 10px;
-
 }
 
 .unspalsh-searchbox {
@@ -313,7 +299,6 @@ td .tabicon svg {
   border-radius: 50px;
   box-shadow: 0px 11px 23px 5px #41479b1f;
   margin-bottom: 10px;
-
 }
 
 .unsplash-model {
@@ -322,16 +307,15 @@ td .tabicon svg {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-
 }
 
-@media(max-width:1224px) {
+@media (max-width: 1224px) {
   .unsplash-model {
     width: 80%;
   }
 }
 
-@media(max-width:767px) {
+@media (max-width: 767px) {
   .unspalsh-searchbox {
     width: 90%;
   }
@@ -345,7 +329,7 @@ td .tabicon svg {
   }
 }
 
-@media(max-width:450px) {
+@media (max-width: 450px) {
   .unsplash-section {
     max-height: 300px;
     overflow-y: auto;
@@ -358,7 +342,6 @@ td .tabicon svg {
 .pexels-input select:focus {
   border: none !important;
   background: none !important;
-
 }
 
 /* video */
@@ -371,13 +354,12 @@ td .tabicon svg {
   width: 100% !important;
   background: #e4aa07 !important;
   border-radius: 20px !important;
-  margin:0 auto;
+  margin: 0 auto;
 }
 
 .custom-progress::-webkit-progress-value {
   color: blue !important;
   background: #e4aa07 !important;
-
 }
 
 .custom-progress::webkit-progress-bar {
@@ -400,7 +382,6 @@ td .tabicon svg {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
 
   z-index: 999;
 }
@@ -461,7 +442,6 @@ td .tabicon svg {
 }
 
 .spinner {
-
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
@@ -476,8 +456,8 @@ td .tabicon svg {
   position: absolute;
   right: -84%;
   background: #fff;
-  top:0px;
- 
+  top: 0px;
+
   padding: 15px 10px;
   border-radius: 5px;
   box-shadow: 0px 10px 20px #ccc;
@@ -485,4 +465,3 @@ td .tabicon svg {
 .drag-over {
   background-color: #a0c4ff; /* Change the background color when hovered over */
 }
-

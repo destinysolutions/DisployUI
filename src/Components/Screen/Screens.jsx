@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import "../../Styles/screen.css";
 import {
+  AiOutlineAppstoreAdd,
   AiOutlineCloseCircle,
   AiOutlineCloudUpload,
   AiOutlineSave,
+  AiOutlineSearch,
 } from "react-icons/ai";
 import {
   MdLiveTv,
@@ -15,28 +17,38 @@ import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { MdOutlineAddToQueue } from "react-icons/md";
 import { HiOutlineRectangleGroup } from "react-icons/hi2";
-import { VscVmActive } from "react-icons/vsc";
+import { VscCalendar, VscVmActive } from "react-icons/vsc";
 import { VscVmConnect } from "react-icons/vsc";
 import PropTypes from "prop-types";
 import ScreenOTPModal from "./ScreenOTPModal";
 import AssetModal from "../Assests/AssetModal";
 import { SlScreenDesktop } from "react-icons/sl";
-import { RiArrowDownSLine, RiDeleteBin5Line } from "react-icons/ri";
+import {
+  RiArrowDownSLine,
+  RiComputerLine,
+  RiDeleteBin5Line,
+  RiPlayListFill,
+} from "react-icons/ri";
 import { HiDotsVertical, HiOutlineLocationMarker } from "react-icons/hi";
-import { BsCollectionPlay, BsPencilSquare } from "react-icons/bs";
+import { BsCollectionPlay, BsPencilSquare, BsTags } from "react-icons/bs";
 import Footer from "../Footer";
-import { BiFilterAlt } from "react-icons/bi";
+import { BiAnchor, BiFilterAlt } from "react-icons/bi";
 import { RxTimer } from "react-icons/rx";
 import { Tooltip } from "@material-tailwind/react";
 
 import {
   DELETE_SCREEN_BY_USERID,
+  GET_ALL_FILES,
+  GET_ALL_SCHEDULE,
   SCREEN_GROUP,
   SELECT_BY_USER_SCREENDETAIL,
   UPDATE_NEW_SCREEN,
 } from "../../Pages/Api";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import moment from "moment";
+import { IoBarChartSharp } from "react-icons/io5";
+import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -46,6 +58,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [scheduleData, setScheduleData] = useState([]);
   const [moreModal, setMoreModal] = useState(false);
   const [locCheckboxClick, setLocCheckboxClick] = useState(true);
   const [screenCheckboxClick, setScreenCheckboxClick] = useState(true);
@@ -93,7 +107,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [editedScreenName, setEditedScreenName] = useState("");
 
   const [editingScreenID, setEditingScreenID] = useState(null);
-
+  const [selectedSchedule, setSelectedSchedule] = useState({
+    scheduleName: "",
+  });
   const UserData = useSelector((Alldata) => Alldata.user);
   const [groupName, setGroupName] = useState("");
   useEffect(() => {
@@ -117,6 +133,64 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         });
     }
   }, [UserData.user?.userID]);
+  const [popupActiveTab, setPopupActiveTab] = useState(1);
+  const [assetData, setAssetData] = useState([]);
+  const [selectedAsset, setSelectedAsset] = useState({ name: "" });
+  const [assetPreview, setAssetPreview] = useState("");
+  const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
+  console.log(selectedAsset.name);
+  useEffect(() => {
+    axios
+      .get(GET_ALL_FILES)
+      .then((response) => {
+        const fetchedData = response.data;
+        const allAssets = [
+          ...(fetchedData.image ? fetchedData.image : []),
+          ...(fetchedData.video ? fetchedData.video : []),
+          ...(fetchedData.doc ? fetchedData.doc : []),
+          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
+          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
+        ];
+        setAssetData(allAssets);
+        console.log(allAssets, "allAssets");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+  useEffect(() => {
+    axios
+      .get(GET_ALL_SCHEDULE)
+      .then((response) => {
+        const fetchedData = response.data;
+
+        setScheduleData(response.data.data);
+        console.log(fetchedData, "allAssets");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+  const handleAssetAdd = (asset) => {
+    setSelectedAsset(asset);
+    setAssetPreview(asset);
+  };
+
+  const [searchAsset, setSearchAsset] = useState("");
+  const handleFilter = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchAsset(searchQuery);
+
+    if (searchQuery === "") {
+      setAssetData(assetData);
+    } else {
+      const filteredData = assetData.filter((item) => {
+        const itemName = item.name ? item.name.toLowerCase() : "";
+        return itemName.includes(searchQuery);
+      });
+      setAssetData(filteredData);
+    }
+  };
 
   const handleScreenClick = (screenId) => {
     // Toggle the action menu for the clicked schedule item
@@ -209,7 +283,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-
+  const handleScheduleAdd = (schedule) => {
+    setSelectedSchedule(schedule);
+  };
   const handleScreenNameUpdate = (screenId) => {
     const screenToUpdate = screenData.find(
       (screen) => screen.screenID === screenId
@@ -278,6 +354,171 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               return {
                 ...screen,
                 screenName: editedScreenName,
+              };
+            }
+            return screen;
+          });
+
+          setScreenData(updatedScreenData);
+          setIsEditingScreen(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      console.error("Screen not found for update");
+    }
+  };
+  const handleAssetUpdate = (screenId) => {
+    const screenToUpdate = screenData.find(
+      (screen) => screen.screenID === screenId
+    );
+    let moduleID = selectedAsset.id;
+    if (screenToUpdate) {
+      const {
+        otp,
+        googleLocation,
+        timeZone,
+        screenOrientation,
+        screenResolution,
+        macid,
+        ipAddress,
+        postalCode,
+        latitude,
+        longitude,
+        userID,
+        tags,
+        tvTimeZone,
+        tvScreenOrientation,
+        tvScreenResolution,
+        screenName,
+      } = screenToUpdate;
+
+      let data = JSON.stringify({
+        screenID: screenId,
+        otp,
+        googleLocation,
+        timeZone,
+        screenOrientation,
+        screenResolution,
+        macid,
+        ipAddress,
+        postalCode,
+        latitude,
+        longitude,
+        userID,
+        screenType: 1,
+        tags,
+        moduleID: moduleID,
+        tvTimeZone,
+        tvScreenOrientation,
+        tvScreenResolution,
+        screenName,
+        operation: "Update",
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: UPDATE_NEW_SCREEN,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      axios
+        .request(config)
+        .then((response) => {
+          console.log(response.data);
+          const updatedScreenData = screenData.map((screen) => {
+            if (screen.screenID === screenId) {
+              return {
+                ...screen,
+                name: selectedAsset.name,
+              };
+            }
+            return screen;
+          });
+
+          setScreenData(updatedScreenData);
+          setIsEditingScreen(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      console.error("Screen not found for update");
+    }
+  };
+  
+  const handleScheduleUpdate = (screenId) => {
+    const screenToUpdate = screenData.find(
+      (screen) => screen.screenID === screenId
+    );
+    let moduleID = selectedSchedule.scheduleId;
+    if (screenToUpdate) {
+      const {
+        otp,
+        googleLocation,
+        timeZone,
+        screenOrientation,
+        screenResolution,
+        macid,
+        ipAddress,
+        postalCode,
+        latitude,
+        longitude,
+        userID,
+        tags,
+        tvTimeZone,
+        tvScreenOrientation,
+        tvScreenResolution,
+        screenName,
+      } = screenToUpdate;
+
+      let data = JSON.stringify({
+        screenID: screenId,
+        otp,
+        googleLocation,
+        timeZone,
+        screenOrientation,
+        screenResolution,
+        macid,
+        ipAddress,
+        postalCode,
+        latitude,
+        longitude,
+        userID,
+        screenType: 2,
+        tags,
+        moduleID: moduleID,
+        tvTimeZone,
+        tvScreenOrientation,
+        tvScreenResolution,
+        screenName,
+        operation: "Update",
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: UPDATE_NEW_SCREEN,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      axios
+        .request(config)
+        .then((response) => {
+          console.log(response.data);
+          const updatedScreenData = screenData.map((screen) => {
+            if (screen.screenID === screenId) {
+              return {
+                ...screen,
+                name: selectedSchedule.name,
               };
             }
             return screen;
@@ -428,7 +669,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         />
                       </div>
                       <div className="flex justify-center">
-                        {" "}
                         <button
                           className="mb-4 border border-primary py-2 px-3"
                           onClick={handleScreenGroup}
@@ -749,26 +989,521 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       {nowPlayingContentVisible && (
                         <td className="p-2 text-center">
                           <button
-                            onClick={() => setShowAssetModal(true)}
+                            onClick={(e) => {
+                              setShowAssetModal(true);
+                              setSelectedAsset({
+                                ...selectedAsset,
+                                name: e.target.value,
+                              });
+                            }}
                             className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           >
-                            Asset
+                            {screen.screenType == 1 ? `${screen.name} ` : ""}
                             <AiOutlineCloudUpload className="ml-2 text-lg" />
                           </button>
-                          {showAssetModal ? (
+                          {showAssetModal && (
                             <>
-                              <AssetModal
-                                setShowAssetModal={setShowAssetModal}
-                              />
+                              <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                                <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
+                                  <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                                    <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                                      <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                        Set Content to Add Media
+                                      </h3>
+                                      <button
+                                        className="p-1 text-xl"
+                                        onClick={() => setShowAssetModal(false)}
+                                      >
+                                        <AiOutlineCloseCircle className="text-2xl" />
+                                      </button>
+                                    </div>
+
+                                    <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
+                                      <div className="bg-white rounded-[30px]">
+                                        <div>
+                                          <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
+                                            <div>
+                                              <nav
+                                                className="flex flex-col space-y-2 "
+                                                aria-label="Tabs"
+                                                role="tablist"
+                                                data-hs-tabs-vertical="true"
+                                              >
+                                                <button
+                                                  type="button"
+                                                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                                    popupActiveTab === 1
+                                                      ? "active"
+                                                      : ""
+                                                  }`}
+                                                  // onClick={() => handleTabClick(1)}
+                                                >
+                                                  <span
+                                                    className={`p-1 rounded ${
+                                                      popupActiveTab === 1
+                                                        ? "bg-primary text-white"
+                                                        : "bg-lightgray"
+                                                    } `}
+                                                  >
+                                                    <IoBarChartSharp
+                                                      size={15}
+                                                    />
+                                                  </span>
+                                                  Assets
+                                                </button>
+                                                <button
+                                                  type="button"
+                                                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                                    popupActiveTab === 2
+                                                      ? "active"
+                                                      : ""
+                                                  }`}
+                                                  //onClick={() => handleTabClick(2)}
+                                                >
+                                                  <span
+                                                    className={`p-1 rounded ${
+                                                      popupActiveTab === 2
+                                                        ? "bg-primary text-white"
+                                                        : "bg-lightgray"
+                                                    } `}
+                                                  >
+                                                    <RiPlayListFill size={15} />
+                                                  </span>
+                                                  Playlist
+                                                </button>
+                                                <button
+                                                  type="button"
+                                                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                                    popupActiveTab === 3
+                                                      ? "active"
+                                                      : ""
+                                                  }`}
+                                                  // onClick={() => handleTabClick(3)}
+                                                >
+                                                  <span
+                                                    className={`p-1 rounded ${
+                                                      popupActiveTab === 3
+                                                        ? "bg-primary text-white"
+                                                        : "bg-lightgray"
+                                                    } `}
+                                                  >
+                                                    <BiAnchor size={15} />
+                                                  </span>
+                                                  Disploy Studio
+                                                </button>
+                                                <button
+                                                  type="button"
+                                                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                                    popupActiveTab === 4
+                                                      ? "active"
+                                                      : ""
+                                                  }`}
+                                                  // onClick={() => handleTabClick(4)}
+                                                >
+                                                  <span
+                                                    className={`p-1 rounded ${
+                                                      popupActiveTab === 4
+                                                        ? "bg-primary text-white"
+                                                        : "bg-lightgray"
+                                                    } `}
+                                                  >
+                                                    <AiOutlineAppstoreAdd
+                                                      size={15}
+                                                    />
+                                                  </span>
+                                                  Apps
+                                                </button>
+                                              </nav>
+                                            </div>
+
+                                            <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
+                                              <div
+                                                className={
+                                                  popupActiveTab === 1
+                                                    ? ""
+                                                    : "hidden"
+                                                }
+                                              >
+                                                <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                                                  <div className="mb-5 relative ">
+                                                    <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
+                                                    <input
+                                                      type="text"
+                                                      placeholder=" Search by Name"
+                                                      className="border border-primary rounded-full px-7 py-2 search-user"
+                                                      value={searchAsset}
+                                                      onChange={handleFilter}
+                                                    />
+                                                  </div>
+                                                  <Link to="/fileupload">
+                                                    <button className="flex align-middle border-primary items-center border rounded-full px-8 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                                                      Upload
+                                                    </button>
+                                                  </Link>
+                                                </div>
+                                                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover">
+                                                  <table
+                                                    style={{
+                                                      borderCollapse:
+                                                        "separate",
+                                                      borderSpacing: " 0 10px",
+                                                    }}
+                                                  >
+                                                    <thead className="sticky top-0">
+                                                      <tr className="bg-lightgray">
+                                                        <th className="p-3 w-80 text-left">
+                                                          Media Name
+                                                        </th>
+                                                        <th>Date Added</th>
+                                                        <th className="p-3">
+                                                          Size
+                                                        </th>
+                                                        <th className="p-3">
+                                                          Type
+                                                        </th>
+                                                      </tr>
+                                                    </thead>
+                                                    {assetData.map((asset) => (
+                                                      <tbody key={asset.id}>
+                                                        <tr
+                                                          className={`${
+                                                            selectedAsset ===
+                                                            asset
+                                                              ? "bg-[#f3c953]"
+                                                              : ""
+                                                          } border-b border-[#eee] `}
+                                                          onClick={() => {
+                                                            handleAssetAdd(
+                                                              asset
+                                                            );
+                                                            setAssetPreviewPopup(
+                                                              true
+                                                            );
+                                                          }}
+                                                        >
+                                                          <td className="p-3">
+                                                            {asset.name}
+                                                          </td>
+                                                          <td className="p-3">
+                                                            {moment(
+                                                              asset.createdDate
+                                                            ).format(
+                                                              "YYYY-MM-DD"
+                                                            )}
+                                                          </td>
+                                                          <td className="p-3">
+                                                            {asset.fileSize}
+                                                          </td>
+                                                          <td className="p-3">
+                                                            {
+                                                              asset.categorieType
+                                                            }
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
+                                                    ))}
+                                                  </table>
+                                                  {assetPreviewPopup && (
+                                                    <>
+                                                      <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-50 outline-none focus:outline-none">
+                                                        <div className="fixed top-1/2 left-1/2 asset-preview-popup">
+                                                          <div className="border-0 rounded-lg shadow-lg relative w-full bg-black outline-none focus:outline-none">
+                                                            <div className="p-1  rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
+                                                              <button
+                                                                className="p-1 text-xl"
+                                                                onClick={() =>
+                                                                  setAssetPreviewPopup(
+                                                                    false
+                                                                  )
+                                                                }
+                                                              >
+                                                                <AiOutlineCloseCircle className="text-2xl" />
+                                                              </button>
+                                                            </div>
+                                                            <div className="p-3 flex justify-center  items-center min-w-[300px] max-w-[300px] min-h-[300px] max-h-[300px]">
+                                                              {assetPreview && (
+                                                                <>
+                                                                  {assetPreview.categorieType ===
+                                                                    "OnlineImage" && (
+                                                                    <div className="imagebox relative p-3">
+                                                                      <img
+                                                                        src={
+                                                                          assetPreview.fileType
+                                                                        }
+                                                                        alt={
+                                                                          assetPreview.name
+                                                                        }
+                                                                        className="rounded-2xl"
+                                                                      />
+                                                                    </div>
+                                                                  )}
+
+                                                                  {assetPreview.categorieType ===
+                                                                    "OnlineVideo" && (
+                                                                    <div className="relative videobox">
+                                                                      <video
+                                                                        controls
+                                                                        className="w-full rounded-2xl relative"
+                                                                      >
+                                                                        <source
+                                                                          src={
+                                                                            assetPreview.fileType
+                                                                          }
+                                                                          type="video/mp4"
+                                                                        />
+                                                                        Your
+                                                                        browser
+                                                                        does not
+                                                                        support
+                                                                        the
+                                                                        video
+                                                                        tag.
+                                                                      </video>
+                                                                    </div>
+                                                                  )}
+                                                                  {assetPreview.categorieType ===
+                                                                    "Image" && (
+                                                                    <img
+                                                                      src={
+                                                                        assetPreview.fileType
+                                                                      }
+                                                                      alt={
+                                                                        assetPreview.name
+                                                                      }
+                                                                      className="imagebox relative flex justify-center  items-center min-w-[250px] max-w-[250px] min-h-[250px] max-h-[250px]"
+                                                                    />
+                                                                  )}
+                                                                  {assetPreview.categorieType ===
+                                                                    "Video" && (
+                                                                    <video
+                                                                      controls
+                                                                      className="w-full rounded-2xl relative h-56"
+                                                                    >
+                                                                      <source
+                                                                        src={
+                                                                          assetPreview.fileType
+                                                                        }
+                                                                        type="video/mp4"
+                                                                      />
+                                                                      Your
+                                                                      browser
+                                                                      does not
+                                                                      support
+                                                                      the video
+                                                                      tag.
+                                                                    </video>
+                                                                  )}
+                                                                  {assetPreview.categorieType ===
+                                                                    "DOC" && (
+                                                                    <a
+                                                                      href={
+                                                                        assetPreview.fileType
+                                                                      }
+                                                                      target="_blank"
+                                                                      rel="noopener noreferrer"
+                                                                    >
+                                                                      {
+                                                                        assetPreview.name
+                                                                      }
+                                                                    </a>
+                                                                  )}
+                                                                </>
+                                                              )}
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </>
+                                                  )}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="flex justify-between items-center p-5">
+                                      <p className="text-black">
+                                        Content will always be playing Confirm
+                                      </p>
+                                      <button
+                                        className="bg-primary text-white rounded-full px-5 py-2 hover:bg-SlateBlue"
+                                        onClick={() => {
+                                          setShowAssetModal(false);
+                                          handleAssetUpdate(screen.screenID);
+                                        }}
+                                      >
+                                        Confirm
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </>
-                          ) : null}
+                          )}
                         </td>
                       )}
                       {currScheduleContentVisible && (
                         <td className="break-words	w-[150px] p-2 text-center">
-                          Schedule Name Till 28 June 2023
+                          {screen.screenType == 2 ? (
+                            `${screen.name} Till
+                          ${moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`
+                          ) : (
+                            <button onClick={() => setShowScheduleModal(true)}>
+                              Set a schedule
+                            </button>
+                          )}
+                          {showScheduleModal && (
+                            <>
+                              <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                                <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                                  <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                    <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                                      <div className="flex items-center">
+                                        <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                          Set Schedule
+                                        </h3>
+                                      </div>
+                                      <button
+                                        className="p-1 text-xl"
+                                        onClick={() =>
+                                          setShowScheduleModal(false)
+                                        }
+                                      >
+                                        <AiOutlineCloseCircle className="text-2xl" />
+                                      </button>
+                                    </div>
+                                    <div className="overflow-x-auto mt-8 px-5">
+                                      <table
+                                        className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+                                        cellPadding={20}
+                                      >
+                                        <thead>
+                                          <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                                            <th className="font-medium text-[14px]">
+                                              <div className="flex items-center">
+                                                <TbCalendarTime className="mr-2 text-xl" />
+                                                Schedule Name
+                                              </div>
+                                            </th>
+                                            <th className="font-medium text-[14px]">
+                                              <div className="flex items-center">
+                                                <TbCalendarTime className="mr-2 text-xl" />
+                                                Time Zones
+                                              </div>
+                                            </th>
+                                            <th className="font-medium text-[14px]">
+                                              <div className=" flex  items-center justify-center mx-auto">
+                                                <VscCalendar className="mr-2 text-xl" />
+                                                Date Added
+                                              </div>
+                                            </th>
+                                            <th className="font-medium text-[14px]">
+                                              <div className=" flex  items-center justify-center mx-auto">
+                                                <TbCalendarStats className="mr-2 text-xl" />
+                                                start date
+                                              </div>
+                                            </th>
+                                            <th className="font-medium text-[14px]">
+                                              <div className=" flex  items-center justify-center mx-auto">
+                                                <TbCalendarStats className="mr-2 text-xl" />
+                                                End date
+                                              </div>
+                                            </th>
+                                            <th className="font-medium text-[14px]">
+                                              <div className=" flex  items-center justify-center mx-auto">
+                                                <RiComputerLine className="mr-2 text-xl" />
+                                                screens Assigned
+                                              </div>
+                                            </th>
+                                            <th className="font-medium text-[14px]">
+                                              <div className="flex  items-center justify-center mx-auto">
+                                                <BsTags className="mr-2 text-xl" />
+                                                Tags
+                                              </div>
+                                            </th>
+                                            <th></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {scheduleData.map((schedule) => (
+                                            <tr
+                                              className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                              key={schedule.scheduleId}
+                                            >
+                                              <td className="flex items-center ">
+                                                <input
+                                                  type="checkbox"
+                                                  className="mr-3"
+                                                  onChange={() =>
+                                                    handleScheduleAdd(schedule)
+                                                  }
+                                                />
+                                                <div>
+                                                  <div>
+                                                    <Link to="/screensplayer">
+                                                      {schedule.scheduleName}
+                                                    </Link>
+                                                  </div>
+                                                </div>
+                                              </td>
+                                              <td className="text-center">
+                                                {schedule.timeZoneName}
+                                              </td>
+                                              <td className="text-center">
+                                                {moment(
+                                                  schedule.createdDate
+                                                ).format("YYYY-MM-DD")}
+                                              </td>
+                                              <td className="text-center">
+                                                {moment(
+                                                  schedule.startDate
+                                                ).format("YYYY-MM-DD")}
+                                              </td>
+
+                                              <td className="text-center">
+                                                {moment(
+                                                  schedule.endDate
+                                                ).format("YYYY-MM-DD")}
+                                              </td>
+                                              <td className="p-2 text-center">
+                                                {schedule.screenAssigned}
+                                              </td>
+                                              <td className="p-2 text-center">
+                                                {schedule.tags}
+                                              </td>
+                                              <td className="text-center">
+                                                <Link to="/myschedule">
+                                                  <button className="ml-3 relative">
+                                                    <HiDotsVertical />
+                                                  </button>
+                                                </Link>
+                                              </td>
+                                            </tr>
+                                          ))}
+                                        </tbody>
+                                      </table>
+                                    </div>
+
+                                    <div className="py-4 flex justify-center">
+                                      <button
+                                        onClick={() => {
+                                          setShowScheduleModal(false);
+                                          handleScheduleUpdate(screen.screenID);
+                                        }}
+                                        className="border-2 border-primary px-5 py-2 rounded-full ml-3"
+                                      >
+                                        Save
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )}
                         </td>
                       )}
+
                       {tagsContentVisible && (
                         <td className="p-2 text-center">{screen.tags}</td>
                       )}
