@@ -20,6 +20,7 @@ import Footer from "../Footer";
 import ReactPlayer from "react-player";
 import axios from "axios";
 import { YOUTUBE_INSTANCE_ADD_URL } from "../../Pages/Api";
+import moment from "moment";
 
 const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   YoutubeDetail.propTypes = {
@@ -44,12 +45,12 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setAreSubtitlesOn(!areSubtitlesOn);
   };
   const [maxVideos, setMaxVideos] = useState(10);
+  const [edited, setEdited] = useState(false);
+  const currentDate = new Date();
 
-  // Intance Name
-  const [instancename, setinstancename] = useState();
-  const handleinstancenameChange = (e) => {
-    setinstancename(e.target.value);
-  };
+  const [instanceName, setInstanceName] = useState(
+    moment(currentDate).format("YYYY-MM-DD hh:mm")
+  );
 
   // video preview
   function showVideoPreview() {
@@ -65,7 +66,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   //Insert  API
   const addYoutubeApp = () => {
     let data = JSON.stringify({
-      instanceName: instancename,
+      instanceName: instanceName,
       youTubeURL: YoutubeVideo,
       muteVideos: isMuted,
       toggleSubtitles: areSubtitlesOn,
@@ -87,7 +88,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status === 200) {
-          history("/youtubedetail");
+          history("/youtube");
         }
       })
       .catch((error) => {
@@ -105,10 +106,24 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block  items-center">
             <div className="flex items-center">
-              <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
-                YouTube
-              </h1>
-              <GoPencil className="ml-4 text-lg" />
+              {edited ? (
+                <input
+                  type="text"
+                  className="w-full border border-primary rounded-md px-2 py-1"
+                  placeholder="Enter schedule name"
+                  value={instanceName}
+                  onChange={(e) => setInstanceName(e.target.value)}
+                />
+              ) : (
+                <>
+                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
+                    {instanceName}
+                  </h1>
+                  <button onClick={() => setEdited(true)}>
+                    <GoPencil className="ml-4 text-lg" />
+                  </button>
+                </>
+              )}
             </div>
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
               <button
@@ -334,11 +349,11 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 )}
               </div>
-              <button
-                className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full px-[10px] text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                onClick={hideVideoPreview}
-              >
-                <AiOutlineClose />
+
+              <button className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full px-[10px] text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                <Link to="/youtube">
+                  <AiOutlineClose />
+                </Link>
               </button>
             </div>
           </div>
@@ -352,20 +367,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     cellSpacing={10}
                   >
                     <tbody>
-                      <tr>
-                        <td>
-                          <label className="text-base font-normal">
-                            Enter Instance Name
-                          </label>
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            placeholder="Enter Instance Name"
-                            onChange={handleinstancenameChange}
-                          />
-                        </td>
-                      </tr>
+                      <tr></tr>
                       <tr>
                         <td>
                           <label className="text-base font-normal">

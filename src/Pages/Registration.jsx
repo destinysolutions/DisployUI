@@ -48,7 +48,7 @@ const Registration = () => {
         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
         "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
       ),
-    firstName: Yup.string().required("First Name is required").max(50),
+    firstName: Yup.string().required(" Name is required").max(50),
     emailID: Yup.string()
       .required("Email is required")
       .email("E-mail must be a valid e-mail!"),
@@ -322,7 +322,7 @@ const Registration = () => {
                       type="text"
                       name="firstName"
                       id="firstName"
-                      placeholder="Enter Your First Name"
+                      placeholder="Enter Your Name"
                       className="formInput"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -350,7 +350,7 @@ const Registration = () => {
                       )}
                   </div>
                   <div className="relative">
-                    <label className="formLabel">Email address</label>
+                    <label className="formLabel">Email Address</label>
                     <input
                       type="email"
                       name="emailID"
@@ -424,7 +424,7 @@ const Registration = () => {
                     type="submit"
                     className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3 text-center text-base"
                   >
-                    Create Your account
+                    Create Your Account
                   </button>
                   <div className="lg:flex lg:ml-3 text-sm sm:block">
                     <label className="not-italic text-[#808080] font-medium mb-3">

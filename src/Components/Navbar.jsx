@@ -86,7 +86,7 @@ const Navbar = () => {
           setRegisterdata(response.data.data);
           setUserCreateDate(response.data.data[0].createdDate);
           setUserTrialDays(response.data.data[0].trialDays);
-          console.log(response.data);
+          //console.log(response.data);
         })
         .catch((error) => {
           console.log(error);

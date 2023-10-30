@@ -2,31 +2,14 @@ import { useEffect, useState } from "react";
 import "../Styles/sidebar.css";
 import { Link, useNavigate } from "react-router-dom";
 import * as FiIcons from "react-icons/fi";
-// import { AiOutlineCloseCircle } from "react-icons/ai";
 import { MdOutlineAddToQueue } from "react-icons/md";
 import { HiOutlineRectangleGroup } from "react-icons/hi2";
 import PropTypes from "prop-types";
-// import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import ScreenOTPModal from "./Screen/ScreenOTPModal";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 
 const Sidebar = ({ sidebarOpen }) => {
-  // const navigate = useNavigate()
-
-  // const handlelogout = () => {
-  //   // const token = localStorage.removeItem('token')
-  //   // console.log(token);
-  //   // navigate('/')
-  //   try {
-  //     localStorage.removeItem('userdata');
-
-  //     navigate('/');
-  //   } catch (error) {
-  //     console.error('Logout failed:', error);
-  //     // Handle the error (e.g., display an error message to the user)
-  //   }
-  // }
   const navigation = useNavigate();
 
   Sidebar.propTypes = {
@@ -97,18 +80,18 @@ const Sidebar = ({ sidebarOpen }) => {
         />
       ),
     },
-    {
-      title: "Disploy Studio",
-      cName: "nav-text link-items",
-      path: "/disploystudio",
-      icon: (
-        <img
-          src="/MenuIcons/disploy_studio_icon.svg"
-          alt="Disploy_Studio"
-          className="w-6"
-        />
-      ),
-    },
+    // {
+    //   title: "Disploy Studio",
+    //   cName: "nav-text link-items",
+    //   path: "/disploystudio",
+    //   icon: (
+    //     <img
+    //       src="/MenuIcons/disploy_studio_icon.svg"
+    //       alt="Disploy_Studio"
+    //       className="w-6"
+    //     />
+    //   ),
+    // },
     {
       title: "My Schedule",
       cName: "nav-text link-items",
@@ -127,48 +110,48 @@ const Sidebar = ({ sidebarOpen }) => {
       path: "/apps",
       icon: <img src="/MenuIcons/apps_icon.svg" alt="Apps" className="w-6" />,
     },
-    {
-      title: "Reports",
-      cName: "nav-text link-items",
-      path: "/reports",
-      icon: (
-        <img src="/MenuIcons/reports_icon.svg" alt="Reports" className="w-6" />
-      ),
-    },
-    {
-      title: "Approval",
-      cName: "nav-text link-items",
-      path: "/approval",
-      icon: (
-        <img
-          src="/MenuIcons/approval_icon.svg"
-          alt="Approval"
-          className="w-6"
-        />
-      ),
-    },
-    {
-      title: "Social Media Tools",
-      cName: "nav-text link-items",
-      path: "/Social_Media_Tools",
-      icon: (
-        <img
-          src="/MenuIcons/social-media-tools-icon.svg"
-          alt="Social Media Tools"
-          className="w-6"
-        />
-      ),
-    },
+    // {
+    //   title: "Reports",
+    //   cName: "nav-text link-items",
+    //   path: "/reports",
+    //   icon: (
+    //     <img src="/MenuIcons/reports_icon.svg" alt="Reports" className="w-6" />
+    //   ),
+    // },
+    // {
+    //   title: "Approval",
+    //   cName: "nav-text link-items",
+    //   path: "/approval",
+    //   icon: (
+    //     <img
+    //       src="/MenuIcons/approval_icon.svg"
+    //       alt="Approval"
+    //       className="w-6"
+    //     />
+    //   ),
+    // },
+    // {
+    //   title: "Social Media Tools",
+    //   cName: "nav-text link-items",
+    //   path: "/Social_Media_Tools",
+    //   icon: (
+    //     <img
+    //       src="/MenuIcons/social-media-tools-icon.svg"
+    //       alt="Social Media Tools"
+    //       className="w-6"
+    //     />
+    //   ),
+    // },
   ];
   const MenuIcons = [
-    {
-      title: "Support",
-      cName: "nav-text link-items",
-      path: "/support",
-      icon: (
-        <img src="/MenuIcons/support_icon.svg" alt="Support" className="w-6" />
-      ),
-    },
+    // {
+    //   title: "Support",
+    //   cName: "nav-text link-items",
+    //   path: "/support",
+    //   icon: (
+    //     <img src="/MenuIcons/support_icon.svg" alt="Support" className="w-6" />
+    //   ),
+    // },
     {
       title: "Settings",
       cName: "nav-text link-items",
@@ -177,18 +160,18 @@ const Sidebar = ({ sidebarOpen }) => {
         <img src="/MenuIcons/setting_icon.svg" alt="Settings" className="w-6" />
       ),
     },
-    {
-      title: "Take Tour",
-      cName: "nav-text link-items",
-      path: "/taketour",
-      icon: (
-        <img
-          src="/MenuIcons/take_tour_icon.svg"
-          alt="Take_Tour"
-          className="w-6"
-        />
-      ),
-    },
+    // {
+    //   title: "Take Tour",
+    //   cName: "nav-text link-items",
+    //   path: "/taketour",
+    //   icon: (
+    //     <img
+    //       src="/MenuIcons/take_tour_icon.svg"
+    //       alt="Take_Tour"
+    //       className="w-6"
+    //     />
+    //   ),
+    // },
     {
       title: "Trash",
       cName: "nav-text link-items",
@@ -257,7 +240,7 @@ const Sidebar = ({ sidebarOpen }) => {
               </div>
               <ul className="space-y-1 font-medium">
                 {Menus.map((item, index) => {
-                  const submenuIsOpen = submenuStates[item.title] || false; // Check if submenu is open
+                  const submenuIsOpen = submenuStates[item.title] || false;
                   return (
                     <li key={index} className={item.cName}>
                       <div className="flex items-center">
@@ -274,7 +257,7 @@ const Sidebar = ({ sidebarOpen }) => {
                               onClick={(e) => {
                                 e.preventDefault();
                                 updateSubmenuState(item.title, !submenuIsOpen);
-                              }} // Update submenu state
+                              }}
                             />
                           </div>
                         )}
@@ -300,11 +283,10 @@ const Sidebar = ({ sidebarOpen }) => {
                 {MenuIcons.map((item, MIindex) => {
                   return (
                     <li key={MIindex} className={item.cName}>
-                      {/* <Link to={item.path}> */}
                       <div
                         className="flex"
                         onClick={() => {
-                          if ((item.title = "Log Out")) {
+                          if (item.title == "Log Out") {
                             localStorage.setItem("role_access", "");
                             window.location.reload();
                             navigation("/");
@@ -318,39 +300,12 @@ const Sidebar = ({ sidebarOpen }) => {
                         <span className="ml-5 text-[#8E94A9]">
                           {item.title}
                         </span>
-                        {/* </Link> */}
+
                         {Menus.title}
                       </div>
                     </li>
                   );
-
-                  // if (item.title == 'Log Out') {
-                  //   return (
-                  //     <li key={MIindex} className={item.cName} onClick={handlelogout}>
-                  //       <Link to={item.path}>
-                  //         <div>{item.icon}</div>
-                  //         <span className="ml-5">{item.title}</span>
-                  //       </Link>
-                  //       {Menus.title}
-                  //     </li>
-                  //   );
-                  // }
                 })}
-
-                {/* {MenuIcons.map((item, MIindex) => (
-                  <li key={MIindex} className={item.cName}>
-                    <Link to={item.path}>
-                      <div>{item.icon}</div>
-                      <span className="ml-5">{item.title}</span>
-                    </Link>
-                    {item.title === 'Log Out' && (
-                      <div onClick={handlelogout}>
-                        <div>{item.icon}</div>
-                        <span className="ml-5">{item.title}</span>
-                      </div>
-                    )}
-                  </li>
-                ))} */}
               </ul>
             </div>
           </div>
@@ -424,24 +379,12 @@ const Sidebar = ({ sidebarOpen }) => {
                 <div className="dotline my-4"></div>
               </li>
               {MenuIcons.map((item, MIindex) => {
-                // if (item.title == 'Log Out') {
-                //   return (
-                //     <li key={MIindex} className={item.cName} onClick={handlelogout}>
-                //       <Link to={item.path}>
-                //         <div>{item.icon}</div>
-                //         <span className="ml-5">{item.title}</span>
-                //       </Link>
-                //       {Menus.title}
-                //     </li>
-                //   );
-                // }
                 return (
                   <li key={MIindex} className={item.cName}>
-                    {/* <Link to={item.path}> */}
                     <div
                       className="flex"
                       onClick={() => {
-                        if ((item.title = "Log Out")) {
+                        if (item.title == "Log Out") {
                           localStorage.setItem("role_access", "");
                           window.location.reload();
                           navigation("/");
@@ -453,7 +396,7 @@ const Sidebar = ({ sidebarOpen }) => {
                     >
                       <div>{item.icon}</div>
                       <span className="ml-5 text-[#8E94A9]">{item.title}</span>
-                      {/* </Link> */}
+
                       {Menus.title}
                     </div>
                   </li>
