@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import PropTypes from "prop-types";
-import { AiOutlineFile, AiOutlineFolder } from "react-icons/ai";
-import { BiImageAlt } from "react-icons/bi";
+
 import { GET_ALL_TRASHDATA } from "../Pages/Api";
 
 const Trash = ({ sidebarOpen, setSidebarOpen }) => {
@@ -62,13 +60,13 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       Item type
                     </th>
                     <th className=" sticky top-0 border-b border-lightgray th-bg-100 text-md font-semibold">
-                      Datee modified
+                      Date modified
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {deletedData.map((item) => (
-                    <tr key={item.id}>
+                    <tr key={item.trashId}>
                       <td className=" border-b border-lightgray text-sm ">
                         {item.fileName}
                       </td>

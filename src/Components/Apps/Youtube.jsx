@@ -4,7 +4,7 @@ import Navbar from "../Navbar";
 import { TbAppsFilled } from "react-icons/tb";
 import { useState } from "react";
 import { RiDeleteBin5Line, RiDeleteBinLine } from "react-icons/ri";
-import { BsCameraVideo } from "react-icons/bs";
+import { BsCameraVideo, BsInfoLg } from "react-icons/bs";
 import { TbExclamationMark } from "react-icons/tb";
 import { VscBook } from "react-icons/vsc";
 import { AiOutlineCloseCircle } from "react-icons/ai";
@@ -28,33 +28,18 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  const [appCheckbox, setAppCheckbox] = useState(null);
-  const handleCheckboxClick = (id) => {
-    if (appCheckbox === id) {
-      setAppCheckbox(null);
-    } else {
-      setAppCheckbox(id);
-    }
-  };
-
   const [appDetailModal, setAppDetailModal] = useState(false);
-  // Getalldata
+
   const [youtubeData, setYoutubeData] = useState([]);
-  // Initialize state for the "Select All" checkbox
+
   const [selectAll, setSelectAll] = useState(false);
-  const [instanceCheckboxes, setInstanceCheckboxes] = useState({});
+
   useEffect(() => {
     axios
       .get(GET_ALL_YOUTUBEDATA)
       .then((response) => {
         const fetchedData = response.data.data;
         setYoutubeData(fetchedData);
-        console.log(fetchedData);
-        const initialCheckboxes = {};
-        fetchedData.forEach((instance) => {
-          initialCheckboxes[instance.youtubeId] = false;
-        });
-        setInstanceCheckboxes(initialCheckboxes);
       })
       .catch((error) => {
         console.error("Error fetching deleted data:", error);
@@ -91,25 +76,29 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleCheckboxChange = (instanceId) => {
-    const updatedInstance = { ...instanceCheckboxes };
-    updatedInstance[instanceId] = !updatedInstance[instanceId];
-    setInstanceCheckboxes(updatedInstance);
-
-    const allChecked = Object.values(updatedInstance).every(
-      (isChecked) => isChecked
+    const updatedInstance = youtubeData.map((youtube) =>
+      youtube.youtubeId === instanceId
+        ? {
+            ...youtube,
+            isChecked: !youtube.isChecked,
+          }
+        : youtube
     );
+
+    setYoutubeData(updatedInstance);
+
+    const allChecked = updatedInstance.every((youtube) => youtube.isChecked);
     setSelectAll(allChecked);
   };
+
   // Function to handle the "Select All" checkbox change
   const handleSelectAll = (e) => {
-    const checked = e.target.checked;
-    setSelectAll(checked);
-    const updatedInstance = {};
-
-    for (const instanceId in instanceCheckboxes) {
-      updatedInstance[instanceId] = checked;
-    }
-    setInstanceCheckboxes(updatedInstance);
+    const updatedInstance = youtubeData.map((youtube) => ({
+      ...youtube,
+      isChecked: !selectAll,
+    }));
+    setYoutubeData(updatedInstance);
+    setSelectAll(!selectAll);
   };
 
   const handelDeleteAllInstance = () => {
@@ -123,7 +112,6 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then(() => {
-        setInstanceCheckboxes({});
         setSelectAll(false);
         setYoutubeData([]);
       })
@@ -165,12 +153,12 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                 <h1 className="not-italic font-medium text-xl text-[#001737] ">
                   YouTube
                 </h1>
-                <div className="flex">
+                <div className="flex items-center">
                   <button
                     onClick={() => setAppDetailModal(true)}
-                    className="rotate-180 ml-2 border-primary items-center border-2 rounded-full p-1 text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                    className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full p-1 text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                   >
-                    <TbExclamationMark />
+                    <BsInfoLg />
                   </button>
                   {appDetailModal && (
                     <>
@@ -238,10 +226,10 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                   )}
                   <button
                     onClick={handelDeleteAllInstance}
-                    className=" ml-2 border-primary items-center border-2 rounded-full p-1 text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                    className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full p-1 text-xl hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                     style={{ display: selectAll ? "block" : "none" }}
                   >
-                    <RiDeleteBinLine className="text-lg" />
+                    <RiDeleteBinLine />
                   </button>
 
                   <button className="sm:ml-2 xs:ml-1 mt-1">
@@ -265,7 +253,14 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className="shadow-md bg-[#EFF3FF] rounded-lg">
                           <div className="relative flex justify-between">
                             <button className="float-right p-2">
-                              <input className="h-5 w-5" type="checkbox" />
+                              <input
+                                className="h-5 w-5"
+                                type="checkbox"
+                                checked={item.isChecked || false}
+                                onChange={() =>
+                                  handleCheckboxChange(item.youtubeId)
+                                }
+                              />
                             </button>
                             <div className="relative">
                               <button className="float-right">
@@ -303,7 +298,6 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                           </div>
                           <div className="text-center clear-both pb-8">
-                            
                             <img
                               src="../../../public/AppsImg/youtube.svg"
                               alt="Logo"

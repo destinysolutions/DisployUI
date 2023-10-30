@@ -1,10 +1,113 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { TbAppsFilled } from "react-icons/tb";
 import { Link } from "react-router-dom";
+import { BsInfoLg } from "react-icons/bs";
+import { RiDeleteBin5Line, RiDeleteBinLine } from "react-icons/ri";
+import axios from "axios";
+import {
+  DELETE_ALL_TEXT_SCROLL,
+  GET_ALL_TEXT_SCROLL_INSTANCE,
+  SCROLL_ADD_TEXT,
+} from "../../Pages/Api";
+import { useState } from "react";
+import { MdPlaylistPlay } from "react-icons/md";
+import { FiUpload } from "react-icons/fi";
+import { BiDotsHorizontalRounded } from "react-icons/bi";
 
 const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
+  const [instanceData, setInstanceData] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
+  useEffect(() => {
+    axios.get(GET_ALL_TEXT_SCROLL_INSTANCE).then((response) => {
+      setInstanceData(response.data.data);
+      console.log(response.data.data);
+    });
+  }, []);
+
+  const handelDeleteInstance = (scrollId) => {
+    let data = JSON.stringify({
+      textScroll_Id: scrollId,
+      operation: "Delete",
+    });
+
+    let config = {
+      method: "post",
+      url: SCROLL_ADD_TEXT,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response, "response");
+        const updatedInstanceData = instanceData.filter(
+          (instanceData) => instanceData.textScroll_Id !== scrollId
+        );
+        setInstanceData(updatedInstanceData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleCheckboxChange = (instanceId) => {
+    const updatedInstance = instanceData.map((instance) =>
+      instance.textScroll_Id === instanceId
+        ? {
+            ...instance,
+            isChecked: !instance.isChecked,
+          }
+        : instance
+    );
+
+    setInstanceData(updatedInstance);
+
+    const allChecked = updatedInstance.every((instance) => instance.isChecked);
+    setSelectAll(allChecked);
+  };
+
+  // Function to handle the "Select All" checkbox change
+  const handleSelectAll = () => {
+    const updatedInstance = instanceData.map((instance) => ({
+      ...instance,
+      isChecked: !selectAll,
+    }));
+    setInstanceData(updatedInstance);
+    setSelectAll(!selectAll);
+  };
+
+  const handelDeleteAllInstance = () => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: DELETE_ALL_TEXT_SCROLL,
+      headers: {},
+    };
+
+    axios
+      .request(config)
+      .then(() => {
+        setSelectAll(false);
+        setInstanceData([]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const [appDropDown, setAppDropDown] = useState(null);
+  const handleAppDropDownClick = (id) => {
+    if (appDropDown === id) {
+      setAppDropDown(null);
+    } else {
+      setAppDropDown(id);
+    }
+  };
+
   return (
     <>
       <div className="flex border-b border-gray bg-white">
@@ -32,100 +135,93 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                   Text Scroll
                 </h1>
                 <div className="flex items-center">
-                  <button className="rounded bg-lightgray p-1">
-                    <div className="flex items-center">
-                      <svg
-                        stroke="currentColor"
-                        fill="currentColor"
-                        strokeWidth="0"
-                        viewBox="0 0 16 16"
-                        height="1em"
-                        width="1em"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2V5zm11.5 5.175 3.5 1.556V4.269l-3.5 1.556v4.35zM2 4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h7.5a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H2z"
-                        ></path>
-                      </svg>
-                      <div className="ml-1">
-                        <span>02</span>
-                      </div>
-                    </div>
-                  </button>
                   <button className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full p-1 text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                    <svg
-                      stroke="currentColor"
-                      fill="currentColor"
-                      strokeWidth="0"
-                      viewBox="0 0 16 16"
-                      height="1em"
-                      width="1em"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M14.5 2H9l-.35.15-.65.64-.65-.64L7 2H1.5l-.5.5v10l.5.5h5.29l.86.85h.7l.86-.85h5.29l.5-.5v-10l-.5-.5zm-7 10.32l-.18-.17L7 12H2V3h4.79l.74.74-.03 8.58zM14 12H9l-.35.15-.14.13V3.7l.7-.7H14v9zM6 5H3v1h3V5zm0 4H3v1h3V9zM3 7h3v1H3V7zm10-2h-3v1h3V5zm-3 2h3v1h-3V7zm0 2h3v1h-3V9z"
-                      ></path>
-                    </svg>
+                    <BsInfoLg />
                   </button>
-                  <button className="w-8 h-8 rotate-180 ml-2 border-primary items-center border-2 rounded-full p-1 text-xl hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                    <svg
-                      stroke="currentColor"
-                      fill="none"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      height="1em"
-                      width="1em"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                      <path d="M12 19v.01"></path>
-                      <path d="M12 15v-10"></path>
-                    </svg>
+                  <button
+                    onClick={handelDeleteAllInstance}
+                    style={{ display: selectAll ? "block" : "none" }}
+                    className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full p-1 text-xl hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  >
+                    <RiDeleteBinLine />
                   </button>
-                  <button className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full p-1 text-xl hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                    <svg
-                      stroke="currentColor"
-                      fill="currentColor"
-                      strokeWidth="0"
-                      viewBox="0 0 24 24"
-                      height="1em"
-                      width="1em"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g>
-                        <path fill="none" d="M0 0h24v24H0z"></path>
-                        <path d="M17 6h5v2h-2v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8H2V6h5V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3zm1 2H6v12h12V8zm-9 3h2v6H9v-6zm4 0h2v6h-2v-6zM9 4v2h6V4H9z"></path>
-                      </g>
-                    </svg>
+                  <button className="sm:ml-2 xs:ml-1 mt-2 ">
+                    <input
+                      type="checkbox"
+                      className="h-7 w-7"
+                      checked={selectAll}
+                      onChange={handleSelectAll}
+                    />
                   </button>
                 </div>
               </div>
               <div className="grid grid-cols-10 gap-4 mt-5">
-                <div className="lg:col-span-2 md:col-span-5 sm:col-span-10 ">
-                  <div className="shadow-md bg-[#EFF3FF] rounded-lg">
-                    <div className="relative">
-                      <button className="float-right p-2">
-                        <input className="h-5 w-5" type="checkbox" />
-                      </button>
-                    </div>
-                    <div className="text-center clear-both pb-8">
-                      <img
-                        src="images/text-scroll-icon.svg"
-                        alt="Logo"
-                        className="cursor-pointer mx-auto h-30 w-30"
-                      />
-                      <h4 className="text-lg font-medium mt-3">
-                        <a href="text-scroll-appdetail.html">Text Scroll</a>
-                      </h4>
-                      <h4 className="text-sm font-normal ">Added </h4>
+                {instanceData.map((instance) => (
+                  <div
+                    className="lg:col-span-2 md:col-span-5 sm:col-span-10 "
+                    key={instance.textScroll_Id}
+                  >
+                    <div className="shadow-md bg-[#EFF3FF] rounded-lg">
+                      <div className="relative flex justify-between">
+                        <button className="float-right p-2">
+                          <input
+                            className="h-5 w-5"
+                            type="checkbox"
+                            checked={instance.isChecked || false}
+                            onChange={() =>
+                              handleCheckboxChange(instance.textScroll_Id)
+                            }
+                          />
+                        </button>
+                        <div className="relative">
+                          <button className="float-right">
+                            <BiDotsHorizontalRounded
+                              className="text-2xl"
+                              onClick={() =>
+                                handleAppDropDownClick(instance.textScroll_Id)
+                              }
+                            />
+                          </button>
+                          {appDropDown === instance.textScroll_Id && (
+                            <div className="appdw">
+                              <ul>
+                                <li className="flex text-sm items-center">
+                                  <FiUpload className="mr-2 text-lg" />
+                                  Set to Screen
+                                </li>
+                                <li className="flex text-sm items-center">
+                                  <MdPlaylistPlay className="mr-2 text-lg" />
+                                  Add to Playlist
+                                </li>
+
+                                <li
+                                  className="flex text-sm items-center cursor-pointer"
+                                  onClick={() =>
+                                    handelDeleteInstance(instance.textScroll_Id)
+                                  }
+                                >
+                                  <RiDeleteBin5Line className="mr-2 text-lg" />
+                                  Delete
+                                </li>
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-center clear-both pb-8">
+                        <img
+                          src="../../../AppsImg/text-scroll-icon.svg"
+                          alt="Logo"
+                          className="cursor-pointer mx-auto h-30 w-30"
+                        />
+                        <h4 className="text-lg font-medium mt-3">
+                          <a href="text-scroll-appdetail.html">Text Scroll</a>
+                        </h4>
+                        <h4 className="text-sm font-normal ">Added </h4>
+                      </div>
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>

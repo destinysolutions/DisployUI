@@ -370,88 +370,68 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
   const handleAssetUpdate = (screenId) => {
-    const screenToUpdate = screenData.find(
-      (screen) => screen.screenID === screenId
-    );
     let moduleID = selectedAsset.id;
-    if (screenToUpdate) {
-      const {
-        otp,
-        googleLocation,
-        timeZone,
-        screenOrientation,
-        screenResolution,
-        macid,
-        ipAddress,
-        postalCode,
-        latitude,
-        longitude,
-        userID,
-        tags,
-        tvTimeZone,
-        tvScreenOrientation,
-        tvScreenResolution,
-        screenName,
-      } = screenToUpdate;
 
-      let data = JSON.stringify({
-        screenID: screenId,
-        otp,
-        googleLocation,
-        timeZone,
-        screenOrientation,
-        screenResolution,
-        macid,
-        ipAddress,
-        postalCode,
-        latitude,
-        longitude,
-        userID,
-        screenType: 1,
-        tags,
-        moduleID: moduleID,
-        tvTimeZone,
-        tvScreenOrientation,
-        tvScreenResolution,
-        screenName,
-        operation: "Update",
-      });
+    let data = JSON.stringify({
+      // screenID: screenId,
+      // otp,
+      // googleLocation,
+      // timeZone,
+      // screenOrientation,
+      // screenResolution,
+      // macid,
+      // ipAddress,
+      // postalCode,
+      // latitude,
+      // longitude,
+      // userID,
+      // screenType: 1,
+      // tags,
+      // moduleID: moduleID,
+      // tvTimeZone,
+      // tvScreenOrientation,
+      // tvScreenResolution,
+      // screenName,
+      // operation: "Update",
 
-      let config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: UPDATE_NEW_SCREEN,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        data: data,
-      };
+      screenType: 1,
+      screenID: screenId,
+      moduleID: moduleID,
+      userID: UserData.user?.userID,
+    });
 
-      axios
-        .request(config)
-        .then((response) => {
-          console.log(response.data);
-          const updatedScreenData = screenData.map((screen) => {
-            if (screen.screenID === screenId) {
-              return {
-                ...screen,
-                name: selectedAsset.name,
-              };
-            }
-            return screen;
-          });
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: UPDATE_NEW_SCREEN,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
 
-          setScreenData(updatedScreenData);
-          setIsEditingScreen(false);
-        })
-        .catch((error) => {
-          console.log(error);
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data);
+        const updatedScreenData = screenData.map((screen) => {
+          if (screen.screenID === screenId) {
+            return {
+              ...screen,
+              name: selectedAsset.name,
+            };
+          }
+          return screen;
         });
-    } else {
-      console.error("Screen not found for update");
-    }
+
+        setScreenData(updatedScreenData);
+        setIsEditingScreen(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
-  
+
   const handleScheduleUpdate = (screenId) => {
     const screenToUpdate = screenData.find(
       (screen) => screen.screenID === screenId

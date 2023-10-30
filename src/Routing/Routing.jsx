@@ -43,6 +43,7 @@ import YoutubeDetail from "../Components/Apps/YoutubeDetail";
 import Weather from "../Components/Apps/Weather";
 import TextScroll from "../Components/Apps/TextScroll";
 import TextScrollDetail from "../Components/Apps/TextScrollDetail";
+import WeatherDetail from "../Components/Apps/WeatherDetail";
 
 const Routing = () => {
   //for screen resize sidebar open close
@@ -254,6 +255,15 @@ const Routing = () => {
               path="/weather"
               element={
                 <Weather
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/weather-detail"
+              element={
+                <WeatherDetail
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />
