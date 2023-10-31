@@ -87,21 +87,21 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="icons flex  items-center">
                 <div>
                   <Link to={"../screens"}>
-                    <button className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray">
-                      <MdArrowBackIosNew className="p-1 text-3xl text-black hover:text-white " />
+                    <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                      <MdArrowBackIosNew className="p-1 px-2 text-4xl text-white hover:text-white " />
                     </button>
                   </Link>
                 </div>
                 <div>
-                  <button className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray">
-                    <IoMdRefresh className="p-1 text-3xl text-black hover:text-white " />
+                  <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                    <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
                   </button>
                 </div>
 
                 <div>
                   <div>
-                    <button className="border rounded-full mr-2 hover:shadow-xl border-gray hover:bg-red hover:border-red">
-                      <RiDeleteBin5Line className="p-1 text-3xl text-black hover:text-white " />
+                    <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                      <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
                     </button>
                   </div>
                 </div>

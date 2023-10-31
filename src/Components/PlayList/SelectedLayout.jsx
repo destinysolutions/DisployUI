@@ -11,6 +11,7 @@ import { GET_ALL_FILES, SELECT_BY_LIST } from "../../Pages/Api";
 import AssetModal from "../Assests/AssetModal";
 import PreviewModal from "./PreviewModel";
 import { useLocation } from "react-router-dom";
+import { BiFilterAlt } from "react-icons/bi";
 const DEFAULT_IMAGE = "";
 
 const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
@@ -600,7 +601,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
             className="h-20 w-20"
           /> */}
 
-          <div className="lg:flex lg:justify-between sm:block xs:block  items-center mt-5">
+          <div className="lg:flex lg:justify-between sm:block xs:block border-b border-lightgray pb-3  items-center mt-5 relative searchbox">
             <input
               type="text"
               placeholder="Sep 26th, 2023, 12:47 PM "
@@ -618,32 +619,22 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             </div>
           </div>
-          <div className="flex flex-wrap rounded-xl mt-8 shadow bg-white">
+
+          <div className="flex flex-wrap rounded-xl mt-5 shadow bg-white">
             <div className="w-full md:w-1/2 border-r-2 border-r-[#E4E6FF] p-5">
               <div className="flex items-center justify-between mb-4">
-                <div className="search-part flex items-center">
-                  <div className="relative ">
+                <div className="search-part flex items-center relative ">
+                  <div className="relative searchbox">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                       <AiOutlineSearch className="w-5 h-5 text-gray " />
                     </span>
                     <input
                       type="text"
-                      placeholder="Search Content "
+                      placeholder="Search Content relative"
                       className="border border-primary rounded-full px-7 py-2.5 block w-full p-4 pl-10"
                     />
                   </div>
-                  <svg
-                    stroke="currentColor"
-                    fill="currentColor"
-                    stroke-width="0"
-                    viewBox="0 0 24 24"
-                    className="ml-1 text-lg"
-                    height="1em"
-                    width="1em"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M21 3H5a1 1 0 0 0-1 1v2.59c0 .523.213 1.037.583 1.407L10 13.414V21a1.001 1.001 0 0 0 1.447.895l4-2c.339-.17.553-.516.553-.895v-5.586l5.417-5.417c.37-.37.583-.884.583-1.407V4a1 1 0 0 0-1-1zm-6.707 9.293A.996.996 0 0 0 14 13v5.382l-2 1V13a.996.996 0 0 0-.293-.707L6 6.59V5h14.001l.002 1.583-5.71 5.71z"></path>
-                  </svg>
+                  <BiFilterAlt className="absolute right-1 bg-gray rounded-full p-1 text-2xl" />
                 </div>
                 <button
                   onClick={() => setShowAssetModal(true)}
@@ -659,18 +650,18 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
               <div className="overflow-y-auto min-h-[320px] max-h-[320px] rounded-xl mt-8 shadow bg-white mb-6">
                 <table
-                  className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
+                  className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF] selectedlayout-table"
                   cellPadding={20}
                 >
-                  <thead>
+                  <thead className="sticky top-[-5px]">
                     <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                      <th className="text-[#5A5881] py-2.5 text-base font-semibold">
+                      <th className="text-[#444] text-sm font-semibold p-2">
                         Assets Name
                       </th>
-                      <th className="text-[#5A5881] py-2.5 text-base font-semibold">
+                      <th className="text-[#444] text-sm font-semibold p-2">
                         Type
                       </th>
-                      <th className="text-[#5A5881] py-2.5 text-base font-semibold">
+                      <th className="text-[#444] text-sm font-semibold p-2">
                         Tags
                       </th>
                     </tr>
@@ -684,9 +675,9 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                           addSeletedAsset(assetdata, currentSection)
                         }
                       >
-                        <td className="flex"> {assetdata.name}</td>
+                        <td className="p-2"> {assetdata.name}</td>
                         <td className="p-2">PNG</td>
-                        <td className="p-2 ">Tags, Tags </td>
+                        <td className="p-2">Tags, Tags </td>
                       </tr>
                     ))}
                   </tbody>
@@ -714,15 +705,15 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       .fill(2)
                       .map((item, index) => (
                         <button
-                          className={`px-5 ${
+                          className={`px-3 ${
                             currentSection == index + 1
-                              ? "bg-primary"
-                              : "bg-white"
+                              ? "bg-primary text-sm"
+                              : "bg-white text-sm"
                           } ${
                             currentSection == index + 1
-                              ? "text-white"
-                              : "text-primary"
-                          }  rounded-full py-2 border border-primary me-3`}
+                              ? "text-white text-sm"
+                              : "text-primary text-sm"
+                          }  rounded-full py-2 border border-primary me-3 text-sm`}
                           key={index}
                           onClick={() => setcurrentSection(index + 1)}
                         >

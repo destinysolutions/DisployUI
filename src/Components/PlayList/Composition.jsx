@@ -167,62 +167,65 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 "></h1>
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn">
-              <div className="relative">
+              <div className="relative searchbox">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                   <AiOutlineSearch className="w-5 h-5 text-gray " />
                 </span>
                 <input
                   type="text"
                   placeholder="Search Content"
-                  className="border border-primary rounded-full px-7 py-2.5 block w-full p-4 pl-10"
+                  className="border border-primary rounded-full px-7 py-2.5 block w-full p-4 pl-10 "
                 />
               </div>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                Preview
-              </button>
-              <button
-                onClick={() => navigation("/addcomposition")}
-                className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-              >
-                Add Composition
-              </button>
-              <button className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                <input
-                  type="checkbox"
-                  className="w-6 h-5"
-                  checked={SelectAllCompositionList}
-                  onChange={(event) => onALLSelectComposition(event)}
-                />
-              </button>
-              {SelectAllCompositionList && (
-                <button className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                  <RiDeleteBinLine />
+
+              <div className="flex align-middle items-center">
+                <button className="dashboard-btn  flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5  text-base sm:text-sm mx-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  Preview
                 </button>
-              )}
+                <button
+                  onClick={() => navigation("/addcomposition")}
+                  className="dashboard-btn  flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5  text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                >
+                  Add Composition
+                </button>
+                <button className="sm:ml-2 xs:ml-1  flex align-middle  text-base">
+                  <input
+                    type="checkbox"
+                    className="w-6 h-5"
+                    checked={SelectAllCompositionList}
+                    onChange={(event) => onALLSelectComposition(event)}
+                  />
+                </button>
+                {SelectAllCompositionList && (
+                  <button className="sm:ml-2 xs:ml-1 py-2 px-2  flex align-middle border-white bg-red text-white items-center border-2 rounded-full  text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                    <RiDeleteBinLine />
+                  </button>
+                )}
+              </div>
             </div>
           </div>
           <div className="overflow-x-auto rounded-xl mt-8 shadow bg-white mb-6">
             <table
-              className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+              className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto composition-table"
               cellPadding={20}
             >
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                  <th className="text-[#5A5881] text-base font-semibold">
+                  <th className="text-[#444] text-sm font-semibold p-2">
                     Composition Name
                   </th>
-                  <th className="text-[#5A5881] text-base font-semibold">
+                  <th className="text-[#444] text-sm font-semibold p-2">
                     Date Added
                   </th>
-                  <th className="text-[#5A5881] text-base font-semibold">
+                  <th className="text-[#444] text-sm font-semibold p-2">
                     Resolution
                   </th>
-                  <th className="text-[#5A5881] text-base font-semibold">
+                  <th className="text-[#444] text-sm font-semibold p-2">
                     Duration
                   </th>
                   <th
                     colSpan="2"
-                    className="text-[#5A5881] text-base font-semibold"
+                    className="text-[#444] text-sm font-semibold p-2"
                   >
                     Tags{" "}
                   </th>
@@ -269,14 +272,16 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                           {onClickMore && (
                             <div className="scheduleAction z-10 ">
                               <div className="my-1">
-                                <button>Edit Schedule</button>
+                                <button className="text-sm">
+                                  Edit Schedule
+                                </button>
                               </div>
                               <div className=" mb-1">
-                                <button>Add Screens</button>
+                                <button className="text-sm">Add Screens</button>
                               </div>
                               <div className="mb-1 border border-[#F2F0F9]"></div>
                               <div className=" mb-1 text-[#D30000]">
-                                <button>Delete</button>
+                                <button className="text-sm">Delete</button>
                               </div>
                             </div>
                           )}

@@ -304,43 +304,43 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             >
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                  <th className="text-[#444] text-sm font-semibold">
+                  <th className="text-[#444] text-sm font-semibold p-2">
                     <div className="flex items-center">
                       <TbCalendarTime className="mr-2 text-xl" />
                       Schedule Name
                     </div>
                   </th>
-                  <th className="text-[#444] text-sm font-semibold">
+                  <th className="text-[#444] text-sm font-semibold p-2">
                     <div className="flex items-center">
                       <TbCalendarTime className="mr-2 text-xl" />
                       Time Zones
                     </div>
                   </th>
-                  <th className="text-[#444] text-sm font-semibold">
+                  <th className="text-[#444] text-sm font-semibold p-2">
                     <div className=" flex  items-center justify-center mx-auto">
                       <VscCalendar className="mr-2 text-xl" />
                       Date Added
                     </div>
                   </th>
-                  <th className="text-[#444] text-sm font-semibold">
+                  <th className="text-[#444] text-sm font-semibold p-2">
                     <div className=" flex  items-center justify-center mx-auto">
                       <TbCalendarStats className="mr-2 text-xl" />
                       start date
                     </div>
                   </th>
-                  <th className="text-[#444] text-sm font-semibold">
+                  <th className="text-[#444] text-sm font-semibold p-2">
                     <div className=" flex  items-center justify-center mx-auto">
                       <TbCalendarStats className="mr-2 text-xl" />
                       End date
                     </div>
                   </th>
-                  <th className="text-[#444] text-sm font-semibold">
+                  <th className="text-[#444] text-sm font-semibold p-2">
                     <div className=" flex  items-center justify-center mx-auto">
                       <RiComputerLine className="mr-2 text-xl" />
                       screens Assigned
                     </div>
                   </th>
-                  <th className="text-[#444] text-sm font-semibold">
+                  <th className="text-[#444] text-sm font-semibold p-2">
                     <div className="flex  items-center justify-center mx-auto">
                       <BsTags className="mr-2 text-xl" />
                       Tags

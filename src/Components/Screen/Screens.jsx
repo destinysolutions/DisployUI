@@ -828,7 +828,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="overflow-x-auto bg-white rounded-xl mt-8 shadow">
+          <div className=" bg-white rounded-xl mt-8 shadow screen-section">
             <table
               className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto screen-table"
               cellPadding={20}
@@ -836,7 +836,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
                   {screenContentVisible && (
-                    <th className=" text-[#444] text-sm font-semibold">
+                    <th className=" text-[#444] text-sm font-semibold p-2">
                       <div className="flex  items-center ">
                         <SlScreenDesktop className="mr-2 text-xl" />
                         Screen
@@ -844,7 +844,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     </th>
                   )}
                   {locContentVisible && (
-                    <th className=" text-[#444] text-sm font-semibold">
+                    <th className=" text-[#444] text-sm font-semibold p-2">
                       <div className="flex  items-center justify-center ">
                         <HiOutlineLocationMarker className="mr-2 text-xl" />
                         Google Location
@@ -852,7 +852,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     </th>
                   )}
                   {statusContentVisible && (
-                    <th className=" text-[#444] text-sm font-semibold">
+                    <th className=" text-[#444] text-sm font-semibold p-2">
                       <div className="flex  items-center justify-center  mx-auto ">
                         <MdLiveTv className="mr-2 text-xl" />
                         status
@@ -861,7 +861,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     </th>
                   )}
                   {lastSeenContentVisible && (
-                    <th className=" text-[#444] text-sm font-semibold">
+                    <th className=" text-[#444] text-sm font-semibold p-2">
                       <div className="flex  items-center justify-center   mx-auto">
                         <RxTimer className="mr-2 text-xl" />
                         Last Seen
@@ -870,7 +870,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     </th>
                   )}
                   {nowPlayingContentVisible && (
-                    <th className=" text-[#444] text-sm font-semibold">
+                    <th className=" text-[#444] text-sm font-semibold p-2">
                       <div className="flex  items-center justify-center  mx-auto">
                         <BsCollectionPlay className="mr-2 text-xl" />
                         Now Playing
@@ -878,7 +878,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     </th>
                   )}
                   {currScheduleContentVisible && (
-                    <th className=" text-[#444] text-sm font-semibold">
+                    <th className=" text-[#444] text-sm font-semibold p-2">
                       <div className=" flex  items-center mx-auto justify-center">
                         <MdOutlineCalendarMonth className="mr-2 text-xl" />
                         Current Schedule
@@ -886,7 +886,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     </th>
                   )}
                   {tagsContentVisible && (
-                    <th className="text-[#5A5881] text-base font-semibold">
+                    <th className="text-[#444] text-sm font-semibold p-2">
                       <div className=" flex mx-auto items-center justify-center">
                         <BsPencilSquare className="mr-2 text-xl" />
                         Tags
@@ -894,7 +894,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                     </th>
                   )}
-                  <th></th>
+                  <th className="w-4"></th>
                 </tr>
               </thead>
               {Array.isArray(screenData) &&
@@ -979,7 +979,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           >
                             {screen.screenType == 1 ? `${screen.name} ` : ""}
-                            <AiOutlineCloudUpload className="ml-2 text-lg" />
+                            <AiOutlineCloudUpload className=" text-lg" />
                           </button>
                           {showAssetModal && (
                             <>
@@ -1104,8 +1104,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                     : "hidden"
                                                 }
                                               >
-                                                <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                                                  <div className="mb-5 relative ">
+                                                <div className="flex flex-wrap items-start lg:justify-between border-b border-lightgray  md:justify-center sm:justify-center xs:justify-center">
+                                                  <div className="mb-5 relative searchbox">
                                                     <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
                                                     <input
                                                       type="text"
@@ -1116,12 +1116,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                     />
                                                   </div>
                                                   <Link to="/fileupload">
-                                                    <button className="flex align-middle border-primary items-center border rounded-full px-8 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                                                    <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                                                       Upload
                                                     </button>
                                                   </Link>
                                                 </div>
-                                                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover">
+                                                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
                                                   <table
                                                     style={{
                                                       borderCollapse:
@@ -1161,7 +1161,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                             );
                                                           }}
                                                         >
-                                                          <td className="p-3">
+                                                          <td className="p-3 text-left">
                                                             {asset.name}
                                                           </td>
                                                           <td className="p-3">
@@ -1502,7 +1502,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 <Link
                                   to={`/screensplayer?screenID=${screen.screenID}`}
                                 >
-                                  <button>Edit Screen</button>
+                                  <button className="text-sm">
+                                    Edit Screen
+                                  </button>
                                 </Link>
                               </div>
 
@@ -1512,6 +1514,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                   onClick={() =>
                                     handelDeleteScreen(screen.screenID)
                                   }
+                                  className="text-sm text-left"
                                 >
                                   Delete
                                 </button>

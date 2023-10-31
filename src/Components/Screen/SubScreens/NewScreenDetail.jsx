@@ -243,7 +243,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
               New Screens Details
             </h1>
             <div className="lg:flex md:flex sm:block">
-              <button className="flex align-middle border-primary items-center border rounded-full px-8 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="flex align-middle border-SlateBlue bg-SlateBlue text-white items-center border rounded-full px-8 py-2 text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 hover:border-white">
                 Edit
               </button>
             </div>
@@ -570,8 +570,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                   : "hidden"
                                               }
                                             >
-                                              <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                                                <div className="mb-5 relative ">
+                                              <div className="flex border-b border-lightgray flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                                                <div className="mb-5 relative searchbox">
                                                   <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
                                                   <input
                                                     type="text"
@@ -582,7 +582,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                   />
                                                 </div>
                                                 <Link to="/fileupload">
-                                                  <button className="flex align-middle border-primary items-center border rounded-full px-8 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                                                  <button className="flex align-middle border-SlateBlue bg-SlateBlue text-white items-center border rounded-full px-4 py-2 text-sm  hover:text-white hover:bg-primary hover:shadow-lg hover:shadow-primary-500/50 hover:border-white">
                                                     Upload
                                                   </button>
                                                 </Link>
@@ -766,7 +766,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                       Content will always be playing Confirm
                                     </p>
                                     <button
-                                      className="bg-primary text-white rounded-full px-5 py-2 hover:bg-SlateBlue"
+                                      className="bg-SlateBlue text-white rounded-full px-5 py-2 hover:bg-primary text-sm"
                                       onClick={() => setShowAssetModal(false)}
                                     >
                                       Confirm
@@ -832,56 +832,56 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                       <AiOutlineCloseCircle className="text-2xl" />
                                     </button>
                                   </div>
-                                  <div className="overflow-x-auto mt-8 px-5">
+                                  <div className="overflow-x-auto mt-8 px-5 Set-Schedule-popup">
                                     <table
                                       className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto set-schedule-table"
                                       cellPadding={20}
                                     >
-                                      <thead>
+                                      <thead className="sticky top-0">
                                         <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                                          <th className="text-[#444] text-sm font-semibold">
+                                          <th className="text-[#444] text-sm font-semibold p-2">
                                             <div className="flex items-center">
                                               <TbCalendarTime className="mr-2 text-xl" />
                                               Schedule Name
                                             </div>
                                           </th>
-                                          <th className="text-[#444] text-sm font-semibold">
+                                          <th className="text-[#444] text-sm font-semibold p-2">
                                             <div className="flex items-center">
                                               <TbCalendarTime className="mr-2 text-xl" />
                                               Time Zones
                                             </div>
                                           </th>
-                                          <th className="text-[#444] text-sm font-semibold">
+                                          <th className="text-[#444] text-sm font-semibold p-2">
                                             <div className=" flex  items-center justify-center mx-auto">
                                               <VscCalendar className="mr-2 text-xl" />
                                               Date Added
                                             </div>
                                           </th>
-                                          <th className="text-[#444] text-sm font-semibold">
+                                          <th className="text-[#444] text-sm font-semibold p-2">
                                             <div className=" flex  items-center justify-center mx-auto">
                                               <TbCalendarStats className="mr-2 text-xl" />
                                               start date
                                             </div>
                                           </th>
-                                          <th className="text-[#444] text-sm font-semibold">
+                                          <th className="text-[#444] text-sm font-semibold p-2">
                                             <div className=" flex  items-center justify-center mx-auto">
                                               <TbCalendarStats className="mr-2 text-xl" />
                                               End date
                                             </div>
                                           </th>
-                                          <th className="text-[#444] text-sm font-semibold">
+                                          <th className="text-[#444] text-sm font-semibold p-2">
                                             <div className=" flex  items-center justify-center mx-auto">
                                               <RiComputerLine className="mr-2 text-xl" />
                                               screens Assigned
                                             </div>
                                           </th>
-                                          <th className="text-[#444] text-sm font-semibold">
+                                          <th className="text-[#444] text-sm font-semibold p-2">
                                             <div className="flex  items-center justify-center mx-auto">
                                               <BsTags className="mr-2 text-xl" />
                                               Tags
                                             </div>
                                           </th>
-                                          <th></th>
+                                          <th className="w-[100px]"></th>
                                         </tr>
                                       </thead>
                                       <tbody>
@@ -944,12 +944,12 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                     </table>
                                   </div>
 
-                                  <div className="py-4 flex justify-center">
+                                  <div className="py-2 flex justify-center">
                                     <button
                                       onClick={() =>
                                         setShowScheduleModal(false)
                                       }
-                                      className="border-2 border-primary px-5 py-2 rounded-full ml-3"
+                                      className="border-2 border-SlateBlue bg-SlateBlue hover:bg-primary hover:border-white px-5 py-2 rounded-full ml-3 text-white"
                                     >
                                       Save
                                     </button>
@@ -1053,7 +1053,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       <td className=" lg:block md:block sm:hidden"></td>
                       <td>
                         <button
-                          className="shadow bg-primary focus:shadow-outline focus:outline-none text-white font-medium py-2 px-9 rounded-full hover:bg-SlateBlue"
+                          className="shadow bg-SlateBlue focus:shadow-outline focus:outline-none text-white font-medium py-2 px-9 rounded-full hover:bg-primary"
                           type="button"
                           onClick={handleScreenDetail}
                         >

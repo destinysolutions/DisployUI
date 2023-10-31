@@ -237,7 +237,7 @@ td .tabicon svg {
   }
 
   .text-center.clickdetail {
-    margin-bottom: 10px;
+    margin-bottom:30px;
   }
 
   .vdetails {
@@ -260,7 +260,7 @@ td .tabicon svg {
   height: 100%;
   object-fit: cover;
 }
-@media(max-width:1366px){
+@media(max-width:1240px){
   .assets-section li.assetsbox,
 .assetsbox {
   width: 100%;

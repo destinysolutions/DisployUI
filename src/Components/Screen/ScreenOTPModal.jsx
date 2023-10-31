@@ -82,7 +82,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                 <img src="/ScreenImg/disploy-tv-img.png" alt="" />
               </div>
 
-              <div className="container mx-auto">
+              <div className="mx-auto">
                 <div className="w-full">
                   <div className="font-normal lg:text-lg md:text-lg sm:text-base xs:text-sm text-[#000000] text-center">
                     Enter the 6-character pairing code?
@@ -96,7 +96,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                       <div key={index}>
                         <input
                           ref={otpRefs[index]}
-                          className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded"
+                          className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded border-gray"
                           type="text"
                           value={value}
                           maxLength="1"
@@ -107,17 +107,17 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                       </div>
                     ))}
                   </div>
-                  <div className="flex justify-center text-center text-red text-xl my-2 font-semibold">
+                  <div className="flex justify-center text-center text-red text-xl mt-2 font-semibold">
                     {errorMessge}
                   </div>
-                  <div className="flex justify-center text-center">
+                  <div className="flex justify-center text-center my-2">
                     <input type="checkbox" />
-                    <p className="ml-2 text-[#515151] ">
+                    <p className="ml-2 text-[#515151] text-sm">
                       Start screen in Preview Mode
                     </p>
                   </div>
                   <div className="flex justify-center text-center">
-                    <p className="text-[#515151]">
+                    <p className="text-[#515151] text-sm max-w-lg">
                       To get pair code, please install Disploy app on your
                       Players (Android, LG, Samsung, FireStick, Raspberry Pi,
                       etc.)
@@ -129,7 +129,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
 
             <div className="flex items-center justify-center pb-4">
               <button
-                className="text-white bg-[#00072E] font-semibold   lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-lg md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
+                className="text-white bg-SlateBlue hover:bg-primary font-semibold   lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-base md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
                 type="button"
                 onClick={verifyOTP}
               >

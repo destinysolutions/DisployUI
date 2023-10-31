@@ -678,7 +678,7 @@ const EventEditor = ({
                           </div>
                           <div className="flex items-center justify-center mt-4">
                             <button
-                              className="border border-primary rounded-full px-4 py-1 "
+                              className="border text-sm border-white bg-SlateBlue hover:bg-primary text-white rounded-full px-4 py-2 "
                               onClick={() => setAssetPreviewPopup(true)}
                             >
                               Preview
@@ -900,7 +900,7 @@ const EventEditor = ({
                   </button>
                 ) : (
                   <button
-                    className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
+                    className="border-2 border-white text-white hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
                     onClick={() => {
                       handleSave();
                       setShowRepeatSettings(false);
