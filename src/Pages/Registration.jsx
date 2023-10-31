@@ -56,9 +56,9 @@ const Registration = () => {
       .required("Phone Number is required")
       .matches(phoneRegExp, "Phone number is not valid"),
     googleLocation: Yup.string().required("Google Location is required"),
-    terms: Yup.boolean()
-      .oneOf([true], "You must accept the terms and conditions")
-      .required("You must accept the terms and conditions"),
+    // terms: Yup.boolean()
+    //   .oneOf([true], "You must accept the terms and conditions")
+    //   .required("You must accept the terms and conditions"),
   });
 
   const formik = useFormik({
@@ -69,7 +69,7 @@ const Registration = () => {
       emailID: "",
       googleLocation: "",
       phoneNumber: "",
-      terms: false,
+      // terms: false,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -268,133 +268,151 @@ const Registration = () => {
                 alt="title"
               />
             </div>
-            <div className="w-full bg-white rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
-              <div className="p-5 sm:px-8 py-1">
-                <div className="my-1 font-inter not-italic font-medium text-[24px] text-black mt-4">
+            <div className="w-full border-[#ffffff6e] border rounded-lg shadow-md md:mt-0  xl:p-0 lg:min-w-[600px] md:min-w-[600px] sm:min-w-auto xs:min-w-auto">
+              <div className="p-3 sm:px-8 py-1">
+                <div className="my-1 font-inter not-italic font-medium text-[24px] text-white mt-4">
                   Create account
                 </div>
-                <div className="mb-8 font-['Poppins'] not-italic font-normal text-[16px] text-black">
+                <div className="mb-8 font-['Poppins'] not-italic font-normal text-[16px] text-white">
                   Fill in the fields below to sign up for an account.
                 </div>
                 <form
                   onSubmit={formik.handleSubmit}
                   className="space-y-3 md:space-y-5"
                 >
-                  <div className="relative">
-                    <label className="formLabel">Company Name</label>
-                    <input
-                      type="text"
-                      name="companyName"
-                      id="companyName"
-                      placeholder="Enter Company Name"
-                      className="formInput"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.companyName}
-                    />
-                    {formik.errors.companyName &&
-                      formik.touched.companyName && (
-                        <div className="error">{formik.errors.companyName}</div>
-                      )}
-                  </div>
-                  <div className="relative">
-                    <label className="formLabel">Google Location</label>
-                    <input
-                      type="text"
-                      name="googleLocation"
-                      id="googleLocation"
-                      placeholder="Enter Your Google Location"
-                      className="formInput"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.googleLocation}
-                    />
-                    {formik.errors.googleLocation &&
-                      formik.touched.googleLocation && (
-                        <div className="error">
-                          {formik.errors.googleLocation}
-                        </div>
-                      )}
-                  </div>
-                  <div className="relative">
-                    <label className="formLabel">Name</label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      id="firstName"
-                      placeholder="Enter Your Name"
-                      className="formInput"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.firstName}
-                    />
-                    {formik.errors.firstName && formik.touched.firstName && (
-                      <div className="error">{formik.errors.firstName}</div>
-                    )}
-                  </div>
-                  <div className="relative">
-                    <label className="formLabel">Phone Number</label>
-                    <input
-                      type="tel"
-                      name="phoneNumber"
-                      id="phoneNumber"
-                      placeholder="Enter Phone Number"
-                      className="formInput"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.phoneNumber}
-                    />
-                    {formik.errors.phoneNumber &&
-                      formik.touched.phoneNumber && (
-                        <div className="error">{formik.errors.phoneNumber}</div>
-                      )}
-                  </div>
-                  <div className="relative">
-                    <label className="formLabel">Email Address</label>
-                    <input
-                      type="email"
-                      name="emailID"
-                      id="emailID"
-                      className="formInput"
-                      placeholder="Enter Your Email Address"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.emailID}
-                    />
-                    {formik.errors.emailID && formik.touched.emailID && (
-                      <div className="error">{formik.errors.emailID}</div>
-                    )}
-                  </div>
-                  <div className="relative">
-                    <label className="formLabel">Password</label>
+                  <div class="grid lg:grid-rows-4 md:grid-rows-4 sm:grid-rows-7 xs:grid-rows-7 lg:grid-flow-col md:grid-flow-col sm:grid-flow-rows lg:gap-4 md:gap-4 sm:gap-2 xs:gap-2">
                     <div className="relative">
                       <input
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        id="password"
-                        placeholder="Enter Your Password"
+                        type="text"
+                        name="companyName"
+                        id="companyName"
+                        placeholder="Enter Company Name"
                         className="formInput"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        value={formik.values.password}
+                        value={formik.values.companyName}
                       />
-                      <div className="icon">
-                        {showPassword ? (
-                          <BsFillEyeFill
-                            onClick={() => setShowPassword(!showPassword)}
-                          />
-                        ) : (
-                          <BsFillEyeSlashFill
-                            onClick={() => setShowPassword(!showPassword)}
-                          />
+                      {formik.errors.companyName &&
+                        formik.touched.companyName && (
+                          <div className="error">
+                            {formik.errors.companyName}
+                          </div>
                         )}
-                      </div>
                     </div>
-                    {formik.errors.password && formik.touched.password && (
-                      <div className="error">{formik.errors.password}</div>
-                    )}
+
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="firstName"
+                        id="firstName"
+                        placeholder="Enter Your Name"
+                        className="formInput"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.firstName}
+                      />
+                      {formik.errors.firstName && formik.touched.firstName && (
+                        <div className="error">{formik.errors.firstName}</div>
+                      )}
+                    </div>
+
+                    <div className="relative">
+                      <input
+                        type="tel"
+                        name="phoneNumber"
+                        id="phoneNumber"
+                        placeholder="Enter Phone Number"
+                        className="formInput"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.phoneNumber}
+                      />
+                      {formik.errors.phoneNumber &&
+                        formik.touched.phoneNumber && (
+                          <div className="error">
+                            {formik.errors.phoneNumber}
+                          </div>
+                        )}
+                    </div>
+
+                    <div className="relative">
+                      <div className="relative">
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          name="password"
+                          id="password"
+                          placeholder="Enter Your Password"
+                          className="formInput"
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          value={formik.values.password}
+                        />
+                        <div className="icon">
+                          {showPassword ? (
+                            <BsFillEyeFill
+                              onClick={() => setShowPassword(!showPassword)}
+                            />
+                          ) : (
+                            <BsFillEyeSlashFill
+                              onClick={() => setShowPassword(!showPassword)}
+                            />
+                          )}
+                        </div>
+                      </div>
+                      {formik.errors.password && formik.touched.password && (
+                        <div className="error">{formik.errors.password}</div>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="googleLocation"
+                        id="googleLocation"
+                        placeholder="Enter Your Google Location"
+                        className="formInput"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.googleLocation}
+                      />
+                      {formik.errors.googleLocation &&
+                        formik.touched.googleLocation && (
+                          <div className="error">
+                            {formik.errors.googleLocation}
+                          </div>
+                        )}
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="firstName"
+                        id="firstName"
+                        placeholder="Enter Your Name"
+                        className="formInput"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.firstName}
+                      />
+                      {formik.errors.firstName && formik.touched.firstName && (
+                        <div className="error">{formik.errors.firstName}</div>
+                      )}
+                    </div>
+                    <div className="relative">
+                      <input
+                        type="email"
+                        name="emailID"
+                        id="emailID"
+                        className="formInput"
+                        placeholder="Enter Your Email Address"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.emailID}
+                      />
+                      {formik.errors.emailID && formik.touched.emailID && (
+                        <div className="error">{formik.errors.emailID}</div>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-start">
+                  {/* <div className="flex items-start">
                     <div className="flex items-center h-5">
                       <input
                         id="terms"
@@ -406,32 +424,32 @@ const Registration = () => {
                         className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
                       />
                     </div>
-                    <div className="lg:flex ml-3 text-sm sm:block">
-                      <label className="not-italic text-[#808080] font-medium">
+                    <div className="flex ml-3 text-sm flex-wrap">
+                      <label className="not-italic text-white font-medium">
                         I accept the
                       </label>
-                      <Link to="/termsconditions">
-                        <p className="lg:ml-1 not-italic text-[#3871E1] font-medium">
+                       <Link to="/termsconditions">
+                        <p className="lg:ml-1 not-italic text-white font-medium">
                           terms and conditions
                         </p>
-                      </Link>
+                      </Link> 
                     </div>
-                  </div>
-                  {formik.errors.terms && formik.touched.terms && (
+                  </div> */}
+                  {/* {formik.errors.terms && formik.touched.terms && (
                     <div className="error">{formik.errors.terms}</div>
-                  )}
+                  )} */}
                   <button
                     type="submit"
-                    className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3 text-center text-base"
+                    className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
                   >
                     Create Your Account
                   </button>
-                  <div className="lg:flex lg:ml-3 text-sm sm:block">
-                    <label className="not-italic text-[#808080] font-medium mb-3">
+                  <div className="flex lg:ml-3 text-sm flex-wrap">
+                    <label className="not-italic text-white font-medium mb-3">
                       Already have an account?
                     </label>
                     <Link to="/">
-                      <p className="lg:ml-1 not-italic text-[#3871E1] font-medium mb-3">
+                      <p className="lg:ml-1 not-italic text-white font-medium mb-3 hover:text-SlateBlue">
                         Sign in here
                       </p>
                     </Link>

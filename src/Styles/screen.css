@@ -495,3 +495,26 @@ button.daysbtn {
     max-width: 95%;
   }
 }
+
+.screen-table tr:nth-child(even),
+.newscreengroup-table tr:nth-child(even),
+.merged-table tr:nth-child(even),
+.assetstable table tr:nth-child(even),
+.schedual-table table tr:nth-child(even),
+.AddMedia-table tbody:nth-child(even),
+.set-schedule-table   tr:nth-child(even){
+  background: #ebebeb;
+}
+.screen-table tr,
+.newscreengroup-table tr,
+.merged-table tr,
+.assetstable table tr,
+.schedual-table table tr,
+.AddMedia-table tbody,
+.set-schedule-table  tr{
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+.imagebox.relative.p-3 img {
+  min-height: 250px;
+  max-height: 250px;
+}

@@ -87,3 +87,26 @@
     overflow-x: auto !important ;
   }
 }
+.schedual-btn{
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  left: 0%;
+  bottom: 0;
+  padding: 10px 0;
+  transform: translate(0%, 22px);
+  border-top: 1px solid #ccc;
+  position: sticky;
+  z-index: 9;
+}
+.schedualtime-table thead{
+  position: sticky;
+  top: 0;
+  top: 0;
+  z-index: 9;
+  box-shadow: 0px 10px 20px #cccccc87;
+  z-index: 9;
+}
+table.AddMedia-table td{
+  font-size:14px;
+}

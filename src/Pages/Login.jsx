@@ -65,16 +65,16 @@ const Login = () => {
     emailID: Yup.string()
       .required("Email is required")
       .email("E-mail must be a valid e-mail!"),
-    terms: Yup.boolean()
-      .oneOf([true], "You must accept the terms and conditions")
-      .required("You must accept the terms and conditions"),
+    // terms: Yup.boolean()
+    //   .oneOf([true], "You must accept the terms and conditions")
+    //   .required("You must accept the terms and conditions"),
   });
 
   const formik = useFormik({
     initialValues: {
       password: "",
       emailID: "",
-      terms: false,
+      // terms: false,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
@@ -380,7 +380,8 @@ const Login = () => {
                       <div className="error">{formik.errors.password}</div>
                     )}
                   </div>
-                  <div className="flex items-start">
+                  {/* <div className="flex items-start">
+
                     <div className="flex items-center h-5">
                       <input
                         id="terms"
@@ -402,13 +403,22 @@ const Login = () => {
                         </p>
                       </Link>
                     </div>
+
+                 
+                  </div> */}
+
+                  <div>
+                    <p className="ml-1 not-italic text-white font-medium  text-right hover:text-SlateBlue">
+                      Forgot Password?
+                    </p>
                   </div>
-                  {formik.errors.terms && formik.touched.terms && (
+
+                  {/* {formik.errors.terms && formik.touched.terms && (
                     <div className="error">{formik.errors.terms}</div>
-                  )}
+                  )} */}
                   <button
                     type="submit"
-                    className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4"
+                    className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
                   >
                     Sign in
                   </button>
@@ -417,7 +427,7 @@ const Login = () => {
                       Don’t have an account, yet?
                     </p>
                     <button
-                      className="ml-1 not-italic text-white font-medium border-b border-white"
+                      className="ml-1 not-italic text-white font-medium hover:text-SlateBlue"
                       onClick={handleRegister}
                     >
                       Sign up here

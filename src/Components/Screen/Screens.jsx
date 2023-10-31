@@ -582,9 +582,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                 >
-                  <VscVmConnect className="p-1 text-3xl text-primary hover:text-white" />
+                  <VscVmConnect className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
               </Tooltip>
               <Tooltip
@@ -598,10 +598,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                   onClick={() => setShowOTPModal(true)}
                 >
-                  <MdOutlineAddToQueue className="p-1 text-3xl hover:text-white text-primary" />
+                  <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
               </Tooltip>
               {showOTPModal ? (
@@ -620,10 +620,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                   onClick={handleNewScreenGroupClick}
                 >
-                  <HiOutlineRectangleGroup className="p-1 text-3xl hover:text-white text-primary" />
+                  <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
               </Tooltip>
               {showNewScreenGroupPopup && (
@@ -671,9 +671,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                 >
-                  <VscVmActive className="p-1 text-3xl hover:text-white text-primary" />
+                  <VscVmActive className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
               </Tooltip>
               <Tooltip
@@ -687,14 +687,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
+                  className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                   onClick={handleDeleteAllScreen}
                   style={{ display: selectAllChecked ? "block" : "none" }}
                 >
-                  <RiDeleteBin5Line className="p-1 text-3xl hover:text-white text-primary" />
+                  <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
               </Tooltip>
-              <div className="relative">
+              <div className="relative mt-1">
                 <Tooltip
                   content="More"
                   placement="bottom-end"
@@ -706,10 +706,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   <button
                     type="button"
-                    className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue border-gray"
+                    className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                     onClick={() => setMoreModal(!moreModal)}
                   >
-                    <RiArrowDownSLine className="p-1 text-3xl hover:text-white text-primary" />
+                    <RiArrowDownSLine className="p-1 px-2 text-4xl text-white hover:text-white" />
                   </button>
                 </Tooltip>
                 {moreModal && (
@@ -830,13 +830,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
           <div className="overflow-x-auto bg-white rounded-xl mt-8 shadow">
             <table
-              className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+              className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto screen-table"
               cellPadding={20}
             >
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
                   {screenContentVisible && (
-                    <th className=" text-[#5A5881] text-base font-semibold">
+                    <th className=" text-[#444] text-sm font-semibold">
                       <div className="flex  items-center ">
                         <SlScreenDesktop className="mr-2 text-xl" />
                         Screen
@@ -844,7 +844,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     </th>
                   )}
                   {locContentVisible && (
-                    <th className=" text-[#5A5881] text-base font-semibold">
+                    <th className=" text-[#444] text-sm font-semibold">
                       <div className="flex  items-center justify-center ">
                         <HiOutlineLocationMarker className="mr-2 text-xl" />
                         Google Location
@@ -852,7 +852,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     </th>
                   )}
                   {statusContentVisible && (
-                    <th className=" text-[#5A5881] text-base font-semibold">
+                    <th className=" text-[#444] text-sm font-semibold">
                       <div className="flex  items-center justify-center  mx-auto ">
                         <MdLiveTv className="mr-2 text-xl" />
                         status
@@ -861,7 +861,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     </th>
                   )}
                   {lastSeenContentVisible && (
-                    <th className=" text-[#5A5881] text-base font-semibold">
+                    <th className=" text-[#444] text-sm font-semibold">
                       <div className="flex  items-center justify-center   mx-auto">
                         <RxTimer className="mr-2 text-xl" />
                         Last Seen
@@ -870,7 +870,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     </th>
                   )}
                   {nowPlayingContentVisible && (
-                    <th className=" text-[#5A5881] text-base font-semibold">
+                    <th className=" text-[#444] text-sm font-semibold">
                       <div className="flex  items-center justify-center  mx-auto">
                         <BsCollectionPlay className="mr-2 text-xl" />
                         Now Playing
@@ -878,7 +878,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     </th>
                   )}
                   {currScheduleContentVisible && (
-                    <th className=" text-[#5A5881] text-base font-semibold">
+                    <th className=" text-[#444] text-sm font-semibold">
                       <div className=" flex  items-center mx-auto justify-center">
                         <MdOutlineCalendarMonth className="mr-2 text-xl" />
                         Current Schedule

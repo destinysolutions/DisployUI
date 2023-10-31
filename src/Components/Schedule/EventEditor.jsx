@@ -366,14 +366,14 @@ const EventEditor = ({
           },
         }}
       >
-        <div>
+        <div className="relative">
           <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl xs:text-xs text-[#001737] border-b border-lightgray pb-2  ">
             Select Assets and Schedule Time
           </h1>
 
-          <div className="grid grid-cols-12 my-6">
+          <div className="grid grid-cols-12 relative">
             <div className="lg:col-span-9 md:col-span-8 sm:col-span-12 xs:col-span-12 rounded-lg">
-              <div className="mb-5 relative ">
+              <div className="my-2 relative ">
                 <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
                 <input
                   type="text"
@@ -387,7 +387,7 @@ const EventEditor = ({
                 <div className="rounded-sm bg-white shadow-2xl md:pb-1">
                   <div className="max-w-full overflow-auto max-h-[1340px]">
                     <table
-                      className="w-full lg:table-fixed md:table-fixed sm:table-auto xs:table-auto text-sm break-words "
+                      className="w-full lg:table-fixed md:table-fixed sm:table-auto xs:table-auto text-sm break-words schedualtime-table"
                       cellPadding={10}
                     >
                       <thead>
@@ -875,50 +875,53 @@ const EventEditor = ({
                 </div>
               </div>
             </div>
-          </div>
-          <div className="flex justify-center">
-            <button
-              className="border-2 border-lightgray hover:bg-primary hover:text-white   px-5 py-2 rounded-full"
-              onClick={() => {
-                onClose();
-                setShowRepeatSettings(false);
-              }}
-            >
-              Cancel
-            </button>
 
-            {isEditMode ? (
-              <button
-                className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
-                onClick={() => {
-                  handleSave();
-                  setShowRepeatSettings(false);
-                }}
-              >
-                Update
-              </button>
-            ) : (
-              <button
-                className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
-                onClick={() => {
-                  handleSave();
-                  setShowRepeatSettings(false);
-                }}
-              >
-                Save
-              </button>
-            )}
-            {isEditMode && (
-              <button
-                className="border-2 border-lightgray hover:bg-primary hover:text-white   px-6 py-2 rounded-full ml-3"
-                onClick={() => {
-                  handelDeletedata();
-                  setShowRepeatSettings(false);
-                }}
-              >
-                Delete
-              </button>
-            )}
+            <div className="col-span-12 bg-white schedual-btn">
+              <div className="flex justify-center ">
+                <button
+                  className="border-2 border-lightgray hover:bg-primary hover:text-white   px-5 py-2 rounded-full"
+                  onClick={() => {
+                    onClose();
+                    setShowRepeatSettings(false);
+                  }}
+                >
+                  Cancel
+                </button>
+
+                {isEditMode ? (
+                  <button
+                    className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
+                    onClick={() => {
+                      handleSave();
+                      setShowRepeatSettings(false);
+                    }}
+                  >
+                    Update
+                  </button>
+                ) : (
+                  <button
+                    className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
+                    onClick={() => {
+                      handleSave();
+                      setShowRepeatSettings(false);
+                    }}
+                  >
+                    Save
+                  </button>
+                )}
+                {isEditMode && (
+                  <button
+                    className="border-2 border-lightgray hover:bg-primary hover:text-white   px-6 py-2 rounded-full ml-3"
+                    onClick={() => {
+                      handelDeletedata();
+                      setShowRepeatSettings(false);
+                    }}
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </ReactModal>

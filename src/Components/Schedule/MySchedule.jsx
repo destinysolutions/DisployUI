@@ -263,28 +263,28 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             </h1>
             <div className=" items-center flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn ">
               <Link to="/weatherschedule">
-                <button className=" flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                <button className=" flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                   <TiWeatherSunny className="text-lg mr-1" />
                   Weather Schedule
                 </button>
               </Link>
               <Link to="/addschedule">
-                <button className="sm:ml-2 xs:ml-1  flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                <button className="sm:ml-2 xs:ml-1  flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                   <BiAddToQueue className="text-lg mr-1" />
                   New Schedule
                 </button>
               </Link>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle border-gray items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="sm:ml-2 xs:ml-1 flex align-middle border-white bg-SlateBlue text-white items-center border-2 border-SlateBlue hover:border-white rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <FiUpload className="text-lg" />
               </button>
               <button
-                className="sm:ml-2 xs:ml-1 flex align-middle border-gray items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                className="sm:ml-2 xs:ml-1 flex align-middle border-white bg-red text-white items-center border-2 border-SlateBlue hover:border-white rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 onClick={handelDeleteAllSchedule}
                 style={{ display: selectAll ? "block" : "none" }}
               >
                 <RiDeleteBin5Line className="text-lg" />
               </button>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle border-gray items-center border-2 rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="sm:ml-2 xs:ml-1 flex align-middle border-white bg-SlateBlue text-white items-center border-2 border-SlateBlue hover:border-white rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <HiMagnifyingGlass className="text-lg" />
               </button>
               <button className="sm:ml-2 xs:ml-1 mt-1">
@@ -304,43 +304,43 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             >
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                  <th className="font-medium text-[14px]">
+                  <th className="text-[#444] text-sm font-semibold">
                     <div className="flex items-center">
                       <TbCalendarTime className="mr-2 text-xl" />
                       Schedule Name
                     </div>
                   </th>
-                  <th className="font-medium text-[14px]">
+                  <th className="text-[#444] text-sm font-semibold">
                     <div className="flex items-center">
                       <TbCalendarTime className="mr-2 text-xl" />
                       Time Zones
                     </div>
                   </th>
-                  <th className="font-medium text-[14px]">
+                  <th className="text-[#444] text-sm font-semibold">
                     <div className=" flex  items-center justify-center mx-auto">
                       <VscCalendar className="mr-2 text-xl" />
                       Date Added
                     </div>
                   </th>
-                  <th className="font-medium text-[14px]">
+                  <th className="text-[#444] text-sm font-semibold">
                     <div className=" flex  items-center justify-center mx-auto">
                       <TbCalendarStats className="mr-2 text-xl" />
                       start date
                     </div>
                   </th>
-                  <th className="font-medium text-[14px]">
+                  <th className="text-[#444] text-sm font-semibold">
                     <div className=" flex  items-center justify-center mx-auto">
                       <TbCalendarStats className="mr-2 text-xl" />
                       End date
                     </div>
                   </th>
-                  <th className="font-medium text-[14px]">
+                  <th className="text-[#444] text-sm font-semibold">
                     <div className=" flex  items-center justify-center mx-auto">
                       <RiComputerLine className="mr-2 text-xl" />
                       screens Assigned
                     </div>
                   </th>
-                  <th className="font-medium text-[14px]">
+                  <th className="text-[#444] text-sm font-semibold">
                     <div className="flex  items-center justify-center mx-auto">
                       <BsTags className="mr-2 text-xl" />
                       Tags

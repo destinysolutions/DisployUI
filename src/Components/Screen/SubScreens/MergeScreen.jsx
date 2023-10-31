@@ -53,16 +53,16 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             <div className="icons flex  items-center sm:mt-3">
               <div>
-                <button className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue hover:border-SlateBlue border-primary ">
-                  <IoMdRefresh className="p-1 text-3xl  hover:text-white text-primary " />
+                <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg ">
+                  <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
               </div>
               <div>
                 <button
                   type="button"
-                  className="border rounded-full mr-2 hover:shadow-xl hover:bg-SlateBlue hover:border-SlateBlue border-primary"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                 >
-                  <VscVmConnect className="p-1 text-3xl text-primary hover:text-white" />
+                  <VscVmConnect className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
               </div>
               <div>
@@ -84,15 +84,15 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="flex items-center">
                 {isHovering && (
                   <div className="flex items-center flex-wrap">
-                    <button className="rounded-full mx-1 border hover:bg-SlateBlue">
-                      <TbScanEye className="text-2xl p-1 hover:text-white" />
+                    <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                      <TbScanEye className="text-3xl p-1 hover:text-white" />
                     </button>
 
-                    <button className="rounded-full mx-1 border hover:bg-SlateBlue">
-                      <TbUpload className="text-2xl p-1 hover:text-white" />
+                    <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                      <TbUpload className="text-3xl p-1 hover:text-white" />
                     </button>
-                    <button className="rounded-full mx-1 border hover:bg-red hover:border-red">
-                      <RiDeleteBin5Line className="text-2xl p-1 hover:text-white" />
+                    <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                      <RiDeleteBin5Line className="text-3xl p-1 hover:text-white" />
                     </button>
                     <button>
                       {" "}
@@ -108,11 +108,11 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                       <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
                         Preview
                       </button>{" "}
-                      <button className="rounded-full mx-1 border hover:bg-SlateBlue">
-                        <TbUpload className="text-2xl p-1 hover:text-white" />
+                      <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                        <TbUpload className="text-3xl p-1 hover:text-white" />
                       </button>
-                      <button className="rounded-full mx-1 border hover:bg-red hover:border-red">
-                        <RiDeleteBin5Line className="text-2xl p-1 hover:text-white" />
+                      <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                        <RiDeleteBin5Line className="text-3xl p-1 hover:text-white" />
                       </button>
                       <button>
                         {" "}
@@ -135,12 +135,12 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
             {showdata && (
               <div className="overflow-x-auto">
                 <table
-                  className="mt-9 w-full sm:mt-3 lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white"
+                  className="mt-9 w-full sm:mt-3 lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white merged-table"
                   cellPadding={20}
                 >
                   <thead>
-                    <tr className="border-b border-lightgray">
-                      <th className="p-3 font-medium text-[14px]">
+                    <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                      <th className="text-[#444] text-sm font-semibold p-2">
                         <button className=" flex  items-center justify-center px-6 py-2">
                           <svg
                             width="20"
@@ -158,7 +158,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                           Screen
                         </button>
                       </th>
-                      <th className="p-3 font-medium text-[14px]">
+                      <th className="text-[#444] text-sm font-semibold p-2">
                         <button className=" flex  items-center justify-center mx-auto px-6 py-2">
                           <svg
                             className="mr-2"
@@ -193,7 +193,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                           </svg>
                         </button>
                       </th>
-                      <th className="p-3 font-medium text-[14px]">
+                      <th className="text-[#444] text-sm font-semibold p-2">
                         <button className=" flex  items-center justify-center mx-auto px-6 py-2">
                           <svg
                             className="mr-2"
@@ -228,7 +228,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                           </svg>
                         </button>
                       </th>
-                      <th className="p-3 font-medium text-[14px]">
+                      <th className="text-[#444] text-sm font-semibold p-2">
                         <button className=" flex  items-center justify-center mx-auto px-6 py-2">
                           <svg
                             className="mr-2"
@@ -257,7 +257,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                           Now Playing
                         </button>
                       </th>
-                      <th className="p-3 font-medium text-[14px]">
+                      <th className="text-[#444] text-sm font-semibold p-2">
                         <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
                           <svg
                             className="mr-2"
@@ -277,7 +277,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                           Current Schedule
                         </button>
                       </th>
-                      <th className="p-3 font-medium text-[14px]">
+                      <th className="text-[#444] text-sm font-semibold p-2">
                         <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
                           <svg
                             className="mr-2"

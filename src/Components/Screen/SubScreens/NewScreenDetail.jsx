@@ -407,7 +407,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       <>
                         <tr className="display-none">
                           <td></td>
-                          <td className="relative p-0">
+                          <td className="relative">
                             <input
                               className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                               value={selectedAsset.name}
@@ -589,6 +589,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                               </div>
                                               <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover">
                                                 <table
+                                                  className="AddMedia-table"
                                                   style={{
                                                     borderCollapse: "separate",
                                                     borderSpacing: " 0 10px",
@@ -833,48 +834,48 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div>
                                   <div className="overflow-x-auto mt-8 px-5">
                                     <table
-                                      className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+                                      className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto set-schedule-table"
                                       cellPadding={20}
                                     >
                                       <thead>
                                         <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                                          <th className="font-medium text-[14px]">
+                                          <th className="text-[#444] text-sm font-semibold">
                                             <div className="flex items-center">
                                               <TbCalendarTime className="mr-2 text-xl" />
                                               Schedule Name
                                             </div>
                                           </th>
-                                          <th className="font-medium text-[14px]">
+                                          <th className="text-[#444] text-sm font-semibold">
                                             <div className="flex items-center">
                                               <TbCalendarTime className="mr-2 text-xl" />
                                               Time Zones
                                             </div>
                                           </th>
-                                          <th className="font-medium text-[14px]">
+                                          <th className="text-[#444] text-sm font-semibold">
                                             <div className=" flex  items-center justify-center mx-auto">
                                               <VscCalendar className="mr-2 text-xl" />
                                               Date Added
                                             </div>
                                           </th>
-                                          <th className="font-medium text-[14px]">
+                                          <th className="text-[#444] text-sm font-semibold">
                                             <div className=" flex  items-center justify-center mx-auto">
                                               <TbCalendarStats className="mr-2 text-xl" />
                                               start date
                                             </div>
                                           </th>
-                                          <th className="font-medium text-[14px]">
+                                          <th className="text-[#444] text-sm font-semibold">
                                             <div className=" flex  items-center justify-center mx-auto">
                                               <TbCalendarStats className="mr-2 text-xl" />
                                               End date
                                             </div>
                                           </th>
-                                          <th className="font-medium text-[14px]">
+                                          <th className="text-[#444] text-sm font-semibold">
                                             <div className=" flex  items-center justify-center mx-auto">
                                               <RiComputerLine className="mr-2 text-xl" />
                                               screens Assigned
                                             </div>
                                           </th>
-                                          <th className="font-medium text-[14px]">
+                                          <th className="text-[#444] text-sm font-semibold">
                                             <div className="flex  items-center justify-center mx-auto">
                                               <BsTags className="mr-2 text-xl" />
                                               Tags

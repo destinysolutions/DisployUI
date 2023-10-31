@@ -1143,10 +1143,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             )}
                           </td>
                         </tr>
-
-                        <tr>
-                          <td className="mb-2"></td>
-                        </tr>
                       </React.Fragment>
                     ))}
 
