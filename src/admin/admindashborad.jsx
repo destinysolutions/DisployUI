@@ -2,6 +2,7 @@ import Users from "../Components/Dashboard/TabingData/Users";
 import Sidebar from "../Components/Sidebar";
 import PropTypes from "prop-types";
 import AdminNavbar from "./adminNavbar";
+import AdminSidebar from "./AdminSidebar";
 
 const AdminDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   AdminDashboard.propTypes = {
@@ -28,7 +29,10 @@ const AdminDashboard = ({ sidebarOpen, setSidebarOpen }) => {
     // </div>
     <>
       <div className="flex border-b border-gray">
-        {/* <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} /> */}
+        <AdminSidebar
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
         <AdminNavbar />
       </div>
       <div className="pt-6 px-5 page-contain">

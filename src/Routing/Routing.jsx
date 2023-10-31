@@ -45,6 +45,8 @@ import TextScroll from "../Components/Apps/TextScroll";
 import TextScrollDetail from "../Components/Apps/TextScrollDetail";
 import WeatherDetail from "../Components/Apps/WeatherDetail";
 
+import Loading from "../Components/Loading";
+
 const Routing = () => {
   //for screen resize sidebar open close
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -467,7 +469,12 @@ const Routing = () => {
     );
   }
 
-  return <div>Loading..</div>;
+  return (
+    <Loading />
+    // <div className="flex justify-center items-center h-screen">
+    //   <TailSpin color="red" radius={"8px"} />
+    // </div>
+  );
 };
 
 export default Routing;
