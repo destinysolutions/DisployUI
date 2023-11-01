@@ -136,6 +136,9 @@ body {
   .sm\:text-sm {
     font-size: 13px !important;
   }
+  .dayremaining-box{
+    display:none;
+  }
 }
 
 @media (max-width: 300px) {

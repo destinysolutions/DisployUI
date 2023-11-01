@@ -129,9 +129,11 @@ const Navbar = () => {
         <div className="flex-col flex">
           <div className="w-full">
             <div className=" justify-end items-center mx-auto px-4 flex relative">
-              <div className="mr-3">
+              <div className="mr-3 dayremaining-box">
                 {daysRemaining > 0 ? (
-                  <p>Trial Days Remaining : {daysRemaining}</p>
+                  <p className="text-sm ">
+                    Trial Days Remaining : {daysRemaining}
+                  </p>
                 ) : (
                   <p>Your trial has expired.</p>
                 )}
