@@ -1,41 +1,63 @@
 import "../Styles/sidebar.css";
-import { useNavigate } from "react-router-dom";
+import * as FiIcons from "react-icons/fi";
 
 import PropTypes from "prop-types";
 import * as AiIcons from "react-icons/ai";
-
+import { Link } from "react-router-dom";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 import { useState } from "react";
-
+import { useEffect } from "react";
+import { FaUserTimes } from "react-icons/fa";
+import { FaUserAlt, FaUserCheck, FaUsers } from "react-icons/fa";
+import { SlOrganization } from "react-icons/sl";
 const AdminSidebar = ({ sidebarOpen }) => {
-  const navigation = useNavigate();
-
   AdminSidebar.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
   };
-
+  const [activeSubmenu, setActiveSubmenu] = useState(false);
+  const [submenuStates, setSubmenuStates] = useState({});
+  const updateSubmenuState = (submenuTitle, isOpen) => {
+    const updatedStates = { ...submenuStates, [submenuTitle]: isOpen };
+    setSubmenuStates(updatedStates);
+    localStorage.setItem("submenuStates", JSON.stringify(updatedStates));
+  };
+  useEffect(() => {
+    const storedStates = localStorage.getItem("submenuStates");
+    if (storedStates) {
+      setSubmenuStates(JSON.parse(storedStates));
+    }
+  }, []);
   //for menu list
   const Menus = [
     {
+      title: "UserType",
+      cName: "nav-text link-items",
+      path: "/manage-user-type",
+      icon: <FaUsers className="text-2xl"/>,
+    },
+    {
       title: "User",
       cName: "nav-text link-items",
-      path: "/dashboard",
-      icon: (
-        <img
-          src="/MenuIcons/dashboard_icon.svg"
-          alt="Dashboard"
-          className="fill-white w-6"
-        />
-      ),
+      path: "/user",
+      icon: <FaUserAlt className="text-2xl"/>,
     },
-
     {
-      title: "OnBoding",
+      title: "Organization",
       cName: "nav-text link-items",
-      path: "/onboding",
-      icon: (
-        <img src="/MenuIcons/assets_icon.svg" alt="Assets" className="w-6" />
-      ),
+      //path: "/organization",
+      icon: <SlOrganization className="text-2xl"/>,
+      subMenus: [
+        {
+          title: "Pending",
+          path: "/pending",
+          icon: <FaUserTimes className="  text-xl  " />,
+        },
+        {
+          title: "OnBorded",
+          path: "/onborded",
+          icon: <FaUserCheck className="  text-xl  "/>,
+        },
+      ],
     },
   ];
 
@@ -59,29 +81,41 @@ const AdminSidebar = ({ sidebarOpen }) => {
                 />
               </div>
               <ul className="space-y-1 font-medium">
-                {Menus.map((item, MIindex) => {
+                {Menus.map((item, index) => {
+                  const submenuIsOpen = submenuStates[item.title] || false;
                   return (
-                    <li key={MIindex} className={item.cName}>
-                      <div
-                        className="flex"
-                        onClick={() => {
-                          if (item.title == "Log Out") {
-                            localStorage.setItem("role_access", "");
-                            window.location.reload();
-                            navigation("/");
-                            auth.signOut();
-                          } else {
-                            navigation(item.path);
-                          }
-                        }}
-                      >
-                        <div>{item.icon}</div>
-                        <span className="ml-5 text-[#8E94A9]">
-                          {item.title}
-                        </span>
-
-                        {Menus.title}
+                    <li key={index} className={item.cName}>
+                      <div className="flex items-center">
+                        <Link to={item.path}>
+                          <div>{item.icon}</div>
+                          <span className="ml-5">{item.title}</span>
+                        </Link>
+                        {item.subMenus && (
+                          <div className="ml-5 absolute right-0">
+                            <FiIcons.FiChevronDown
+                              className={`${
+                                submenuIsOpen ? "transform rotate-180" : ""
+                              } transition-transform duration-300 text-white `}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                updateSubmenuState(item.title, !submenuIsOpen);
+                              }}
+                            />
+                          </div>
+                        )}
                       </div>
+                      {submenuIsOpen && item.subMenus && (
+                        <ul className="ml-4 mt-3">
+                          {item.subMenus.map((submenu, subIndex) => (
+                            <li key={subIndex} className="p-2 relative submenu">
+                              <Link to={submenu.path}>
+                                <div>{submenu.icon}</div>
+                                <span className="ml-5">{submenu.title}</span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </li>
                   );
                 })}
@@ -119,27 +153,38 @@ const AdminSidebar = ({ sidebarOpen }) => {
               </div>
             </div>
             <ul className="space-y-1 font-medium">
-              {Menus.map((item, MIindex) => {
+              {Menus.map((item, index) => {
                 return (
-                  <li key={MIindex} className={item.cName}>
-                    <div
-                      className="flex"
-                      onClick={() => {
-                        if (item.title == "Log Out") {
-                          localStorage.setItem("role_access", "");
-                          window.location.reload();
-                          navigation("/");
-                          auth.signOut();
-                        } else {
-                          navigation(item.path);
-                        }
-                      }}
-                    >
-                      <div>{item.icon}</div>
-                      <span className="ml-5 text-[#8E94A9]">{item.title}</span>
-
-                      {Menus.title}
+                  <li key={index} className={item.cName}>
+                    <div className="flex items-center">
+                      <Link to={item.path}>
+                        <div>{item.icon}</div>
+                        <span className="ml-5">{item.title}</span>
+                      </Link>
+                      {item.subMenus && (
+                        <div className="ml-5 absolute right-0">
+                          <FiIcons.FiChevronDown
+                            className={`${
+                              activeSubmenu ? "transform rotate-180" : ""
+                            } transition-transform duration-300 text-white 
+                          `}
+                            onClick={() => setActiveSubmenu(!activeSubmenu)}
+                          />
+                        </div>
+                      )}
                     </div>
+                    {activeSubmenu && item.subMenus && (
+                      <ul className="ml-4 mt-3">
+                        {item.subMenus.map((submenu, subIndex) => (
+                          <li key={subIndex} className="p-2 relative submenu">
+                            <Link to={submenu.path}>
+                              <div>{submenu.icon}</div>
+                              <span className="ml-5">{submenu.title}</span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </li>
                 );
               })}

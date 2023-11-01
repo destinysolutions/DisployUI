@@ -48,7 +48,8 @@ const Registration = () => {
         /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
         "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
       ),
-    firstName: Yup.string().required(" Name is required").max(50),
+    firstName: Yup.string().required("First Name is required").max(50),
+    lastName: Yup.string().required("Last Name is required").max(50),
     emailID: Yup.string()
       .required("Email is required")
       .email("E-mail must be a valid e-mail!"),
@@ -69,6 +70,7 @@ const Registration = () => {
       emailID: "",
       googleLocation: "",
       phoneNumber: "",
+      lastName: "",
       // terms: false,
     },
     validationSchema: validationSchema,
@@ -86,13 +88,14 @@ const Registration = () => {
 
               const formData = new FormData();
 
-              formData.append("companyName", values.companyName);
-              formData.append("password", values.password);
-              formData.append("firstName", values.firstName);
-              formData.append("emailID", values.emailID);
-              formData.append("googleLocation", values.googleLocation);
-              formData.append("phoneNumber", values.phoneNumber);
-              formData.append("operation", "Insert");
+              formData.append("OrganizationName", values.companyName);
+              formData.append("Password", values.password);
+              formData.append("FirstName", values.firstName);
+              formData.append("LastName", values.lastName);
+              formData.append("Email", values.emailID);
+              formData.append("GoogleLocation", values.googleLocation);
+              formData.append("Phone", values.phoneNumber);
+              formData.append("Operation", "Insert");
               axios
                 .post(ADD_REGISTER_URL, formData, {
                   headers: {
@@ -153,11 +156,11 @@ const Registration = () => {
       const user = res.user;
       const formData = new FormData();
 
-      formData.append("firstName", user.displayName);
-      formData.append("emailID", user.email);
+      formData.append("FirstName", user.displayName);
+      formData.append("Email", user.email);
 
-      formData.append("phoneNumber", user.phoneNumber);
-      formData.append("operation", "Insert");
+      formData.append("Phone", user.phoneNumber);
+      formData.append("Operation", "Insert");
       axios
         .post(ADD_REGISTER_URL, formData, {
           headers: {
@@ -232,11 +235,6 @@ const Registration = () => {
       console.log(err);
     }
   };
-  //for signup
-  const handleRegister = () => {
-    history("/register");
-    localStorage.removeItem("hasSeenMessage");
-  };
 
   return (
     <>
@@ -280,7 +278,7 @@ const Registration = () => {
                   onSubmit={formik.handleSubmit}
                   className="space-y-3 md:space-y-5"
                 >
-                  <div class="grid lg:grid-rows-4 md:grid-rows-4 sm:grid-rows-7 xs:grid-rows-7 lg:grid-flow-col md:grid-flow-col sm:grid-flow-rows lg:gap-4 md:gap-4 sm:gap-2 xs:gap-2">
+                  <div className="grid lg:grid-rows-4 md:grid-rows-4 sm:grid-rows-7 xs:grid-rows-7 lg:grid-flow-col md:grid-flow-col sm:grid-flow-rows lg:gap-4 md:gap-4 sm:gap-2 xs:gap-2">
                     <div className="relative">
                       <input
                         type="text"
@@ -384,16 +382,16 @@ const Registration = () => {
                     <div className="relative">
                       <input
                         type="text"
-                        name="firstName"
-                        id="firstName"
+                        name="lastName"
+                        id="lastName"
                         placeholder="Enter Your Name"
                         className="formInput"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        value={formik.values.firstName}
+                        value={formik.values.lastName}
                       />
-                      {formik.errors.firstName && formik.touched.firstName && (
-                        <div className="error">{formik.errors.firstName}</div>
+                      {formik.errors.lastName && formik.touched.lastName && (
+                        <div className="error">{formik.errors.lastName}</div>
                       )}
                     </div>
                     <div className="relative">
