@@ -1,4 +1,4 @@
-.playlistdw {
+.assetsdw {
   position: absolute;
   background: #fff;
   padding: 15px;
@@ -7,12 +7,13 @@
   font-size: 16px;
   width: 166px;
   border: 1px solid #ccc;
-  transform: translate(2%, 21px);
-  right: -26%;
-  top: 50%;
+  z-index: 99;
+  transform: translate(1%, 0px);
+  right: 6px;
+  top: 30px;
 }
 
-.playlistdw:before {
+.assetsdw:before {
   content: "";
   position: absolute;
   width: 15px;
@@ -52,8 +53,7 @@
   left: 50%;
 }
 
-
-@media(max-width:800px) {
+@media (max-width: 800px) {
   .roundedbtn {
     border-radius: 0px !important;
   }
@@ -63,14 +63,11 @@
   }
 
   .myplaylist-popup-details {
-
     margin: 10px !important;
   }
-
-
 }
 
-@media (max-device-width:640px) and (max-device-height:400px) {
+@media (max-device-width: 640px) and (max-device-height: 400px) {
   .addmediapopup {
     height: 100vh;
     overflow-y: auto;
@@ -78,7 +75,7 @@
   }
 }
 
-@media(max-width:412px) {
+@media (max-width: 412px) {
   .playlistbtn button {
     margin-top: 10px;
   }
@@ -89,12 +86,11 @@
   }
 
   .myplaylist-popup-details {
-
     margin: 10px !important;
   }
 }
 
-@media(max-width:350px) {
+@media (max-width: 350px) {
   .myplaylist-popup-details {
     min-width: 250px;
   }

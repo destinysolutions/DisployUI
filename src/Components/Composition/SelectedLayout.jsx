@@ -7,12 +7,20 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { FabricJSCanvas, useFabricJSEditor } from "fabricjs-react";
 import { fabric } from "fabric";
 import axios from "axios";
-import { GET_ALL_FILES, SELECT_BY_LIST } from "../../Pages/Api";
+import {
+  ADDPLAYLIST,
+  ADDSUBPLAYLIST,
+  GET_ALL_FILES,
+  SELECT_BY_LIST,
+} from "../../Pages/Api";
 import AssetModal from "../Assests/AssetModal";
 import PreviewModal from "./PreviewModel";
+import { RxCrossCircled } from "react-icons/rx";
+import Carousel from "./DynamicCarousel";
 import { useLocation } from "react-router-dom";
-import { BiFilterAlt } from "react-icons/bi";
 const DEFAULT_IMAGE = "";
+
+import { useSelector } from "react-redux";
 
 const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   SelectLayout.propTypes = {
@@ -25,6 +33,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [assetData, setAssetData] = useState([]);
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [addAsset, setAddAsset] = useState([]);
+  const UserData = useSelector((Alldata) => Alldata.user);
 
   const [jsondata, setjsondata] = useState({
     version: 0,
@@ -34,7 +43,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [compositonData, setcompositonData] = useState([]);
   const [currentSection, setcurrentSection] = useState(1);
-  const [Testasset, setTestasset] = useState([]);
+  const [Testasset, setTestasset] = useState({});
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
@@ -46,10 +55,11 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   useEffect(() => {
+    // console.log("state", state);
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${SELECT_BY_LIST}?LayoutDtlID=${state}`,
+      url: `${SELECT_BY_LIST}?LayoutDtlID=${state?.layoutDtlID}`,
       headers: {},
       data: "",
     };
@@ -57,7 +67,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        // console.log(JSON.stringify(response.data?.data[0]));
+        console.log(JSON.stringify(response.data?.data[0].lstLayloutModelList));
         setcompositonData(response.data?.data[0]);
       })
       .catch((error) => {
@@ -158,162 +168,200 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const onDeleteSelected = () => {
     editor.deleteSelected();
   };
-  const onSave = () => {
+
+  const onSave = async () => {
     // const canvasData = JSON.stringify(editor.canvas.toJSON());
-    console.log("canvasData", editor.canvas.toJSON());
-    setjsondata(editor.canvas.toJSON());
+    let data = new FormData();
+    data.append("PlayListId", 0);
+    data.append("CompositionName", state?.name);
+    data.append("Resolution", "1920 x 1080");
+    data.append("Tags", "Tags");
+    data.append("LayoutDtlID", state.layoutDtlID);
+    data.append("UserID", UserData.user?.userID);
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: ADDPLAYLIST,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+
+    await axios
+      .request(config)
+      .then((response) => {
+        console.log("===========>", response.data?.data.playListId);
+        const id = response.data?.data.playListId;
+        if (id) {
+          const newdata = [];
+          addAsset.map((item, index) => {
+            console.log("item", item[index + 1]);
+            item[index + 1].map((i) =>
+              newdata.push({
+                subPlaylistId: 0,
+                playListID: id,
+                assetID: i.id,
+                timeduration: i.PlayDuration,
+                layoutID: compositonData?.lstLayloutModelList[index].layoutID,
+                userID: UserData.user?.userID,
+              })
+            );
+          });
+          const datas = JSON.stringify(newdata);
+          console.log("data", datas);
+          let config = {
+            method: "post",
+            maxBodyLength: Infinity,
+            url: ADDSUBPLAYLIST,
+            headers: {
+              "Content-Type": "application/json",
+            },
+            data: datas,
+          };
+
+          axios
+            .request(config)
+            .then((response) => {
+              console.log("datauploaded", JSON.stringify(response.data));
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          alert("something went wrong not able to upload data");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        return error;
+      });
+
+    // console.log("===>", newdata);
   };
 
-  const addSeletedAsset = (data, currentSection, alldata) => {
-    const newdata = [
-      ...addAsset,
-      { ...data, PlayDuration: 10, isEdited: true },
-    ];
-    // if (Testasset.length > 0) {
-    //   const newdata = Testasset.map((item, index, alldata) => {
-    //     if (Object.keys(item).includes(`section${currentSection}`)) {
-    //       return {
-    //         ...item,
-    //         [`section${currentSection}`]: [
-    //           ...item?.[`section${currentSection}`],
-    //           { ...data, PlayDuration: 10, isEdited: true },
-    //         ],
-    //       };
-    //     } else {
-    //       return [
-    //         ...alldata,
-    //         {
-    //           [`section${currentSection}`]: [
-    //             { ...data, PlayDuration: 10, isEdited: true },
-    //           ],
-    //         },
-    //       ];
-    //     }
-    //   });
-    //   console.log("newdata", newdata);
-    //   setTestasset(newdata);
-    // } else {
-    //   setTestasset([
-    //     { [`section${1}`]: [{ ...data, PlayDuration: 10, isEdited: true }] },
-    //   ]);
-    // }
-    console.log("cureentSection", currentSection);
-    const newdata2 = Testasset.reduce(
-      (t, item, ind) => {
-        var objectkey = `section${currentSection}`;
-        console.log("type", objectkey);
-        if (Object.keys(item).includes(objectkey)) {
-          return t.map((i, index) => {
-            if (ind == index) {
-              console.log("Trueeeeeeeee", ind == index);
-              return {
-                ...i,
-                [String("section" + currentSection)]: [
-                  ...i[String("section" + currentSection)],
-                  { ...data, PlayDuration: 10, isEdited: true },
-                ],
-              };
-            } else {
-              return i;
-            }
-          });
-        } else {
-          console.log("Falseeeeeeeeeeeeeeeeee");
-          return [
-            ...t,
-            {
-              [`section${currentSection}`]: [
-                { ...data, PlayDuration: 10, isEdited: true },
-              ],
-            },
-          ];
-        }
-      },
-      [{ [`section${1}`]: [{ ...data, PlayDuration: 10, isEdited: true }] }]
-    );
-    console.log("newdata2", newdata2);
-    setTestasset(newdata2);
-    setAddAsset(newdata);
+  const addSeletedAsset = (data, currentSection) => {
+    console.log("data", data);
+    let newdatas = { ...Testasset };
+    if (newdatas?.[currentSection]) {
+      newdatas[currentSection].push({
+        ...data,
+        PlayDuration: data.durations ? data.durations : 10,
+        isEdited: true,
+      });
+    } else {
+      newdatas[currentSection] = [{ ...data, PlayDuration: 1, isEdited: true }];
+    }
+    const newdd = Object.entries(newdatas).map(([k, i]) => ({ [k]: i }));
+    setTestasset(newdatas);
+    setAddAsset(newdd);
   };
 
   const deleteSeletedAsset = (id) => {
-    const newdata = addAsset.filter((item, index) => index !== id);
-    setAddAsset(newdata);
+    const updated = addAsset.map((item, index) => {
+      if (index + 1 == currentSection) {
+        return {
+          ...item,
+          [currentSection]: item[currentSection].filter(
+            (item, index) => index !== id
+          ),
+        };
+      } else {
+        return item;
+      }
+    });
+    const deletedobject = { ...Testasset };
+    if (deletedobject?.[currentSection]) {
+      deletedobject[currentSection] = deletedobject[currentSection].filter(
+        (item, index) => index !== id
+      );
+    }
+    setTestasset(deletedobject);
+
+    setAddAsset(updated);
   };
 
   const onEditSelectedAsset = (id) => {
     const CompositionData = [...addAsset];
-    const newData = CompositionData.map((item, index) => {
-      if (index == id) {
-        return { ...item, isEdited: !item.isEdited };
+    const updated = CompositionData.map((item, index) => {
+      if (index + 1 == currentSection) {
+        return {
+          ...item,
+          [currentSection]: item[currentSection].map((items, i) => {
+            if (i == id) {
+              return { ...items, isEdited: !items.isEdited };
+            } else {
+              return items;
+            }
+          }),
+        };
       } else {
         return item;
       }
     });
-    console.log("CompositionData", CompositionData);
-    setAddAsset(newData);
+    const ChnagedObject = { ...Testasset };
+    if (ChnagedObject?.[currentSection]) {
+      ChnagedObject[currentSection] = ChnagedObject[currentSection].map(
+        (items, i) => {
+          if (i == id) {
+            return { ...items, isEdited: !items.isEdited };
+          } else {
+            return items;
+          }
+        }
+      );
+    }
+    setTestasset(ChnagedObject);
+    setAddAsset(updated);
   };
 
   const onChangeSelectedAsset = (e, id) => {
     const CompositionData = [...addAsset];
-    const newData = CompositionData.map((item, index) => {
-      if (index == id) {
-        return { ...item, PlayDuration: e };
+    // const newData = CompositionData.map((item, index) => {
+    //   if (index == id) {
+    //     return { ...item, PlayDuration: e };
+    //   } else {
+    //     return item;
+    //   }
+    // });
+    const updated = CompositionData.map((item, index) => {
+      if (index + 1 == currentSection) {
+        return {
+          ...item,
+          [currentSection]: item[currentSection].map((items, i) => {
+            if (i == id) {
+              return { ...items, PlayDuration: e };
+            } else {
+              return items;
+            }
+          }),
+        };
       } else {
         return item;
       }
     });
-    setAddAsset(newData);
+    const ChnagedObject = { ...Testasset };
+    if (ChnagedObject?.[currentSection]) {
+      ChnagedObject[currentSection] = ChnagedObject[currentSection].map(
+        (items, i) => {
+          if (i == id) {
+            return { ...items, PlayDuration: e };
+          } else {
+            return items;
+          }
+        }
+      );
+    }
+    setTestasset(ChnagedObject);
+    setAddAsset(updated);
   };
-  //   const image = `<svg
-  //   xmlns="http://www.w3.org/2000/svg"
-  //   xmlns:xlink="http://www.w3.org/1999/xlink"
-  //   version="1.1"
-  //   width="476"
-  //   height="268"
-  //   viewBox="0 0 476 268"
-  //   xml:space="preserve"
-  // >
-  //   <desc>Created with Fabric.js 5.3.0</desc>
-  //   <defs></defs>
-  //   <g transform="matrix(1 0 0 1 175.5 75.5)">
-  //     <rect
-  //       style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(217,217,217); fill-rule: nonzero; opacity: 1;"
-  //       x="-175"
-  //       y="-75"
-  //       rx="0"
-  //       ry="0"
-  //       width="350"
-  //       height="150"
-  //     />
-  //   </g>
-  //   <g transform="matrix(1 0 0 1 413 134.5)">
-  //     <rect
-  //       style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(213,227,255); fill-rule: nonzero; opacity: 1;"
-  //       x="-62.5"
-  //       y="-134"
-  //       rx="0"
-  //       ry="0"
-  //       width="125"
-  //       height="268"
-  //     />
-  //   </g>
-  //   <g transform="matrix(1 0 0 1 175.5 210.5)">
-  //     <rect
-  //       style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(125,135,169); fill-rule: nonzero; opacity: 1;"
-  //       x="-175"
-  //       y="-60"
-  //       rx="0"
-  //       ry="0"
-  //       width="350"
-  //       height="120"
-  //     />
-  //   </g>
-  // </svg>`;
   const jsonCanvasData = {
     version: "5.3.0",
     objects: [
       {
+        layoutID: 1,
+        layoutDtlID: 1,
         type: "rect",
         version: "5.3.0",
         originX: "left",
@@ -329,16 +377,16 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         strokeLineCap: "butt",
         strokeDashOffset: 0,
         strokeLineJoin: "miter",
-        strokeUniform: "false",
+        strokeUniform: false,
         strokeMiterLimit: 4,
         scaleX: 1,
         scaleY: 1,
         angle: 0,
-        flipX: "false",
-        flipY: "false",
+        flipX: false,
+        flipY: false,
         opacity: 1,
         shadow: "null",
-        visible: "true",
+        visible: true,
         backgroundColor: "",
         fillRule: "nonzero",
         paintFirst: "fill",
@@ -349,6 +397,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         ry: 0,
       },
       {
+        layoutID: 2,
+        layoutDtlID: 1,
         type: "rect",
         version: "5.3.0",
         originX: "left",
@@ -364,16 +414,16 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         strokeLineCap: "butt",
         strokeDashOffset: 0,
         strokeLineJoin: "miter",
-        strokeUniform: "false",
+        strokeUniform: false,
         strokeMiterLimit: 4,
         scaleX: 1,
         scaleY: 1,
         angle: 0,
-        flipX: "false",
-        flipY: "false",
+        flipX: false,
+        flipY: false,
         opacity: 1,
         shadow: "null",
-        visible: "true",
+        visible: true,
         backgroundColor: "",
         fillRule: "nonzero",
         paintFirst: "fill",
@@ -384,6 +434,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         ry: 0,
       },
       {
+        layoutID: 3,
+        layoutDtlID: 1,
         type: "rect",
         version: "5.3.0",
         originX: "left",
@@ -399,16 +451,16 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         strokeLineCap: "butt",
         strokeDashOffset: 0,
         strokeLineJoin: "miter",
-        strokeUniform: "false",
+        strokeUniform: false,
         strokeMiterLimit: 4,
         scaleX: 1,
         scaleY: 1,
         angle: 0,
-        flipX: "false",
-        flipY: "false",
+        flipX: false,
+        flipY: false,
         opacity: 1,
         shadow: "null",
-        visible: "true",
+        visible: true,
         backgroundColor: "",
         fillRule: "nonzero",
         paintFirst: "fill",
@@ -420,6 +472,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       },
     ],
   };
+
   return (
     <>
       <div className="flex bg-white py-3 border-b border-gray">
@@ -430,7 +483,11 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div className="flex relative justify-center items-center h-[268px] w-[476px]">
-              {compositonData?.lstLayloutModelList?.map((obj, index) => (
+              <RxCrossCircled
+                className="absolute z-50 w-[30px] h-[30px] text-white top-1 right-1"
+                onClick={closeModal}
+              />
+              {jsonCanvasData.objects.map((obj, index) => (
                 <div
                   key={index}
                   style={{
@@ -443,7 +500,9 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                     // Apply other CSS properties as needed
                   }}
                 >
-                  {/* You can add content or additional HTML elements within the div */}
+                  {modalVisible && (
+                    <Carousel items={addAsset[index][index + 1]} />
+                  )}
                 </div>
               ))}
             </div>
@@ -601,7 +660,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
             className="h-20 w-20"
           /> */}
 
-          <div className="lg:flex lg:justify-between sm:block xs:block border-b border-lightgray pb-3  items-center mt-5 relative searchbox">
+          <div className="lg:flex lg:justify-between sm:block xs:block  items-center mt-5">
             <input
               type="text"
               placeholder="Sep 26th, 2023, 12:47 PM "
@@ -614,27 +673,40 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 Preview
               </button>
-              <button className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button
+                onClick={onSave}
+                className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+              >
                 Save
               </button>
             </div>
           </div>
-
-          <div className="flex flex-wrap rounded-xl mt-5 shadow bg-white">
+          <div className="flex flex-wrap rounded-xl mt-8 shadow bg-white">
             <div className="w-full md:w-1/2 border-r-2 border-r-[#E4E6FF] p-5">
               <div className="flex items-center justify-between mb-4">
-                <div className="search-part flex items-center relative ">
-                  <div className="relative searchbox">
+                <div className="search-part flex items-center">
+                  <div className="relative ">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                       <AiOutlineSearch className="w-5 h-5 text-gray " />
                     </span>
                     <input
                       type="text"
-                      placeholder="Search Content relative"
+                      placeholder="Search Content "
                       className="border border-primary rounded-full px-7 py-2.5 block w-full p-4 pl-10"
                     />
                   </div>
-                  <BiFilterAlt className="absolute right-1 bg-gray rounded-full p-1 text-2xl" />
+                  <svg
+                    stroke="currentColor"
+                    fill="currentColor"
+                    strokeWidth="0"
+                    viewBox="0 0 24 24"
+                    className="ml-1 text-lg"
+                    height="1em"
+                    width="1em"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M21 3H5a1 1 0 0 0-1 1v2.59c0 .523.213 1.037.583 1.407L10 13.414V21a1.001 1.001 0 0 0 1.447.895l4-2c.339-.17.553-.516.553-.895v-5.586l5.417-5.417c.37-.37.583-.884.583-1.407V4a1 1 0 0 0-1-1zm-6.707 9.293A.996.996 0 0 0 14 13v5.382l-2 1V13a.996.996 0 0 0-.293-.707L6 6.59V5h14.001l.002 1.583-5.71 5.71z"></path>
+                  </svg>
                 </div>
                 <button
                   onClick={() => setShowAssetModal(true)}
@@ -650,34 +722,35 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
               <div className="overflow-y-auto min-h-[320px] max-h-[320px] rounded-xl mt-8 shadow bg-white mb-6">
                 <table
-                  className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF] selectedlayout-table"
+                  className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
                   cellPadding={20}
                 >
-                  <thead className="sticky top-[-5px]">
+                  <thead>
                     <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                      <th className="text-[#444] text-sm font-semibold p-2">
+                      <th className="text-[#5A5881] py-2.5 text-base font-semibold">
                         Assets Name
                       </th>
-                      <th className="text-[#444] text-sm font-semibold p-2">
+                      <th className="text-[#5A5881] py-2.5 text-base font-semibold">
                         Type
                       </th>
-                      <th className="text-[#444] text-sm font-semibold p-2">
+                      <th className="text-[#5A5881] py-2.5 text-base font-semibold">
                         Tags
                       </th>
                     </tr>
                   </thead>
 
                   <tbody>
-                    {assetData.map((assetdata) => (
+                    {assetData.map((assetdata, index) => (
                       <tr
+                        key={index}
                         className="border-b border-b-[#E4E6FF]"
                         onClick={() =>
                           addSeletedAsset(assetdata, currentSection)
                         }
                       >
-                        <td className="p-2"> {assetdata.name}</td>
+                        <td className="flex"> {assetdata.name}</td>
                         <td className="p-2">PNG</td>
-                        <td className="p-2">Tags, Tags </td>
+                        <td className="p-2 ">Tags, Tags </td>
                       </tr>
                     ))}
                   </tbody>
@@ -705,15 +778,15 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       .fill(2)
                       .map((item, index) => (
                         <button
-                          className={`px-3 ${
+                          className={`px-5 ${
                             currentSection == index + 1
-                              ? "bg-primary text-sm"
-                              : "bg-white text-sm"
+                              ? "bg-primary"
+                              : "bg-white"
                           } ${
                             currentSection == index + 1
-                              ? "text-white text-sm"
-                              : "text-primary text-sm"
-                          }  rounded-full py-2 border border-primary me-3 text-sm`}
+                              ? "text-white"
+                              : "text-primary"
+                          }  rounded-full py-2 border border-primary me-3`}
                           key={index}
                           onClick={() => setcurrentSection(index + 1)}
                         >
@@ -734,95 +807,103 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                   cellPadding={10}
                 >
                   <tbody>
-                    {addAsset.map((item, index) => (
-                      <tr>
-                        <td>
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 w-10 h-10">
-                              <>
-                                {item.categorieType === "OnlineImage" && (
+                    {addAsset.length > 0 &&
+                      addAsset[currentSection - 1] &&
+                      addAsset[currentSection - 1][currentSection]?.map(
+                        (item, index) => (
+                          <tr key={index}>
+                            <td>
+                              <div className="flex items-center">
+                                <div className="flex-shrink-0 w-10 h-10">
                                   <>
-                                    <img
-                                      className="w-full h-full rounded-sm"
-                                      src={item.fileType}
-                                      alt={item.name}
-                                    />
+                                    {item.categorieType === "OnlineImage" && (
+                                      <>
+                                        <img
+                                          className="w-full h-full rounded-sm"
+                                          src={item.fileType}
+                                          alt={item.name}
+                                        />
+                                      </>
+                                    )}
+                                    {item.categorieType === "Image" && (
+                                      <img
+                                        src={item.fileType}
+                                        alt={item.name}
+                                        className="imagebox relative"
+                                      />
+                                    )}
+                                    {item.categorieType === "Video" && (
+                                      <video
+                                        controls
+                                        className="w-full h-full rounded-sm"
+                                      >
+                                        <source
+                                          src={item.fileType}
+                                          type="video/mp4"
+                                        />
+                                        Your browser does not support the video
+                                        tag.
+                                      </video>
+                                    )}
+                                    {item.categorieType === "DOC" && (
+                                      <a
+                                        href={item.fileType}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        {item.name}
+                                      </a>
+                                    )}
                                   </>
-                                )}
-                                {item.categorieType === "Image" && (
-                                  <img
-                                    src={item.fileType}
-                                    alt={item.name}
-                                    className="imagebox relative"
+                                </div>
+                                <div className="ml-3">
+                                  <p className="text-gray-900 whitespace-no-wrap">
+                                    Assets 123
+                                  </p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="text-center w-24">Image</td>
+                            <td className="text-center w-24">
+                              {item?.isEdited ? (
+                                <span className=" px-2 py-2 border border-[#E4E6FF] rounded-full">
+                                  {item.PlayDuration} Sec
+                                </span>
+                              ) : (
+                                <span className="flex  px-2 py-2 border border-[#E4E6FF] rounded-full">
+                                  <input
+                                    className="flex outline-none w-full"
+                                    value={item.PlayDuration}
+                                    onChange={(e) =>
+                                      onChangeSelectedAsset(
+                                        e.target.value,
+                                        index
+                                      )
+                                    }
                                   />
-                                )}
-                                {item.categorieType === "Video" && (
-                                  <video
-                                    controls
-                                    className="w-full h-full rounded-sm"
-                                  >
-                                    <source
-                                      src={item.fileType}
-                                      type="video/mp4"
-                                    />
-                                    Your browser does not support the video tag.
-                                  </video>
-                                )}
-                                {item.categorieType === "DOC" && (
-                                  <a
-                                    href={item.fileType}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                  >
-                                    {item.name}
-                                  </a>
-                                )}
-                              </>
-                            </div>
-                            <div className="ml-3">
-                              <p className="text-gray-900 whitespace-no-wrap">
-                                Assets 123
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="text-center w-24">Image</td>
-                        <td className="text-center w-24">
-                          {item?.isEdited ? (
-                            <span className=" px-2 py-2 border border-[#E4E6FF] rounded-full">
-                              {item.PlayDuration} Sec
-                            </span>
-                          ) : (
-                            <span className="flex  px-2 py-2 border border-[#E4E6FF] rounded-full">
-                              <input
-                                className="flex outline-none w-full"
-                                value={item.PlayDuration}
-                                onChange={(e) =>
-                                  onChangeSelectedAsset(e.target.value, index)
-                                }
-                              />
-                            </span>
-                          )}
-                        </td>
-                        <td className="text-sm flex justify-end w-24">
-                          <a
-                            className="px-2"
-                            onClick={() => onEditSelectedAsset(index)}
-                          >
-                            <img
-                              src="../../../Settings/edit-icon.svg"
-                              className="w-5"
-                            />
-                          </a>
-                          <a onClick={() => deleteSeletedAsset(index)}>
-                            <img
-                              src="../../../Settings/delete-icon.svg"
-                              className="w-5"
-                            />
-                          </a>
-                        </td>
-                      </tr>
-                    ))}
+                                </span>
+                              )}
+                            </td>
+                            <td className="text-sm flex justify-end w-24">
+                              <a
+                                className="px-2"
+                                onClick={() => onEditSelectedAsset(index)}
+                              >
+                                <img
+                                  src="../../../Settings/edit-icon.svg"
+                                  className="w-5"
+                                />
+                              </a>
+                              <a onClick={() => deleteSeletedAsset(index)}>
+                                <img
+                                  src="../../../Settings/delete-icon.svg"
+                                  className="w-5"
+                                />
+                              </a>
+                            </td>
+                          </tr>
+                        )
+                      )}
                   </tbody>
                 </table>
               </div>

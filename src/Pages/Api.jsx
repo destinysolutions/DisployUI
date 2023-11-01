@@ -1,7 +1,8 @@
 export const LOGIN_URL =
   "https://disployapi.thedestinysolutions.com/api/Register/Login";
 export const ADD_REGISTER_URL =
-  "http://192.168.1.219/api/UserMaster/AddOrganizationSignups";
+  "https://disployapi.thedestinysolutions.com/api/Register/AddRegister";
+// "http://192.168.1.115/api/UserMaster/AddOrganizationSignups";
 export const All_REGISTER_URL =
   "https://disployapi.thedestinysolutions.com/api/Register/GetAllRegister";
 export const GET_ALL_CURRENCIES =
@@ -113,5 +114,10 @@ export const DELETE_ALL_TEXT_SCROLL =
   "https://disployapi.thedestinysolutions.com/api/YoutubeApp/DeleteAllTextScroll";
 export const SELECT_BY_ASSET_ID =
   "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/SelectByAssetID";
-//http://192.168.1.219
+export const ADDPLAYLIST =
+  "https://disployapi.thedestinysolutions.com/api/PlayList/AddPlayList";
+
+export const ADDSUBPLAYLIST =
+  "https://disployapi.thedestinysolutions.com/api/PlayList/AddSubPlayList";
+//http://192.168.1.115
 //https://disployapi.thedestinysolutions.com

@@ -33,9 +33,7 @@ import { auth } from "../firebase/firebase";
 import LoginContainer from "./AuthRoutes";
 import UserProfile from "../Pages/Profile/UserProfile";
 import AdminContainer from "./AdminRoutes";
-import AddComposition from "../Components/PlayList/AddComposition";
-import SelectLayout from "../Components/PlayList/SelectedLayout";
-import Composition from "../Components/PlayList/Composition";
+
 import { useDispatch } from "react-redux";
 import { loginUser } from "../Redux/useraction";
 import Youtube from "../Components/Apps/Youtube";
@@ -46,6 +44,9 @@ import TextScrollDetail from "../Components/Apps/TextScrollDetail";
 import WeatherDetail from "../Components/Apps/WeatherDetail";
 
 import Loading from "../Components/Loading";
+import AddComposition from "../Components/Composition/AddComposition";
+import Composition from "../Components/Composition/Composition";
+import SelectLayout from "../Components/Composition/SelectedLayout";
 
 const Routing = () => {
   //for screen resize sidebar open close

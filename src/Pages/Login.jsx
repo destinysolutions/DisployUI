@@ -24,6 +24,7 @@ import {
 } from "../firebase/firebase";
 import { useDispatch } from "react-redux";
 import { loginUser, signUpUser } from "../Redux/useraction";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const Login = () => {
   //using for routing
@@ -39,6 +40,7 @@ const Login = () => {
   const location = useLocation();
   const message = location?.state?.message || null;
   const [messageVisible, setMessageVisible] = useState(false);
+  const [captcha, setcaptcha] = useState("");
   useEffect(() => {
     const hasSeenMessage = localStorage.getItem("hasSeenMessage");
 
@@ -56,6 +58,10 @@ const Login = () => {
     return () => clearTimeout(timeout);
   }, [errorMessge, messageVisible]);
 
+  const handleCaptcha = (value) => {
+    console.log(value);
+    setcaptcha(value);
+  };
   //using for save token
   // const [cookies, setCookie] = useCookies(["token"]);
 
@@ -408,7 +414,13 @@ const Login = () => {
                   </div> */}
 
                   <div>
-                    <p className="ml-1 not-italic text-white font-medium  text-right hover:text-SlateBlue">
+                    <ReCAPTCHA
+                      sitekey="6LeaCucoAAAAAAtAGGm4Npy_vzYNITq2SFYsGbeL"
+                      render="explicit"
+                      onChange={handleCaptcha}
+                    />
+
+                    <p className="ml-1 mt-2 not-italic text-white font-medium  text-right hover:text-SlateBlue">
                       Forgot Password?
                     </p>
                   </div>
@@ -419,6 +431,7 @@ const Login = () => {
                   <button
                     type="submit"
                     className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
+                    disabled={!captcha}
                   >
                     Sign in
                   </button>
