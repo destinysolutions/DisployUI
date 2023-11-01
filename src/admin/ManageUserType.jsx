@@ -41,7 +41,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.219/api/UserMaster/AddUserTypeMaster",
+      url: "http://192.168.1.115/api/UserMaster/AddUserTypeMaster",
       headers: {
         "Content-Type": "application/json",
       },
@@ -87,7 +87,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.219/api/UserMaster/GetAllUserTypeMaster",
+      url: "http://192.168.1.115/api/UserMaster/GetAllUserTypeMaster",
       headers: {},
     };
 
@@ -116,7 +116,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.219/api/UserMaster/AddUserTypeMaster",
+      url: "http://192.168.1.115/api/UserMaster/AddUserTypeMaster",
       headers: {
         "Content-Type": "application/json",
       },

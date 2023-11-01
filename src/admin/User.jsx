@@ -58,7 +58,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.219/api/UserMaster/AddUserMaster",
+      url: "http://192.168.1.115/api/UserMaster/AddUserMaster",
       headers: {
         "Content-Type": "application/json",
       },
@@ -68,6 +68,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
+        console.log(response.data, "sdsdsdsdsd");
         fetchUserData();
         if (!editMode) {
           setUserData((prevData) => [
@@ -90,11 +91,15 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
 
-    // Reset form fields
-    setUserType("");
-    setIsActive(false);
+    setUserName("");
+    setFirstName("");
+    setLastName("");
+    setPhoneNumber("");
+    setEmail("");
+    setSelectedUserType("");
+    setIsActive("");
     setEditMode(false);
-    setEditUserId(null);
+    setEditUserId("");
     setAddUserModal(false);
   };
   const handleEditClick = (user) => {
@@ -103,7 +108,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     setLastName(user.lastName);
     setPhoneNumber(user.phone);
     setEmail(user.email);
-    setUserType(user.userType);
+    setSelectedUserType(user.userType);
     setIsActive(user.isActive);
     setEditMode(true);
     setEditUserId(user.userID);
@@ -114,7 +119,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.219/api/UserMaster/GetAllUserTypeMaster",
+      url: "http://192.168.1.115/api/UserMaster/GetAllUserTypeMaster",
       headers: {},
     };
 
@@ -132,7 +137,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.219/api/UserMaster/GetAllUserMaster",
+      url: "http://192.168.1.115/api/UserMaster/GetAllUserMaster",
       headers: {},
     };
 
@@ -161,7 +166,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.219/api/UserMaster/AddUserMaster",
+      url: "http://192.168.1.115/api/UserMaster/AddUserMaster",
       headers: {
         "Content-Type": "application/json",
       },
@@ -317,7 +322,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
               Users
             </h1>
 
-            {/* <div className="text-right mb-5 mr-5 relative sm:mr-0">
+            <div className="text-right mb-5 mr-5 relative sm:mr-0">
               <AiOutlineSearch className="absolute top-[13px] right-[232px] z-10 text-gray searchicon" />
               <input
                 type="text"
@@ -325,7 +330,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                 className="border border-gray rounded-full px-7 py-2 search-user"
                 onChange={handleFilter}
               />
-            </div> */}
+            </div>
             <div className="lg:flex md:flex sm:block">
               <button
                 onClick={() => setAddUserModal(true)}
@@ -381,20 +386,24 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                           value={phoneNumber}
                           onChange={(e) => setPhoneNumber(e.target.value)}
                         />
-                        <input
-                          type="email"
-                          placeholder="Email"
-                          className="formInput mt-4"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                        <input
-                          type="Password"
-                          placeholder="Password"
-                          className="formInput mt-4"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
+                        {!editMode && (
+                          <>
+                            <input
+                              type="email"
+                              placeholder="Email"
+                              className="formInput mt-4"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                            />
+                            <input
+                              type="Password"
+                              placeholder="Password"
+                              className="formInput mt-4"
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                            />
+                          </>
+                        )}
                         <select
                           onChange={(e) => setSelectedUserType(e.target.value)}
                           value={selectedUserType}
