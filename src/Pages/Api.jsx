@@ -1,7 +1,7 @@
 export const LOGIN_URL =
   "https://disployapi.thedestinysolutions.com/api/Register/Login";
 export const ADD_REGISTER_URL =
-  "https://disployapi.thedestinysolutions.com/api/Register/AddRegister";
+  "http://192.168.1.219/api/UserMaster/AddOrganizationSignups";
 export const All_REGISTER_URL =
   "https://disployapi.thedestinysolutions.com/api/Register/GetAllRegister";
 export const GET_ALL_CURRENCIES =
