@@ -21,7 +21,7 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
             }
           />
           <Route
-            path="/onborded"
+            path="/onborded"  
             element={
               <OnBoding
                 sidebarOpen={sidebarOpen}

@@ -11,6 +11,8 @@ import axios from "axios";
 import DataTable from "react-data-table-component";
 import { CiMenuKebab } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
+import "../Styles/admin.css";
 
 const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [addUserModal, setAddUserModal] = useState(false);
@@ -27,7 +29,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [userName, setUserName] = useState("");
 
   const [password, setPassword] = useState("");
-
+  const [showPassword, setShowPassword] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -69,7 +71,9 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         console.log(response.data, "sdsdsdsdsd");
+
         fetchUserData();
+
         if (!editMode) {
           setUserData((prevData) => [
             ...prevData,
@@ -89,6 +93,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .catch((error) => {
         console.log(error);
+        alert(error.response.data);
       });
 
     setUserName("");
@@ -396,12 +401,23 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
                               onChange={(e) => setEmail(e.target.value)}
                             />
                             <input
-                              type="Password"
+                              type={showPassword ? "text" : "password"}
                               placeholder="Password"
                               className="formInput mt-4"
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}
                             />
+                            <div className="eyeIcon">
+                              {showPassword ? (
+                                <BsFillEyeFill
+                                  onClick={() => setShowPassword(!showPassword)}
+                                />
+                              ) : (
+                                <BsFillEyeSlashFill
+                                  onClick={() => setShowPassword(!showPassword)}
+                                />
+                              )}
+                            </div>
                           </>
                         )}
                         <select

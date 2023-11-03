@@ -1,5 +1,9 @@
 import "../Styles/loginRegister.css";
-import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
+import {
+  BsFillEyeFill,
+  BsFillEyeSlashFill,
+  BsFillInfoCircleFill,
+} from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import { BsMicrosoft } from "react-icons/bs";
 import { BsApple } from "react-icons/bs";
@@ -9,8 +13,6 @@ import { useState } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useEffect } from "react";
-import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { ADD_REGISTER_URL } from "./Api";
 import video from "../../public/DisployImg/iStock-1137481126.mp4";
@@ -26,14 +28,10 @@ const Registration = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   //using registration faild error msg display
-  const [errorMessge, setErrorMessge] = useState(false);
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setErrorMessge(false);
-    }, 5000);
-    return () => clearTimeout(timeout);
-  }, [errorMessge]);
-
+  const [errorMessge, setErrorMessge] = useState("");
+  const [errorMessgeVisible, setErrorMessgeVisible] = useState(false);
+  console.log("errorMessgeVisible:", errorMessgeVisible); // Check if it's true
+  console.log("errorMessge:", errorMessge);
   //using for routing
   const history = useNavigate();
 
@@ -110,7 +108,8 @@ const Registration = () => {
                 })
                 .catch((error) => {
                   console.log(error);
-                  setErrorMessge("Registration failed.");
+                  setErrorMessgeVisible(true);
+                  setErrorMessge(error.response.data);
                 });
             })
             .catch((error) => {
@@ -118,7 +117,9 @@ const Registration = () => {
             });
         })
         .catch((error) => {
-          console.log("error", error);
+          console.log("error", error.message);
+          setErrorMessgeVisible(true);
+          setErrorMessge(error.message);
           var errorMessage = JSON.parse(error.message);
 
           switch (errorMessage.error.message) {
@@ -174,6 +175,7 @@ const Registration = () => {
         })
         .catch((error) => {
           console.log(error);
+          setErrorMessgeVisible(true);
           setErrorMessge("Registration failed.");
         });
     } catch (err) {
@@ -203,6 +205,7 @@ const Registration = () => {
         })
         .catch((error) => {
           console.log(error);
+          setErrorMessgeVisible(true);
           setErrorMessge("Registration failed.");
         });
     } catch (err) {
@@ -239,18 +242,27 @@ const Registration = () => {
   return (
     <>
       {/* registration faild error msg display start*/}
-      {errorMessge && (
-        <Alert
-          className="bg-red w-auto"
-          style={{ position: "fixed", top: "20px", right: "20px" }}
+      {errorMessgeVisible && (
+        <div
+          className="bg-[#fff2cd] px-5 py-3 border-b-2 border-SlateBlue shadow-md"
+          style={{
+            position: "fixed",
+            top: "16px",
+            right: "20px",
+            zIndex: "999999",
+          }}
         >
-          <div className="flex">
+          <div className="flex text-SlateBlue  text-base font-normal items-center relative">
+            <BsFillInfoCircleFill className="mr-1" />
             {errorMessge}
-            <button className="ml-10" onClick={() => setErrorMessge(false)}>
-              <AiOutlineClose className="text-xl" />
+            <button
+              className="absolute top-[-26px] right-[-26px] bg-white rounded-full p-1 "
+              onClick={() => setErrorMessgeVisible(false)}
+            >
+              <AiOutlineClose className="text-xl  text-SlateBlue " />
             </button>
           </div>
-        </Alert>
+        </div>
       )}
       {/* registration faild error msg display end*/}
 

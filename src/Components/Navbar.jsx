@@ -109,6 +109,26 @@ const Navbar = () => {
     auth.signOut();
   };
 
+  const [timeoutId, setTimeoutId] = useState(null);
+
+  useEffect(() => {
+    // Create a timeout that runs after 2000 milliseconds (2 seconds)
+    const timeout = setTimeout(() => {
+      handleSignOut();
+      console.log("Timeout completed!");
+    }, 1800000);
+
+    // Store the timeout ID in state
+    setTimeoutId(timeout);
+
+    // Clean up the timeout when the component unmounts
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, []);
+
   // Parse the createdDate and calculate the trial end date
   const createdDate = new Date(userCreateDate);
   const trialEndDate = new Date(createdDate);
