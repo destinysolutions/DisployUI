@@ -13,35 +13,49 @@ import { MdArrowBackIosNew } from "react-icons/md";
 import {
   CREATE_NEW_FOLDER,
   FetchdataFormFolder,
+  GET_ALL_FILES,
   MOVE_TO_FOLDER,
 } from "../../Pages/Api";
 import { TiFolderOpen } from "react-icons/ti";
 import { FcOpenedFolder } from "react-icons/fc";
 import { CgMoveRight } from "react-icons/cg";
+import { useSelector } from "react-redux";
 const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   NewFolderDialog.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   // folder wise show asset
   const [folderData, setFolderData] = useState([]);
   const [folderNames, setFolderNames] = useState([]);
   const [NestedNewFolder, setNestedNewFolder] = useState([]);
   const location = useLocation();
   const folderId = location.pathname.split("/").pop();
+
   const history = useNavigate();
+  const [folderName, setFolderName] = useState("");
   const loadFolderByID = (folderId) => {
-    axios.get(`${FetchdataFormFolder}?ID=${folderId}`).then((response) => {
-      const fetchedData = response.data.data;
-      setNestedNewFolder(fetchedData);
-      setFolderData(fetchedData);
-      setFolderNames(
-        Array.isArray(fetchedData) &&
-          fetchedData.map((folder) => folder.folderName)
-      );
-      console.log(fetchedData, "fetchedData");
-    });
+    axios
+      .get(`${GET_ALL_FILES}?FolderID=${folderId}`, {
+        headers: { Authorization: authToken },
+      })
+      .then((response) => {
+        const fetchedData = response.data;
+        setNestedNewFolder(fetchedData);
+        const allAssets = [
+          ...(fetchedData.image ? fetchedData.image : []),
+          ...(fetchedData.video ? fetchedData.video : []),
+          ...(fetchedData.doc ? fetchedData.doc : []),
+          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
+          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
+          ...(fetchedData.folder ? fetchedData.folder : []),
+        ];
+        setFolderData(allAssets);
+
+        console.log(fetchedData, "fetchedData");
+      });
   };
 
   useEffect(() => {
@@ -84,10 +98,12 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
 
   // delete data
 
-  const handleMoveToTrash = (assetId) => {
+  const handleMoveToTrash = (assetId, assetType) => {
     let data = JSON.stringify({
-      asset: assetId,
+      assetID: assetId,
+      type: assetType == "Folder" ? "Folder" : "Image",
       operation: "Delete",
+      userID: 0,
     });
 
     let config = {
@@ -95,6 +111,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
       maxBodyLength: Infinity,
       url: MOVE_TO_FOLDER,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
       data: data,
@@ -103,7 +120,9 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        const updateAsset = folderData.filter((asset) => asset.id !== assetId);
+        const updateAsset = folderData.filter(
+          (asset) => asset.assetID !== assetId
+        );
         setFolderData(updateAsset);
       })
       .catch((error) => {
@@ -111,50 +130,57 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const subFolderName = "New Folder";
   const createNestedFolder = () => {
-    let nextFolderName = subFolderName;
+    let baseFolderName = "New Folder";
+    let folderNameToCheck = baseFolderName;
     let counter = 1;
 
-    while (folderNames.includes(nextFolderName)) {
-      counter++;
-      nextFolderName = `${subFolderName} ${counter}`;
-    }
-    let data = JSON.stringify({
-      folderName: subFolderName,
-      operation: "Insert",
-      parentId: folderId,
-    });
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: CREATE_NEW_FOLDER,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: data,
+    const checkFolderNameAndCreate = () => {
+      // Check if the folder name exists in the list of folders
+      if (folderNameExists(folderNameToCheck)) {
+        counter++;
+        folderNameToCheck = `${baseFolderName} ${counter}`;
+        checkFolderNameAndCreate(); // Recursively check the next name
+      } else {
+        // The folder name doesn't exist, so create it
+        const formData = new FormData();
+        formData.append("parentID", folderId);
+        formData.append("operation", "Insert");
+        formData.append("folderName", folderNameToCheck);
+        axios
+          .post(CREATE_NEW_FOLDER, formData, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: authToken,
+            },
+          })
+          .then((response) => {
+            console.log("Folder created:", response.data);
+            loadFolderByID(folderId);
+          })
+          .catch((error) => {
+            console.error("Error creating folder:", error);
+          });
+      }
     };
 
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(response.data);
-        loadFolderByID(folderId);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // Function to check if the folder name already exists in the data
+    const folderNameExists = (name) => {
+      return NestedNewFolder.folder.some((folder) => folder.assetName === name);
+    };
+
+    checkFolderNameAndCreate();
   };
   const handleMoveTo = (folderId) => {
     selectedItems.forEach((item) => {
-      moveDataToFolder(item.id, folderId);
+      moveDataToFolder(item.assetID, folderId, item.assetType);
     });
   };
-  const moveDataToFolder = async (dataId, folderId) => {
+  const moveDataToFolder = async (dataId, folderId, assetType) => {
     let data = JSON.stringify({
       folderID: folderId,
-      asset: dataId,
+      assetID: dataId,
+      type: assetType == "Folder" ? "Folder" : "Image",
       operation: "Insert",
     });
 
@@ -163,6 +189,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
       maxBodyLength: Infinity,
       url: MOVE_TO_FOLDER,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
       data: data,
@@ -171,7 +198,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     try {
       const response = await axios.request(config);
       console.log(JSON.stringify(response.data));
-
+      loadFolderByID(folderId);
       updateFolderContent(folderId);
     } catch (error) {
       console.log(error);
@@ -212,20 +239,19 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Handle going back to the parent folder
   const navigateBack = () => {
-    if (folderData.length > 0) {
-      const parentFolderId = folderData[0].parentFolderId;
+    if (
+      NestedNewFolder &&
+      NestedNewFolder.perentIDData &&
+      NestedNewFolder.perentIDData.length > 0
+    ) {
+      const parentFolderId = NestedNewFolder.perentIDData[0].perentID;
       console.log(parentFolderId, "parentFolderId");
       if (parentFolderId) {
-        console.log(parentFolderId, "parentFolderId");
-        // If there is a parent folder, navigate to it
         history(`/NewFolderDialog/${parentFolderId}`);
-        //history("/assets");
       } else {
-        // If there is no parent folder, navigate to the main assets page
         history("/assets");
       }
     } else {
-      // Handle the case where folderData is empty (e.g., on the root page)
       history("/assets");
     }
   };
@@ -233,13 +259,10 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   // edit folder Name
   const [editMode, setEditMode] = useState(null);
 
-  const handleKeyDown = (e, folderID, index) => {
+  const handleKeyDown = (e, folderID) => {
     if (e.key === "Enter") {
-      // Save the folder name on Enter key press
-      const newName = folderNames[index];
-      saveFolderName(folderID, newName);
+      saveFolderName(folderID, folderName);
     } else if (e.key === "Escape") {
-      // Cancel editing on Escape key press
       setEditMode(null);
     }
   };
@@ -251,24 +274,14 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
       formData.append("folderName", newName);
 
       const response = await axios.post(CREATE_NEW_FOLDER, formData, {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: authToken,
+          "Content-Type": "application/json",
+        },
       });
       const updatedFolder = response.data.data.model;
-      // Create a new array with updated folder names
-      const updatedNewFolder = NestedNewFolder.map((item) => {
-        if (item.folderID === updatedFolder.folderID) {
-          // Replace the folder name for the specific folder ID
-          return {
-            ...item,
-            folderName: updatedFolder.folderName,
-          };
-        } else {
-          return item;
-        }
-      });
+      loadFolderByID(folderID);
 
-      // Set the updated array as the new state
-      setNestedNewFolder(updatedNewFolder);
       console.log("Folder name updated:", updatedFolder);
     } catch (error) {
       console.error("Error updating folder name:", error);
@@ -312,48 +325,48 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className=" page-content grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section mt-4">
                   {Array.isArray(folderData) &&
                     folderData.map((folderAsset, index) => (
-                      <div key={folderAsset.id}>
+                      <div key={folderAsset.assetID}>
                         <div className="relative assetsbox">
-                          {folderAsset.categorieType === "OnlineImage" && (
+                          {folderAsset.assetType === "OnlineImage" && (
                             <img
-                              src={folderAsset.fileType}
-                              alt={folderAsset.name}
+                              src={folderAsset.assetFolderPath}
+                              alt={folderAsset.assetName}
                               className="imagebox relative opacity-1 w-full rounded-2xl"
                             />
                           )}
 
-                          {folderAsset.categorieType === "OnlineVideo" && (
+                          {folderAsset.assetType === "OnlineVideo" && (
                             <video
                               controls
                               className="w-full rounded-2xl relative imagebox"
                             >
                               <source
-                                src={folderAsset.fileType}
+                                src={folderAsset.assetFolderPath}
                                 type="video/mp4"
                               />
                               Your browser does not support the video tag.
                             </video>
                           )}
-                          {folderAsset.categorieType === "Image" && (
+                          {folderAsset.assetType === "Image" && (
                             <img
-                              src={folderAsset.fileType}
-                              alt={folderAsset.name}
+                              src={folderAsset.assetFolderPath}
+                              alt={folderAsset.assetName}
                               className="imagebox relative opacity-1 w-full rounded-2xl"
                             />
                           )}
-                          {folderAsset.categorieType === "Video" && (
+                          {folderAsset.assetType === "Video" && (
                             <video
                               controls
                               className="w-full rounded-2xl relative h-56  list-none imagebox"
                             >
                               <source
-                                src={folderAsset.fileType}
+                                src={folderAsset.assetFolderPath}
                                 type="video/mp4"
                               />
                               Your browser does not support the video tag.
                             </video>
                           )}
-                          {folderAsset.categorieType === "DOC" && (
+                          {folderAsset.assetType === "DOC" && (
                             <a
                               href={folderAsset.fileType}
                               target="_blank"
@@ -363,52 +376,54 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                               {folderAsset.name}
                             </a>
                           )}
-                          {folderAsset.type === "Folder" && (
-                            <li
+                          {folderAsset.assetType === "Folder" && (
+                            <div
                               onDragOver={handleDragOver}
                               onDrop={(event) =>
-                                handleDrop(event, folderAsset.id)
+                                handleDrop(event, folderAsset.assetID)
                               }
                               className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col"
                             >
                               <FcOpenedFolder
                                 className="text-8xl text-center mx-auto"
-                                onClick={() => navigateToFolder(folderAsset.id)}
+                                onClick={() =>
+                                  navigateToFolder(folderAsset.assetID)
+                                }
                               />
 
-                              {editMode === folderAsset.id ? (
+                              {editMode === folderAsset.assetID ? (
                                 <input
                                   type="text"
-                                  value={folderNames[index]}
+                                  value={folderName}
                                   className="w-full"
-                                  onChange={(e) => {
-                                    const newFolderNames = [...folderNames];
-                                    newFolderNames[index] = e.target.value;
-                                    setFolderNames(newFolderNames);
-                                  }}
+                                  onChange={(e) =>
+                                    setFolderName(e.target.value)
+                                  }
                                   onBlur={() => {
                                     saveFolderName(
-                                      folderAsset.id,
-                                      folderNames[index]
+                                      folderAsset.assetID,
+                                      folderName
                                     );
                                     setEditMode(null);
                                   }}
                                   onKeyDown={(e) =>
-                                    handleKeyDown(e, folderAsset.id, index)
+                                    handleKeyDown(e, folderAsset.assetID, index)
                                   }
                                   autoFocus
                                 />
                               ) : (
-                                <span
-                                  onClick={() => {
-                                    setEditMode(folderAsset.id);
-                                  }}
-                                  className="cursor-pointer"
-                                >
-                                  {folderNames[index]}
-                                </span>
+                                <>
+                                  <span
+                                    onClick={() => {
+                                      setEditMode(folderAsset.assetID);
+                                    }}
+                                    className="cursor-pointer"
+                                  >
+                                    {folderAsset.assetName}
+                                  </span>
+                                </>
                               )}
-                            </li>
+                            </div>
                           )}
 
                           <div
@@ -417,19 +432,19 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                             onMouseLeave={() => setHoveredTabIcon(null)}
                             onClick={() => handleIconClick(folderAsset)}
                           >
-                            {folderAsset.categorieType === "Image" && (
+                            {folderAsset.assetType === "Image" && (
                               <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
                             )}
 
-                            {folderAsset.categorieType === "Video" && (
+                            {folderAsset.assetType === "Video" && (
                               <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
                             )}
 
-                            {folderAsset.categorieType === "OnlineImage" && (
+                            {folderAsset.assetType === "OnlineImage" && (
                               <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
                             )}
 
-                            {folderAsset.categorieType === "OnlineVideo" && (
+                            {folderAsset.assetType === "OnlineVideo" && (
                               <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
                             )}
                           </div>
@@ -454,7 +469,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                                   {folderAsset.createdDate}
                                 </h6>
                                 <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                                  {folderAsset.categorieType}
+                                  {folderAsset.assetType}
                                 </span>
                                 <span>,</span>
                                 <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
@@ -492,7 +507,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                                       <MdPlaylistPlay className="mr-2 text-lg" />
                                       Add to Playlist
                                     </li>
-                                    {folderAsset.categorieType === "Image" && (
+                                    {folderAsset.assetType === "Image" && (
                                       <li className="flex text-sm items-center">
                                         <FiDownload className="mr-2 text-lg" />
                                         <a href={folderAsset.fileType} download>
@@ -501,7 +516,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                                       </li>
                                     )}
 
-                                    {folderAsset.categorieType === "Video" && (
+                                    {folderAsset.assetType === "Video" && (
                                       <li className="flex text-sm items-center">
                                         <FiDownload className="mr-2 text-lg" />
                                         <a href={folderAsset.fileType} download>
@@ -509,7 +524,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                                         </a>
                                       </li>
                                     )}
-                                    {folderAsset.categorieType ===
+                                    {folderAsset.assetType ===
                                       "OnlineImage" && (
                                       <li className="flex text-sm items-center">
                                         <FiDownload className="mr-2 text-lg" />
@@ -519,7 +534,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                                       </li>
                                     )}
 
-                                    {folderAsset.categorieType ===
+                                    {folderAsset.assetType ===
                                       "OnlineVideo" && (
                                       <li className="flex text-sm items-center">
                                         <FiDownload className="mr-2 text-lg" />
@@ -528,7 +543,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                                         </a>
                                       </li>
                                     )}
-                                    {folderAsset.categorieType === "DOC" && (
+                                    {folderAsset.assetType === "DOC" && (
                                       <li className="flex text-sm items-center">
                                         <FiDownload className="mr-2 text-lg" />
                                         <a href={folderAsset.fileType} download>
@@ -550,17 +565,17 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                                           {isMoveToOpen && (
                                             <div className="move-to-dropdown">
                                               <ul>
-                                                {NestedNewFolder.map(
+                                                {NestedNewFolder.folder.map(
                                                   (folder) => (
-                                                    <li key={folder.id}>
+                                                    <li key={folder.assetID}>
                                                       <button
                                                         onClick={() =>
                                                           handleMoveTo(
-                                                            folder.id
+                                                            folder.assetID
                                                           )
                                                         }
                                                       >
-                                                        {folder.folderName}
+                                                        {folder.assetName}
                                                       </button>
                                                     </li>
                                                   )
@@ -574,7 +589,10 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                                     <li>
                                       <button
                                         onClick={() =>
-                                          handleMoveToTrash(folderAsset.id)
+                                          handleMoveToTrash(
+                                            folderAsset.assetID,
+                                            folderAsset.assetType
+                                          )
                                         }
                                         className="flex text-sm items-center"
                                       >

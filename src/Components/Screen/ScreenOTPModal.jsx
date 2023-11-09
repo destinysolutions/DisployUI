@@ -4,7 +4,6 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { OTP_VERIFY } from "../../Pages/Api";
 import { useRef } from "react";
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 const ScreenOTPModal = ({ setShowOTPModal }) => {
@@ -14,6 +13,8 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
   const otpRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
 
   const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
+
   const handleOtpChange = (index, value) => {
     const updatedOtpValues = [...otpValues];
     updatedOtpValues[index] = value;
@@ -28,7 +29,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
   const verifyOTP = () => {
     let data = JSON.stringify({
       otp: completeOtp,
-      userID: UserData.user?.userID,
+      //userID: UserData.user?.userID,
     });
 
     let config = {
@@ -36,6 +37,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
       url: OTP_VERIFY,
       headers: {
         "Content-Type": "application/json",
+        Authorization: authToken,
       },
       data: data,
     };
@@ -107,15 +109,10 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                       </div>
                     ))}
                   </div>
-                  <div className="flex justify-center text-center text-red text-xl mt-2 font-semibold">
+                  <div className="flex justify-center text-center text-red text-xl my-2 font-semibold">
                     {errorMessge}
                   </div>
-                  <div className="flex justify-center text-center my-2">
-                    <input type="checkbox" />
-                    <p className="ml-2 text-[#515151] text-sm">
-                      Start screen in Preview Mode
-                    </p>
-                  </div>
+
                   <div className="flex justify-center text-center">
                     <p className="text-[#515151] text-sm max-w-lg">
                       To get pair code, please install Disploy app on your

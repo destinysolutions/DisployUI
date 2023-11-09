@@ -13,6 +13,7 @@ import {
   GET_ALL_SCHEDULE,
   GET_ALL_SCREEN_ORIENTATION,
   GET_ALL_SCREEN_RESOLUTION,
+  GET_SCREEN_TIMEZONE,
   GET_SCREEN_TYPE,
   GET_TIMEZONE,
   UPDATE_NEW_SCREEN,
@@ -31,12 +32,16 @@ import { BsFillInfoCircleFill, BsTags } from "react-icons/bs";
 import { HiDotsVertical } from "react-icons/hi";
 import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
 import { VscCalendar } from "react-icons/vsc";
+import { useSelector } from "react-redux";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
 
   const [tagName, setTagName] = useState("");
 
@@ -92,12 +97,16 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     // Define an array of axios requests
     const axiosRequests = [
-      axios.get(GET_ALL_FILES),
-      axios.get(GET_SCREEN_TYPE),
-      axios.get(GET_ALL_SCREEN_ORIENTATION),
-      axios.get(GET_ALL_SCREEN_RESOLUTION),
-      axios.get(GET_TIMEZONE),
-      axios.get(GET_ALL_SCHEDULE),
+      axios.get(GET_ALL_FILES, { headers: { Authorization: authToken } }),
+      axios.get(GET_SCREEN_TYPE, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_SCREEN_ORIENTATION, {
+        headers: { Authorization: authToken },
+      }),
+      axios.get(GET_ALL_SCREEN_RESOLUTION, {
+        headers: { Authorization: authToken },
+      }),
+      axios.get(GET_SCREEN_TIMEZONE, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_SCHEDULE, { headers: { Authorization: authToken } }),
     ];
 
     // Use Promise.all to send all requests concurrently
@@ -121,7 +130,10 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
         ];
-
+        console.log(
+          timezoneResponse.data,
+          "screenOrientationResponse.data.data"
+        );
         setAssetData(allAssets);
         setGetSelectedScreenTypeOption(screenTypeResponse.data.data);
         setScreenOrientation(screenOrientationResponse.data.data);
@@ -173,19 +185,30 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         screenOrientation: selectScreenOrientation,
         screenResolution: selectScreenResolution,
         timeZone: selectedTimezoneName,
-        screenType: selectedScreenTypeOption,
+        //mediaType: selectedScreenTypeOption,
         tags: tagName,
         screenName: screenName,
-        moduleID: moduleID,
+        //mediaDetailID: moduleID,
         operation: "Update",
       });
-
+      console.log(
+        "SDADS",
+        screen_id,
+        selectScreenOrientation,
+        selectScreenResolution,
+        selectedTimezoneName,
+        selectedScreenTypeOption,
+        tagName,
+        screenName,
+        moduleID
+      );
       let config = {
         method: "post",
         maxBodyLength: Infinity,
         url: UPDATE_NEW_SCREEN,
         headers: {
           "Content-Type": "application/json",
+          Authorization: authToken,
         },
         data: data,
       };
@@ -242,11 +265,11 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4">
               New Screens Details
             </h1>
-            <div className="lg:flex md:flex sm:block">
+            {/* <div className="lg:flex md:flex sm:block">
               <button className="flex align-middle border-SlateBlue bg-SlateBlue text-white items-center border rounded-full px-8 py-2 text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 hover:border-white">
                 Edit
               </button>
-            </div>
+            </div> */}
           </div>
           <div className="shadow-md lg:p-5  md:p-5 sm:p:2 rounded-md bg-white flex items-center justify-between mt-7 w-full">
             <form className="w-full newscreen-details">
@@ -302,8 +325,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         >
                           {getTimezone.map((timezone) => (
                             <option
-                              value={timezone.timeZoneName}
-                              key={timezone.timeZoneId}
+                              value={timezone.timeZoneID}
+                              key={timezone.timeZoneID}
                             >
                               {timezone.timeZoneName}
                             </option>
@@ -320,26 +343,23 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       <td>
                         <div className="border border-[#D5E3FF] rounded w-full px-3 py-2 lg:flex  md:flex sm:block xs:block flex-wrap align-center">
                           {getScreenOrientation.map((option) => (
-                            <div
-                              key={option.screenOrientationId}
-                              className="flex"
-                            >
+                            <div key={option.orientationID} className="flex">
                               <input
                                 type="radio"
-                                value={option.screenOrientationId}
+                                value={option.orientationID}
                                 checked={
-                                  option.screenOrientationId ===
+                                  option.orientationID ===
                                   selectScreenOrientation
                                 }
                                 onChange={(e) =>
                                   handleScreenOrientationRadio(
                                     e,
-                                    option.screenOrientationId
+                                    option.orientationID
                                   )
                                 }
                               />
                               <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                                {option.screenOrientation}
+                                {option.orientationName}
                               </label>
                             </div>
                           ))}
@@ -355,23 +375,23 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       <td>
                         <div className="border border-[#D5E3FF] rounded w-full px-3 py-2 flex align-center lg:flex  md:flex sm:block xs:block flex-wrap align-center">
                           {getScreenResolution.map((option) => (
-                            <div key={option.screenResolutionId}>
+                            <div key={option.resolutionsID}>
                               <input
                                 type="radio"
-                                value={option.screenResolutionId}
+                                value={option.resolutionsID}
                                 checked={
-                                  option.screenResolutionId ===
+                                  option.resolutionsID ===
                                   selectScreenResolution
                                 }
                                 onChange={(e) =>
                                   handleScreenResolutionRadio(
                                     e,
-                                    option.screenResolutionId
+                                    option.resolutionsID
                                   )
                                 }
                               />
                               <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                                {option.screenResolutionName}
+                                {option.resolutionsName}
                               </label>
                             </div>
                           ))}
@@ -393,10 +413,10 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           <option value="">Select Type</option>
                           {getSelectedScreenTypeOption.map((option) => (
                             <option
-                              key={option.screenTypeId}
-                              value={option.screenTypeId}
+                              key={option.mediaTypeId}
+                              value={option.mediaTypeId}
                             >
-                              {option.screenTypeName}
+                              {option.mediaTypeName}
                             </option>
                           ))}
                         </select>

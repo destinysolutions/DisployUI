@@ -123,14 +123,14 @@
 }
 
 button.tabshow.tabassactive {
-  background: #e4e4e4;
+  background: #e4aa07;
   padding: 10px 15px;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
 }
 
 button.tabshow.tabassactive.right {
-  background: #e4e4e4;
+  background: #e4aa07;
   padding: 10px 15px;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;

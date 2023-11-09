@@ -34,12 +34,17 @@ import {
   SELECT_BY_ASSET_ID,
 } from "../../Pages/Api";
 import { FcOpenedFolder } from "react-icons/fc";
+import { useSelector } from "react-redux";
+import moment from "moment";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const history = useNavigate();
   const [asstab, setTogglebtn] = useState(1);
   const updatetoggle = (id) => {
@@ -100,21 +105,26 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [originalData, setOriginalData] = useState([]);
   const [gridData, setGridData] = useState([]);
   const [tableData, setTableData] = useState([]);
+  const [newFolder, setNewfolder] = useState([]);
+  const [folderName, setFolderName] = useState("");
 
   const fetchData = () => {
     axios
-      .get(GET_ALL_FILES)
+      .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
       .then((response) => {
         const fetchedData = response.data;
         console.log(fetchedData);
         setOriginalData(fetchedData);
+
         const allAssets = [
           ...(fetchedData.image ? fetchedData.image : []),
           ...(fetchedData.video ? fetchedData.video : []),
           ...(fetchedData.doc ? fetchedData.doc : []),
           ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
+          ...(fetchedData.folder ? fetchedData.folder : []),
         ];
+
         const sortedAssets = allAssets.sort((a, b) => {
           return new Date(b.createdDate) - new Date(a.createdDate);
         });
@@ -181,29 +191,40 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [trashData, setTrashData] = useState([]);
   const handelDeletedata = (id) => {
-    const deletedItem = gridData.find((item) => item.id === id);
+    const deletedItem = gridData.find((item) => item.assetID === id);
 
     if (deletedItem) {
       const formData = new FormData();
-      formData.append("Id", id);
-      formData.append("operation", "Delete");
-      formData.append("CategorieType", deletedItem.categorieType);
+      formData.append("AssetID", id);
+      formData.append("Operation", "Delete");
+      formData.append("IsActive", "true");
+      formData.append("IsDelete", "false");
+      formData.append("FolderID", "0");
+      formData.append("UserID", "0");
+      formData.append("AssetType", "Image");
 
       axios
-        .post(ALL_FILES_UPLOAD, formData)
+        .post(ALL_FILES_UPLOAD, formData, {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "multipart/form-data",
+          },
+        })
         .then((response) => {
           const deletedWithInfo = {
             id: id,
             deletedDate: new Date(),
-            name: deletedItem.name,
-            categorieType: deletedItem.categorieType,
-            fileType: deletedItem.fileType,
+            name: deletedItem.assetName,
+            categorieType: deletedItem.assetType,
+            fileType: deletedItem.assetFolderPath,
             fileSize: deletedItem.fileSize,
           };
 
           setTrashData([...trashData, deletedWithInfo]);
 
-          const updatedGridData = gridData.filter((item) => item.id !== id);
+          const updatedGridData = gridData.filter(
+            (item) => item.assetID !== id
+          );
           setGridData(updatedGridData);
           setTableData(updatedGridData);
         })
@@ -279,62 +300,48 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  // New folder
-  const [newFolder, setNewfolder] = useState([]);
-  const [folderNames, setFolderNames] = useState([]);
-
-  const folderName = "New Folder";
-
-  const fetchFolderDetails = () => {
-    axios
-      .get(GET_ALL_NEW_FOLDER)
-      .then((response) => {
-        const fetchedData = response.data.data.filter(
-          (folder) => !folder.deleted
-        );
-        setNewfolder(fetchedData);
-        console.log(response.data.data, "res");
-        setFolderNames(fetchedData.map((folder) => folder.folderName));
-
-        console.log(fetchedData);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  useEffect(() => {
-    fetchFolderDetails();
-  }, []);
-
   const createFolder = () => {
-    let nextFolderName = folderName;
+    let baseFolderName = "New Folder";
+    let folderNameToCheck = baseFolderName;
     let counter = 1;
 
-    while (folderNames.includes(nextFolderName)) {
-      counter++;
-      nextFolderName = `${folderName} ${counter}`;
-    }
-    const formData = new FormData();
-    formData.append("operation", "Insert");
-    formData.append("folderName", nextFolderName);
-    axios
-      .post(CREATE_NEW_FOLDER, formData, {
-        headers: { "Content-Type": "application/json" },
-      })
-      .then((response) => {
-        console.log("Folder created:", response.data);
+    const checkFolderNameAndCreate = () => {
+      // Check if the folder name exists in the list of folders
+      if (folderNameExists(folderNameToCheck)) {
+        counter++;
+        folderNameToCheck = `${baseFolderName} ${counter}`;
+        checkFolderNameAndCreate(); // Recursively check the next name
+      } else {
+        // The folder name doesn't exist, so create it
+        const formData = new FormData();
+        formData.append("operation", "Insert");
+        formData.append("folderName", folderNameToCheck);
+        axios
+          .post(CREATE_NEW_FOLDER, formData, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: authToken,
+            },
+          })
+          .then((response) => {
+            console.log("Folder created:", response.data);
+            fetchData();
+          })
+          .catch((error) => {
+            console.error("Error creating folder:", error);
+          });
+      }
+    };
 
-        fetchFolderDetails();
-      })
-      .catch((error) => {
-        console.error("Error creating folder:", error);
-      });
+    // Function to check if the folder name already exists in the data
+    const folderNameExists = (name) => {
+      return originalData.folder.some((folder) => folder.assetName === name);
+    };
+
+    checkFolderNameAndCreate();
   };
-
   //Delete new folder
   const deleteFolder = (folderID) => {
-    console.log(folderID, "folderID");
     const data = JSON.stringify({
       folderID: folderID,
       operation: "Delete",
@@ -343,12 +350,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .post(CREATE_NEW_FOLDER, data, {
         headers: {
+          Authorization: authToken,
           "Content-Type": "application/json",
         },
       })
       .then((response) => {
         console.log(response, "response");
-        fetchFolderDetails();
+        fetchData();
       })
       .catch((error) => {
         console.log(error);
@@ -401,19 +409,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   // edit folder Name
   const [editMode, setEditMode] = useState(null);
 
-  const handleKeyDown = (e, folderID, index) => {
+  const handleKeyDown = (e, folderID) => {
     if (e.key === "Enter") {
-      // Save the folder name on Enter key press
-      const newName = folderNames[index];
-      saveFolderName(folderID, newName);
+      saveFolderName(folderID, folderName);
     } else if (e.key === "Escape") {
-      // Cancel editing on Escape key press
       setEditMode(null);
     }
   };
+
   const updateFolderNameInAPI = async (folderID, newName) => {
-    console.log(folderID, "folderIDfolderID");
-    console.log(newName, "newNamenewName");
     try {
       const formData = new FormData();
       formData.append("folderID", folderID);
@@ -421,22 +425,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       formData.append("folderName", newName);
 
       const response = await axios.post(CREATE_NEW_FOLDER, formData, {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          Authorization: authToken,
+          "Content-Type": "application/json",
+        },
       });
+
       const updatedFolder = response.data.data.model;
-
-      const updatedNewFolder = newFolder.map((item) => {
-        if (item.folderID === updatedFolder.folderID) {
-          return {
-            ...item,
-            folderName: updatedFolder.folderName,
-          };
-        } else {
-          return item;
-        }
-      });
-
-      setNewfolder(updatedNewFolder);
+      fetchData();
       console.log("Folder name updated:", updatedFolder);
     } catch (error) {
       console.error("Error updating folder name:", error);
@@ -455,10 +451,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const toggleMoveTo = () => {
     setIsMoveToOpen(!isMoveToOpen);
   };
-  const moveDataToFolder = async (dataId, folderId) => {
+  const moveDataToFolder = async (dataId, folderId, assetType) => {
     let data = JSON.stringify({
       folderID: folderId,
-      asset: dataId,
+      assetID: dataId,
+      type: assetType == "Folder" ? "Folder" : "Image",
       operation: "Insert",
     });
 
@@ -467,6 +464,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       maxBodyLength: Infinity,
       url: MOVE_TO_FOLDER,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
       data: data,
@@ -483,11 +481,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const handleMoveTo = (folderId) => {
     selectedItems.forEach((item) => {
-      moveDataToFolder(item.id, folderId);
-
-      setGridData((prevGridData) =>
-        prevGridData.filter((image) => image.id !== item.id)
-      );
+      moveDataToFolder(item.assetID, folderId, item.assetType);
     });
   };
   const updateFolderContent = (folderId) => {
@@ -573,12 +567,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     </button>
                   </li>
                 </ul>
-                <button onClick={handleSelectAll}>
+                <button
+                  onClick={handleSelectAll}
+                  className="flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                >
                   <input
                     type="checkbox"
-                    className=" mx-1 w-6 h-5 mt-2"
-                    checked={selectAll}
+                    className="w-6 h-5"
                     readOnly
+                    checked={selectAll}
                   />
                 </button>
 
@@ -637,109 +634,60 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   "page-content grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section"
                 }
               >
-                {/*new folder*/}
-
-                {newFolder.map((folder, index) => {
-                  return (
-                    <li
-                      key={`folder-${folder.folderID}`}
-                      onDragOver={handleDragOver}
-                      onDrop={(event) => handleDrop(event, folder.folderID)}
-                      className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col"
-                    >
-                      <FcOpenedFolder
-                        className="text-8xl text-center mx-auto"
-                        onClick={() => navigateToFolder(folder.folderID)}
-                      />
-
-                      {editMode === folder.folderID ? (
-                        <input
-                          type="text"
-                          value={folderNames[index]}
-                          className="w-full"
-                          onChange={(e) => {
-                            const newFolderNames = [...folderNames];
-                            newFolderNames[index] = e.target.value;
-                            setFolderNames(newFolderNames);
-                            console.log(newFolderNames);
-                          }}
-                          onBlur={() => {
-                            saveFolderName(folder.folderID, folderNames[index]);
-                            setEditMode(null);
-                          }}
-                          onKeyDown={(e) =>
-                            handleKeyDown(e, folder.folderID, index)
-                          }
-                          autoFocus
-                        />
-                      ) : (
-                        <>
-                          <span
-                            onClick={() => {
-                              setEditMode(folder.folderID);
-                            }}
-                            className="cursor-pointer"
-                          >
-                            {folderNames[index]}
-                          </span>
-                          <button
-                            onClick={() => toggleAssetsdw(folder.folderID)}
-                            className="absolute right-4 top-2"
-                          >
-                            <BsThreeDots className="text-2xl relative" />
-                          </button>
-                          {openAssetsdwId === folder.folderID && (
-                            <div className="assetsdw">
-                              <ul>
-                                <li className="flex text-sm items-center">
-                                  <FiUpload className="mr-2 text-lg" />
-                                  Set to Screen
-                                </li>
-                                <li className="flex text-sm items-center">
-                                  <MdPlaylistPlay className="mr-2 text-lg" />
-                                  Add to Playlist
-                                </li>
-
-                                <li className="flex text-sm items-center">
-                                  <FiDownload className="mr-2 text-lg" />
-                                  <a href="#">Download</a>
-                                </li>
-                                <li className="flex text-sm items-center">
-                                  <CgMoveRight className="mr-2 text-lg" />
-                                  Move to
-                                </li>
-                                <li>
-                                  <button
-                                    className="flex text-sm items-center"
-                                    onClick={() =>
-                                      deleteFolder(folder.folderID)
-                                    }
-                                  >
-                                    <RiDeleteBin5Line className="mr-2 text-lg" />
-                                    Move to Trash
-                                  </button>
-                                </li>
-                              </ul>
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </li>
-                  );
-                })}
-
                 {gridData.length > 0 ? (
                   gridData.map((item, index) => (
                     <li
-                      key={`tabitem-grid-${item.id}-${index}`}
+                      key={`tabitem-grid-${item.assetID}-${index}`}
                       draggable
-                      onDragStart={(event) => handleDragStart(event, item.id)}
+                      onDragStart={(event) =>
+                        handleDragStart(event, item.assetID)
+                      }
                       className="relative list-none assetsbox"
                     >
-                      {item.categorieType === "Image" && (
+                      {item.assetType === "Folder" && (
+                        <div
+                          onDragOver={handleDragOver}
+                          onDrop={(event) => handleDrop(event, item.assetID)}
+                          className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col"
+                        >
+                          <FcOpenedFolder
+                            className="text-8xl text-center mx-auto"
+                            onClick={() => navigateToFolder(item.assetID)}
+                          />
+
+                          {editMode === item.assetID ? (
+                            <input
+                              type="text"
+                              value={folderName}
+                              className="w-full"
+                              onChange={(e) => setFolderName(e.target.value)}
+                              onBlur={() => {
+                                saveFolderName(item.assetID, folderName);
+                                setEditMode(null);
+                              }}
+                              onKeyDown={(e) =>
+                                handleKeyDown(e, item.assetID, index)
+                              }
+                              autoFocus
+                            />
+                          ) : (
+                            <>
+                              <span
+                                onClick={() => {
+                                  setEditMode(item.assetID);
+                                }}
+                                className="cursor-pointer"
+                              >
+                                {item.assetName}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      )}
+                      {item.assetType === "Image" && (
                         <img
-                          src={item.fileType}
-                          alt={item.name}
+                          src={item.assetFolderPath}
+                          alt={item.assetName}
                           className={`imagebox relative ${
                             selectedItems.includes(item)
                               ? "active opacity-1 w-full rounded-2xl"
@@ -748,10 +696,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         />
                       )}
 
-                      {item.categorieType === "OnlineImage" && (
+                      {item.assetType === "OnlineImage" && (
                         <img
-                          src={item.fileType}
-                          alt={item.name}
+                          src={item.assetFolderPath}
+                          alt={item.assetName}
                           className={`imagebox relative ${
                             selectedItems.includes(item)
                               ? "active opacity-1 w-full rounded-2xl"
@@ -760,22 +708,22 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         />
                       )}
 
-                      {item.categorieType === "OnlineVideo" && (
+                      {item.assetType === "OnlineVideo" && (
                         <video
                           controls
                           className="w-full rounded-2xl relative h-56"
                         >
-                          <source src={item.fileType} type="video/mp4" />
+                          <source src={item.assetFolderPath} type="video/mp4" />
                           Your browser does not support the video tag.
                         </video>
                       )}
 
-                      {item.categorieType === "Video" && (
+                      {item.assetType === "Video" && (
                         <video
                           controls
                           className="w-full rounded-2xl relative h-56"
                         >
-                          <source src={item.fileType} type="video/mp4" />
+                          <source src={item.assetFolderPath} type="video/mp4" />
                           Your browser does not support the video tag.
                         </video>
                       )}
@@ -786,19 +734,19 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         onMouseLeave={() => setHoveredTabIcon(null)}
                         onClick={() => handleIconClick(item)}
                       >
-                        {item.categorieType === "Image" && (
+                        {item.assetType === "Image" && (
                           <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
                         )}
 
-                        {item.categorieType === "Video" && (
+                        {item.assetType === "Video" && (
                           <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
                         )}
 
-                        {item.categorieType === "OnlineImage" && (
+                        {item.assetType === "OnlineImage" && (
                           <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
                         )}
 
-                        {item.categorieType === "OnlineVideo" && (
+                        {item.assetType === "OnlineVideo" && (
                           <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
                         )}
                       </div>
@@ -806,25 +754,21 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       {/*start hover icon details */}
                       {hoveredTabIcon === item && (
                         <div className="vdetails">
-                          <div className="flex justify-end">
-                            <div className="storage mb-1">
-                              {/* <span className="bg-white text-primary rounded-sm p-1 text-sm">
-                                {item.fileSize}
-                              </span> */}
-                            </div>
-                          </div>
+                          <div className="flex justify-end"></div>
                           <div className="text-center clickdetail">
                             <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs  mb-1">
-                              {item.name}
+                              {item.assetName}
                             </h3>
-                            {/*<p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                              {item.details}
-                            </p> */}
+                            <p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                              Uploaded By {item.userName}
+                            </p>
                             <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light">
-                              {item.createdDate}
+                              {moment(item.createdDate).format(
+                                "YYYY-MM-DD hh:mm"
+                              )}
                             </h6>
                             <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                              {item.categorieType}
+                              {item.assetType}
                             </span>
                             <span>,</span>
                             <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
@@ -863,44 +807,44 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 <MdPlaylistPlay className="mr-2 text-lg" />
                                 Add to Playlist
                               </li>
-                              {item.categorieType === "Image" && (
+                              {item.assetType === "Image" && (
                                 <li className="flex text-sm items-center">
                                   <FiDownload className="mr-2 text-lg" />
-                                  <a href={item.fileType} download>
+                                  <a href={item.assetFolderPath} download>
                                     Download
                                   </a>
                                 </li>
                               )}
 
-                              {item.categorieType === "Video" && (
+                              {item.assetType === "Video" && (
                                 <li className="flex text-sm items-center">
                                   <FiDownload className="mr-2 text-lg" />
-                                  <a href={item.fileType} download>
+                                  <a href={item.assetFolderPath} download>
                                     Download
                                   </a>
                                 </li>
                               )}
-                              {item.categorieType === "OnlineImage" && (
+                              {item.assetType === "OnlineImage" && (
                                 <li className="flex text-sm items-center">
                                   <FiDownload className="mr-2 text-lg" />
-                                  <a href={item.fileType} download>
+                                  <a href={item.assetFolderPath} download>
                                     Download
                                   </a>
                                 </li>
                               )}
 
-                              {item.categorieType === "OnlineVideo" && (
+                              {item.assetType === "OnlineVideo" && (
                                 <li className="flex text-sm items-center">
                                   <FiDownload className="mr-2 text-lg" />
-                                  <a href={item.fileType} download>
+                                  <a href={item.assetFolderPath} download>
                                     Download
                                   </a>
                                 </li>
                               )}
-                              {item.categorieType === "DOC" && (
+                              {item.assetType === "DOC" && (
                                 <li className="flex text-sm items-center">
                                   <FiDownload className="mr-2 text-lg" />
-                                  <a href={item.fileType} download>
+                                  <a href={item.assetFolderPath} download>
                                     Download
                                   </a>
                                 </li>
@@ -919,14 +863,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     {isMoveToOpen && (
                                       <div className="move-to-dropdown">
                                         <ul>
-                                          {newFolder.map((folder) => (
-                                            <li key={folder.folderID}>
+                                          {originalData.folder.map((folder) => (
+                                            <li key={folder.assetID}>
                                               <button
                                                 onClick={() =>
-                                                  handleMoveTo(folder.folderID)
+                                                  handleMoveTo(folder.assetID)
                                                 }
                                               >
-                                                {folder.folderName}
+                                                {folder.assetName}
                                               </button>
                                             </li>
                                           ))}
@@ -939,7 +883,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               <li>
                                 <button
                                   onClick={() => {
-                                    handleWarning(item.id);
+                                    handleWarning(item.assetID);
+                                    deleteFolder(item.assetID);
                                   }}
                                   className="flex text-sm items-center"
                                 >
@@ -970,7 +915,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     <button
                                       className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
                                       onClick={() => {
-                                        handelDeletedata(item.id);
+                                        handelDeletedata(item.assetID);
                                         setDeleteMessage(false);
                                       }}
                                     >
@@ -985,23 +930,21 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
 
                       {/*end of checkbox*/}
-                      {item.categorieType === "DOC" && (
+                      {item.assetType === "DOC" && (
                         <div className="bg-white px-4 py-5 rounded-lg shadow-lg h-full">
-                          {item.categorieType === "DOC" && (
+                          {item.assetType === "DOC" && (
                             <HiDocumentDuplicate className=" text-primary text-4xl mt-10" />
                           )}
-                          {item.categorieType === "DOC" && (
+                          {item.assetType === "DOC" && (
                             <a
-                              href={item.fileType}
+                              href={item.assetFolderPath}
                               target="_blank"
                               rel="noopener noreferrer"
                             >
-                              {item.name}
+                              {item.assetName}
                             </a>
                           )}
-                          {item.categorieType === "DOC" && (
-                            <p>{item.details}</p>
-                          )}
+                          {item.assetType === "DOC" && <p>{item.details}</p>}
                         </div>
                       )}
                     </li>
@@ -1037,184 +980,120 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {newFolder.map((folder, index) => (
-                      <React.Fragment key={`folder-${folder.folderID}`}>
-                        <tr
-                          onDragOver={handleDragOver}
-                          onDrop={(event) => handleDrop(event, folder.folderID)}
-                          className="bg-white rounded-lg font-normal text-[14px] text-[#5E5E5E] shadow-sm newfolder"
-                        >
-                          <td className="flex items-center relative">
-                            <div>
-                              <FcOpenedFolder
-                                className="text-8xl text-center mx-auto"
-                                onClick={() =>
-                                  navigateToFolder(folder.folderID)
-                                }
-                              />
-                            </div>
-                            <div className="ml-3">
-                              {editMode === folder.folderID ? (
-                                <input
-                                  type="text"
-                                  value={folderNames[index]}
-                                  className="w-full"
-                                  onChange={(e) => {
-                                    const newFolderNames = [...folderNames];
-                                    newFolderNames[index] = e.target.value;
-                                    setFolderNames(newFolderNames);
-                                    console.log(newFolderNames);
-                                  }}
-                                  onBlur={() => {
-                                    saveFolderName(
-                                      folder.folderID,
-                                      folderNames[index]
-                                    );
-                                    setEditMode(null);
-                                  }}
-                                  onKeyDown={(e) =>
-                                    handleKeyDown(e, folder.folderID, index)
-                                  }
-                                  autoFocus
-                                />
-                              ) : (
-                                <>
-                                  <span
-                                    onClick={() => {
-                                      setEditMode(folder.folderID);
-                                    }}
-                                    className="cursor-pointer"
-                                  >
-                                    {folderNames[index]}
-                                  </span>
-                                </>
-                              )}
-                            </div>
-                          </td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td>{folder.fileSize}</td>
-                          <td>
-                            <input
-                              type="checkbox"
-                              className="w-[20px] h-[20px]"
-                            />
-                          </td>
-                          <td className="relative w-[40px]">
-                            <button
-                              onClick={() =>
-                                toggleAssetsdwList(folder.folderID)
-                              }
-                              className="absolute right-4 top-[37%]"
-                            >
-                              <BsThreeDotsVertical className="text-2xl relative" />
-                            </button>
-                            {openAssetsdwIdList === folder.folderID && (
-                              <div className="assetsdw bottom-[-90px]">
-                                <ul>
-                                  <li className="flex text-sm items-center">
-                                    <FiUpload className="mr-2 text-lg" />
-                                    Set to Screen
-                                  </li>
-                                  <li className="flex text-sm items-center">
-                                    <MdPlaylistPlay className="mr-2 text-lg" />
-                                    Add to Playlist
-                                  </li>
-
-                                  <li className="flex text-sm items-center">
-                                    <FiDownload className="mr-2 text-lg" />
-                                    <a href="#">Download</a>
-                                  </li>
-
-                                  <li>
-                                    <button
-                                      className="flex text-sm items-center"
-                                      onClick={() =>
-                                        deleteFolder(folder.folderID)
-                                      }
-                                    >
-                                      <RiDeleteBin5Line className="mr-2 text-lg" />
-                                      Move to Trash
-                                    </button>
-                                  </li>
-                                </ul>
-                              </div>
-                            )}
-                          </td>
-                        </tr>
-                      </React.Fragment>
-                    ))}
-
                     {tableData.length > 0 ? (
                       tableData.map((item, index) => (
                         <tr
-                          key={`tabitem-table-${item.id}-${index}`}
+                          key={`tabitem-table-${item.assetID}-${index}`}
                           className=" mt-2 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] shadow-inner"
                         >
                           <td className="flex items-center relative">
-                            {item.categorieType === "Image" && (
+                            {item.assetType === "Folder" && (
+                              <div
+                                onDragOver={handleDragOver}
+                                onDrop={(event) =>
+                                  handleDrop(event, item.assetID)
+                                }
+                                className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col"
+                              >
+                                <FcOpenedFolder
+                                  className="text-8xl text-center mx-auto"
+                                  onClick={() => navigateToFolder(item.assetID)}
+                                />
+
+                                {editMode === item.assetID ? (
+                                  <input
+                                    type="text"
+                                    value={folderName}
+                                    className="w-full"
+                                    onChange={(e) =>
+                                      setFolderName(e.target.value)
+                                    }
+                                    onBlur={() => {
+                                      saveFolderName(item.assetID, folderName);
+                                      setEditMode(null);
+                                    }}
+                                    onKeyDown={(e) =>
+                                      handleKeyDown(e, item.assetID, index)
+                                    }
+                                    autoFocus
+                                  />
+                                ) : (
+                                  <>
+                                    <span
+                                      onClick={() => {
+                                        setEditMode(item.assetID);
+                                      }}
+                                      className="cursor-pointer"
+                                    >
+                                      {item.assetName}
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+                            )}
+
+                            {item.assetType === "Image" && (
                               <div className="imagebox relative">
                                 <img
-                                  src={item.fileType}
+                                  src={item.assetFolderPath}
                                   className="rounded-2xl"
                                 />
-                                <div className="tabicon text-center absolute right-0 bottom-[25px]">
-                                  {item.categorieType === "Image" && (
+                                <div className="tabicon text-center absolute left-[6px] top-[-25px]">
+                                  {item.assetType === "Image" && (
                                     <RiGalleryFill className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
                                   )}
                                 </div>
                               </div>
                             )}
 
-                            {item.categorieType === "Video" && (
+                            {item.assetType === "Video" && (
                               <div className="relative videobox">
                                 <video
                                   controls
                                   className="w-full rounded-2xl relative"
                                 >
                                   <source
-                                    src={item.fileType}
+                                    src={item.assetFolderPath}
                                     type="video/mp4"
                                   />
                                   Your browser does not support the video tag.
                                 </video>
-                                <div className="tabicon text-center absolute left-10 top-3">
-                                  {item.categorieType === "Video" && (
+                                <div className="tabicon text-center absolute left-[6px] top-[-25px]">
+                                  {item.assetType === "Video" && (
                                     <HiOutlineVideoCamera className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
                                   )}
                                 </div>
                               </div>
                             )}
 
-                            {item.categorieType === "OnlineImage" && (
+                            {item.assetType === "OnlineImage" && (
                               <div className="imagebox relative">
                                 <img
-                                  src={item.fileType}
+                                  src={item.assetFolderPath}
                                   className="rounded-2xl"
                                 />
-                                <div className="tabicon text-center absolute right-0 bottom-[25px]">
-                                  {item.categorieType === "Image" && (
+                                <div className="tabicon text-center absolute left-[6px] top-[-25px]">
+                                  {item.assetType === "OnlineImage" && (
                                     <RiGalleryFill className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
                                   )}
                                 </div>
                               </div>
                             )}
 
-                            {item.categorieType === "OnlineVideo" && (
+                            {item.assetType === "OnlineVideo" && (
                               <div className="relative videobox">
                                 <video
                                   controls
                                   className="w-full rounded-2xl relative"
                                 >
                                   <source
-                                    src={item.fileType}
+                                    src={item.assetFolderPath}
                                     type="video/mp4"
                                   />
                                   Your browser does not support the video tag.
                                 </video>
-                                <div className="tabicon text-center absolute left-10 top-3">
-                                  {item.categorieType === "Video" && (
+                                <div className="tabicon text-center absolute left-[6px] top-[-25px]">
+                                  {item.assetType === "OnlineVideo" && (
                                     <HiOutlineVideoCamera className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
                                   )}
                                 </div>
@@ -1223,18 +1102,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
                             <div className="ml-2">
                               <h1 className="font-medium lg:text-base md:text-sm sm:text-sm xs:text-xs">
-                                {item.name}
+                                {item.assetName}
                               </h1>
-                              <p className="max-w-[250px] lg:text-base md:text-sm sm:text-sm xs:text-xs">
-                                {item.details}
-                              </p>
                             </div>
                           </td>
 
                           <td>{item.durations}</td>
                           <td>{item.resolutions}</td>
                           <td className=" break-all max-w-sm">
-                            {item.categorieType}
+                            {item.assetType}
                           </td>
                           <td>{item.fileSize}</td>
 
@@ -1270,7 +1146,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   <li>
                                     <button
                                       onClick={() => {
-                                        handleWarning(item.id);
+                                        handleWarning(item.assetID);
+                                        deleteFolder(item.assetID);
                                       }}
                                       className="flex text-sm items-center"
                                     >
@@ -1304,7 +1181,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                         <button
                                           className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
                                           onClick={() => {
-                                            handelDeletedata(item.id);
+                                            handelDeletedata(item.assetID);
                                             setDeleteMessage(false);
                                           }}
                                         >
@@ -1321,7 +1198,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       ))
                     ) : (
                       <tr>
-                        <td>Loading data...</td>
+                        <td>Not Assets Found</td>
                       </tr>
                     )}
                   </tbody>

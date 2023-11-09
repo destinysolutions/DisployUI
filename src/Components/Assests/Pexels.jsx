@@ -6,7 +6,10 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 const Pexels = ({ closeModal }) => {
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const [photos, setPhotos] = useState([]);
   const [media, setMedia] = useState([]);
   const [searchQuery, setSearchQuery] = useState("Nature");
@@ -96,16 +99,22 @@ const Pexels = ({ closeModal }) => {
     selectedMedia.images.forEach((image) => {
       console.log(image, "image");
       const formData = new FormData();
-      const details = "Some Details about the file";
-      formData.append("FileType", image.src.original);
-      formData.append("operation", "Insert");
-      formData.append("CategorieType", "OnlineImage");
-      formData.append("details", details);
-      formData.append("name", image.alt);
-      formData.append("resolutions", `${image.height}*${image.width}`);
+
+      formData.append("AssetFolderPath", image.src.original);
+      formData.append("Operation", "Insert");
+      formData.append("AssetType", "OnlineImage");
+      formData.append("IsActive", "true");
+      formData.append("IsDelete", "false");
+      formData.append("FolderID", "0");
+      formData.append("AssetName", image.alt);
+      formData.append("Resolutions", `${image.height}*${image.width}`);
 
       axios
         .post(ALL_FILES_UPLOAD, formData, {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "multipart/form-data",
+          },
           onUploadProgress: (progressEvent) => {
             const progress = Math.round(
               (progressEvent.loaded / progressEvent.total) * 100
@@ -154,19 +163,25 @@ const Pexels = ({ closeModal }) => {
       // Extract the name from the filename by removing the file extension
       const name = filename.split(".")[0];
       const formData = new FormData();
-      const details = "Some Details about the file";
-      formData.append("FileType", video.video_files[0].link);
-      formData.append("operation", "Insert");
-      formData.append("CategorieType", "OnlineVideo");
-      formData.append("details", details);
+
+      formData.append("AssetFolderPath", video.video_files[0].link);
+      formData.append("Operation", "Insert");
+      formData.append("AssetType", "OnlineVideo");
+      formData.append("IsActive", "true");
+      formData.append("IsDelete", "false");
+      formData.append("FolderID", "0");
       formData.append(
-        "resolutions",
+        "Resolutions",
         `${video.video_files[0].height}*${video.video_files[0].width}`
       );
-      formData.append("durations", video.duration);
-      formData.append("name", name);
+      formData.append("Durations", video.duration);
+      formData.append("AssetName", name);
       axios
         .post(ALL_FILES_UPLOAD, formData, {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "multipart/form-data",
+          },
           onUploadProgress: (progressEvent) => {
             const progress = Math.round(
               (progressEvent.loaded / progressEvent.total) * 100
@@ -235,68 +250,66 @@ const Pexels = ({ closeModal }) => {
           {/* Conditional rendering based on selected media type */}
           <div className="container mx-auto">
             <div>
-            <div className="unsplash-section bg-white rounded-lg">
-              {selectedMediaType === "images" ? (
-                <div className="grid grid-cols-12 px-3 gap-4 unsplash-section bg-white rounded-lg">
-                  {photos.map((photo, index) => (
-                    <div
-                      key={index}
-                      className="lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-12 relative unsplash-box"
-                      onClick={() => handleSelectMedia("images", photo)}
-                      style={{
-                        border: selectedMedia.images.includes(photo)
-                          ? "2px solid blue"
-                          : "2px solid white",
-                      }}
-                    >
-                      <img
-                        src={photo.src.original}
-                        alt={photo.photographer}
-                        className="relative unsplash-img"
-                      />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-12 px-3 gap-4 unsplash-section bg-white rounded-lg">
-                  {media.map((item, index) => (
-                    <div
-                      key={index}
-                      className="lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-12 relative unsplash-box"
-                      onClick={() => handleSelectMedia("videos", item)}
-                      style={{
-                        border: selectedMedia.videos.includes(item)
-                          ? "2px solid blue"
-                          : "2px solid white",
-                      }}
-                    >
-                      <video
-                        width="100%"
-                        height="200px"
-                        controls
-                        className="relative unsplash-img"
+              <div className="unsplash-section bg-white rounded-lg">
+                {selectedMediaType === "images" ? (
+                  <div className="grid grid-cols-12 px-3 gap-4 unsplash-section bg-white rounded-lg">
+                    {photos.map((photo, index) => (
+                      <div
+                        key={index}
+                        className="lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-12 relative unsplash-box"
+                        onClick={() => handleSelectMedia("images", photo)}
+                        style={{
+                          border: selectedMedia.images.includes(photo)
+                            ? "2px solid blue"
+                            : "2px solid white",
+                        }}
                       >
-                        <source
-                          src={item.video_files[0].link}
-                          type="video/mp4"
+                        <img
+                          src={photo.src.original}
+                          alt={photo.photographer}
+                          className="relative unsplash-img"
                         />
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
-                  ))}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-12 px-3 gap-4 unsplash-section bg-white rounded-lg">
+                    {media.map((item, index) => (
+                      <div
+                        key={index}
+                        className="lg:col-span-3 md:col-span-3 sm:col-span-6 xs:col-span-12 relative unsplash-box"
+                        onClick={() => handleSelectMedia("videos", item)}
+                        style={{
+                          border: selectedMedia.videos.includes(item)
+                            ? "2px solid blue"
+                            : "2px solid white",
+                        }}
+                      >
+                        <video
+                          width="100%"
+                          height="200px"
+                          controls
+                          className="relative unsplash-img"
+                        >
+                          <source
+                            src={item.video_files[0].link}
+                            type="video/mp4"
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className="text-center mt-5">
+                  <button
+                    onClick={handleLoadMore}
+                    className="text-white py-3 px-3 rounded-md fs-3 my-4 flex items-center justify-center mx-auto bg-SlateBlue hover:bg-black"
+                  >
+                    <BiLoaderCircle /> Load More
+                  </button>
                 </div>
-              )}
-              <div className="text-center mt-5">
-              <button
-                onClick={handleLoadMore}
-                className="text-white py-3 px-3 rounded-md fs-3 my-4 flex items-center justify-center mx-auto bg-SlateBlue hover:bg-black"
-              >
-                <BiLoaderCircle /> Load More
-              </button>
-            </div>
               </div>
-
-             
 
               <div className="text-center mt-5">
                 <Link to="/assets">

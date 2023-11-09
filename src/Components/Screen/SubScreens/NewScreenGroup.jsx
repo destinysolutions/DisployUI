@@ -18,6 +18,7 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { useEffect } from "react";
 import { SELECT_ALL_SCREENGROUP } from "../../../Pages/Api";
 import axios from "axios";
+import { Tooltip } from "@material-tailwind/react";
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenGroup.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -66,23 +67,55 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                 Group Name
               </h1>
             </div>
-            <div className="icons flex  items-center sm:mt-3">
-              <div>
-                <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg ">
-                  <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white " />
+            <div className="flex items-center sm:mt-3 flex-wrap">
+              <Tooltip
+                content="Refresh Screen"
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-5"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
+                <button
+                  type="button"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                >
+                  <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
-              </div>
-              <div>
-                <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+              </Tooltip>
+              <Tooltip
+                content="Screen Group"
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-5"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
+                <button
+                  type="button"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                >
                   <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
-              </div>
-              <div>
-                <button>
-                  {" "}
-                  <input type="checkbox" className=" w-6 h-6" />
+              </Tooltip>
+              <Tooltip
+                content="Select All ScreenGroup"
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-5"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
+                <button
+                  type="button"
+                  className="flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                >
+                  <input type="checkbox" className="w-6 h-5" />
                 </button>
-              </div>
+              </Tooltip>
             </div>
           </div>
 
@@ -110,7 +143,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                       <RiDeleteBin5Line className="text-3xl p-1 hover:text-white" />
                     </button>
                     <button>
-                      {" "}
                       <input type="checkbox" className=" mx-1 w-6 h-5 mt-2" />
                     </button>
                   </div>
@@ -119,7 +151,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className=" flex items-center flex-wrap">
                   {showdata && (
                     <>
-                      {" "}
                       <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white flex items-center">
                         <LuMonitor className="text-sm mr-1" />
                         03
@@ -137,13 +168,11 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                         <RiDeleteBin5Line className="text-3xl p-1 hover:text-white" />
                       </button>
                       <button>
-                        {" "}
                         <input type="checkbox" className=" mx-1 w-6 h-5 mt-2" />
                       </button>
                     </>
                   )}
                   <button onClick={handleDropupClick}>
-                    {" "}
                     {showdata ? (
                       <IoIosArrowDropup className="text-3xl" />
                     ) : (
@@ -337,7 +366,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                   <tbody>
                     <tr className="bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2">
                       <td className="flex items-center ">
-                        <input type="checkbox" className="mr-3" /> My Screen 1{" "}
+                        <input type="checkbox" className="mr-3" /> My Screen 1
                         <button>
                           <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
                         </button>
@@ -353,7 +382,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                           onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         >
-                          {" "}
                           Asset Name
                           <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
@@ -365,7 +393,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                     </tr>
                     <tr className="bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2">
                       <td className="flex items-center ">
-                        <input type="checkbox" className="mr-3" /> My Screen 1{" "}
+                        <input type="checkbox" className="mr-3" /> My Screen 1
                         <button>
                           <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
                         </button>
@@ -381,7 +409,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                           onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         >
-                          {" "}
                           Asset Name
                           <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
@@ -394,7 +421,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
                     <tr className="bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2">
                       <td className="flex items-center ">
-                        <input type="checkbox" className="mr-3" /> My Screen 1{" "}
+                        <input type="checkbox" className="mr-3" /> My Screen 1
                         <button>
                           <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
                         </button>
@@ -410,7 +437,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                           onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         >
-                          {" "}
                           Asset Name
                           <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>

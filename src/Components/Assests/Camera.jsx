@@ -8,7 +8,10 @@ import { MdMotionPhotosOn } from "react-icons/md";
 import axios from "axios";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 const Camera = ({ closeModal, onImageUpload }) => {
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const webcamRef = useRef(null);
   const [imageSrc, setImageSrc] = useState(null);
   const [isFrontCamera, setIsFrontCamera] = useState(true);
@@ -57,13 +60,18 @@ const Camera = ({ closeModal, onImageUpload }) => {
       const uniqueFileName = `Image_${Date.now()}.jpg`;
       const formData = new FormData();
       formData.append("File", blob, uniqueFileName);
-      formData.append("operation", "Insert");
-      formData.append("CategorieType", "Image");
-      formData.append("details", details);
-      formData.append("name", uniqueFileName);
-
+      formData.append("Operation", "Insert");
+      formData.append("AssetType", "Image");
+      formData.append("AssetName", uniqueFileName);
+      formData.append("IsActive", "true");
+      formData.append("IsDelete", "false");
+      formData.append("FolderID", "0");
       axios
         .post(ALL_FILES_UPLOAD, formData, {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "multipart/form-data",
+          },
           onUploadProgress: (progressEvent) => {
             const progress = Math.round(
               (progressEvent.loaded / progressEvent.total) * 100
@@ -157,7 +165,6 @@ const Camera = ({ closeModal, onImageUpload }) => {
                 Image uploaded successfully!
               </div>
             )}
-
           </div>
 
           {uploading && (
@@ -167,15 +174,10 @@ const Camera = ({ closeModal, onImageUpload }) => {
                   className="progress-bar"
                   style={{ width: `${uploadProgress}%` }}
                 ></div>
-                <div className="ml-3">
-                  {uploadProgress}%
-                </div>
+                <div className="ml-3">{uploadProgress}%</div>
               </div>
-
             </div>
           )}
-
-
         </div>
       </div>
     </div>

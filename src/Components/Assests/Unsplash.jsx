@@ -8,8 +8,11 @@ import axios from "axios";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Unsplash = ({ closeModal, onSelectedImages }) => {
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const [img, setImg] = useState("Natural");
   const [res, setRes] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);
@@ -58,19 +61,26 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
     setUploadInProgress(true);
     selectedImages.forEach((image) => {
       const formData = new FormData();
-      const details = "Some Details about the file";
-      formData.append("FileType", image.urls.full);
-      formData.append("operation", "Insert");
-      formData.append("CategorieType", "OnlineImage");
-      formData.append("details", details);
-      formData.append("name", image.alt_description);
-      formData.append("resolutions", `${image.height}*${image.width}`);
+
+      formData.append("AssetFolderPath", image.urls.full);
+      formData.append("Operation", "Insert");
+      formData.append("AssetType", "OnlineImage");
+      formData.append("UserID", "0");
+      formData.append("AssetName", image.alt_description);
+      formData.append("Resolutions", `${image.height}*${image.width}`);
+      formData.append("IsActive", "true");
+      formData.append("IsDelete", "false");
+      formData.append("FolderID", "0");
       setImageUploadProgress((prevProgress) => ({
         ...prevProgress,
         [image.id]: 0,
       }));
       axios
         .post(ALL_FILES_UPLOAD, formData, {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "multipart/form-data",
+          },
           onUploadProgress: (progressEvent) => {
             const progress = Math.round(
               (progressEvent.loaded / progressEvent.total) * 100
