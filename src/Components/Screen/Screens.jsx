@@ -111,11 +111,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     scheduleName: "",
   });
   const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const [groupName, setGroupName] = useState("");
   useEffect(() => {
     if (UserData.user?.userID) {
       axios
-        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${UserData.user?.userID}`)
+        .get(SELECT_BY_USER_SCREENDETAIL, {
+          headers: { Authorization: authToken },
+        })
         .then((response) => {
           const fetchedData = response.data.data;
           console.log(fetchedData, "dsdsdsdsds");
@@ -816,10 +819,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   unmount: { scale: 1, y: 10 },
                 }}
               >
-                <button type="button">
+                <button
+                  type="button"
+                  className="flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                >
                   <input
                     type="checkbox"
-                    className="h-7 w-7"
+                    className="w-6 h-5"
                     onChange={handleSelectAllCheckboxChange}
                     checked={selectAllChecked}
                   />
@@ -830,7 +836,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
           <div className=" bg-white rounded-xl mt-8 shadow screen-section">
             <table
-              className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto screen-table"
+              className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto screen-table"
               cellPadding={20}
             >
               <thead>

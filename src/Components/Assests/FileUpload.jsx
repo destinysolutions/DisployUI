@@ -32,7 +32,8 @@ import videoimg from "../../../public/Assets/camera.png";
 import pixabayimg from "../../../public/Assets/pixabay.png";
 import { useNavigate } from "react-router-dom";
 import { FcFile } from "react-icons/fc";
-import {AiOutlineAppstore } from "react-icons/ai";
+import { AiOutlineAppstore } from "react-icons/ai";
+import { useSelector } from "react-redux";
 {
   /* end of video*/
 }
@@ -41,14 +42,13 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const [fileSuccessModal, setfileSuccessModal] = useState(false);
   const [fileErrorModal, setfileErrorModal] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
 
-
-    /* google drive */
-
-
+  /* google drive */
 
   {
     /*camera */
@@ -145,15 +145,22 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
       // Create an array to hold all the promises for image uploads
       const uploadPromises = selectedImages.map(async (image, index) => {
         const CategorieType = getContentType(image.file.type);
-        const details = "Some Details about the file";
+       
         const formData = new FormData();
         formData.append("File", image.file);
-        formData.append("operation", "Insert");
-        formData.append("CategorieType", CategorieType);
-        formData.append("details", details);
+        formData.append("Operation", "Insert");
+        formData.append("AssetType", CategorieType);
+        formData.append("IsActive", "true");
+        formData.append("IsDelete", "false");
+        formData.append('FolderID', '0');
+      
 
         try {
           const response = await axios.post(ALL_FILES_UPLOAD, formData, {
+            headers: {
+              Authorization: authToken,
+              "Content-Type": "multipart/form-data",
+            },
             onUploadProgress: (progressEvent) => {
               const progress = Math.round(
                 (progressEvent.loaded / progressEvent.total) * 100
@@ -506,29 +513,26 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               {/* end pixabay */}
             </span>
             {/*start app*/}
-            <Link to={"/apps"} className="bg-white text-SlateBlue px-3 leading-none  rounded-[45px] fileUploadIcon relative">
-         
-          <Tooltip
-            content="More App"
-            placement="bottom-end"
-            className=" bg-SlateBlue text-white z-10 ml-5"
-            animate={{
-              mount: { scale: 1, y: 0 },
-              unmount: { scale: 1, y: 10 },
-            }}
-          >
-            <button
-              
-              className="relative"
+            <Link
+              to={"/apps"}
+              className="bg-white text-SlateBlue px-3 leading-none  rounded-[45px] fileUploadIcon relative"
             >
-              <AiOutlineAppstore className="relative text-3xl" />
-            </button>
-          </Tooltip>
-          </Link>
-          {/* end pixabay */}
-        
-          
-         {/*End app*/}
+              <Tooltip
+                content="More App"
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-5"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
+                <button className="relative">
+                  <AiOutlineAppstore className="relative text-3xl" />
+                </button>
+              </Tooltip>
+            </Link>
+            {/* end pixabay */}
+            {/*End app*/}
           </div>
           <div className="flex w-full flex-col gap-4"></div>
           <div
@@ -606,10 +610,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               </div>
             </div>
           </div>
-
-          
-
-        
 
           {/*  {uploading && (
             <div className="progressbar-popup bg-white shadow-2xl">

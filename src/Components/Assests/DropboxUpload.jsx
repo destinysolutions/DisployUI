@@ -4,27 +4,34 @@ import { AiOutlineDropbox } from "react-icons/ai";
 import { Tooltip } from "@material-tailwind/react";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const DropboxUpload = () => {
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const handleSuccess = (files) => {
     files.forEach((image) => {
       const formData = new FormData();
-      const details = "Dropbox file upload";
-
-     
       if (
         image.link_type === "direct" &&
         image.is_dir === false &&
         image.name.match(/\.(mp4|mov|avi|mkv)$/i)
       ) {
-        formData.append("FileType", image.link);
-        formData.append("operation", "Insert");
-        formData.append("CategorieType", "OnlineImage");
-        formData.append("details", details);
-        formData.append("name", image.name);
+        formData.append("File", image.link);
+        formData.append("Operation", "Insert");
+        formData.append("AssetType", "OnlineImage");
+        formData.append("IsActive", "true");
+        formData.append("IsDelete", "false");
+        formData.append("FolderID", "0");
+        formData.append("AssetName", image.name);
 
         axios
-          .post(ALL_FILES_UPLOAD, formData)
+          .post(ALL_FILES_UPLOAD, formData, {
+            headers: {
+              Authorization: authToken,
+              "Content-Type": "multipart/form-data",
+            },
+          })
           .then((response) => {
             console.log("Upload Success:", response.data);
           })

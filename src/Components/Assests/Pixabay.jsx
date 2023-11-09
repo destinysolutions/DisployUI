@@ -3,7 +3,10 @@ import axios from "axios";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 const Pixabay = ({ closeModal }) => {
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const [images, setImages] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
@@ -66,18 +69,23 @@ const Pixabay = ({ closeModal }) => {
     selectedImages.forEach((image) => {
       console.log(image, "image");
       const formData = new FormData();
-      const details = "Some Details about the file";
-      formData.append("FileType", image.largeImageURL);
-      formData.append("operation", "Insert");
-      formData.append("CategorieType", "OnlineImage");
-      formData.append("details", details);
+      formData.append("AssetFolderPath", image.webformatURL);
+      formData.append("Operation", "Insert");
+      formData.append("AssetType", "OnlineImage");
+      formData.append("IsActive", "true");
+      formData.append("IsDelete", "false");
+      formData.append("FolderID", "0");
       formData.append(
-        "resolutions",
+        "Resolutions",
         `${image.webformatHeight}*${image.webformatWidth}`
       );
-      formData.append("name", image.tags);
+      formData.append("AssetName", image.tags);
       axios
         .post(ALL_FILES_UPLOAD, formData, {
+          headers: {
+            Authorization: authToken,
+            "Content-Type": "multipart/form-data",
+          },
           onUploadProgress: (progressEvent) => {
             const progress = Math.round(
               (progressEvent.loaded / progressEvent.total) * 100

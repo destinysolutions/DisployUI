@@ -12,6 +12,7 @@ import Navbar from "../../Navbar";
 import PropTypes from "prop-types";
 import Footer from "../../Footer";
 import { AiOutlineCloudUpload } from "react-icons/ai";
+import { Tooltip } from "@material-tailwind/react";
 const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   MergeScreen.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -51,26 +52,56 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                 Merged Screens
               </h1>
             </div>
-            <div className="icons flex  items-center sm:mt-3">
-              <div>
-                <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg ">
+            <div className="flex items-center sm:mt-3 flex-wrap">
+              <Tooltip
+                content="Refresh Screen"
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-5"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
+                <button
+                  type="button"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                >
                   <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
-              </div>
-              <div>
+              </Tooltip>
+              <Tooltip
+                content="Merge Screen"
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-5"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
                 <button
                   type="button"
                   className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                 >
                   <VscVmConnect className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
-              </div>
-              <div>
-                <button>
-                  {" "}
-                  <input type="checkbox" className=" w-6 h-6" />
+              </Tooltip>
+
+              <Tooltip
+                content="Select All "
+                placement="bottom-end"
+                className=" bg-SlateBlue text-white z-10 ml-5"
+                animate={{
+                  mount: { scale: 1, y: 0 },
+                  unmount: { scale: 1, y: 10 },
+                }}
+              >
+                <button
+                  type="button"
+                  className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                >
+                  <input type="checkbox" className="w-6 h-5" />
                 </button>
-              </div>
+              </Tooltip>
             </div>
           </div>
 
@@ -87,7 +118,6 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                     <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
                       <TbScanEye className="text-3xl p-1 hover:text-white" />
                     </button>
-
                     <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
                       <TbUpload className="text-3xl p-1 hover:text-white" />
                     </button>
@@ -95,7 +125,6 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                       <RiDeleteBin5Line className="text-3xl p-1 hover:text-white" />
                     </button>
                     <button>
-                      {" "}
                       <input type="checkbox" className=" mx-1 w-6 h-5 mt-2" />
                     </button>
                   </div>
@@ -104,10 +133,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className=" flex items-center">
                   {showdata && (
                     <>
-                      {" "}
                       <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
                         Preview
-                      </button>{" "}
+                      </button>
                       <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
                         <TbUpload className="text-3xl p-1 hover:text-white" />
                       </button>
@@ -115,13 +143,11 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         <RiDeleteBin5Line className="text-3xl p-1 hover:text-white" />
                       </button>
                       <button>
-                        {" "}
                         <input type="checkbox" className=" mx-1 w-6 h-5 mt-2" />
                       </button>
                     </>
                   )}
                   <button className="showicon" onClick={handleDropupClick}>
-                    {" "}
                     {showdata ? (
                       <IoIosArrowDropup className="text-3xl" />
                     ) : (
@@ -328,7 +354,6 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                           onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         >
-                          {" "}
                           Asset Name
                           <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
@@ -353,7 +378,6 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                           onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         >
-                          {" "}
                           Asset Name
                           <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
@@ -378,7 +402,6 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                           onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         >
-                          {" "}
                           Asset Name
                           <AiOutlineCloudUpload className="ml-2 text-lg" />
                         </button>
