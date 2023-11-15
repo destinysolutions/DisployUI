@@ -9,13 +9,15 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import { SELECT_BY_LIST } from "../../Pages/Api";
+import { useSelector } from "react-redux";
 
 const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
   AddComposition.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const navigation = useNavigate();
 
   const [allcompositionData, setAllcompositionData] = useState([]);
@@ -29,7 +31,9 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
       method: "get",
       maxBodyLength: Infinity,
       url: SELECT_BY_LIST,
-      headers: {},
+      headers: {
+        Authorization: authToken,
+      },
       data: "",
     };
 

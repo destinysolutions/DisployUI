@@ -10,8 +10,12 @@ import axios from "axios";
 import { useState } from "react";
 import moment from "moment";
 import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
+
   const [scrollType, setScrollType] = useState([]);
   const [selectedScrollType, setSelectedScrollType] = useState(1);
   const [text, setText] = useState("");
@@ -24,9 +28,16 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
   );
 
   useEffect(() => {
-    axios.get(SCROLL_TYPE_OPTION).then((response) => {
-      setScrollType(response.data.data);
-    });
+    axios
+      .get(SCROLL_TYPE_OPTION, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
+      .then((response) => {
+        setScrollType(response.data.data);
+        console.log(response.data.data);
+      });
   });
   const handleInsertScrollText = () => {
     let data = JSON.stringify({
@@ -42,6 +53,7 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
       url: SCROLL_ADD_TEXT,
       headers: {
         "Content-Type": "application/json",
+        Authorization: authToken,
       },
       data: data,
     };

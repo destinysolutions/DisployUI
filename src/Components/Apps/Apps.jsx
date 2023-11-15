@@ -13,16 +13,19 @@ import { Link } from "react-router-dom";
 import Footer from "../Footer";
 import { GET_ALL_APPS } from "../../Pages/Api";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const Apps = ({ sidebarOpen, setSidebarOpen }) => {
   Apps.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const [appData, setAppData] = useState([]);
   useEffect(() => {
     axios
-      .get(GET_ALL_APPS)
+      .get(GET_ALL_APPS, { headers: { Authorization: authToken } })
       .then((response) => {
         const fetchedData = response.data.data;
         setAppData(fetchedData);

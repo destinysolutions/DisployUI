@@ -21,12 +21,16 @@ import ReactPlayer from "react-player";
 import { FiUpload } from "react-icons/fi";
 import { MdPlaylistPlay } from "react-icons/md";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
+import { useSelector } from "react-redux";
 
 const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   Youtube.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
+  
 
   const [appDetailModal, setAppDetailModal] = useState(false);
 
@@ -36,7 +40,9 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     axios
-      .get(GET_ALL_YOUTUBEDATA)
+      .get(GET_ALL_YOUTUBEDATA,{ headers: {
+        Authorization: authToken,
+      },})
       .then((response) => {
         const fetchedData = response.data.data;
         setYoutubeData(fetchedData);
@@ -56,6 +62,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
       method: "post",
       url: YOUTUBE_INSTANCE_ADD_URL,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
       data: data,
@@ -106,7 +113,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
       method: "get",
       maxBodyLength: Infinity,
       url: YOUTUBEDATA_ALL_DELETE,
-      headers: {},
+      headers: {Authorization: authToken},
     };
 
     axios

@@ -17,7 +17,7 @@ import AssetModal from "../Assests/AssetModal";
 import PreviewModal from "./PreviewModel";
 import { RxCrossCircled } from "react-icons/rx";
 import Carousel from "./DynamicCarousel";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 const DEFAULT_IMAGE = "";
 
 import { useSelector } from "react-redux";
@@ -34,7 +34,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [addAsset, setAddAsset] = useState([]);
   const UserData = useSelector((Alldata) => Alldata.user);
-
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const [jsondata, setjsondata] = useState({
     version: 0,
     objects: [],
@@ -53,14 +53,14 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       onReady(canvas);
     });
   };
-
+  const navigate = useNavigate();
   useEffect(() => {
     // console.log("state", state);
     let config = {
       method: "get",
       maxBodyLength: Infinity,
       url: `${SELECT_BY_LIST}?LayoutDtlID=${state?.layoutDtlID}`,
-      headers: {},
+      headers: { Authorization: authToken },
       data: "",
     };
 
@@ -77,7 +77,11 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     axios
-      .get(GET_ALL_FILES)
+      .get(GET_ALL_FILES, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
       .then((response) => {
         const fetchedData = response.data;
         const allAssets = [
@@ -172,12 +176,12 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const onSave = async () => {
     // const canvasData = JSON.stringify(editor.canvas.toJSON());
     let data = new FormData();
-    data.append("PlayListId", 0);
+    data.append("CompositionID", 0);
     data.append("CompositionName", state?.name);
     data.append("Resolution", "1920 x 1080");
     data.append("Tags", "Tags");
-    data.append("LayoutDtlID", state.layoutDtlID);
-    data.append("UserID", UserData.user?.userID);
+    data.append("LayoutID", state.layoutDtlID);
+    data.append("UserID", 0);
 
     let config = {
       method: "post",
@@ -185,6 +189,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       url: ADDPLAYLIST,
       headers: {
         "Content-Type": "application/json",
+        Authorization: authToken,
       },
       data: data,
     };
@@ -192,20 +197,23 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     await axios
       .request(config)
       .then((response) => {
-        console.log("===========>", response.data?.data.playListId);
-        const id = response.data?.data.playListId;
+        console.log("===========>", response.data);
+        const id = response.data?.data.compositionID;
         if (id) {
           const newdata = [];
           addAsset.map((item, index) => {
             console.log("item", item[index + 1]);
             item[index + 1].map((i) =>
               newdata.push({
-                subPlaylistId: 0,
-                playListID: id,
-                assetID: i.id,
-                timeduration: i.PlayDuration,
-                layoutID: compositonData?.lstLayloutModelList[index].layoutID,
-                userID: UserData.user?.userID,
+                compositionDetailsID: 0,
+                compositionID: id,
+                mediaID: i.assetID,
+                duration: i.PlayDuration,
+                durationType: "hour",
+                layoutDetailsID:
+                  compositonData?.lstLayloutModelList[index].layoutID,
+                userID: 0,
+                mediaTypeID: 1,
               })
             );
           });
@@ -217,6 +225,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
             url: ADDSUBPLAYLIST,
             headers: {
               "Content-Type": "application/json",
+              Authorization: authToken,
             },
             data: datas,
           };
@@ -224,6 +233,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           axios
             .request(config)
             .then((response) => {
+              navigate("/composition");
               console.log("datauploaded", JSON.stringify(response.data));
             })
             .catch((error) => {
@@ -748,7 +758,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                           addSeletedAsset(assetdata, currentSection)
                         }
                       >
-                        <td className="flex"> {assetdata.name}</td>
+                        <td className="flex"> {assetdata.assetName}</td>
                         <td className="p-2">PNG</td>
                         <td className="p-2 ">Tags, Tags </td>
                       </tr>
@@ -816,42 +826,42 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className="flex items-center">
                                 <div className="flex-shrink-0 w-10 h-10">
                                   <>
-                                    {item.categorieType === "OnlineImage" && (
+                                    {item.assetType === "OnlineImage" && (
                                       <>
                                         <img
                                           className="w-full h-full rounded-sm"
-                                          src={item.fileType}
-                                          alt={item.name}
+                                          src={item.assetFolderPath}
+                                          alt={item.assetName}
                                         />
                                       </>
                                     )}
-                                    {item.categorieType === "Image" && (
+                                    {item.assetType === "Image" && (
                                       <img
-                                        src={item.fileType}
-                                        alt={item.name}
+                                        src={item.assetFolderPath}
+                                        alt={item.assetName}
                                         className="imagebox relative"
                                       />
                                     )}
-                                    {item.categorieType === "Video" && (
+                                    {item.assetType === "Video" && (
                                       <video
                                         controls
                                         className="w-full h-full rounded-sm"
                                       >
                                         <source
-                                          src={item.fileType}
+                                          src={item.assetFolderPath}
                                           type="video/mp4"
                                         />
                                         Your browser does not support the video
                                         tag.
                                       </video>
                                     )}
-                                    {item.categorieType === "DOC" && (
+                                    {item.assetType === "DOC" && (
                                       <a
-                                        href={item.fileType}
+                                        href={item.assetFolderPath}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                       >
-                                        {item.name}
+                                        {item.assetName}
                                       </a>
                                     )}
                                   </>

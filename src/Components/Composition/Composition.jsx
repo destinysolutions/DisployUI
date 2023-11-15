@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -30,8 +30,13 @@ import { HiDotsVertical } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import Footer from "../Footer";
 import { useNavigate } from "react-router-dom";
+import { GET_ALL_COMPOSITIONS } from "../../Pages/Api";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const navigation = useNavigate();
 
   const [toggle, setToggle] = useState(1);
@@ -45,7 +50,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     setActiveTab(tabNumber);
     setPopupActiveTab(tabNumber);
   };
-
+  const [onClickMore, setOnClickMore] = useState(false);
   const initialComposition = [
     {
       CompositionName: "Composition 1",
@@ -93,14 +98,37 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       onClickMore: false,
     },
   ];
+  const [compositionData, setCompositionData] = useState([]);
+  const loadComposition = () => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: GET_ALL_COMPOSITIONS,
+      headers: {
+        Authorization: authToken,
+      },
+    };
 
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data);
+        setCompositionData(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    loadComposition();
+  });
   const [playlistDropdown, setplaylistDropdown] = useState(false);
   const [showAppTabContent, setShowAppTabContent] = useState(false);
   const [showYoutubeContent, setShowYoutubeContent] = useState(false);
   const [showTagAdded, setShowTagAdded] = useState(false);
 
   const [playlists, setPlaylists] = useState([]);
-  const [CompositionList, setCompositionList] = useState(initialComposition);
+  //const [CompositionList, setCompositionList] = useState(initialComposition);
   const [SelectAllCompositionList, setSelectAllCompositionList] =
     useState(false);
 
@@ -144,18 +172,24 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectAllCompositionList(e.target.checked);
   };
 
-  const onClickMoreComposition = (param) => {
-    const CompositionData = [...CompositionList];
-    const newData = CompositionData.map((item, index) => {
-      if (index == param) {
-        return { ...item, onClickMore: !item.onClickMore };
-      } else {
-        return { ...item, onClickMore: false };
-      }
-    });
-    setCompositionList(newData);
+  // const onClickMoreComposition = (param) => {
+  //   const CompositionData = [...CompositionList];
+  //   const newData = CompositionData.map((item, index) => {
+  //     if (index == param) {
+  //       return { ...item, onClickMore: !item.onClickMore };
+  //     } else {
+  //       return { ...item, onClickMore: false };
+  //     }
+  //   });
+  //   setCompositionList(newData);
+  // };
+  const onClickMoreComposition = (compositionID) => {
+    // Toggle the action menu for the clicked schedule item
+    setOnClickMore((prevState) => ({
+      ...prevState,
+      [compositionID]: !prevState[compositionID] || false,
+    }));
   };
-
   return (
     <>
       <div className="flex bg-white py-3 border-b border-gray">
@@ -229,65 +263,59 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                 </tr>
               </thead>
               <tbody>
-                {CompositionList.map(
-                  (
-                    {
-                      CompositionName,
-                      DateAdded,
-                      Resolution,
-                      Duration,
-                      Tags,
-                      isSelected,
-                      onClickMore,
-                    },
-                    index
-                  ) => (
-                    <tr className="border-b border-b-[#E4E6FF]" key={index}>
-                      <td className="flex">
-                        <input
-                          type="checkbox"
-                          className="w-6 h-5 me-2"
-                          checked={isSelected}
-                          value={isSelected}
-                          onChange={() => onSelectComposition(index)}
-                        />
-                        {CompositionName}
-                      </td>
-                      <td className="p-2">{DateAdded}</td>
-                      <td className="p-2 ">{Resolution}</td>
-                      <td className="p-2">{Duration}</td>
-                      <td className="p-2">{Tags}</td>
-                      <td className="p-2 text-center relative ">
-                        <div className="relative ">
-                          <button
-                            className="ml-3 relative"
-                            onClick={() => onClickMoreComposition(index)}
-                          >
-                            <HiDotsVertical />
-                          </button>
-                          {/* action popup start */}
-                          {onClickMore && (
-                            <div className="scheduleAction z-10 ">
-                              <div className="my-1">
-                                <button>Edit </button>
-                              </div>
-                              <div className=" mb-1">
-                                <button>Duplicate</button>
-                              </div>
-                              <div className=" mb-1">
-                                <button>Set to Screens</button>
-                              </div>
-                              <div className="mb-1 border border-[#F2F0F9]"></div>
-                              <div className=" mb-1 text-[#D30000]">
-                                <button>Delete</button>
-                              </div>
+                {compositionData.map((composition) => (
+                  <tr
+                    className="border-b border-b-[#E4E6FF]"
+                    key={composition.compositionID}
+                  >
+                    <td className="flex">
+                      <input
+                        type="checkbox"
+                        className="w-6 h-5 me-2"
+                        // checked={isSelected}
+                        // value={isSelected}
+                        onChange={() =>
+                          onSelectComposition(composition.compositionID)
+                        }
+                      />
+                      {composition.compositionName}
+                    </td>
+                    <td className="p-2">{/* {DateAdded} */}</td>
+                    <td className="p-2 ">{composition.resolution}</td>
+                    <td className="p-2">{/* {Duration} */}</td>
+                    <td className="p-2">{composition.tags}</td>
+                    <td className="p-2 text-center relative ">
+                      <div className="relative ">
+                        <button
+                          className="ml-3 relative"
+                          onClick={() =>
+                            onClickMoreComposition(composition.compositionID)
+                          }
+                        >
+                          <HiDotsVertical />
+                        </button>
+                        {/* action popup start */}
+                        {onClickMore[composition.compositionID] && (
+                          <div className="scheduleAction z-10 ">
+                            <div className="my-1">
+                              <button>Edit </button>
                             </div>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                )}
+                            <div className=" mb-1">
+                              <button>Duplicate</button>
+                            </div>
+                            <div className=" mb-1">
+                              <button>Set to Screens</button>
+                            </div>
+                            <div className="mb-1 border border-[#F2F0F9]"></div>
+                            <div className=" mb-1 text-[#D30000]">
+                              <button>Delete</button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

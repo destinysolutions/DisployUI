@@ -36,6 +36,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [screenData, setScreenData] = useState([]);
   const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
@@ -46,9 +47,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const loadScheduleData = () => {
     axios
-      .get(GET_ALL_SCHEDULE)
+      .get(GET_ALL_SCHEDULE, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
       .then((response) => {
         const fetchedData = response.data.data;
+        console.log(fetchedData, "schedule data");
         setScheduleData(fetchedData);
       })
       .catch((error) => {
@@ -106,6 +112,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       method: "post",
       url: ADD_SCHEDULE,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
       data: data,
@@ -133,6 +140,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       method: "post",
       url: ADD_SCHEDULE,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
       data: data,
@@ -149,20 +157,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
   const handleUpdateScreenAssign = () => {
-    let data = JSON.stringify({
-      scheduleId: scheduleId,
-      screenAssigned: selectedScreenIdsString,
-      operation: "Insert",
-    });
-
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: UPDATE_SCREEN_ASSIGN,
+      url: `${UPDATE_SCREEN_ASSIGN}?ScheduleID=${scheduleId}&ScreenID=${selectedScreenIdsString}`,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
-      data: data,
     };
 
     axios
@@ -182,7 +184,11 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     if (UserData.user?.userID) {
       axios
-        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${UserData.user?.userID}`)
+        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${UserData.user?.userID}`, {
+          headers: {
+            Authorization: authToken,
+          },
+        })
         .then((response) => {
           const fetchedData = response.data.data;
 
@@ -274,23 +280,23 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   New Schedule
                 </button>
               </Link>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle border-white bg-SlateBlue text-white items-center border-2 border-SlateBlue hover:border-white rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="sm:ml-2 xs:ml-1 flex align-middle bg-SlateBlue text-white items-center border-2 border-SlateBlue hover:border-white rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <FiUpload className="text-lg" />
               </button>
               <button
-                className="sm:ml-2 xs:ml-1 flex align-middle border-white bg-red text-white items-center border-2 border-SlateBlue hover:border-white rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center border-2 border-SlateBlue hover:border-white rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 onClick={handelDeleteAllSchedule}
                 style={{ display: selectAll ? "block" : "none" }}
               >
                 <RiDeleteBin5Line className="text-lg" />
               </button>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle border-white bg-SlateBlue text-white items-center border-2 border-SlateBlue hover:border-white rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="sm:ml-2 xs:ml-1 flex align-middle  bg-SlateBlue text-white items-center border-2 border-SlateBlue hover:border-white rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <HiMagnifyingGlass className="text-lg" />
               </button>
-              <button className="sm:ml-2 xs:ml-1 mt-1">
+              <button className="flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <input
                   type="checkbox"
-                  className="h-7 w-7"
+                  className="w-6 h-5"
                   checked={selectAll}
                   onChange={handleSelectAll}
                 />
