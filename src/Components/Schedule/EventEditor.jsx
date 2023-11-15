@@ -14,6 +14,7 @@ import { ADD_EVENT } from "../../Pages/Api";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
+import { RiDeleteBin6Line } from "react-icons/ri";
 const EventEditor = ({
   isOpen,
   onClose,
@@ -57,16 +58,19 @@ const EventEditor = ({
   const [emptyTitleMessage, setEmptyTitleMessage] = useState("");
   const [emptyTitleMessageVisible, setEmptyTitleMessageVisible] =
     useState(false);
-  const [repeatDayMessageShown, setRepeatDayMessageShown] = useState(false);
   const handleOpenRepeatSettings = () => {
     setShowRepeatSettings(true);
   };
+  const [repeatDayWarning, setRepeatDayWarning] = useState(false);
 
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
   useEffect(() => {
     if (isOpen) {
       if (selectedEvent) {
+        console.log(selectedEvent?.isfutureDateExists, "selectdfg");
+        console.log("selectedEvent.repeatDay", selectedEvent.repeatDay);
         let assetId;
+
         if (selectedEvent?.asset?.assetID != undefined) {
           assetId = selectedEvent?.asset?.assetID;
         } else {
@@ -79,17 +83,6 @@ const EventEditor = ({
           setSelectedAsset(previousSelectedAsset);
           setAssetPreview(previousSelectedAsset);
         }
-        // const previousSelectedDay = selectedEvent.repeatDay;
-
-        // setSelectedRepeatDay(previousSelectedDay);
-
-        // console.log(previousSelectedDay, "previousSelectedDay");
-        // const previousSelectedDayss = buttons.find((previousSelected) => {
-        //   return previousSelected === previousSelectedDay;
-        // });
-        // console.log(previousSelectedDayss, "previousSelectedDay");
-
-        // setSelectedRepeatDay(selectedEvent.repeatDay || "");
         if (selectedEvent.repeatDay !== "") {
           setShowRepeatSettings(true);
           setPreviousSetedRepeatDay(selectedEvent.repeatDay);
@@ -216,18 +209,6 @@ const EventEditor = ({
           newPreviousSetedRepeatDay.push(buttons[i]);
         }
       }
-      // Compare the old and new values of newPreviousSetedRepeatDay
-      // if (
-      //   JSON.stringify(newPreviousSetedRepeatDay) !==
-      //   JSON.stringify(previousSetedRepeatDay)
-      // ) {
-      //   if (!repeatDayMessageShown) {
-      //     let messge = "RepeatDay has changed!";
-      //     setRepeatDayMessage(messge);
-      //     setRepeatDayMessageVisible(true);
-      //     setRepeatDayMessageShown(true); // Mark the message as shown
-      //   }
-      // }
       setPreviousSetedRepeatDay(newPreviousSetedRepeatDay);
     }
   };
@@ -237,7 +218,12 @@ const EventEditor = ({
     setAssetPreview(asset);
   };
 
-  const handleSave = () => {
+  const handleWarn = () => {
+    if (selectedEvent.isfutureDateExists == 1) {
+      setRepeatDayWarning(true);
+    }
+  };
+  const handleSave = (updateAllValue) => {
     // Check if the title is empty
     if (!title) {
       setEmptyTitleMessage("Please enter a title for the event.");
@@ -267,6 +253,14 @@ const EventEditor = ({
         : selectedDaysInString;
       setSelectedRepeatDay(repeatDayValue);
     }
+    // Check if the end date is modified
+    // const isEndDateModified =
+    //   selectedEvent?.end && selectedEvent.end.getTime() !== end.getTime();
+    // if (isEndDateModified) {
+    //   if (!areSpecificDaysSelected && !selectAllDays) {
+    //     alert("Please select repeat for all days otherwise anyone day");
+    //   }
+    // }
 
     let eventData = {
       title: title,
@@ -274,6 +268,7 @@ const EventEditor = ({
       end: end,
       color: selectedColor,
       asset: selectedAsset,
+      //UpdateALL: updateAllValue,
     };
 
     if (areSpecificDaysSelected || selectAllDays) {
@@ -293,12 +288,17 @@ const EventEditor = ({
       onClose();
     } else {
       if (selectedEvent) {
-        onSave(selectedEvent?.id || selectedEvent?.eventId, eventData);
+        onSave(
+          selectedEvent?.id || selectedEvent?.eventId,
+          eventData,
+          updateAllValue
+        );
       } else {
-        onSave(null, eventData);
+        onSave(null, eventData, updateAllValue);
       }
       onClose();
     }
+
     // Check if the repeat days have changed and show the message
     if (
       !JSON.stringify(selectedEvent?.repeatDay) ===
@@ -425,7 +425,6 @@ const EventEditor = ({
                             } border-b border-[#eee] `}
                             onClick={() => {
                               handleAssetAdd(item);
-                              // setAssetPreviewPopup(true);
                             }}
                           >
                             <td className="border-b border-[#eee]">
@@ -705,46 +704,89 @@ const EventEditor = ({
                     </ul>
                   </div>
                 </div>
+                {repeatDayWarning && (
+                  <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                    <div className="relative w-full max-w-xl max-h-full">
+                      <div className="relative bg-white rounded-lg shadow">
+                        <div className="py-6 text-center">
+                          <h3 className="mb-5 text-xl text-primary">
+                            can you update all event ?
+                          </h3>
+                          <div className="flex justify-center items-center space-x-4">
+                            <button
+                              className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
+                              //onClick={() => setdeletePopup(false)}
+                              onClick={() => {
+                                handleSave(0);
+                                setRepeatDayWarning(false);
+                              }}
+                            >
+                              No, cancel
+                            </button>
+
+                            <button
+                              className="text-white bg-SlateBlue rounded text-lg font-bold px-5 py-2"
+                              onClick={() => {
+                                handleSave(1);
+                                setRepeatDayWarning(false);
+                              }}
+                            >
+                              Yes, I'm sure
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {showRepeatSettings ? (
                   <>
                     <div className="relative md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0  p-4">
-                      <div className="backbtn absolute top-[5px] left-[-10px] ">
-                        <button
-                          className="border border-SlateBlue rounded-full p-1 bg-SlateBlue"
-                          onClick={() => setShowRepeatSettings(false)}
-                        >
-                          <MdOutlineArrowBackIosNew className="text-white" />
-                        </button>
-                      </div>
-                      <div className="mt-3">
-                        <div>
-                          <label>Start Date:</label>
-                          <div className="mt-1">
-                            <input
-                              type="date"
-                              value={editedStartDate}
-                              onChange={handleStartDateChange}
-                              className="bg-lightgray rounded-full px-3 py-2 w-full"
-                            />
+                      {selectedEvent?.isfutureDateExists === 1 ||
+                      selectedEvent?.isfutureDateExists === 0 ? (
+                        ""
+                      ) : (
+                        <>
+                          <div className="backbtn absolute top-[5px] left-[-10px] ">
+                            <button
+                              className="border border-SlateBlue rounded-full p-1 bg-SlateBlue"
+                              onClick={() => setShowRepeatSettings(false)}
+                            >
+                              <MdOutlineArrowBackIosNew className="text-white" />
+                            </button>
                           </div>
-                        </div>
-                        <div className=" mt-5">
-                          <label>End Date:</label>
-                          <div className="mt-1">
-                            <input
-                              type="date"
-                              value={editedEndDate}
-                              onChange={handleEndDateChange}
-                              className="bg-lightgray rounded-full px-3 py-2 w-full"
-                            />
+                          <div className="mt-3">
+                            <div>
+                              <label>Start Date:</label>
+                              <div className="mt-1">
+                                <input
+                                  type="date"
+                                  value={editedStartDate}
+                                  onChange={handleStartDateChange}
+                                  className="bg-lightgray rounded-full px-3 py-2 w-full"
+                                />
+                              </div>
+                            </div>
+                            <div className=" mt-5">
+                              <label>End Date:</label>
+                              <div className="mt-1">
+                                <input
+                                  type="date"
+                                  value={editedEndDate}
+                                  onChange={handleEndDateChange}
+                                  className="bg-lightgray rounded-full px-3 py-2 w-full"
+                                />
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
 
-                      <div className="mt-5 text-black font-medium text-lg">
-                        <label>Repeating {countAllDaysInRange()} Day(s)</label>
-                      </div>
-
+                          <div className="mt-5 text-black font-medium text-lg">
+                            <label>
+                              Repeating {countAllDaysInRange()} Day(s)
+                            </label>
+                          </div>
+                        </>
+                      )}
                       <div className="lg:flex md:block sm:block xs:block items-center mt-5 lg:flex-nowrap md:flex-wrap sm:flex-wrap">
                         <div className="mr-2 w-full">
                           <label className="ml-2">Start Time</label>
@@ -770,44 +812,43 @@ const EventEditor = ({
                           </div>
                         </div>
                       </div>
+                      {selectedEvent?.isfutureDateExists === 1 ||
+                      selectedEvent?.isfutureDateExists === 0 ? (
+                        ""
+                      ) : (
+                        <>
+                          <div className="mt-5 text-black font-medium text-lg mr-2">
+                            <input
+                              type="checkbox"
+                              checked={selectAllDays}
+                              onChange={handleCheckboxChange}
+                            />
+                            <label className="ml-3">Repeat for All Day</label>
+                          </div>
 
-                      <div className="mt-5 text-black font-medium text-lg mr-2">
-                        <input
-                          type="checkbox"
-                          checked={selectAllDays}
-                          onChange={handleCheckboxChange}
-                        />
-                        <label className="ml-3">Repeat for All Day</label>
-                      </div>
-
-                      <div>
-                        {buttons.map((label, index) => (
-                          <button
-                            // className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
-                            //   (selectAllDays || selectedDays[index]) &&
-                            //   isDayInRange(index) &&
-                            //   previousSetedRepeatDay
-                            //     ? "bg-SlateBlue border-white"
-                            //     : ""
-                            // }`}
-                            className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
-                              (selectAllDays || selectedDays[index]) &&
-                              isDayInRange(index)
-                                ? "bg-SlateBlue border-white"
-                                : ""
-                            } ${
-                              previousSetedRepeatDay.includes(label) // Check if label is in previousSetedRepeatDay
-                                ? "bg-SlateBlue border-white"
-                                : ""
-                            }`}
-                            key={index}
-                            disabled={!isDayInRange(index)}
-                            onClick={() => handleDayButtonClick(index)}
-                          >
-                            {label}
-                          </button>
-                        ))}
-                      </div>
+                          <div>
+                            {buttons.map((label, index) => (
+                              <button
+                                className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
+                                  (selectAllDays || selectedDays[index]) &&
+                                  isDayInRange(index)
+                                    ? "bg-SlateBlue border-white"
+                                    : ""
+                                } ${
+                                  previousSetedRepeatDay.includes(label)
+                                    ? "bg-SlateBlue border-white"
+                                    : ""
+                                }`}
+                                key={index}
+                                disabled={!isDayInRange(index)}
+                                onClick={() => handleDayButtonClick(index)}
+                              >
+                                {label}
+                              </button>
+                            ))}
+                          </div>
+                        </>
+                      )}
                     </div>
                     <div className="border-b-2 border-lightgray mt-2"></div>
                   </>
@@ -908,8 +949,9 @@ const EventEditor = ({
                   <button
                     className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
                     onClick={() => {
-                      handleSave();
-                      setShowRepeatSettings(false);
+                      handleWarn();
+                      // handleSave();
+                      // setShowRepeatSettings(false);
                     }}
                   >
                     Update

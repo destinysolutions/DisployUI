@@ -1,6 +1,6 @@
 import "../Styles/sidebar.css";
 import * as FiIcons from "react-icons/fi";
-
+import { ImStack } from "react-icons/im";
 import PropTypes from "prop-types";
 import * as AiIcons from "react-icons/ai";
 import { Link } from "react-router-dom";
@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { FaUserTimes } from "react-icons/fa";
 import { FaUserAlt, FaUserCheck, FaUsers } from "react-icons/fa";
 import { SlOrganization } from "react-icons/sl";
+
 const AdminSidebar = ({ sidebarOpen }) => {
   AdminSidebar.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -30,22 +31,28 @@ const AdminSidebar = ({ sidebarOpen }) => {
   //for menu list
   const Menus = [
     {
+      title: "Dashboard",
+      cName: "nav-text link-items",
+      path: "/admin-dashboard",
+      icon: <ImStack className="text-2xl" />,
+    },
+    {
       title: "UserType",
       cName: "nav-text link-items",
       path: "/manage-user-type",
-      icon: <FaUsers className="text-2xl"/>,
+      icon: <FaUsers className="text-2xl" />,
     },
     {
       title: "User",
       cName: "nav-text link-items",
       path: "/user",
-      icon: <FaUserAlt className="text-2xl"/>,
+      icon: <FaUserAlt className="text-2xl" />,
     },
     {
       title: "Organization",
       cName: "nav-text link-items",
       //path: "/organization",
-      icon: <SlOrganization className="text-2xl"/>,
+      icon: <SlOrganization className="text-2xl" />,
       subMenus: [
         {
           title: "Pending",
@@ -55,7 +62,7 @@ const AdminSidebar = ({ sidebarOpen }) => {
         {
           title: "OnBorded",
           path: "/onborded",
-          icon: <FaUserCheck className="  text-xl  "/>,
+          icon: <FaUserCheck className="  text-xl  " />,
         },
       ],
     },

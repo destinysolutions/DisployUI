@@ -10,7 +10,7 @@ const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
       <BrowserRouter>
         <Routes>
           <Route>
-            <Route path="/dashboard" element={<Navigate to="/" />} />
+            {/* <Route path="/dashboard" element={<Navigate to="/" />} /> */}
             <Route path="/screens" element={<Navigate to="/" />} />
             <Route path="/edituser" element={<Navigate to="/" />} />
             <Route path="/userprofile" element={<Navigate to="/" />} />

@@ -18,18 +18,18 @@ const Sidebar = ({ sidebarOpen }) => {
 
   //for menu list
   const Menus = [
-    {
-      title: "Dashboard",
-      cName: "nav-text link-items",
-      path: "/dashboard",
-      icon: (
-        <img
-          src="/MenuIcons/dashboard_icon.svg"
-          alt="Dashboard"
-          className="fill-white w-6"
-        />
-      ),
-    },
+    // {
+    //   title: "Dashboard",
+    //   cName: "nav-text link-items",
+    //   path: "/dashboard",
+    //   icon: (
+    //     <img
+    //       src="/MenuIcons/dashboard_icon.svg"
+    //       alt="Dashboard"
+    //       className="fill-white w-6"
+    //     />
+    //   ),
+    // },
     {
       title: "Screens",
       cName: "nav-text link-items",
@@ -110,6 +110,7 @@ const Sidebar = ({ sidebarOpen }) => {
       path: "/apps",
       icon: <img src="/MenuIcons/apps_icon.svg" alt="Apps" className="w-6" />,
     },
+
     // {
     //   title: "Reports",
     //   cName: "nav-text link-items",
@@ -172,12 +173,12 @@ const Sidebar = ({ sidebarOpen }) => {
     //     />
     //   ),
     // },
-    {
-      title: "Trash",
-      cName: "nav-text link-items",
-      path: "/trash",
-      icon: <img src="/MenuIcons/Trash_icon.svg" alt="Trash" className="w-6" />,
-    },
+    // {
+    //   title: "Trash",
+    //   cName: "nav-text link-items",
+    //   path: "/trash",
+    //   icon: <img src="/MenuIcons/Trash_icon.svg" alt="Trash" className="w-6" />,
+    // },
     {
       title: "Log Out",
       cName: "nav-text link-items",
