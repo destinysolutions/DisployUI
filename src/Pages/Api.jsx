@@ -2,7 +2,7 @@ export const LOGIN_URL =
   "https://disployapi.thedestinysolutions.com/api/Register/Login";
 export const ADD_REGISTER_URL =
   // "https://disployapi.thedestinysolutions.com/api/Register/AddRegister";
-  "http://192.168.1.115/api/UserMaster/AddOrganizationSignups";
+  "https://disployapi.thedestinysolutions.com/api/UserMaster/AddOrganizationSignups";
 export const All_REGISTER_URL =
   "https://disployapi.thedestinysolutions.com/api/Register/GetAllRegister";
 export const GET_ALL_CURRENCIES =
@@ -41,13 +41,19 @@ export const GET_ALL_SCREEN_RESOLUTION =
   "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllScreenResolution";
 export const GET_ALL_SCREEN_ORIENTATION =
   "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllScreenOrientation";
+export const GET_SCREEN_TIMEZONE =
+  "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllTimeZone";
+export const GET_SCEDULE_TIMEZONE =
+  "https://disployapi.thedestinysolutions.com​/api/EventMaster/GetAllTimeZone";
 export const GET_TIMEZONE =
   "https://disployapi.thedestinysolutions.com/api/EventMaster/GetAllTimeZone";
 
 export const GET_ALL_FILES =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/GetAll";
+  "https://disployapi.thedestinysolutions.com/api/AssetMaster/GetAll";
+//  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/GetAll";
 export const ALL_FILES_UPLOAD =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/ImageVideoDocUpload";
+  "https://disployapi.thedestinysolutions.com/api/AssetMaster/AssetUpload";
+// "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/ImageVideoDocUpload";
 export const GOOGLE_DRIVE =
   "https://disployapi.thedestinysolutions.com/api/GoogleDrive/GoogleDrive";
 export const OTP_VERIFY =
@@ -57,19 +63,22 @@ export const GET_ALL_EVENTS =
 export const ADD_EVENT =
   "https://disployapi.thedestinysolutions.com/api/EventMaster/AddEvent";
 export const GET_ALL_SCHEDULE =
-  "https://disployapi.thedestinysolutions.com/api/Schedule/GetAllSchedule";
+  //"https://disployapi.thedestinysolutions.com​/api/EventMaster/SelectAllGetSchedule";
+  "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/GetAllSchedule";
 export const ADD_SCHEDULE =
-  "https://disployapi.thedestinysolutions.com/api/Schedule/AddSchedule";
+  "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/AddSchedule";
+// "https://disployapi.thedestinysolutions.com/api/Schedule/AddSchedule";
 export const UPDATE_SCREEN_ASSIGN =
-  "https://disployapi.thedestinysolutions.com/api/Schedule/UpdateAssignScreen";
+  "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/UpdateAssignScreen";
+//"https://disployapi.thedestinysolutions.com/api/Schedule/UpdateAssignScreen";
 export const SCHEDULE_EVENT_SELECT_BY_ID =
   "https://disployapi.thedestinysolutions.com/api/EventMaster/SelectByID";
 export const SCHEDULE_SELECT_BY_ID =
-  "https://disployapi.thedestinysolutions.com/api/Schedule/SelectByID";
+  "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/SelectByID";
 export const UPDATED_SCHEDULE_DATA =
   "https://disployapi.thedestinysolutions.com/api/EventMaster/SelectAllGetSchedule";
-export const ADD_TIMEZONE =
-  "https://disployapi.thedestinysolutions.com/api/Schedule/AddTimeZone";
+export const UPDATE_TIMEZONE =
+  "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/UpdateTimeZone";
 export const SIGNAL_R = "https://disployapi.thedestinysolutions.com/chatHub";
 
 export const GET_ALL_TRASHDATA =
@@ -78,11 +87,13 @@ export const ADD_TRASH =
   "https://disployapi.thedestinysolutions.com/api/Trash/AddTrash";
 
 export const CREATE_NEW_FOLDER =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/CreateFolder";
+  "https://disployapi.thedestinysolutions.com/api/AssetMaster/FolderMaster";
+// "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/CreateFolder";
 export const GET_ALL_NEW_FOLDER =
   "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/GetAllFolder";
 export const MOVE_TO_FOLDER =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/Move";
+  "https://disployapi.thedestinysolutions.com/api/AssetMaster/Move";
+// "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/Move";
 export const FetchdataFormFolder =
   "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/SelectByFolder";
 
@@ -99,7 +110,7 @@ export const YOUTUBEDATA_ALL_DELETE =
   "https://disployapi.thedestinysolutions.com/api/YoutubeApp/DeleteAllYoutubeApp";
 
 export const SELECT_BY_LIST =
-  "https://disployapi.thedestinysolutions.com/api/Layout/SelectByList";
+  "https://disployapi.thedestinysolutions.com/api/LayoutMaster/SelectByList";
 
 export const UPDATE_TRIAL_DAY =
   "https://disployapi.thedestinysolutions.com/api/Register/UpdateTrialDay";
@@ -115,9 +126,10 @@ export const DELETE_ALL_TEXT_SCROLL =
 export const SELECT_BY_ASSET_ID =
   "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/SelectByAssetID";
 export const ADDPLAYLIST =
-  "https://disployapi.thedestinysolutions.com/api/PlayList/AddPlayList";
-
+  "https://disployapi.thedestinysolutions.com/api/CompositionMaster/AddCompositionMaster";
 export const ADDSUBPLAYLIST =
-  "https://disployapi.thedestinysolutions.com/api/PlayList/AddSubPlayList";
-//http://192.168.1.115
+  "https://disployapi.thedestinysolutions.com/api/CompositionMaster/AddSubCompositionMaster";
+export const GET_ALL_COMPOSITIONS =
+  "https://disployapi.thedestinysolutions.com/api/CompositionMaster/GetAllCompositionMaster";
+//https://disployapi.thedestinysolutions.com
 //https://disployapi.thedestinysolutions.com

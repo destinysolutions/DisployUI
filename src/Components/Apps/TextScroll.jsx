@@ -15,15 +15,25 @@ import { useState } from "react";
 import { MdPlaylistPlay } from "react-icons/md";
 import { FiUpload } from "react-icons/fi";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
+import { useSelector } from "react-redux";
 
 const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
+
   const [instanceData, setInstanceData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   useEffect(() => {
-    axios.get(GET_ALL_TEXT_SCROLL_INSTANCE).then((response) => {
-      setInstanceData(response.data.data);
-      console.log(response.data.data);
-    });
+    axios
+      .get(GET_ALL_TEXT_SCROLL_INSTANCE, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
+      .then((response) => {
+        setInstanceData(response.data.data);
+        console.log(response.data.data);
+      });
   }, []);
 
   const handelDeleteInstance = (scrollId) => {
@@ -37,6 +47,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       url: SCROLL_ADD_TEXT,
       headers: {
         "Content-Type": "application/json",
+        Authorization: authToken,
       },
       data: data,
     };
@@ -86,7 +97,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       method: "get",
       maxBodyLength: Infinity,
       url: DELETE_ALL_TEXT_SCROLL,
-      headers: {},
+      headers: { Authorization: authToken },
     };
 
     axios
@@ -215,7 +226,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                           className="cursor-pointer mx-auto h-30 w-30"
                         />
                         <h4 className="text-lg font-medium mt-3">
-                          <a href="text-scroll-appdetail.html">Text Scroll</a>
+                          {instance.instanceName}
                         </h4>
                         <h4 className="text-sm font-normal ">Added </h4>
                       </div>

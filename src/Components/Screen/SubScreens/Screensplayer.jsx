@@ -17,17 +17,24 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import Footer from "../../Footer";
 import { SELECT_BY_SCREENID_SCREENDETAIL } from "../../../Pages/Api";
 import axios from "axios";
+import { useSelector } from "react-redux";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const [searchParams] = useSearchParams();
   const getScreenID = searchParams.get("screenID");
   const [screenData, setScreenData] = useState([]);
   useEffect(() => {
     axios
-      .get(`${SELECT_BY_SCREENID_SCREENDETAIL}?ScreenID=${getScreenID}`)
+      .get(`${SELECT_BY_SCREENID_SCREENDETAIL}?ScreenID=${getScreenID}`, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
       .then((response) => {
         const fetchedData = response.data.data;
         console.log(fetchedData, "fetchedData");

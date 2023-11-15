@@ -21,12 +21,16 @@ import ReactPlayer from "react-player";
 import axios from "axios";
 import { YOUTUBE_INSTANCE_ADD_URL } from "../../Pages/Api";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   YoutubeDetail.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
+
   const history = useNavigate();
   const [enabled, setEnabled] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
@@ -79,6 +83,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
       maxBodyLength: Infinity,
       url: YOUTUBE_INSTANCE_ADD_URL,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
       data: data,

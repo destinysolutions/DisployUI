@@ -102,6 +102,7 @@ const Login = () => {
       axios
         .request(config)
         .then((response) => {
+          localStorage.setItem("userID", JSON.stringify(response.data));
           const createdDate = new Date(response.data.createdDate);
           const trialEndDate = new Date(createdDate);
           trialEndDate.setDate(
@@ -113,81 +114,80 @@ const Login = () => {
           const daysRemaining = Math.ceil(
             (trialEndDate - currentDate) / (1000 * 60 * 60 * 24)
           );
-          if (daysRemaining > 0) {
-            if (response.data.status === 200) {
-              const userRole = response.data.role;
-              if (userRole == 1) {
-                localStorage.setItem("userID", JSON.stringify(response.data));
-                localStorage.setItem("role_access", "ADMIN");
-                setTimeout(() => {
-                  window.location.href = "/";
-                }, 500);
-              } else if (userRole == 2) {
-                // User login logic
-                auth
-                  .signInWithEmailAndPassword(values.emailID, values.password)
-                  .then((userCredential) => {
-                    const user = userCredential.user;
-                    if (!user.emailVerified) {
-                      alert("Please verify your email.");
-                    } else {
-                      const user_ID = response.data.userID;
-                      console.log("..", user_ID);
-                      localStorage.setItem(
-                        "userID",
-                        JSON.stringify(response.data)
+          // if (daysRemaining > 0) {
+          if (response.data.status === 200) {
+            const userRole = response.data.role;
+            if (userRole == 1) {
+              localStorage.setItem("role_access", "ADMIN");
+              setTimeout(() => {
+                window.location.href = "/";
+              }, 500);
+            } else if (userRole == 2) {
+              // User login logic
+              auth
+                .signInWithEmailAndPassword(values.emailID, values.password)
+                .then((userCredential) => {
+                  const user = userCredential.user;
+                  if (!user.emailVerified) {
+                    alert("Please verify your email.");
+                  } else {
+                    const user_ID = response.data.userID;
+                    console.log("..", user_ID);
+                    localStorage.setItem(
+                      "userID",
+                      JSON.stringify(response.data)
+                    );
+                    localStorage.setItem("role_access", "USER");
+                    setTimeout(() => {
+                      window.location.href = "/";
+                    }, 500);
+                  }
+                })
+                .catch((error) => {
+                  var errorMessage = JSON.parse(error.message);
+                  console.log("errorMessage", errorMessage);
+                  switch (errorMessage.error.message) {
+                    case "ERROR_INVALID_EMAIL":
+                      alert("Your email address appears to be malformed.");
+                      break;
+                    case "ERROR_WRONG_PASSWORD":
+                      alert("Your password is wrong.");
+                      break;
+                    case "ERROR_USER_NOT_FOUND":
+                      alert("User with this email doesn't exist.");
+                      break;
+                    case "ERROR_USER_DISABLED":
+                      alert("User with this email has been disabled.");
+                      break;
+                    case "ERROR_TOO_MANY_REQUESTS":
+                      alert("Too many requests. Try again later.");
+                      break;
+                    case "ERROR_OPERATION_NOT_ALLOWED":
+                      alert(
+                        "Signing in with Email and Password is not enabled."
                       );
-                      localStorage.setItem("role_access", "USER");
-                      setTimeout(() => {
-                        window.location.href = "/";
-                      }, 500);
-                    }
-                  })
-                  .catch((error) => {
-                    var errorMessage = JSON.parse(error.message);
-                    console.log("errorMessage", errorMessage);
-                    switch (errorMessage.error.message) {
-                      case "ERROR_INVALID_EMAIL":
-                        alert("Your email address appears to be malformed.");
-                        break;
-                      case "ERROR_WRONG_PASSWORD":
-                        alert("Your password is wrong.");
-                        break;
-                      case "ERROR_USER_NOT_FOUND":
-                        alert("User with this email doesn't exist.");
-                        break;
-                      case "ERROR_USER_DISABLED":
-                        alert("User with this email has been disabled.");
-                        break;
-                      case "ERROR_TOO_MANY_REQUESTS":
-                        alert("Too many requests. Try again later.");
-                        break;
-                      case "ERROR_OPERATION_NOT_ALLOWED":
-                        alert(
-                          "Signing in with Email and Password is not enabled."
-                        );
-                        break;
-                      case "INVALID_LOGIN_CREDENTIALS":
-                        alert("Invaild Email Or Password");
-                        break;
+                      break;
+                    case "INVALID_LOGIN_CREDENTIALS":
+                      alert("Invaild Email Or Password");
+                      break;
 
-                      default:
-                        alert("Something went wrong");
-                    }
-                  });
-              } else {
-                // Handle other roles or unknown roles
-                console.log("Unexpected role value:", userRole);
-                alert("Invalid role: " + userRole);
-              }
+                    default:
+                      alert("Something went wrong");
+                  }
+                });
             } else {
-              setErrorMessge(response.data.message);
+              // Handle other roles or unknown roles
+              console.log("Unexpected role value:", userRole);
+              alert("Invalid role: " + userRole);
             }
           } else {
-            alert(
-              "Trial days has been expired please contact the Administration"
-            );
+            setErrorMessge(response.data.message);
           }
+          // } else {
+          //   alert(
+          //     "Trial days has been expired please contact the Administration"
+          //   );
+          // }
         })
         .catch((error) => {
           console.log(error);

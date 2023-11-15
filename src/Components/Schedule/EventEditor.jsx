@@ -13,6 +13,7 @@ import ReactModal from "react-modal";
 import { ADD_EVENT } from "../../Pages/Api";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
 import { BsFillInfoCircleFill } from "react-icons/bs";
+import { useSelector } from "react-redux";
 const EventEditor = ({
   isOpen,
   onClose,
@@ -24,6 +25,8 @@ const EventEditor = ({
   setAssetData,
   allAssets,
 }) => {
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const [title, setTitle] = useState("");
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
   const [editedStartDate, setEditedStartDate] = useState("");
@@ -64,13 +67,13 @@ const EventEditor = ({
     if (isOpen) {
       if (selectedEvent) {
         let assetId;
-        if (selectedEvent?.asset?.id != undefined) {
-          assetId = selectedEvent?.asset?.id;
+        if (selectedEvent?.asset?.assetID != undefined) {
+          assetId = selectedEvent?.asset?.assetID;
         } else {
           assetId = selectedEvent.asset;
         }
         const previousSelectedAsset = allAssets.find(
-          (asset) => asset.id === assetId
+          (asset) => asset.assetID === assetId
         );
         if (previousSelectedAsset) {
           setSelectedAsset(previousSelectedAsset);
@@ -319,7 +322,7 @@ const EventEditor = ({
       setAssetData(allAssets);
     } else {
       const filteredData = allAssets.filter((item) => {
-        const itemName = item.name ? item.name.toLowerCase() : "";
+        const itemName = item.assetName ? item.assetName.toLowerCase() : "";
         return itemName.includes(searchQuery);
       });
       setAssetData(filteredData);
@@ -336,6 +339,7 @@ const EventEditor = ({
       method: "post",
       url: ADD_EVENT,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
       data: data,
@@ -415,7 +419,7 @@ const EventEditor = ({
                       <tbody>
                         {assetData.map((item) => (
                           <tr
-                            key={item.id}
+                            key={item.assetID}
                             className={`${
                               selectedAsset === item ? "bg-[#f3c953]" : ""
                             } border-b border-[#eee] `}
@@ -425,58 +429,58 @@ const EventEditor = ({
                             }}
                           >
                             <td className="border-b border-[#eee]">
-                              {item.categorieType === "OnlineImage" && (
+                              {item.assetType === "OnlineImage" && (
                                 <div className="imagebox relative">
                                   <img
-                                    src={item.fileType}
-                                    alt={item.name}
+                                    src={item.assetFolderPath}
+                                    alt={item.assetName}
                                     className="rounded-2xl h-24 w-28"
                                   />
                                 </div>
                               )}
 
-                              {item.categorieType === "OnlineVideo" && (
+                              {item.assetType === "OnlineVideo" && (
                                 <div className="imagebox relative">
                                   <video
                                     controls
                                     className="rounded-2xl h-24 w-28"
                                   >
                                     <source
-                                      src={item.fileType}
+                                      src={item.assetFolderPath}
                                       type="video/mp4"
                                     />
                                     Your browser does not support the video tag.
                                   </video>
                                 </div>
                               )}
-                              {item.categorieType === "Image" && (
+                              {item.assetType === "Image" && (
                                 <img
-                                  src={item.fileType}
-                                  alt={item.name}
+                                  src={item.assetFolderPath}
+                                  alt={item.assetName}
                                   className="imagebox relative h-24 w-28"
                                 />
                               )}
-                              {item.categorieType === "Video" && (
+                              {item.assetType === "Video" && (
                                 <div className="relative videobox">
                                   <video
                                     controls
                                     className="w-full rounded-2xl relative"
                                   >
                                     <source
-                                      src={item.fileType}
+                                      src={item.assetFolderPath}
                                       type="video/mp4"
                                     />
                                     Your browser does not support the video tag.
                                   </video>
                                 </div>
                               )}
-                              {item.categorieType === "DOC" && (
+                              {item.assetType === "DOC" && (
                                 <a
-                                  href={item.fileType}
+                                  href={item.assetFolderPath}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                 >
-                                  {item.name}
+                                  {item.assetName}
                                 </a>
                               )}
                             </td>
@@ -487,7 +491,7 @@ const EventEditor = ({
                                   handleAssetAdd(item);
                                 }}
                               >
-                                {item.name}
+                                {item.assetName}
                               </h5>
                             </td>
                             <td className="border-b border-[#eee]">
@@ -532,18 +536,20 @@ const EventEditor = ({
                                       <div className="p-3 flex justify-center  items-center min-w-[300px] max-w-[300px] min-h-[300px] max-h-[300px]">
                                         {assetPreview && (
                                           <>
-                                            {assetPreview.categorieType ===
+                                            {assetPreview.assetType ===
                                               "OnlineImage" && (
                                               <div className="imagebox relative p-3">
                                                 <img
-                                                  src={assetPreview.fileType}
-                                                  alt={assetPreview.name}
+                                                  src={
+                                                    assetPreview.assetFolderPath
+                                                  }
+                                                  alt={assetPreview.assetName}
                                                   className="rounded-2xl "
                                                 />
                                               </div>
                                             )}
 
-                                            {assetPreview.categorieType ===
+                                            {assetPreview.assetType ===
                                               "OnlineVideo" && (
                                               <div className="relative videobox">
                                                 <video
@@ -551,7 +557,9 @@ const EventEditor = ({
                                                   className="w-full rounded-2xl relative"
                                                 >
                                                   <source
-                                                    src={assetPreview.fileType}
+                                                    src={
+                                                      assetPreview.assetFolderPath
+                                                    }
                                                     type="video/mp4"
                                                   />
                                                   Your browser does not support
@@ -559,36 +567,42 @@ const EventEditor = ({
                                                 </video>
                                               </div>
                                             )}
-                                            {assetPreview.categorieType ===
+                                            {assetPreview.assetType ===
                                               "Image" && (
                                               <img
-                                                src={assetPreview.fileType}
-                                                alt={assetPreview.name}
+                                                src={
+                                                  assetPreview.assetFolderPath
+                                                }
+                                                alt={assetPreview.assetName}
                                                 className="imagebox relative flex justify-center  items-center min-w-[250px] max-w-[250px] min-h-[250px] max-h-[250px]"
                                               />
                                             )}
-                                            {assetPreview.categorieType ===
+                                            {assetPreview.assetType ===
                                               "Video" && (
                                               <video
                                                 controls
                                                 className="w-full rounded-2xl relative h-56"
                                               >
                                                 <source
-                                                  src={assetPreview.fileType}
+                                                  src={
+                                                    assetPreview.assetFolderPath
+                                                  }
                                                   type="video/mp4"
                                                 />
                                                 Your browser does not support
                                                 the video tag.
                                               </video>
                                             )}
-                                            {assetPreview.categorieType ===
+                                            {assetPreview.assetType ===
                                               "DOC" && (
                                               <a
-                                                href={assetPreview.fileType}
+                                                href={
+                                                  assetPreview.assetFolderPath
+                                                }
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                               >
-                                                {assetPreview.name}
+                                                {assetPreview.assetName}
                                               </a>
                                             )}
                                           </>
@@ -674,7 +688,9 @@ const EventEditor = ({
                         <h3>Asset :</h3>
                         <div className="mt-2 ">
                           <div className="bg-lightgray rounded-full px-4 py-2 w-full overflow-hidden whitespace-nowrap text-ellipsis">
-                            {selectedAsset ? selectedAsset.name : "Set Media"}
+                            {selectedAsset
+                              ? selectedAsset.assetName
+                              : "Set Media"}
                           </div>
                           <div className="flex items-center justify-center mt-4">
                             <button

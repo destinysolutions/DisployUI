@@ -144,7 +144,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   console.log(selectedAsset.name);
   useEffect(() => {
     axios
-      .get(GET_ALL_FILES)
+      .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
       .then((response) => {
         const fetchedData = response.data;
         const allAssets = [
@@ -163,7 +163,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
   useEffect(() => {
     axios
-      .get(GET_ALL_SCHEDULE)
+      .get(GET_ALL_SCHEDULE, { headers: { Authorization: authToken } })
       .then((response) => {
         const fetchedData = response.data;
 
@@ -270,6 +270,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       url: UPDATE_NEW_SCREEN,
       headers: {
         "Content-Type": "application/json",
+        Authorization: authToken,
       },
       data: data,
     };
@@ -344,6 +345,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         url: UPDATE_NEW_SCREEN,
         headers: {
           "Content-Type": "application/json",
+          Authorization: authToken,
         },
         data: data,
       };
@@ -409,6 +411,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       url: UPDATE_NEW_SCREEN,
       headers: {
         "Content-Type": "application/json",
+        Authorization: authToken,
       },
       data: data,
     };
@@ -489,6 +492,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         url: UPDATE_NEW_SCREEN,
         headers: {
           "Content-Type": "application/json",
+          Authorization: authToken,
         },
         data: data,
       };
@@ -547,6 +551,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       url: SCREEN_GROUP,
       headers: {
         "Content-Type": "application/json",
+        Authorization: authToken,
       },
       data: data,
     };
@@ -1150,7 +1155,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                       </tr>
                                                     </thead>
                                                     {assetData.map((asset) => (
-                                                      <tbody key={asset.id}>
+                                                      <tbody
+                                                        key={asset.assetID}
+                                                      >
                                                         <tr
                                                           className={`${
                                                             selectedAsset ===
@@ -1168,7 +1175,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                           }}
                                                         >
                                                           <td className="p-3 text-left">
-                                                            {asset.name}
+                                                            {asset.assetName}
                                                           </td>
                                                           <td className="p-3">
                                                             {moment(
@@ -1181,9 +1188,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                             {asset.fileSize}
                                                           </td>
                                                           <td className="p-3">
-                                                            {
-                                                              asset.categorieType
-                                                            }
+                                                            {asset.assetType}
                                                           </td>
                                                         </tr>
                                                       </tbody>
@@ -1209,22 +1214,22 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                             <div className="p-3 flex justify-center  items-center min-w-[300px] max-w-[300px] min-h-[300px] max-h-[300px]">
                                                               {assetPreview && (
                                                                 <>
-                                                                  {assetPreview.categorieType ===
+                                                                  {assetPreview.assetType ===
                                                                     "OnlineImage" && (
                                                                     <div className="imagebox relative p-3">
                                                                       <img
                                                                         src={
-                                                                          assetPreview.fileType
+                                                                          assetPreview.assetFolderPath
                                                                         }
                                                                         alt={
-                                                                          assetPreview.name
+                                                                          assetPreview.assetName
                                                                         }
                                                                         className="rounded-2xl"
                                                                       />
                                                                     </div>
                                                                   )}
 
-                                                                  {assetPreview.categorieType ===
+                                                                  {assetPreview.assetType ===
                                                                     "OnlineVideo" && (
                                                                     <div className="relative videobox">
                                                                       <video
@@ -1233,7 +1238,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                       >
                                                                         <source
                                                                           src={
-                                                                            assetPreview.fileType
+                                                                            assetPreview.assetFolderPath
                                                                           }
                                                                           type="video/mp4"
                                                                         />
@@ -1247,19 +1252,19 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                       </video>
                                                                     </div>
                                                                   )}
-                                                                  {assetPreview.categorieType ===
+                                                                  {assetPreview.assetType ===
                                                                     "Image" && (
                                                                     <img
                                                                       src={
-                                                                        assetPreview.fileType
+                                                                        assetPreview.assetFolderPath
                                                                       }
                                                                       alt={
-                                                                        assetPreview.name
+                                                                        assetPreview.assetName
                                                                       }
                                                                       className="imagebox relative flex justify-center  items-center min-w-[250px] max-w-[250px] min-h-[250px] max-h-[250px]"
                                                                     />
                                                                   )}
-                                                                  {assetPreview.categorieType ===
+                                                                  {assetPreview.assetType ===
                                                                     "Video" && (
                                                                     <video
                                                                       controls
@@ -1267,7 +1272,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                     >
                                                                       <source
                                                                         src={
-                                                                          assetPreview.fileType
+                                                                          assetPreview.assetFolderPath
                                                                         }
                                                                         type="video/mp4"
                                                                       />
@@ -1279,17 +1284,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                       tag.
                                                                     </video>
                                                                   )}
-                                                                  {assetPreview.categorieType ===
+                                                                  {assetPreview.assetType ===
                                                                     "DOC" && (
                                                                     <a
                                                                       href={
-                                                                        assetPreview.fileType
+                                                                        assetPreview.assetFolderPath
                                                                       }
                                                                       target="_blank"
                                                                       rel="noopener noreferrer"
                                                                     >
                                                                       {
-                                                                        assetPreview.name
+                                                                        assetPreview.assetName
                                                                       }
                                                                     </a>
                                                                   )}

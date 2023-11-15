@@ -24,9 +24,11 @@ import {
   GET_TIMEZONE,
   UPDATED_SCHEDULE_DATA,
   SIGNAL_R,
-  ADD_TIMEZONE,
   SELECT_BY_USER_SCREENDETAIL,
   UPDATE_SCREEN_ASSIGN,
+  GET_SCEDULE_TIMEZONE,
+  UPDATE_TIMEZONE,
+  GET_ALL_EVENTS,
 } from "../../Pages/Api";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
@@ -80,8 +82,10 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       ? getScheduleName
       : moment(current_date).format("YYYY-MM-DD hh:mm")
   );
+
   const [screenData, setScreenData] = useState([]);
   const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
@@ -92,22 +96,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const selectedScreenIdsString = selectedScreens.join(",");
 
   const navigate = useNavigate();
-  const handleSelectSlot = useCallback(
-    ({ start, end }) => {
-      if (getScheduleName) {
-        setSelectedSlot({ start, end });
-        setCreatePopupOpen(true);
-      } else if (!newScheduleNameInput) {
-        let messge = "Please Insert Schedule Name";
-        setScheduleMessage(messge);
-        setScheduleMessageVisible(true);
-      } else {
-        setSelectedSlot({ start, end });
-        setCreatePopupOpen(true);
-      }
-    },
-    [newScheduleNameInput]
-  );
+
+  const handleSelectSlot = useCallback(({ start, end }) => {
+    setSelectedSlot({ start, end });
+    setCreatePopupOpen(true);
+  }, []);
 
   const handleSelectEvent = useCallback((event) => {
     setSelectedEvent(event);
@@ -116,9 +109,14 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     axios
-      .get(GET_TIMEZONE)
+      .get(GET_SCEDULE_TIMEZONE, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
       .then((TIMEZONEresponse) => {
         setTimezone(TIMEZONEresponse.data.data);
+
         const timezone = isEditingSchedule
           ? addedTimezoneName
           : TIMEZONEresponse.data.data[92].timeZoneName;
@@ -126,12 +124,20 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         setSelectedTimezoneName(timezone);
         if (!isEditingSchedule) {
           axios
-            .post(ADD_SCHEDULE, {
-              scheduleName: newScheduleNameInput,
-              timeZoneName: TIMEZONEresponse.data.data[92].timeZoneName,
-              screenAssigned: selectedScreenIdsString,
-              operation: "Insert",
-            })
+            .post(
+              ADD_SCHEDULE,
+              {
+                scheduleName: newScheduleNameInput,
+                timeZoneName: TIMEZONEresponse.data.data[92].timeZoneName,
+                screenAssigned: selectedScreenIdsString,
+                operation: "Insert",
+              },
+              {
+                headers: {
+                  Authorization: authToken,
+                },
+              }
+            )
             .then((response) => {
               const newScheduleId = response.data.data.model.scheduleId;
               setCreatedScheduleId(newScheduleId);
@@ -148,7 +154,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     axios
-      .get(GET_ALL_FILES)
+      .get(GET_ALL_FILES, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
       .then((response) => {
         const fetchedData = response.data;
         const allAssets = [
@@ -263,6 +273,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleTimezone = (timezonename) => {
+    console.log(timezonename);
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
@@ -270,14 +281,15 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     let data = JSON.stringify({
       scheduleId: scheduleIdToUse,
       timeZoneName: timezonename,
-      operation: "Update",
+      userID: 0,
     });
 
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: ADD_TIMEZONE,
+      url: UPDATE_TIMEZONE,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
       data: data,
@@ -286,7 +298,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log("handleTimezone", JSON.stringify(response.data));
+        console.log(JSON.stringify(response.data));
       })
       .catch((error) => {
         console.log(error);
@@ -294,41 +306,51 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   // Function to handle saving the new schedule
-  const handleSaveNewSchedule = () => {
-    debugger;
-    console.log(selectedScreens, ";fsdfsdfg==>selectedScreens");
-    axios
-      .post(ADD_SCHEDULE, {
-        scheduleName: newScheduleNameInput,
-        timeZoneName: selectedTimezoneName,
-        screenAssigned: selectedScreenIdsString,
-        operation: "Insert",
-      })
-      .then((response) => {
-        const newScheduleId = response.data.data.model.scheduleId;
-        setCreatedScheduleId(newScheduleId);
-        console.log(response.data);
-        return newScheduleId;
-      })
-      .catch((error) => {
-        console.error("Error creating a new schedule:", error);
-      });
-  };
+  // const handleSaveNewSchedule = () => {
+  //   axios
+  //     .post(
+  //       ADD_SCHEDULE,
+  //       {
+  //         headers: {
+  //           Authorization: authToken,
+  //         },
+  //       },
+  //       {
+  //         scheduleName: newScheduleNameInput,
+  //         timeZoneName: selectedTimezoneName,
+  //         screenAssigned: selectedScreenIdsString,
+  //         operation: "Insert",
+  //       }
+  //     )
+  //     .then((response) => {
+  //       const newScheduleId = response.data.data.model.scheduleId;
+  //       setCreatedScheduleId(newScheduleId);
+  //       console.log(response.data);
+  //       return newScheduleId;
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error creating a new schedule:", error);
+  //     });
+  // };
 
   const saveEditedSchedule = () => {
+    const scheduleIdToUse = isEditingSchedule
+      ? getScheduleId
+      : createdScheduleId;
     let data = JSON.stringify({
-      scheduleId: getScheduleId,
+      scheduleId: scheduleIdToUse,
       scheduleName: newScheduleNameInput,
       screenAssigned: selectedScreenIdsString,
       startDate: overallEventTimes.earliestStartTime.toLocaleString(),
       endDate: overallEventTimes.latestEndTime.toLocaleString(),
-      operation: "Update",
+      operation: "Insert",
     });
     let config = {
       method: "post",
       maxBodyLength: Infinity,
       url: ADD_SCHEDULE,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
       data: data,
@@ -344,25 +366,20 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
+
   const handleUpdateScreenAssign = () => {
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
-    console.log("scheduleIdToUse", scheduleIdToUse);
-    let data = JSON.stringify({
-      scheduleId: scheduleIdToUse,
-      screenAssigned: selectedScreenIdsString,
-      operation: "Insert",
-    });
 
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: UPDATE_SCREEN_ASSIGN,
+      url: `${UPDATE_SCREEN_ASSIGN}?ScheduleID=${scheduleIdToUse}&ScreenID=${selectedScreenIdsString}`,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
-      data: data,
     };
 
     axios
@@ -380,9 +397,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       ? getScheduleId
       : createdScheduleId;
     const previousSelectedAsset = allAssets.find(
-      (asset) => asset.id === event.asset
+      (asset) => asset.assetID === event.asset
     );
-
+    console.log("previousSelectedAsset", previousSelectedAsset);
     const updatedEventData = {
       ...event,
       start,
@@ -400,7 +417,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       ? getScheduleId
       : createdScheduleId;
     const previousSelectedAsset = allAssets.find(
-      (asset) => asset.id === event.asset
+      (asset) => asset.assetID === event.asset
     );
 
     const resizedEvent = {
@@ -416,7 +433,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   // Fetch events associated with the scheduleId
   const loadEventsForSchedule = (scheduleId) => {
     axios
-      .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`)
+      .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
       .then((response) => {
         const fetchedData = response.data.data;
         setScheduleAsset(response.data.data);
@@ -437,18 +458,20 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleSaveEvent = (eventId, eventData) => {
+    console.log(eventData, "eventData");
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
 
     const data = {
+      //eventId: eventId == 0 ? "" : eventId,
       startDate: eventData.start,
       endDate: eventData.end,
-      asset: eventData.asset ? eventData.asset.id : null,
+      asset: eventData.asset ? eventData.asset.assetID : null,
       title: eventData.title,
       color: eventData.color,
       repeatDay: eventData.repeatDay,
-      operation: eventId ? "Update" : "Insert",
+      operation: "Insert",
       scheduleId: scheduleIdToUse,
     };
 
@@ -466,6 +489,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       method: "post",
       url: ADD_EVENT,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
       data: data,
@@ -565,7 +589,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     if (UserData.user?.userID) {
       axios
-        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${UserData.user?.userID}`)
+        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${UserData.user?.userID}`, {
+          headers: {
+            Authorization: authToken,
+          },
+        })
         .then((response) => {
           const fetchedData = response.data.data;
           console.log(fetchedData, "dsdsdsdsds");
@@ -702,7 +730,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 {getTimezone.map((timezone) => (
                   <option
                     value={timezone.timeZoneName}
-                    key={timezone.timeZoneId}
+                    key={timezone.timeZoneID}
                   >
                     {timezone.timeZoneName}
                   </option>
@@ -796,7 +824,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                           )
                         ).map((uniqueId, index) => {
                           const foundAsset = allAssets.find(
-                            (asset) => asset.id === uniqueId
+                            (asset) => asset.assetID === uniqueId
                           );
 
                           if (foundAsset) {
@@ -814,14 +842,14 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
                     {selectedAsset && (
                       <>
-                        {selectedAsset.categorieType === "OnlineImage" && (
+                        {selectedAsset.assetType === "OnlineImage" && (
                           <img
                             src={selectedAsset.fileType}
                             alt={selectedAsset.name}
                             className="imagebox relative"
                           />
                         )}
-                        {selectedAsset.categorieType === "OnlineVideo" && (
+                        {selectedAsset.assetType === "OnlineVideo" && (
                           <video
                             controls
                             className="w-full rounded-2xl relative h-56"
@@ -833,32 +861,32 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             Your browser does not support the video tag.
                           </video>
                         )}
-                        {selectedAsset.categorieType === "Image" && (
+                        {selectedAsset.assetType === "Image" && (
                           <img
-                            src={selectedAsset.fileType}
-                            alt={selectedAsset.name}
+                            src={selectedAsset.assetFolderPath}
+                            alt={selectedAsset.assetName}
                             className="imagebox relative"
                           />
                         )}
-                        {selectedAsset.categorieType === "Video" && (
+                        {selectedAsset.assetType === "Video" && (
                           <video
                             controls
                             className="w-full rounded-2xl relative h-56"
                           >
                             <source
-                              src={selectedAsset.fileType}
+                              src={selectedAsset.assetFolderPath}
                               type="video/mp4"
                             />
                             Your browser does not support the video tag.
                           </video>
                         )}
-                        {selectedAsset.categorieType === "DOC" && (
+                        {selectedAsset.assetType === "DOC" && (
                           <a
-                            href={selectedAsset.fileType}
+                            href={selectedAsset.assetFolderPath}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            {selectedAsset.name}
+                            {selectedAsset.assetName}
                           </a>
                         )}
                       </>
@@ -891,11 +919,12 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             <button
               className="mb-3 border-2 border-gray bg-lightgray hover:bg-primary hover:text-white  px-6 py-2 rounded-full ml-3"
               onClick={() =>
-                isEditingSchedule
-                  ? saveEditedSchedule()
-                  : createdScheduleId
-                  ? navigate("/myschedule")
-                  : handleSaveNewSchedule()
+                // isEditingSchedule
+                //   ? saveEditedSchedule()
+                //   : createdScheduleId
+                //   ? navigate("/myschedule")
+                //   : handleSaveNewSchedule()
+                saveEditedSchedule()
               }
             >
               Save

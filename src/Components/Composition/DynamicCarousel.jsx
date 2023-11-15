@@ -21,40 +21,40 @@ const Carousel = ({ items }) => {
         if (currentIndex === index) {
           return (
             <div className="flex h-full w-full" key={index}>
-              {item.categorieType === "OnlineImage" && (
+              {item.assetType === "OnlineImage" && (
                 <>
                   <img
                     className="w-full h-full object-cover rounded-sm"
-                    src={item.fileType}
-                    alt={item.name}
+                    src={item.assetFolderPath}
+                    alt={item.assetName}
                   />
                 </>
               )}
-              {item.categorieType === "Image" && (
+              {item.assetType === "Image" && (
                 <img
-                  src={item.fileType}
-                  alt={item.name}
+                  src={item.assetFolderPath}
+                  alt={item.assetName}
                   className="w-full h-full object-cover rounded-sm"
                 />
               )}
-              {item.categorieType === "Video" && (
+              {item.assetType === "Video" && (
                 <video
                   loop
                   autoPlay
                   controls
                   className="w-full h-full rounded-sm"
                 >
-                  <source src={item.fileType} type="video/mp4" />
+                  <source src={item.assetFolderPath} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               )}
-              {item.categorieType === "DOC" && (
+              {item.assetType === "DOC" && (
                 <a
-                  href={item.fileType}
+                  href={item.assetFolderPath}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {item.name}
+                  {item.assetName}
                 </a>
               )}
             </div>
