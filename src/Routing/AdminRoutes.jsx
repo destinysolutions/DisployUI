@@ -10,9 +10,18 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path="/manage-user-type" element={<Navigate to="/" />} />
+          <Route path="/admin-dashboard" element={<Navigate to="/" />} />
           <Route
             path="/"
+            element={
+              <AdminDashboard
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/manage-user-type"
             element={
               <ManageUserType
                 sidebarOpen={sidebarOpen}
@@ -21,7 +30,7 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
             }
           />
           <Route
-            path="/onborded"  
+            path="/onborded"
             element={
               <OnBoding
                 sidebarOpen={sidebarOpen}

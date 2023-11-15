@@ -440,6 +440,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data.data;
+        // console.log("event data : ", fetchedData);
         setScheduleAsset(response.data.data);
         const fetchedEvents = fetchedData.map((item) => ({
           id: item.eventId,
@@ -449,6 +450,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           color: item.color,
           asset: item.asset,
           repeatDay: item.repeatDay,
+          isfutureDateExists: item.isfutureDateExists,
+          actualEndDate: item.actualEndDate,
         }));
         setEvents(fetchedEvents);
       })
@@ -456,15 +459,20 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-
-  const handleSaveEvent = (eventId, eventData) => {
-    console.log(eventData, "eventData");
+  // console.log(selectedEvent?.isfutureDateExists, "selectdfg");
+  //   useEffect(()=>{
+  // if(selectedEvent?.isfutureDateExists == 1){
+  //   console.log('yes');
+  // }
+  //   },[])
+  const handleSaveEvent = (eventId, eventData, updateAllValue) => {
+    // debugger;
+    console.log(updateAllValue, "eventData");
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
 
     const data = {
-      //eventId: eventId == 0 ? "" : eventId,
       startDate: eventData.start,
       endDate: eventData.end,
       asset: eventData.asset ? eventData.asset.assetID : null,
@@ -473,6 +481,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       repeatDay: eventData.repeatDay,
       operation: "Insert",
       scheduleId: scheduleIdToUse,
+      UpdateALL: updateAllValue,
     };
 
     if (eventId) {
@@ -499,7 +508,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         const fetchedData = response.data.data.eventTables;
-
+        console.log(fetchedData, "fetchedData");
         const updateEvent = fetchedData.map((item) => ({
           id: item.eventId,
           title: item.title,
@@ -510,7 +519,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           day: item.day,
           asset: item.asset,
         }));
-
+        console.log(updateEvent, "updateEvent");
         // // Sending a SignalR message for the updated event
         // if (eventId) {
         //   const updatedEvent = fetchedData.find(

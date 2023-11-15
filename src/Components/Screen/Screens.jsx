@@ -37,7 +37,6 @@ import { RxTimer } from "react-icons/rx";
 import { Tooltip } from "@material-tailwind/react";
 
 import {
-  DELETE_SCREEN_BY_USERID,
   GET_ALL_FILES,
   GET_ALL_SCHEDULE,
   SCREEN_GROUP,
@@ -240,7 +239,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: DELETE_SCREEN_BY_USERID,
+      url: UPDATE_NEW_SCREEN,
       headers: {
         "Content-Type": "application/json",
       },

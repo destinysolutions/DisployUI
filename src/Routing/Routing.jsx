@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
-import Dashboard from "../Components/Dashboard/Dashboard";
+// import Dashboard from "../Components/Dashboard/Dashboard";
 import Screens from "../Components/Screen/Screens";
 import NewScreenGroup from "../Components/Screen/SubScreens/NewScreenGroup";
 import Screensplayer from "../Components/Screen/SubScreens/Screensplayer";
@@ -122,9 +122,9 @@ const Routing = () => {
       <UserProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" />} />
-            <Route path="/register" element={<Navigate to="/dashboard" />} />
-            <Route
+            <Route path="/" element={<Navigate to="/screens" />} />
+            <Route path="/register" element={<Navigate to="/screens" />} />
+            {/* <Route
               path="/dashboard"
               element={
                 <Dashboard
@@ -132,7 +132,7 @@ const Routing = () => {
                   setSidebarOpen={setSidebarOpen}
                 />
               }
-            />
+            /> */}
 
             <Route
               path="/screens"
