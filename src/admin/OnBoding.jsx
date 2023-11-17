@@ -8,6 +8,7 @@ import { useState } from "react";
 import axios from "axios";
 import { CiMenuKebab } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { ADD_ORGANIZATION_MASTER, GET_ALL_ORGANIZATION_MASTER } from "./AdminAPI";
 
 const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
   const [userData, setUserData] = useState([]);
@@ -16,7 +17,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.115/api/UserMaster/GetAllOrganizationMaster",
+      url: GET_ALL_ORGANIZATION_MASTER,
       headers: {},
     };
     axios
@@ -171,7 +172,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.115/api/UserMaster/AddOrganizationMaster",
+      url: ADD_ORGANIZATION_MASTER,
       headers: {
         "Content-Type": "application/json",
       },

@@ -28,6 +28,7 @@ import {
   RiComputerLine,
   RiDeleteBin5Line,
   RiPlayListFill,
+  RiSignalTowerLine,
 } from "react-icons/ri";
 import { HiDotsVertical, HiOutlineLocationMarker } from "react-icons/hi";
 import { BsCollectionPlay, BsPencilSquare, BsTags } from "react-icons/bs";
@@ -137,10 +138,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   }, [UserData.user?.userID]);
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   const [assetData, setAssetData] = useState([]);
-  const [selectedAsset, setSelectedAsset] = useState({ name: "" });
+  const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
   const [assetPreview, setAssetPreview] = useState("");
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
-  console.log(selectedAsset.name);
+  console.log(selectedAsset.assetName);
   useEffect(() => {
     axios
       .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
@@ -241,6 +242,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       maxBodyLength: Infinity,
       url: UPDATE_NEW_SCREEN,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
       data: data,
@@ -307,9 +309,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         latitude,
         longitude,
         userID,
-        screenType,
+        mediaType,
         tags,
-        moduleID,
+        mediaDetailID,
         tvTimeZone,
         tvScreenOrientation,
         tvScreenResolution,
@@ -328,9 +330,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         latitude,
         longitude,
         userID,
-        screenType,
+        mediaType,
         tags,
-        moduleID,
+        mediaDetailID,
         tvTimeZone,
         tvScreenOrientation,
         tvScreenResolution,
@@ -374,67 +376,88 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
   const handleAssetUpdate = (screenId) => {
-    let moduleID = selectedAsset.id;
+    const screenToUpdate = screenData.find(
+      (screen) => screen.screenID === screenId
+    );
+    let moduleID = selectedAsset.assetID;
 
-    let data = JSON.stringify({
-      // screenID: screenId,
-      // otp,
-      // googleLocation,
-      // timeZone,
-      // screenOrientation,
-      // screenResolution,
-      // macid,
-      // ipAddress,
-      // postalCode,
-      // latitude,
-      // longitude,
-      // userID,
-      // screenType: 1,
-      // tags,
-      // moduleID: moduleID,
-      // tvTimeZone,
-      // tvScreenOrientation,
-      // tvScreenResolution,
-      // screenName,
-      // operation: "Update",
+    if (screenToUpdate) {
+      const {
+        otp,
+        googleLocation,
+        timeZone,
+        screenOrientation,
+        screenResolution,
+        macid,
+        ipAddress,
+        postalCode,
+        latitude,
+        longitude,
+        userID,
+        tags,
+        tvTimeZone,
+        tvScreenOrientation,
+        tvScreenResolution,
+        screenName,
+      } = screenToUpdate;
 
-      screenType: 1,
-      screenID: screenId,
-      moduleID: moduleID,
-      userID: UserData.user?.userID,
-    });
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: UPDATE_NEW_SCREEN,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authToken,
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(response.data);
-        const updatedScreenData = screenData.map((screen) => {
-          if (screen.screenID === screenId) {
-            return {
-              ...screen,
-              name: selectedAsset.name,
-            };
-          }
-          return screen;
-        });
-
-        setScreenData(updatedScreenData);
-        setIsEditingScreen(false);
-      })
-      .catch((error) => {
-        console.log(error);
+      let data = JSON.stringify({
+        screenID: screenId,
+        otp,
+        googleLocation,
+        timeZone,
+        screenOrientation,
+        screenResolution,
+        macid,
+        ipAddress,
+        postalCode,
+        latitude,
+        longitude,
+        userID,
+        mediaType: 1,
+        tags,
+        mediaDetailID: moduleID,
+        tvTimeZone,
+        tvScreenOrientation,
+        tvScreenResolution,
+        screenName,
+        operation: "Update",
       });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: UPDATE_NEW_SCREEN,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authToken,
+        },
+        data: data,
+      };
+
+      axios
+        .request(config)
+        .then((response) => {
+          console.log(response.data);
+          const updatedScreenData = screenData.map((screen) => {
+            if (screen.screenID === screenId) {
+              return {
+                ...screen,
+                assetName: selectedAsset.assetName,
+              };
+            }
+            return screen;
+          });
+
+          setScreenData(updatedScreenData);
+          setIsEditingScreen(false);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      console.error("Asset not found for update");
+    }
   };
 
   const handleScheduleUpdate = (screenId) => {
@@ -475,9 +498,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         latitude,
         longitude,
         userID,
-        screenType: 2,
+        mediaType: 2,
         tags,
-        moduleID: moduleID,
+        mediaDetailID: moduleID,
         tvTimeZone,
         tvScreenOrientation,
         tvScreenResolution,
@@ -504,7 +527,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             if (screen.screenID === screenId) {
               return {
                 ...screen,
-                name: selectedSchedule.name,
+                scheduleName: selectedSchedule.scheduleName,
               };
             }
             return screen;
@@ -680,7 +703,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   type="button"
                   className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                 >
-                  <VscVmActive className="p-1 px-2 text-4xl text-white hover:text-white" />
+                  <RiSignalTowerLine className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
               </Tooltip>
               <Tooltip
@@ -983,13 +1006,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               setShowAssetModal(true);
                               setSelectedAsset({
                                 ...selectedAsset,
-                                name: e.target.value,
+                                assetName: e.target.value,
                               });
                             }}
                             className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           >
-                            {screen.screenType == 1 ? `${screen.name} ` : ""}
-                            <AiOutlineCloudUpload className=" text-lg" />
+                            {screen.assetName}
+                            <AiOutlineCloudUpload className="text-lg ml-2" />
                           </button>
                           {showAssetModal && (
                             <>
@@ -1335,14 +1358,15 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       )}
                       {currScheduleContentVisible && (
                         <td className="break-words	w-[150px] p-2 text-center">
-                          {screen.screenType == 2 ? (
-                            `${screen.name} Till
-                          ${moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`
-                          ) : (
+                          {screen.scheduleName == "" ? (
                             <button onClick={() => setShowScheduleModal(true)}>
                               Set a schedule
                             </button>
+                          ) : (
+                            `${screen.scheduleName} Till
+                          ${moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`
                           )}
+
                           {showScheduleModal && (
                             <>
                               <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">

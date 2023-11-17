@@ -11,6 +11,7 @@ import axios from "axios";
 import DataTable from "react-data-table-component";
 import { CiMenuKebab } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { ADD_USER_TYPE_MASTER, GET_ALL_USER_TYPE_MASTER } from "./AdminAPI";
 
 const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
   const [addUsertypeModal, setAddUserTypeModal] = useState(false);
@@ -41,7 +42,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.115/api/UserMaster/AddUserTypeMaster",
+      url: ADD_USER_TYPE_MASTER,
       headers: {
         "Content-Type": "application/json",
       },
@@ -87,7 +88,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.115/api/UserMaster/GetAllUserTypeMaster",
+      url: GET_ALL_USER_TYPE_MASTER,
       headers: {},
     };
 
@@ -116,7 +117,7 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.115/api/UserMaster/AddUserTypeMaster",
+      url: ADD_USER_TYPE_MASTER,
       headers: {
         "Content-Type": "application/json",
       },
