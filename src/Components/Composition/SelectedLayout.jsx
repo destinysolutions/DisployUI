@@ -177,7 +177,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     // const canvasData = JSON.stringify(editor.canvas.toJSON());
     let data = new FormData();
     data.append("CompositionID", 0);
-    data.append("CompositionName", state?.name);
+    data.append("CompositionName", "s1");
     data.append("Resolution", "1920 x 1080");
     data.append("Tags", "Tags");
     data.append("LayoutID", state.layoutDtlID);
@@ -188,8 +188,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       maxBodyLength: Infinity,
       url: ADDPLAYLIST,
       headers: {
-        "Content-Type": "application/json",
         Authorization: authToken,
+        "Content-Type": "multipart/form-data",
       },
       data: data,
     };

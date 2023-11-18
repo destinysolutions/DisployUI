@@ -145,15 +145,14 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
       // Create an array to hold all the promises for image uploads
       const uploadPromises = selectedImages.map(async (image, index) => {
         const CategorieType = getContentType(image.file.type);
-       
+
         const formData = new FormData();
         formData.append("File", image.file);
         formData.append("Operation", "Insert");
         formData.append("AssetType", CategorieType);
         formData.append("IsActive", "true");
         formData.append("IsDelete", "false");
-        formData.append('FolderID', '0');
-      
+        formData.append("FolderID", "0");
 
         try {
           const response = await axios.post(ALL_FILES_UPLOAD, formData, {
@@ -198,7 +197,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
       await Promise.all(uploadPromises);
 
       // Once all files are uploaded, navigate to the desired location
-      navigate("/assets");
+      navigate(-1);
     } catch (error) {
       console.error("An error occurred during upload:", error);
     } finally {
@@ -348,7 +347,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               Media Upload
             </h1>
             <div className="lg:flex md:flex sm:block">
-              <Link to="/assets">
+              <Link to={-1}>
                 <button className="flex align-middle border-primary items-center border rounded-full lg:px-8 md:px-8 sm:px-4 xs:px-4 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                   Cancel
                 </button>

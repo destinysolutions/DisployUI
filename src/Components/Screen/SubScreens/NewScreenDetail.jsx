@@ -186,10 +186,10 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         screenOrientation: selectScreenOrientation,
         screenResolution: selectScreenResolution,
         timeZone: selectedTimezoneName,
-        mediaType: selectedScreenTypeOption,
+        mediaType: selectedScreenTypeOption || 0,
         tags: tagName,
         screenName: screenName,
-        mediaDetailID: moduleID,
+        mediaDetailID: moduleID || 0,
         operation: "Update",
       });
       console.log(
@@ -491,106 +491,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                     <div className="bg-white rounded-[30px]">
                                       <div>
                                         <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                          <div>
-                                            <nav
-                                              className="flex flex-col space-y-2 "
-                                              aria-label="Tabs"
-                                              role="tablist"
-                                              data-hs-tabs-vertical="true"
-                                            >
-                                              <button
-                                                type="button"
-                                                className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                                  popupActiveTab === 1
-                                                    ? "active"
-                                                    : ""
-                                                }`}
-                                                // onClick={() => handleTabClick(1)}
-                                              >
-                                                <span
-                                                  className={`p-1 rounded ${
-                                                    popupActiveTab === 1
-                                                      ? "bg-primary text-white"
-                                                      : "bg-lightgray"
-                                                  } `}
-                                                >
-                                                  <IoBarChartSharp size={15} />
-                                                </span>
-                                                Assets
-                                              </button>
-                                              <button
-                                                type="button"
-                                                className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                                  popupActiveTab === 2
-                                                    ? "active"
-                                                    : ""
-                                                }`}
-                                                //onClick={() => handleTabClick(2)}
-                                              >
-                                                <span
-                                                  className={`p-1 rounded ${
-                                                    popupActiveTab === 2
-                                                      ? "bg-primary text-white"
-                                                      : "bg-lightgray"
-                                                  } `}
-                                                >
-                                                  <RiPlayListFill size={15} />
-                                                </span>
-                                                Playlist
-                                              </button>
-                                              <button
-                                                type="button"
-                                                className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                                  popupActiveTab === 3
-                                                    ? "active"
-                                                    : ""
-                                                }`}
-                                                // onClick={() => handleTabClick(3)}
-                                              >
-                                                <span
-                                                  className={`p-1 rounded ${
-                                                    popupActiveTab === 3
-                                                      ? "bg-primary text-white"
-                                                      : "bg-lightgray"
-                                                  } `}
-                                                >
-                                                  <BiAnchor size={15} />
-                                                </span>
-                                                Disploy Studio
-                                              </button>
-                                              <button
-                                                type="button"
-                                                className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                                  popupActiveTab === 4
-                                                    ? "active"
-                                                    : ""
-                                                }`}
-                                                // onClick={() => handleTabClick(4)}
-                                              >
-                                                <span
-                                                  className={`p-1 rounded ${
-                                                    popupActiveTab === 4
-                                                      ? "bg-primary text-white"
-                                                      : "bg-lightgray"
-                                                  } `}
-                                                >
-                                                  <AiOutlineAppstoreAdd
-                                                    size={15}
-                                                  />
-                                                </span>
-                                                Apps
-                                              </button>
-                                            </nav>
-                                          </div>
-
                                           <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
-                                            <div
-                                              className={
-                                                popupActiveTab === 1
-                                                  ? ""
-                                                  : "hidden"
-                                              }
-                                            >
+                                            <div>
                                               <div className="flex border-b border-lightgray flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                                                 <div className="mb-5 relative searchbox">
                                                   <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />

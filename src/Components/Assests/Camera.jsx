@@ -90,7 +90,7 @@ const Camera = ({ closeModal, onImageUpload }) => {
 
             setTimeout(() => {
               setIsSaved(false);
-              navigate("/assets");
+              navigate(-1);
             }, 1000);
           }
         })

@@ -48,7 +48,7 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
       // Start uploading
       setUploading(true);
       setTimeout(() => {
-        navigate("/assets");
+        navigate(-1);
       }, 1000);
     } catch (error) {
       console.error("Error stopping recording:", error);
