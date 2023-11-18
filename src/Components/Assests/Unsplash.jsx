@@ -98,7 +98,7 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
             ...prevStatus,
             [image.id]: "success",
           }));
-          navigate("/assets");
+          navigate(-1);
         })
         .catch((error) => {
           console.error("Upload Error:", error);

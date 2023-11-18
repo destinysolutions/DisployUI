@@ -13,6 +13,7 @@ import { CiMenuKebab } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 import "../Styles/admin.css";
+import { ADD_USER_MASTER, GET_ALL_USER_MASTER, GET_ALL_USER_TYPE_MASTER } from "./AdminAPI";
 
 const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [addUserModal, setAddUserModal] = useState(false);
@@ -60,7 +61,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.115/api/UserMaster/AddUserMaster",
+      url: ADD_USER_MASTER,
       headers: {
         "Content-Type": "application/json",
       },
@@ -124,7 +125,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.115/api/UserMaster/GetAllUserTypeMaster",
+      url: GET_ALL_USER_TYPE_MASTER,
       headers: {},
     };
 
@@ -142,7 +143,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.115/api/UserMaster/GetAllUserMaster",
+      url: GET_ALL_USER_MASTER,
       headers: {},
     };
 
@@ -171,7 +172,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "http://192.168.1.115/api/UserMaster/AddUserMaster",
+      url: ADD_USER_MASTER,
       headers: {
         "Content-Type": "application/json",
       },

@@ -94,12 +94,13 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleScheduleItemClick = (scheduleId) => {
     setScheduleId(scheduleId);
-    // Toggle the action menu for the clicked schedule item
-
-    setShowActionBox((prevState) => ({
-      ...prevState,
-      [scheduleId]: !prevState[scheduleId] || false,
-    }));
+    setShowActionBox((prevState) => {
+      const updatedState = Object.keys(prevState).reduce((acc, key) => {
+        acc[key] = key === scheduleId ? !prevState[key] : false;
+        return acc;
+      }, {});
+      return { ...updatedState, [scheduleId]: !prevState[scheduleId] };
+    });
   };
 
   const handelDeleteSchedule = (scheduleId) => {
@@ -394,7 +395,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         <button
                           className="ml-3 relative"
                           onClick={() => {
-                            setShowActionBox(!showActionBox);
                             handleScheduleItemClick(schedule.scheduleId);
                           }}
                         >

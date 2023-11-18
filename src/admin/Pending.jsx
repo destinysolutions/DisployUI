@@ -5,6 +5,11 @@ import axios from "axios";
 import { DELETE_USER } from "../Pages/Api";
 import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./adminNavbar";
+import {
+  ADD_ORGANIZATION_MASTER,
+  GET_ALL_ORGANIZATION_SIGNUPS,
+  SELECT_BY_ORGANIZATION_SIGNUPS_ID,
+} from "./AdminAPI";
 
 const Pending = ({ sidebarOpen, setSidebarOpen }) => {
   const [userData, setUserData] = useState([]);
@@ -19,7 +24,7 @@ const Pending = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const handleUserData = () => {
     axios
-      .get("http://192.168.1.115/api/UserMaster/GetAllOrganizationSignups")
+      .get(GET_ALL_ORGANIZATION_SIGNUPS)
       .then((response) => {
         const fetchedData = response.data.data;
         setUserData(fetchedData);
@@ -37,7 +42,7 @@ const Pending = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `http://192.168.1.115/api/UserMaster/SelectByOrganizationSignupsID?ID=${id}`,
+      url: `${SELECT_BY_ORGANIZATION_SIGNUPS_ID}?ID=${id}`,
       headers: {},
     };
 
@@ -74,7 +79,7 @@ const Pending = ({ sidebarOpen, setSidebarOpen }) => {
       let config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: "http://192.168.1.115/api/UserMaster/AddOrganizationMaster",
+        url: ADD_ORGANIZATION_MASTER,
         headers: {
           "Content-Type": "application/json",
         },

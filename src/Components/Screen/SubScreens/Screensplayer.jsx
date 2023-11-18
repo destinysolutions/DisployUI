@@ -15,7 +15,12 @@ import { FiPlus } from "react-icons/fi";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import Footer from "../../Footer";
-import { SELECT_BY_SCREENID_SCREENDETAIL } from "../../../Pages/Api";
+import {
+  GET_ALL_FILES,
+  GET_ALL_SCREEN_ORIENTATION,
+  GET_SCREEN_TIMEZONE,
+  SELECT_BY_SCREENID_SCREENDETAIL,
+} from "../../../Pages/Api";
 import axios from "axios";
 import { useSelector } from "react-redux";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
@@ -28,6 +33,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [searchParams] = useSearchParams();
   const getScreenID = searchParams.get("screenID");
   const [screenData, setScreenData] = useState([]);
+  const [assetData, setAssetData] = useState([]);
+  const [getScreenOrientation, setScreenOrientation] = useState([]);
+  const [getTimezone, setTimezone] = useState([]);
+
   useEffect(() => {
     axios
       .get(`${SELECT_BY_SCREENID_SCREENDETAIL}?ScreenID=${getScreenID}`, {
@@ -75,7 +84,41 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     });
   };
   const buttons = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+  useEffect(() => {
+    // Define an array of axios requests
+    const axiosRequests = [
+      axios.get(GET_ALL_FILES, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_SCREEN_ORIENTATION, {
+        headers: { Authorization: authToken },
+      }),
+      axios.get(GET_SCREEN_TIMEZONE, { headers: { Authorization: authToken } }),
+    ];
 
+    // Use Promise.all to send all requests concurrently
+    Promise.all(axiosRequests)
+      .then((responses) => {
+        const [filesResponse, screenOrientationResponse, timezoneResponse] =
+          responses;
+
+        // Process each response and set state accordingly
+        const fetchedData = filesResponse.data;
+        const allAssets = [
+          ...(fetchedData.image ? fetchedData.image : []),
+          ...(fetchedData.video ? fetchedData.video : []),
+          ...(fetchedData.doc ? fetchedData.doc : []),
+          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
+          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
+        ];
+        setAssetData(allAssets);
+
+        setScreenOrientation(screenOrientationResponse.data.data);
+
+        setTimezone(timezoneResponse.data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
   return (
     <>
       <div className="flex border-b border-gray">
@@ -190,7 +233,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   <div
                     className={
                       toggle === 1
-                        ? "show-togglecontent active"
+                        ? "show-togglecontent active mb-5"
                         : "togglecontent"
                     }
                   >
@@ -377,7 +420,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   <div
                     className={
                       toggle === 2
-                        ? "show-togglecontent active"
+                        ? "show-togglecontent active mb-5"
                         : "togglecontent"
                     }
                   >
@@ -394,69 +437,24 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           </td>
                           <td className="text-left">
                             <div className="flex lg:justify-center md:justify-start sm:justify-start xs:justify-start lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
-                              <div className="mb-[0.125rem] mr-4 inline-block min-h-[1.5rem] pl-[1.5rem]">
-                                <input
-                                  className="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-SlateBlue checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-SlateBlue checked:after:bg-SlateBlue checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-SlateBlue checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-SlateBlue dark:checked:after:bg-SlateBlue dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                                  type="radio"
-                                  name="inlineRadioOptions"
-                                  id="inlineRadio1"
-                                  value="option1"
-                                />
-                                <label
-                                  className="mt-px inline-block pl-[0.15rem] opacity-50 hover:cursor-pointer"
-                                  htmlFor="inlineRadio1"
+                              {getScreenOrientation.map((option) => (
+                                <div
+                                  key={option.orientationID}
+                                  className="mb-[0.125rem] mr-4 inline-block min-h-[1.5rem] pl-[1.5rem]"
                                 >
-                                  0
-                                </label>
-                              </div>
-
-                              <div className="mb-[0.125rem] mr-4 inline-block min-h-[1.5rem] pl-[1.5rem]">
-                                <input
-                                  className="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-SlateBlue checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-SlateBlue checked:after:bg-SlateBlue checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-SlateBlue checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-SlateBlue dark:checked:after:bg-SlateBlue dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                                  type="radio"
-                                  name="inlineRadioOptions"
-                                  id="inlineRadio1"
-                                  value="option1"
-                                />
-                                <label
-                                  className="mt-px inline-block pl-[0.15rem] opacity-50 hover:cursor-pointer"
-                                  htmlFor="inlineRadio1"
-                                >
-                                  90
-                                </label>
-                              </div>
-
-                              <div className="mb-[0.125rem] mr-4 inline-block min-h-[1.5rem] pl-[1.5rem]">
-                                <input
-                                  className="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-SlateBlue checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-SlateBlue checked:after:bg-SlateBlue checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-SlateBlue checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-SlateBlue dark:checked:after:bg-SlateBlue dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                                  type="radio"
-                                  name="inlineRadioOptions"
-                                  id="inlineRadio1"
-                                  value="option1"
-                                />
-                                <label
-                                  className="mt-px inline-block pl-[0.15rem] opacity-50 hover:cursor-pointer"
-                                  htmlFor="inlineRadio1"
-                                >
-                                  180
-                                </label>
-                              </div>
-
-                              <div className="mb-[0.125rem] mr-4 inline-block min-h-[1.5rem] pl-[1.5rem]">
-                                <input
-                                  className="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-SlateBlue checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-SlateBlue checked:after:bg-SlateBlue checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-SlateBlue checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-SlateBlue dark:checked:after:bg-SlateBlue dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
-                                  type="radio"
-                                  name="inlineRadioOptions"
-                                  id="inlineRadio1"
-                                  value="option1"
-                                />
-                                <label
-                                  className="mt-px inline-block pl-[0.15rem] opacity-50 hover:cursor-pointer"
-                                  htmlFor="inlineRadio1"
-                                >
-                                  270
-                                </label>
-                              </div>
+                                  <input
+                                    className="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-SlateBlue checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-SlateBlue checked:after:bg-SlateBlue checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-SlateBlue checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-SlateBlue dark:checked:after:bg-SlateBlue dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+                                    type="radio"
+                                    value={option.orientationID}
+                                  />
+                                  <label
+                                    className="mt-px inline-block pl-[0.15rem] opacity-50 hover:cursor-pointer"
+                                    htmlFor="inlineRadio1"
+                                  >
+                                    {option.orientationName}
+                                  </label>
+                                </div>
+                              ))}
                             </div>
                           </td>
                         </tr>
@@ -529,6 +527,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     <input
                                       type="text"
                                       placeholder="132, My Street, Kingston, New York..."
+                                      readOnly
                                     />
                                   </td>
                                 </tr>
@@ -751,7 +750,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   </td>
                                 </tr>
 
-                                <tr>
+                                {/* <tr>
                                   <td colSpan={2}>
                                     <div className="flex items-center justify-center">
                                       {" "}
@@ -781,10 +780,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       </label>
                                     </div>
                                   </td>
-                                </tr>
+                                </tr> */}
                               </tbody>
                             </table>
-                            <div className="text-right my-5">
+                            <div className="text-right mt-3">
                               <button className="bg-primary text-base px-5 py-2 rounded-full text-white hover:bg-SlateBlue">
                                 Save
                               </button>
@@ -897,7 +896,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 </td>
                               </tr>
 
-                              <tr>
+                              {/* <tr>
                                 <td colSpan={2}>
                                   <div className="flex items-center justify-center">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base mr-2">
@@ -926,9 +925,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     </label>
                                   </div>
                                 </td>
-                              </tr>
+                              </tr> */}
                             </table>
-                            <div className="text-right my-5">
+                            <div className="text-right mt-3">
                               <button className="bg-primary text-base px-5 py-2 rounded-full text-white hover:bg-SlateBlue">
                                 Save
                               </button>

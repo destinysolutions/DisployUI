@@ -127,7 +127,7 @@ const Pexels = ({ closeModal }) => {
         })
         .then((response) => {
           console.log("Upload Success:", response.data);
-          navigate("/assets");
+          navigate(-1);
         })
         .catch((error) => {
           console.error("Upload Error:", error);
@@ -194,7 +194,7 @@ const Pexels = ({ closeModal }) => {
         })
         .then((response) => {
           console.log("Upload Success:", response.data);
-          navigate("/assets");
+          navigate(-1);
         })
         .catch((error) => {
           console.error("Upload Error:", error);
@@ -312,7 +312,7 @@ const Pexels = ({ closeModal }) => {
               </div>
 
               <div className="text-center mt-5">
-                <Link to="/assets">
+                <Link to={-1}>
                   <button
                     onClick={handleMediaUpload}
                     className="text-white py-3 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"

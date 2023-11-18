@@ -72,7 +72,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [createdScheduleId, setCreatedScheduleId] = useState("");
   const [searchParams] = useSearchParams();
   const getScheduleId = searchParams.get("scheduleId");
-
+  console.log(scheduleAsset, "schedulassseeet");
   const isEditingSchedule = !!getScheduleId;
 
   const getScheduleName = searchParams.get("scheduleName");
@@ -591,7 +591,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleAssetChange = (event) => {
     const selectedName = event.target.value;
-    const selectedAsset = assetData.find((item) => item.name === selectedName);
+    const selectedAsset = assetData.find(
+      (item) => item.assetName === selectedName
+    );
     setSelectedAsset(selectedAsset);
   };
 
@@ -838,8 +840,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
                           if (foundAsset) {
                             return (
-                              <option key={index} value={foundAsset.name}>
-                                {foundAsset.name}
+                              <option key={index} value={foundAsset.assetName}>
+                                {foundAsset.assetName}
                               </option>
                             );
                           }
@@ -853,8 +855,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       <>
                         {selectedAsset.assetType === "OnlineImage" && (
                           <img
-                            src={selectedAsset.fileType}
-                            alt={selectedAsset.name}
+                            src={selectedAsset.assetFolderPath}
+                            alt={selectedAsset.assetName}
                             className="imagebox relative"
                           />
                         )}
@@ -864,7 +866,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             className="w-full rounded-2xl relative h-56"
                           >
                             <source
-                              src={selectedAsset.fileType}
+                              src={selectedAsset.assetFolderPath}
                               type="video/mp4"
                             />
                             Your browser does not support the video tag.

@@ -98,7 +98,7 @@ const Pixabay = ({ closeModal }) => {
         })
         .then((response) => {
           console.log("Upload Success:", response.data);
-          navigate("/assets");
+          navigate(-1);
         })
         .catch((error) => {
           console.error("Upload Error:", error);

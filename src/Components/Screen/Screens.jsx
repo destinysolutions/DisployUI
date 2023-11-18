@@ -28,6 +28,7 @@ import {
   RiComputerLine,
   RiDeleteBin5Line,
   RiPlayListFill,
+  RiSignalTowerLine,
 } from "react-icons/ri";
 import { HiDotsVertical, HiOutlineLocationMarker } from "react-icons/hi";
 import { BsCollectionPlay, BsPencilSquare, BsTags } from "react-icons/bs";
@@ -46,7 +47,6 @@ import {
 import axios from "axios";
 import { useSelector } from "react-redux";
 import moment from "moment";
-import { IoBarChartSharp } from "react-icons/io5";
 import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
@@ -135,12 +135,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         });
     }
   }, [UserData.user?.userID]);
-  const [popupActiveTab, setPopupActiveTab] = useState(1);
+  
   const [assetData, setAssetData] = useState([]);
-  const [selectedAsset, setSelectedAsset] = useState({ name: "" });
+  const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
   const [assetPreview, setAssetPreview] = useState("");
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
-  console.log(selectedAsset.name);
+  console.log(selectedAsset.assetName);
   useEffect(() => {
     axios
       .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
@@ -195,11 +195,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleScreenClick = (screenId) => {
-    // Toggle the action menu for the clicked schedule item
-    setShowActionBox((prevState) => ({
-      ...prevState,
-      [screenId]: !prevState[screenId] || false,
-    }));
+    setShowActionBox((prevState) => {
+      const updatedState = Object.keys(prevState).reduce((acc, key) => {
+        acc[key] = key === screenId ? !prevState[key] : false;
+        return acc;
+      }, {});
+      return { ...updatedState, [screenId]: !prevState[screenId] };
+    });
   };
   const handleScreenNameClick = (screenId) => {
     setEditingScreenID(screenId);
@@ -241,6 +243,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       maxBodyLength: Infinity,
       url: UPDATE_NEW_SCREEN,
       headers: {
+        Authorization: authToken,
         "Content-Type": "application/json",
       },
       data: data,
@@ -289,10 +292,102 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const handleScheduleAdd = (schedule) => {
     setSelectedSchedule(schedule);
   };
+  const [screenNameError, setScreenNameError] = useState("");
   const handleScreenNameUpdate = (screenId) => {
     const screenToUpdate = screenData.find(
       (screen) => screen.screenID === screenId
     );
+    if (editedScreenName.trim() === "") {
+      setScreenNameError("Screen name is required");
+    } else {
+      setScreenNameError("");
+      if (screenToUpdate) {
+        const {
+          otp,
+          googleLocation,
+          timeZone,
+          screenOrientation,
+          screenResolution,
+          macid,
+          ipAddress,
+          postalCode,
+          latitude,
+          longitude,
+          userID,
+          mediaType,
+          tags,
+          mediaDetailID,
+          tvTimeZone,
+          tvScreenOrientation,
+          tvScreenResolution,
+        } = screenToUpdate;
+
+        let data = JSON.stringify({
+          screenID: screenId,
+          otp,
+          googleLocation,
+          timeZone,
+          screenOrientation,
+          screenResolution,
+          macid,
+          ipAddress,
+          postalCode,
+          latitude,
+          longitude,
+          userID,
+          mediaType,
+          tags,
+          mediaDetailID,
+          tvTimeZone,
+          tvScreenOrientation,
+          tvScreenResolution,
+          screenName: editedScreenName,
+          operation: "Update",
+        });
+
+        let config = {
+          method: "post",
+          maxBodyLength: Infinity,
+          url: UPDATE_NEW_SCREEN,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: authToken,
+          },
+          data: data,
+        };
+
+        axios
+          .request(config)
+          .then((response) => {
+            console.log(response.data);
+            const updatedScreenData = screenData.map((screen) => {
+              if (screen.screenID === screenId) {
+                return {
+                  ...screen,
+                  screenName: editedScreenName,
+                };
+              }
+              return screen;
+            });
+
+            setScreenData(updatedScreenData);
+            setIsEditingScreen(false);
+            setEditingScreenID(null);
+            setEditedScreenName("");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        console.error("Screen not found for update");
+      }
+    }
+  };
+  const handleAssetUpdate = (screenId) => {
+    const screenToUpdate = screenData.find(
+      (screen) => screen.screenID === screenId
+    );
+    let moduleID = selectedAsset.assetID;
 
     if (screenToUpdate) {
       const {
@@ -307,12 +402,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         latitude,
         longitude,
         userID,
-        screenType,
         tags,
-        moduleID,
         tvTimeZone,
         tvScreenOrientation,
         tvScreenResolution,
+        screenName,
       } = screenToUpdate;
 
       let data = JSON.stringify({
@@ -328,13 +422,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         latitude,
         longitude,
         userID,
-        screenType,
+        mediaType: 1,
         tags,
-        moduleID,
+        mediaDetailID: moduleID,
         tvTimeZone,
         tvScreenOrientation,
         tvScreenResolution,
-        screenName: editedScreenName,
+        screenName,
         operation: "Update",
       });
 
@@ -357,7 +451,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             if (screen.screenID === screenId) {
               return {
                 ...screen,
-                screenName: editedScreenName,
+                assetName: selectedAsset.assetName,
               };
             }
             return screen;
@@ -370,71 +464,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           console.log(error);
         });
     } else {
-      console.error("Screen not found for update");
+      console.error("Asset not found for update");
     }
-  };
-  const handleAssetUpdate = (screenId) => {
-    let moduleID = selectedAsset.id;
-
-    let data = JSON.stringify({
-      // screenID: screenId,
-      // otp,
-      // googleLocation,
-      // timeZone,
-      // screenOrientation,
-      // screenResolution,
-      // macid,
-      // ipAddress,
-      // postalCode,
-      // latitude,
-      // longitude,
-      // userID,
-      // screenType: 1,
-      // tags,
-      // moduleID: moduleID,
-      // tvTimeZone,
-      // tvScreenOrientation,
-      // tvScreenResolution,
-      // screenName,
-      // operation: "Update",
-
-      screenType: 1,
-      screenID: screenId,
-      moduleID: moduleID,
-      userID: UserData.user?.userID,
-    });
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: UPDATE_NEW_SCREEN,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authToken,
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(response.data);
-        const updatedScreenData = screenData.map((screen) => {
-          if (screen.screenID === screenId) {
-            return {
-              ...screen,
-              name: selectedAsset.name,
-            };
-          }
-          return screen;
-        });
-
-        setScreenData(updatedScreenData);
-        setIsEditingScreen(false);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   const handleScheduleUpdate = (screenId) => {
@@ -475,9 +506,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         latitude,
         longitude,
         userID,
-        screenType: 2,
+        mediaType: 2,
         tags,
-        moduleID: moduleID,
+        mediaDetailID: moduleID,
         tvTimeZone,
         tvScreenOrientation,
         tvScreenResolution,
@@ -504,7 +535,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             if (screen.screenID === screenId) {
               return {
                 ...screen,
-                name: selectedSchedule.name,
+                scheduleName: selectedSchedule.scheduleName,
               };
             }
             return screen;
@@ -680,7 +711,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   type="button"
                   className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                 >
-                  <VscVmActive className="p-1 px-2 text-4xl text-white hover:text-white" />
+                  <RiSignalTowerLine className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
               </Tooltip>
               <Tooltip
@@ -929,9 +960,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 type="text"
                                 className="border border-primary rounded-md w-full"
                                 value={editedScreenName}
-                                onChange={(e) =>
-                                  setEditedScreenName(e.target.value)
-                                }
+                                onChange={(e) => {
+                                  setEditedScreenName(e.target.value);
+                                }}
                               />
                               <button
                                 onClick={() => {
@@ -941,6 +972,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               >
                                 <AiOutlineSave className="text-2xl ml-1 hover:text-primary" />
                               </button>
+                              {/* {screenNameError && (
+                                <div className="text-red">
+                                  {screenNameError}
+                                </div>
+                              )} */}
                             </div>
                           ) : (
                             <div>
@@ -983,13 +1019,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               setShowAssetModal(true);
                               setSelectedAsset({
                                 ...selectedAsset,
-                                name: e.target.value,
+                                assetName: e.target.value,
                               });
                             }}
                             className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           >
-                            {screen.screenType == 1 ? `${screen.name} ` : ""}
-                            <AiOutlineCloudUpload className=" text-lg" />
+                            {screen.assetName}
+                            <AiOutlineCloudUpload className="text-lg ml-2" />
                           </button>
                           {showAssetModal && (
                             <>
@@ -1012,108 +1048,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                       <div className="bg-white rounded-[30px]">
                                         <div>
                                           <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                            <div>
-                                              <nav
-                                                className="flex flex-col space-y-2 "
-                                                aria-label="Tabs"
-                                                role="tablist"
-                                                data-hs-tabs-vertical="true"
-                                              >
-                                                <button
-                                                  type="button"
-                                                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                                    popupActiveTab === 1
-                                                      ? "active"
-                                                      : ""
-                                                  }`}
-                                                  // onClick={() => handleTabClick(1)}
-                                                >
-                                                  <span
-                                                    className={`p-1 rounded ${
-                                                      popupActiveTab === 1
-                                                        ? "bg-primary text-white"
-                                                        : "bg-lightgray"
-                                                    } `}
-                                                  >
-                                                    <IoBarChartSharp
-                                                      size={15}
-                                                    />
-                                                  </span>
-                                                  Assets
-                                                </button>
-                                                <button
-                                                  type="button"
-                                                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                                    popupActiveTab === 2
-                                                      ? "active"
-                                                      : ""
-                                                  }`}
-                                                  //onClick={() => handleTabClick(2)}
-                                                >
-                                                  <span
-                                                    className={`p-1 rounded ${
-                                                      popupActiveTab === 2
-                                                        ? "bg-primary text-white"
-                                                        : "bg-lightgray"
-                                                    } `}
-                                                  >
-                                                    <RiPlayListFill size={15} />
-                                                  </span>
-                                                  Playlist
-                                                </button>
-                                                <button
-                                                  type="button"
-                                                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                                    popupActiveTab === 3
-                                                      ? "active"
-                                                      : ""
-                                                  }`}
-                                                  // onClick={() => handleTabClick(3)}
-                                                >
-                                                  <span
-                                                    className={`p-1 rounded ${
-                                                      popupActiveTab === 3
-                                                        ? "bg-primary text-white"
-                                                        : "bg-lightgray"
-                                                    } `}
-                                                  >
-                                                    <BiAnchor size={15} />
-                                                  </span>
-                                                  Disploy Studio
-                                                </button>
-                                                <button
-                                                  type="button"
-                                                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                                    popupActiveTab === 4
-                                                      ? "active"
-                                                      : ""
-                                                  }`}
-                                                  // onClick={() => handleTabClick(4)}
-                                                >
-                                                  <span
-                                                    className={`p-1 rounded ${
-                                                      popupActiveTab === 4
-                                                        ? "bg-primary text-white"
-                                                        : "bg-lightgray"
-                                                    } `}
-                                                  >
-                                                    <AiOutlineAppstoreAdd
-                                                      size={15}
-                                                    />
-                                                  </span>
-                                                  Apps
-                                                </button>
-                                              </nav>
-                                            </div>
-
                                             <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
-                                              <div
-                                                className={
-                                                  popupActiveTab === 1
-                                                    ? ""
-                                                    : "hidden"
-                                                }
-                                              >
+                                              <div>
                                                 <div className="flex flex-wrap items-start lg:justify-between border-b border-lightgray  md:justify-center sm:justify-center xs:justify-center">
                                                   <div className="mb-5 relative searchbox">
                                                     <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
@@ -1335,14 +1271,15 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       )}
                       {currScheduleContentVisible && (
                         <td className="break-words	w-[150px] p-2 text-center">
-                          {screen.screenType == 2 ? (
-                            `${screen.name} Till
-                          ${moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`
-                          ) : (
+                          {screen.scheduleName == "" ? (
                             <button onClick={() => setShowScheduleModal(true)}>
                               Set a schedule
                             </button>
+                          ) : (
+                            `${screen.scheduleName} Till
+                          ${moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`
                           )}
+
                           {showScheduleModal && (
                             <>
                               <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
