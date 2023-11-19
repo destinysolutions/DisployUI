@@ -46,18 +46,18 @@ const Sidebar = ({ sidebarOpen }) => {
             <MdOutlineAddToQueue className=" text-gray text-lg opacity-60 " />
           ),
         },
-        {
-          title: "New Screen Group",
-          path: "/newscreengroup",
-          icon: (
-            <HiOutlineRectangleGroup className=" text-gray text-xl opacity-60 " />
-          ),
-        },
-        {
-          title: "Merge Screens",
-          path: "/mergescreen",
-          icon: <img src="/MenuIcons/merge_screen.svg" alt="Merge Screen" />,
-        },
+        // {
+        //   title: "New Screen Group",
+        //   path: "/newscreengroup",
+        //   icon: (
+        //     <HiOutlineRectangleGroup className=" text-gray text-xl opacity-60 " />
+        //   ),
+        // },
+        // {
+        //   title: "Merge Screens",
+        //   path: "/mergescreen",
+        //   icon: <img src="/MenuIcons/merge_screen.svg" alt="Merge Screen" />,
+        // },
       ],
     },
     {
@@ -153,14 +153,14 @@ const Sidebar = ({ sidebarOpen }) => {
     //     <img src="/MenuIcons/support_icon.svg" alt="Support" className="w-6" />
     //   ),
     // },
-    {
-      title: "Settings",
-      cName: "nav-text link-items",
-      path: "/settings",
-      icon: (
-        <img src="/MenuIcons/setting_icon.svg" alt="Settings" className="w-6" />
-      ),
-    },
+    // {
+    //   title: "Settings",
+    //   cName: "nav-text link-items",
+    //   path: "/settings",
+    //   icon: (
+    //     <img src="/MenuIcons/setting_icon.svg" alt="Settings" className="w-6" />
+    //   ),
+    // },
     // {
     //   title: "Take Tour",
     //   cName: "nav-text link-items",

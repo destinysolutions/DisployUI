@@ -143,7 +143,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 Save
               </button>
-              <div className="relative sm:mt-2">
+              {/* <div className="relative sm:mt-2">
                 <button
                   onClick={() => setShowPopup(!showPopup)}
                   className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full p-2 text-xl  hover:bg-SlateBlue hover:text-white  hover:shadow-lg hover:shadow-primary-500/50 hover:border-white"
@@ -151,7 +151,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                   <BiDotsHorizontalRounded />
                 </button>
                 {showPopup && (
-                  <div className="editdw">
+                  <div className="editdw z-30">
                     <ul>
                       <li
                         className="flex text-sm items-center cursor-pointer"
@@ -353,7 +353,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     </div>
                   </div>
                 )}
-              </div>
+              </div> */}
 
               <button className="sm:ml-2 xs:ml-1 sm:mt-2 border-primary items-center border-2  rounded-full text-xl  hover:text-white hover:bg-SlateBlue hover:border-white hover:shadow-lg hover:shadow-primary-500/50 p-2 ">
                 <Link to="/youtube">

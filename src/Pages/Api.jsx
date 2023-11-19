@@ -131,5 +131,7 @@ export const DELETE_COMPOSITION_BY_ID =
   "https://disployapi.thedestinysolutions.com/api/CompositionMaster/DeleteCompositionByID";
 export const DELETE_ALL_COMPOSITIONS =
   "https://disployapi.thedestinysolutions.com/api/CompositionMaster/DeleteAllComposition";
+export const GET_ALL_TAGS =
+  "https://disployapi.thedestinysolutions.com/api/CompositionMaster/GetAllTag";
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115

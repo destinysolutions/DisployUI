@@ -13,20 +13,17 @@ import {
   GET_ALL_SCHEDULE,
   GET_ALL_SCREEN_ORIENTATION,
   GET_ALL_SCREEN_RESOLUTION,
+  GET_ALL_TAGS,
   GET_SCREEN_TIMEZONE,
   GET_SCREEN_TYPE,
-  GET_TIMEZONE,
   UPDATE_NEW_SCREEN,
 } from "../../../Pages/Api";
 import {
-  AiOutlineAppstoreAdd,
   AiOutlineClose,
   AiOutlineCloseCircle,
   AiOutlineSearch,
 } from "react-icons/ai";
-import { IoBarChartSharp } from "react-icons/io5";
-import { RiComputerLine, RiPlayListFill } from "react-icons/ri";
-import { BiAnchor } from "react-icons/bi";
+import { RiComputerLine } from "react-icons/ri";
 import moment from "moment";
 import { BsFillInfoCircleFill, BsTags } from "react-icons/bs";
 import { HiDotsVertical } from "react-icons/hi";
@@ -44,11 +41,17 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const authToken = `Bearer ${UserData.user.data.token}`;
 
   const [tagName, setTagName] = useState("");
-
+  const [showTagBox, setShowTagBox] = useState(false);
+  const [selectedTag, setSelectedTag] = useState("");
   const handleTagNameChange = (event) => {
-    setTagName(event.target.value);
+    const value = event.target.value;
+    setTagName(value);
+    setSelectedTag("");
   };
-
+  const handleSuggestionClick = (suggestedTag) => {
+    setTagName(suggestedTag);
+    setSelectedTag(suggestedTag); // Track the selected tag separately
+  };
   const [getSelectedScreenTypeOption, setGetSelectedScreenTypeOption] =
     useState([]);
   const [getTimezone, setTimezone] = useState([]);
@@ -82,9 +85,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const otpData = location?.state?.otpData || null;
   const message = location?.state?.message || null;
   const [otpMessageVisible, setOTPMessageVisible] = useState(false);
-
-  const [popupActiveTab, setPopupActiveTab] = useState(1);
   const [assetData, setAssetData] = useState([]);
+  const [assetAllData, setAssetAllData] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
   const [selectedSchedule, setSelectedSchedule] = useState({
     scheduleName: "",
@@ -93,6 +95,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
   const [screenName, setScreenName] = useState("");
   const [scheduleData, setScheduleData] = useState([]);
+  const [tagsData, setTagsData] = useState([]);
 
   useEffect(() => {
     // Define an array of axios requests
@@ -107,6 +110,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       }),
       axios.get(GET_SCREEN_TIMEZONE, { headers: { Authorization: authToken } }),
       axios.get(GET_ALL_SCHEDULE, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_TAGS, { headers: { Authorization: authToken } }),
     ];
 
     // Use Promise.all to send all requests concurrently
@@ -119,6 +123,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           screenResolutionResponse,
           timezoneResponse,
           scheduleResponse,
+          tagsResponse,
         ] = responses;
 
         // Process each response and set state accordingly
@@ -135,12 +140,15 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           "screenOrientationResponse.data.data"
         );
         setAssetData(allAssets);
+        setAssetAllData(allAssets);
         setGetSelectedScreenTypeOption(screenTypeResponse.data.data);
         setScreenOrientation(screenOrientationResponse.data.data);
         setScreenResolution(screenResolutionResponse.data.data);
         setTimezone(timezoneResponse.data.data);
         setSelectedTimezoneName(timezoneResponse.data.data[92].timeZoneID);
         setScheduleData(scheduleResponse.data.data);
+        setTagsData(tagsResponse.data.data);
+        console.log(tagsResponse);
       })
       .catch((error) => {
         console.error(error);
@@ -161,10 +169,10 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setSearchAsset(searchQuery);
 
     if (searchQuery === "") {
-      setAssetData(assetData);
+      setAssetData(assetAllData);
     } else {
       const filteredData = assetData.filter((item) => {
-        const itemName = item.name ? item.name.toLowerCase() : "";
+        const itemName = item.assetName ? item.assetName.toLowerCase() : "";
         return itemName.includes(searchQuery);
       });
       setAssetData(filteredData);
@@ -965,9 +973,56 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               type="text"
                               className="border border-[#D5E3FF] rounded w-full px-2 py-2"
                               placeholder="Enter tag..."
-                              value={tagName}
+                              value={selectedTag || tagName}
                               onChange={handleTagNameChange}
                             />
+                            <button
+                              type="button"
+                              onClick={() => setShowTagBox(!showTagBox)}
+                              className="ml-2"
+                            >
+                              <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 20 20"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M4.34315 4.34315C5.84344 2.84285 7.87827 2 10 2C12.1217 2 14.1566 2.84285 15.6569 4.34315C17.1571 5.84344 18 7.87827 18 10C18 12.1217 17.1571 14.1566 15.6569 15.6569C14.1566 17.1571 12.1217 18 10 18C7.87827 18 5.84344 17.1571 4.34315 15.6569C2.84285 14.1566 2 12.1217 2 10C2 7.87827 2.84285 5.84344 4.34315 4.34315ZM10 0C7.34784 0 4.8043 1.05357 2.92893 2.92893C1.05357 4.8043 0 7.34784 0 10C0 12.6522 1.05357 15.1957 2.92893 17.0711C4.8043 18.9464 7.34784 20 10 20C12.6522 20 15.1957 18.9464 17.0711 17.0711C18.9464 15.1957 20 12.6522 20 10C20 7.34784 18.9464 4.8043 17.0711 2.92893C15.1957 1.05357 12.6522 0 10 0ZM11 11C11 10.4477 10.5523 10 10 10C9.44771 10 9 10.4477 9 11V14C9 14.5523 9.44771 15 10 15C10.5523 15 11 14.5523 11 14V11ZM9.94922 4.75C9.25886 4.75 8.69922 5.30964 8.69922 6C8.69922 6.69036 9.25886 7.25 9.94922 7.25H10.0492C10.7396 7.25 11.2992 6.69036 11.2992 6C11.2992 5.30964 10.7396 4.75 10.0492 4.75H9.94922Z"
+                                  fill="#515151"
+                                />
+                              </svg>
+                            </button>
+
+                            {showTagBox && (
+                              <>
+                                <div className=" tagname absolute top-[45px] right-[-8px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10 max-w-[250px]">
+                                  <div className="lg:flex md:flex sm:block">
+                                    <div className="p-2">
+                                      <h6 className="text-center text-sm mb-1">
+                                        Give a Tag Name Such
+                                      </h6>
+                                      <div className="flex flex-wrap">
+                                        {tagsData.map((tag) => (
+                                          <div
+                                            key={tag.tagID}
+                                            className="p-1 rounded bg-[#EFF5FF] m-1 text-sm font-light cursor-pointer"
+                                            onClick={() =>
+                                              handleSuggestionClick(tag.tagName)
+                                            }
+                                          >
+                                            {tag.tagName}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </>
+                            )}
                           </div>
                         </div>
                       </td>

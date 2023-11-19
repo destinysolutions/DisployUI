@@ -567,7 +567,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     </button>
                   </li>
                 </ul>
-                <button
+                {/* <button
                   onClick={handleSelectAll}
                   className="flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 >
@@ -577,16 +577,16 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     readOnly
                     checked={selectAll}
                   />
-                </button>
+                </button> */}
 
-                {selectedItems.length > 0 && (
+                {/* {selectedItems.length > 0 && (
                   <button
                     onClick={handleDelete}
                     className="rounded-full px-2 py-2 m-1 text-center border hover:text-white hover:bg-red hover:border-red"
                   >
                     <RiDeleteBin5Line className=" text-lg" />
                   </button>
-                )}
+                )} */}
               </div>
             </div>
 
@@ -615,9 +615,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 Doc
               </button>
-              <button className={activetab === 5 ? "tabactivebtn " : "tabbtn"}>
+              {/* <button className={activetab === 5 ? "tabactivebtn " : "tabbtn"}>
                 App
-              </button>
+              </button> */}
             </div>
 
             {/*start grid view */}
@@ -799,14 +799,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         {assetsdw === item && selectedItems.includes(item) && (
                           <div className="assetsdw">
                             <ul>
-                              <li className="flex text-sm items-center">
+                              {/* <li className="flex text-sm items-center">
                                 <FiUpload className="mr-2 text-lg" />
                                 Set to Screen
-                              </li>
-                              <li className="flex text-sm items-center">
+                              </li> */}
+                              {/* <li className="flex text-sm items-center">
                                 <MdPlaylistPlay className="mr-2 text-lg" />
                                 Add to Playlist
-                              </li>
+                              </li> */}
                               {item.assetType === "Image" && (
                                 <li className="flex text-sm items-center">
                                   <FiDownload className="mr-2 text-lg" />
@@ -975,7 +975,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       <th className="text-black font-medium">Resolution</th>
                       <th className="text-black font-medium">Type</th>
                       <th className="text-black font-medium">Size</th>
-                      <th></th>
+                      {/* <th></th> */}
                       <th></th>
                     </tr>
                   </thead>
@@ -1114,12 +1114,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           </td>
                           <td>{item.fileSize}</td>
 
-                          <td>
+                          {/* <td>
                             <input
                               type="checkbox"
                               className="w-[20px] h-[20px]"
                             />
-                          </td>
+                          </td> */}
                           <td className="relative w-[40px]">
                             <button onClick={() => updateassetsdw2(item)}>
                               <BsThreeDotsVertical className="text-2xl relative" />
@@ -1127,22 +1127,57 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             {assetsdw2 === item && (
                               <div className="assetsdw">
                                 <ul>
-                                  <li className="flex text-sm items-center">
+                                  {/* <li className="flex text-sm items-center">
                                     <FiUpload className="mr-2 text-lg" />
                                     Set to Screen
                                   </li>
                                   <li className="flex text-sm items-center">
                                     <MdPlaylistPlay className="mr-2 text-lg" />
                                     Add to Playlist
-                                  </li>
+                                  </li> */}
                                   <li className="flex text-sm items-center">
                                     <FiDownload className="mr-2 text-lg" />
-                                    Download
+                                    <a href={item.assetFolderPath} download>
+                                      Download
+                                    </a>
                                   </li>
-                                  <li className="flex text-sm items-center">
+                                  {/* <li className="flex text-sm items-center">
                                     <CgMoveRight className="mr-2 text-lg" />
                                     Move to
-                                  </li>
+                                  </li> */}
+                                  {/* <li className="flex text-sm items-center relative">
+                                    <div className="move-to-button">
+                                      <button
+                                        onClick={toggleMoveTo}
+                                        className="flex"
+                                      >
+                                        <CgMoveRight className="mr-2 text-lg" />
+                                        Move to
+                                      </button>
+
+                                      {isMoveToOpen && (
+                                        <div className="move-to-dropdown">
+                                          <ul>
+                                            {originalData.folder.map(
+                                              (folder) => (
+                                                <li key={folder.assetID}>
+                                                  <button
+                                                    onClick={() =>
+                                                      handleMoveTo(
+                                                        folder.assetID
+                                                      )
+                                                    }
+                                                  >
+                                                    {folder.assetName}
+                                                  </button>
+                                                </li>
+                                              )
+                                            )}
+                                          </ul>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </li> */}
                                   <li>
                                     <button
                                       onClick={() => {

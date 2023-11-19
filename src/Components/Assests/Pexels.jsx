@@ -94,7 +94,6 @@ const Pexels = ({ closeModal }) => {
   };
 
   const handleMediaUpload = () => {
-    //debugger;
     setUploadInProgress(true);
     selectedMedia.images.forEach((image) => {
       console.log(image, "image");

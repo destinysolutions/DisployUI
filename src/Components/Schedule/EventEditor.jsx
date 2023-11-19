@@ -51,24 +51,23 @@ const EventEditor = ({
     new Array(buttons.length).fill(false)
   );
   const [selectedRepeatDay, setSelectedRepeatDay] = useState("");
-  const [previousSetedRepeatDay, setPreviousSetedRepeatDay] = useState("");
+  // const [previousSetedRepeatDay, setPreviousSetedRepeatDay] = useState("");
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
   const [repeatDayMessage, setRepeatDayMessage] = useState("");
   const [repeatDayMessageVisible, setRepeatDayMessageVisible] = useState(false);
   const [emptyTitleMessage, setEmptyTitleMessage] = useState("");
   const [emptyTitleMessageVisible, setEmptyTitleMessageVisible] =
     useState(false);
-  const handleOpenRepeatSettings = () => {
-    setShowRepeatSettings(true);
-  };
+  const [editEndDateChangeMessage, setEditEndDateChangeMessage] = useState("");
+  const [editEndDateChangeMessageVisible, setEditEndDateChangeMessageVisible] =
+    useState(false);
+
   const [repeatDayWarning, setRepeatDayWarning] = useState(false);
 
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
   useEffect(() => {
     if (isOpen) {
       if (selectedEvent) {
-        console.log(selectedEvent?.isfutureDateExists, "selectdfg");
-        console.log("selectedEvent.repeatDay", selectedEvent.repeatDay);
         let assetId;
 
         if (selectedEvent?.asset?.assetID != undefined) {
@@ -83,10 +82,10 @@ const EventEditor = ({
           setSelectedAsset(previousSelectedAsset);
           setAssetPreview(previousSelectedAsset);
         }
-        if (selectedEvent.repeatDay !== "") {
-          setShowRepeatSettings(true);
-          setPreviousSetedRepeatDay(selectedEvent.repeatDay);
-        }
+        // if (selectedEvent.repeatDay !== "") {
+        //   setShowRepeatSettings(true);
+        //   // setPreviousSetedRepeatDay(selectedEvent.repeatDay);
+        // }
         setTitle(selectedEvent.title);
         setSelectedColor(selectedEvent.color);
         setEditedStartDate(moment(selectedEvent.start).format("YYYY-MM-DD"));
@@ -184,6 +183,16 @@ const EventEditor = ({
   };
   const handleCheckboxChange = () => {
     const newSelectAllDays = !selectAllDays;
+    if (
+      moment(selectedSlot?.end).format("YYYY-MM-DD") === editedEndDate &&
+      newSelectAllDays
+    ) {
+      setEditEndDateChangeMessage("Please change End Date");
+      setEditEndDateChangeMessageVisible(true);
+      // Reset the state to prevent checking the checkbox
+      setSelectAllDays(false);
+      return;
+    }
     setSelectAllDays(newSelectAllDays);
     const newSelectedDays = newSelectAllDays
       ? Array(buttons.length).fill(true)
@@ -199,17 +208,26 @@ const EventEditor = ({
       // Check if all individual days are selected, then check the "Repeat for All Day" checkbox.
       const newSelectAllDays = newSelectedDays.every((day) => day === true);
 
+      if (
+        moment(selectedSlot?.end).format("YYYY-MM-DD") === editedEndDate &&
+        newSelectedDays[index]
+      ) {
+        setEditEndDateChangeMessage("Please change End Date");
+        setEditEndDateChangeMessageVisible(true);
+        // Reset the state to prevent the button from being clicked
+        return;
+      }
       setSelectedDays(newSelectedDays);
       setSelectAllDays(newSelectAllDays);
 
       // Update previousSetedRepeatDay based on the selected days
-      let newPreviousSetedRepeatDay = [];
-      for (let i = 0; i < newSelectedDays.length; i++) {
-        if (newSelectedDays[i]) {
-          newPreviousSetedRepeatDay.push(buttons[i]);
-        }
-      }
-      setPreviousSetedRepeatDay(newPreviousSetedRepeatDay);
+      // let newPreviousSetedRepeatDay = [];
+      // for (let i = 0; i < newSelectedDays.length; i++) {
+      //   if (newSelectedDays[i]) {
+      //     newPreviousSetedRepeatDay.push(buttons[i]);
+      //   }
+      // }
+      // setPreviousSetedRepeatDay(newPreviousSetedRepeatDay);
     }
   };
 
@@ -227,6 +245,11 @@ const EventEditor = ({
     // Check if the title is empty
     if (!title) {
       setEmptyTitleMessage("Please enter a title for the event.");
+      setEmptyTitleMessageVisible(true);
+      return;
+    }
+    if (!selectedAsset) {
+      setEmptyTitleMessage("Please select Asset");
       setEmptyTitleMessageVisible(true);
       return;
     }
@@ -252,6 +275,17 @@ const EventEditor = ({
         ? buttons.map((dayName) => dayName)
         : selectedDaysInString;
       setSelectedRepeatDay(repeatDayValue);
+    }
+    if (
+      moment(selectedSlot?.end).format("YYYY-MM-DD") !== editedEndDate &&
+      !selectAllDays && // Check if no checkbox is selected
+      !areSpecificDaysSelected // Check if no individual day is selected
+    ) {
+      setEditEndDateChangeMessage(
+        "Please select repeat for all days otherwise anyone day"
+      );
+      setEditEndDateChangeMessageVisible(true);
+      return;
     }
     // Check if the end date is modified
     // const isEndDateModified =
@@ -291,10 +325,11 @@ const EventEditor = ({
         onSave(
           selectedEvent?.id || selectedEvent?.eventId,
           eventData,
-          updateAllValue
+          updateAllValue,
+          setShowRepeatSettings(false)
         );
       } else {
-        onSave(null, eventData, updateAllValue);
+        onSave(null, eventData, updateAllValue, setShowRepeatSettings(false));
       }
       onClose();
     }
@@ -620,6 +655,28 @@ const EventEditor = ({
                 </div>
               </div>
             </div>
+            {editEndDateChangeMessageVisible && (
+              <div
+                className="bg-[#fff2cd] px-5 py-3 border-b-2 border-SlateBlue shadow-md"
+                style={{
+                  position: "fixed",
+                  top: "16px",
+                  right: "20px",
+                  zIndex: "999999",
+                }}
+              >
+                <div className="flex text-SlateBlue  text-base font-normal items-center relative">
+                  <BsFillInfoCircleFill className="mr-1" />
+                  {editEndDateChangeMessage}
+                  <button
+                    className="absolute top-[-26px] right-[-26px] bg-white rounded-full p-1 "
+                    onClick={() => setEditEndDateChangeMessageVisible(false)}
+                  >
+                    <AiOutlineClose className="text-xl  text-SlateBlue " />
+                  </button>
+                </div>
+              </div>
+            )}
             {emptyTitleMessageVisible && (
               <div
                 className="bg-[#fff2cd] px-5 py-3 border-b-2 border-SlateBlue shadow-md"
@@ -825,23 +882,41 @@ const EventEditor = ({
                             />
                             <label className="ml-3">Repeat for All Day</label>
                           </div>
-
+                          {/* {console.log(
+                            "selectedEvent?.end == editedEndDate",
+                            //selectedSlot?.end
+                            // ==
+                            moment(selectedEvent?.end).format("YYYY-MM-DD") ==
+                              editedEndDate
+                          )}
+                          {console.log("editedEndDate", editedEndDate)}
+                          {console.log(
+                            "moment(selectedEvent?.end :",
+                            moment(selectedEvent?.end).format("YYYY-MM-DD")
+                          )} */}
                           <div>
                             {buttons.map((label, index) => (
                               <button
                                 className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
                                   (selectAllDays || selectedDays[index]) &&
                                   isDayInRange(index)
-                                    ? "bg-SlateBlue border-white"
+                                    ? // &&
+                                      // moment(selectedSlot?.end).format(
+                                      //   "YYYY-MM-DD"
+                                      // ) === editedEndDate
+                                      "bg-SlateBlue border-white"
                                     : ""
-                                } ${
-                                  previousSetedRepeatDay.includes(label)
-                                    ? "bg-SlateBlue border-white"
-                                    : ""
-                                }`}
+                                } 
+                             
+                                `}
                                 key={index}
                                 disabled={!isDayInRange(index)}
                                 onClick={() => handleDayButtonClick(index)}
+                                // ${
+                                //   previousSetedRepeatDay.includes(label)
+                                //     ? "bg-SlateBlue border-white"
+                                //     : ""
+                                // }
                               >
                                 {label}
                               </button>
@@ -900,18 +975,24 @@ const EventEditor = ({
                           </li>
                         </ul>
                       </div>
-                      <div className="p-3 flex justify-between items-center">
-                        <div>Repeat Multiple Day</div>
+                      {isEditMode ? (
+                        ""
+                      ) : (
+                        <>
+                          <div className="p-3 flex justify-between items-center">
+                            <div>Repeat Multiple Day</div>
 
-                        <div>
-                          <button
-                            onClick={handleOpenRepeatSettings}
-                            className="border border-primary rounded-full px-4 py-1"
-                          >
-                            Repeat
-                          </button>
-                        </div>
-                      </div>
+                            <div>
+                              <button
+                                onClick={() => setShowRepeatSettings(true)}
+                                className="border border-primary rounded-full px-4 py-1"
+                              >
+                                Repeat
+                              </button>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </>
                 )}
@@ -949,9 +1030,9 @@ const EventEditor = ({
                   <button
                     className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
                     onClick={() => {
-                      handleWarn();
-                      // handleSave();
-                      // setShowRepeatSettings(false);
+                      selectedEvent?.repeatDay == ""
+                        ? handleSave()
+                        : handleWarn();
                     }}
                   >
                     Update
@@ -961,7 +1042,6 @@ const EventEditor = ({
                     className="border-2 border-white text-white hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
                     onClick={() => {
                       handleSave();
-                      setShowRepeatSettings(false);
                     }}
                   >
                     Save

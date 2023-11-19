@@ -58,7 +58,7 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center ">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 "></h1>
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn">
-              <div className="relative">
+              {/* <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                   <AiOutlineSearch className="w-5 h-5 text-gray " />
                 </span>
@@ -67,10 +67,10 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
                   placeholder="Search Content "
                   className="border border-primary rounded-full px-7 py-2.5 block w-full p-4 pl-10"
                 />
-              </div>
-              <button className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              </div> */}
+              {/* <button className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 Add Custom Layout
-              </button>
+              </button> */}
             </div>
           </div>
           <div className="rounded-xl mt-8 shadow bg-white p-5">

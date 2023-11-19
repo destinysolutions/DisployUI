@@ -176,6 +176,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                       <div className="relative flex justify-between">
                         <button className="float-right p-2">
                           <input
+                            style={{ display: selectAll ? "block" : "none" }}
                             className="h-5 w-5"
                             type="checkbox"
                             checked={instance.isChecked || false}
@@ -196,14 +197,14 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                           {appDropDown === instance.textScroll_Id && (
                             <div className="appdw">
                               <ul>
-                                <li className="flex text-sm items-center">
+                                {/* <li className="flex text-sm items-center">
                                   <FiUpload className="mr-2 text-lg" />
                                   Set to Screen
                                 </li>
                                 <li className="flex text-sm items-center">
                                   <MdPlaylistPlay className="mr-2 text-lg" />
                                   Add to Playlist
-                                </li>
+                                </li> */}
 
                                 <li
                                   className="flex text-sm items-center cursor-pointer"
