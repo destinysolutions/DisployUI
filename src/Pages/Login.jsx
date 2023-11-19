@@ -419,10 +419,13 @@ const Login = () => {
                       render="explicit"
                       onChange={handleCaptcha}
                     />
+                    {/* <div className="error">
+                      {!captcha ? "Please Select Captcha" : ""}
+                    </div> */}
 
-                    <p className="ml-1 mt-2 not-italic text-white font-medium  text-right hover:text-SlateBlue">
+                    {/* <p className="ml-1 mt-2 not-italic text-white font-medium  text-right hover:text-SlateBlue">
                       Forgot Password?
-                    </p>
+                    </p> */}
                   </div>
 
                   {/* {formik.errors.terms && formik.touched.terms && (
@@ -449,7 +452,7 @@ const Login = () => {
                 </form>
               </div>
             </div>
-            <div className="flex items-center justify-center mt-4">
+            {/* <div className="flex items-center justify-center mt-4">
               <div className="socialIcon socialIcon1">
                 <button onClick={SignInWithGoogle}>
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
@@ -470,7 +473,7 @@ const Login = () => {
                   <BsMicrosoft className="text-lg text-primary" />
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

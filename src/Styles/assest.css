@@ -237,7 +237,7 @@ td .tabicon svg {
   }
 
   .text-center.clickdetail {
-    margin-bottom:30px;
+    margin-bottom: 30px;
   }
 
   .vdetails {
@@ -260,14 +260,14 @@ td .tabicon svg {
   height: 100%;
   object-fit: cover;
 }
-@media(max-width:1240px){
+@media (max-width: 1240px) {
   .assets-section li.assetsbox,
-.assetsbox {
-  width: 100%;
-  max-height:200px;
-  min-height:200px;
-  object-fit: cover;
-}
+  .assetsbox {
+    width: 100%;
+    max-height: 200px;
+    min-height: 200px;
+    object-fit: cover;
+  }
 }
 
 .assetstable .imagebox,

@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { OTP_VERIFY } from "../../Pages/Api";
 import { useRef } from "react";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { GET_ALL_ORGANIZATION_MASTER } from "../../admin/AdminAPI";
 
 const ScreenOTPModal = ({ setShowOTPModal }) => {
   const history = useNavigate();
@@ -61,10 +63,30 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
         console.log(error);
       });
   };
+  const [screen, setScreen] = useState();
+  console.log(screen, "screen");
+  useEffect(() => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: GET_ALL_ORGANIZATION_MASTER,
+      headers: {},
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        setScreen(response.data.data[0].screen);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   return (
     <>
       <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-[9999] outline-none focus:outline-none">
-        <div className="relative w-auto my-6 lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full sm:mx-3 xs:mx-3">
+        <div
+          className={`relative w-auto my-6 lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full sm:mx-3 xs:mx-3`}
+        >
           <div className="border-0 rounded-xl shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
             <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
               <h3 className="text-xl font-medium">New Screen</h3>
@@ -75,64 +97,73 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                 <AiOutlineCloseCircle className="text-3xl text-primary" />
               </button>
             </div>
-            <div className="relative lg:p-5 md:p-5 sm:p-3 xs:p-2 flex-auto">
-              <div className="flex items-center justify-center mb-4">
-                <img src="/DisployImg/BlackLogo.svg" />
-              </div>
-
-              <div className="flex w-7/12 mx-auto items-center justify-center relative mb-4">
-                <img src="/ScreenImg/disploy-tv-img.png" alt="" />
-              </div>
-
-              <div className="mx-auto">
-                <div className="w-full">
-                  <div className="font-normal lg:text-lg md:text-lg sm:text-base xs:text-sm text-[#000000] text-center">
-                    Enter the 6-character pairing code?
+            {screen == 1 ? (
+              <h3 className="justify-center text-center text-red text-xl p-10 font-semibold break-words">
+                You can not able to create new screen. In Trail preiod you can
+                create only one Screen.
+              </h3>
+            ) : (
+              <>
+                <div className="relative lg:p-5 md:p-5 sm:p-3 xs:p-2 flex-auto">
+                  <div className="flex items-center justify-center mb-4">
+                    <img src="/DisployImg/BlackLogo.svg" />
                   </div>
 
-                  <div
-                    id="otp"
-                    className="flex flex-row justify-center text-center px-2"
-                  >
-                    {otpValues.map((value, index) => (
-                      <div key={index}>
-                        <input
-                          ref={otpRefs[index]}
-                          className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded border-gray"
-                          type="text"
-                          value={value}
-                          maxLength="1"
-                          onChange={(e) =>
-                            handleOtpChange(index, e.target.value)
-                          }
-                        />
+                  <div className="flex w-7/12 mx-auto items-center justify-center relative mb-4">
+                    <img src="/ScreenImg/disploy-tv-img.png" alt="" />
+                  </div>
+
+                  <div className="mx-auto">
+                    <div className="w-full">
+                      <div className="font-normal lg:text-lg md:text-lg sm:text-base xs:text-sm text-[#000000] text-center">
+                        Enter the 6-character pairing code?
                       </div>
-                    ))}
-                  </div>
-                  <div className="flex justify-center text-center text-red text-xl my-2 font-semibold">
-                    {errorMessge}
-                  </div>
 
-                  <div className="flex justify-center text-center">
-                    <p className="text-[#515151] text-sm max-w-lg">
-                      To get pair code, please install Disploy app on your
-                      Players (Android, LG, Samsung, FireStick, Raspberry Pi,
-                      etc.)
-                    </p>
+                      <div
+                        id="otp"
+                        className="flex flex-row justify-center text-center px-2"
+                      >
+                        {otpValues.map((value, index) => (
+                          <div key={index}>
+                            <input
+                              ref={otpRefs[index]}
+                              className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded border-gray"
+                              type="text"
+                              value={value}
+                              maxLength="1"
+                              onChange={(e) =>
+                                handleOtpChange(index, e.target.value)
+                              }
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex justify-center text-center text-red text-xl my-2 font-semibold">
+                        {errorMessge}
+                      </div>
+
+                      <div className="flex justify-center text-center">
+                        <p className="text-[#515151] text-sm max-w-lg">
+                          To get pair code, please install Disploy app on your
+                          Players (Android, LG, Samsung, FireStick, Raspberry
+                          Pi, etc.)
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="flex items-center justify-center pb-4">
-              <button
-                className="text-white bg-SlateBlue hover:bg-primary font-semibold   lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-base md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
-                type="button"
-                onClick={verifyOTP}
-              >
-                Continue
-              </button>
-            </div>
+                <div className="flex items-center justify-center pb-4">
+                  <button
+                    className="text-white bg-SlateBlue hover:bg-primary font-semibold   lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-base md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
+                    type="button"
+                    onClick={verifyOTP}
+                  >
+                    Continue
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

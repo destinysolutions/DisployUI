@@ -4,7 +4,7 @@ import Footer from "../Footer";
 import Navbar from "../Navbar";
 import Sidebar from "../Sidebar";
 import { AiOutlineSearch } from "react-icons/ai";
-import { FabricJSCanvas, useFabricJSEditor } from "fabricjs-react";
+import { useFabricJSEditor } from "fabricjs-react";
 import { fabric } from "fabric";
 import axios from "axios";
 import {
@@ -17,10 +17,12 @@ import AssetModal from "../Assests/AssetModal";
 import PreviewModal from "./PreviewModel";
 import { RxCrossCircled } from "react-icons/rx";
 import Carousel from "./DynamicCarousel";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 const DEFAULT_IMAGE = "";
 
 import { useSelector } from "react-redux";
+import moment from "moment";
+import { GoPencil } from "react-icons/go";
 
 const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   SelectLayout.propTypes = {
@@ -29,22 +31,21 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const { state } = useLocation();
-  const [addCounter, setaddCounter] = useState(1);
+  const [edited, setEdited] = useState(false);
+  const currentDate = new Date();
+  const [compositionName, setCompositionName] = useState(
+    moment(currentDate).format("YYYY-MM-DD hh:mm")
+  );
   const [assetData, setAssetData] = useState([]);
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [addAsset, setAddAsset] = useState([]);
   const UserData = useSelector((Alldata) => Alldata.user);
   const authToken = `Bearer ${UserData.user.data.token}`;
-  const [jsondata, setjsondata] = useState({
-    version: 0,
-    objects: [],
-  });
-  const { selectedObjects, editor, onReady } = useFabricJSEditor();
+  const { editor, onReady } = useFabricJSEditor();
   const [modalVisible, setModalVisible] = useState(false);
   const [compositonData, setcompositonData] = useState([]);
   const [currentSection, setcurrentSection] = useState(1);
   const [Testasset, setTestasset] = useState({});
-
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
   const _onReady = (canvas) => {
@@ -55,7 +56,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const navigate = useNavigate();
   useEffect(() => {
-    // console.log("state", state);
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -97,87 +97,11 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   }, []);
-  const onAddRectangle = () => {
-    // editor.addRectangle();
-    if (addCounter == 1) {
-      const rect = new fabric.Rect({
-        left: 0,
-        top: 0,
-        width: 350,
-        height: 150,
-        fill: "red",
-      });
-      editor.canvas.add(rect);
-
-      // Bring the newly added rectangle to the front
-      rect.bringToFront();
-
-      editor.canvas.renderAll();
-      setaddCounter(2);
-    } else if (addCounter == 2) {
-      const rect = new fabric.Rect({
-        left: 350,
-        top: 0,
-        width: 125,
-        height: 268,
-        fill: "green",
-      });
-      editor.canvas.add(rect);
-
-      // Bring the newly added rectangle to the front
-      rect.bringToFront();
-
-      editor.canvas.renderAll();
-      setaddCounter(3);
-    } else if (addCounter == 3) {
-      const rect = new fabric.Rect({
-        left: 0,
-        top: 150,
-        width: 350,
-        height: 120,
-        fill: "blue",
-      });
-      editor.canvas.add(rect);
-
-      // Bring the newly added rectangle to the front
-      rect.bringToFront();
-
-      editor.canvas.renderAll();
-      setaddCounter(4);
-    } else {
-      const rect = new fabric.Rect({
-        left: 100,
-        top: 100,
-        right: 100,
-        bottom: 100,
-        width: 100,
-        height: 100,
-        fill: "orange",
-      });
-      editor.canvas.add(rect);
-
-      // Bring the newly added rectangle to the front
-      rect.bringToFront();
-
-      editor.canvas.renderAll();
-    }
-  };
-
-  const onDeleteAll = () => {
-    editor.deleteAll();
-    setText("");
-    setaddCounter(1);
-  };
-
-  const onDeleteSelected = () => {
-    editor.deleteSelected();
-  };
 
   const onSave = async () => {
-    // const canvasData = JSON.stringify(editor.canvas.toJSON());
     let data = new FormData();
     data.append("CompositionID", 0);
-    data.append("CompositionName", "s1");
+    data.append("CompositionName", compositionName);
     data.append("Resolution", "1920 x 1080");
     data.append("Tags", "Tags");
     data.append("LayoutID", state.layoutDtlID);
@@ -209,7 +133,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 compositionID: id,
                 mediaID: i.assetID,
                 duration: i.PlayDuration,
-                durationType: "hour",
+                durationType: "Second",
                 layoutDetailsID:
                   compositonData?.lstLayloutModelList[index].layoutID,
                 userID: 0,
@@ -247,8 +171,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
         return error;
       });
-
-    // console.log("===>", newdata);
   };
 
   const addSeletedAsset = (data, currentSection) => {
@@ -328,13 +250,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   const onChangeSelectedAsset = (e, id) => {
     const CompositionData = [...addAsset];
-    // const newData = CompositionData.map((item, index) => {
-    //   if (index == id) {
-    //     return { ...item, PlayDuration: e };
-    //   } else {
-    //     return item;
-    //   }
-    // });
+
     const updated = CompositionData.map((item, index) => {
       if (index + 1 == currentSection) {
         return {
@@ -494,7 +410,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div className="flex relative justify-center items-center h-[268px] w-[476px]">
               <RxCrossCircled
-                className="absolute z-50 w-[30px] h-[30px] text-white top-1 right-1"
+                className="absolute z-50 w-[30px] h-[30px] text-white top-1 right-1 cursor-pointer"
                 onClick={closeModal}
               />
               {jsonCanvasData.objects.map((obj, index) => (
@@ -507,7 +423,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                     width: obj.width + "px",
                     height: obj.height + "px",
                     backgroundColor: obj.fill,
-                    // Apply other CSS properties as needed
                   }}
                 >
                   {modalVisible && (
@@ -671,11 +586,26 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           /> */}
 
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center mt-5">
-            <input
-              type="text"
-              placeholder="Sep 26th, 2023, 12:47 PM "
-              className="border border-primary rounded-full px-7 py-2.5 block"
-            />
+            {edited ? (
+              <input
+                type="text"
+                className="border border-primary rounded-full px-7 py-2.5 block"
+                placeholder="Enter schedule name"
+                value={compositionName}
+                onChange={(e) => setCompositionName(e.target.value)}
+              />
+            ) : (
+              <>
+                <div className="flex">
+                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
+                    {compositionName}
+                  </h1>
+                  <button onClick={() => setEdited(true)}>
+                    <GoPencil className="ml-4 text-lg" />
+                  </button>
+                </div>
+              </>
+            )}
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn">
               <button
                 onClick={openModal}
@@ -694,7 +624,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="flex flex-wrap rounded-xl mt-8 shadow bg-white">
             <div className="w-full md:w-1/2 border-r-2 border-r-[#E4E6FF] p-5">
               <div className="flex items-center justify-between mb-4">
-                <div className="search-part flex items-center">
+                {/* <div className="search-part flex items-center">
                   <div className="relative ">
                     <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                       <AiOutlineSearch className="w-5 h-5 text-gray " />
@@ -717,13 +647,15 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                   >
                     <path d="M21 3H5a1 1 0 0 0-1 1v2.59c0 .523.213 1.037.583 1.407L10 13.414V21a1.001 1.001 0 0 0 1.447.895l4-2c.339-.17.553-.516.553-.895v-5.586l5.417-5.417c.37-.37.583-.884.583-1.407V4a1 1 0 0 0-1-1zm-6.707 9.293A.996.996 0 0 0 14 13v5.382l-2 1V13a.996.996 0 0 0-.293-.707L6 6.59V5h14.001l.002 1.583-5.71 5.71z"></path>
                   </svg>
-                </div>
-                <button
-                  onClick={() => setShowAssetModal(true)}
-                  className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                >
-                  New Assets
-                </button>
+                </div> */}
+                <Link to="/FileUpload">
+                  <button
+                    //onClick={() => setShowAssetModal(true)}
+                    className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  >
+                    New Assets Upload
+                  </button>
+                </Link>
                 {showAssetModal ? (
                   <>
                     <AssetModal setShowAssetModal={setShowAssetModal} />
@@ -758,8 +690,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                           addSeletedAsset(assetdata, currentSection)
                         }
                       >
-                        <td className="flex"> {assetdata.assetName}</td>
-                        <td className="p-2">PNG</td>
+                        <td className="break-words"> {assetdata.assetName}</td>
+                        <td className="p-2">{assetdata.fileExtention}</td>
                         <td className="p-2 ">Tags, Tags </td>
                       </tr>
                     ))}

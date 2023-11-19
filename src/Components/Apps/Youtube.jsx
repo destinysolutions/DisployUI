@@ -30,7 +30,6 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const UserData = useSelector((Alldata) => Alldata.user);
   const authToken = `Bearer ${UserData.user.data.token}`;
-  
 
   const [appDetailModal, setAppDetailModal] = useState(false);
 
@@ -40,9 +39,11 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     axios
-      .get(GET_ALL_YOUTUBEDATA,{ headers: {
-        Authorization: authToken,
-      },})
+      .get(GET_ALL_YOUTUBEDATA, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
       .then((response) => {
         const fetchedData = response.data.data;
         setYoutubeData(fetchedData);
@@ -113,7 +114,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
       method: "get",
       maxBodyLength: Infinity,
       url: YOUTUBEDATA_ALL_DELETE,
-      headers: {Authorization: authToken},
+      headers: { Authorization: authToken },
     };
 
     axios
@@ -263,6 +264,9 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                               <input
                                 className="h-5 w-5"
                                 type="checkbox"
+                                style={{
+                                  display: selectAll ? "block" : "none",
+                                }}
                                 checked={item.isChecked || false}
                                 onChange={() =>
                                   handleCheckboxChange(item.youtubeId)
@@ -281,14 +285,14 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                               {appDropDown === item.youtubeId && (
                                 <div className="appdw">
                                   <ul>
-                                    <li className="flex text-sm items-center">
+                                    {/* <li className="flex text-sm items-center">
                                       <FiUpload className="mr-2 text-lg" />
                                       Set to Screen
                                     </li>
                                     <li className="flex text-sm items-center">
                                       <MdPlaylistPlay className="mr-2 text-lg" />
                                       Add to Playlist
-                                    </li>
+                                    </li> */}
 
                                     <li
                                       className="flex text-sm items-center cursor-pointer"

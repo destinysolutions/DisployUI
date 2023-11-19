@@ -120,7 +120,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         })
         .then((response) => {
           const fetchedData = response.data.data;
-          console.log(fetchedData, "dsdsdsdsds");
           setScreenData(fetchedData);
           const initialCheckboxes = {};
           if (Array.isArray(fetchedData)) {
@@ -135,12 +134,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         });
     }
   }, [UserData.user?.userID]);
-  
+
   const [assetData, setAssetData] = useState([]);
+  const [assetAllData, setAssetAllData] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
   const [assetPreview, setAssetPreview] = useState("");
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
-  console.log(selectedAsset.assetName);
+
   useEffect(() => {
     axios
       .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
@@ -154,7 +154,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
         ];
         setAssetData(allAssets);
-        console.log(allAssets, "allAssets");
+        setAssetAllData(allAssets);
       })
       .catch((error) => {
         console.log(error);
@@ -167,7 +167,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         const fetchedData = response.data;
 
         setScheduleData(response.data.data);
-        console.log(fetchedData, "allAssets");
       })
       .catch((error) => {
         console.log(error);
@@ -184,10 +183,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     setSearchAsset(searchQuery);
 
     if (searchQuery === "") {
-      setAssetData(assetData);
+      setAssetData(assetAllData);
     } else {
       const filteredData = assetData.filter((item) => {
-        const itemName = item.name ? item.name.toLowerCase() : "";
+        const itemName = item.assetName ? item.assetName.toLowerCase() : "";
         return itemName.includes(searchQuery);
       });
       setAssetData(filteredData);
@@ -359,7 +358,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         axios
           .request(config)
           .then((response) => {
-            console.log(response.data);
             const updatedScreenData = screenData.map((screen) => {
               if (screen.screenID === screenId) {
                 return {
@@ -446,7 +444,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       axios
         .request(config)
         .then((response) => {
-          console.log(response.data);
           const updatedScreenData = screenData.map((screen) => {
             if (screen.screenID === screenId) {
               return {
@@ -530,7 +527,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       axios
         .request(config)
         .then((response) => {
-          console.log(response.data);
           const updatedScreenData = screenData.map((screen) => {
             if (screen.screenID === screenId) {
               return {
@@ -566,7 +562,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const selectedScreenIdsString = Array.isArray(selectedCheckboxIDs)
     ? selectedCheckboxIDs.join(",")
     : "";
-  console.log(selectedCheckboxIDs, "selectedCheckboxIDs");
 
   const handleScreenGroup = () => {
     let data = JSON.stringify({
@@ -588,9 +583,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
     axios
       .request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-      })
+      .then((response) => {})
       .catch((error) => {
         console.log(error);
       });
@@ -609,7 +602,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             </h1>
 
             <div className="flex items-center sm:mt-3 flex-wrap">
-              <Tooltip
+              {/* <Tooltip
                 content="Connect Screen"
                 placement="bottom-end"
                 className=" bg-SlateBlue text-white z-10 ml-5"
@@ -624,7 +617,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   <VscVmConnect className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
-              </Tooltip>
+              </Tooltip> */}
               <Tooltip
                 content="New Screen"
                 placement="bottom-end"
@@ -647,7 +640,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   <ScreenOTPModal setShowOTPModal={setShowOTPModal} />
                 </>
               ) : null}
-              <Tooltip
+              {/* <Tooltip
                 content="New Screen Group"
                 placement="bottom-end"
                 className=" bg-SlateBlue text-white z-10 ml-5"
@@ -663,7 +656,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
-              </Tooltip>
+              </Tooltip> */}
               {showNewScreenGroupPopup && (
                 <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
                   <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
@@ -698,7 +691,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 </div>
               )}
-              <Tooltip
+              {/* <Tooltip
                 content="Deactivate/Activate"
                 placement="bottom-end"
                 className=" bg-SlateBlue text-white z-10 ml-5"
@@ -713,7 +706,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   <RiSignalTowerLine className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
-              </Tooltip>
+              </Tooltip> */}
               <Tooltip
                 content="Delete"
                 placement="bottom-end"
@@ -764,7 +757,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         />
                         Screen
                       </li>
-                      <li className="flex text-sm items-center mt-2">
+                      {/* <li className="flex text-sm items-center mt-2">
                         <input
                           type="checkbox"
                           className="mr-2 text-lg"
@@ -785,7 +778,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           }
                         />
                         Last Seen
-                      </li>
+                      </li> */}
                       <li className="flex text-sm items-center mt-2">
                         <input
                           type="checkbox"
@@ -892,7 +885,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                     </th>
                   )}
-                  {statusContentVisible && (
+                  {/* {statusContentVisible && (
                     <th className=" text-[#444] text-sm font-semibold p-2">
                       <div className="flex  items-center justify-center  mx-auto ">
                         <MdLiveTv className="mr-2 text-xl" />
@@ -900,8 +893,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <BiFilterAlt className="ml-1 text-lg" />
                       </div>
                     </th>
-                  )}
-                  {lastSeenContentVisible && (
+                  )} */}
+                  {/* {lastSeenContentVisible && (
                     <th className=" text-[#444] text-sm font-semibold p-2">
                       <div className="flex  items-center justify-center   mx-auto">
                         <RxTimer className="mr-2 text-xl" />
@@ -909,7 +902,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <BiFilterAlt className="ml-1 text-lg" />
                       </div>
                     </th>
-                  )}
+                  )} */}
                   {nowPlayingContentVisible && (
                     <th className=" text-[#444] text-sm font-semibold p-2">
                       <div className="flex  items-center justify-center  mx-auto">
@@ -947,6 +940,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           <input
                             type="checkbox"
                             className="mr-3"
+                            style={{
+                              display: selectAllChecked ? "block" : "none",
+                            }}
                             onChange={() =>
                               handleScreenCheckboxChange(screen.screenID)
                             }
@@ -980,11 +976,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                           ) : (
                             <div>
-                              <Link
+                              {/* <Link
                                 to={`/screensplayer?screenID=${screen.screenID}`}
-                              >
-                                {screen.screenName}
-                              </Link>
+                              > */}
+                              {screen.screenName}
+                              {/* </Link> */}
                               <button
                                 onClick={() => {
                                   setIsEditingScreen(true);
@@ -998,22 +994,27 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       )}
                       {locContentVisible && (
-                        <td className="p-2 break-words w-[150px] text-center">
+                        <td className="p-2 break-words text-center">
                           {screen.googleLocation}
                         </td>
                       )}
-                      {statusContentVisible && (
+                      {/* {statusContentVisible && (
                         <td className="p-2 text-center">
                           <button className="rounded-full px-6 py-1 text-white text-center bg-[#3AB700]">
                             Live
                           </button>
                         </td>
-                      )}
-                      {lastSeenContentVisible && (
-                        <td className="p-2 text-center">25 May 2023</td>
-                      )}
+                      )} */}
+                      {/* {lastSeenContentVisible && (
+                        <td className="p-2 text-center break-words">
+                          25 May 2023
+                        </td>
+                      )} */}
                       {nowPlayingContentVisible && (
-                        <td className="p-2 text-center">
+                        <td
+                          className="p-2 text-center "
+                          style={{ wordBreak: "break-all" }}
+                        >
                           <button
                             onClick={(e) => {
                               setShowAssetModal(true);
@@ -1022,10 +1023,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 assetName: e.target.value,
                               });
                             }}
-                            className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                            className="flex items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           >
                             {screen.assetName}
-                            <AiOutlineCloudUpload className="text-lg ml-2" />
+                            <AiOutlineCloudUpload className="text-lg ml-3" />
                           </button>
                           {showAssetModal && (
                             <>
@@ -1368,9 +1369,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                 />
                                                 <div>
                                                   <div>
-                                                    <Link to="/screensplayer">
-                                                      {schedule.scheduleName}
-                                                    </Link>
+                                                    {schedule.scheduleName}
                                                   </div>
                                                 </div>
                                               </td>
@@ -1445,7 +1444,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           {/* action popup start */}
                           {showActionBox[screen.screenID] && (
                             <div className="scheduleAction z-10 ">
-                              <div className="my-1">
+                              {/* <div className="my-1">
                                 <Link
                                   to={`/screensplayer?screenID=${screen.screenID}`}
                                 >
@@ -1455,7 +1454,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 </Link>
                               </div>
 
-                              <div className="mb-1 border border-[#F2F0F9]"></div>
+                              <div className="mb-1 border border-[#F2F0F9]"></div> */}
                               <div className=" mb-1 text-[#D30000]">
                                 <button
                                   onClick={() =>

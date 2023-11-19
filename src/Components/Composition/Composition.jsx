@@ -128,6 +128,25 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     loadComposition();
   }, []);
+  useEffect(() => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: "https://disployapi.thedestinysolutions.com/api/CompositionMaster/SelectCompositionDetailsByID?ID=36",
+      headers: {
+        Authorization: authToken,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   return (
     <>
       <div className="flex bg-white py-3 border-b border-gray">
@@ -139,7 +158,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 "></h1>
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn">
-              <div className="relative">
+              {/* <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                   <AiOutlineSearch className="w-5 h-5 text-gray " />
                 </span>
@@ -148,10 +167,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   placeholder="Search Content"
                   className="border border-primary rounded-full px-7 py-2.5 block w-full p-4 pl-10"
                 />
-              </div>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              </div> */}
+              {/* <button className="sm:ml-2 xs:ml-1 flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 Preview
-              </button>
+              </button> */}
               <button
                 onClick={() => navigation("/addcomposition")}
                 className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
@@ -213,6 +232,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                       <input
                         type="checkbox"
                         className="w-6 h-5 mr-2"
+                        style={{ display: selectAll ? "block" : "none" }}
                         checked={composition.isChecked || false}
                         onChange={() =>
                           handleSelectComposition(composition.compositionID)
@@ -224,7 +244,12 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                       {moment(composition.dateAdded).format("YYYY-MM-DD")}
                     </td>
                     <td className="p-2 ">{composition.resolution}</td>
-                    <td className="p-2">{composition.duration}</td>
+
+                    <td className="p-2">
+                      {moment
+                        .utc(composition.duration * 1000)
+                        .format("HH:mm:ss")}
+                    </td>
                     <td className="p-2">{composition.tags}</td>
                     <td className="p-2 text-center relative ">
                       <div className="relative ">
@@ -239,7 +264,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                         {/* action popup start */}
                         {showActionBox[composition.compositionID] && (
                           <div className="scheduleAction z-10 ">
-                            <div className="my-1">
+                            {/* <div className="my-1">
                               <button>Edit </button>
                             </div>
                             <div className=" mb-1">
@@ -247,8 +272,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                             <div className=" mb-1">
                               <button>Set to Screens</button>
-                            </div>
-                            <div className="mb-1 border border-[#F2F0F9]"></div>
+                            </div> */}
+                            {/* <div className="mb-1 border border-[#F2F0F9]"></div> */}
                             <div className=" mb-1 text-[#D30000]">
                               <button
                                 onClick={() =>

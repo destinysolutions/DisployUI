@@ -56,10 +56,10 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
               Apps
             </h1>
-            <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+            {/* <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
               <MdOutlineWidgets className="text-2xl mr-2 text-white" />
               New Instance
-            </button>
+            </button> */}
           </div>
           <div className="mt-5 mb-5">
             <div className="grid grid-cols-10 gap-4">
@@ -71,7 +71,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
                       key={app.app_Id}
                     >
                       <div className="shadow-md bg-white rounded-lg p-3">
-                        <div className="relative">
+                        {/* <div className="relative">
                           <button className="float-right">
                             <BiDotsHorizontalRounded
                               className="text-2xl"
@@ -100,7 +100,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
                               </ul>
                             </div>
                           )}
-                        </div>
+                        </div> */}
                         <Link to={`/${app.appName}`}>
                           <div className="text-center clear-both">
                             <img

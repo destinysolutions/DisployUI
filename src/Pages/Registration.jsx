@@ -467,7 +467,7 @@ const Registration = () => {
                 </form>
               </div>
             </div>
-            <div className="flex items-center justify-center mt-4">
+            {/* <div className="flex items-center justify-center mt-4">
               <div className="socialIcon socialIcon1">
                 <button onClick={SignInWithGoogle}>
                   <BsGoogle className="text-2xl text-white bg-primary rounded-full p-1" />
@@ -488,7 +488,7 @@ const Registration = () => {
                   <BsMicrosoft className="text-lg text-primary" />
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

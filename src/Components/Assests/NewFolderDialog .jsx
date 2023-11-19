@@ -239,21 +239,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Handle going back to the parent folder
   const navigateBack = () => {
-    if (
-      NestedNewFolder &&
-      NestedNewFolder.perentIDData &&
-      NestedNewFolder.perentIDData.length > 0
-    ) {
-      const parentFolderId = NestedNewFolder.perentIDData[0].perentID;
-      console.log(parentFolderId, "parentFolderId");
-      if (parentFolderId) {
-        history(`/NewFolderDialog/${parentFolderId}`);
-      } else {
-        history("/assets");
-      }
-    } else {
-      history("/assets");
-    }
+    history(-1);
   };
 
   // edit folder Name

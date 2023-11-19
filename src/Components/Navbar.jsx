@@ -8,6 +8,7 @@ import { SELECT_BY_ID_USERDETAIL } from "../Pages/Api";
 
 import { auth } from "../firebase/firebase";
 import { useSelector } from "react-redux";
+import { GET_ALL_ORGANIZATION_MASTER } from "../admin/AdminAPI";
 
 const getInitials = (name) => {
   let initials;
@@ -51,6 +52,7 @@ const Navbar = () => {
   const [regsiterdata, setRegisterdata] = useState([]);
   const [userCreateDate, setUserCreateDate] = useState("");
   const [userTrialDays, setUserTrialDays] = useState("");
+
   const UserData = useSelector((Alldata) => Alldata.user);
 
   const handleProfileClick = (e) => {
@@ -77,21 +79,36 @@ const Navbar = () => {
       document.removeEventListener("click", handleDocumentClick);
     };
   }, []);
-
   useEffect(() => {
     if (UserData) {
       axios
         .get(`${SELECT_BY_ID_USERDETAIL}?ID=${UserData.user?.userID}`)
         .then((response) => {
-          setRegisterdata(response.data.data);
           setUserCreateDate(response.data.data[0].createdDate);
           setUserTrialDays(response.data.data[0].trialDays);
-          //console.log(response.data);
+          console.log(response.data);
         })
         .catch((error) => {
           console.log(error);
         });
     }
+  }, []);
+  useEffect(() => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: GET_ALL_ORGANIZATION_MASTER,
+      headers: {},
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data);
+        setRegisterdata(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   //used for apply navigation
@@ -149,7 +166,7 @@ const Navbar = () => {
         <div className="flex-col flex">
           <div className="w-full">
             <div className=" justify-end items-center mx-auto px-4 flex relative">
-              {/* <div className="mr-3 dayremaining-box">
+              <div className="mr-3 dayremaining-box">
                 {daysRemaining > 0 ? (
                   <p className="text-sm ">
                     Trial Days Remaining : {daysRemaining}
@@ -157,14 +174,14 @@ const Navbar = () => {
                 ) : (
                   <p>Your trial has expired.</p>
                 )}
-              </div> */}
-              <img
+              </div>
+              {/* <img
                 src="/NavbarIcons/Union.svg"
                 alt="Union"
                 className="m-1 cursor-pointer bg-lightgray"
-              />
+              /> */}
               {/* Notification box start */}
-              <div className="relative">
+              {/* <div className="relative">
                 <img
                   src="/NavbarIcons/notification.svg"
                   alt="notification"
@@ -211,7 +228,7 @@ const Navbar = () => {
                     </div>
                   </>
                 )}
-              </div>
+              </div> */}
               {/* Notification box end */}
               {/* profile box start */}
               <div className="relative">
@@ -219,8 +236,8 @@ const Navbar = () => {
                   regsiterdata.map((data) => {
                     const imgSrc = "";
                     return (
-                      <div key={data.userID}>
-                        {data.image == "" ? (
+                      <div key={data.orgSingupID}>
+                        {data.image == null ? (
                           <img
                             src={
                               imgSrc.length <= 0
@@ -248,7 +265,7 @@ const Navbar = () => {
                           <>
                             <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
                               <div className="flex items-center space-x-3 cursor-pointer p-2">
-                                {data.image == "" ? (
+                                {data.image == null ? (
                                   <img
                                     src={
                                       imgSrc.length <= 0
@@ -281,19 +298,21 @@ const Navbar = () => {
                                 </div>
                               </div>
                               <div className="border-b-[1px] border-[#8E94A9]"></div>
-                              <div className="p-2">
-                                <Link to="/userprofile">
+                              <div
+                               //className="p-2"
+                               >
+                                {/* <Link to="/userprofile">
                                   <div className="text-base font-medium mb-1 flex justify-between items-center">
                                     My Account
                                     <MdOutlineNavigateNext className="text-2xl text-gray" />
                                   </div>
-                                </Link>
-                                <div className="text-base font-medium mb-1 flex justify-between items-center">
+                                </Link> */}
+                                {/* <div className="text-base font-medium mb-1 flex justify-between items-center">
                                   Profile settings
                                   <MdOutlineNavigateNext className="text-2xl text-gray" />
-                                </div>
+                                </div> */}
                               </div>
-                              <div className="border-b-[1px] border-[#8E94A9]"></div>
+                              {/* <div className="border-b-[1px] border-[#8E94A9]"></div> */}
                               <div className="flex justify-center items-center p-2">
                                 <div className="mr-2">
                                   <RiLogoutBoxRLine className="text-xl" />
