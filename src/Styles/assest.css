@@ -169,9 +169,10 @@ button.tabshow.tabassactive.right {
 
 td .assetsdw {
   right: 6px;
-  top: inherit;
-  bottom: -85px;
+  top: 50%;
+
   z-index: 9;
+  transform: translate(3px, 20px);
 }
 
 td .tabicon svg {

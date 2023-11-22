@@ -71,7 +71,7 @@ export const SCHEDULE_EVENT_SELECT_BY_ID =
 export const SCHEDULE_SELECT_BY_ID =
   "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/SelectByID";
 export const UPDATED_SCHEDULE_DATA =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/SelectAllGetSchedule";
+  "https://disployapi.thedestinysolutions.com/api/EventMaster/SelectAllGetScheduleList";
 export const UPDATE_TIMEZONE =
   "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/UpdateTimeZone";
 export const SIGNAL_R = "https://disployapi.thedestinysolutions.com/chatHub";
@@ -119,7 +119,7 @@ export const GET_ALL_TEXT_SCROLL_INSTANCE =
 export const DELETE_ALL_TEXT_SCROLL =
   "https://disployapi.thedestinysolutions.com/api/YoutubeApp/DeleteAllTextScroll";
 export const SELECT_BY_ASSET_ID =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/SelectByAssetID";
+  "https://disployapi.thedestinysolutions.com/api/AssetMaster/SelectByAssetID";
 export const ADDPLAYLIST =
   "https://disployapi.thedestinysolutions.com/api/CompositionMaster/AddCompositionMaster";
 export const ADDSUBPLAYLIST =
@@ -133,5 +133,7 @@ export const DELETE_ALL_COMPOSITIONS =
   "https://disployapi.thedestinysolutions.com/api/CompositionMaster/DeleteAllComposition";
 export const GET_ALL_TAGS =
   "https://disployapi.thedestinysolutions.com/api/CompositionMaster/GetAllTag";
+export const GET_CURRENT_ASSET =
+  "https://disployapi.thedestinysolutions.com/api/EventMaster/GetCurrentAsset";
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115

@@ -28,8 +28,8 @@ import Userrole from "../Components/Settings/Userrole";
 import Trash from "../Components/Trash";
 import NewFolderDialog from "../Components/Assests/NewFolderDialog ";
 import { UserProvider } from "../UserContext";
-
 import { auth } from "../firebase/firebase";
+// import { auth } from "../firebase/firebase";
 import LoginContainer from "./AuthRoutes";
 import UserProfile from "../Pages/Profile/UserProfile";
 import AdminContainer from "./AdminRoutes";

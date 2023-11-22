@@ -18,11 +18,15 @@ import Footer from "../../Footer";
 import {
   GET_ALL_FILES,
   GET_ALL_SCREEN_ORIENTATION,
+  GET_ALL_TAGS,
+  GET_CURRENT_ASSET,
   GET_SCREEN_TIMEZONE,
   SELECT_BY_SCREENID_SCREENDETAIL,
+  UPDATE_NEW_SCREEN,
 } from "../../../Pages/Api";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import moment from "moment";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -36,18 +40,51 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [assetData, setAssetData] = useState([]);
   const [getScreenOrientation, setScreenOrientation] = useState([]);
   const [getTimezone, setTimezone] = useState([]);
-
+  const [selectScreenOrientation, setSelectScreenOrientation] = useState();
+  const [selectedTag, setSelectedTag] = useState("");
+  const [tagsData, setTagsData] = useState([]);
+  const [selectedTimezoneName, setSelectedTimezoneName] = useState("");
+  const [googleLoc, setGoogleLoc] = useState("");
+  let currentDate = new Date();
+  let formatedate = moment(currentDate).format("YYYY-MM-DD hh:mm");
+  console.log("formatedate", formatedate);
+  function handleScreenOrientationRadio(e, optionId) {
+    setSelectScreenOrientation(optionId);
+  }
   useEffect(() => {
     axios
-      .get(`${SELECT_BY_SCREENID_SCREENDETAIL}?ScreenID=${getScreenID}`, {
+      .get(
+        `${SELECT_BY_SCREENID_SCREENDETAIL}?ScreenID=${getScreenID}&CurrentDateTime=${formatedate}`,
+        {
+          headers: {
+            Authorization: authToken,
+          },
+        }
+      )
+      .then((response) => {
+        const fetchedData = response.data.data;
+        console.log(fetchedData, "fetchedData");
+        setScreenData(fetchedData);
+        setSelectScreenOrientation(fetchedData[0].screenOrientation);
+        setSelectedTimezoneName(fetchedData[0].timeZone);
+        setSelectedTag(fetchedData[0].tags);
+        setGoogleLoc(fetchedData[0].googleLocation);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+  useEffect(() => {
+    axios
+      .get(GET_ALL_TAGS, {
         headers: {
           Authorization: authToken,
         },
       })
       .then((response) => {
         const fetchedData = response.data.data;
-        console.log(fetchedData, "fetchedData");
-        setScreenData(fetchedData);
+        // console.log(fetchedData, "fetchedData");
+        setTagsData(fetchedData);
       })
       .catch((error) => {
         console.log(error);
@@ -119,6 +156,99 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         console.error(error);
       });
   }, []);
+  const [playerData, setPlayerData] = useState();
+  // console.log(playerData);
+  useEffect(() => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${GET_CURRENT_ASSET}?ScreenID=${getScreenID}`,
+      headers: {
+        Authorization: authToken,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data);
+        setPlayerData(response.data.data[0].fileType);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+  const isVideo = playerData && /\.(mp4|webm|ogg)$/i.test(playerData);
+  console.log("selectScreenOrientation", selectScreenOrientation);
+  console.log("selectedTimezoneName", selectedTimezoneName);
+  console.log("tagName", selectedTag);
+  const handleScreenDetail = () => {
+    console.log(getScreenID);
+    if (getScreenID) {
+      const {
+        otp,
+        screenResolution,
+        macid,
+        ipAddress,
+        postalCode,
+        latitude,
+        longitude,
+        userID,
+        tvTimeZone,
+        tvScreenOrientation,
+        tvScreenResolution,
+        screenName,
+        mediaDetailID,
+        mediaType,
+        googleLocation,
+      } = getScreenID;
+
+      let data = JSON.stringify({
+        screenID: getScreenID,
+        otp,
+        timeZone: selectedTimezoneName,
+        screenOrientation: selectScreenOrientation,
+        screenResolution,
+        macid,
+        ipAddress,
+        postalCode,
+        latitude,
+        longitude,
+        userID,
+        mediaType,
+        tags: selectedTag,
+        mediaDetailID,
+        tvTimeZone,
+        tvScreenOrientation,
+        tvScreenResolution,
+        screenName,
+        operation: "Update",
+      });
+
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: UPDATE_NEW_SCREEN,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: authToken,
+        },
+        data: data,
+      };
+
+      axios
+        .request(config)
+        .then((response) => {
+          console.log("response", response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      console.error("Screen not update");
+    }
+  };
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -142,31 +272,46 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     </button>
                   </Link>
                 </div>
-                <div>
+                {/* <div>
                   <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
                     <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
                   </button>
-                </div>
+                </div> */}
 
-                <div>
+                {/* <div>
                   <div>
                     <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
                       <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
                     </button>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
 
             <div className="relative bg-white shadow-lg rounded-e-md screenplayer-section">
               <div className="screen-palyer-img ">
-                <ReactPlayer
-                  url={[
-                    "https://www.youtube.com/watch?v=oUFJJNQGwhk",
-                    "https://www.youtube.com/watch?v=jNgP6d9HraI",
-                  ]}
+                {/* <ReactPlayer
+                  url={playerData}
+                  controls={true}
                   className="max-w-full max-h-full reactplayer min-w-full"
-                />
+                /> */}
+                {playerData && isVideo ? (
+                  // Render video player
+                  <ReactPlayer
+                    url={playerData}
+                    className="max-w-full max-h-full reactplayer min-w-full"
+                    controls={true} // Add controls for video
+                    width="100%"
+                    height="100%"
+                  />
+                ) : (
+                  // Render image
+                  <img
+                    src={playerData}
+                    alt="Media"
+                    className="max-w-full max-h-full"
+                  />
+                )}
               </div>
 
               <div className="grid  grid-cols-12  screen-player-details pb-7 sm:pb-0 border-b border-[#D5E3FF]">
@@ -178,7 +323,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     <h4 className="text-primary text-lg">Default Media</h4>
                   </div>
 
-                  <div className="relative">
+                  {/* <div className="relative">
                     <div className="relative">
                       <button
                         className="bg-white p-1 rounded-md shadow mr-2 hover:bg-SlateBlue relative"
@@ -204,7 +349,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </ul>
                       </div>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -312,7 +457,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               </td>
                               <td className="text-left">
                                 <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                                  {screen.timeZone}
+                                  {screen.timeZoneName}
                                 </p>
                               </td>
                             </tr>
@@ -328,7 +473,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 </p>
                               </td>
                             </tr>
-                            <tr className="border-b border-[#D5E3FF]">
+                            {/* <tr className="border-b border-[#D5E3FF]">
                               <td className="text-right">
                                 <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                   Connected Since:
@@ -339,7 +484,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   Jun 5, 2023, 8:16 PM
                                 </p>
                               </td>
-                            </tr>
+                            </tr> */}
                             <tr className="border-b border-[#D5E3FF]">
                               <td className="text-right">
                                 <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
@@ -348,11 +493,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               </td>
                               <td className="text-left">
                                 <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                                  User Name
+                                  {screen.userName}
                                 </p>
                               </td>
                             </tr>
-                            <tr className="border-b border-[#D5E3FF]">
+                            {/* <tr className="border-b border-[#D5E3FF]">
                               <td className="text-right">
                                 <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                   Operating Hours:
@@ -363,8 +508,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   Always on
                                 </p>
                               </td>
-                            </tr>
-                            <tr className="border-b border-[#D5E3FF]">
+                            </tr> */}
+                            {/* <tr className="border-b border-[#D5E3FF]">
                               <td className="text-right">
                                 <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                   payment method:
@@ -375,7 +520,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   **** **** **** 2222
                                 </p>
                               </td>
-                            </tr>
+                            </tr> */}
 
                             {/* <tr>
                           <td colSpan={2}>
@@ -410,11 +555,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           </tbody>
                         ))}
                     </table>
-                    <div className="text-right my-5">
+                    {/* <div className="text-right my-5">
                       <button className="bg-primary text-base px-5 py-2 rounded-full text-white">
                         Save
                       </button>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div
@@ -440,17 +585,23 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               {getScreenOrientation.map((option) => (
                                 <div
                                   key={option.orientationID}
-                                  className="mb-[0.125rem] mr-4 inline-block min-h-[1.5rem] pl-[1.5rem]"
+                                  className="flex"
                                 >
                                   <input
-                                    className="relative float-left -ml-[1.5rem] mr-1 mt-0.5 h-5 w-5 appearance-none rounded-full border-2 border-solid border-neutral-300 before:pointer-events-none before:absolute before:h-4 before:w-4 before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] after:absolute after:z-[1] after:block after:h-4 after:w-4 after:rounded-full after:content-[''] checked:border-SlateBlue checked:before:opacity-[0.16] checked:after:absolute checked:after:left-1/2 checked:after:top-1/2 checked:after:h-[0.625rem] checked:after:w-[0.625rem] checked:after:rounded-full checked:after:border-SlateBlue checked:after:bg-SlateBlue checked:after:content-[''] checked:after:[transform:translate(-50%,-50%)] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:border-SlateBlue checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:border-neutral-600 dark:checked:border-primary dark:checked:after:border-SlateBlue dark:checked:after:bg-SlateBlue dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:border-primary dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
                                     type="radio"
                                     value={option.orientationID}
+                                    checked={
+                                      option.orientationID ===
+                                      selectScreenOrientation
+                                    }
+                                    onChange={(e) =>
+                                      handleScreenOrientationRadio(
+                                        e,
+                                        option.orientationID
+                                      )
+                                    }
                                   />
-                                  <label
-                                    className="mt-px inline-block pl-[0.15rem] opacity-50 hover:cursor-pointer"
-                                    htmlFor="inlineRadio1"
-                                  >
+                                  <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
                                     {option.orientationName}
                                   </label>
                                 </div>
@@ -459,12 +610,12 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           </td>
                         </tr>
                         <tr>
-                          <td className="lg:text-right md:text-right sm:text-left xs:text-left pb-0">
+                          {/* <td className="lg:text-right md:text-right sm:text-left xs:text-left pb-0">
                             <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Playback Mode:
                             </p>
-                          </td>
-                          <td className="text-left pb-0">
+                          </td> */}
+                          {/* <td className="text-left pb-0">
                             <ul className="inline-flex items-center justify-center  my-4 lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
                               <li className="text-sm">
                                 {" "}
@@ -493,14 +644,14 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 </button>
                               </li>
                             </ul>
-                          </td>
+                          </td> */}
                         </tr>
                         <tr
-                          className={
-                            sync === 1
-                              ? "show-togglesynccontent active w-full"
-                              : "togglesynccontent"
-                          }
+                        // className={
+                        //   sync === 1
+                        //     ? "show-togglesynccontent active w-full"
+                        //     : "togglesynccontent"
+                        // }
                         >
                           <td colSpan={2}>
                             <table
@@ -508,7 +659,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               className="sync-table w-full responsive-table"
                             >
                               <tbody>
-                                <tr className="border-b border-[#D5E3FF]">
+                                {/* <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-center pt-0" colSpan={2}>
                                     <p className="text-primary text-sm font-medium">
                                       Sync mode will keep your screens in sync
@@ -516,7 +667,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       content
                                     </p>
                                   </td>
-                                </tr>
+                                </tr> */}
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
@@ -526,7 +677,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   <td>
                                     <input
                                       type="text"
-                                      placeholder="132, My Street, Kingston, New York..."
+                                      //placeholder="132, My Street, Kingston, New York..."
+                                      value={googleLoc}
                                       readOnly
                                     />
                                   </td>
@@ -539,14 +691,26 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     </p>
                                   </td>
                                   <td className="relative">
-                                    <select className="relative">
-                                      <option>Asia/Calcutta</option>
-                                      <option>Asia/Calcutta</option>
+                                    <select
+                                      className="relative"
+                                      value={selectedTimezoneName}
+                                      onChange={(e) =>
+                                        setSelectedTimezoneName(e.target.value)
+                                      }
+                                    >
+                                      {getTimezone.map((timezone) => (
+                                        <option
+                                          value={timezone.timeZoneID}
+                                          key={timezone.timeZoneID}
+                                        >
+                                          {timezone.timeZoneName}
+                                        </option>
+                                      ))}
                                     </select>
                                   </td>
                                 </tr>
 
-                                <tr className="border-b border-[#D5E3FF]">
+                                {/* <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                       Screen Group:
@@ -558,7 +722,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       <option>grouped</option>
                                     </select>
                                   </td>
-                                </tr>
+                                </tr> */}
 
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
@@ -567,13 +731,25 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     </p>
                                   </td>
                                   <td>
-                                    <select>
-                                      <option>Marketing</option>
+                                    <select
+                                      value={selectedTag}
+                                      onChange={(e) =>
+                                        setSelectedTag(e.target.value)
+                                      }
+                                    >
+                                      {tagsData.map((tag) => (
+                                        <option
+                                          key={tag.tagID}
+                                          value={tag.tagName}
+                                        >
+                                          {tag.tagName}
+                                        </option>
+                                      ))}
                                     </select>
                                   </td>
                                 </tr>
 
-                                <tr className="border-b border-[#D5E3FF] relative">
+                                {/* <tr className="border-b border-[#D5E3FF] relative">
                                   <td className="text-right">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                       Operating Hours:
@@ -607,7 +783,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       </div>
                                     )}
                                   </td>
-                                </tr>
+                                </tr> */}
 
                                 {showhoursModal && (
                                   <>
@@ -685,7 +861,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     </div>
                                   </>
                                 )}
-
+                                {/* 
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
@@ -748,7 +924,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       )}
                                     </div>
                                   </td>
-                                </tr>
+                                </tr> */}
 
                                 {/* <tr>
                                   <td colSpan={2}>
@@ -784,151 +960,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               </tbody>
                             </table>
                             <div className="text-right mt-3">
-                              <button className="bg-primary text-base px-5 py-2 rounded-full text-white hover:bg-SlateBlue">
-                                Save
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-
-                        <tr
-                          className={
-                            sync === 2
-                              ? "show-togglesynccontent active w-full"
-                              : "togglesynccontent"
-                          }
-                        >
-                          <td colSpan={2}>
-                            <table
-                              cellPadding={10}
-                              className="sync-table  w-full responsive-table"
-                            >
-                              <tr className="border-b border-[#D5E3FF]">
-                                <td className="text-center pt-0" colSpan={2}>
-                                  <p className="text-primary text-sm font-medium">
-                                    Unsync mode will play your content from the
-                                    beginning each time and won&apos;t keep this
-                                    screen in sync
-                                  </p>
-                                </td>
-                              </tr>
-                              <tr className="border-b border-[#D5E3FF]">
-                                <td className="text-right">
-                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                    Google Location
-                                  </p>
-                                </td>
-                                <td>
-                                  <input
-                                    type="text"
-                                    placeholder="132, My Street, Kingston, New York..."
-                                  />
-                                </td>
-                              </tr>
-
-                              <tr className="border-b border-[#D5E3FF]">
-                                <td className="text-right">
-                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                    Select Time Zone
-                                  </p>
-                                </td>
-                                <td className="relative">
-                                  <select className="relative">
-                                    <option>Asia/Calcutta</option>
-                                    <option>Asia/Calcutta</option>
-                                  </select>
-                                </td>
-                              </tr>
-
-                              <tr className="border-b border-[#D5E3FF]">
-                                <td className="text-right">
-                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                    Screen Group
-                                  </p>
-                                </td>
-                                <td>
-                                  <select>
-                                    <option>Ungrouped</option>
-                                    <option>grouped</option>
-                                  </select>
-                                </td>
-                              </tr>
-
-                              <tr className="border-b border-[#D5E3FF]">
-                                <td className="text-right">
-                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                    Tags
-                                  </p>
-                                </td>
-                                <td>
-                                  <select>
-                                    <option>Marketing</option>
-                                  </select>
-                                </td>
-                              </tr>
-
-                              <tr className="border-b border-[#D5E3FF]">
-                                <td className="text-right">
-                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                    Operating Hours:
-                                  </p>
-                                </td>
-                                <td>
-                                  <select className="relative">
-                                    <option>Always On</option>
-                                    <option>
-                                      <button>Custom</button>
-                                    </option>
-                                  </select>
-                                </td>
-                              </tr>
-
-                              <tr className="border-b border-[#D5E3FF]">
-                                <td className="text-right">
-                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                    payment method:
-                                  </p>
-                                </td>
-                                <td className="text-left">
-                                  <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                                    **** **** **** 2222
-                                  </p>
-                                </td>
-                              </tr>
-
-                              {/* <tr>
-                                <td colSpan={2}>
-                                  <div className="flex items-center justify-center">
-                                    <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base mr-2">
-                                      Do you want to run the App at boot up time
-                                      :
-                                    </p>
-                                    <label className="inline-flex relative items-center  cursor-pointer">
-                                      <input
-                                        type="checkbox"
-                                        className="sr-only peer"
-                                        checked={enabled}
-                                        readOnly
-                                      />
-                                      <div
-                                        onClick={() => {
-                                          setEnabled(!enabled);
-                                        }}
-                                        className={` w-14  rounded-full peer-checked:after:translate-x-[130%] peer-checked:after:border-gray after:content-[''] after:bg-white after:absolute after:top-[-2px] after:left-[0px] after:rounded-full after:h-[25px] after:w-[25px] after:z-10  after:border-gray after:border-2 after:transition-all ${
-                                          enabled
-                                            ? " bg-gray text-left pl-2 text-white text-sm"
-                                            : "bg-gray text-right pr-2 text-white text-sm"
-                                        }`}
-                                      >
-                                        {enabled ? "On" : "Off"}
-                                      </div>
-                                    </label>
-                                  </div>
-                                </td>
-                              </tr> */}
-                            </table>
-                            <div className="text-right mt-3">
-                              <button className="bg-primary text-base px-5 py-2 rounded-full text-white hover:bg-SlateBlue">
+                              <button
+                                onClick={handleScreenDetail}
+                                className="bg-primary text-base px-5 py-2 rounded-full text-white hover:bg-SlateBlue"
+                              >
                                 Save
                               </button>
                             </div>
