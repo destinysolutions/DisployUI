@@ -40,7 +40,7 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data?.data));
+        console.log(response.data?.data);
         setAllcompositionData(response.data?.data);
       })
       .catch((error) => {

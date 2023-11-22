@@ -22,7 +22,7 @@ import {
   auth,
   facebookProvider,
   microsoftProvider,
-} from "../firebase/firebase";
+} from "../FireBase/firebase";
 const Registration = () => {
   //using show or hide password field
   const [showPassword, setShowPassword] = useState(false);
