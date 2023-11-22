@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { auth } from "../FireBase/firebase";
 
-import { auth } from "../firebase/firebase";
 
 const AdminNavbar = () => {
   //used for apply navigation

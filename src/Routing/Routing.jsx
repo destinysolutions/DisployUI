@@ -28,8 +28,6 @@ import Userrole from "../Components/Settings/Userrole";
 import Trash from "../Components/Trash";
 import NewFolderDialog from "../Components/Assests/NewFolderDialog ";
 import { UserProvider } from "../UserContext";
-import { auth } from "../firebase/firebase";
-// import { auth } from "../firebase/firebase";
 import LoginContainer from "./AuthRoutes";
 import UserProfile from "../Pages/Profile/UserProfile";
 import AdminContainer from "./AdminRoutes";
@@ -47,6 +45,7 @@ import Loading from "../Components/Loading";
 import AddComposition from "../Components/Composition/AddComposition";
 import Composition from "../Components/Composition/Composition";
 import SelectLayout from "../Components/Composition/SelectedLayout";
+import { auth } from "../FireBase/firebase";
 
 const Routing = () => {
   //for screen resize sidebar open close

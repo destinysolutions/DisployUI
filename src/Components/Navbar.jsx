@@ -5,10 +5,9 @@ import { RiLogoutBoxRLine } from "react-icons/ri";
 import "././../Styles/sidebar.css";
 import axios from "axios";
 import { SELECT_BY_ID_USERDETAIL } from "../Pages/Api";
-
-import { auth } from "../firebase/firebase";
 import { useSelector } from "react-redux";
 import { GET_ALL_ORGANIZATION_MASTER } from "../admin/AdminAPI";
+import { auth } from "../FireBase/firebase";
 
 const getInitials = (name) => {
   let initials;

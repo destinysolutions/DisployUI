@@ -21,7 +21,7 @@ import {
   auth,
   facebookProvider,
   microsoftProvider,
-} from "../firebase/firebase";
+} from "../FireBase/firebase";
 import { useDispatch } from "react-redux";
 import { loginUser, signUpUser } from "../Redux/useraction";
 import ReCAPTCHA from "react-google-recaptcha";
