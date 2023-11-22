@@ -220,10 +220,6 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  const handleDragOver = (event) => {
-    event.preventDefault();
-  };
-
   // Function to handle drop into folder
   const handleDrop = (event, folderId) => {
     event.preventDefault();
@@ -283,7 +279,14 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const toggleMoveTo = () => {
     setIsMoveToOpen(!isMoveToOpen);
   };
+  // dragdrop
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
 
+  const handleDragStart = (event, itemId) => {
+    event.dataTransfer.setData("text/plain", itemId);
+  };
   return (
     <>
       <div className="flex border-b border-gray">
@@ -311,7 +314,13 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className=" page-content grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section mt-4">
                   {Array.isArray(folderData) &&
                     folderData.map((folderAsset, index) => (
-                      <div key={folderAsset.assetID}>
+                      <div
+                        key={folderAsset.assetID}
+                        draggable
+                        onDragStart={(event) =>
+                          handleDragStart(event, folderAsset.assetID)
+                        }
+                      >
                         <div className="relative assetsbox">
                           {folderAsset.assetType === "OnlineImage" && (
                             <img

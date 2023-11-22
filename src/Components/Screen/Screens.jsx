@@ -38,16 +38,20 @@ import { RxTimer } from "react-icons/rx";
 import { Tooltip } from "@material-tailwind/react";
 
 import {
+  GET_ALL_COMPOSITIONS,
   GET_ALL_FILES,
   GET_ALL_SCHEDULE,
   SCREEN_GROUP,
   SELECT_BY_USER_SCREENDETAIL,
+  SIGNAL_R,
   UPDATE_NEW_SCREEN,
 } from "../../Pages/Api";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { IoBarChartSharp } from "react-icons/io5";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -140,7 +144,33 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
   const [assetPreview, setAssetPreview] = useState("");
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
+  const [popupActiveTab, setPopupActiveTab] = useState(1);
+  const [compositionData, setCompositionData] = useState([]);
+  const [selectedComposition, setSelectedComposition] = useState({
+    compositionName: "",
+  });
+  const loadComposition = () => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: GET_ALL_COMPOSITIONS,
+      headers: {
+        Authorization: authToken,
+      },
+    };
 
+    axios
+      .request(config)
+      .then((response) => {
+        setCompositionData(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    loadComposition();
+  }, []);
   useEffect(() => {
     axios
       .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
@@ -164,9 +194,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .get(GET_ALL_SCHEDULE, { headers: { Authorization: authToken } })
       .then((response) => {
-        const fetchedData = response.data;
+        const fetchedData = response.data.data;
 
-        setScheduleData(response.data.data);
+        setScheduleData(fetchedData);
       })
       .catch((error) => {
         console.log(error);
@@ -176,7 +206,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedAsset(asset);
     setAssetPreview(asset);
   };
-
+  const handleCompositionsAdd = (composition) => {
+    setSelectedComposition(composition);
+  };
+  console.log(selectedComposition);
   const [searchAsset, setSearchAsset] = useState("");
   const handleFilter = (event) => {
     const searchQuery = event.target.value.toLowerCase();
@@ -385,8 +418,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     const screenToUpdate = screenData.find(
       (screen) => screen.screenID === screenId
     );
-    let moduleID = selectedAsset.assetID;
-
+    let moduleID = selectedAsset.assetID || selectedComposition.compositionID;
+    let mediaType = selectedAsset.assetID ? 1 : 3;
     if (screenToUpdate) {
       const {
         otp,
@@ -420,7 +453,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         latitude,
         longitude,
         userID,
-        mediaType: 1,
+        mediaType: mediaType,
         tags,
         mediaDetailID: moduleID,
         tvTimeZone,
@@ -448,7 +481,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             if (screen.screenID === screenId) {
               return {
                 ...screen,
-                assetName: selectedAsset.assetName,
+                assetName:
+                  selectedAsset.assetName ||
+                  selectedComposition.compositionName,
               };
             }
             return screen;
@@ -588,6 +623,156 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
+
+  //socket signal-RRR
+  const [connection, setConnection] = useState(null);
+  const [screenConnected, setScreenConnected] = useState(null);
+  const [sendTvStatus, setSendTvStatus] = useState(null);
+  useEffect(() => {
+    const connectSignalR = async () => {
+      const newConnection = new HubConnectionBuilder()
+        .withUrl(SIGNAL_R)
+        .configureLogging(LogLevel.Information)
+        .build();
+
+      newConnection.on("ScreenConnected", (screenConnected) => {
+        console.log("ScreenConnected", screenConnected);
+        setScreenConnected(screenConnected);
+      });
+
+      newConnection.on("TvStatus", (status) => {
+        console.log("SendTvStatus", status);
+        // setSendTvStatus(status);
+      });
+
+      try {
+        await newConnection.start();
+        console.log("Connection established");
+        setConnection(newConnection);
+
+        // Invoke ScreenConnected method
+        await newConnection.invoke("ScreenConnected");
+        console.log("Message sent:", screenConnected);
+
+        // Invoke SendTvStatus method
+        await newConnection.invoke("SendTvStatus", true, "E0:76:D0:32:54:00");
+        //console.log("SendTvStatus", 1, "E0:76:D0:32:54:00");
+      } catch (error) {
+        console.error("Error during connection:", error);
+      }
+    };
+
+    connectSignalR(); // Call the combined function
+
+    return () => {
+      if (connection) {
+        connection
+          .stop()
+          .then(() => {
+            console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  }, []);
+  // useEffect(() => {
+  //   const newConnection = new HubConnectionBuilder()
+  //     .withUrl(SIGNAL_R)
+  //     .configureLogging(LogLevel.Information)
+  //     .build();
+
+  //   newConnection.on("ChangeTVStatus", (status) => {
+  //     console.log("ChangeTVStatus", status);
+  //     //setScreenConnected(screenConnected);
+  //   });
+
+  //   newConnection
+  //     .start()
+  //     .then(() => {
+  //       console.log("Connection established");
+  //       setConnection(newConnection);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error starting connection:", error);
+  //     });
+
+  //   return () => {
+  //     if (newConnection) {
+  //       newConnection
+  //         .stop()
+  //         .then(() => {
+  //           console.log("Connection stopped");
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error stopping connection:", error);
+  //         });
+  //     }
+  //   };
+  // }, []);
+  // useEffect(() => {
+  //   if (connection) {
+  //     connection
+  //       .invoke("ChangeTVStatus", 1,"")
+  //       .then(() => {
+  //         //console.log("Message sent:", screenConnected);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error sending message:", error);
+  //       });
+  //   } else {
+  //     console.warn("Connection is not established yet.");
+  //   }
+  // }, [connection]);
+  // useEffect(() => {
+  //   const newConnection = new HubConnectionBuilder()
+  //     .withUrl(SIGNAL_R)
+  //     .configureLogging(LogLevel.Information)
+  //     .build();
+
+  //   newConnection.on("TvStatus", (status) => {
+  //     console.log("SendTvStatus", status);
+  //     //setSendTvStatus(sendTvStatus);
+  //   });
+
+  //   newConnection
+  //     .start()
+  //     .then(() => {
+  //       console.log("Connection established");
+  //       setConnection(newConnection);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error starting connection:", error);
+  //     });
+
+  //   return () => {
+  //     if (newConnection) {
+  //       newConnection
+  //         .stop()
+  //         .then(() => {
+  //           console.log("Connection stopped");
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error stopping connection:", error);
+  //         });
+  //     }
+  //   };
+  // }, []);
+  // useEffect(() => {
+  //   if (connection) {
+  //     connection
+  //       .invoke("SendTvStatus", true, "E0:76:D0:32:54:00")
+  //       .then(() => {
+  //         console.log("SendTvStatus", true, "E0:76:D0:32:54:00");
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error sending message:", error);
+  //       });
+  //   } else {
+  //     console.warn("Connection is not established yet.");
+  //   }
+  // }, [connection]);
   return (
     <>
       <div className="flex border-b border-gray">
@@ -976,11 +1161,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                           ) : (
                             <div>
-                              {/* <Link
+                              <Link
                                 to={`/screensplayer?screenID=${screen.screenID}`}
-                              > */}
-                              {screen.screenName}
-                              {/* </Link> */}
+                              >
+                                {screen.screenName}
+                              </Link>
                               <button
                                 onClick={() => {
                                   setIsEditingScreen(true);
@@ -1049,10 +1234,114 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                       <div className="bg-white rounded-[30px]">
                                         <div>
                                           <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
+                                            <div>
+                                              <nav
+                                                className="flex flex-col space-y-2 "
+                                                aria-label="Tabs"
+                                                role="tablist"
+                                                data-hs-tabs-vertical="true"
+                                              >
+                                                <button
+                                                  type="button"
+                                                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                                    popupActiveTab === 1
+                                                      ? "active"
+                                                      : ""
+                                                  }`}
+                                                  onClick={() =>
+                                                    setPopupActiveTab(1)
+                                                  }
+                                                >
+                                                  <span
+                                                    className={`p-1 rounded ${
+                                                      popupActiveTab === 1
+                                                        ? "bg-primary text-white"
+                                                        : "bg-lightgray"
+                                                    } `}
+                                                  >
+                                                    <IoBarChartSharp
+                                                      size={15}
+                                                    />
+                                                  </span>
+                                                  Assets
+                                                </button>
+                                                <button
+                                                  type="button"
+                                                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                                    popupActiveTab === 2
+                                                      ? "active"
+                                                      : ""
+                                                  }`}
+                                                  onClick={() =>
+                                                    setPopupActiveTab(2)
+                                                  }
+                                                >
+                                                  <span
+                                                    className={`p-1 rounded ${
+                                                      popupActiveTab === 2
+                                                        ? "bg-primary text-white"
+                                                        : "bg-lightgray"
+                                                    } `}
+                                                  >
+                                                    <RiPlayListFill size={15} />
+                                                  </span>
+                                                  Compositions
+                                                </button>
+                                                {/* <button
+                                                  type="button"
+                                                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                                    popupActiveTab === 3
+                                                      ? "active"
+                                                      : ""
+                                                  }`}
+                                                  // onClick={() => handleTabClick(3)}
+                                                >
+                                                  <span
+                                                    className={`p-1 rounded ${
+                                                      popupActiveTab === 3
+                                                        ? "bg-primary text-white"
+                                                        : "bg-lightgray"
+                                                    } `}
+                                                  >
+                                                    <BiAnchor size={15} />
+                                                  </span>
+                                                  Disploy Studio
+                                                </button>
+                                                <button
+                                                  type="button"
+                                                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                                                    popupActiveTab === 4
+                                                      ? "active"
+                                                      : ""
+                                                  }`}
+                                                  // onClick={() => handleTabClick(4)}
+                                                >
+                                                  <span
+                                                    className={`p-1 rounded ${
+                                                      popupActiveTab === 4
+                                                        ? "bg-primary text-white"
+                                                        : "bg-lightgray"
+                                                    } `}
+                                                  >
+                                                    <AiOutlineAppstoreAdd
+                                                      size={15}
+                                                    />
+                                                  </span>
+                                                  Apps
+                                                </button> */}
+                                              </nav>
+                                            </div>
+
                                             <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
-                                              <div>
-                                                <div className="flex flex-wrap items-start lg:justify-between border-b border-lightgray  md:justify-center sm:justify-center xs:justify-center">
-                                                  <div className="mb-5 relative searchbox">
+                                              <div
+                                                className={
+                                                  popupActiveTab === 1
+                                                    ? ""
+                                                    : "hidden"
+                                                }
+                                              >
+                                                <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                                                  <div className="mb-5 relative ">
                                                     <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
                                                     <input
                                                       type="text"
@@ -1244,6 +1533,106 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                   )}
                                                 </div>
                                               </div>
+                                              <div
+                                                className={
+                                                  popupActiveTab === 2
+                                                    ? ""
+                                                    : "hidden"
+                                                }
+                                              >
+                                                <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                                                  <div className="mb-5 relative ">
+                                                    <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
+                                                    <input
+                                                      type="text"
+                                                      placeholder=" Search by Name"
+                                                      className="border border-primary rounded-full px-7 py-2 search-user"
+                                                      value={searchAsset}
+                                                      onChange={handleFilter}
+                                                    />
+                                                  </div>
+                                                  <Link to="/addcomposition">
+                                                    <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                                                      Add New Composition
+                                                    </button>
+                                                  </Link>
+                                                </div>
+                                                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
+                                                  <table
+                                                    style={{
+                                                      borderCollapse:
+                                                        "separate",
+                                                      borderSpacing: " 0 10px",
+                                                    }}
+                                                  >
+                                                    <thead className="sticky top-0">
+                                                      <tr className="bg-lightgray">
+                                                        <th className="p-3 w-80 text-left">
+                                                          Composition Name
+                                                        </th>
+                                                        <th>Date Added</th>
+                                                        <th className="p-3">
+                                                          Resolution
+                                                        </th>
+                                                        <th className="p-3">
+                                                          Duration
+                                                        </th>
+                                                      </tr>
+                                                    </thead>
+                                                    {compositionData.map(
+                                                      (composition) => (
+                                                        <tbody
+                                                          key={
+                                                            composition.compositionID
+                                                          }
+                                                        >
+                                                          <tr
+                                                            className={`${
+                                                              selectedComposition ===
+                                                              composition
+                                                                ? "bg-[#f3c953]"
+                                                                : ""
+                                                            } border-b border-[#eee] `}
+                                                            onClick={() => {
+                                                              handleCompositionsAdd(
+                                                                composition
+                                                              );
+                                                            }}
+                                                          >
+                                                            <td className="p-3 text-left">
+                                                              {
+                                                                composition.compositionName
+                                                              }
+                                                            </td>
+                                                            <td className="p-3">
+                                                              {moment(
+                                                                composition.dateAdded
+                                                              ).format(
+                                                                "YYYY-MM-DD"
+                                                              )}
+                                                            </td>
+                                                            <td className="p-3">
+                                                              {
+                                                                composition.resolution
+                                                              }
+                                                            </td>
+                                                            <td className="p-3">
+                                                              {moment
+                                                                .utc(
+                                                                  composition.duration *
+                                                                    1000
+                                                                )
+                                                                .format(
+                                                                  "HH:mm:ss"
+                                                                )}
+                                                            </td>
+                                                          </tr>
+                                                        </tbody>
+                                                      )
+                                                    )}
+                                                  </table>
+                                                </div>
+                                              </div>
                                             </div>
                                           </div>
                                         </div>
@@ -1254,7 +1643,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         Content will always be playing Confirm
                                       </p>
                                       <button
-                                        className="bg-primary text-white rounded-full px-5 py-2 hover:bg-SlateBlue"
+                                        className="bg-primary text-white rounded-full px-5 py-2"
                                         onClick={() => {
                                           setShowAssetModal(false);
                                           handleAssetUpdate(screen.screenID);
@@ -1444,7 +1833,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           {/* action popup start */}
                           {showActionBox[screen.screenID] && (
                             <div className="scheduleAction z-10 ">
-                              {/* <div className="my-1">
+                              <div className="my-1">
                                 <Link
                                   to={`/screensplayer?screenID=${screen.screenID}`}
                                 >
@@ -1454,7 +1843,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 </Link>
                               </div>
 
-                              <div className="mb-1 border border-[#F2F0F9]"></div> */}
+                              <div className="mb-1 border border-[#F2F0F9]"></div>
                               <div className=" mb-1 text-[#D30000]">
                                 <button
                                   onClick={() =>

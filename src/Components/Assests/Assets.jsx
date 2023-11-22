@@ -190,79 +190,79 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   // Delete API
 
   const [trashData, setTrashData] = useState([]);
-  const handelDeletedata = (id) => {
-    const deletedItem = gridData.find((item) => item.assetID === id);
 
-    if (deletedItem) {
-      const formData = new FormData();
-      formData.append("AssetID", id);
-      formData.append("Operation", "Delete");
-      formData.append("IsActive", "true");
-      formData.append("IsDelete", "false");
-      formData.append("FolderID", "0");
-      formData.append("UserID", "0");
-      formData.append("AssetType", "Image");
+  const handelDeletedata = (assetId) => {
+    console.log("idid", assetId);
 
-      axios
-        .post(ALL_FILES_UPLOAD, formData, {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          const deletedWithInfo = {
-            id: id,
-            deletedDate: new Date(),
-            name: deletedItem.assetName,
-            categorieType: deletedItem.assetType,
-            fileType: deletedItem.assetFolderPath,
-            fileSize: deletedItem.fileSize,
-          };
-
-          setTrashData([...trashData, deletedWithInfo]);
-
-          const updatedGridData = gridData.filter(
-            (item) => item.assetID !== id
-          );
-          setGridData(updatedGridData);
-          setTableData(updatedGridData);
-        })
-        .catch((error) => {
-          console.error("Error deleting data:", error);
-        });
-    }
-  };
-
-  useEffect(() => {
-    let data = JSON.stringify({
-      trashId: trashData.id,
-      fileName: trashData.name,
-      fileLocation: trashData.fileType,
-      dateDeleted: trashData.deletedDate,
-      fileSize: trashData.fileSize,
-      itemType: trashData.categorieType,
-      dateModified: "",
-      operation: "Insert",
-    });
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: ADD_TRASH,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
+    const formData = new FormData();
+    formData.append("AssetID", assetId);
+    formData.append("Operation", "Delete");
+    formData.append("IsActive", "true");
+    formData.append("IsDelete", "false");
+    formData.append("FolderID", "0");
+    formData.append("UserID", "0");
+    formData.append("AssetType", "Image");
 
     axios
-      .request(config)
-      .then((response) => {})
+      .post(ALL_FILES_UPLOAD, formData, {
+        headers: {
+          Authorization: authToken,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log("response", response);
+        // const deletedWithInfo = {
+        //   id: id,
+        //   deletedDate: new Date(),
+        //   name: deletedItem.assetName,
+        //   categorieType: deletedItem.assetType,
+        //   fileType: deletedItem.assetFolderPath,
+        //   fileSize: deletedItem.fileSize,
+        // };
+
+        // setTrashData([...trashData, deletedWithInfo]);
+
+        const updatedGridData = gridData.filter(
+          (item) => item.assetID !== assetId
+        );
+        setGridData(updatedGridData);
+        setTableData(updatedGridData);
+      })
       .catch((error) => {
-        console.log(error);
+        console.error("Error deleting data:", error);
       });
-  });
+  };
+
+  // useEffect(() => {
+  //   let data = JSON.stringify({
+  //     trashId: trashData.id,
+  //     fileName: trashData.name,
+  //     fileLocation: trashData.fileType,
+  //     dateDeleted: trashData.deletedDate,
+  //     fileSize: trashData.fileSize,
+  //     itemType: trashData.categorieType,
+  //     dateModified: "",
+  //     operation: "Insert",
+  //   });
+
+  //   let config = {
+  //     method: "post",
+  //     maxBodyLength: Infinity,
+  //     url: ADD_TRASH,
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     data: data,
+  //   };
+
+  //   axios
+  //     .request(config)
+  //     .then((response) => {})
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // });
 
   // select All checkbox
 
@@ -364,12 +364,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
   const [deleteMessage, setDeleteMessage] = useState(false);
 
-  const handleWarning = (id) => {
+  const handleWarning = (assetId) => {
+    console.log("wZAn id:", assetId);
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${SELECT_BY_ASSET_ID}?Id=${id}`,
-      headers: {},
+      url: `${SELECT_BY_ASSET_ID}?Id=${assetId}`,
+      headers: { Authorization: authToken },
     };
 
     axios
@@ -379,7 +380,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         if (response.data.data == true) {
           setDeleteMessage(true);
         } else {
-          handelDeletedata(id);
+          handelDeletedata(assetId);
         }
       })
       .catch((error) => {
@@ -789,11 +790,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       <div className="checkbox flex justify-between absolute top-5 px-4 w-full">
                         <input
                           type="checkbox"
-                          className="w-[20px] h-[20px]"
+                          className="w-[20px] h-[20px] relative"
                           checked={selectAll || selectedItems.includes(item)}
                           onChange={() => handleCheckboxChange(item)}
                         />
-                        <button onClick={() => updateassetsdw(item)}>
+                        <button
+                          onClick={() => updateassetsdw(item)}
+                          className="relative"
+                        >
                           <BsThreeDots className="text-2xl" />
                         </button>
                         {assetsdw === item && selectedItems.includes(item) && (
@@ -851,10 +855,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               )}
                               <li className="flex text-sm items-center relative">
                                 {selectedItems.length > 0 && (
-                                  <div className="move-to-button">
+                                  <div className="move-to-button relative">
                                     <button
                                       onClick={toggleMoveTo}
-                                      className="flex"
+                                      className="flex relative"
                                     >
                                       <CgMoveRight className="mr-2 text-lg" />
                                       Move to
@@ -864,15 +868,26 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       <div className="move-to-dropdown">
                                         <ul>
                                           {originalData.folder.map((folder) => (
-                                            <li key={folder.assetID}>
-                                              <button
-                                                onClick={() =>
-                                                  handleMoveTo(folder.assetID)
-                                                }
-                                              >
-                                                {folder.assetName}
-                                              </button>
-                                            </li>
+                                            // Check if the folder is not in the selectedItems array
+                                            <>
+                                              {selectedItems.every(
+                                                (item) =>
+                                                  item.assetID !==
+                                                  folder.assetID
+                                              ) && (
+                                                <li key={folder.assetID}>
+                                                  <button
+                                                    onClick={() =>
+                                                      handleMoveTo(
+                                                        folder.assetID
+                                                      )
+                                                    }
+                                                  >
+                                                    {folder.assetName}
+                                                  </button>
+                                                </li>
+                                              )}
+                                            </>
                                           ))}
                                         </ul>
                                       </div>
@@ -901,8 +916,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className="relative bg-white rounded-lg shadow">
                                 <div className="py-6 text-center">
                                   <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
-                                  <h3 className="mb-5 text-xl text-primary">
+                                  <h3 className="mb-5 text-xl text-primary  px-5">
                                     Are you sure you want to delete this Asset?
+                                    Because this Asset is being use in another
+                                    place.If you click on yes it will get
+                                    removed from the places where the asset is
+                                    used.
                                   </h3>
                                   <div className="flex justify-center items-center space-x-4">
                                     <button
@@ -911,7 +930,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     >
                                       No, cancel
                                     </button>
-
                                     <button
                                       className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
                                       onClick={() => {
@@ -1121,7 +1139,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             />
                           </td> */}
                           <td className="relative w-[40px]">
-                            <button onClick={() => updateassetsdw2(item)}>
+                            <button
+                              onClick={() => updateassetsdw2(item)}
+                              className="relative"
+                            >
                               <BsThreeDotsVertical className="text-2xl relative" />
                             </button>
                             {assetsdw2 === item && (

@@ -220,7 +220,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       method: "get",
       maxBodyLength: Infinity,
       url: UPDATED_SCHEDULE_DATA,
-      headers: {},
+      headers: { Authorization: authToken },
     };
 
     axios
@@ -273,7 +273,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleTimezone = (timezonename) => {
-    console.log(timezonename);
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
@@ -298,7 +297,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
+        //console.log(JSON.stringify(response.data));
       })
       .catch((error) => {
         console.log(error);
@@ -385,7 +384,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
+        //console.log(JSON.stringify(response.data));
       })
       .catch((error) => {
         console.log(error);
@@ -399,7 +398,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     const previousSelectedAsset = allAssets.find(
       (asset) => asset.assetID === event.asset
     );
-    console.log("previousSelectedAsset", previousSelectedAsset);
     const updatedEventData = {
       ...event,
       start,
@@ -440,7 +438,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data.data;
-        // console.log("event data : ", fetchedData);
         setScheduleAsset(response.data.data);
         const fetchedEvents = fetchedData.map((item) => ({
           id: item.eventId,
@@ -461,7 +458,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleSaveEvent = (eventId, eventData, updateAllValue) => {
-    console.log(updateAllValue, "eventData");
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
@@ -496,7 +492,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         const fetchedData = response.data.data.eventTables;
-        console.log(response.data.data.eventTables, "fetchedData");
         const updateEvent = fetchedData.map((item) => ({
           id: item.eventId,
           title: item.title,
@@ -507,12 +502,16 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           day: item.day,
           asset: item.asset,
         }));
-        console.log(updateEvent, "updateEvent");
+        // console.log(
+        //   updateEvent,
+        //   "updateEventDFTUOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+        // );
         // // Sending a SignalR message for the updated event
         if (eventId) {
           const updatedEvent = fetchedData.find(
-            (event) => event.id === eventId
+            (event) => event.eventId === eventId
           );
+          console.log(updateEvent, "updateEvent");
           if (updatedEvent && connection) {
             connection
               .invoke(
@@ -595,7 +594,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         })
         .then((response) => {
           const fetchedData = response.data.data;
-          console.log(fetchedData, "dsdsdsdsds");
           setScreenData(fetchedData);
           const initialCheckboxes = {};
           if (Array.isArray(fetchedData)) {

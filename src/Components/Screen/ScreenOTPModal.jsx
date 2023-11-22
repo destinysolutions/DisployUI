@@ -99,8 +99,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
             </div>
             {screen == 1 ? (
               <h3 className="justify-center text-center text-red text-xl p-10 font-semibold break-words">
-                You can not able to create new screen. In Trail preiod you can
-                create only one Screen.
+                To add more screens, please activate your trial period
               </h3>
             ) : (
               <>

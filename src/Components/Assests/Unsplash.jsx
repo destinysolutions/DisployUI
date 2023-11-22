@@ -61,7 +61,6 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
     setUploadInProgress(true);
     selectedImages.forEach((image) => {
       const formData = new FormData();
-
       formData.append("AssetFolderPath", image.urls.full);
       formData.append("Operation", "Insert");
       formData.append("AssetType", "OnlineImage");
