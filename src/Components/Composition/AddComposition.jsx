@@ -1,6 +1,5 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-
 import Footer from "../Footer";
 import Navbar from "../Navbar";
 import Sidebar from "../Sidebar";
@@ -22,8 +21,8 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [allcompositionData, setAllcompositionData] = useState([]);
 
-  const SelectLayout = (id) => {
-    navigation("/selectedlayout", { state: id });
+  const SelectLayout = (data) => {
+    navigation(`/addcomposition/${data?.layoutDtlID}`);
   };
 
   useEffect(() => {
@@ -47,6 +46,8 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   }, []);
+  // console.log(allcompositionData);
+
   return (
     <>
       <div className="flex bg-white py-3 border-b border-gray">

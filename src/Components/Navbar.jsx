@@ -78,6 +78,7 @@ const Navbar = () => {
       document.removeEventListener("click", handleDocumentClick);
     };
   }, []);
+
   useEffect(() => {
     if (UserData) {
       axios
@@ -85,13 +86,13 @@ const Navbar = () => {
         .then((response) => {
           setUserCreateDate(response.data.data[0].createdDate);
           setUserTrialDays(response.data.data[0].trialDays);
-          console.log(response.data);
         })
         .catch((error) => {
           console.log(error);
         });
     }
   }, []);
+
   useEffect(() => {
     let config = {
       method: "get",
@@ -102,7 +103,6 @@ const Navbar = () => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data);
         setRegisterdata(response.data.data);
       })
       .catch((error) => {
@@ -298,8 +298,8 @@ const Navbar = () => {
                               </div>
                               <div className="border-b-[1px] border-[#8E94A9]"></div>
                               <div
-                               //className="p-2"
-                               >
+                              //className="p-2"
+                              >
                                 {/* <Link to="/userprofile">
                                   <div className="text-base font-medium mb-1 flex justify-between items-center">
                                     My Account
