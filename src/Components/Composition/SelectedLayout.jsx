@@ -17,7 +17,7 @@ import AssetModal from "../Assests/AssetModal";
 import PreviewModal from "./PreviewModel";
 import { RxCrossCircled } from "react-icons/rx";
 import Carousel from "./DynamicCarousel";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 const DEFAULT_IMAGE = "";
 
 import { useSelector } from "react-redux";
@@ -46,20 +46,28 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [compositonData, setcompositonData] = useState([]);
   const [currentSection, setcurrentSection] = useState(1);
   const [Testasset, setTestasset] = useState({});
+
+  const navigate = useNavigate();
+
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
+
+  const onCancel = () => navigate("/addcomposition");
+
+  const { id } = useParams();
+
   const _onReady = (canvas) => {
     fabric.Image.fromURL(DEFAULT_IMAGE, (img) => {
       canvas.renderAll();
       onReady(canvas);
     });
   };
-  const navigate = useNavigate();
+
   useEffect(() => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${SELECT_BY_LIST}?LayoutDtlID=${state?.layoutDtlID}`,
+      url: `${SELECT_BY_LIST}?LayoutID=${id}`,
       headers: { Authorization: authToken },
       data: "",
     };
@@ -67,12 +75,12 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data?.data[0].lstLayloutModelList));
         setcompositonData(response.data?.data[0]);
       })
       .catch((error) => {
         console.log(error);
       });
+    setcompositonData(state);
   }, []);
 
   useEffect(() => {
@@ -173,8 +181,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const addSeletedAsset = (data, currentSection) => {
-    console.log("data", data);
+  const addSeletedAsset = (data, currSection) => {
+    console.log("data", data, currSection);
     let newdatas = { ...Testasset };
     if (newdatas?.[currentSection]) {
       newdatas[currentSection].push({
@@ -186,8 +194,13 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       newdatas[currentSection] = [{ ...data, PlayDuration: 1, isEdited: true }];
     }
     const newdd = Object.entries(newdatas).map(([k, i]) => ({ [k]: i }));
+    console.log(newdatas, newdd);
     setTestasset(newdatas);
     setAddAsset(newdd);
+    // const num = currentSection;
+    // const datanew = { 1: data };
+    // console.log(datanew);
+    // setAddAsset([...addAsset, { currentSection: data }]);
   };
 
   const deleteSeletedAsset = (id) => {
@@ -282,6 +295,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     setTestasset(ChnagedObject);
     setAddAsset(updated);
   };
+
   const jsonCanvasData = {
     version: "5.3.0",
     objects: [
@@ -359,45 +373,48 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         rx: 0,
         ry: 0,
       },
-      {
-        layoutID: 3,
-        layoutDtlID: 1,
-        type: "rect",
-        version: "5.3.0",
-        originX: "left",
-        originY: "top",
-        left: 0,
-        top: 150,
-        width: 350,
-        height: 120,
-        fill: "#7D87A9",
-        stroke: "null",
-        strokeWidth: 1,
-        strokeDashArray: "null",
-        strokeLineCap: "butt",
-        strokeDashOffset: 0,
-        strokeLineJoin: "miter",
-        strokeUniform: false,
-        strokeMiterLimit: 4,
-        scaleX: 1,
-        scaleY: 1,
-        angle: 0,
-        flipX: false,
-        flipY: false,
-        opacity: 1,
-        shadow: "null",
-        visible: true,
-        backgroundColor: "",
-        fillRule: "nonzero",
-        paintFirst: "fill",
-        globalCompositeOperation: "source-over",
-        skewX: 0,
-        skewY: 0,
-        rx: 0,
-        ry: 0,
-      },
+      // {
+      //   layoutID: 3,
+      //   layoutDtlID: 1,
+      //   type: "rect",
+      //   version: "5.3.0",
+      //   originX: "left",
+      //   originY: "top",
+      //   left: 0,
+      //   top: 150,
+      //   width: 350,
+      //   height: 120,
+      //   fill: "#7D87A9",
+      //   stroke: "null",
+      //   strokeWidth: 1,
+      //   strokeDashArray: "null",
+      //   strokeLineCap: "butt",
+      //   strokeDashOffset: 0,
+      //   strokeLineJoin: "miter",
+      //   strokeUniform: false,
+      //   strokeMiterLimit: 4,
+      //   scaleX: 1,
+      //   scaleY: 1,
+      //   angle: 0,
+      //   flipX: false,
+      //   flipY: false,
+      //   opacity: 1,
+      //   shadow: "null",
+      //   visible: true,
+      //   backgroundColor: "",
+      //   fillRule: "nonzero",
+      //   paintFirst: "fill",
+      //   globalCompositeOperation: "source-over",
+      //   skewX: 0,
+      //   skewY: 0,
+      //   rx: 0,
+      //   ry: 0,
+      // },
     ],
   };
+
+  // console.log(compositonData);
+  // console.log(addAsset);
 
   return (
     <>
@@ -408,12 +425,24 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="pt-6 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
-            <div className="flex relative justify-center items-center h-[268px] w-[476px]">
+            <div className="grid relative  h-[268px] w-[476px]">
               <RxCrossCircled
-                className="absolute z-50 w-[30px] h-[30px] text-white top-1 right-1 cursor-pointer"
+                className="absolute z-50 w-[30px] h-[30px] text-white bg-black top-1 right-1 cursor-pointer"
                 onClick={closeModal}
               />
-              {jsonCanvasData.objects.map((obj, index) => (
+              {/* <div className="w-full col-span-full text-center row-span-2 bg-red h-full "> */}
+              {modalVisible && (
+                <Carousel items={addAsset} compositonData={compositonData} />
+              )}
+              {/* </div> */}
+              {/* <div className="w-full col-span-1 text-center row-span-2 bg-yellow-500 h-full">
+                asd
+              </div> */}
+              {/* <div className="w-full col-span-full text-center row-span-1 bg-green h-full">
+                {" "}
+                asd
+              </div> */}
+              {/* {jsonCanvasData.objects.map((obj, index) => (
                 <div
                   key={index}
                   style={{
@@ -429,161 +458,9 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                     <Carousel items={addAsset[index][index + 1]} />
                   )}
                 </div>
-              ))}
+              ))} */}
             </div>
           </PreviewModal>
-          {/* <div className="lg:flex lg:justify-between sm:block xs:block items-center">
-            <input
-              type="text"
-              placeholder="Sep 26th, 2023, 12:47 PM "
-              className="border border-primary rounded-full px-7 py-2.5 block"
-            />
-            <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn">
-              <button className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                Save
-              </button>
-            </div>
-          </div> */}
-
-          {/* <div className="w-full flex flex-wrap rounded-xl mt-8 shadow bg-white">
-            <div className="flex w-full md:w-1/2 lg:w-1/2 xl:w-2/3 border-r-2 border-r-[#E4E6FF] p-5 justify-center items-center">
-              <div className="layout-card block text-center cursor-pointer mx-auto ">
-                <FabricJSCanvas
-                  className="h-[268px] w-[476px] "
-                  onReady={_onReady}
-                />
-              </div>
-            </div>
-
-            <div className="w-full md:w-1/2 lg:w-1/2 xl:w-2/3 p-5">
-              <h3 className="text-lg font-medium block mb-3">Resolution</h3>
-              <select
-                data-te-select-init
-                className="border border-primary rounded-full px-4 py-2.5 block "
-              >
-                <option value="1">Landscape 1920 x 1080</option>
-                <option value="2">Portrait 1080 x 1920</option>
-                <option value="3">Custom</option>
-              </select>
-
-              <div className="overflow-x-auto mt-3 mb-6">
-                <table
-                  className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
-                  cellPadding={10}
-                >
-                  <tbody>
-                    <tr>
-                      <td className="w-16">
-                        <strong>Section 1:</strong>{" "}
-                      </td>
-                      <td className="w-24">
-                        <div className="flex items-center">
-                          <span>Width</span>
-                          <span className="px-2">
-                            <input
-                              type="text"
-                              className="bg-gray-50 border border-[#E4E6FF] text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              placeholder="286"
-                            />
-                          </span>
-                          <span className="me-5">Px,</span>
-                        </div>
-                      </td>
-                      <td className="w-24">
-                        <div className="flex items-center">
-                          <span>Height</span>
-                          <span className="px-2">
-                            <input
-                              type="text"
-                              className="bg-gray-50 border border-[#E4E6FF] text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              placeholder="170"
-                            />
-                          </span>
-                          <span>Px</span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="w-16">
-                        <strong>Section 2:</strong>{" "}
-                      </td>
-                      <td className="w-24">
-                        <div className="flex items-center">
-                          <span>Width</span>
-                          <span className="px-2">
-                            <input
-                              type="text"
-                              className="bg-gray-50 border border-[#E4E6FF] text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              placeholder="75"
-                            />
-                          </span>
-                          <span className="me-5">Px,</span>
-                        </div>
-                      </td>
-                      <td className="w-24">
-                        <div className="flex items-center">
-                          <span>Height</span>
-                          <span className="px-2">
-                            <input
-                              type="text"
-                              className="bg-gray-50 border border-[#E4E6FF] text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              placeholder="245"
-                            />
-                          </span>
-                          <span>Px</span>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="w-16">
-                        <strong>Section 3:</strong>{" "}
-                      </td>
-                      <td className="w-24">
-                        <div className="flex items-center">
-                          <span>Width</span>
-                          <span className="px-2">
-                            <input
-                              type="text"
-                              className="bg-gray-50 border border-[#E4E6FF] text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              placeholder="286"
-                            />
-                          </span>
-                          <span className="me-5">Px,</span>
-                        </div>
-                      </td>
-                      <td className="w-24">
-                        <div className="flex items-center">
-                          <span>Height</span>
-                          <span className="px-2">
-                            <input
-                              type="text"
-                              className="bg-gray-50 border border-[#E4E6FF] text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-16 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                              placeholder="75"
-                            />
-                          </span>
-                          <span>Px</span>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div className="click-add">
-                <p>
-                  Click (
-                  <a href="#" className="text-filthy-brown">
-                    Add Section
-                  </a>
-                  ) to add a new Section
-                </p>
-              </div>
-            </div>
-          </div> */}
-          {/* OnSelect Section */}
-          {/* <img
-            src={`data:image/svg+xml;utf8,${encodeURIComponent(image)}`}
-            className="h-20 w-20"
-          /> */}
 
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center mt-5">
             {edited ? (
@@ -606,7 +483,14 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </>
             )}
+            {/* cancel + preview + save btns */}
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn">
+              <button
+                onClick={onCancel}
+                className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+              >
+                Cancel
+              </button>
               <button
                 onClick={openModal}
                 className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
@@ -624,30 +508,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="flex flex-wrap rounded-xl mt-8 shadow bg-white">
             <div className="w-full md:w-1/2 border-r-2 border-r-[#E4E6FF] p-5">
               <div className="flex items-center justify-between mb-4">
-                {/* <div className="search-part flex items-center">
-                  <div className="relative ">
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                      <AiOutlineSearch className="w-5 h-5 text-gray " />
-                    </span>
-                    <input
-                      type="text"
-                      placeholder="Search Content "
-                      className="border border-primary rounded-full px-7 py-2.5 block w-full p-4 pl-10"
-                    />
-                  </div>
-                  <svg
-                    stroke="currentColor"
-                    fill="currentColor"
-                    strokeWidth="0"
-                    viewBox="0 0 24 24"
-                    className="ml-1 text-lg"
-                    height="1em"
-                    width="1em"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M21 3H5a1 1 0 0 0-1 1v2.59c0 .523.213 1.037.583 1.407L10 13.414V21a1.001 1.001 0 0 0 1.447.895l4-2c.339-.17.553-.516.553-.895v-5.586l5.417-5.417c.37-.37.583-.884.583-1.407V4a1 1 0 0 0-1-1zm-6.707 9.293A.996.996 0 0 0 14 13v5.382l-2 1V13a.996.996 0 0 0-.293-.707L6 6.59V5h14.001l.002 1.583-5.71 5.71z"></path>
-                  </svg>
-                </div> */}
                 <Link to="/FileUpload">
                   <button
                     //onClick={() => setShowAssetModal(true)}
@@ -686,9 +546,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       <tr
                         key={index}
                         className="border-b border-b-[#E4E6FF]"
-                        onClick={() =>
-                          addSeletedAsset(assetdata, currentSection)
-                        }
+                        onClick={() => addSeletedAsset(assetdata, index + 1)}
                       >
                         <td className="break-words"> {assetdata.assetName}</td>
                         <td className="p-2">{assetdata.fileExtention}</td>
@@ -705,7 +563,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className="layout-img me-5">
                   <img
                     src={`data:image/svg+xml;utf8,${encodeURIComponent(
-                      compositonData.svg
+                      compositonData?.svg
                     )}`}
                     alt="Logo"
                     className="w-32"
@@ -716,7 +574,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                     Duration:-<span>0 Sec</span>
                   </h3>
                   <div className="flex">
-                    {Array(compositonData.lstLayloutModelList?.length)
+                    {Array(compositonData?.lstLayloutModelList?.length)
                       .fill(2)
                       .map((item, index) => (
                         <button
@@ -735,10 +593,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                           Section {index + 1}
                         </button>
                       ))}
-
-                    {/* <button className=" px-5 py-2 border border-primary rounded-full">
-                      Section 2
-                    </button> */}
                   </div>
                 </div>
               </div>
@@ -750,102 +604,104 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   <tbody>
                     {addAsset.length > 0 &&
-                      addAsset[currentSection - 1] &&
-                      addAsset[currentSection - 1][currentSection]?.map(
-                        (item, index) => (
-                          <tr key={index}>
-                            <td>
-                              <div className="flex items-center">
-                                <div className="flex-shrink-0 w-10 h-10">
-                                  <>
-                                    {item.assetType === "OnlineImage" && (
-                                      <>
+                      addAsset
+                        .filter((item, index) => index + 1 === currentSection)
+                        .map((item, index) => {
+                          console.log(index + 1 === currentSection);
+                          return (
+                            <tr key={index}>
+                              <td>
+                                <div className="flex items-center">
+                                  <div className="flex-shrink-0 w-10 h-10">
+                                    <>
+                                      {item.assetType === "OnlineImage" && (
+                                        <>
+                                          <img
+                                            className="w-full h-full rounded-sm"
+                                            src={item.assetFolderPath}
+                                            alt={item.assetName}
+                                          />
+                                        </>
+                                      )}
+                                      {item.assetType === "Image" && (
                                         <img
-                                          className="w-full h-full rounded-sm"
                                           src={item.assetFolderPath}
                                           alt={item.assetName}
+                                          className="imagebox relative"
                                         />
-                                      </>
-                                    )}
-                                    {item.assetType === "Image" && (
-                                      <img
-                                        src={item.assetFolderPath}
-                                        alt={item.assetName}
-                                        className="imagebox relative"
-                                      />
-                                    )}
-                                    {item.assetType === "Video" && (
-                                      <video
-                                        controls
-                                        className="w-full h-full rounded-sm"
-                                      >
-                                        <source
-                                          src={item.assetFolderPath}
-                                          type="video/mp4"
-                                        />
-                                        Your browser does not support the video
-                                        tag.
-                                      </video>
-                                    )}
-                                    {item.assetType === "DOC" && (
-                                      <a
-                                        href={item.assetFolderPath}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                      >
-                                        {item.assetName}
-                                      </a>
-                                    )}
-                                  </>
+                                      )}
+                                      {item.assetType === "Video" && (
+                                        <video
+                                          controls
+                                          className="w-full h-full rounded-sm"
+                                        >
+                                          <source
+                                            src={item.assetFolderPath}
+                                            type="video/mp4"
+                                          />
+                                          Your browser does not support the
+                                          video tag.
+                                        </video>
+                                      )}
+                                      {item.assetType === "DOC" && (
+                                        <a
+                                          href={item.assetFolderPath}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          {item.assetName}
+                                        </a>
+                                      )}
+                                    </>
+                                  </div>
+                                  <div className="ml-3">
+                                    <p className="text-gray-900 whitespace-no-wrap">
+                                      Assets 123
+                                    </p>
+                                  </div>
                                 </div>
-                                <div className="ml-3">
-                                  <p className="text-gray-900 whitespace-no-wrap">
-                                    Assets 123
-                                  </p>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="text-center w-24">Image</td>
-                            <td className="text-center w-24">
-                              {item?.isEdited ? (
-                                <span className=" px-2 py-2 border border-[#E4E6FF] rounded-full">
-                                  {item.PlayDuration} Sec
-                                </span>
-                              ) : (
-                                <span className="flex  px-2 py-2 border border-[#E4E6FF] rounded-full">
-                                  <input
-                                    className="flex outline-none w-full"
-                                    value={item.PlayDuration}
-                                    onChange={(e) =>
-                                      onChangeSelectedAsset(
-                                        e.target.value,
-                                        index
-                                      )
-                                    }
+                              </td>
+                              <td className="text-center w-24">Image</td>
+                              <td className="text-center w-24">
+                                {item?.isEdited ? (
+                                  <span className=" px-2 py-2 border border-[#E4E6FF] rounded-full">
+                                    {item.PlayDuration} Sec
+                                  </span>
+                                ) : (
+                                  <span className="flex  px-2 py-2 border border-[#E4E6FF] rounded-full">
+                                    <input
+                                      className="flex outline-none w-full"
+                                      value={item.PlayDuration}
+                                      onChange={(e) =>
+                                        onChangeSelectedAsset(
+                                          e.target.value,
+                                          index
+                                        )
+                                      }
+                                    />
+                                  </span>
+                                )}
+                              </td>
+                              <td className="text-sm flex justify-end w-24">
+                                <a
+                                  className="px-2"
+                                  onClick={() => onEditSelectedAsset(index)}
+                                >
+                                  <img
+                                    src="../../../Settings/edit-icon.svg"
+                                    className="w-5"
                                   />
-                                </span>
-                              )}
-                            </td>
-                            <td className="text-sm flex justify-end w-24">
-                              <a
-                                className="px-2"
-                                onClick={() => onEditSelectedAsset(index)}
-                              >
-                                <img
-                                  src="../../../Settings/edit-icon.svg"
-                                  className="w-5"
-                                />
-                              </a>
-                              <a onClick={() => deleteSeletedAsset(index)}>
-                                <img
-                                  src="../../../Settings/delete-icon.svg"
-                                  className="w-5"
-                                />
-                              </a>
-                            </td>
-                          </tr>
-                        )
-                      )}
+                                </a>
+                                <a onClick={() => deleteSeletedAsset(index)}>
+                                  <img
+                                    src="../../../Settings/delete-icon.svg"
+                                    className="w-5"
+                                  />
+                                </a>
+                              </td>
+                            </tr>
+                          );
+                        })}
                   </tbody>
                 </table>
               </div>

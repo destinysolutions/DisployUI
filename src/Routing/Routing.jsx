@@ -44,7 +44,7 @@ import WeatherDetail from "../Components/Apps/WeatherDetail";
 import Loading from "../Components/Loading";
 import AddComposition from "../Components/Composition/AddComposition";
 import Composition from "../Components/Composition/Composition";
-import SelectLayout from "../Components/Composition/SelectedLayout";
+import SelectedLayout from "../Components/Composition/SelectedLayout";
 import { auth } from "../FireBase/firebase";
 
 const Routing = () => {
@@ -300,6 +300,16 @@ const Routing = () => {
               }
             />
             <Route
+              path="/addcomposition/:id"
+              element={
+                <SelectedLayout
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+
+            {/* <Route
               path="/selectedlayout"
               element={
                 <SelectLayout
@@ -307,7 +317,7 @@ const Routing = () => {
                   setSidebarOpen={setSidebarOpen}
                 />
               }
-            />
+            /> */}
             {/* DisployStudio component route */}
             <Route
               path="/disploystudio"
