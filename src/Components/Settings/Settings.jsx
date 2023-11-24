@@ -3,30 +3,18 @@ import { useState } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import PropTypes from "prop-types";
-import { BsInfoCircle } from "react-icons/bs";
 import { FaCertificate } from "react-icons/fa";
 import { HiOutlineUsers } from "react-icons/hi";
 import { MdOutlineStorage } from "react-icons/md";
-import { BsFileText } from "react-icons/bs";
-import { MdOutlineDiscount } from "react-icons/md";
 import { SiMediamarkt } from "react-icons/si";
-import { SlCalender } from "react-icons/sl";
-import { FiUserCheck } from "react-icons/fi";
 import { RiEyeLine } from "react-icons/ri";
 import { AiOutlineSearch } from "react-icons/ai";
-import DataTable from "react-data-table-component";
-
 import Userrole from "./Userrole";
-import Users from "./Users";
-import ScreenAuthorize from "./ScreenAuthorize";
-import Billing from "./Billing";
-import Myplan from "./Myplan";
-import Discount from "./Discount";
 import Storagelimit from "./Storagelimit";
 import Defaultmedia from "./Defaultmedia";
 import "../../Styles/Settings.css";
 import Footer from "../Footer";
-import ApprovalReq from "./ApprovalReq";
+import Users from "./Users";
 
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
   Settings.propTypes = {
@@ -241,18 +229,6 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
               </h1>
             </div>
 
-            {/* company info search */}
-            <div className={STabs === 1 ? "" : "hidden"}>
-              <div className="text-right flex items-end justify-end relative">
-                <AiOutlineSearch className="absolute top-[13px] lg:right-[234px] md:right-[234px] sm:right-[234px] xs:right-auto xs:left-3 z-10 text-[#6e6e6e]" />
-                <input
-                  type="text"
-                  placeholder=" Search Company Name"
-                  className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
-                  onChange={handleFilter}
-                />
-              </div>
-            </div>
             {/* User Roles search */}
             <div className={STabs === 2 ? "" : "hidden"}>
               <div className="text-right flex items-end justify-end relative">
@@ -260,42 +236,6 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                 <input
                   type="text"
                   placeholder=" Search User Role"
-                  className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
-                />
-              </div>
-            </div>
-
-            {/* Screen Authorize */}
-            <div className={STabs === 4 ? "" : "hidden"}>
-              <div className="text-right flex items-end justify-end relative">
-                <AiOutlineSearch className="absolute top-[13px] lg:right-[234px] md:right-[234px] sm:right-[234px] xs:right-auto xs:left-3 z-10 text-[#6e6e6e]" />
-                <input
-                  type="text"
-                  placeholder=" Search User Name"
-                  className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
-                />
-              </div>
-            </div>
-
-            {/* Billing */}
-            <div className={STabs === 5 ? "" : "hidden"}>
-              <div className="text-right flex items-end justify-end relative">
-                <AiOutlineSearch className="absolute top-[13px] lg:right-[234px] md:right-[234px] sm:right-[234px] xs:right-auto xs:left-3 z-10 text-[#6e6e6e]" />
-                <input
-                  type="text"
-                  placeholder=" Search User Name"
-                  className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
-                />
-              </div>
-            </div>
-
-            {/* My Plan */}
-            <div className={STabs === 6 ? "" : "hidden"}>
-              <div className="text-right flex items-end justify-end relative">
-                <AiOutlineSearch className="absolute top-[13px] lg:right-[234px] md:right-[234px] sm:right-[234px] xs:right-auto xs:left-3 z-10 text-[#6e6e6e]" />
-                <input
-                  type="text"
-                  placeholder=" Search Plan"
                   className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
                 />
               </div>
@@ -313,10 +253,11 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                     }
                     onClick={() => updateTab(1)}
                   >
-                    <BsInfoCircle className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                    <span className="text-base text-primary">Company Info</span>
+                    <HiOutlineUsers className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                    <span className="text-base text-primary">Users</span>
                   </button>
                 </li>
+
                 <li>
                   <button
                     className={
@@ -328,87 +269,13 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                     <span className="text-base text-primary">User Role</span>
                   </button>
                 </li>
-                <li>
-                  <button
-                    className={
-                      STabs === 10 ? "stabshow settingtabactive" : "settingtab"
-                    }
-                    onClick={() => updateTab(10)}
-                  >
-                    <SiMediamarkt className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                    <span className="text-base text-primary">
-                      Approval Required
-                    </span>
-                  </button>
-                </li>
+
                 <li>
                   <button
                     className={
                       STabs === 3 ? "stabshow settingtabactive" : "settingtab"
                     }
                     onClick={() => updateTab(3)}
-                  >
-                    <HiOutlineUsers className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                    <span className="text-base text-primary">Users</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button
-                    className={
-                      STabs === 4 ? "stabshow settingtabactive" : "settingtab"
-                    }
-                    onClick={() => updateTab(4)}
-                  >
-                    <FiUserCheck className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                    <span className="text-base text-primary">
-                      Authorized Screen
-                    </span>
-                  </button>
-                </li>
-
-                <li>
-                  <button
-                    className={
-                      STabs === 5 ? "stabshow settingtabactive" : "settingtab"
-                    }
-                    onClick={() => updateTab(5)}
-                  >
-                    <BsFileText className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                    <span className="text-base text-primary">Billing</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button
-                    className={
-                      STabs === 6 ? "stabshow settingtabactive" : "settingtab"
-                    }
-                    onClick={() => updateTab(6)}
-                  >
-                    <SlCalender className=" text-3xl  text-white bg-primary rounded-md p-2 mr-2" />
-                    <span className="text-base text-primary"> My Plan</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button
-                    className={
-                      STabs === 7 ? "stabshow settingtabactive" : "settingtab"
-                    }
-                    onClick={() => updateTab(7)}
-                  >
-                    <MdOutlineDiscount className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                    <span className="text-base text-primary">Discount</span>
-                  </button>
-                </li>
-
-                <li>
-                  <button
-                    className={
-                      STabs === 8 ? "stabshow settingtabactive" : "settingtab"
-                    }
-                    onClick={() => updateTab(8)}
                   >
                     <MdOutlineStorage className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
                     <span className="text-base text-primary">
@@ -420,9 +287,9 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                 <li>
                   <button
                     className={
-                      STabs === 9 ? "stabshow settingtabactive" : "settingtab"
+                      STabs === 4 ? "stabshow settingtabactive" : "settingtab"
                     }
-                    onClick={() => updateTab(9)}
+                    onClick={() => updateTab(4)}
                   >
                     <SiMediamarkt className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
                     <span className="text-base text-primary">
@@ -436,52 +303,22 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
             {/*Tab details*/}
             <div className="lg:col-span-10 md:col-span-9 sm:col-span-9 xs:col-span-12 bg-white  tabdetails rounded-md relative">
               <div className={STabs === 1 ? "" : "hidden"}>
-                <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
-                  <DataTable
-                    columns={column}
-                    data={records}
-                    fixedHeader
-                    fixedHeaderScrollHeight="500px"
-                  ></DataTable>
-                </div>
+                <Users />
               </div>
-              {/*End of company info details*/}
+              {/*End of userrole details*/}
               <div className={STabs === 2 ? "" : "hidden"}>
                 <Userrole />
               </div>
-              {/*End of userrole details*/}
+              {/*End of users details*/}
               <div className={STabs === 3 ? "" : "hidden"}>
-                <Users />
-              </div>
-              {/*End of users details*/}
-
-              <div className={STabs === 4 ? "" : "hidden"}>
-                <ScreenAuthorize />
-              </div>
-              {/*End of users details*/}
-              <div className={STabs === 5 ? "" : "hidden"}>
-                <Billing />
-              </div>
-              {/*End of Billing*/}
-              <div className={STabs === 6 ? "" : "hidden"}>
-                <Myplan />
-              </div>
-              {/*End of Plan*/}
-              <div className={STabs === 7 ? "" : "hidden"}>
-                <Discount />
-              </div>
-              {/*End of Plan*/}
-              <div className={STabs === 8 ? "" : "hidden"}>
                 <Storagelimit />
               </div>
               {/*Storage Limits*/}
-              <div className={STabs === 9 ? "" : "hidden"}>
+              <div className={STabs === 4 ? "" : "hidden"}>
                 <Defaultmedia />
               </div>
+
               {/*Default Media*/}
-              <div className={STabs === 10 ? "" : "hidden"}>
-                <ApprovalReq />
-              </div>
             </div>
           </div>
         </div>

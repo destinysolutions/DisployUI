@@ -53,14 +53,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   }
   useEffect(() => {
     axios
-      .get(
-        `${SELECT_BY_SCREENID_SCREENDETAIL}?ScreenID=${getScreenID}&CurrentDateTime=${formatedate}`,
-        {
-          headers: {
-            Authorization: authToken,
-          },
-        }
-      )
+      .get(`${SELECT_BY_SCREENID_SCREENDETAIL}?ScreenID=${getScreenID}`, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
       .then((response) => {
         const fetchedData = response.data.data;
         console.log(fetchedData, "fetchedData");
@@ -162,7 +159,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${GET_CURRENT_ASSET}?ScreenID=${getScreenID}`,
+      url: `${GET_CURRENT_ASSET}?ScreenID=${getScreenID}&CurrentDateTime=${formatedate}`,
       headers: {
         Authorization: authToken,
       },
@@ -801,17 +798,17 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                         <hr className="border-gray " />
                                         <div className="model-body lg:p-5 md:p-5 sm:p-5 xs:p-4 ">
                                           <div className="model-details shadow-2xl lg:p-3 md:p-5 sm:p-5 xs:py-3 xs:px-1 text-left rounded-2xl">
-                                            <lable className="text-base font-medium">
+                                            <label className="text-base font-medium">
                                               Hours:
-                                            </lable>
+                                            </label>
                                             <div className="flex justify-between items-center mt-3">
                                               <input
                                                 type="time"
                                                 placeholder="From Time"
                                               />
-                                              <lable className="lg:px-3 md:px-3 sm:px-1 xs:px-1 text-base">
+                                              <label className="lg:px-3 md:px-3 sm:px-1 xs:px-1 text-base">
                                                 To
-                                              </lable>
+                                              </label>
                                               <input
                                                 type="time"
                                                 placeholder="To Time"
