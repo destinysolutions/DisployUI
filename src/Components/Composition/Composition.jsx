@@ -8,13 +8,19 @@ import { HiDotsVertical } from "react-icons/hi";
 import Footer from "../Footer";
 import { useNavigate } from "react-router-dom";
 import {
+  COMPOSITION_BY_ID,
   DELETE_ALL_COMPOSITIONS,
   DELETE_COMPOSITION_BY_ID,
   GET_ALL_COMPOSITIONS,
+  SELECT_BY_LIST,
 } from "../../Pages/Api";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import moment from "moment";
+import toast from "react-hot-toast";
+import PreviewModal from "./PreviewModel";
+import { RxCrossCircled } from "react-icons/rx";
+import Carousel from "./DynamicCarousel";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
@@ -23,6 +29,15 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [showActionBox, setShowActionBox] = useState(false);
   const [compositionData, setCompositionData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [compositionByIdLoading, setCompositionByIdLoading] = useState(false);
+  const [previewModalData, setPreviewModalData] = useState([]);
+  const [layotuDetails, setLayotuDetails] = useState(null);
+
+  const openModal = () => setModalVisible(true);
+  const closeModal = () => setModalVisible(false);
+
   const loadComposition = () => {
     let config = {
       method: "get",
@@ -32,14 +47,18 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         Authorization: authToken,
       },
     };
-
+    setLoading(true);
     axios
       .request(config)
       .then((response) => {
-        setCompositionData(response.data.data);
+        if (response?.data?.status == 200) {
+          setCompositionData(response.data.data);
+          setLoading(false);
+        }
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
 
@@ -63,13 +82,20 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       },
     };
 
+    toast.loading("Deleting...");
     axios
       .request(config)
       .then((response) => {
         console.log(JSON.stringify(response.data));
+        const newArr = compositionData.filter(
+          (item) => item?.compositionID !== com_id
+        );
+        setCompositionData(newArr);
+        toast.remove();
       })
       .catch((error) => {
         console.log(error);
+        toast.remove();
       });
   };
 
@@ -105,6 +131,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       return updatedComposition;
     });
   };
+
   const handleDeleteAllCompositions = () => {
     let config = {
       method: "get",
@@ -125,40 +152,75 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-  useEffect(() => {
-    loadComposition();
-  }, []);
-  useEffect(() => {
+
+  const handleFetchCompositionById = async (id) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/CompositionMaster/SelectCompositionDetailsByID?ID=36",
+      url: `${COMPOSITION_BY_ID}?ID=${id}`,
       headers: {
         Authorization: authToken,
       },
     };
-
+    toast.loading("Fetching...");
+    setCompositionByIdLoading(true);
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data);
+        if (response?.data?.status == 200) {
+          setPreviewModalData(response?.data?.data);
+          openModal();
+        }
+        toast.remove();
+        setCompositionByIdLoading(false);
+      })
+      .catch((error) => {
+        toast.remove();
+        setCompositionByIdLoading(false);
+        console.log(error);
+      });
+  };
+
+  const handleFetchLayoutById = (id) => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${SELECT_BY_LIST}?LayoutID=${id}`,
+      headers: { Authorization: authToken },
+      data: "",
+    };
+    setLoading(true);
+    axios
+      .request(config)
+      .then((response) => {
+        if (response?.data?.status == 200) {
+          setLayotuDetails(response.data?.data[0]);
+        }
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    loadComposition();
   }, []);
+
   return (
     <>
       <div className="flex bg-white py-3 border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
+
       <div className="pt-6 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 "></h1>
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn">
-              {/* <div className="relative">
+              <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                   <AiOutlineSearch className="w-5 h-5 text-gray " />
                 </span>
@@ -167,7 +229,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   placeholder="Search Content"
                   className="border border-primary rounded-full px-7 py-2.5 block w-full p-4 pl-10"
                 />
-              </div> */}
+              </div>
               {/* <button className="sm:ml-2 xs:ml-1 flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 Preview
               </button> */}
@@ -195,9 +257,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             </div>
           </div>
-          <div className="overflow-x-auto rounded-xl mt-8 shadow bg-white mb-6">
+          <div className="rounded-xl mt-8 shadow bg-white mb-6">
             <table
-              className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+              className="w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
               cellPadding={20}
             >
               <thead>
@@ -214,83 +276,144 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   <th className="text-[#5A5881] text-base font-semibold">
                     Duration
                   </th>
-                  <th
-                    colSpan="2"
-                    className="text-[#5A5881] text-base font-semibold"
-                  >
+                  <th className="text-[#5A5881] text-base font-semibold">
                     Tags
                   </th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                {compositionData.map((composition) => (
-                  <tr
-                    className="border-b border-b-[#E4E6FF]"
-                    key={composition.compositionID}
-                  >
-                    <td className="flex">
-                      <input
-                        type="checkbox"
-                        className="w-6 h-5 mr-2"
-                        style={{ display: selectAll ? "block" : "none" }}
-                        checked={composition.isChecked || false}
-                        onChange={() =>
-                          handleSelectComposition(composition.compositionID)
-                        }
-                      />
-                      {composition.compositionName}
-                    </td>
-                    <td className="p-2">
-                      {moment(composition.dateAdded).format("YYYY-MM-DD")}
-                    </td>
-                    <td className="p-2 ">{composition.resolution}</td>
+                {loading ? (
+                  <tr className="text-center font-semibold text-lg w-full">
+                    <td colSpan="5">Loading...</td>
+                  </tr>
+                ) : compositionData.length > 0 && !loading ? (
+                  compositionData.map((composition) => (
+                    <tr
+                      className="border-b border-b-[#E4E6FF] "
+                      key={composition.compositionID}
+                    >
+                      <td className="flex">
+                        <input
+                          type="checkbox"
+                          className="w-6 h-5 mr-2"
+                          style={{ display: selectAll ? "block" : "none" }}
+                          checked={composition.isChecked || false}
+                          onChange={() =>
+                            handleSelectComposition(composition.compositionID)
+                          }
+                        />
+                        {composition.compositionName}
+                      </td>
+                      <td className="p-2">
+                        {moment(composition.dateAdded).format("YYYY-MM-DD")}
+                      </td>
+                      <td className="p-2 ">{composition.resolution}</td>
+                      <td className="p-2">
+                        {moment
+                          .utc(composition.duration * 1000)
+                          .format("HH:mm:ss")}
+                      </td>
+                      <td className="p-2">{composition.tags}</td>
+                      <td className="p-2 text-center relative">
+                        <div className="">
+                          <button
+                            className="ml-3 "
+                            onClick={() => {
+                              onClickMoreComposition(composition.compositionID);
+                            }}
+                          >
+                            <HiDotsVertical />
+                          </button>
+                          {/* action popup start */}
+                          {showActionBox[composition.compositionID] && (
+                            <div className="scheduleAction z-20">
+                              <div className="my-1">
+                                <button
+                                  onClick={() =>
+                                    navigation(
+                                      `/editcomposition/${composition?.compositionID}/${composition?.layoutID}`
+                                    )
+                                  }
+                                >
+                                  Edit{" "}
+                                </button>
+                              </div>
+                              <div className=" mb-1">
+                                <button
+                                  onClick={() => {
+                                    handleFetchCompositionById(
+                                      composition?.compositionID
+                                    );
+                                    handleFetchLayoutById(
+                                      composition?.layoutID
+                                    );
+                                  }}
+                                >
+                                  Preview
+                                </button>
+                              </div>
+                              {/* <div className=" mb-1">
+                                <button>Duplicate</button>
+                              </div> */}
+                              <div className=" mb-1">
+                                <button>Set to Screens</button>
+                              </div>
+                              <div className="mb-1 border border-[#F2F0F9]"></div>
+                              <div className=" mb-1 text-[#D30000]">
+                                <button
+                                  onClick={() =>
+                                    handelDeleteComposition(
+                                      composition.compositionID
+                                    )
+                                  }
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </td>
 
-                    <td className="p-2">
-                      {moment
-                        .utc(composition.duration * 1000)
-                        .format("HH:mm:ss")}
-                    </td>
-                    <td className="p-2">{composition.tags}</td>
-                    <td className="p-2 text-center relative ">
-                      <div className="relative ">
-                        <button
-                          className="ml-3 relative"
-                          onClick={() => {
-                            onClickMoreComposition(composition.compositionID);
-                          }}
-                        >
-                          <HiDotsVertical />
-                        </button>
-                        {/* action popup start */}
-                        {showActionBox[composition.compositionID] && (
-                          <div className="scheduleAction z-10 ">
-                            {/* <div className="my-1">
-                              <button>Edit </button>
-                            </div>
-                            <div className=" mb-1">
-                              <button>Duplicate</button>
-                            </div>
-                            <div className=" mb-1">
-                              <button>Set to Screens</button>
-                            </div> */}
-                            {/* <div className="mb-1 border border-[#F2F0F9]"></div> */}
-                            <div className=" mb-1 text-[#D30000]">
-                              <button
-                                onClick={() =>
-                                  handelDeleteComposition(
-                                    composition.compositionID
-                                  )
-                                }
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
+                      <PreviewModal show={modalVisible} onClose={closeModal}>
+                        <div className="relative h-auto w-auto">
+                          <RxCrossCircled
+                            className="absolute z-50 w-[30px] h-[30px] text-white bg-black top-1 right-1 cursor-pointer"
+                            onClick={closeModal}
+                          />
+
+                          {!loading &&
+                            layotuDetails?.lstLayloutModelList?.map(
+                              (obj, index) => (
+                                <div
+                                  key={index}
+                                  style={{
+                                    width: layotuDetails?.screenWidth + "px",
+                                    height: layotuDetails?.screenHeight + "px",
+                                    backgroundColor: obj.fill,
+                                  }}
+                                >
+                                  {modalVisible && (
+                                    <Carousel
+                                      items={previewModalData}
+                                      composition={obj}
+                                    />
+                                  )}
+                                </div>
+                              )
+                            )}
+                        </div>
+                      </PreviewModal>
+                    </tr>
+                  ))
+                ) : (
+                  <tr className="text-center p-2 font-semibold w-full">
+                    <td colSpan="3" className="p-3 text-center">
+                      No CompositionData here.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

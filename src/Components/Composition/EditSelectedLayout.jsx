@@ -10,6 +10,7 @@ import axios from "axios";
 import {
   ADDPLAYLIST,
   ADDSUBPLAYLIST,
+  COMPOSITION_BY_ID,
   GET_ALL_FILES,
   SELECT_BY_LIST,
 } from "../../Pages/Api";
@@ -25,8 +26,8 @@ import moment from "moment";
 import { GoPencil } from "react-icons/go";
 import toast from "react-hot-toast";
 
-const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
-  SelectLayout.propTypes = {
+const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
+  EditSelectedLayout.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
@@ -45,6 +46,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [addAsset, setAddAsset] = useState([]);
   const [edited, setEdited] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [compositionLoading, setCompositionLoading] = useState(false);
   const [savingLoader, setSavingLoader] = useState(false);
   // const [jsonCanvasData, setJsonCanvasData] = useState([
   //   {
@@ -99,16 +101,9 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
-  const onCancel = () => navigate("/addcomposition");
+  const onCancel = () => navigate("/composition");
 
-  const { id } = useParams();
-
-  const totalDurationSeconds = addAsset
-    .map((e, index) => e[index + 1])
-    .flat(Infinity)
-    .reduce((acc, curr) => {
-      return acc + Number(curr?.duration);
-    }, 0);
+  const { id, layoutId } = useParams();
 
   const _onReady = (canvas) => {
     fabric.Image.fromURL(DEFAULT_IMAGE, (img) => {
@@ -117,17 +112,24 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     });
   };
 
+  const totalDurationSeconds = addAsset
+    .map((e, index) => e[index + 1])
+    .flat(Infinity)
+    .reduce((acc, curr) => {
+      return acc + Number(curr?.duration);
+    }, 0);
+
   const onSave = async () => {
     const newdata = [];
     addAsset.map((item, index) => {
       item[index + 1].map((i) => newdata.push(i));
     });
     let data = JSON.stringify({
-      compositionID: 0,
+      compositionID: Number(id),
       compositionName: compositionName,
       resolution: "1920 * 1080",
       tags: "tags",
-      layoutID: id,
+      layoutID: layoutId,
       userID: 0,
       duration: totalDurationSeconds,
       dateAdded: new Date(),
@@ -331,91 +333,51 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     openModal();
   };
 
-  const jsonCanvasData = {
-    version: "5.3.0",
-    objects: [
-      {
-        layoutID: 1,
-        layoutDtlID: 1,
-        type: "rect",
-        version: "5.3.0",
-        originX: "left",
-        originY: "top",
-        left: 0,
-        top: 0,
-        width: 250,
-        height: 50,
-        fill: "#D9D9D9",
-        stroke: "null",
-        strokeWidth: 1,
-        strokeDashArray: "null",
-        strokeLineCap: "butt",
-        strokeDashOffset: 0,
-        strokeLineJoin: "miter",
-        strokeUniform: false,
-        strokeMiterLimit: 4,
-        scaleX: 1,
-        scaleY: 1,
-        angle: 0,
-        flipX: false,
-        flipY: false,
-        opacity: 1,
-        shadow: "null",
-        visible: true,
-        backgroundColor: "",
-        fillRule: "nonzero",
-        paintFirst: "fill",
-        globalCompositeOperation: "source-over",
-        skewX: 0,
-        skewY: 0,
-        rx: 0,
-        ry: 0,
+  const handleFetchCompositionById = async () => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${COMPOSITION_BY_ID}?ID=${id}`,
+      headers: {
+        Authorization: authToken,
       },
-      {
-        layoutID: 2,
-        layoutDtlID: 1,
-        type: "rect",
-        version: "5.3.0",
-        originX: "left",
-        originY: "top",
-        left: 350,
-        top: 0,
-        width: 125,
-        height: 268,
-        fill: "#D5E3FF",
-        stroke: "null",
-        strokeWidth: 1,
-        strokeDashArray: "null",
-        strokeLineCap: "butt",
-        strokeDashOffset: 0,
-        strokeLineJoin: "miter",
-        strokeUniform: false,
-        strokeMiterLimit: 4,
-        scaleX: 1,
-        scaleY: 1,
-        angle: 0,
-        flipX: false,
-        flipY: false,
-        opacity: 1,
-        shadow: "null",
-        visible: true,
-        backgroundColor: "",
-        fillRule: "nonzero",
-        paintFirst: "fill",
-        globalCompositeOperation: "source-over",
-        skewX: 0,
-        skewY: 0,
-        rx: 0,
-        ry: 0,
-      },
-    ],
+    };
+
+    setCompositionLoading(true);
+    axios
+      .request(config)
+      .then((response) => {
+        if (response?.data?.status == 200) {
+          const data = response.data?.data;
+          // const filterData = assetData.filter((item1) => {
+          //   return data.some((item2) => item2.mediaID === item1?.assetID);
+          // });
+          let obj = {};
+          for (const [key, value] of data.entries()) {
+            if (obj[value?.sectionID]) {
+              obj[value?.sectionID].push(value);
+            } else {
+              obj[value?.sectionID] = [value];
+            }
+          }
+          const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
+          // console.log("asda", obj);
+          setTestasset(obj);
+          setAddAsset(newdd);
+        }
+        setCompositionLoading(false);
+      })
+      .catch((error) => {
+        setCompositionLoading(false);
+        console.log(error);
+      });
   };
 
   const handleFetchLayoutById = () => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${SELECT_BY_LIST}?LayoutID=${id}`,
+      url: `${SELECT_BY_LIST}?LayoutID=${layoutId}`,
       headers: { Authorization: authToken },
       data: "",
     };
@@ -459,10 +421,11 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     handleFetchLayoutById();
+    handleFetchCompositionById();
     handleFetchAllAssests();
   }, []);
 
-  console.log(compositonData);
+  // console.log(compositonData);
 
   return (
     <>
@@ -481,13 +444,11 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
               {!loading &&
                 compositonData !== null &&
+                addAsset.length > 0 &&
                 compositonData?.lstLayloutModelList?.map((obj, index) => (
                   <div
                     key={index}
                     style={{
-                      // position: "absolute",
-                      // left: obj.left + "px",
-                      // top: obj.top + "px",
                       width: compositonData?.screenWidth + "px",
                       height: compositonData?.screenHeight + "px",
                       backgroundColor: obj.fill,
@@ -630,7 +591,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div className="layout-detaills">
                   <h3 className="text-lg font-medium block mb-3">
-                    Duration:-&nbsp;<span>{totalDurationSeconds} Sec</span>
+                    Duration:-<span>{totalDurationSeconds} Sec</span>
                   </h3>
                   <div className="flex">
                     {Array(compositonData?.lstLayloutModelList?.length)
@@ -662,7 +623,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                   cellPadding={10}
                 >
                   <tbody>
-                    {addAsset.length > 0 &&
+                    {!compositionLoading &&
+                      addAsset.length > 0 &&
                       addAsset[currentSection - 1] &&
                       addAsset[currentSection - 1][currentSection].map(
                         (item, index) => {
@@ -783,4 +745,4 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     </>
   );
 };
-export default SelectLayout;
+export default EditSelectedLayout;

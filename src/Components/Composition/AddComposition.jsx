@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 import Footer from "../Footer";
 import Navbar from "../Navbar";
 import Sidebar from "../Sidebar";
-import { AiOutlineSearch } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import { SELECT_BY_LIST } from "../../Pages/Api";
 import { useSelector } from "react-redux";
+import { HiArrowLongLeft } from "react-icons/hi2";
 
 const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
   AddComposition.propTypes = {
@@ -39,14 +39,13 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data?.data);
+        // console.log(response.data?.data);
         setAllcompositionData(response.data?.data);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
-  // console.log(allcompositionData);
 
   return (
     <>
@@ -75,11 +74,16 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
           <div className="rounded-xl mt-8 shadow bg-white p-5">
-            <h4 className="text-lg font-medium mb-5">Standard</h4>
+            <h4
+              className="text-lg font-medium mb-5 flex w-fit items-center gap-2 cursor-pointer "
+              onClick={() => navigation("/composition")}
+            >
+              <HiArrowLongLeft size={30} /> Standard
+            </h4>
             <div className="grid grid-cols-3 gap-8">
               {allcompositionData.map((item, index) => (
                 <div className="relative" key={index}>
-                  <div className="layout-card block text-center cursor-pointer max-w-xs mx-auto ">
+                  <div className="layout-card block text-center max-w-xs mx-auto ">
                     <img
                       src={`data:image/svg+xml;utf8,${encodeURIComponent(
                         item.svg
@@ -89,7 +93,7 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
                     />
                     <div className="onhover_show">
                       <div className="text">
-                        <h4 className="text-lg font-medium">Layout Name</h4>
+                        <h4 className="text-lg font-medium">{item?.name}</h4>
                         <p className="text-sm font-normal ">
                           Total Section: {item.lstLayloutModelList.length}
                         </p>

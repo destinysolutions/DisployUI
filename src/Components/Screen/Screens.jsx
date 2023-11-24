@@ -1832,7 +1832,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           </button>
                           {/* action popup start */}
                           {showActionBox[screen.screenID] && (
-                            <div className="scheduleAction z-10 ">
+                            <div className="scheduleAction z-10">
                               <div className="my-1">
                                 <Link
                                   to={`/screensplayer?screenID=${screen.screenID}`}

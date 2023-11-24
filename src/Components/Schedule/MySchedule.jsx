@@ -61,9 +61,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-  useEffect(() => {
-    loadScheduleData();
-  }, []);
+
   // Initialize state for the "Select All" checkbox
   const [selectAll, setSelectAll] = useState(false);
 
@@ -157,6 +155,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
+
   const handleUpdateScreenAssign = () => {
     let config = {
       method: "post",
@@ -182,31 +181,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-  useEffect(() => {
-    if (UserData.user?.userID) {
-      axios
-        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${UserData.user?.userID}`, {
-          headers: {
-            Authorization: authToken,
-          },
-        })
-        .then((response) => {
-          const fetchedData = response.data.data;
-
-          setScreenData(fetchedData);
-          const initialCheckboxes = {};
-          if (Array.isArray(fetchedData)) {
-            fetchedData.forEach((screen) => {
-              initialCheckboxes[screen.screenID] = false;
-            });
-            setScreenCheckboxes(initialCheckboxes);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }, [UserData.user?.userID]);
 
   const handleScreenCheckboxChange = (screenID) => {
     const updatedCheckboxes = { ...screenCheckboxes };
@@ -254,6 +228,37 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       setSelectedScreens([]);
     }
   };
+
+  useEffect(() => {
+    loadScheduleData();
+  }, []);
+
+  useEffect(() => {
+    if (UserData.user?.userID) {
+      axios
+        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${UserData.user?.userID}`, {
+          headers: {
+            Authorization: authToken,
+          },
+        })
+        .then((response) => {
+          const fetchedData = response.data.data;
+
+          setScreenData(fetchedData);
+          const initialCheckboxes = {};
+          if (Array.isArray(fetchedData)) {
+            fetchedData.forEach((screen) => {
+              initialCheckboxes[screen.screenID] = false;
+            });
+            setScreenCheckboxes(initialCheckboxes);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [UserData.user?.userID]);
+
   return (
     <>
       {/* navbar and sidebar start */}
