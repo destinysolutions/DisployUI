@@ -46,6 +46,7 @@ import AddComposition from "../Components/Composition/AddComposition";
 import Composition from "../Components/Composition/Composition";
 import SelectedLayout from "../Components/Composition/SelectedLayout";
 import { auth } from "../FireBase/firebase";
+import EditSelectedLayout from "../Components/Composition/EditSelectedLayout";
 
 const Routing = () => {
   //for screen resize sidebar open close
@@ -303,6 +304,15 @@ const Routing = () => {
               path="/addcomposition/:id"
               element={
                 <SelectedLayout
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/editcomposition/:id/:layoutId"
+              element={
+                <EditSelectedLayout
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />
