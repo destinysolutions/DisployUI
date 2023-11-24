@@ -153,14 +153,14 @@ const Sidebar = ({ sidebarOpen }) => {
     //     <img src="/MenuIcons/support_icon.svg" alt="Support" className="w-6" />
     //   ),
     // },
-    // {
-    //   title: "Settings",
-    //   cName: "nav-text link-items",
-    //   path: "/settings",
-    //   icon: (
-    //     <img src="/MenuIcons/setting_icon.svg" alt="Settings" className="w-6" />
-    //   ),
-    // },
+    {
+      title: "Settings",
+      cName: "nav-text link-items",
+      path: "/settings",
+      icon: (
+        <img src="/MenuIcons/setting_icon.svg" alt="Settings" className="w-6" />
+      ),
+    },
     // {
     //   title: "Take Tour",
     //   cName: "nav-text link-items",

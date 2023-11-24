@@ -7,6 +7,9 @@ import {
 } from "react-icons/md";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useEffect } from "react";
+import DataTable from "react-data-table-component";
+import { useSelector } from "react-redux";
+import axios from "axios";
 const Userrole = () => {
   const [showdata, setShowdata] = useState(false);
   const handleDropupClick = () => {
@@ -16,6 +19,8 @@ const Userrole = () => {
     /*model */
   }
   const [showuserroleModal, setshowuserroleModal] = useState(false);
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
 
   const tableData = [
     {
@@ -86,16 +91,16 @@ const Userrole = () => {
 
   const [showPopup, setShowPopup] = useState(false); // New state to control the popup visibility
   const [selectedRows, setSelectedRows] = useState([]);
-  const handleCheckboxChange = (checkboxId, rowId) => {
-    // Update checkbox state when clicked
-    setCheckboxStates((prevState) => ({
-      ...prevState,
-      [rowId]: {
-        ...prevState[rowId],
-        [checkboxId]: !prevState[rowId]?.[checkboxId] || true,
-      },
-    }));
-  };
+  // const handleCheckboxChange = (checkboxId, rowId) => {
+  //   // Update checkbox state when clicked
+  //   setCheckboxStates((prevState) => ({
+  //     ...prevState,
+  //     [rowId]: {
+  //       ...prevState[rowId],
+  //       [checkboxId]: !prevState[rowId]?.[checkboxId] || true,
+  //     },
+  //   }));
+  // };
 
   // Check if any checkbox is checked
   const isAnyCheckboxChecked = Object.values(checkboxStates).some(
@@ -201,618 +206,680 @@ const Userrole = () => {
     });
   }, []);
 
-  const mergedCheckboxStates = {
-    ...checkboxState,
-    ...localStorageData.checkboxState,
+  const [userRoleData, setUserRoleData] = useState([]);
+  const [screenIsApprovarID, setScreenIsApprovarID] = useState("");
+  const [screenIsReviwerID, setScreenIsReviwerID] = useState("");
+  const [myScheduleIsApprovarID, setMyScheduleIsApprovarID] = useState("");
+  const [myScheduleIsReviwerID, setMyScheduleIsReviwerID] = useState("");
+  const [appsIsApprovarID, setAppsIsApprovarID] = useState("");
+  const [appsIsReviwerID, setAppsIsReviwerID] = useState("");
+  const [roleName, setRoleName] = useState("");
+
+  const [checkboxValues, setCheckboxValues] = useState({
+    screenView: false,
+    screenCreateEdit: false,
+    screenDelete: false,
+    screenApprovar: false,
+    screenReviewer: false,
+    myScheduleView: false,
+    myScheduleCreateEdit: false,
+    myScheduleDelete: false,
+    myScheduleApprovar: false,
+    myScheduleReviewer: false,
+    appsView: false,
+    appsCreateEdit: false,
+    appsDelete: false,
+    appsApprovar: false,
+    appsReviewer: false,
+  });
+
+  const handleCheckboxChange = (category, value) => {
+    setCheckboxValues((prevValues) => ({
+      ...prevValues,
+      [category]: value,
+    }));
   };
-  const mergedDropdownStates = {
-    ...dropdownStates,
-    ...localStorageData.dropdownStates,
+
+  useEffect(() => {
+    let data = JSON.stringify({
+      mode: "Selectlist",
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://disployapi.thedestinysolutions.com/api/OrganizationUsersRole/AddUpdateOrganizationUsersRole",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data);
+        setUserRoleData(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const handleSaveUserRole = () => {
+    let data = JSON.stringify({
+      orgUserRoleID: 0,
+      orgUserRole: roleName,
+      isActive: 1,
+      userID: 0,
+      mode: "Save",
+      useraccess: [
+        {
+          userAccessID: 0,
+          userRoleID: 0,
+          moduleID: 1,
+          isView: checkboxValues.screenView,
+          isSave: checkboxValues.screenCreateEdit,
+          isDelete: checkboxValues.screenDelete,
+          isApprove: checkboxValues.screenApprovar,
+          approverID: screenIsApprovarID || 0,
+          isReviewer: checkboxValues.screenReviewer,
+          reviewerID: screenIsReviwerID || 0,
+        },
+        {
+          userAccessID: 0,
+          userRoleID: 0,
+          moduleID: 2,
+          isView: checkboxValues.myScheduleView,
+          isSave: checkboxValues.myScheduleCreateEdit,
+          isDelete: checkboxValues.myScheduleDelete,
+          isApprove: checkboxValues.myScheduleApprovar,
+          approverID: myScheduleIsApprovarID || 0,
+          isReviewer: checkboxValues.myScheduleReviewer,
+          reviewerID: myScheduleIsReviwerID || 0,
+        },
+        {
+          userAccessID: 0,
+          userRoleID: 0,
+          moduleID: 3,
+          isView: checkboxValues.appsView,
+          isSave: checkboxValues.appsCreateEdit,
+          isDelete: checkboxValues.appsDelete,
+          isApprove: checkboxValues.appsApprovar,
+          approverID: appsIsApprovarID || 0,
+          isReviewer: checkboxValues.appsReviewer,
+          reviewerID: appsIsReviwerID || 0,
+        },
+      ],
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://disployapi.thedestinysolutions.com/api/OrganizationUsersRole/AddUpdateOrganizationUsersRole",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
-  // console.log(mergedDropdownStates.screen);
-  // console.log(mergedDropdownStates.mySchedule);
-  // console.log(mergedDropdownStates.apps);
-  // console.log(mergedDropdownStates.settings);
-  // console.log(mergedDropdownStates.reports);
-  return (
-    <>
-      <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
-        <button
-          className=" dashboard-btn  flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5  py-2 text-base sm:text-sm mb-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-          onClick={() => setshowuserroleModal(true)}
-        >
-          <FaCertificate className="text-lg mr-1" />
-          Add New Role
-        </button>
+  useEffect(() => {
+    let data = JSON.stringify({
+      OrgUserRoleID: 10,
+      mode: "SelectByID",
+    });
 
-        <div className="accordions  clear-both">
-          <div className="section shadow-md py-3 px-5 rounded-md bg-lightgray flex  items-center justify-between">
-            <h1 className="text-lg text-primary font-medium">Manager</h1>
-            <div className=" flex items-center">
-              <button className="showicon" onClick={handleDropupClick}>
-                {showdata ? (
-                  <MdOutlineKeyboardArrowUp className="text-3xl" />
-                ) : (
-                  <MdOutlineKeyboardArrowDown className="text-3xl" />
-                )}
-              </button>
-            </div>
-          </div>
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://disployapi.thedestinysolutions.com/api/OrganizationUsersRole/AddUpdateOrganizationUsersRole",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+      data: data,
+    };
 
-          {showdata && (
-            <div className="bg-[#EFF3FF] py-5 overflow-x-auto">
-              <table className="w-full text-left" cellPadding={15}>
-                <thead>
-                  <tr className="border-b border-b-[#E4E6FF]">
-                    <th className=" w-2/5"></th>
-                    <th className="text-[#5A5881] text-base font-semibold  w-1/12">
-                      Create
-                    </th>
-                    <th className="text-[#5A5881] text-base font-semibold w-1/12">
-                      Edit
-                    </th>
-                    <th className="text-[#5A5881] text-base font-semibold w-1/12">
-                      Delete
-                    </th>
-                    <th>Need Approval</th>
-                    {/* <th className='text-[#5A5881] text-base font-semibold w-2/12'>Propose Changes</th>
-                                        <th className='text-[#5A5881] text-base font-semibold w-2/12'>Approve Changes</th> */}
-                  </tr>
-                </thead>
-                <tbody>
-                  {tableData.map((row) => (
-                    <tr key={row.id} className="border-b border-b-[#E4E6FF]">
-                      <td className="text-[#5E5E5E] max-w-xl">{row.name}</td>
-                      <td>
-                        <input
-                          type="checkbox"
-                          id={`cbx${row.id}-1`}
-                          className="hidden cbx"
-                          checked={
-                            checkboxStates[row.id]?.[`cbx${row.id}-1`] || false
-                          }
-                          onChange={() =>
-                            handleCheckboxChange(`cbx${row.id}-1`, row.id)
-                          }
-                        />
-                        <label className="check cbx">
-                          <svg width="18px" height="18px" viewBox="0 0 18 18">
-                            <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                            <polyline points="1 9 7 14 15 4"></polyline>
-                          </svg>
-                        </label>
-                      </td>
-                      <td>
-                        <input
-                          type="checkbox"
-                          id={`cbx${row.id}-2`}
-                          className="hidden cbx"
-                          checked={
-                            checkboxStates[row.id]?.[`cbx${row.id}-2`] || false
-                          }
-                          onChange={() =>
-                            handleCheckboxChange(`cbx${row.id}-2`, row.id)
-                          }
-                        />
-                        <label htmlFor={`cbx${row.id}-2`} className="check cbx">
-                          <svg width="18px" height="18px" viewBox="0 0 18 18">
-                            <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                            <polyline points="1 9 7 14 15 4"></polyline>
-                          </svg>
-                        </label>
-                      </td>
-                      <td>
-                        <input
-                          type="checkbox"
-                          id={`cbx${row.id}-3`}
-                          className="hidden cbx"
-                          checked={
-                            checkboxStates[row.id]?.[`cbx${row.id}-3`] || false
-                          }
-                          onChange={() =>
-                            handleCheckboxChange(`cbx${row.id}-3`, row.id)
-                          }
-                        />
-                        <label htmlFor={`cbx${row.id}-3`} className="check cbx">
-                          <svg width="18px" height="18px" viewBox="0 0 18 18">
-                            <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                            <polyline points="1 9 7 14 15 4"></polyline>
-                          </svg>
-                        </label>
-                      </td>
-                      <td>
-                        {row.name === "Screen" &&
-                          mergedCheckboxStates.screen === true && (
-                            <button
-                              onClick={() => handleSetApprovalClick(row.id)}
-                              disabled={
-                                !Object.values(
-                                  checkboxStates[row.id] || {}
-                                ).some((isChecked) => isChecked)
-                              }
-                            >
-                              Set Approval
-                            </button>
-                          )}
-                        {row.name === "Apps" &&
-                          mergedCheckboxStates.apps === true && (
-                            <button
-                              onClick={() => handleSetApprovalClick(row.id)}
-                              disabled={
-                                !Object.values(
-                                  checkboxStates[row.id] || {}
-                                ).some((isChecked) => isChecked)
-                              }
-                            >
-                              Set Approval
-                            </button>
-                          )}
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
-                        {row.name === "My Schedule" &&
-                          mergedCheckboxStates.mySchedule === true && (
-                            <button
-                              onClick={() => handleSetApprovalClick(row.id)}
-                              disabled={
-                                !Object.values(
-                                  checkboxStates[row.id] || {}
-                                ).some((isChecked) => isChecked)
-                              }
-                            >
-                              Set Approval
-                            </button>
-                          )}
-                        {row.name === "Reports" &&
-                          mergedCheckboxStates.reports === true && (
-                            <button
-                              onClick={() => handleSetApprovalClick(row.id)}
-                              disabled={
-                                !Object.values(
-                                  checkboxStates[row.id] || {}
-                                ).some((isChecked) => isChecked)
-                              }
-                            >
-                              Set Approval
-                            </button>
-                          )}
-                        {row.name === "Settings" &&
-                          mergedCheckboxStates.settings === true && (
-                            <button
-                              onClick={() => handleSetApprovalClick(row.id)}
-                              disabled={
-                                !Object.values(
-                                  checkboxStates[row.id] || {}
-                                ).some((isChecked) => isChecked)
-                              }
-                            >
-                              Set Approval
-                            </button>
-                          )}
-                      </td>
-                      {selectedRows !== null && showPopup && (
-                        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                          <div className="relative w-auto ">
-                            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                              <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
-                                <h3 className="text-xl font-medium">
-                                  Approval
-                                </h3>
-                                <button
-                                  className="p-1 text-xl"
-                                  onClick={closePopup}
-                                >
-                                  Close
-                                </button>
-                              </div>
-                              <div className="my-3 ml-4">
-                                <table cellPadding={10}>
-                                  <thead>
-                                    <tr className="text-center">
-                                      <th></th>
-                                      <th>L1</th>
-                                      {mergedDropdownStates.screen >= 2 && (
-                                        <th>L2</th>
-                                      )}
-                                      {mergedDropdownStates.screen >= 3 && (
-                                        <th>L3</th>
-                                      )}
-                                      {mergedDropdownStates.screen >= 4 && (
-                                        <th>L4</th>
-                                      )}
-                                      {mergedDropdownStates.screen >= 5 && (
-                                        <th>L5</th>
-                                      )}
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr>
-                                      <td>{selectedRows}</td>
-                                      <td>
-                                        <select className="border border-primary p-3">
-                                          <option value="Pankaj(Owner)">
-                                            Pankaj (Owner)
-                                          </option>
-                                          <option value="Shubhas(Manager)">
-                                            Shubhas (Manager)
-                                          </option>
-                                          <option value="Maulik(Jr. Manager)">
-                                            Maulik (Jr. Manager)
-                                          </option>
-                                          <option value="Hetal(Developer)">
-                                            Hetal (Developer)
-                                          </option>
-                                        </select>
-                                      </td>
-                                      {mergedDropdownStates.screen >= 2 && (
-                                        <td>
-                                          <select className="border border-primary p-3">
-                                            <option value="Pankaj(Owner)">
-                                              Pankaj (Owner)
-                                            </option>
-                                            <option value="Shubhas(Manager)">
-                                              Shubhas (Manager)
-                                            </option>
-                                            <option value="Maulik(Jr. Manager)">
-                                              Maulik (Jr. Manager)
-                                            </option>
-                                            <option value="Hetal(Developer)">
-                                              Hetal (Developer)
-                                            </option>
-                                          </select>
-                                        </td>
-                                      )}
-
-                                      {mergedDropdownStates.screen >= 3 && (
-                                        <td>
-                                          <select className="border border-primary p-3">
-                                            <option value="Pankaj(Owner)">
-                                              Pankaj (Owner)
-                                            </option>
-                                            <option value="Shubhas(Manager)">
-                                              Shubhas (Manager)
-                                            </option>
-                                            <option value="Maulik(Jr. Manager)">
-                                              Maulik (Jr. Manager)
-                                            </option>
-                                            <option value="Hetal(Developer)">
-                                              Hetal (Developer)
-                                            </option>
-                                          </select>
-                                        </td>
-                                      )}
-                                      {mergedDropdownStates.screen >= 4 && (
-                                        <td>
-                                          <select className="border border-primary p-3">
-                                            <option value="Pankaj(Owner)">
-                                              Pankaj (Owner)
-                                            </option>
-                                            <option value="Shubhas(Manager)">
-                                              Shubhas (Manager)
-                                            </option>
-                                            <option value="Maulik(Jr. Manager)">
-                                              Maulik (Jr. Manager)
-                                            </option>
-                                            <option value="Hetal(Developer)">
-                                              Hetal (Developer)
-                                            </option>
-                                          </select>
-                                        </td>
-                                      )}
-                                      {mergedDropdownStates.screen >= 5 && (
-                                        <td>
-                                          <select className="border border-primary p-3">
-                                            <option value="Pankaj(Owner)">
-                                              Pankaj (Owner)
-                                            </option>
-                                            <option value="Shubhas(Manager)">
-                                              Shubhas (Manager)
-                                            </option>
-                                            <option value="Maulik(Jr. Manager)">
-                                              Maulik (Jr. Manager)
-                                            </option>
-                                            <option value="Hetal(Developer)">
-                                              Hetal (Developer)
-                                            </option>
-                                          </select>
-                                        </td>
-                                      )}
-                                    </tr>
-                                  </tbody>
-                                </table>
-                                <div className="flex justify-end p-6">
-                                  <button
-                                    className="border border-primary px-4 py-2 rounded-full"
-                                    onClick={closePopup}
-                                  >
-                                    save
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      {/* <td>
-                                                <input
-                                                    type="checkbox"
-                                                    id={`cbx${row.id}-4`}
-                                                    className="hidden cbx"
-                                                    checked={checkboxStates[`cbx${row.id}-4`] || false}
-                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-4`)}
-                                                />
-                                                <label htmlFor={`cbx${row.id}-4`} className="check cbx">
-                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
-                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                                                        <polyline points="1 9 7 14 15 4"></polyline>
-                                                    </svg>
-                                                </label>
-                                            </td> */}
-
-                      {/* <td>
-                                                <input
-                                                    type="checkbox"
-                                                    id={`cbx${row.id}-5`}
-                                                    className="hidden cbx"
-                                                    checked={checkboxStates[`cbx${row.id}-5`] || false}
-                                                    onChange={() => handleCheckboxChange(`cbx${row.id}-5`)}
-                                                />
-                                                <label htmlFor={`cbx${row.id}-5`} className="check cbx">
-                                                    <svg width="18px" height="18px" viewBox="0 0 18 18">
-                                                        <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                                                        <polyline points="1 9 7 14 15 4"></polyline>
-                                                    </svg>
-                                                </label>
-                                            </td> */}
-                    </tr>
-                  ))}
-                  {/*Billing */}
-                  <tr className="border-b border-b-[#E4E6FF]">
-                    <td
-                      colSpan={5}
-                      className="text-primary max-w-xl font-medium"
-                    >
-                      Billing
-                    </td>
-                  </tr>
-                  {BillingData.map((row) => (
-                    <tr key={row.id} className="border-b border-b-[#E4E6FF]">
-                      <td className="text-[#5E5E5E] max-w-xl">{row.name}</td>
-                      <td>
-                        <input
-                          type="checkbox"
-                          id={`cbx${row.id}-1`}
-                          className="hidden cbx"
-                          checked={checkboxStates[`cbx${row.id}-1`] || false}
-                          onChange={() =>
-                            handleCheckboxChange(`cbx${row.id}-1`)
-                          }
-                        />
-                        <label className="check cbx">
-                          <svg width="18px" height="18px" viewBox="0 0 18 18">
-                            <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                            <polyline points="1 9 7 14 15 4"></polyline>
-                          </svg>
-                        </label>
-                      </td>
-
-                      <td>
-                        <input
-                          type="checkbox"
-                          id={`cbx${row.id}-2`}
-                          className="hidden cbx"
-                          checked={checkboxStates[`cbx${row.id}-2`] || false}
-                          onChange={() =>
-                            handleCheckboxChange(`cbx${row.id}-2`)
-                          }
-                        />
-                        <label className="check cbx">
-                          <svg width="18px" height="18px" viewBox="0 0 18 18">
-                            <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                            <polyline points="1 9 7 14 15 4"></polyline>
-                          </svg>
-                        </label>
-                      </td>
-
-                      <td>
-                        <input
-                          type="checkbox"
-                          id={`cbx${row.id}-3`}
-                          className="hidden cbx"
-                          checked={checkboxStates[`cbx${row.id}-3`] || false}
-                          onChange={() =>
-                            handleCheckboxChange(`cbx${row.id}-3`)
-                          }
-                        />
-                        <label  className="check cbx">
-                          <svg width="18px" height="18px" viewBox="0 0 18 18">
-                            <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                            <polyline points="1 9 7 14 15 4"></polyline>
-                          </svg>
-                        </label>
-                      </td>
-
-                      <td>
-                        <input
-                          type="checkbox"
-                          id={`cbx${row.id}-4`}
-                          className="hidden cbx"
-                          checked={checkboxStates[`cbx${row.id}-4`] || false}
-                          onChange={() =>
-                            handleCheckboxChange(`cbx${row.id}-4`)
-                          }
-                        />
-                        <label  className="check cbx">
-                          <svg width="18px" height="18px" viewBox="0 0 18 18">
-                            <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                            <polyline points="1 9 7 14 15 4"></polyline>
-                          </svg>
-                        </label>
-                      </td>
-
-                      <td>
-                        <input
-                          type="checkbox"
-                          id={`cbx${row.id}-5`}
-                          className="hidden cbx"
-                          checked={checkboxStates[`cbx${row.id}-5`] || false}
-                          onChange={() =>
-                            handleCheckboxChange(`cbx${row.id}-5`)
-                          }
-                        />
-                        <label  className="check cbx">
-                          <svg width="18px" height="18px" viewBox="0 0 18 18">
-                            <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                            <polyline points="1 9 7 14 15 4"></polyline>
-                          </svg>
-                        </label>
-                      </td>
-                    </tr>
-                  ))}
-
-                  {/*content */}
-                  <tr className="border-b border-b-[#E4E6FF]">
-                    <td
-                      colSpan={5}
-                      className="text-primary max-w-xl font-medium"
-                    >
-                      Content
-                    </td>
-                  </tr>
-
-                  {contentData.map((row) => (
-                    <tr key={row.id} className="border-b border-b-[#E4E6FF]">
-                      <td className="text-[#5E5E5E] max-w-xl">{row.name}</td>
-                      <td>
-                        <input
-                          type="checkbox"
-                          id={`cbx${row.id}-1`}
-                          className="hidden cbx"
-                          checked={checkboxStates[`cbx${row.id}-1`] || false}
-                          onChange={() =>
-                            handleCheckboxChange(`cbx${row.id}-1`)
-                          }
-                        />
-                        <label className="check cbx">
-                          <svg width="18px" height="18px" viewBox="0 0 18 18">
-                            <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                            <polyline points="1 9 7 14 15 4"></polyline>
-                          </svg>
-                        </label>
-                      </td>
-
-                      <td>
-                        <input
-                          type="checkbox"
-                          id={`cbx${row.id}-2`}
-                          className="hidden cbx"
-                          checked={checkboxStates[`cbx${row.id}-2`] || false}
-                          onChange={() =>
-                            handleCheckboxChange(`cbx${row.id}-2`)
-                          }
-                        />
-                        <label className="check cbx">
-                          <svg width="18px" height="18px" viewBox="0 0 18 18">
-                            <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                            <polyline points="1 9 7 14 15 4"></polyline>
-                          </svg>
-                        </label>
-                      </td>
-
-                      <td>
-                        <input
-                          type="checkbox"
-                          id={`cbx${row.id}-3`}
-                          className="hidden cbx"
-                          checked={checkboxStates[`cbx${row.id}-3`] || false}
-                          onChange={() =>
-                            handleCheckboxChange(`cbx${row.id}-3`)
-                          }
-                        />
-                        <label  className="check cbx">
-                          <svg width="18px" height="18px" viewBox="0 0 18 18">
-                            <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                            <polyline points="1 9 7 14 15 4"></polyline>
-                          </svg>
-                        </label>
-                      </td>
-
-                      <td>
-                        <input
-                          type="checkbox"
-                          id={`cbx${row.id}-4`}
-                          className="hidden cbx"
-                          checked={checkboxStates[`cbx${row.id}-4`] || false}
-                          onChange={() =>
-                            handleCheckboxChange(`cbx${row.id}-4`)
-                          }
-                        />
-                        <label  className="check cbx">
-                          <svg width="18px" height="18px" viewBox="0 0 18 18">
-                            <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                            <polyline points="1 9 7 14 15 4"></polyline>
-                          </svg>
-                        </label>
-                      </td>
-
-                      <td>
-                        <input
-                          type="checkbox"
-                          id={`cbx${row.id}-5`}
-                          className="hidden cbx"
-                          checked={checkboxStates[`cbx${row.id}-5`] || false}
-                          onChange={() =>
-                            handleCheckboxChange(`cbx${row.id}-5`)
-                          }
-                        />
-                        <label  className="check cbx">
-                          <svg width="18px" height="18px" viewBox="0 0 18 18">
-                            <path d="M1,9 L1,3.5 C1,2 2,1 3.5,1 L14.5,1 C16,1 17,2 17,3.5 L17,14.5 C17,16 16,17 14.5,17 L3.5,17 C2,17 1,16 1,14.5 L1,9 Z"></path>
-                            <polyline points="1 9 7 14 15 4"></polyline>
-                          </svg>
-                        </label>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+  const columns = [
+    {
+      name: "First Name",
+      selector: (row) => row.firstName,
+      sortable: true,
+    },
+    {
+      name: "Last Name",
+      selector: (row) => row.lastName,
+      sortable: true,
+    },
+    {
+      name: "Email",
+      selector: (row) => row.email,
+      sortable: true,
+    },
+    {
+      name: "Google Location",
+      selector: (row) => row.googleLocation,
+      sortable: true,
+    },
+    {
+      name: "PhoneNo",
+      selector: (row) => row.phone,
+      sortable: true,
+    },
+    {
+      name: "Organization Name",
+      selector: (row) => row.organizationName,
+      sortable: true,
+    },
+    {
+      name: "Trial Day",
+      selector: (row) => row.trialDays,
+      sortable: true,
+    },
+    {
+      name: "Screen",
+      selector: (row) => row.screen,
+      sortable: true,
+    },
+    {
+      name: "Active",
+      selector: (row) => row.isActive,
+      sortable: true,
+      cell: (row) => (
+        <div>
+          {row.isActive ? (
+            <span style={{ color: "green" }}>Active</span>
+          ) : (
+            <span style={{ color: "red" }}>Inactive</span>
           )}
         </div>
+      ),
+    },
+    // {
+    //   name: "Action",
+    //   cell: (row) => (
+    //     <div className="relative">
+    //       <button onClick={() => handleActionClick(row.organizationID)}>
+    //         <CiMenuKebab />
+    //       </button>
+    //       {showActionBox === row.organizationID && (
+    //         <>
+    //           <div className="actionpopup z-10 ">
+    //             <button
+    //               onClick={() => setShowActionBox(false)}
+    //               className="bg-white absolute top-[-14px] left-[-8px] z-10  rounded-full drop-shadow-sm p-1"
+    //             >
+    //               <AiOutlineClose />
+    //             </button>
 
-        {/*accordions1 close */}
-        <div className="accordions  clear-both mt-3">
-          <div className="section shadow-md py-3 px-5 rounded-md bg-lightgray flex  items-center justify-between">
-            <h1 className="text-lg text-primary font-medium">Jr. Manager</h1>
-            <div className=" flex items-center">
-              <button className="showicon">
-                {showdata ? (
-                  <MdOutlineKeyboardArrowUp className="text-3xl" />
-                ) : (
-                  <MdOutlineKeyboardArrowDown className="text-3xl" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-        {/*accordions 2 close */}
+    //             <div className=" mb-1 text-[#D30000]">
+    //               <button onClick={() => setdeletePopup(true)}>Delete</button>
+    //             </div>
+    //           </div>
+    //           {deletePopup ? (
+    //             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+    //               <div className="relative w-full max-w-xl max-h-full">
+    //                 <div className="relative bg-white rounded-lg shadow">
+    //                   <div className="py-6 text-center">
+    //                     <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
+    //                     <h3 className="mb-5 text-xl text-primary">
+    //                       Are you sure you want to delete this User?
+    //                     </h3>
+    //                     <div className="flex justify-center items-center space-x-4">
+    //                       <button
+    //                         className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
+    //                         // onClick={() => setdeletePopup(false)}
+    //                       >
+    //                         No, cancel
+    //                       </button>
 
-        <div className="accordions  clear-both mt-3">
-          <div className="section shadow-md py-3 px-5 rounded-md bg-lightgray flex  items-center justify-between">
-            <h1 className="text-lg text-primary font-medium">Viewer</h1>
-            <div className=" flex items-center">
-              <button className="showicon">
-                {showdata ? (
-                  <MdOutlineKeyboardArrowUp className="text-3xl" />
-                ) : (
-                  <MdOutlineKeyboardArrowDown className="text-3xl" />
-                )}
-              </button>
-            </div>
-          </div>
+    //                       <button
+    //                         className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
+    //                         // onClick={() => {
+    //                         //   handleDelete(row.organizationID);
+    //                         //   setdeletePopup(false);
+    //                         // }}
+    //                       >
+    //                         Yes, I'm sure
+    //                       </button>
+    //                     </div>
+    //                   </div>
+    //                 </div>
+    //               </div>
+    //             </div>
+    //           ) : null}
+    //         </>
+    //       )}
+    //     </div>
+    //   ),
+    // },
+  ];
+  return (
+    <>
+      <div className="grid grid-cols-12 lg:px-5 md:px-5 sm:px-2 xs:px-2 mt-5 ">
+        <div className="lg:col-span-2 md:col-span-3 sm:col-span-3 xs:col-span-6 ">
+          <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl mb-5">
+            Roles List
+          </h1>
         </div>
-        {/*accordions 3 close */}
+        <div className="lg:col-span-10 md:col-span-9 sm:col-span-9 xs:col-span-6">
+          <button
+            className=" dashboard-btn  flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5  py-2 text-base sm:text-sm mb-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+            onClick={() => setshowuserroleModal(true)}
+          >
+            Add New Role
+          </button>
+        </div>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:px-5 md:px-5 sm:px-2 xs:px-2">
+        {userRoleData.map((userrole) => (
+          <div
+            className="rounded-xl p-6 bg-[#E7EFFF] user-role-card"
+            key={userrole.orgUserRoleID}
+          >
+            <div className="flex justify-between">
+              <div className="role-name">
+                <p>Total 5 Users</p>
+                <h3 className="text-3xl text-primary my-2">
+                  {userrole.orgUserRole}
+                </h3>
+                <button
+                  className="bg-primary text-white items-center  rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50 border border-primary"
+                  href="#"
+                >
+                  Edit Role
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* <div className="md:px-5 sm:px-2 xs:px-2 mt-5">
+        <div className="my-2 flex sm:flex-row flex-col">
+          <div className="flex flex-row mb-1 sm:mb-0">
+            <div className="relative">
+              <select className="h-full rounded-l border block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                <option>5</option>
+                <option>10</option>
+                <option>20</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg
+                  className="fill-current h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </div>
+            </div>
+            <div className="relative">
+              <select className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-0 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
+                <option>All</option>
+                <option>Active</option>
+                <option>Inactive</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg
+                  className="fill-current h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div className="block relative">
+            <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-4 w-4 fill-current text-gray-500"
+              >
+                <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
+              </svg>
+            </span>
+            <input
+              placeholder="Search"
+              className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
+            />
+          </div>
+        </div>
+      </div> */}
+      <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2 mt-5">
+        <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
+          <table className="min-w-full leading-normal">
+            <thead>
+              <tr className=" bg-[#EFF3FF] border-b border-b-[#E4E6FF]">
+                <th className="px-3 py-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  User
+                </th>
+                <th className="px-3 py-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Rol
+                </th>
+                <th className="px-3 py-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Notification
+                </th>
+
+                <th className="px-3 py-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Screen Access
+                </th>
+                <th className="px-3 py-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-3 py-6 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-b-[#E4E6FF]">
+                <td className="p-3 bg-white text-sm">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 w-10 h-10">
+                      <img
+                        className="w-full h-full rounded-full"
+                        src="../../../Settings/1user-img.png"
+                        alt=""
+                      />
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        Vera Carpenter
+                      </p>
+                    </div>
+                  </div>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">Manager</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">Email</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">15</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <span className="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
+                    Active
+                  </span>
+                </td>
+                <td className="px-3 py-6 bg-white text-sm flex ">
+                  <a href="#">
+                    <img src="../../../Settings/view-icon.svg" />
+                  </a>
+                  <a className="px-2" href="#">
+                    <img src="../../../Settings/edit-icon.svg" />
+                  </a>
+                  <a href="#">
+                    <img src="../../../Settings/delete-icon.svg" />
+                  </a>
+                </td>
+              </tr>
+              <tr className="border-b border-b-[#E4E6FF]">
+                <td className="p-3 bg-white text-sm">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 w-10 h-10">
+                      <img
+                        className="w-full h-full rounded-full"
+                        src="../../../Settings/2user-img.png"
+                        alt=""
+                      />
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        Vera Carpenter
+                      </p>
+                    </div>
+                  </div>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">Manager</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">Email</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">15</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <span className="bg-red-200 px-3 py-1 font-semibold text-red-900 leading-tight">
+                    InActive
+                  </span>
+                </td>
+                <td className="px-3 py-6 bg-white text-sm flex ">
+                  <a href="#">
+                    <img src="../../../Settings/view-icon.svg" />
+                  </a>
+                  <a className="px-2" href="#">
+                    <img src="../../../Settings/edit-icon.svg" />
+                  </a>
+                  <a href="#">
+                    <img src="../../../Settings/delete-icon.svg" />
+                  </a>
+                </td>
+              </tr>
+              <tr className="border-b border-b-[#E4E6FF]">
+                <td className="p-3 bg-white text-sm">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 w-10 h-10">
+                      <img
+                        className="w-full h-full rounded-full"
+                        src="../../../Settings/3user-img.png"
+                        alt=""
+                      />
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        Vera Carpenter
+                      </p>
+                    </div>
+                  </div>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">Manager</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">Email</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">15</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <span className="bg-orange-200 px-3 py-1 font-semibold text-orange-900 leading-tight">
+                    Pending
+                  </span>
+                </td>
+                <td className="px-3 py-6 bg-white text-sm flex ">
+                  <a href="#">
+                    <img src="../../../Settings/view-icon.svg" />
+                  </a>
+                  <a className="px-2" href="#">
+                    <img src="../../../Settings/edit-icon.svg" />
+                  </a>
+                  <a href="#">
+                    <img src="../../../Settings/delete-icon.svg" />
+                  </a>
+                </td>
+              </tr>
+              <tr className="border-b border-b-[#E4E6FF]">
+                <td className="p-3 bg-white text-sm">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 w-10 h-10">
+                      <img
+                        className="w-full h-full rounded-full"
+                        src="../../../Settings/1user-img.png"
+                        alt=""
+                      />
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        Vera Carpenter
+                      </p>
+                    </div>
+                  </div>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">Manager</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">Email</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">15</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <span className="bg-red-200 px-3 py-1 font-semibold text-red-900 leading-tight">
+                    inActive
+                  </span>
+                </td>
+                <td className="px-3 py-6 bg-white text-sm flex ">
+                  <a href="#">
+                    <img src="../../../Settings/view-icon.svg" />
+                  </a>
+                  <a className="px-2" href="#">
+                    <img src="../../../Settings/edit-icon.svg" />
+                  </a>
+                  <a href="#">
+                    <img src="../../../Settings/delete-icon.svg" />
+                  </a>
+                </td>
+              </tr>
+              <tr className="border-b border-b-[#E4E6FF]">
+                <td className="p-3 bg-white text-sm">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 w-10 h-10">
+                      <img
+                        className="w-full h-full rounded-full"
+                        src="../../../Settings/1user-img.png"
+                        alt=""
+                      />
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        Vera Carpenter
+                      </p>
+                    </div>
+                  </div>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">Manager</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">Email</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">15</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <span className="bg-orange-200 px-3 py-1 font-semibold text-orange-900 leading-tight">
+                    Pending
+                  </span>
+                </td>
+                <td className="px-3 py-6 bg-white text-sm flex ">
+                  <a href="#">
+                    <img src="../../../Settings/view-icon.svg" />
+                  </a>
+                  <a className="px-2" href="#">
+                    <img src="../../../Settings/edit-icon.svg" />
+                  </a>
+                  <a href="#">
+                    <img src="../../../Settings/delete-icon.svg" />
+                  </a>
+                </td>
+              </tr>
+              <tr className="border-b border-b-[#E4E6FF]">
+                <td className="p-3 bg-white text-sm">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 w-10 h-10">
+                      <img
+                        className="w-full h-full rounded-full"
+                        src="../../../Settings/3user-img.png"
+                        alt=""
+                      />
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        Vera Carpenter
+                      </p>
+                    </div>
+                  </div>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">Manager</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">Email</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <p className="text-gray-900 whitespace-no-wrap">15</p>
+                </td>
+                <td className="p-3 bg-white text-sm">
+                  <span className="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
+                    Active
+                  </span>
+                </td>
+                <td className="px-3 py-6 bg-white text-sm flex ">
+                  <a href="#">
+                    <img src="../../../Settings/view-icon.svg" />
+                  </a>
+                  <a className="px-2" href="#">
+                    <img src="../../../Settings/edit-icon.svg" />
+                  </a>
+                  <a href="#">
+                    <img src="../../../Settings/delete-icon.svg" />
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div className="px-5 py-5 bg-white flex flex-col xs:flex-row items-center xs:justify-between          ">
+            <span className="text-xs xs:text-sm text-gray-900">
+              Showing 1 to 4 of 50 Entries
+            </span>
+            <div className="inline-flex mt-2 xs:mt-0">
+              <button className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
+                Prev
+              </button>
+              <button className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r">
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div className="mt-7">
+        <DataTable
+          columns={columns}
+          //data={userData}
+          fixedHeader
+          pagination
+          paginationPerPage={10}
+        ></DataTable>
+      </div> */}
       {showuserroleModal && (
         <>
           <div className="backdrop">
@@ -835,12 +902,367 @@ const Userrole = () => {
                         <input
                           type="text"
                           placeholder="Enter New Role Name"
-                          name="name"
+                          value={roleName}
                           className="formInput w-full"
+                          onChange={(e) => setRoleName(e.target.value)}
                         />
                       </div>
                     </div>
+                    <div className="col-span-12">
+                      <h5 className="mr-2">Administrator Access</h5>
+                    </div>
+                    <div className="col-span-12">
+                      <table
+                        className="w-full"
+                        cellPadding={10}
+                        cellSpacing={10}
+                      >
+                        <thead>
+                          <tr className="bg-lightgray">
+                            <th></th>
+                            <th>View</th>
+                            <th>Create & Edit</th>
+                            <th>Delete</th>
+                            <th>Approval</th>
+                            <th>Reviewer</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-b border-lightgray rounded-md">
+                            <td>Screen</td>
+                            <td className="text-center">
+                              <div>
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.screenView}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "screenView",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              </div>
+                            </td>
 
+                            <td className="text-center">
+                              <div>
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.screenCreateEdit}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "screenCreateEdit",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              </div>
+                            </td>
+                            <td className="text-center">
+                              <div>
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.screenDelete}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "screenDelete",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              </div>
+                            </td>
+                            <td className="text-center">
+                              {checkboxValues.screenApprovar == true ? (
+                                <select
+                                  className="formInput"
+                                  value={screenIsApprovarID}
+                                  onChange={(e) =>
+                                    setScreenIsApprovarID(e.target.value)
+                                  }
+                                >
+                                  <option label="select Approvar"></option>
+                                  {userRoleData.map((userrole) => (
+                                    <option
+                                      key={userrole.orgUserRoleID}
+                                      value={userrole.orgUserRoleID}
+                                    >
+                                      {userrole.orgUserRole}
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.screenApprovar}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "screenApprovar",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              )}
+                            </td>
+                            <td className="text-center">
+                              {checkboxValues.screenReviewer == true ? (
+                                <select
+                                  className="formInput"
+                                  value={screenIsReviwerID}
+                                  onChange={(e) =>
+                                    setScreenIsReviwerID(e.target.value)
+                                  }
+                                >
+                                  <option label="select Reviewer"></option>
+                                  {userRoleData.map((userrole) => (
+                                    <option
+                                      key={userrole.orgUserRoleID}
+                                      value={userrole.orgUserRoleID}
+                                    >
+                                      {userrole.orgUserRole}
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.screenReviewer}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "screenReviewer",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              )}
+                            </td>
+                          </tr>
+
+                          <tr className="border-b border-lightgray rounded-md">
+                            <td>My Schedule</td>
+                            <td className="text-center">
+                              <div>
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.myScheduleView}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "myScheduleView",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              </div>
+                            </td>
+
+                            <td className="text-center">
+                              <div>
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.myScheduleCreateEdit}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "myScheduleCreateEdit",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              </div>
+                            </td>
+                            <td className="text-center">
+                              <div>
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.myScheduleDelete}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "myScheduleDelete",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              </div>
+                            </td>
+                            <td className="text-center">
+                              {checkboxValues.myScheduleApprovar == true ? (
+                                <select
+                                  className="formInput"
+                                  value={myScheduleIsApprovarID}
+                                  onChange={(e) =>
+                                    setMyScheduleIsApprovarID(e.target.value)
+                                  }
+                                >
+                                  <option label="select Approver"></option>
+                                  {userRoleData.map((userrole) => (
+                                    <option
+                                      key={userrole.orgUserRoleID}
+                                      value={userrole.orgUserRoleID}
+                                    >
+                                      {userrole.orgUserRole}
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.myScheduleApprovar}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "myScheduleApprovar",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              )}
+                            </td>
+                            <td className="text-center">
+                              {checkboxValues.myScheduleReviewer == true ? (
+                                <select
+                                  className="formInput"
+                                  value={myScheduleIsReviwerID}
+                                  onChange={(e) =>
+                                    setMyScheduleIsReviwerID(e.target.value)
+                                  }
+                                >
+                                  <option label="select Reviewer"></option>
+                                  {userRoleData.map((userrole) => (
+                                    <option
+                                      key={userrole.orgUserRoleID}
+                                      value={userrole.orgUserRoleID}
+                                    >
+                                      {userrole.orgUserRole}
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.myScheduleReviewer}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "myScheduleReviewer",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              )}
+                            </td>
+                          </tr>
+
+                          <tr className="border-b border-lightgray rounded-md">
+                            <td>Apps</td>
+                            <td className="text-center">
+                              <div>
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.appsView}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "appsView",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              </div>
+                            </td>
+
+                            <td className="text-center">
+                              <div>
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.appsCreateEdit}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "appsCreateEdit",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              </div>
+                            </td>
+                            <td className="text-center">
+                              <div>
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.appsDelete}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "appsDelete",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              </div>
+                            </td>
+                            <td className="text-center">
+                              {checkboxValues.appsApprovar == true ? (
+                                <select
+                                  className="formInput"
+                                  value={appsIsApprovarID}
+                                  onChange={(e) =>
+                                    setAppsIsApprovarID(e.target.value)
+                                  }
+                                >
+                                  <option label="select Approver"></option>
+                                  {userRoleData.map((userrole) => (
+                                    <option
+                                      key={userrole.orgUserRoleID}
+                                      value={userrole.orgUserRoleID}
+                                    >
+                                      {userrole.orgUserRole}
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.appsApprovar}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "appsApprovar",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              )}
+                            </td>
+                            <td className="text-center">
+                              {checkboxValues.appsReviewer == true ? (
+                                <select
+                                  className="formInput"
+                                  value={appsIsReviwerID}
+                                  onChange={(e) =>
+                                    setAppsIsReviwerID(e.target.value)
+                                  }
+                                >
+                                  <option label="select Reviewer"></option>
+                                  {userRoleData.map((userrole) => (
+                                    <option
+                                      key={userrole.orgUserRoleID}
+                                      value={userrole.orgUserRoleID}
+                                    >
+                                      {userrole.orgUserRole}
+                                    </option>
+                                  ))}
+                                </select>
+                              ) : (
+                                <input
+                                  type="checkbox"
+                                  checked={checkboxValues.appsReviewer}
+                                  onChange={(e) =>
+                                    handleCheckboxChange(
+                                      "appsReviewer",
+                                      e.target.checked
+                                    )
+                                  }
+                                />
+                              )}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                     <div className="col-span-12 text-center">
                       <button
                         className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
@@ -848,7 +1270,10 @@ const Userrole = () => {
                       >
                         Cancel
                       </button>
-                      <button className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white">
+                      <button
+                        onClick={handleSaveUserRole}
+                        className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
+                      >
                         Save
                       </button>
                     </div>
