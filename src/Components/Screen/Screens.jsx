@@ -113,6 +113,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedSchedule, setSelectedSchedule] = useState({
     scheduleName: "",
   });
+  const [searchScreen, setSearchScreen] = useState("");
+  const [screenAllData, setScreenAllData] = useState([]);
   const UserData = useSelector((Alldata) => Alldata.user);
   const authToken = `Bearer ${UserData.user.data.token}`;
   const [groupName, setGroupName] = useState("");
@@ -125,6 +127,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         .then((response) => {
           const fetchedData = response.data.data;
           setScreenData(fetchedData);
+          setScreenAllData(fetchedData);
           const initialCheckboxes = {};
           if (Array.isArray(fetchedData)) {
             fetchedData.forEach((screen) => {
@@ -773,6 +776,21 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   //     console.warn("Connection is not established yet.");
   //   }
   // }, [connection]);
+  const handleScreenFilter = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchScreen(searchQuery);
+
+    if (searchQuery === "") {
+      setScreenData(screenAllData);
+    } else {
+      const filteredData = compositionData.filter((item) => {
+        const itemName = item.screenName ? item.screenName.toLowerCase() : "";
+        return itemName.includes(searchQuery);
+      });
+      setScreenData(filteredData);
+    }
+  };
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -787,6 +805,18 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             </h1>
 
             <div className="flex items-center sm:mt-3 flex-wrap">
+              <div className="relative mr-5">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <AiOutlineSearch className="w-5 h-5 text-gray " />
+                </span>
+                <input
+                  type="text"
+                  placeholder="   Search by Name"
+                  className="border border-primary rounded-full px-7 py-2 search-user"
+                  value={searchScreen}
+                  onChange={handleScreenFilter}
+                />
+              </div>
               {/* <Tooltip
                 content="Connect Screen"
                 placement="bottom-end"

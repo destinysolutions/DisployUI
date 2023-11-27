@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import ReactPlayer from "react-player";
 
 const Defaultmedia = () => {
   const [mediaTabs, setMediaTabs] = useState(1);
@@ -23,6 +24,9 @@ const Defaultmedia = () => {
   const [assetData, setAssetData] = useState([]);
   const [assetAllData, setAssetAllData] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
+  const [assetName, setAssetName] = useState("");
+  const [filePath, setFilePath] = useState("");
+
   useEffect(() => {
     axios
       .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
@@ -44,7 +48,6 @@ const Defaultmedia = () => {
   }, []);
   const handleAssetAdd = (asset) => {
     setSelectedAsset(asset);
-    setAssetPreview(asset);
   };
   const [searchAsset, setSearchAsset] = useState("");
   const handleFilter = (event) => {
@@ -61,6 +64,51 @@ const Defaultmedia = () => {
       setAssetData(filteredData);
     }
   };
+  const handleGetAsset = () => {
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://disployapi.thedestinysolutions.com/api/UserMaster/GetDefaultAsset",
+      headers: {
+        Authorization: authToken,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        setAssetName(response.data.data.assetName);
+        setFilePath(response.data.data.assetFolderPath);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    handleGetAsset();
+  }, []);
+
+  const handleChangeMedia = () => {
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `https://disployapi.thedestinysolutions.com/api/UserMaster/SaveDefaultAsset?AssetID=${selectedAsset.assetID}`,
+      headers: {
+        Authorization: authToken,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data.data);
+        handleGetAsset();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const isVideo = filePath && /\.(mp4|webm|ogg)$/i.test(filePath);
   return (
     <>
       <div>
@@ -106,10 +154,16 @@ const Defaultmedia = () => {
                       Asset / Playing:
                     </label>
                     <button
-                      onClick={() => setShowAssetModal(true)}
+                      onClick={(e) => {
+                        setShowAssetModal(true);
+                        setSelectedAsset({
+                          ...selectedAsset,
+                          assetName: e.target.value,
+                        });
+                      }}
                       className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm   hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                     >
-                      Asset Name
+                      {assetName}
                       <AiOutlineCloudUpload className="ml-2 text-lg" />
                     </button>
                     {showAssetModal && (
@@ -213,7 +267,10 @@ const Defaultmedia = () => {
                                 </p>
                                 <button
                                   className="bg-SlateBlue text-white rounded-full px-5 py-2 hover:bg-primary text-sm"
-                                  onClick={() => setShowAssetModal(false)}
+                                  onClick={() => {
+                                    setShowAssetModal(false);
+                                    handleChangeMedia();
+                                  }}
                                 >
                                   Confirm
                                 </button>
@@ -234,7 +291,23 @@ const Defaultmedia = () => {
                   </div>
                 </div>
                 <div className=" lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                  <img src="../../../Settings/media1.png" className="w-full" />
+                  {filePath && isVideo ? (
+                    // Render video player
+                    <ReactPlayer
+                      url={filePath}
+                      className="max-w-full max-h-full reactplayer min-w-full"
+                      controls={true} // Add controls for video
+                      width="100%"
+                      height="100%"
+                    />
+                  ) : (
+                    // Render image
+                    <img
+                      src={filePath}
+                      alt="Media"
+                      className="max-w-full max-h-full"
+                    />
+                  )}
                 </div>
               </div>
             </div>
