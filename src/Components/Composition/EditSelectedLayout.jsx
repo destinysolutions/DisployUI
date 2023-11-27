@@ -38,9 +38,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [compositonData, setcompositonData] = useState(null);
   const [currentSection, setcurrentSection] = useState(1);
   const [Testasset, setTestasset] = useState({});
-  const [compositionName, setCompositionName] = useState(
-    moment(currentDate).format("YYYY-MM-DD hh:mm")
-  );
+  const [compositionName, setCompositionName] = useState("");
   const [assetData, setAssetData] = useState([]);
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [addAsset, setAddAsset] = useState([]);
@@ -348,10 +346,12 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
-          const data = response.data?.data;
+          const data = response.data?.data[0]?.sections;
           // const filterData = assetData.filter((item1) => {
           //   return data.some((item2) => item2.mediaID === item1?.assetID);
           // });
+          // console.log(data);
+          setCompositionName(response.data?.data[0]?.compositionName);
           let obj = {};
           for (const [key, value] of data.entries()) {
             if (obj[value?.sectionID]) {
@@ -361,7 +361,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
             }
           }
           const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
-          // console.log("asda", obj);
           setTestasset(obj);
           setAddAsset(newdd);
         }
@@ -425,7 +424,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
     handleFetchAllAssests();
   }, []);
 
-  // console.log(compositonData);
+  // console.log(ad);
+  // console.log(addAsset);
 
   return (
     <>

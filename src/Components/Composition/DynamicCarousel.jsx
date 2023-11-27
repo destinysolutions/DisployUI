@@ -36,7 +36,7 @@ const Carousel = ({ items, compositonData }) => {
                   <img
                     src={item.assetFolderPath}
                     alt={item.assetName}
-                    className="w-full h-full rounded-sm"
+                    className="w-full h-full rounded-sm "
                   />
                 )}
                 {item.assetType === "Video" && (
@@ -60,7 +60,10 @@ const Carousel = ({ items, compositonData }) => {
                   </a>
                 )}
                 {item?.text && (
-                  <marquee className="text-lg" direction={item?.scrollType == 1 ? "left" : "right"}>
+                  <marquee
+                    className="text-lg align-middle h-full flex items-center justify-center"
+                    direction={item?.scrollType == 1 ? "left" : "right"}
+                  >
                     {item?.text}
                   </marquee>
                 )}
