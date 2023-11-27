@@ -182,7 +182,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
-          setPreviewModalData(response?.data?.data);
+          setPreviewModalData(response?.data?.data[0]?.sections);
           openModal();
         }
         toast.remove();
@@ -203,18 +203,15 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       headers: { Authorization: authToken },
       data: "",
     };
-    setLoading(true);
     axios
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
           setLayotuDetails(response.data?.data[0]);
         }
-        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
-        setLoading(false);
       });
   };
 
@@ -339,6 +336,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     loadComposition();
   }, []);
 
+  // console.log(layotuDetails);
   return (
     <>
       <div className="flex bg-white py-3 border-b border-gray">
@@ -761,9 +759,17 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       )}
                       <PreviewModal show={modalVisible} onClose={closeModal}>
-                        <div className="relative h-auto w-auto">
+                        <div
+                          className={`absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2`}
+                          style={{
+                            maxWidth: `${layotuDetails?.screenWidth}px`,
+                            minWidth: `${layotuDetails?.screenWidth}px`,
+                            maxHeight: `${layotuDetails?.screenHeight}px`,
+                            minHeight: `${layotuDetails?.screenHeight}px`,
+                          }}
+                        >
                           <RxCrossCircled
-                            className="absolute z-50 w-[30px] h-[30px] text-white bg-black top-1 right-1 cursor-pointer"
+                            className="absolute z-50 w-[30px] h-[30px] text-white hover:bg-black/50 bg-black/20 rounded-full top-1 right-1 cursor-pointer"
                             onClick={closeModal}
                           />
 
@@ -773,8 +779,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div
                                   key={index}
                                   style={{
-                                    width: layotuDetails?.screenWidth + "px",
-                                    height: layotuDetails?.screenHeight + "px",
+                                    width: obj?.width + "px",
+                                    height: obj?.height + "px",
                                     backgroundColor: obj.fill,
                                   }}
                                 >

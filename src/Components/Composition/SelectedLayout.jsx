@@ -107,8 +107,11 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const totalDurationSeconds = addAsset
     .map((e, index) => e[index + 1])
     .flat(Infinity)
+    .filter((item) => item?.duration !== undefined)
     .reduce((acc, curr) => {
-      return acc + Number(curr?.duration);
+      if (curr?.duration !== undefined && curr?.duration !== null) {
+        return acc + Number(curr?.duration);
+      }
     }, 0);
 
   const _onReady = (canvas) => {
@@ -169,7 +172,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     let newdatas = { ...Testasset };
     if (newdatas?.[currentSection]) {
       newdatas[currentSection].push({
-        duration: data.durations !== null ? data.durations : 10,
+        duration: 10,
         isEdited: false,
         sectionID: currentSection,
         compositionDetailsID: 0,
@@ -190,11 +193,12 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         userName: data?.userName,
         text: data?.text,
         scrollType: data?.scrollType,
+        instanceName: data?.instanceName,
       });
     } else {
       newdatas[currentSection] = [
         {
-          duration: data.durations !== null ? data.durations : 10,
+          duration: 10,
           isEdited: false,
           sectionID: currentSection,
           compositionDetailsID: 0,
@@ -215,6 +219,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           userName: data?.userName,
           text: data?.text,
           scrollType: data?.scrollType,
+          instanceName: data?.instanceName,
         },
       ];
     }
@@ -351,8 +356,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         originY: "top",
         left: 0,
         top: 0,
-        width: 250,
-        height: 50,
+        width: 80,
+        height: 70,
         fill: "#D9D9D9",
         stroke: "null",
         strokeWidth: 1,
@@ -386,10 +391,47 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         version: "5.3.0",
         originX: "left",
         originY: "top",
-        left: 350,
+        left: 0,
+        top: 70,
+        width: 80,
+        height: 30,
+        fill: "#7D87A9",
+        stroke: "null",
+        strokeWidth: 1,
+        strokeDashArray: "null",
+        strokeLineCap: "butt",
+        strokeDashOffset: 0,
+        strokeLineJoin: "miter",
+        strokeUniform: false,
+        strokeMiterLimit: 4,
+        scaleX: 1,
+        scaleY: 1,
+        angle: 0,
+        flipX: false,
+        flipY: false,
+        opacity: 1,
+        shadow: "null",
+        visible: true,
+        backgroundColor: "",
+        fillRule: "nonzero",
+        paintFirst: "fill",
+        globalCompositeOperation: "source-over",
+        skewX: 0,
+        skewY: 0,
+        rx: 0,
+        ry: 0,
+      },
+      {
+        layoutID: 2,
+        layoutDtlID: 1,
+        type: "rect",
+        version: "5.3.0",
+        originX: "left",
+        originY: "top",
+        left: 80,
         top: 0,
-        width: 125,
-        height: 268,
+        width: 20,
+        height: 100,
         fill: "#D5E3FF",
         stroke: "null",
         strokeWidth: 1,
@@ -489,7 +531,95 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   // console.log(compositonData);
   // console.log(assetData);
-  console.log(addAsset);
+  // console.log(addAsset);
+
+  const items = [
+    {
+      layoutID: 6,
+      layoutDtlID: 2,
+      type: "rect",
+      version: "5.3.0",
+      originX: "left",
+      originY: "top",
+      leftside: 1,
+      topside: 1,
+      width: 60,
+      height: 100,
+      fill: "#D9D9D9",
+      stroke: "#8E94A9",
+      strokeWidth: 1,
+      strokeDashArray: "null",
+      strokeLineCap: "butt",
+      strokeDashOffset: 0,
+      strokeLineJoin: "miter",
+      strokeUniform: false,
+      strokeMiterLimit: 4,
+      scaleX: 1,
+      scaleY: 1,
+      angle: 0,
+      flipX: false,
+      flipY: false,
+      opacity: 1,
+      shadow: "null",
+      visible: true,
+      backgroundColor: "",
+      fillRule: "nonzero",
+      paintFirst: "fill",
+      globalCompositeOperation: "source-over",
+      skewX: 0,
+      skewY: 0,
+      rx: 0,
+      ry: 0,
+      sectionID: 1,
+      top: 1,
+      left: 1,
+      right: 0,
+      bottom: 0,
+    },
+    {
+      layoutID: 7,
+      layoutDtlID: 2,
+      type: "rect",
+      version: "5.3.0",
+      originX: "left",
+      originY: "top",
+      leftside: 1,
+      topside: 1,
+      width: 40,
+      height: 100,
+      fill: "#000000",
+      stroke: "#8E94A9",
+      strokeWidth: 1,
+      strokeDashArray: "null",
+      strokeLineCap: "butt",
+      strokeDashOffset: 0,
+      strokeLineJoin: "miter",
+      strokeUniform: false,
+      strokeMiterLimit: 4,
+      scaleX: 1,
+      scaleY: 1,
+      angle: 0,
+      flipX: false,
+      flipY: false,
+      opacity: 1,
+      shadow: "null",
+      visible: true,
+      backgroundColor: "",
+      fillRule: "nonzero",
+      paintFirst: "fill",
+      globalCompositeOperation: "source-over",
+      skewX: 0,
+      skewY: 0,
+      rx: 0,
+      ry: 0,
+      sectionID: 1,
+      top: 1,
+      left: 0,
+      right: 1,
+      bottom: 0,
+    },
+  ];
+  // console.log(items);
 
   return (
     <>
@@ -500,8 +630,41 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="pt-6 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
+            {/* <div
+              className={`absolute  top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 `}
+              style={{
+                maxWidth: `${compositonData?.screenWidth}px`,
+                minWidth: `${compositonData?.screenWidth}px`,
+                maxHeight: `${compositonData?.screenHeight}px`,
+                minHeight: `${compositonData?.screenHeight}px`,
+              }}
+            >
+              <RxCrossCircled
+                className="absolute z-50 w-[30px] h-[30px] text-white hover:bg-black/50 bg-black/20 rounded-full top-1 right-1 cursor-pointer"
+                onClick={closeModal}
+              />
+
+              {jsonCanvasData.objects.map((obj, index) => (
+                <div
+                  key={index}
+                  style={{
+                    position: "absolute",
+                    left: obj.left + "%",
+                    top: obj.top + "%",
+                    width: obj.width + "%",
+                    height: obj.height + "%",
+                    backgroundColor: obj.fill,
+                    // Apply other CSS properties as needed
+                  }}
+                >
+                  {modalVisible && (
+                    <Carousel items={addAsset[index][index + 1]} />
+                  )}
+                </div>
+              ))}
+            </div> */}
             <div
-              className={`absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2`}
+              className={`absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 `}
               style={{
                 maxWidth: `${compositonData?.screenWidth}px`,
                 minWidth: `${compositonData?.screenWidth}px`,
@@ -515,24 +678,46 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               />
 
               {!loading &&
-                compositonData !== null &&
-                compositonData?.lstLayloutModelList?.map((obj, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      width: obj?.width + "px",
-                      height: obj?.height + "px",
-                      backgroundColor: obj.fill,
-                    }}
-                  >
-                    {modalVisible && (
-                      <Carousel
-                        items={addAsset[index][index + 1]}
-                        compositonData={obj}
-                      />
-                    )}
-                  </div>
-                ))}
+              compositonData !== null &&
+              compositonData?.lstLayloutModelList.length > 2
+                ? jsonCanvasData.objects.map((obj, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        position: "absolute",
+                        left: obj.left + "%",
+                        top: obj.top + "%",
+                        width: obj.width + "%",
+                        height: obj.height + "%",
+                        backgroundColor: obj.fill,
+                        // Apply other CSS properties as needed
+                      }}
+                    >
+                      {modalVisible && (
+                        <Carousel items={addAsset[index][index + 1]} />
+                      )}
+                    </div>
+                  ))
+                : compositonData?.lstLayloutModelList?.map((obj, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        // width: "20%",
+                        // height: "20%",
+                        width: obj?.width + "px",
+                        height: obj?.height + "px",
+                        backgroundColor: obj.fill,
+                      }}
+                    >
+                      {modalVisible && (
+                        <Carousel
+                          items={addAsset[index][index + 1]}
+                          // items={items}
+                          compositonData={obj}
+                        />
+                      )}
+                    </div>
+                  ))}
             </div>
           </PreviewModal>
 
@@ -708,7 +893,13 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               <td>
                                 <div className="flex items-center w-full">
-                                  <div className="min-w-[2rem] min-h-[2rem] max-w-[3rem] max-h-[3rem]">
+                                  <div
+                                    className={` ${
+                                      item?.instanceName
+                                        ? "w-auto"
+                                        : "min-w-[2rem] min-h-[2rem] max-w-[3rem] max-h-[3rem]"
+                                    } `}
+                                  >
                                     <>
                                       {item.assetType === "OnlineImage" && (
                                         <>
@@ -748,11 +939,21 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                           {item.assetName}
                                         </a>
                                       )}
+                                      {item.instanceName && (
+                                        <a
+                                          href={item?.instanceName}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          {item.instanceName}
+                                        </a>
+                                      )}
                                     </>
                                   </div>
                                   <div className="ml-3 w-24">
                                     <p className="text-gray-900 break-words hyphens-auto">
-                                      {item?.assetName}
+                                      {item?.assetName && item?.assetName}
+                                      {item?.text && item?.text}
                                     </p>
                                   </div>
                                 </div>
@@ -760,7 +961,11 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               <td className="text-center w-24">
                                 {item?.assetType}
                               </td>
-                              <td className="text-center w-fit">
+                              <td
+                                className={`text-center w-fit ${
+                                  item?.instanceName && "hidden"
+                                }`}
+                              >
                                 {!item?.isEdited ? (
                                   <span className="border whitespace-nowrap border-[#E4E6FF] rounded-full p-2">
                                     {item.duration} Sec

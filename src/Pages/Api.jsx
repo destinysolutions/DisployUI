@@ -137,6 +137,7 @@ export const GET_CURRENT_ASSET =
   "https://disployapi.thedestinysolutions.com/api/EventMaster/GetCurrentAsset";
 
 export const COMPOSITION_BY_ID =
-  "https://disployapi.thedestinysolutions.com/api/CompositionMaster/SelectCompositionDetailsByID";
+  // "https://disployapi.thedestinysolutions.com/api/CompositionMaster/SelectCompositionDetailsByID";
+  "https://disployapi.thedestinysolutions.com/api/CompositionMaster/SelectCompositionByID";
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115
