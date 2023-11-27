@@ -306,6 +306,123 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+  const jsonCanvasData = {
+    version: "5.3.0",
+    objects: [
+      {
+        layoutID: 1,
+        layoutDtlID: 1,
+        type: "rect",
+        version: "5.3.0",
+        originX: "left",
+        originY: "top",
+        left: 0,
+        top: 0,
+        width: 80,
+        height: 70,
+        fill: "#D9D9D9",
+        stroke: "null",
+        strokeWidth: 1,
+        strokeDashArray: "null",
+        strokeLineCap: "butt",
+        strokeDashOffset: 0,
+        strokeLineJoin: "miter",
+        strokeUniform: false,
+        strokeMiterLimit: 4,
+        scaleX: 1,
+        scaleY: 1,
+        angle: 0,
+        flipX: false,
+        flipY: false,
+        opacity: 1,
+        shadow: "null",
+        visible: true,
+        backgroundColor: "",
+        fillRule: "nonzero",
+        paintFirst: "fill",
+        globalCompositeOperation: "source-over",
+        skewX: 0,
+        skewY: 0,
+        rx: 0,
+        ry: 0,
+      },
+      {
+        layoutID: 2,
+        layoutDtlID: 1,
+        type: "rect",
+        version: "5.3.0",
+        originX: "left",
+        originY: "top",
+        left: 0,
+        top: 70,
+        width: 80,
+        height: 30,
+        fill: "#7D87A9",
+        stroke: "null",
+        strokeWidth: 1,
+        strokeDashArray: "null",
+        strokeLineCap: "butt",
+        strokeDashOffset: 0,
+        strokeLineJoin: "miter",
+        strokeUniform: false,
+        strokeMiterLimit: 4,
+        scaleX: 1,
+        scaleY: 1,
+        angle: 0,
+        flipX: false,
+        flipY: false,
+        opacity: 1,
+        shadow: "null",
+        visible: true,
+        backgroundColor: "",
+        fillRule: "nonzero",
+        paintFirst: "fill",
+        globalCompositeOperation: "source-over",
+        skewX: 0,
+        skewY: 0,
+        rx: 0,
+        ry: 0,
+      },
+      {
+        layoutID: 2,
+        layoutDtlID: 1,
+        type: "rect",
+        version: "5.3.0",
+        originX: "left",
+        originY: "top",
+        left: 80,
+        top: 0,
+        width: 20,
+        height: 100,
+        fill: "#D5E3FF",
+        stroke: "null",
+        strokeWidth: 1,
+        strokeDashArray: "null",
+        strokeLineCap: "butt",
+        strokeDashOffset: 0,
+        strokeLineJoin: "miter",
+        strokeUniform: false,
+        strokeMiterLimit: 4,
+        scaleX: 1,
+        scaleY: 1,
+        angle: 0,
+        flipX: false,
+        flipY: false,
+        opacity: 1,
+        shadow: "null",
+        visible: true,
+        backgroundColor: "",
+        fillRule: "nonzero",
+        paintFirst: "fill",
+        globalCompositeOperation: "source-over",
+        skewX: 0,
+        skewY: 0,
+        rx: 0,
+        ry: 0,
+      },
+    ],
+  };
+
   useEffect(() => {
     if (UserData.user?.userID) {
       axios
@@ -774,25 +891,47 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                           />
 
                           {!loading &&
-                            layotuDetails?.lstLayloutModelList?.map(
-                              (obj, index) => (
+                          layotuDetails?.lstLayloutModelList.length > 2
+                            ? jsonCanvasData.objects.map((obj, index) => (
                                 <div
                                   key={index}
                                   style={{
-                                    width: obj?.width + "px",
-                                    height: obj?.height + "px",
+                                    position: "absolute",
+                                    left: obj.left + "%",
+                                    top: obj.top + "%",
+                                    width: obj.width + "%",
+                                    height: obj.height + "%",
                                     backgroundColor: obj.fill,
+                                    // Apply other CSS properties as needed
                                   }}
                                 >
                                   {modalVisible && (
                                     <Carousel
+                                      // items={addAsset[index][index + 1]}
                                       items={previewModalData}
-                                      composition={obj}
                                     />
                                   )}
                                 </div>
-                              )
-                            )}
+                              ))
+                            : layotuDetails?.lstLayloutModelList?.map(
+                                (obj, index) => (
+                                  <div
+                                    key={index}
+                                    style={{
+                                      width: obj?.width + "px",
+                                      height: obj?.height + "px",
+                                      backgroundColor: obj.fill,
+                                    }}
+                                  >
+                                    {modalVisible && (
+                                      <Carousel
+                                        items={previewModalData}
+                                        composition={obj}
+                                      />
+                                    )}
+                                  </div>
+                                )
+                              )}
                         </div>
                       </PreviewModal>
                     </tr>

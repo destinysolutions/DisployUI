@@ -630,39 +630,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="pt-6 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
-            {/* <div
-              className={`absolute  top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 `}
-              style={{
-                maxWidth: `${compositonData?.screenWidth}px`,
-                minWidth: `${compositonData?.screenWidth}px`,
-                maxHeight: `${compositonData?.screenHeight}px`,
-                minHeight: `${compositonData?.screenHeight}px`,
-              }}
-            >
-              <RxCrossCircled
-                className="absolute z-50 w-[30px] h-[30px] text-white hover:bg-black/50 bg-black/20 rounded-full top-1 right-1 cursor-pointer"
-                onClick={closeModal}
-              />
-
-              {jsonCanvasData.objects.map((obj, index) => (
-                <div
-                  key={index}
-                  style={{
-                    position: "absolute",
-                    left: obj.left + "%",
-                    top: obj.top + "%",
-                    width: obj.width + "%",
-                    height: obj.height + "%",
-                    backgroundColor: obj.fill,
-                    // Apply other CSS properties as needed
-                  }}
-                >
-                  {modalVisible && (
-                    <Carousel items={addAsset[index][index + 1]} />
-                  )}
-                </div>
-              ))}
-            </div> */}
             <div
               className={`absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 `}
               style={{
