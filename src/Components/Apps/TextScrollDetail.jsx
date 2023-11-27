@@ -39,6 +39,7 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(response.data.data);
       });
   });
+  
   const handleInsertScrollText = () => {
     let data = JSON.stringify({
       text: text,
