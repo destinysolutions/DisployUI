@@ -19,6 +19,7 @@ import {
   ADD_SCHEDULE,
   GET_ALL_SCHEDULE,
   SELECT_BY_USER_SCREENDETAIL,
+  SIGNAL_R,
   UPDATE_SCREEN_ASSIGN,
 } from "../../Pages/Api";
 import { useEffect } from "react";
@@ -26,6 +27,7 @@ import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { MdOutlineGroups } from "react-icons/md";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //for action popup
@@ -156,7 +158,40 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
+  const [connection, setConnection] = useState(null);
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .build();
 
+    newConnection.on("ScreenConnected", (screenConnected) => {
+      console.log("ScreenConnected", screenConnected);
+    });
+
+    newConnection
+      .start()
+      .then(() => {
+        console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
+    return () => {
+      if (newConnection) {
+        newConnection
+          .stop()
+          .then(() => {
+            console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  }, []);
   const handleUpdateScreenAssign = () => {
     let config = {
       method: "post",
@@ -172,6 +207,16 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
+          if (connection) {
+            connection
+              .invoke("ScreenConnected")
+              .then(() => {
+                console.log("SignalR method invoked after screen update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
           setSelectScreenModal(false);
           setAddScreenModal(false);
           setShowActionBox(false);
