@@ -11,6 +11,7 @@ import {
   ADDPLAYLIST,
   ADDSUBPLAYLIST,
   GET_ALL_FILES,
+  GET_ALL_TEXT_SCROLL_INSTANCE,
   SELECT_BY_LIST,
 } from "../../Pages/Api";
 import AssetModal from "../Assests/AssetModal";
@@ -161,17 +162,21 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const addSeletedAsset = (data, currSection) => {
+    const findLayoutDetailID = compositonData?.lstLayloutModelList.find(
+      (item) => item?.sectionID == currentSection
+    );
+
     let newdatas = { ...Testasset };
     if (newdatas?.[currentSection]) {
       newdatas[currentSection].push({
-        duration: data.durations ? data.durations : 10,
+        duration: data.durations !== null ? data.durations : 10,
         isEdited: false,
         sectionID: currentSection,
         compositionDetailsID: 0,
         compositionID: 0,
         mediaID: data?.assetID,
         durationType: "Second",
-        layoutDetailsID: id,
+        layoutDetailsID: findLayoutDetailID?.layoutID,
         userID: 0,
         mediaTypeID: 1,
         assetName: data?.assetName,
@@ -183,19 +188,20 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         type: data?.type,
         perentID: data?.perentID,
         userName: data?.userName,
+        text: data?.text,
+        scrollType: data?.scrollType,
       });
     } else {
       newdatas[currentSection] = [
         {
-          duration: data.durations ? data.durations : 10,
+          duration: data.durations !== null ? data.durations : 10,
           isEdited: false,
           sectionID: currentSection,
           compositionDetailsID: 0,
           compositionID: 0,
           mediaID: data?.assetID,
-          duration: 1,
           durationType: "Second",
-          layoutDetailsID: id,
+          layoutDetailsID: findLayoutDetailID?.layoutID,
           userID: 0,
           mediaTypeID: 1,
           assetName: data?.assetName,
@@ -207,6 +213,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           type: data?.type,
           perentID: data?.perentID,
           userName: data?.userName,
+          text: data?.text,
+          scrollType: data?.scrollType,
         },
       ];
     }
@@ -434,7 +442,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const handleFetchAllAssests = () => {
+  const handleFetchAllData = () => {
     axios
       .get(GET_ALL_FILES, {
         headers: {
@@ -451,6 +459,23 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
         ];
         setAssetData(allAssets);
+        return allAssets;
+      })
+      .then((res) => {
+        axios
+          .get(GET_ALL_TEXT_SCROLL_INSTANCE, {
+            headers: {
+              Authorization: authToken,
+            },
+          })
+          .then((response) => {
+            // const newData = [...res, ...response?.data?.data];
+            // console.log(newData);
+            setAssetData([...res, ...response?.data?.data]);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.log(error);
@@ -459,10 +484,12 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     handleFetchLayoutById();
-    handleFetchAllAssests();
+    handleFetchAllData();
   }, []);
 
-  console.log(compositonData);
+  // console.log(compositonData);
+  // console.log(assetData);
+  console.log(addAsset);
 
   return (
     <>
@@ -470,12 +497,20 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-6 px-5 page-contain">
+      <div className="pt-6 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
-            <div className="relative h-auto w-auto">
+            <div
+              className={`absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2`}
+              style={{
+                maxWidth: `${compositonData?.screenWidth}px`,
+                minWidth: `${compositonData?.screenWidth}px`,
+                maxHeight: `${compositonData?.screenHeight}px`,
+                minHeight: `${compositonData?.screenHeight}px`,
+              }}
+            >
               <RxCrossCircled
-                className="absolute z-50 w-[30px] h-[30px] text-white bg-black top-1 right-1 cursor-pointer"
+                className="absolute z-50 w-[30px] h-[30px] text-white hover:bg-black/50 bg-black/20 rounded-full top-1 right-1 cursor-pointer"
                 onClick={closeModal}
               />
 
@@ -485,11 +520,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                   <div
                     key={index}
                     style={{
-                      // position: "absolute",
-                      // left: obj.left + "px",
-                      // top: obj.top + "px",
-                      width: compositonData?.screenWidth + "px",
-                      height: compositonData?.screenHeight + "px",
+                      width: obj?.width + "px",
+                      height: obj?.height + "px",
                       backgroundColor: obj.fill,
                     }}
                   >
@@ -607,7 +639,10 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                         className="border-b border-b-[#E4E6FF] cursor-pointer"
                         onClick={() => addSeletedAsset(assetdata, index + 1)}
                       >
-                        <td className="break-words"> {assetdata.assetName}</td>
+                        <td className="break-words">
+                          {" "}
+                          {assetdata.assetName || assetdata?.instanceName}
+                        </td>
                         <td className="p-2">{assetdata.fileExtention}</td>
                         <td className="p-2 ">Tags, Tags </td>
                       </tr>

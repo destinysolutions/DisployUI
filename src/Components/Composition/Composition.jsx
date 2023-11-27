@@ -218,9 +218,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  useEffect(() => {
-    loadComposition();
-  }, []);
   const handleScreenCheckboxChange = (screenID) => {
     const updatedCheckboxes = { ...screenCheckboxes };
     updatedCheckboxes[screenID] = !updatedCheckboxes[screenID];
@@ -247,6 +244,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
     setSelectAllChecked(allChecked);
   };
+
   const handleSelectAllCheckboxChange = (e) => {
     const checked = e.target.checked;
     setSelectAllChecked(checked);
@@ -266,6 +264,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       setSelectedScreens([]);
     }
   };
+
   const handleUpdateScreenAssign = () => {
     let config = {
       method: "get",
@@ -292,6 +291,24 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
+
+  const handleFilter = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchComposition(searchQuery);
+
+    if (searchQuery === "") {
+      setCompositionData(compostionAllData);
+    } else {
+      const filteredData = compositionData.filter((item) => {
+        const itemName = item.compositionName
+          ? item.compositionName.toLowerCase()
+          : "";
+        return itemName.includes(searchQuery);
+      });
+      setCompositionData(filteredData);
+    }
+  };
+
   useEffect(() => {
     if (UserData.user?.userID) {
       axios
@@ -317,22 +334,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         });
     }
   }, [UserData.user?.userID]);
-  const handleFilter = (event) => {
-    const searchQuery = event.target.value.toLowerCase();
-    setSearchComposition(searchQuery);
 
-    if (searchQuery === "") {
-      setCompositionData(compostionAllData);
-    } else {
-      const filteredData = compositionData.filter((item) => {
-        const itemName = item.compositionName
-          ? item.compositionName.toLowerCase()
-          : "";
-        return itemName.includes(searchQuery);
-      });
-      setCompositionData(filteredData);
-    }
-  };
+  useEffect(() => {
+    loadComposition();
+  }, []);
 
   return (
     <>

@@ -14,14 +14,15 @@ const Carousel = ({ items, compositonData }) => {
       clearInterval(interval);
     };
   }, [items, currentIndex]);
+  // console.log(items);
 
   return (
     <>
-      <div className="flex h-full w-full justify-center items-center">
+      <div className="h-full w-full">
         {items?.map((item, index) => {
           if (currentIndex === index) {
             return (
-              <div className="flex h-full w-full" key={index}>
+              <div className="h-full w-full" key={index}>
                 {item.assetType === "OnlineImage" && (
                   <>
                     <img
@@ -35,7 +36,7 @@ const Carousel = ({ items, compositonData }) => {
                   <img
                     src={item.assetFolderPath}
                     alt={item.assetName}
-                    className="w-full h-full object-cover rounded-sm"
+                    className="w-full h-full rounded-sm"
                   />
                 )}
                 {item.assetType === "Video" && (
@@ -57,6 +58,11 @@ const Carousel = ({ items, compositonData }) => {
                   >
                     {item.assetName}
                   </a>
+                )}
+                {item?.text && (
+                  <marquee className="text-lg" direction={item?.scrollType == 1 ? "left" : "right"}>
+                    {item?.text}
+                  </marquee>
                 )}
               </div>
             );

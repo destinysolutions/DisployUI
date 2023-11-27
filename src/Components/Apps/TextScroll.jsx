@@ -23,6 +23,8 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [instanceData, setInstanceData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [appDropDown, setAppDropDown] = useState(null);
+
   useEffect(() => {
     axios
       .get(GET_ALL_TEXT_SCROLL_INSTANCE, {
@@ -110,7 +112,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-  const [appDropDown, setAppDropDown] = useState(null);
+
   const handleAppDropDownClick = (id) => {
     if (appDropDown === id) {
       setAppDropDown(null);
