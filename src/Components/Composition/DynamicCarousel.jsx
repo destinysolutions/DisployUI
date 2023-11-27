@@ -36,7 +36,7 @@ const Carousel = ({ items, compositonData }) => {
                   <img
                     src={item.assetFolderPath}
                     alt={item.assetName}
-                    className="w-full h-full rounded-sm "
+                    className="w-full h-full rounded-sm object-contain"
                   />
                 )}
                 {item.assetType === "Video" && (
