@@ -13,7 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { HiDotsVertical, HiOutlineLocationMarker } from "react-icons/hi";
 import { useState } from "react";
 import "../../Styles/schedule.css";
-import { AiOutlineCloseCircle } from "react-icons/ai";
+import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
 import Footer from "../Footer";
 import {
   ADD_SCHEDULE,
@@ -23,7 +23,6 @@ import {
 } from "../../Pages/Api";
 import { useEffect } from "react";
 import axios from "axios";
-import SaveAssignScreenModal from "./SaveAssignScreenModal";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { MdOutlineGroups } from "react-icons/md";
@@ -44,7 +43,8 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     ? selectedScreens.join(",")
     : "";
   const [scheduleId, setScheduleId] = useState("");
-
+  const [searchSchedule, setSearchSchedule] = useState("");
+  const [scheduleAllData, setScheduleAllData] = useState([]);
   const loadScheduleData = () => {
     axios
       .get(GET_ALL_SCHEDULE, {
@@ -56,6 +56,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         const fetchedData = response.data.data;
         console.log(fetchedData, "schedule data");
         setScheduleData(fetchedData);
+        setScheduleAllData(fetchedData);
       })
       .catch((error) => {
         console.log(error);
@@ -258,7 +259,22 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         });
     }
   }, [UserData.user?.userID]);
+  const handleFilter = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchSchedule(searchQuery);
 
+    if (searchQuery === "") {
+      setScheduleData(scheduleAllData);
+    } else {
+      const filteredData = scheduleData.filter((item) => {
+        const itemName = item.scheduleName
+          ? item.scheduleName.toLowerCase()
+          : "";
+        return itemName.includes(searchQuery);
+      });
+      setScheduleData(filteredData);
+    }
+  };
   return (
     <>
       {/* navbar and sidebar start */}
@@ -274,6 +290,18 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               My Schedule
             </h1>
             <div className=" items-center flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn ">
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <AiOutlineSearch className="w-5 h-5 text-gray " />
+                </span>
+                <input
+                  type="text"
+                  placeholder="   Search by Name"
+                  className="border border-primary rounded-full px-7 py-1.5 search-user"
+                  value={searchSchedule}
+                  onChange={handleFilter}
+                />
+              </div>
               {/* <Link to="/weatherschedule">
                 <button className=" flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                   <TiWeatherSunny className="text-lg mr-1" />

@@ -1,32 +1,33 @@
+import axios from "axios";
 import React from "react";
+import { useEffect } from "react";
 import { useState } from "react";
-import { FiFilter, FiEdit2 } from "react-icons/fi";
+import { useSelector } from "react-redux";
+
 const Storagelimit = () => {
-  const [storagelimit, setshowstoragelimit] = useState([
-    {
-      id: 1,
-      name: "Dhara",
-      email: "Dhara@gmail.com",
-      consumedspace: "3GB",
-      availablespace: "3GB",
-      allotspace: "3GB",
-      statusEnabled: true,
-    },
-    {
-      id: 2,
-      name: "Dhara",
-      email: "Dhara@gmail.com",
-      consumedspace: "3GB",
-      availablespace: "3GB",
-      allotspace: "3GB",
-      statusEnabled: false,
-    },
-  ]);
-  const handleStatusToggle = (index) => {
-    const updatedLimit = [...storagelimit];
-    updatedLimit[index].statusEnabled = !updatedLimit[index].statusEnabled;
-    setshowstoragelimit(updatedLimit);
-  };
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
+  const [storageData, setStorageData] = useState("");
+  useEffect(() => {
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://disployapi.thedestinysolutions.com/api/UserMaster/GetStorageDetails",
+      headers: {
+        Authorization: authToken,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        setStorageData(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   return (
     <>
       <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2 mt-5">
@@ -71,7 +72,7 @@ const Storagelimit = () => {
                       borderRadius: "5px",
                     }}
                   >
-                    3GB
+                    {storageData.totalStorage}
                   </span>
                 </td>
                 <td className="text-[#5E5E5E] text-center">
@@ -82,7 +83,7 @@ const Storagelimit = () => {
                       borderRadius: "5px",
                     }}
                   >
-                    2.7GB
+                    {storageData.consumedSpace}
                   </span>
                 </td>
                 <td className="text-[#5E5E5E] text-center">
@@ -93,10 +94,10 @@ const Storagelimit = () => {
                       borderRadius: "5px",
                     }}
                   >
-                    10MB
+                    {storageData.availableSpace}
                   </span>
                 </td>
-                <td className="text-center">90%</td>
+                <td className="text-center">{storageData.usedInPercentage}</td>
               </tr>
             </tbody>
           </table>
