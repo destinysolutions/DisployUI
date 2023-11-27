@@ -97,7 +97,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                 <AiOutlineCloseCircle className="text-3xl text-primary" />
               </button>
             </div>
-            {screen == 1 ? (
+            {screen == 3 ? (
               <h3 className="justify-center text-center text-red text-xl p-10 font-semibold break-words">
                 To add more screens, please activate your trial period
               </h3>

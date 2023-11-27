@@ -84,7 +84,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [tagsContentVisible, setTagsContentVisible] = useState(true);
   const [showActionBox, setShowActionBox] = useState(false);
   const [isEditingScreen, setIsEditingScreen] = useState(false);
-
+  const [assetScreenID, setAssetScreenID] = useState();
+  const [scheduleScreenID, setScheduleScreenID] = useState();
+  console.log("scheduleScreenID", scheduleScreenID);
   useEffect(() => {
     setLocContentVisible(locCheckboxClick);
     setScreenContentVisible(screenCheckboxClick);
@@ -417,10 +419,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       }
     }
   };
-  const handleAssetUpdate = (screenId) => {
+
+  const handleAssetUpdate = () => {
     const screenToUpdate = screenData.find(
-      (screen) => screen.screenID === screenId
+      (screen) => screen.screenID === assetScreenID
     );
+    console.log("screenToUpdate.screenID", assetScreenID);
     let moduleID = selectedAsset.assetID || selectedComposition.compositionID;
     let mediaType = selectedAsset.assetID ? 1 : 3;
     if (screenToUpdate) {
@@ -444,7 +448,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       } = screenToUpdate;
 
       let data = JSON.stringify({
-        screenID: screenId,
+        screenID: assetScreenID,
         otp,
         googleLocation,
         timeZone,
@@ -480,8 +484,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       axios
         .request(config)
         .then((response) => {
+          window.location.reload();
           const updatedScreenData = screenData.map((screen) => {
-            if (screen.screenID === screenId) {
+            if (screen.screenID === assetScreenID) {
               return {
                 ...screen,
                 assetName:
@@ -503,9 +508,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  const handleScheduleUpdate = (screenId) => {
+  const handleScheduleUpdate = () => {
     const screenToUpdate = screenData.find(
-      (screen) => screen.screenID === screenId
+      (screen) => screen.screenID === scheduleScreenID
     );
     let moduleID = selectedSchedule.scheduleId;
     if (screenToUpdate) {
@@ -529,7 +534,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       } = screenToUpdate;
 
       let data = JSON.stringify({
-        screenID: screenId,
+        screenID: scheduleScreenID,
         otp,
         googleLocation,
         timeZone,
@@ -565,8 +570,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       axios
         .request(config)
         .then((response) => {
+          window.location.reload();
           const updatedScreenData = screenData.map((screen) => {
-            if (screen.screenID === screenId) {
+            if (screen.screenID === scheduleScreenID) {
               return {
                 ...screen,
                 scheduleName: selectedSchedule.scheduleName,
@@ -783,7 +789,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     if (searchQuery === "") {
       setScreenData(screenAllData);
     } else {
-      const filteredData = compositionData.filter((item) => {
+      const filteredData = screenData.filter((item) => {
         const itemName = item.screenName ? item.screenName.toLowerCase() : "";
         return itemName.includes(searchQuery);
       });
@@ -1232,6 +1238,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         >
                           <button
                             onClick={(e) => {
+                              console.log(screen.screenID);
+                              setAssetScreenID(screen.screenID);
                               setShowAssetModal(true);
                               setSelectedAsset({
                                 ...selectedAsset,
@@ -1248,7 +1256,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
                                 <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
                                   <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
-                                    <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                                    <div className="flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black">
                                       <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
                                         Set Content to Add Media
                                       </h3>
@@ -1668,6 +1676,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         </div>
                                       </div>
                                     </div>
+
                                     <div className="flex justify-between items-center p-5">
                                       <p className="text-black">
                                         Content will always be playing Confirm
@@ -1676,7 +1685,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="bg-primary text-white rounded-full px-5 py-2"
                                         onClick={() => {
                                           setShowAssetModal(false);
-                                          handleAssetUpdate(screen.screenID);
+                                          handleAssetUpdate();
                                         }}
                                       >
                                         Confirm
@@ -1692,7 +1701,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       {currScheduleContentVisible && (
                         <td className="break-words	w-[150px] p-2 text-center">
                           {screen.scheduleName == "" ? (
-                            <button onClick={() => setShowScheduleModal(true)}>
+                            <button
+                              onClick={() => {
+                                setShowScheduleModal(true);
+                                setScheduleScreenID(screen.screenID);
+                              }}
+                            >
                               Set a schedule
                             </button>
                           ) : (
@@ -1705,7 +1719,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                                 <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
                                   <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                                    <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                                    <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                                       <div className="flex items-center">
                                         <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
                                           Set Schedule

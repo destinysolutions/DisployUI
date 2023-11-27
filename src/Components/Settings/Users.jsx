@@ -268,7 +268,7 @@ const Users = () => {
   };
   const columns = [
     {
-      name: "First Name",
+      name: "Name",
       selector: (row) => row.firstName,
       sortable: true,
     },
@@ -278,16 +278,16 @@ const Users = () => {
       selector: (row) => row.userRoleName,
       sortable: true,
     },
-    {
-      name: "Notification",
-      //selector: (row) => row.googleLocation,
-      sortable: true,
-    },
-    {
-      name: "Screen Access",
-      //selector: (row) => row.phone,
-      sortable: true,
-    },
+    // {
+    //   name: "Notification",
+    //   //selector: (row) => row.googleLocation,
+    //   sortable: true,
+    // },
+    // {
+    //   name: "Screen Access",
+    //   //selector: (row) => row.phone,
+    //   sortable: true,
+    // },
     {
       name: "Status",
       selector: (row) => row.isActive,

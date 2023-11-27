@@ -285,6 +285,7 @@ const Userrole = () => {
       .request(config)
       .then((response) => {
         setUserRoleData(response.data.data);
+        console.log(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -510,26 +511,26 @@ const Userrole = () => {
   };
   const columns = [
     {
-      name: "First Name",
+      name: "Name",
       selector: (row) => row.firstName,
       sortable: true,
     },
 
     {
       name: "Roles",
-      selector: (row) => row.userRole,
+      selector: (row) => row.userRoleName,
       sortable: true,
     },
-    {
-      name: "Notification",
-      //selector: (row) => row.googleLocation,
-      sortable: true,
-    },
-    {
-      name: "Screen Access",
-      //selector: (row) => row.phone,
-      sortable: true,
-    },
+    // {
+    //   name: "Notification",
+    //   //selector: (row) => row.googleLocation,
+    //   sortable: true,
+    // },
+    // {
+    //   name: "Screen Access",
+    //   //selector: (row) => row.phone,
+    //   sortable: true,
+    // },
     {
       name: "Status",
       selector: (row) => row.isActive,
@@ -545,67 +546,67 @@ const Userrole = () => {
       ),
     },
 
-    {
-      name: "Action",
-      cell: (row) => (
-        <div className="relative">
-          <button onClick={() => handleActionClick(row.orgUserSpecificID)}>
-            <CiMenuKebab />
-          </button>
-          {showActionBox === row.orgUserSpecificID && (
-            <>
-              <div className="actionpopup z-10 ">
-                <button
-                  onClick={() => setShowActionBox(false)}
-                  className="bg-white absolute top-[-14px] left-[-8px] z-10  rounded-full drop-shadow-sm p-1"
-                >
-                  <AiOutlineClose />
-                </button>
+    // {
+    //   name: "Action",
+    //   cell: (row) => (
+    //     <div className="relative">
+    //       <button onClick={() => handleActionClick(row.orgUserSpecificID)}>
+    //         <CiMenuKebab />
+    //       </button>
+    //       {showActionBox === row.orgUserSpecificID && (
+    //         <>
+    //           <div className="actionpopup z-10 ">
+    //             <button
+    //               onClick={() => setShowActionBox(false)}
+    //               className="bg-white absolute top-[-14px] left-[-8px] z-10  rounded-full drop-shadow-sm p-1"
+    //             >
+    //               <AiOutlineClose />
+    //             </button>
 
-                <div className=" my-1">
-                  <button>Edit User</button>
-                </div>
-                <div className=" mb-1 text-[#D30000]">
-                  <button onClick={() => setdeletePopup(true)}>Delete</button>
-                </div>
-              </div>
-              {deletePopup ? (
-                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                  <div className="relative w-full max-w-xl max-h-full">
-                    <div className="relative bg-white rounded-lg shadow">
-                      <div className="py-6 text-center">
-                        <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
-                        <h3 className="mb-5 text-xl text-primary">
-                          Are you sure you want to delete this User?
-                        </h3>
-                        <div className="flex justify-center items-center space-x-4">
-                          <button
-                            className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
-                            onClick={() => setdeletePopup(false)}
-                          >
-                            No, cancel
-                          </button>
+    //             <div className=" my-1">
+    //               <button>Edit User</button>
+    //             </div>
+    //             <div className=" mb-1 text-[#D30000]">
+    //               <button onClick={() => setdeletePopup(true)}>Delete</button>
+    //             </div>
+    //           </div>
+    //           {deletePopup ? (
+    //             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+    //               <div className="relative w-full max-w-xl max-h-full">
+    //                 <div className="relative bg-white rounded-lg shadow">
+    //                   <div className="py-6 text-center">
+    //                     <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
+    //                     <h3 className="mb-5 text-xl text-primary">
+    //                       Are you sure you want to delete this User?
+    //                     </h3>
+    //                     <div className="flex justify-center items-center space-x-4">
+    //                       <button
+    //                         className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
+    //                         onClick={() => setdeletePopup(false)}
+    //                       >
+    //                         No, cancel
+    //                       </button>
 
-                          <button
-                            className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
-                            // onClick={() => {
-                            //   handleDelete(row.orgUserSpecificID);
-                            //   setdeletePopup(false);
-                            // }}
-                          >
-                            Yes, I'm sure
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-            </>
-          )}
-        </div>
-      ),
-    },
+    //                       <button
+    //                         className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
+    //                         // onClick={() => {
+    //                         //   handleDelete(row.orgUserSpecificID);
+    //                         //   setdeletePopup(false);
+    //                         // }}
+    //                       >
+    //                         Yes, I'm sure
+    //                       </button>
+    //                     </div>
+    //                   </div>
+    //                 </div>
+    //               </div>
+    //             </div>
+    //           ) : null}
+    //         </>
+    //       )}
+    //     </div>
+    //   ),
+    // },
   ];
   return (
     <>
@@ -633,7 +634,7 @@ const Userrole = () => {
           >
             <div className="flex justify-between">
               <div className="role-name">
-                <p>Total 5 Users</p>
+                <p>Total {userrole.userCount} Users</p>
                 <h3 className="text-3xl text-primary my-2">
                   {userrole.orgUserRole}
                 </h3>
@@ -1005,7 +1006,7 @@ const Userrole = () => {
           </div>
         </div>
       </div> */}
-      <div className="mt-7">
+      <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2 mt-5">
         <DataTable
           columns={columns}
           data={userData}

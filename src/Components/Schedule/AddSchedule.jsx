@@ -94,7 +94,47 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const addedTimezoneName = searchParams.get("timeZoneName");
   const selectedScreenIdsString = selectedScreens.join(",");
+  //socket signal-RRR
+  const [connection, setConnection] = useState(null);
+  const [fileType, setFileType] = useState();
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .build();
 
+    // newConnection.on("ReceiveMessage", (endDate, startDate, type) => {
+    //   console.log("end date", endDate);
+    //   console.log("start date:", startDate);
+    //   console.log("asset:", type);
+    // });
+    newConnection.on("ScreenConnected", (screenConnected) => {
+      console.log("ScreenConnected", screenConnected);
+    });
+
+    newConnection
+      .start()
+      .then(() => {
+        console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
+    return () => {
+      if (newConnection) {
+        newConnection
+          .stop()
+          .then(() => {
+            console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  }, []);
   const navigate = useNavigate();
 
   const handleSelectSlot = useCallback(({ start, end }) => {
@@ -176,45 +216,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   }, []);
 
-  //socket signal-RRR
-  const [connection, setConnection] = useState(null);
-  const [fileType, setFileType] = useState();
-  useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
-
-    newConnection.on("ReceiveMessage", (endDate, startDate, type) => {
-      console.log("end date", endDate);
-      console.log("start date:", startDate);
-      console.log("asset:", type);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
-  }, []);
-
   useEffect(() => {
     let config = {
       method: "get",
@@ -231,20 +232,30 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           Array.isArray(response.data.data) &&
           response.data.data.length > 0
         ) {
-          const { cEndDate, cStartDate, fileType } = response.data.data[0];
-          setFileType(fileType);
+          // const { cEndDate, cStartDate, fileType } = response.data.data[0];
+          // setFileType(fileType);
+          // if (connection) {
+          //   // Send the API response to SignalR when the connection is established
+          //   connection
+          //     .invoke("SendMessage", cEndDate, cStartDate, fileType)
+          //     .then(() => {
+          //       console.log("Message sent:", cEndDate, cStartDate, fileType);
+          //     })
+          //     .catch((error) => {
+          //       console.error("Error sending message:", error);
+          //     });
+          // } else {
+          //   console.warn("Connection is not established yet.");
+          // }
           if (connection) {
-            // Send the API response to SignalR when the connection is established
             connection
-              .invoke("SendMessage", cEndDate, cStartDate, fileType)
+              .invoke("ScreenConnected")
               .then(() => {
-                console.log("Message sent:", cEndDate, cStartDate, fileType);
+                console.log("SignalR method invoked after screen update");
               })
               .catch((error) => {
-                console.error("Error sending message:", error);
+                console.error("Error invoking SignalR method:", error);
               });
-          } else {
-            console.warn("Connection is not established yet.");
           }
         } else {
           console.warn("No data in the response");
@@ -385,6 +396,16 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         //console.log(JSON.stringify(response.data));
+        if (connection) {
+          connection
+            .invoke("ScreenConnected")
+            .then(() => {
+              console.log("SignalR method invoked after screen update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -512,19 +533,29 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             (event) => event.eventId === eventId
           );
           console.log(updateEvent, "updateEvent");
-          if (updatedEvent && connection) {
+          // if (updatedEvent && connection) {
+          //   connection
+          //     .invoke(
+          //       "SendMessage",
+          //       updatedEvent.cEndDate,
+          //       updatedEvent.cStartDate,
+          //       fileType
+          //     )
+          //     .then(() => {
+          //       console.log("SignalR message sent for updated event");
+          //     })
+          //     .catch((error) => {
+          //       console.error("Error sending SignalR message:", error);
+          //     });
+          // }
+          if (connection) {
             connection
-              .invoke(
-                "SendMessage",
-                updatedEvent.cEndDate,
-                updatedEvent.cStartDate,
-                fileType
-              )
+              .invoke("ScreenConnected")
               .then(() => {
-                console.log("SignalR message sent for updated event");
+                console.log("SignalR method invoked after screen update");
               })
               .catch((error) => {
-                console.error("Error sending SignalR message:", error);
+                console.error("Error invoking SignalR method:", error);
               });
           }
         }

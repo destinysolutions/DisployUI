@@ -14,6 +14,7 @@ import {
   GET_ALL_COMPOSITIONS,
   SELECT_BY_LIST,
   SELECT_BY_USER_SCREENDETAIL,
+  SIGNAL_R,
 } from "../../Pages/Api";
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -23,6 +24,7 @@ import PreviewModal from "./PreviewModel";
 import { RxCrossCircled } from "react-icons/rx";
 import Carousel from "./DynamicCarousel";
 import { MdOutlineGroups } from "react-icons/md";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
@@ -261,7 +263,40 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       setSelectedScreens([]);
     }
   };
+  const [connection, setConnection] = useState(null);
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .build();
 
+    newConnection.on("ScreenConnected", (screenConnected) => {
+      console.log("ScreenConnected", screenConnected);
+    });
+
+    newConnection
+      .start()
+      .then(() => {
+        console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
+    return () => {
+      if (newConnection) {
+        newConnection
+          .stop()
+          .then(() => {
+            console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  }, []);
   const handleUpdateScreenAssign = () => {
     let config = {
       method: "get",
@@ -278,6 +313,16 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         console.log("response:", response.data.data);
         if (response.data.status == 200) {
+          if (connection) {
+            connection
+              .invoke("ScreenConnected")
+              .then(() => {
+                console.log("SignalR method invoked after screen update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
           setSelectScreenModal(false);
           setAddScreenModal(false);
           setShowActionBox(false);
@@ -525,6 +570,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                     Duration
                   </th>
                   <th className="text-[#5A5881] text-base font-semibold">
+                    Screen Assign
+                  </th>
+                  <th className="text-[#5A5881] text-base font-semibold">
                     Tags
                   </th>
                   <th></th>
@@ -562,6 +610,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                           .utc(composition.duration * 1000)
                           .format("HH:mm:ss")}
                       </td>
+                      <td className="p-2">{composition.screenIDs}</td>
                       <td className="p-2">{composition.tags}</td>
                       <td className="p-2 text-center relative">
                         <div className="">
