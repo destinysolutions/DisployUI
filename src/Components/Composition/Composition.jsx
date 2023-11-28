@@ -51,6 +51,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const [compositionId, setCompositionId] = useState("");
   const [searchComposition, setSearchComposition] = useState("");
   const [compostionAllData, setCompostionAllData] = useState([]);
+  const [connection, setConnection] = useState(null);
+
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
@@ -184,7 +186,17 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
-          setPreviewModalData(response?.data?.data[0]?.sections);
+          const data = response?.data?.data[0]?.sections;
+          let obj = {};
+          for (const [key, value] of data.entries()) {
+            if (obj[value?.sectionID]) {
+              obj[value?.sectionID].push(value);
+            } else {
+              obj[value?.sectionID] = [value];
+            }
+          }
+          const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
+          setPreviewModalData(newdd);
           openModal();
         }
         toast.remove();
@@ -263,40 +275,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       setSelectedScreens([]);
     }
   };
-  const [connection, setConnection] = useState(null);
-  useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
 
-    newConnection.on("ScreenConnected", (screenConnected) => {
-      console.log("ScreenConnected", screenConnected);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
-  }, []);
   const handleUpdateScreenAssign = () => {
     let config = {
       method: "get",
@@ -495,10 +474,44 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   }, [UserData.user?.userID]);
 
   useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    newConnection.on("ScreenConnected", (screenConnected) => {
+      console.log("ScreenConnected", screenConnected);
+    });
+
+    newConnection
+      .start()
+      .then(() => {
+        console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
     loadComposition();
+    return () => {
+      if (newConnection) {
+        newConnection
+          .stop()
+          .then(() => {
+            console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
   }, []);
 
   // console.log(layotuDetails);
+  // console.log(compositionData);
+  // console.log(previewModalData);
+
   return (
     <>
       <div className="flex bg-white py-3 border-b border-gray">
@@ -941,27 +954,33 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
                           {!loading &&
                           layotuDetails?.lstLayloutModelList.length > 2
-                            ? jsonCanvasData.objects.map((obj, index) => (
-                                <div
-                                  key={index}
-                                  style={{
-                                    position: "absolute",
-                                    left: obj.left + "%",
-                                    top: obj.top + "%",
-                                    width: obj.width + "%",
-                                    height: obj.height + "%",
-                                    backgroundColor: obj.fill,
-                                    // Apply other CSS properties as needed
-                                  }}
-                                >
-                                  {modalVisible && (
-                                    <Carousel
-                                      // items={addAsset[index][index + 1]}
-                                      items={previewModalData}
-                                    />
-                                  )}
-                                </div>
-                              ))
+                            ? layotuDetails.lstLayloutModelList.map(
+                                (obj, index) => (
+                                  <div
+                                    key={index}
+                                    style={{
+                                      position: "absolute",
+                                      left: obj.leftside + "%",
+                                      top: obj.topside + "%",
+                                      width: obj.width + "px",
+                                      height: obj.height + "px",
+                                      // width: obj.width + "%",
+                                      // height: obj.height + "%",
+                                      backgroundColor: obj.fill,
+                                      // Apply other CSS properties as needed
+                                    }}
+                                  >
+                                    {modalVisible && (
+                                      <Carousel
+                                        items={
+                                          previewModalData[index][index + 1]
+                                        }
+                                        // items={previewModalData}
+                                      />
+                                    )}
+                                  </div>
+                                )
+                              )
                             : layotuDetails?.lstLayloutModelList?.map(
                                 (obj, index) => (
                                   <div
@@ -974,7 +993,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                   >
                                     {modalVisible && (
                                       <Carousel
-                                        items={previewModalData}
+                                        items={
+                                          previewModalData[index][index + 1]
+                                        }
                                         composition={obj}
                                       />
                                     )}
