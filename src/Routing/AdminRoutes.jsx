@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import AdminDashboard from "../admin/Admindashborad";
+import Admindashborad from "../admin/Admindashboard";
 import OnBoding from "../admin/OnBoding";
 import ManageUserType from "../admin/ManageUserType";
 import User from "../admin/User";
@@ -14,7 +14,7 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
           <Route
             path="/"
             element={
-              <AdminDashboard
+              <Admindashborad
                 sidebarOpen={sidebarOpen}
                 setSidebarOpen={setSidebarOpen}
               />
