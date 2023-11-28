@@ -93,6 +93,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handelDeleteComposition = (com_id) => {
+    if (!window.confirm("Are you sure?")) return;
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -151,6 +152,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleDeleteAllCompositions = () => {
+    if (!window.confirm("Are you sure?")) return;
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -953,55 +955,27 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                           />
 
                           {!loading &&
-                          layotuDetails?.lstLayloutModelList.length > 2
-                            ? layotuDetails.lstLayloutModelList.map(
-                                (obj, index) => (
-                                  <div
-                                    key={index}
-                                    style={{
-                                      position: "absolute",
-                                      left: obj.leftside + "%",
-                                      top: obj.topside + "%",
-                                      width: obj.width + "px",
-                                      height: obj.height + "px",
-                                      // width: obj.width + "%",
-                                      // height: obj.height + "%",
-                                      backgroundColor: obj.fill,
-                                      // Apply other CSS properties as needed
-                                    }}
-                                  >
-                                    {modalVisible && (
-                                      <Carousel
-                                        items={
-                                          previewModalData[index][index + 1]
-                                        }
-                                        // items={previewModalData}
-                                      />
-                                    )}
-                                  </div>
-                                )
+                            layotuDetails?.lstLayloutModelList?.map(
+                              (obj, index) => (
+                                <div
+                                  key={index}
+                                  style={{
+                                    width: obj?.width + "%",
+                                    height: obj?.height + "%",
+                                    // width: obj?.width + "px",
+                                    // height: obj?.height + "px",
+                                    backgroundColor: obj.fill,
+                                  }}
+                                >
+                                  {modalVisible && (
+                                    <Carousel
+                                      items={previewModalData[index][index + 1]}
+                                      composition={obj}
+                                    />
+                                  )}
+                                </div>
                               )
-                            : layotuDetails?.lstLayloutModelList?.map(
-                                (obj, index) => (
-                                  <div
-                                    key={index}
-                                    style={{
-                                      width: obj?.width + "px",
-                                      height: obj?.height + "px",
-                                      backgroundColor: obj.fill,
-                                    }}
-                                  >
-                                    {modalVisible && (
-                                      <Carousel
-                                        items={
-                                          previewModalData[index][index + 1]
-                                        }
-                                        composition={obj}
-                                      />
-                                    )}
-                                  </div>
-                                )
-                              )}
+                            )}
                         </div>
                       </PreviewModal>
                     </tr>

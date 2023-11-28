@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react";
 
-const Carousel = ({ items, compositonData }) => {
+const Carousel = ({ items, compositonData, from }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const slideCount = items.length;
-
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % slideCount);
-    }, items[currentIndex].duration * 1000);
-
+    let interval;
+    if (from === "screen") {
+      interval = setInterval(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % slideCount);
+      }, items[currentIndex].durationInSecond * 1000);
+    } else {
+      interval = setInterval(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % slideCount);
+      }, items[currentIndex].duration * 1000);
+    }
     return () => {
       clearInterval(interval);
     };
@@ -32,10 +37,16 @@ const Carousel = ({ items, compositonData }) => {
                     />
                   </>
                 )}
-                {item.assetType === "Image" && (
+                {item.assetType === "Image" ? (
                   <img
                     src={item.assetFolderPath}
                     alt={item.assetName}
+                    className="w-full h-full rounded-sm object-contain"
+                  />
+                ) : (
+                  <img
+                    src={item.fileType}
+                    // alt={item.assetName}
                     className="w-full h-full rounded-sm object-contain"
                   />
                 )}

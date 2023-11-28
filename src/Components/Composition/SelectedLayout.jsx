@@ -122,6 +122,15 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const onSave = async () => {
+    toast.remove();
+    if (
+      addAsset.map((e, index) => e[index + 1].length).includes(0) ||
+      addAsset.length === 0 ||
+      addAsset.length !== compositonData?.lstLayloutModelList.length
+    ) {
+      toast.error("Please select assests for every section.");
+      return;
+    }
     const newdata = [];
     addAsset.map((item, index) => {
       item[index + 1].map((i) => newdata.push(i));
@@ -338,7 +347,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       addAsset.length === 0 ||
       addAsset.length !== compositonData?.lstLayloutModelList.length
     ) {
-      toast.error("Please select assests for both sections.");
+      toast.error("Please select assests for every section.");
       return;
     }
     openModal();
@@ -559,48 +568,32 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               />
 
               {!loading &&
-              compositonData !== null &&
-              compositonData?.lstLayloutModelList.length > 2
-                ? compositonData.lstLayloutModelList.map((obj, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        position: "absolute",
-                        left: obj.leftside + "%",
-                        top: obj.topside + "%",
-                        width: obj.width + "px",
-                        height: obj.height + "px",
-                        // width: obj.width + "%",
-                        // height: obj.height + "%",
-                        backgroundColor: obj.fill,
-                        // Apply other CSS properties as needed
-                      }}
-                    >
-                      {modalVisible && (
-                        <Carousel items={addAsset[index][index + 1]} />
-                      )}
-                    </div>
-                  ))
-                : compositonData?.lstLayloutModelList?.map((obj, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        // width: "20%",
-                        // height: "20%",
-                        width: obj?.width + "px",
-                        height: obj?.height + "px",
-                        backgroundColor: obj.fill,
-                      }}
-                    >
-                      {modalVisible && (
-                        <Carousel
-                          items={addAsset[index][index + 1]}
-                          // items={items}
-                          compositonData={obj}
-                        />
-                      )}
-                    </div>
-                  ))}
+                compositonData !== null &&
+                compositonData?.lstLayloutModelList?.map((obj, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      position: "absolute",
+                      left: obj.leftside + "%",
+                      top: obj.topside + "%",
+                      // width: "20%",
+                      // height: "20%",
+                      // width: obj?.width + "px",
+                      // height: obj?.height + "px",
+                      width: obj?.width + "%",
+                      height: obj?.height + "%",
+                      backgroundColor: obj.fill,
+                    }}
+                  >
+                    {modalVisible && (
+                      <Carousel
+                        items={addAsset[index][index + 1]}
+                        // items={items}
+                        compositonData={obj}
+                      />
+                    )}
+                  </div>
+                ))}
             </div>
           </PreviewModal>
 

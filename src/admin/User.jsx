@@ -13,7 +13,11 @@ import { CiMenuKebab } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 import "../Styles/admin.css";
-import { ADD_USER_MASTER, GET_ALL_USER_MASTER, GET_ALL_USER_TYPE_MASTER } from "./AdminAPI";
+import {
+  ADD_USER_MASTER,
+  GET_ALL_USER_MASTER,
+  GET_ALL_USER_TYPE_MASTER,
+} from "./AdminAPI";
 
 const User = ({ sidebarOpen, setSidebarOpen }) => {
   const [addUserModal, setAddUserModal] = useState(false);
@@ -108,6 +112,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
     setEditUserId("");
     setAddUserModal(false);
   };
+
   const handleEditClick = (user) => {
     setUserName(user.userName);
     setFirstName(user.firstName);
@@ -188,6 +193,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
+
   const columns = [
     {
       name: "User Name",
@@ -300,6 +306,7 @@ const User = ({ sidebarOpen, setSidebarOpen }) => {
       ),
     },
   ];
+
   function handleFilter(event) {
     const searchValue = event.target.value.toLowerCase();
 
