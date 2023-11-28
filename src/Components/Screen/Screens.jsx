@@ -120,30 +120,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
   const authToken = `Bearer ${UserData.user.data.token}`;
   const [groupName, setGroupName] = useState("");
-  useEffect(() => {
-    if (UserData.user?.userID) {
-      axios
-        .get(SELECT_BY_USER_SCREENDETAIL, {
-          headers: { Authorization: authToken },
-        })
-        .then((response) => {
-          const fetchedData = response.data.data;
-          setScreenData(fetchedData);
-          setScreenAllData(fetchedData);
-          const initialCheckboxes = {};
-          if (Array.isArray(fetchedData)) {
-            fetchedData.forEach((screen) => {
-              initialCheckboxes[screen.screenID] = false;
-            });
-            setScreenCheckboxes(initialCheckboxes);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }, [UserData.user?.userID]);
-
   const [assetData, setAssetData] = useState([]);
   const [assetAllData, setAssetAllData] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
@@ -154,6 +130,20 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedComposition, setSelectedComposition] = useState({
     compositionName: "",
   });
+  const [screenNameError, setScreenNameError] = useState("");
+  const [searchAsset, setSearchAsset] = useState("");
+
+  //socket signal-RRR
+  const [connection, setConnection] = useState(null);
+  const [screenConnected, setScreenConnected] = useState(null);
+  const [sendTvStatus, setSendTvStatus] = useState(null);
+  const [showNewScreenGroupPopup, setShowNewScreenGroupPopup] = useState(false);
+  const [selectedCheckboxIDs, setSelectedCheckboxIDs] = useState([]);
+
+  const selectedScreenIdsString = Array.isArray(selectedCheckboxIDs)
+    ? selectedCheckboxIDs.join(",")
+    : "";
+
   const loadComposition = () => {
     let config = {
       method: "get",
@@ -173,49 +163,16 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-  useEffect(() => {
-    loadComposition();
-  }, []);
-  useEffect(() => {
-    axios
-      .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
-      .then((response) => {
-        const fetchedData = response.data;
-        const allAssets = [
-          ...(fetchedData.image ? fetchedData.image : []),
-          ...(fetchedData.video ? fetchedData.video : []),
-          ...(fetchedData.doc ? fetchedData.doc : []),
-          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
-          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
-        ];
-        setAssetData(allAssets);
-        setAssetAllData(allAssets);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-  useEffect(() => {
-    axios
-      .get(GET_ALL_SCHEDULE, { headers: { Authorization: authToken } })
-      .then((response) => {
-        const fetchedData = response.data.data;
 
-        setScheduleData(fetchedData);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
   const handleAssetAdd = (asset) => {
     setSelectedAsset(asset);
     setAssetPreview(asset);
   };
+
   const handleCompositionsAdd = (composition) => {
     setSelectedComposition(composition);
   };
-  console.log(selectedComposition);
-  const [searchAsset, setSearchAsset] = useState("");
+
   const handleFilter = (event) => {
     const searchQuery = event.target.value.toLowerCase();
     setSearchAsset(searchQuery);
@@ -240,6 +197,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       return { ...updatedState, [screenId]: !prevState[screenId] };
     });
   };
+
   const handleScreenNameClick = (screenId) => {
     setEditingScreenID(screenId);
   };
@@ -270,6 +228,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleDeleteAllScreen = () => {
+    if (!window.confirm("Are you sure?")) return;
     let data = JSON.stringify({
       userID: UserData.user?.userID,
       operation: "DeleteUserIdScreenOtp",
@@ -299,6 +258,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handelDeleteScreen = (screenId) => {
+    if (!window.confirm("Are you sure?")) return;
     let data = JSON.stringify({
       screenID: screenId,
       operation: "DeleteScreenOtp",
@@ -326,10 +286,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
+
   const handleScheduleAdd = (schedule) => {
     setSelectedSchedule(schedule);
   };
-  const [screenNameError, setScreenNameError] = useState("");
+
   const handleScreenNameUpdate = (screenId) => {
     const screenToUpdate = screenData.find(
       (screen) => screen.screenID === screenId
@@ -591,8 +552,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       console.error("Screen not found for update");
     }
   };
-  const [showNewScreenGroupPopup, setShowNewScreenGroupPopup] = useState(false);
-  const [selectedCheckboxIDs, setSelectedCheckboxIDs] = useState([]);
 
   const handleNewScreenGroupClick = () => {
     const checkedIDs = Object.keys(screenCheckboxes).filter(
@@ -602,10 +561,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
     setShowNewScreenGroupPopup(!showNewScreenGroupPopup);
   };
-
-  const selectedScreenIdsString = Array.isArray(selectedCheckboxIDs)
-    ? selectedCheckboxIDs.join(",")
-    : "";
 
   const handleScreenGroup = () => {
     let data = JSON.stringify({
@@ -633,11 +588,56 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  //socket signal-RRR
-  const [connection, setConnection] = useState(null);
-  const [screenConnected, setScreenConnected] = useState(null);
-  const [sendTvStatus, setSendTvStatus] = useState(null);
+  const handleScreenFilter = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchScreen(searchQuery);
+
+    if (searchQuery === "") {
+      setScreenData(screenAllData);
+    } else {
+      const filteredData = screenData.filter((item) => {
+        const itemName = item.screenName ? item.screenName.toLowerCase() : "";
+        return itemName.includes(searchQuery);
+      });
+      setScreenData(filteredData);
+    }
+  };
+
   useEffect(() => {
+    // load composition
+    loadComposition();
+
+    // get all files
+    axios
+      .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
+      .then((response) => {
+        const fetchedData = response.data;
+        const allAssets = [
+          ...(fetchedData.image ? fetchedData.image : []),
+          ...(fetchedData.video ? fetchedData.video : []),
+          ...(fetchedData.doc ? fetchedData.doc : []),
+          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
+          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
+        ];
+        setAssetData(allAssets);
+        setAssetAllData(allAssets);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // get all schedule
+    axios
+      .get(GET_ALL_SCHEDULE, { headers: { Authorization: authToken } })
+      .then((response) => {
+        const fetchedData = response.data.data;
+
+        setScheduleData(fetchedData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     const connectSignalR = async () => {
       const newConnection = new HubConnectionBuilder()
         .withUrl(SIGNAL_R)
@@ -686,6 +686,31 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (UserData.user?.userID) {
+      axios
+        .get(SELECT_BY_USER_SCREENDETAIL, {
+          headers: { Authorization: authToken },
+        })
+        .then((response) => {
+          const fetchedData = response.data.data;
+          setScreenData(fetchedData);
+          setScreenAllData(fetchedData);
+          const initialCheckboxes = {};
+          if (Array.isArray(fetchedData)) {
+            fetchedData.forEach((screen) => {
+              initialCheckboxes[screen.screenID] = false;
+            });
+            setScreenCheckboxes(initialCheckboxes);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [UserData.user?.userID]);
+
   // useEffect(() => {
   //   const newConnection = new HubConnectionBuilder()
   //     .withUrl(SIGNAL_R)
@@ -782,20 +807,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   //     console.warn("Connection is not established yet.");
   //   }
   // }, [connection]);
-  const handleScreenFilter = (event) => {
-    const searchQuery = event.target.value.toLowerCase();
-    setSearchScreen(searchQuery);
-
-    if (searchQuery === "") {
-      setScreenData(screenAllData);
-    } else {
-      const filteredData = screenData.filter((item) => {
-        const itemName = item.screenName ? item.screenName.toLowerCase() : "";
-        return itemName.includes(searchQuery);
-      });
-      setScreenData(filteredData);
-    }
-  };
 
   return (
     <>

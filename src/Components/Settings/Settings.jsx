@@ -21,85 +21,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const [STabs, setSTabs] = useState(1);
-  function updateTab(id) {
-    setSTabs(id);
-  }
 
-  {
-    /* switch on off*/
-  }
-  function handleFilter(event) {
-    const newData = data.map((row) => {
-      if (row.cname.toLowerCase().includes(event.target.value.toLowerCase())) {
-        return { ...row }; // Preserve the row
-      } else {
-        return { ...row, enabled: false }; // Set enabled to false for rows that don't match the filter
-      }
-    });
-    setRecords(newData);
-  }
-
-  {
-    /* Data Table */
-  }
-  const column = [
-    {
-      name: "Company Name",
-      selector: (row) => row.cname,
-      sortable: true,
-    },
-    {
-      name: "Total Screen",
-      selector: (row) => row.totalscreen,
-      sortable: true,
-    },
-    {
-      name: "Location",
-      selector: (row) => row.location,
-      sortable: true,
-    },
-    {
-      name: "Status",
-      cell: (row) => (
-        <label className="inline-flex relative items-center cursor-pointer">
-          <input
-            type="checkbox"
-            className="sr-only peer"
-            checked={row.enabled}
-            onChange={() => {
-              const newData = data.map((rowData) => {
-                if (rowData.id === row.id) {
-                  return { ...rowData, enabled: !rowData.enabled };
-                }
-                return rowData;
-              });
-              setRecords(newData);
-            }}
-          />
-          <div
-            onClick={() => {
-              const newData = data.map((rowData) => {
-                if (rowData.id === row.id) {
-                  return { ...rowData, enabled: !rowData.enabled };
-                }
-                return rowData;
-              });
-              setRecords(newData);
-            }}
-            className={`w-10 h-5 bg-gray rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all ${
-              row.enabled ? "peer-checked:bg-[#009618]" : ""
-            }`}
-          ></div>
-        </label>
-      ),
-    },
-    {
-      name: "",
-      selector: (row) => row.show,
-      sortable: true,
-    },
-  ];
   const data = [
     {
       id: 1,
@@ -200,7 +122,88 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
       ),
     },
   ];
+
+  const [STabs, setSTabs] = useState(1);
   const [records, setRecords] = useState(data);
+
+  function updateTab(id) {
+    setSTabs(id);
+  }
+
+  {
+    /* switch on off*/
+  }
+  function handleFilter(event) {
+    const newData = data.map((row) => {
+      if (row.cname.toLowerCase().includes(event.target.value.toLowerCase())) {
+        return { ...row }; // Preserve the row
+      } else {
+        return { ...row, enabled: false }; // Set enabled to false for rows that don't match the filter
+      }
+    });
+    setRecords(newData);
+  }
+
+  {
+    /* Data Table */
+  }
+  const column = [
+    {
+      name: "Company Name",
+      selector: (row) => row.cname,
+      sortable: true,
+    },
+    {
+      name: "Total Screen",
+      selector: (row) => row.totalscreen,
+      sortable: true,
+    },
+    {
+      name: "Location",
+      selector: (row) => row.location,
+      sortable: true,
+    },
+    {
+      name: "Status",
+      cell: (row) => (
+        <label className="inline-flex relative items-center cursor-pointer">
+          <input
+            type="checkbox"
+            className="sr-only peer"
+            checked={row.enabled}
+            onChange={() => {
+              const newData = data.map((rowData) => {
+                if (rowData.id === row.id) {
+                  return { ...rowData, enabled: !rowData.enabled };
+                }
+                return rowData;
+              });
+              setRecords(newData);
+            }}
+          />
+          <div
+            onClick={() => {
+              const newData = data.map((rowData) => {
+                if (rowData.id === row.id) {
+                  return { ...rowData, enabled: !rowData.enabled };
+                }
+                return rowData;
+              });
+              setRecords(newData);
+            }}
+            className={`w-10 h-5 bg-gray rounded-full peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all ${
+              row.enabled ? "peer-checked:bg-[#009618]" : ""
+            }`}
+          ></div>
+        </label>
+      ),
+    },
+    {
+      name: "",
+      selector: (row) => row.show,
+      sortable: true,
+    },
+  ];
 
   function handleFilter(event) {
     const newData = data.filter((row) => {

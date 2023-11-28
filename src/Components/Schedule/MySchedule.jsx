@@ -47,6 +47,9 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [scheduleId, setScheduleId] = useState("");
   const [searchSchedule, setSearchSchedule] = useState("");
   const [scheduleAllData, setScheduleAllData] = useState([]);
+  const [connection, setConnection] = useState(null);
+  const [selectAll, setSelectAll] = useState(false);
+
   const loadScheduleData = () => {
     axios
       .get(GET_ALL_SCHEDULE, {
@@ -56,7 +59,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data.data;
-        console.log(fetchedData, "schedule data");
+        // console.log(fetchedData, "schedule data");
         setScheduleData(fetchedData);
         setScheduleAllData(fetchedData);
       })
@@ -64,9 +67,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-
-  // Initialize state for the "Select All" checkbox
-  const [selectAll, setSelectAll] = useState(false);
 
   // Function to handle the "Select All" checkbox change
   const handleSelectAll = () => {
@@ -105,6 +105,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handelDeleteSchedule = (scheduleId) => {
+    if (!window.confirm("Are you sure?")) return;
     let data = JSON.stringify({
       scheduleId: scheduleId,
       operation: "Delete",
@@ -134,6 +135,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handelDeleteAllSchedule = () => {
+    if (!window.confirm("Are you sure?")) return;
     let data = JSON.stringify({
       operation: "ALLDelete",
     });
@@ -158,40 +160,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-  const [connection, setConnection] = useState(null);
-  useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
 
-    newConnection.on("ScreenConnected", (screenConnected) => {
-      console.log("ScreenConnected", screenConnected);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
-  }, []);
   const handleUpdateScreenAssign = () => {
     let config = {
       method: "post",
@@ -211,7 +180,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             connection
               .invoke("ScreenConnected")
               .then(() => {
-                console.log("SignalR method invoked after screen update");
+                // console.log("SignalR method invoked after screen update");
               })
               .catch((error) => {
                 console.error("Error invoking SignalR method:", error);
@@ -275,8 +244,57 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+  const handleFilter = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchSchedule(searchQuery);
+
+    if (searchQuery === "") {
+      setScheduleData(scheduleAllData);
+    } else {
+      const filteredData = scheduleData.filter((item) => {
+        const itemName = item.scheduleName
+          ? item.scheduleName.toLowerCase()
+          : "";
+        return itemName.includes(searchQuery);
+      });
+      setScheduleData(filteredData);
+    }
+  };
+
   useEffect(() => {
     loadScheduleData();
+
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    newConnection.on("ScreenConnected", (screenConnected) => {
+      // console.log("ScreenConnected", screenConnected);
+    });
+
+    newConnection
+      .start()
+      .then(() => {
+        // console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
+    return () => {
+      if (newConnection) {
+        newConnection
+          .stop()
+          .then(() => {
+            // console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -304,22 +322,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         });
     }
   }, [UserData.user?.userID]);
-  const handleFilter = (event) => {
-    const searchQuery = event.target.value.toLowerCase();
-    setSearchSchedule(searchQuery);
 
-    if (searchQuery === "") {
-      setScheduleData(scheduleAllData);
-    } else {
-      const filteredData = scheduleData.filter((item) => {
-        const itemName = item.scheduleName
-          ? item.scheduleName.toLowerCase()
-          : "";
-        return itemName.includes(searchQuery);
-      });
-      setScheduleData(filteredData);
-    }
-  };
   return (
     <>
       {/* navbar and sidebar start */}
