@@ -4,7 +4,7 @@ import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
 import axios from "axios";
 import { DELETE_USER } from "../Pages/Api";
 import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./adminNavbar";
+import AdminNavbar from "./AdminNavbar";
 import {
   ADD_ORGANIZATION_MASTER,
   GET_ALL_ORGANIZATION_SIGNUPS,

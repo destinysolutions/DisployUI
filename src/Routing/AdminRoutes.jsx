@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import AdminDashboard from "../admin/admindashborad";
+import AdminDashboard from "../admin/Admindashborad";
 import OnBoding from "../admin/OnBoding";
 import ManageUserType from "../admin/ManageUserType";
 import User from "../admin/User";

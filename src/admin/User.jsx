@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./adminNavbar";
+import AdminNavbar from "./AdminNavbar";
 import { useState } from "react";
 import {
   AiOutlineClose,
