@@ -11,6 +11,9 @@ import { GET_ALL_COUNTRY } from "../../Pages/Api";
 import { CiMenuKebab } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import DataTable from "react-data-table-component";
+import { IoMdNotificationsOutline } from "react-icons/io";
+import { MdLockOutline } from "react-icons/md";
+import { IoIosLink } from "react-icons/io";
 const Users = () => {
   const [users, setUsers] = useState([
     {
@@ -75,11 +78,14 @@ const Users = () => {
   const [showActionBox, setShowActionBox] = useState(false);
   const [deletePopup, setdeletePopup] = useState(false);
   const [userID, setUserID] = useState("");
+  const [showUserProfile, setShowUserProfile] = useState(false);
+  const [userDetailData, setUserDetailData] = useState([]);
+  const [activeTab, setActiveTab] = useState(1);
   const handleActionClick = (rowId) => {
     setUserID(rowId);
     setShowActionBox(rowId);
   };
-
+  console.log("showuserModal", showuserModal);
   useEffect(() => {
     fetch(GET_ALL_COUNTRY)
       .then((response) => response.json())
@@ -252,6 +258,7 @@ const Users = () => {
       .request(config)
       .then((response) => {
         const fetchedData = response.data.data;
+        setUserDetailData(fetchedData);
         console.log(fetchedData);
         setFirstName(fetchedData.firstName);
         setLastName(fetchedData.lastName);
@@ -319,7 +326,16 @@ const Users = () => {
                 >
                   <AiOutlineClose />
                 </button>
-
+                <div className=" my-1">
+                  <button
+                    onClick={() => {
+                      selectUserById(row.orgUserSpecificID);
+                      setShowUserProfile(true);
+                    }}
+                  >
+                    View User
+                  </button>
+                </div>
                 <div className=" my-1">
                   <button
                     onClick={() => {
@@ -374,27 +390,6 @@ const Users = () => {
   ];
   return (
     <>
-      <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
-        <div>
-          <button
-            className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-            onClick={() => setshowuserModal(true)}
-          >
-            <BiUserPlus className="text-2xl mr-1" />
-            Add New Users
-          </button>
-        </div>
-        <div className="clear-both overflow-x-auto">
-          <DataTable
-            columns={columns}
-            data={userData}
-            fixedHeader
-            pagination
-            paginationPerPage={10}
-          ></DataTable>
-        </div>
-      </div>
-
       {showuserModal && (
         <>
           <div className="backdrop">
@@ -573,6 +568,904 @@ const Users = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </>
+      )}
+      {showUserProfile ? (
+        <>
+          <div className="lg:p-4 md:p-4 sm:p-2 xs:p-2 ">
+            <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl mb-5">
+              User Information
+            </h1>
+            <div className="full flex flex-wrap -mx-3 mb-3">
+              <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <div className="card-shadow pt-6">
+                  <div className="user-details text-center border-b border-b-[#E4E6FF]">
+                    <span className="user-img flex justify-center mb-3">
+                      <img src="../../../Settings/3user-img.png" />
+                    </span>
+                    <span className="user-name">
+                      {userDetailData.firstName} {userDetailData.lastName}
+                    </span>
+                    <div className="user-designation my-2">
+                      {userDetailData.userRoleName}
+                    </div>
+                    {/* <div className="total-screens-count my-4">
+                      <span className="screen-icon me-3">
+                        <img src="../../../Settings/screen-icon.svg" alt="" />
+                      </span>
+                      <span className="screen-count text-left">
+                        <strong>50</strong>
+                        <p>Total Screens</p>
+                      </span>
+                    </div> */}
+                  </div>
+                  <div className="user-pro-details">
+                    <h3 className="user-name my-2">Details</h3>
+                    <div className="flex">
+                      <label className="font-semibold">User ID :</label>
+                      <span className="ml-2">
+                        {userDetailData.orgUserSpecificID}
+                      </span>
+                    </div>
+                    <div className="flex">
+                      <label className="font-semibold">User Name :</label>
+                      <span className="ml-2">
+                        {userDetailData.firstName} {userDetailData.lastName}
+                      </span>
+                    </div>
+                    <div className="flex">
+                      <label className="font-semibold">Company Name :</label>
+                      <span className="ml-2">{userDetailData.company}</span>
+                    </div>
+
+                    <div className="flex">
+                      <label className="font-semibold">Email :</label>
+                      <span className="ml-2">{userDetailData.email}</span>
+                    </div>
+
+                    <div className="flex">
+                      <label className="font-semibold">Status :</label>
+
+                      {userDetailData.isActive == 1 ? (
+                        <span className="ml-2 bg-lime-700 px-3 rounded">
+                          Active
+                        </span>
+                      ) : (
+                        <span className="ml-2 bg-red px-3 rounded">
+                          Inactive
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex">
+                      <label className="font-semibold">Role :</label>
+                      <span className="ml-2">
+                        {userDetailData.userRoleName}
+                      </span>
+                    </div>
+
+                    {/* <div className="flex">
+                      <label>Tax ID:</label>
+                      <span>Tax-8894</span>
+                    </div> */}
+                    <div className="flex">
+                      <label className="font-semibold">Contact :</label>
+                      <span className="ml-2">{userDetailData.phone}</span>
+                    </div>
+                    {/* <div className="flex">
+                      <label>Language:</label>
+                      <span>English</span>
+                    </div> */}
+                    <div className="flex">
+                      <label className="font-semibold">Country :</label>
+                      <span className="ml-2">{userDetailData.countryName}</span>
+                    </div>
+                    <div className="flex justify-center w-full">
+                      <button
+                        onClick={() => {
+                          setshowuserModal(true);
+                          selectUserById(userDetailData.orgUserSpecificID);
+                        }}
+                        className="me-3 hover:bg-white hover:text-primary text-base px-8 py-2 border border-primary  shadow-md rounded-full bg-primary text-white "
+                      >
+                        Edit
+                      </button>
+
+                      {/* <button className="hover:bg-white hover:text-primary text-base px-8 py-3 border border-red shadow-md rounded-full text-red-900  bg-red-200 ">
+                   
+                        Suspend
+                      </button> */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <div className="card-shadow pt-6">
+                  <ul className="flex items-center xs:mt-2 sm:mt-0 md:mt-0  lg:mt-0  xs:mr-1  mr-3  ">
+                    <li>
+                      <button
+                        className={`inline-flex items-center
+                          ${activeTab === 1 ? "tabactivebtn" : "tabbtn "}
+                        `}
+                        onClick={() => setActiveTab(1)}
+                      >
+                        <MdLockOutline className="text-primary text-lg mr-1" />
+                        Security
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        className={`inline-flex items-center
+                          ${activeTab === 2 ? "tabactivebtn" : "tabbtn "}
+                        `}
+                        onClick={() => setActiveTab(2)}
+                      >
+                        <IoMdNotificationsOutline className="text-primary text-lg mr-1" />
+                        Notifications
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        className={`inline-flex items-center
+                          ${activeTab === 3 ? "tabactivebtn" : "tabbtn "}
+                        `}
+                        onClick={() => setActiveTab(3)}
+                      >
+                        <IoIosLink className="text-primary text-lg mr-1" />
+                        Connections
+                      </button>
+                    </li>
+                  </ul>
+                  <div className={activeTab === 1 ? "" : "hidden"}>
+                    <div className="user-pro-details security-tab">
+                      <h3 className="user-name my-6">Change Password</h3>
+                      <div className="w-full py-9 mb-8 bg-light-red text-center">
+                        <p className="mb-3">
+                          <b>Ensure that these Requirements are met</b>
+                        </p>
+                        <p className=""> Minimum 8 characters long,</p>
+                        <p> uppercase & symbol</p>
+                      </div>
+                      <div className="w-full mb-4">
+                        <form
+                          action=""
+                          method="post"
+                          name="signupForm"
+                          id="signupForm"
+                        >
+                          <div class="inputDiv relative mb-5">
+                            <label class="w-full inputLabel" for="password">
+                              Old Password
+                            </label>
+                            <input
+                              type="password"
+                              className="w-full border border-[#D5E3FF] rounded-xl p-2"
+                              con
+                              id="password"
+                              name="password"
+                              required
+                            />
+                          </div>
+                          <div class="inputDiv relative mb-5">
+                            <label class="w-full inputLabel" for="password">
+                              New Password
+                            </label>
+                            <input
+                              type="password"
+                              className="w-full border border-[#D5E3FF] rounded-xl p-2"
+                              con
+                              id="password"
+                              name="password"
+                              required
+                            />
+                          </div>
+
+                          <div class="inputDiv relative mb-5">
+                            <label class="inputLabel" for="confirmPassword">
+                              Confirm Password
+                            </label>
+                            <input
+                              type="password"
+                              className="w-full border border-[#D5E3FF] rounded-xl p-2"
+                              id="confirmPassword"
+                              name="confirmPassword"
+                            />
+                          </div>
+
+                          <div class="buttonWrapper">
+                            <button
+                              type="submit"
+                              id="submitButton"
+                              onclick="validateSignupForm()"
+                              class="me-3 hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
+                            >
+                              <span>Change Password</span>
+                              <span id="loader"></span>
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={activeTab === 2 ? "" : "hidden"}>
+                    <div className="user-pro-details notifications-tab mt-4">
+                      <h3 className="user-name ">Notifications</h3>
+                      <p className="mb-3">
+                        You will receive notification for the below selected
+                        items.
+                      </p>
+
+                      <div className="w-full my-6">
+                        <table class="min-w-full leading-normal border border-[#E4E6FF] bg-white mb-8">
+                          <thead>
+                            <tr className="border-b border-b-[#E4E6FF]">
+                              <th class="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                                Type
+                              </th>
+                              <th class="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                                Send alerts
+                              </th>
+                              <th class="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                                Email
+                              </th>
+                              <th class="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                                Phone
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td class="px-5 py-3 bg-white text-sm">
+                                <div class="flex items-center">
+                                  <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                      Screen Offline
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <div class="relative ">
+                                  <select
+                                    class="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                    name="whatever"
+                                    id="frm-whatever"
+                                  >
+                                    <option value="">Select </option>
+                                    <option value="1">Item 1</option>
+                                    <option value="2">Item 2</option>
+                                    <option value="3">Item 3</option>
+                                  </select>
+                                  <div class="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                    <svg
+                                      class="h-4 w-4"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 20 20"
+                                    >
+                                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                    </svg>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <label class="checkbox" for="offline1">
+                                  <span class="checkbox__label"></span>
+                                  <input type="checkbox" id="offline1" />
+                                  <div class="checkbox__indicator"></div>
+                                </label>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <label class="checkbox" for="offline2">
+                                  <span class="checkbox__label"></span>
+                                  <input type="checkbox" id="offline2" />
+                                  <div class="checkbox__indicator"></div>
+                                </label>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td class="px-5 py-3 bg-white text-sm">
+                                <div class="flex items-center">
+                                  <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                      Purchased Plan
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <div class="relative ">
+                                  <select
+                                    class="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                    name="whatever"
+                                    id="frm-whatever"
+                                  >
+                                    <option value="">Instant </option>
+                                    <option value="1">Item 1</option>
+                                    <option value="2">Item 2</option>
+                                    <option value="3">Item 3</option>
+                                  </select>
+                                  <div class="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                    <svg
+                                      class="h-4 w-4"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 20 20"
+                                    >
+                                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                    </svg>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <label class="checkbox" for="purchased-plan1">
+                                  <span class="checkbox__label"></span>
+                                  <input type="checkbox" id="purchased-plan1" />
+                                  <div class="checkbox__indicator"></div>
+                                </label>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <label class="checkbox" for="purchased-plan2">
+                                  <span class="checkbox__label"></span>
+                                  <input type="checkbox" id="purchased-plan2" />
+                                  <div class="checkbox__indicator"></div>
+                                </label>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td class="px-5 py-3 bg-white text-sm">
+                                <div class="flex items-center">
+                                  <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                      Added Users
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <div class="relative ">
+                                  <select
+                                    class="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                    name="whatever"
+                                    id="frm-whatever"
+                                  >
+                                    <option value="">15 Minute </option>
+                                    <option value="1">20 Minute</option>
+                                    <option value="2">25 Minute</option>
+                                    <option value="3">30 Minute</option>
+                                  </select>
+                                  <div class="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                    <svg
+                                      class="h-4 w-4"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 20 20"
+                                    >
+                                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                    </svg>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <label class="checkbox" for="added-users1">
+                                  <span class="checkbox__label"></span>
+                                  <input type="checkbox" id="added-users1" />
+                                  <div class="checkbox__indicator"></div>
+                                </label>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <label class="checkbox" for="added-users2">
+                                  <span class="checkbox__label"></span>
+                                  <input type="checkbox" id="added-users2" />
+                                  <div class="checkbox__indicator"></div>
+                                </label>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td class="px-5 py-3 bg-white text-sm">
+                                <div class="flex items-center">
+                                  <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                      Changing Details
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <div class="relative ">
+                                  <input
+                                    type="text"
+                                    className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                    placeholder="Enter time (Minute)"
+                                  />
+                                </div>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <label class="checkbox" for="changing-details1">
+                                  <span class="checkbox__label"></span>
+                                  <input
+                                    type="checkbox"
+                                    id="changing-details1"
+                                  />
+                                  <div class="checkbox__indicator"></div>
+                                </label>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <label class="checkbox" for="changing-details2">
+                                  <span class="checkbox__label"></span>
+                                  <input
+                                    type="checkbox"
+                                    id="changing-details2"
+                                  />
+                                  <div class="checkbox__indicator"></div>
+                                </label>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td class="px-5 py-3 bg-white text-sm">
+                                <div class="flex items-center">
+                                  <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                      Playlist
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <div class="relative ">
+                                  <select
+                                    class="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                    name="whatever"
+                                    id="frm-whatever"
+                                  >
+                                    <option value="">Select </option>
+                                    <option value="1">Playlist 1</option>
+                                    <option value="2">Playlist 2</option>
+                                    <option value="3">Playlist 3</option>
+                                  </select>
+                                  <div class="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                    <svg
+                                      class="h-4 w-4"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 20 20"
+                                    >
+                                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                    </svg>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <label class="checkbox" for="Playlist1">
+                                  <span class="checkbox__label"></span>
+                                  <input type="checkbox" id="Playlist1" />
+                                  <div class="checkbox__indicator"></div>
+                                </label>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <label class="checkbox" for="Playlist2">
+                                  <span class="checkbox__label"></span>
+                                  <input type="checkbox" id="Playlist2" />
+                                  <div class="checkbox__indicator"></div>
+                                </label>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td class="px-5 py-3 bg-white text-sm">
+                                <div class="flex items-center">
+                                  <div class="ml-3">
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                      Assets
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <div class="relative ">
+                                  <select
+                                    class="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                    name="whatever"
+                                    id="frm-whatever"
+                                  >
+                                    <option value="">Select </option>
+                                    <option value="1">Assets 1</option>
+                                    <option value="2">Assets 2</option>
+                                    <option value="3">Assets 3</option>
+                                  </select>
+                                  <div class="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                    <svg
+                                      class="h-4 w-4"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      viewBox="0 0 20 20"
+                                    >
+                                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                    </svg>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <label class="checkbox" for="Assets1">
+                                  <span class="checkbox__label"></span>
+                                  <input type="checkbox" id="Assets1" />
+                                  <div class="checkbox__indicator"></div>
+                                </label>
+                              </td>
+                              <td class="px-5 py-3 text-sm">
+                                <label class="checkbox" for="Assets2">
+                                  <span class="checkbox__label"></span>
+                                  <input type="checkbox" id="Assets2" />
+                                  <div class="checkbox__indicator"></div>
+                                </label>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <div class="buttonWrapper flex justify-center  w-full">
+                          <button
+                            type="submit"
+                            id="submitButton"
+                            onclick="validateSignupForm()"
+                            class="me-3 hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
+                          >
+                            <span>Save Change</span>
+                          </button>
+                          <button className="hover:bg-white hover:text-primary text-base px-8 py-3 border border-red shadow-md rounded-full text-red-900  bg-red-200 ">
+                            Discard
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={activeTab === 3 ? "" : "hidden"}>
+                    <div className="user-pro-details connections-tab mt-3">
+                      <h3 className="user-name ">Connected Accounts</h3>
+                      <p className="mb-2">
+                        Display content from your connected accounts on your
+                        site.
+                      </p>
+
+                      <div className="w-full my-6">
+                        <table class="min-w-full leading-normal border border-[#E4E6FF] bg-white mb-4">
+                          <thead>
+                            <tr className="border-b border-b-[#E4E6FF]">
+                              <th class="px-5 py-3 text-left text-lg font-semibold text-gray-600 uppercase tracking-wider">
+                                Apps
+                              </th>
+                              <th class="px-5 py-3 text-right text-lg font-semibold text-gray-600 uppercase tracking-wider">
+                                Status
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td class="px-5 py-2 bg-white text-sm">
+                                <div class="flex items-center">
+                                  <div class="flex-shrink-0 w-10 h-10">
+                                    <img
+                                      class="w-full h-full rounded-full"
+                                      src="../../../Settings/Google__G__Logo.svg"
+                                      alt=""
+                                    />
+                                  </div>
+                                  <div class="ml-3 text-left">
+                                    <strong>Google</strong>
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                      Calendar and contacts
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-2 text-sm text-right">
+                                <span class="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight rounded-full">
+                                  Connect
+                                </span>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td class="px-5 py-2 bg-white text-sm">
+                                <div class="flex items-center">
+                                  <div class="flex-shrink-0 w-10 h-10">
+                                    <img
+                                      class="w-full h-full rounded-full"
+                                      src="../../../Settings/Slack_Technologies_Logo.svg"
+                                      alt=""
+                                    />
+                                  </div>
+                                  <div class="ml-3 text-left">
+                                    <strong>Slack</strong>
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                      Communication
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-2 text-sm text-right">
+                                <span class="bg-red-200 px-3 py-1 font-semibold text-red-900 leading-tight rounded-full">
+                                  Disconnect
+                                </span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                        <h3 className="user-name ">Social Accounts</h3>
+                        <p className="mb-3">
+                          Display content from social accounts on your site.
+                        </p>
+
+                        <table class="min-w-full leading-normal border border-[#E4E6FF] bg-white mb-6">
+                          <tbody>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td class="px-5 py-3 bg-white text-sm">
+                                <div class="flex items-center">
+                                  <div class="flex-shrink-0 w-10 h-10">
+                                    <img
+                                      class="w-full h-full rounded-full"
+                                      src="../../../Settings/facebook-logo.svg"
+                                      alt=""
+                                    />
+                                  </div>
+                                  <div class="ml-3 text-left">
+                                    <strong>Facebook</strong>
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                      Not connected
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-2 text-sm">
+                                <a href="#" className="link-icon-bg">
+                                  <img src="../../../Settings/link-icon.svg" />
+                                </a>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td class="px-5 py-2 bg-white text-sm">
+                                <div class="flex items-center">
+                                  <div class="flex-shrink-0 w-10 h-10">
+                                    <img
+                                      class="w-full h-full rounded-full"
+                                      src="../../../Settings/twitter-logo.svg"
+                                      alt=""
+                                    />
+                                  </div>
+                                  <div class="ml-3 text-left">
+                                    <strong>Twitter</strong>
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                      @Pixinvent
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-2 text-sm">
+                                <a href="#" className="delete-icon-bg">
+                                  <img src="../../../Settings/delete.svg" />
+                                </a>
+                              </td>
+                            </tr>
+                            <tr className="border-b border-b-[#E4E6FF] bg-white">
+                              <td class="px-5 py-2 bg-white text-sm">
+                                <div class="flex items-center">
+                                  <div class="flex-shrink-0 w-10 h-10">
+                                    <img
+                                      class="w-full h-full rounded-full"
+                                      src="../../../Settings/dribbble-logo.svg"
+                                      alt=""
+                                    />
+                                  </div>
+                                  <div class="ml-3 text-left">
+                                    <strong>Dribbble</strong>
+                                    <p class="text-gray-900 whitespace-no-wrap">
+                                      Not connected
+                                    </p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td class="px-5 py-2 text-sm">
+                                <a href="#" className="delete-icon-bg">
+                                  <img src="../../../Settings/delete.svg" />
+                                </a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                        <div class="buttonWrapper flex justify-center  w-full">
+                          <button
+                            type="submit"
+                            id="submitButton"
+                            onclick="validateSignupForm()"
+                            class="me-3 hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
+                          >
+                            <span>Save Change</span>
+                          </button>
+                          <button className="hover:bg-white hover:text-primary text-base px-8 py-3 border border-red shadow-md rounded-full text-red-900  bg-red-200 ">
+                            Discard
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full">
+            <h3 class="user-name my-4">Selected Screens</h3>
+            <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
+              <table class="min-w-full leading-normal">
+                <thead>
+                  <tr className=" bg-[#EFF3FF] border-b border-b-[#E4E6FF]">
+                    <th class="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                      Screen Name
+                    </th>
+                    <th class="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                      Google Location
+                    </th>
+                    <th class="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                      Associated Schedule
+                    </th>
+
+                    <th class="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th class="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                      Tags
+                    </th>
+                    <th class="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                      Group
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-b-[#E4E6FF]">
+                    <td class="p-3 bg-white text-sm">
+                      <label class="checkbox" for="screen1">
+                        <span class="checkbox__label">Harry McCall</span>
+                        <input type="checkbox" id="screen1" />
+                        <div class="checkbox__indicator"></div>
+                      </label>
+                    </td>
+                    <td class="p-3 bg-white text-sm">
+                      <p class="text-gray-900 whitespace-no-wrap">
+                        132, My Street, Kingston, New York 12401.
+                      </p>
+                    </td>
+                    <td class="p-3 bg-white text-sm">
+                      <p class="text-gray-900 whitespace-no-wrap">
+                        Schedule Name Till 28 June 2023
+                      </p>
+                    </td>
+                    <td class="p-3 bg-white text-sm">
+                      <p class="text-gray-900 whitespace-no-wrap">
+                        <span class="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
+                          Live
+                        </span>
+                      </p>
+                    </td>
+                    <td class="p-3 bg-white text-sm">Add Tags</td>
+                    <td class="px-3 py-6 bg-white text-sm flex ">Group Name</td>
+                  </tr>
+                  <tr className="border-b border-b-[#E4E6FF]">
+                    <td class="p-3 bg-white text-sm">
+                      <label class="checkbox" for="screen2">
+                        <span class="checkbox__label">Harry McCall</span>
+                        <input type="checkbox" id="screen2" />
+                        <div class="checkbox__indicator"></div>
+                      </label>
+                    </td>
+                    <td class="p-3 bg-white text-sm">
+                      <p class="text-gray-900 whitespace-no-wrap">
+                        132, My Street, Kingston, New York 12401.
+                      </p>
+                    </td>
+                    <td class="p-3 bg-white text-sm">
+                      <p class="text-gray-900 whitespace-no-wrap">
+                        Schedule Name Till 28 June 2023
+                      </p>
+                    </td>
+                    <td class="p-3 bg-white text-sm">
+                      <p class="text-gray-900 whitespace-no-wrap">
+                        <span class="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
+                          Live
+                        </span>
+                      </p>
+                    </td>
+                    <td class="p-3 bg-white text-sm">Add Tags</td>
+                    <td class="px-3 py-6 bg-white text-sm flex ">Group Name</td>
+                  </tr>
+                  <tr className="border-b border-b-[#E4E6FF]">
+                    <td class="p-3 bg-white text-sm">
+                      <label class="checkbox" for="screen3">
+                        <span class="checkbox__label">Harry McCall</span>
+                        <input type="checkbox" id="screen3" />
+                        <div class="checkbox__indicator"></div>
+                      </label>
+                    </td>
+                    <td class="p-3 bg-white text-sm">
+                      <p class="text-gray-900 whitespace-no-wrap">
+                        132, My Street, Kingston, New York 12401.
+                      </p>
+                    </td>
+                    <td class="p-3 bg-white text-sm">
+                      <p class="text-gray-900 whitespace-no-wrap">
+                        Schedule Name Till 28 June 2023
+                      </p>
+                    </td>
+                    <td class="p-3 bg-white text-sm">
+                      <p class="text-gray-900 whitespace-no-wrap">
+                        <span class="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
+                          Live
+                        </span>
+                      </p>
+                    </td>
+                    <td class="p-3 bg-white text-sm">Add Tags</td>
+                    <td class="px-3 py-6 bg-white text-sm flex ">Group Name</td>
+                  </tr>
+                  <tr className="border-b border-b-[#E4E6FF]">
+                    <td class="p-3 bg-white text-sm">
+                      <label class="checkbox" for="screen4">
+                        <span class="checkbox__label">Harry McCall</span>
+                        <input type="checkbox" id="screen4" />
+                        <div class="checkbox__indicator"></div>
+                      </label>
+                    </td>
+                    <td class="p-3 bg-white text-sm">
+                      <p class="text-gray-900 whitespace-no-wrap">
+                        132, My Street, Kingston, New York 12401.
+                      </p>
+                    </td>
+                    <td class="p-3 bg-white text-sm">
+                      <p class="text-gray-900 whitespace-no-wrap">
+                        Schedule Name Till 28 June 2023
+                      </p>
+                    </td>
+                    <td class="p-3 bg-white text-sm">
+                      <p class="text-gray-900 whitespace-no-wrap">
+                        <span class="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
+                          Live
+                        </span>
+                      </p>
+                    </td>
+                    <td class="p-3 bg-white text-sm">Add Tags</td>
+                    <td class="px-3 py-6 bg-white text-sm flex ">Group Name</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="px-5 py-5 bg-white flex flex-col xs:flex-row items-center xs:justify-between          ">
+                <span class="text-xs xs:text-sm text-gray-900">
+                  Showing 1 to 4 of 50 Entries
+                </span>
+                <div class="inline-flex mt-2 xs:mt-0">
+                  <button class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
+                    Prev
+                  </button>
+                  <button class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r">
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
+            <div>
+              <button
+                className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                onClick={() => setshowuserModal(true)}
+              >
+                <BiUserPlus className="text-2xl mr-1" />
+                Add New Users
+              </button>
+            </div>
+            <div className="clear-both overflow-x-auto">
+              <DataTable
+                columns={columns}
+                data={userData}
+                fixedHeader
+                pagination
+                paginationPerPage={10}
+              ></DataTable>
             </div>
           </div>
         </>
