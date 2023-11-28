@@ -426,6 +426,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   // console.log(ad);
   // console.log(addAsset);
+  // console.log(compositonData);
 
   return (
     <>
@@ -436,32 +437,63 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="pt-6 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
-            <div className="relative h-auto w-auto">
+            <div
+              className={`absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 `}
+              style={{
+                maxWidth: `${compositonData?.screenWidth}px`,
+                minWidth: `${compositonData?.screenWidth}px`,
+                maxHeight: `${compositonData?.screenHeight}px`,
+                minHeight: `${compositonData?.screenHeight}px`,
+              }}
+            >
               <RxCrossCircled
-                className="absolute z-50 w-[30px] h-[30px] text-white bg-black top-1 right-1 cursor-pointer"
+                className="absolute z-50 w-[30px] h-[30px] text-white hover:bg-black/50 bg-black/20 rounded-full top-1 right-1 cursor-pointer"
                 onClick={closeModal}
               />
 
               {!loading &&
-                compositonData !== null &&
-                addAsset.length > 0 &&
-                compositonData?.lstLayloutModelList?.map((obj, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      width: compositonData?.screenWidth + "px",
-                      height: compositonData?.screenHeight + "px",
-                      backgroundColor: obj.fill,
-                    }}
-                  >
-                    {modalVisible && (
-                      <Carousel
-                        items={addAsset[index][index + 1]}
-                        compositonData={obj}
-                      />
-                    )}
-                  </div>
-                ))}
+              compositonData !== null &&
+              compositonData?.lstLayloutModelList.length > 2
+                ? compositonData.lstLayloutModelList.map((obj, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        position: "absolute",
+                        left: obj.leftside + "%",
+                        top: obj.topside + "%",
+                        width: obj.width + "px",
+                        height: obj.height + "px",
+                        // width: obj.width + "%",
+                        // height: obj.height + "%",
+                        backgroundColor: obj.fill,
+                        // Apply other CSS properties as needed
+                      }}
+                    >
+                      {modalVisible && (
+                        <Carousel items={addAsset[index][index + 1]} />
+                      )}
+                    </div>
+                  ))
+                : compositonData?.lstLayloutModelList?.map((obj, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        // width: "20%",
+                        // height: "20%",
+                        width: obj?.width + "px",
+                        height: obj?.height + "px",
+                        backgroundColor: obj.fill,
+                      }}
+                    >
+                      {modalVisible && (
+                        <Carousel
+                          items={addAsset[index][index + 1]}
+                          // items={items}
+                          compositonData={obj}
+                        />
+                      )}
+                    </div>
+                  ))}
             </div>
           </PreviewModal>
 

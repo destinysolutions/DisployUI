@@ -25,6 +25,9 @@ import {
 import { useDispatch } from "react-redux";
 import { loginUser, signUpUser } from "../Redux/useraction";
 import ReCAPTCHA from "react-google-recaptcha";
+// import.meta.env.REACT_APP_RECAPTCHA_SITE_KEY;
+
+// console.log(import.meta.env.REACT_APP_RECAPTCHA_SITE_KEY);
 
 const Login = () => {
   //using for routing
@@ -284,6 +287,8 @@ const Login = () => {
     history("/register");
     localStorage.removeItem("hasSeenMessage");
   };
+
+
   return (
     <>
       {/* register success meg display start */}
@@ -414,11 +419,11 @@ const Login = () => {
                   </div> */}
 
                   <div>
-                    <ReCAPTCHA
-                      sitekey="6LeaCucoAAAAAAtAGGm4Npy_vzYNITq2SFYsGbeL"
+                    {/* <ReCAPTCHA
+                      sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
                       render="explicit"
                       onChange={handleCaptcha}
-                    />
+                    /> */}
                     {/* <div className="error">
                       {!captcha ? "Please Select Captcha" : ""}
                     </div> */}
@@ -434,7 +439,7 @@ const Login = () => {
                   <button
                     type="submit"
                     className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
-                    disabled={!captcha}
+                    // disabled={!captcha}
                   >
                     Sign in
                   </button>
