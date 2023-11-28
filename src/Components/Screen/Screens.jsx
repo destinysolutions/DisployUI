@@ -445,7 +445,16 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       axios
         .request(config)
         .then((response) => {
-          window.location.reload();
+          if (connection) {
+            connection
+              .invoke("ScreenConnected")
+              .then(() => {
+                console.log("SignalR method invoked after Asset update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
           const updatedScreenData = screenData.map((screen) => {
             if (screen.screenID === assetScreenID) {
               return {
@@ -531,7 +540,16 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       axios
         .request(config)
         .then((response) => {
-          window.location.reload();
+          if (connection) {
+            connection
+              .invoke("ScreenConnected")
+              .then(() => {
+                console.log("SignalR method invoked after Schedule update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
           const updatedScreenData = screenData.map((screen) => {
             if (screen.screenID === scheduleScreenID) {
               return {
