@@ -44,22 +44,9 @@ const Login = () => {
   const message = location?.state?.message || null;
   const [messageVisible, setMessageVisible] = useState(false);
   const [captcha, setcaptcha] = useState("");
-  useEffect(() => {
-    const hasSeenMessage = localStorage.getItem("hasSeenMessage");
+  const [loading, setLoading] = useState(false);
 
-    if (!hasSeenMessage && message != null) {
-      setMessageVisible(true);
-      localStorage.setItem("hasSeenMessage", "true");
-    }
-  }, [message]);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setMessageVisible(false);
-      setErrorMessge(false);
-    }, 5000);
-    return () => clearTimeout(timeout);
-  }, [errorMessge, messageVisible]);
+  const navigate = useNavigate();
 
   const handleCaptcha = (value) => {
     console.log(value);
@@ -101,7 +88,7 @@ const Login = () => {
         },
         data: data,
       };
-
+      setLoading(true);
       axios
         .request(config)
         .then((response) => {
@@ -122,9 +109,8 @@ const Login = () => {
             const userRole = response.data.role;
             if (userRole == 1) {
               localStorage.setItem("role_access", "ADMIN");
-              setTimeout(() => {
-                window.location.href = "/";
-              }, 500);
+              window.location.href = "/";
+              // navigate("/");
             } else if (userRole == 2) {
               // User login logic
               auth
@@ -135,16 +121,15 @@ const Login = () => {
                     alert("Please verify your email.");
                   } else {
                     const user_ID = response.data.userID;
-                    console.log("..", user_ID);
                     localStorage.setItem(
                       "userID",
                       JSON.stringify(response.data)
                     );
                     localStorage.setItem("role_access", "USER");
-                    setTimeout(() => {
-                      window.location.href = "/";
-                    }, 500);
+                    window.location.href = "/";
+                    // navigate("/");
                   }
+                  setLoading(false);
                 })
                 .catch((error) => {
                   var errorMessage = JSON.parse(error.message);
@@ -177,26 +162,32 @@ const Login = () => {
                     default:
                       alert("Something went wrong");
                   }
+                  setLoading(false);
                 });
             } else {
               // Handle other roles or unknown roles
               console.log("Unexpected role value:", userRole);
               alert("Invalid role: " + userRole);
+              setLoading(false);
             }
           } else {
             setErrorMessge(response.data.message);
+            setLoading(false);
           }
           // } else {
           //   alert(
           //     "Trial days has been expired please contact the Administration"
           //   );
           // }
+          setLoading(false);
         })
         .catch((error) => {
           console.log(error);
+          setLoading(false);
         });
     },
   });
+
   const SignInWithGoogle = async () => {
     try {
       const res = await auth.signInWithPopup(Googleauthprovider);
@@ -288,6 +279,22 @@ const Login = () => {
     localStorage.removeItem("hasSeenMessage");
   };
 
+  useEffect(() => {
+    const hasSeenMessage = localStorage.getItem("hasSeenMessage");
+
+    if (!hasSeenMessage && message != null) {
+      setMessageVisible(true);
+      localStorage.setItem("hasSeenMessage", "true");
+    }
+  }, [message]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setMessageVisible(false);
+      setErrorMessge(false);
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, [errorMessge, messageVisible]);
 
   return (
     <>
@@ -439,9 +446,9 @@ const Login = () => {
                   <button
                     type="submit"
                     className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
-                    // disabled={!captcha}
+                    disabled={loading}
                   >
-                    Sign in
+                    {loading ? "Signing in..." : "Sign in"}
                   </button>
                   <div className="flex lg:ml-3 lg:text-sm md:text-sm sm:text-sm xs:text-[14px] flex-wrap">
                     <p className="not-italic text-white font-medium">
@@ -450,6 +457,7 @@ const Login = () => {
                     <button
                       className="ml-1 not-italic text-white font-medium hover:text-SlateBlue"
                       onClick={handleRegister}
+                      disabled={loading}
                     >
                       Sign up here
                     </button>

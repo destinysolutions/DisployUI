@@ -24,12 +24,11 @@ import {
   microsoftProvider,
 } from "../FireBase/firebase";
 const Registration = () => {
-  //using show or hide password field
   const [showPassword, setShowPassword] = useState(false);
-
-  //using registration faild error msg display
   const [errorMessge, setErrorMessge] = useState("");
   const [errorMessgeVisible, setErrorMessgeVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   console.log("errorMessgeVisible:", errorMessgeVisible); // Check if it's true
   console.log("errorMessge:", errorMessge);
   //using for routing
@@ -94,6 +93,7 @@ const Registration = () => {
               formData.append("GoogleLocation", values.googleLocation);
               formData.append("Phone", values.phoneNumber);
               formData.append("Operation", "Insert");
+              setLoading(true);
               axios
                 .post(ADD_REGISTER_URL, formData, {
                   headers: {
@@ -104,16 +104,19 @@ const Registration = () => {
                   history("/", {
                     state: { message: "Registration successfull !!" },
                   });
+                  setLoading(false);
                   auth.signOut();
                 })
                 .catch((error) => {
                   console.log(error);
                   setErrorMessgeVisible(true);
                   setErrorMessge(error.response.data);
+                  setLoading(false);
                 });
             })
             .catch((error) => {
               console.error(error);
+              setLoading(false);
             });
         })
         .catch((error) => {
@@ -121,7 +124,6 @@ const Registration = () => {
           setErrorMessgeVisible(true);
           setErrorMessge(error.message);
           var errorMessage = JSON.parse(error.message);
-
           switch (errorMessage.error.message) {
             case "ERROR_INVALID_EMAIL":
               alert("Your email address appears to be malformed.");
@@ -148,9 +150,11 @@ const Registration = () => {
             default:
               alert("An undefined Error happened.");
           }
+          setLoading(false);
         });
     },
   });
+
   const SignInWithGoogle = async () => {
     try {
       const res = await auth.signInWithPopup(Googleauthprovider);
@@ -451,8 +455,9 @@ const Registration = () => {
                   <button
                     type="submit"
                     className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
+                    disabled={loading}
                   >
-                    Create Your Account
+                    {loading ? "Signing up..." : "Create Your Account"}
                   </button>
                   <div className="flex lg:ml-3 text-sm flex-wrap">
                     <label className="not-italic text-white font-medium mb-3">

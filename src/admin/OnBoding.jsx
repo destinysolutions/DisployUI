@@ -1,6 +1,6 @@
 import React from "react";
 import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./adminNavbar";
+import AdminNavbar from "./AdminNavbar";
 import { AiOutlineClose, AiOutlineSearch } from "react-icons/ai";
 import { useEffect } from "react";
 import DataTable from "react-data-table-component";

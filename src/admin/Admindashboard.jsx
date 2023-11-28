@@ -1,7 +1,7 @@
 import Business from "../Components/Dashboard/TabingData/Business";
 import PropTypes from "prop-types";
 import AdminSidebar from "./AdminSidebar";
-import AdminNavbar from "./adminNavbar";
+import AdminNavbar from "./AdminNavbar";
 import { BsLightningCharge } from "react-icons/bs";
 import { MdOutlineSlowMotionVideo } from "react-icons/md";
 

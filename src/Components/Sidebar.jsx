@@ -8,13 +8,20 @@ import PropTypes from "prop-types";
 import * as AiIcons from "react-icons/ai";
 import ScreenOTPModal from "./Screen/ScreenOTPModal";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
+import toast from "react-hot-toast";
+import { auth } from "../FireBase/firebase";
 
 const Sidebar = ({ sidebarOpen }) => {
-  const navigation = useNavigate();
-
   Sidebar.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
   };
+
+  const [showOTPModal, setShowOTPModal] = useState(false);
+  const [activeSubmenu, setActiveSubmenu] = useState(false);
+  const [mobileSidebar, setMobileSidebar] = useState(false);
+  const [submenuStates, setSubmenuStates] = useState({});
+
+  const navigation = useNavigate();
 
   //for menu list
   const Menus = [
@@ -188,25 +195,30 @@ const Sidebar = ({ sidebarOpen }) => {
     },
   ];
 
-  //using for screen otp modal
-  const [showOTPModal, setShowOTPModal] = useState(false);
-
-  //using for display sub menu
-  const [activeSubmenu, setActiveSubmenu] = useState(false);
-
-  //using for mobile sidebar
-  const [mobileSidebar, setMobileSidebar] = useState(false);
   const handleSidebarToggle = () => {
     setMobileSidebar(!mobileSidebar);
   };
-
-  const [submenuStates, setSubmenuStates] = useState({});
 
   // Update submenu state and store in local storage
   const updateSubmenuState = (submenuTitle, isOpen) => {
     const updatedStates = { ...submenuStates, [submenuTitle]: isOpen };
     setSubmenuStates(updatedStates);
     localStorage.setItem("submenuStates", JSON.stringify(updatedStates));
+  };
+
+  const handleChangeRoute = (title, path) => {
+    if (title == "Log Out") {
+      toast.loading("Logout...");
+      setTimeout(() => {
+        localStorage.setItem("role_access", "");
+        auth.signOut();
+        window.location.reload();
+        toast.remove();
+        navigation("/");
+      }, 1000);
+    } else {
+      navigation(path);
+    }
   };
 
   // Load submenu states from local storage on component mount
@@ -287,14 +299,7 @@ const Sidebar = ({ sidebarOpen }) => {
                       <div
                         className="flex"
                         onClick={() => {
-                          if (item.title == "Log Out") {
-                            localStorage.setItem("role_access", "");
-                            window.location.reload();
-                            navigation("/");
-                            auth.signOut();
-                          } else {
-                            navigation(item.path);
-                          }
+                          handleChangeRoute(item.title, item.path);
                         }}
                       >
                         <div>{item.icon}</div>
@@ -385,14 +390,7 @@ const Sidebar = ({ sidebarOpen }) => {
                     <div
                       className="flex"
                       onClick={() => {
-                        if (item.title == "Log Out") {
-                          localStorage.setItem("role_access", "");
-                          window.location.reload();
-                          navigation("/");
-                          auth.signOut();
-                        } else {
-                          navigation(item.path);
-                        }
+                        handleChangeRoute(item.title, item.path);
                       }}
                     >
                       <div>{item.icon}</div>
