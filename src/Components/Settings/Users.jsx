@@ -269,7 +269,6 @@ const Users = () => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
-          setshowuserModal(true)
           const fetchedData = response.data.data;
           setUserDetailData(fetchedData);
           setFirstName(fetchedData.firstName);
@@ -372,6 +371,7 @@ const Users = () => {
                   <button
                     onClick={() => {
                       selectUserById(row.orgUserSpecificID);
+                      setshowuserModal(true)
                     }}
                   >
                     Edit User
