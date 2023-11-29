@@ -952,7 +952,7 @@ const EventEditor = ({
                           <li className="border-b-2 border-lightgray p-3">
                             <h3>End Date:</h3>
                             <div className="mt-2 bg-lightgray rounded-full px-3 py-2 w-full">
-                              {moment(editedStartDate).format("YYYY-MM-DD")}
+                              {moment(editedStartDate).format("DD-MM-YYYY")}
                             </div>
                           </li>
                           <li className="border-b-2 border-lightgray p-3">

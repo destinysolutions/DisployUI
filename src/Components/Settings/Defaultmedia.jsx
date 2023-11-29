@@ -114,7 +114,7 @@ const Defaultmedia = () => {
       <div>
         <div className="Tabbutton">
           <ul className="flex items-center w-full">
-            <li
+            {/* <li
               className="lg:text-lg md:text-lg sm:text-sm xs:text-sm font-medium  w-1/2 text-center"
               onClick={() => updateMediaTab(1)}
             >
@@ -127,8 +127,8 @@ const Defaultmedia = () => {
               >
                 Default Media
               </button>
-            </li>
-            <li
+            </li> */}
+            {/* <li
               className="lg:text-lg md:text-lg sm:text-sm xs:text-sm font-medium   w-1/2 text-center"
               onClick={() => updateMediaTab(2)}
             >
@@ -141,7 +141,7 @@ const Defaultmedia = () => {
               >
                 Emergency Media
               </button>
-            </li>
+            </li> */}
           </ul>
         </div>
         {mediaTabs === 1 && (
@@ -316,7 +316,7 @@ const Defaultmedia = () => {
           </>
         )}
 
-        {mediaTabs === 2 && (
+        {/* {mediaTabs === 2 && (
           <>
             <div>
               <div className="grid grid-cols-12 items-center">
@@ -371,7 +371,7 @@ const Defaultmedia = () => {
               </div>
             </div>
           </>
-        )}
+        )} */}
       </div>
     </>
   );
