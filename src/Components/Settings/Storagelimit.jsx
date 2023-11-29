@@ -72,7 +72,7 @@ const Storagelimit = () => {
                       borderRadius: "5px",
                     }}
                   >
-                    {storageData.totalStorage}
+                    {storageData.totalStorage} GB
                   </span>
                 </td>
                 <td className="text-[#5E5E5E] text-center">
@@ -97,7 +97,7 @@ const Storagelimit = () => {
                     {storageData.availableSpace}
                   </span>
                 </td>
-                <td className="text-center">{storageData.usedInPercentage}</td>
+                <td className="text-center">{storageData.usedInPercentage} %</td>
               </tr>
             </tbody>
           </table>

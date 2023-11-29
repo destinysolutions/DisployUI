@@ -89,9 +89,9 @@ const EventEditor = ({
         setTitle(selectedEvent.title);
         setSelectedColor(selectedEvent.color);
         setEditedStartDate(moment(selectedEvent.start).format("YYYY-MM-DD"));
-        setEditedStartTime(moment(selectedEvent.start).format("HH:mm"));
+        setEditedStartTime(moment(selectedEvent.start).format("hh:mm"));
         setEditedEndDate(moment(selectedEvent.end).format("YYYY-MM-DD"));
-        setEditedEndTime(moment(selectedEvent.end).format("HH:mm"));
+        setEditedEndTime(moment(selectedEvent.end).format("hh:mm"));
       } else if (selectedSlot) {
         setSelectedRepeatDay("");
         setSelectedAsset(null);
@@ -99,9 +99,9 @@ const EventEditor = ({
         setTitle("");
         setSelectedColor("");
         setEditedStartDate(moment(selectedSlot.start).format("YYYY-MM-DD"));
-        setEditedStartTime(moment(selectedSlot.start).format("HH:mm"));
+        setEditedStartTime(moment(selectedSlot.start).format("hh:mm"));
         setEditedEndDate(moment(selectedSlot.end).format("YYYY-MM-DD"));
-        setEditedEndTime(moment(selectedSlot.end).format("HH:mm"));
+        setEditedEndTime(moment(selectedSlot.end).format("hh:mm"));
       }
     }
   }, [isOpen, selectedEvent, selectedSlot, allAssets]);
@@ -530,7 +530,9 @@ const EventEditor = ({
                             </td>
                             <td className="border-b border-[#eee]">
                               <p className="text-black font-medium">
-                                {moment(item.createdDate).format("YYYY-MM-DD")}
+                                {moment(item.createdDate).format(
+                                  "YYYY-MM-DD hh:mm"
+                                )}
                               </p>
                             </td>
                             <td className="border-b border-[#eee]">
@@ -950,7 +952,7 @@ const EventEditor = ({
                           <li className="border-b-2 border-lightgray p-3">
                             <h3>End Date:</h3>
                             <div className="mt-2 bg-lightgray rounded-full px-3 py-2 w-full">
-                              {moment(editedStartDate).format("DD-MM-YYYY")}
+                              {moment(editedStartDate).format("YYYY-MM-DD")}
                             </div>
                           </li>
                           <li className="border-b-2 border-lightgray p-3">
