@@ -9,11 +9,11 @@ const Carousel = ({ items, compositonData, from }) => {
     if (from === "screen") {
       interval = setInterval(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % slideCount);
-      }, items[currentIndex].durationInSecond * 1000);
+      }, items[currentIndex]?.durationInSecond * 1000);
     } else {
       interval = setInterval(() => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % slideCount);
-      }, items[currentIndex].duration * 1000);
+      }, items[currentIndex]?.duration * 1000);
     }
     return () => {
       clearInterval(interval);
@@ -25,6 +25,7 @@ const Carousel = ({ items, compositonData, from }) => {
     <>
       <div className="h-full w-full">
         {items?.map((item, index) => {
+          // console.log(item);
           if (currentIndex === index) {
             return (
               <div className="h-full w-full" key={index}>
@@ -41,13 +42,16 @@ const Carousel = ({ items, compositonData, from }) => {
                   <img
                     src={item.assetFolderPath}
                     alt={item.assetName}
-                    className="w-full h-full rounded-sm object-contain"
+                    className={`w-full h-full ${
+                      item.assetType !== "Image" && "hidden"
+                    } rounded-sm object-fill`}
                   />
                 ) : (
                   <img
                     src={item.fileType}
-                    // alt={item.assetName}
-                    className="w-full h-full rounded-sm object-contain"
+                    className={`w-full h-full ${
+                      !item.fileType && "hidden"
+                    } rounded-sm object-contain`}
                   />
                 )}
                 {item.assetType === "Video" && (
@@ -55,7 +59,9 @@ const Carousel = ({ items, compositonData, from }) => {
                     loop
                     autoPlay
                     controls
-                    className="w-full h-full rounded-sm"
+                    className={`w-full h-full ${
+                      item.assetType !== "Video" && "hidden"
+                    } rounded-sm `}
                   >
                     <source src={item.assetFolderPath} type="video/mp4" />
                     Your browser does not support the video tag.
@@ -70,12 +76,12 @@ const Carousel = ({ items, compositonData, from }) => {
                     {item.assetName}
                   </a>
                 )}
-                {item?.text && (
+                {item?.assetType === "Text" && (
                   <marquee
                     className="text-lg align-middle h-full flex items-center justify-center"
                     direction={item?.scrollType == 1 ? "left" : "right"}
                   >
-                    {item?.text}
+                    {item?.assetFolderPath}
                   </marquee>
                 )}
               </div>

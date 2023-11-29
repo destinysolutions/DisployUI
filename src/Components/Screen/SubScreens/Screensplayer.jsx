@@ -92,7 +92,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     });
   };
 
-  const handleFetchPreviewScreen = async () => {
+  const handleFetchPreviewScreen = async (macId) => {
     let data = JSON.stringify({
       // tempId: 0,
       // otp: "string",
@@ -101,7 +101,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       // screenOrientation: "string",
       // screenResolution: "string",
       // screenID: 0,
-      macid: screenData[0]?.macid,
+      macid: macId,
       // ipAddress: "string",
       // postalCode: "string",
       // latitude: "string",
@@ -126,6 +126,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         if (response?.data?.status == 200) {
           const { data, myComposition } = response?.data;
           setScreenPreviewData({ data, myComposition });
+          handleChangePreviewScreen();
+          console.log(response?.data);
         }
         // if (response?.data?.data.length > 1) {
         //   // find current schedule & set data
@@ -142,97 +144,100 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
   function handleChangePreviewScreen() {
     const { data, myComposition } = screenPreviewData;
-    // console.log(myComposition);
-    if (data.length > 1) {
-      const findCurrentSchedule = data.find((item) => {
-        if (
-          moment(moment().format("LLL")).isBetween(
-            moment(item?.cStartDate).format("LLL"),
+
+    const findCurrentSchedule = data.find((item) => {
+      if (
+        moment(moment().format("LLL")).isBetween(
+          moment(item?.cStartDate).format("LLL"),
+          moment(item?.cEndDate).format("LLL")
+        ) ||
+        (moment(moment().format("LLL")).isSameOrAfter(
+          moment(item?.cStartDate).format("LLL")
+        ) &&
+          moment(moment().format("LLL")).isSameOrBefore(
             moment(item?.cEndDate).format("LLL")
-          ) ||
-          (moment(moment().format("LLL")).isSameOrAfter(
-            moment(item?.cStartDate).format("LLL")
-          ) &&
-            moment(moment().format("LLL")).isSameOrBefore(
-              moment(item?.cEndDate).format("LLL")
-            ))
-        ) {
-          return item;
-        }
-      });
-      if (findCurrentSchedule !== undefined && findCurrentSchedule !== null) {
-        setPlayerData(findCurrentSchedule?.fileType);
-      } else if (myComposition[0]?.noofBox > 0) {
-        // console.log(myComposition[0]?.compositionPossition);
-        // setPlayerData()
-        let obj = {};
-        for (const [
-          key,
-          value,
-        ] of myComposition[0]?.compositionPossition.entries()) {
-          // console.log(value);
-          // console.log();
-          // const singleObj = {...value?.schedules,width:"asd"}
-          // console.log(singleObj);
-          const arr = value?.schedules.map((item) => {
-            return {
-              ...item,
-              width: value?.width,
-              height: value?.height,
-              top: value?.top,
-              left: value?.left,
-            };
-          });
-          console.log(arr);
-          obj[key + 1] = [
-            ...arr,
-            // value?.schedules.map((item) => {
-            //   return {
-            //     ...item,
-            //     width: value?.width,
-            //     height: value?.height,
-            //     top: value?.top,
-            //     left: value?.left,
-            //   };
-            // }),
-            // {
-            //   height: value?.height,
-            //   width: value?.width,
-            //   top: value?.top,
-            //   left: value?.left,
-            // },
-          ];
-          // if (obj[value?.sectionID]) {
-          //   obj[value?.sectionID].push(value);
-          // } else {
-          //   obj[value?.sectionID] = [value];
-          // }
-        }
-        const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
-        // console.log(newdd);
-        setCompositionData(newdd);
-      } else {
-        const findDefaultAsset = data.find(
-          (item) => item?.isdefaultAsset == "true"
-        );
-        return setPlayerData(findDefaultAsset?.fileType);
+          ))
+      ) {
+        return item;
       }
+    });
+    if (findCurrentSchedule !== undefined && findCurrentSchedule !== null) {
+      return setPlayerData(findCurrentSchedule?.fileType);
+    } else if (myComposition[0]?.compositionPossition.length > 0) {
+      let obj = {};
+      for (const [
+        key,
+        value,
+      ] of myComposition[0]?.compositionPossition.entries()) {
+        // console.log(value);
+        // console.log();
+        // const singleObj = {...value?.schedules,width:"asd"}
+        // console.log(singleObj);
+        const arr = value?.schedules.map((item) => {
+          return {
+            ...item,
+            width: value?.width,
+            height: value?.height,
+            top: value?.top,
+            left: value?.left,
+          };
+        });
+        console.log(arr);
+        obj[key + 1] = [
+          ...arr,
+          // value?.schedules.map((item) => {
+          //   return {
+          //     ...item,
+          //     width: value?.width,
+          //     height: value?.height,
+          //     top: value?.top,
+          //     left: value?.left,
+          //   };
+          // }),
+          // {
+          //   height: value?.height,
+          //   width: value?.width,
+          //   top: value?.top,
+          //   left: value?.left,
+          // },
+        ];
+        // if (obj[value?.sectionID]) {
+        //   obj[value?.sectionID].push(value);
+        // } else {
+        //   obj[value?.sectionID] = [value];
+        // }
+      }
+      const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
+      // console.log(newdd);
+      return setCompositionData(newdd);
     } else {
       const findDefaultAsset = data.find(
         (item) => item?.isdefaultAsset == "true"
       );
       return setPlayerData(findDefaultAsset?.fileType);
     }
+    // if (data.length > 1 || myComposition[0]?.compositionPossition.length > 0) {
+    // }
+    //  else {
+    //   const findDefaultAsset = data.find(
+    //     (item) => item?.isdefaultAsset == "true"
+    //   );
+    //   console.log(findDefaultAsset);
+    //   if (findDefaultAsset) {
+    //     return setPlayerData(findDefaultAsset?.fileType);
+    //   }
+    // }
   }
 
   var interval;
 
   function runFunEverySecForPreview() {
-    if (
-      screenPreviewData.data.length === 0 &&
-      screenPreviewData.myComposition.length === 0
-    )
-      return;
+    // if (
+    //   screenPreviewData.data.length === 0 &&
+    //   screenPreviewData.myComposition[0]?.compositionPossition === 0
+    // ) {
+    //   return true;
+    // }
     interval = window.setInterval(() => {
       handleChangePreviewScreen();
     }, 1000);
@@ -316,8 +321,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   useEffect(() => {
-    handleFetchPreviewScreen();
-
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -331,7 +334,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         // setPlayerData(response.data.data[0].fileType);
-        // console.log(response?.data?.data);
+        console.log(response?.data?.data);
       })
       .catch((error) => {
         console.log(error);
@@ -379,6 +382,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data.data;
+        handleFetchPreviewScreen(fetchedData[0]?.macid);
         setScreenData(fetchedData);
         setSelectScreenOrientation(fetchedData[0].screenOrientation);
         setSelectedTimezoneName(fetchedData[0].timeZone);

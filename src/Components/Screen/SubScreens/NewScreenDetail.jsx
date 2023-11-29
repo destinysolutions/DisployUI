@@ -83,9 +83,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showCompositionModal, setShowCompositionModal] = useState(false);
-  const location = useLocation();
-  const otpData = location?.state?.otpData || null;
-  const message = location?.state?.message || null;
+  const { otpData, message } = useLocation().state;
   const [otpMessageVisible, setOTPMessageVisible] = useState(false);
   const [assetData, setAssetData] = useState([]);
   const [assetAllData, setAssetAllData] = useState([]);
@@ -176,6 +174,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const handleCompositionsAdd = (composition) => {
     setSelectedComposition(composition);
   };
+
   const [searchAsset, setSearchAsset] = useState("");
   const handleFilter = (event) => {
     const searchQuery = event.target.value.toLowerCase();
@@ -439,216 +438,174 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     </tr>
 
                     {selectedScreenTypeOption === "1" && (
-                      <>
-                        <tr className="display-none">
-                          <td></td>
-                          <td className="relative">
-                            <input
-                              className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                              value={
-                                selectedAsset.assetName || selectedDefaultAsset
-                              }
-                              placeholder="Asset"
-                              onChange={(e) =>
-                                setSelectedAsset({
-                                  ...selectedAsset,
-                                  assetName: e.target.value,
-                                })
-                              }
-                            />
+                      <tr className={`display-none`}>
+                        <td></td>
+                        <td className="relative">
+                          <input
+                            className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            value={
+                              selectedAsset.assetName || selectedDefaultAsset
+                            }
+                            placeholder="Asset"
+                            onChange={(e) =>
+                              setSelectedAsset({
+                                ...selectedAsset,
+                                assetName: e.target.value,
+                              })
+                            }
+                          />
 
-                            {selectedAsset.assetName ||
-                            selectedDefaultAsset ? null : (
-                              <>
-                                <div className="absolute left-[10%] bottom-[-3px]  text-[35px]  z-20">
-                                  <img
-                                    src="/DisployImg/Polygon.svg"
-                                    alt="notification"
-                                    className="cursor-pointer assestPopup"
-                                  />
+                          {selectedAsset.assetName ||
+                          selectedDefaultAsset ? null : (
+                            <>
+                              <div className="absolute left-[10%] bottom-[-3px]  text-[35px]  z-20">
+                                <img
+                                  src="/DisployImg/Polygon.svg"
+                                  alt="notification"
+                                  className="cursor-pointer assestPopup"
+                                />
+                              </div>
+                              <div className="absolute left-[2%] bottom-[-74px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10  pr-16">
+                                <div
+                                  className="text-sm mb-1 mt-2 ml-3 cursor-pointer"
+                                  onClick={() => setShowAssetModal(true)}
+                                >
+                                  Browse
                                 </div>
-                                <div className="absolute left-[2%] bottom-[-74px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10  pr-16">
-                                  <div
-                                    className="text-sm mb-1 mt-2 ml-3 cursor-pointer"
-                                    onClick={() => setShowAssetModal(true)}
-                                  >
-                                    Browse
-                                  </div>
 
-                                  <div
-                                    className="text-sm mb-3 mt-3 ml-3 cursor-pointer"
-                                    onClick={() => {
-                                      setSelectedDefaultAsset("Default Asset");
-                                    }}
-                                  >
-                                    Default Assets
-                                  </div>
+                                <div
+                                  className="text-sm mb-3 mt-3 ml-3 cursor-pointer"
+                                  onClick={() => {
+                                    setSelectedDefaultAsset("Default Asset");
+                                  }}
+                                >
+                                  Default Assets
                                 </div>
-                              </>
-                            )}
-                          </td>
-                        </tr>
-                      </>
+                              </div>
+                            </>
+                          )}
+                        </td>
+                      </tr>
                     )}
-                    <tr>
-                      <td>
-                        {showAssetModal && (
-                          <>
-                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
-                              <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
-                                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
-                                  <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
-                                    <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
-                                      Set Content to Add Media
-                                    </h3>
-                                    <button
-                                      className="p-1 text-xl"
-                                      onClick={() => setShowAssetModal(false)}
-                                    >
-                                      <AiOutlineCloseCircle className="text-2xl" />
-                                    </button>
-                                  </div>
+                    {showAssetModal && (
+                      <tr>
+                        <td>
+                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                            <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
+                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                                <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                                  <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                    Set Content to Add Media
+                                  </h3>
+                                  <button
+                                    className="p-1 text-xl"
+                                    onClick={() => setShowAssetModal(false)}
+                                  >
+                                    <AiOutlineCloseCircle className="text-2xl" />
+                                  </button>
+                                </div>
 
-                                  <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
-                                    <div className="bg-white rounded-[30px]">
-                                      <div>
-                                        <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                          <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
-                                            <div>
-                                              <div className="flex border-b border-lightgray flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                                                <div className="mb-5 relative searchbox">
-                                                  <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
-                                                  <input
-                                                    type="text"
-                                                    placeholder=" Search by Name"
-                                                    className="border border-primary rounded-full px-7 py-2 search-user"
-                                                    value={searchAsset}
-                                                    onChange={handleFilter}
-                                                  />
-                                                </div>
-                                                <Link to="/fileupload">
-                                                  <button className="flex align-middle border-SlateBlue bg-SlateBlue text-white items-center border rounded-full px-4 py-2 text-sm  hover:text-white hover:bg-primary hover:shadow-lg hover:shadow-primary-500/50 hover:border-white">
-                                                    Upload
-                                                  </button>
-                                                </Link>
+                                <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
+                                  <div className="bg-white rounded-[30px]">
+                                    <div>
+                                      <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
+                                        <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
+                                          <div>
+                                            <div className="flex border-b border-lightgray flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                                              <div className="mb-5 relative searchbox">
+                                                <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
+                                                <input
+                                                  type="text"
+                                                  placeholder=" Search by Name"
+                                                  className="border border-primary rounded-full px-7 py-2 search-user"
+                                                  value={searchAsset}
+                                                  onChange={handleFilter}
+                                                />
                                               </div>
-                                              <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover">
-                                                <table
-                                                  className="AddMedia-table"
-                                                  style={{
-                                                    borderCollapse: "separate",
-                                                    borderSpacing: " 0 10px",
-                                                  }}
-                                                >
-                                                  <thead className="sticky top-0">
-                                                    <tr className="bg-lightgray">
-                                                      <th className="p-3 w-80 text-left">
-                                                        Media Name
-                                                      </th>
-                                                      <th>Date Added</th>
-                                                      <th className="p-3">
-                                                        Size
-                                                      </th>
-                                                      <th className="p-3">
-                                                        Type
-                                                      </th>
+                                              <Link to="/fileupload">
+                                                <button className="flex align-middle border-SlateBlue bg-SlateBlue text-white items-center border rounded-full px-4 py-2 text-sm  hover:text-white hover:bg-primary hover:shadow-lg hover:shadow-primary-500/50 hover:border-white">
+                                                  Upload
+                                                </button>
+                                              </Link>
+                                            </div>
+                                            <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover">
+                                              <table
+                                                className="AddMedia-table"
+                                                style={{
+                                                  borderCollapse: "separate",
+                                                  borderSpacing: " 0 10px",
+                                                }}
+                                              >
+                                                <thead className="sticky top-0">
+                                                  <tr className="bg-lightgray">
+                                                    <th className="p-3 w-80 text-left">
+                                                      Media Name
+                                                    </th>
+                                                    <th>Date Added</th>
+                                                    <th className="p-3">
+                                                      Size
+                                                    </th>
+                                                    <th className="p-3">
+                                                      Type
+                                                    </th>
+                                                  </tr>
+                                                </thead>
+                                                {assetData.map((asset) => (
+                                                  <tbody key={asset.assetID}>
+                                                    <tr
+                                                      className={`${
+                                                        selectedAsset === asset
+                                                          ? "bg-[#f3c953]"
+                                                          : ""
+                                                      } border-b border-[#eee] `}
+                                                      onClick={() => {
+                                                        handleAssetAdd(asset);
+                                                        setAssetPreviewPopup(
+                                                          true
+                                                        );
+                                                      }}
+                                                    >
+                                                      <td className="p-3">
+                                                        {asset.assetName}
+                                                      </td>
+                                                      <td className="p-3">
+                                                        {moment(
+                                                          asset.createdDate
+                                                        ).format("YYYY-MM-DD")}
+                                                      </td>
+                                                      <td className="p-3">
+                                                        {asset.fileSize}
+                                                      </td>
+                                                      <td className="p-3">
+                                                        {asset.assetType}
+                                                      </td>
                                                     </tr>
-                                                  </thead>
-                                                  {assetData.map((asset) => (
-                                                    <tbody key={asset.assetID}>
-                                                      <tr
-                                                        className={`${
-                                                          selectedAsset ===
-                                                          asset
-                                                            ? "bg-[#f3c953]"
-                                                            : ""
-                                                        } border-b border-[#eee] `}
-                                                        onClick={() => {
-                                                          handleAssetAdd(asset);
-                                                          setAssetPreviewPopup(
-                                                            true
-                                                          );
-                                                        }}
-                                                      >
-                                                        <td className="p-3">
-                                                          {asset.assetName}
-                                                        </td>
-                                                        <td className="p-3">
-                                                          {moment(
-                                                            asset.createdDate
-                                                          ).format(
-                                                            "YYYY-MM-DD"
-                                                          )}
-                                                        </td>
-                                                        <td className="p-3">
-                                                          {asset.fileSize}
-                                                        </td>
-                                                        <td className="p-3">
-                                                          {asset.assetType}
-                                                        </td>
-                                                      </tr>
-                                                    </tbody>
-                                                  ))}
-                                                </table>
-                                                {assetPreviewPopup && (
-                                                  <>
-                                                    <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-50 outline-none focus:outline-none">
-                                                      <div className="fixed top-1/2 left-1/2 asset-preview-popup">
-                                                        <div className="border-0 rounded-lg shadow-lg relative w-full bg-black outline-none focus:outline-none">
-                                                          <div className="p-1  rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
-                                                            <button
-                                                              className="p-1 text-xl"
-                                                              onClick={() =>
-                                                                setAssetPreviewPopup(
-                                                                  false
-                                                                )
-                                                              }
-                                                            >
-                                                              <AiOutlineCloseCircle className="text-2xl" />
-                                                            </button>
-                                                          </div>
-                                                          <div className="p-3 flex justify-center  items-center min-w-[300px] max-w-[300px] min-h-[300px] max-h-[300px]">
-                                                            {assetPreview && (
-                                                              <>
-                                                                {assetPreview.assetType ===
-                                                                  "OnlineImage" && (
-                                                                  <div className="imagebox relative p-3">
-                                                                    <img
-                                                                      src={
-                                                                        assetPreview.assetFolderPath
-                                                                      }
-                                                                      alt={
-                                                                        assetPreview.assetName
-                                                                      }
-                                                                      className="rounded-2xl"
-                                                                    />
-                                                                  </div>
-                                                                )}
-
-                                                                {assetPreview.assetType ===
-                                                                  "OnlineVideo" && (
-                                                                  <div className="relative videobox">
-                                                                    <video
-                                                                      controls
-                                                                      className="w-full rounded-2xl relative"
-                                                                    >
-                                                                      <source
-                                                                        src={
-                                                                          assetPreview.assetFolderPath
-                                                                        }
-                                                                        type="video/mp4"
-                                                                      />
-                                                                      Your
-                                                                      browser
-                                                                      does not
-                                                                      support
-                                                                      the video
-                                                                      tag.
-                                                                    </video>
-                                                                  </div>
-                                                                )}
-                                                                {assetPreview.assetType ===
-                                                                  "Image" && (
+                                                  </tbody>
+                                                ))}
+                                              </table>
+                                              {assetPreviewPopup && (
+                                                <>
+                                                  <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-50 outline-none focus:outline-none">
+                                                    <div className="fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 asset-preview-popup">
+                                                      <div className="border-0 rounded-lg shadow-lg relative min-w-[40vw] left-1/2 -translate-x-1/2 min-h-[60vh] max-h-[60vh] max-w-screen bg-black outline-none focus:outline-none">
+                                                        <div className="p-1 rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
+                                                          <button
+                                                            className="text-xl"
+                                                            onClick={() =>
+                                                              setAssetPreviewPopup(
+                                                                false
+                                                              )
+                                                            }
+                                                          >
+                                                            <AiOutlineCloseCircle className="text-2xl" />
+                                                          </button>
+                                                        </div>
+                                                        <div className="absolute inset-0 w-full h-full">
+                                                          {assetPreview && (
+                                                            <>
+                                                              {assetPreview.assetType ===
+                                                                "OnlineImage" && (
+                                                                <div className="imagebox p-3">
                                                                   <img
                                                                     src={
                                                                       assetPreview.assetFolderPath
@@ -656,14 +613,17 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                                     alt={
                                                                       assetPreview.assetName
                                                                     }
-                                                                    className="imagebox relative flex justify-center  items-center min-w-[250px] max-w-[250px] min-h-[250px] max-h-[250px]"
+                                                                    className="rounded-2xl w-full h-full object-contain"
                                                                   />
-                                                                )}
-                                                                {assetPreview.assetType ===
-                                                                  "Video" && (
+                                                                </div>
+                                                              )}
+
+                                                              {assetPreview.assetType ===
+                                                                "OnlineVideo" && (
+                                                                <div className="relative videobox">
                                                                   <video
                                                                     controls
-                                                                    className="w-full rounded-2xl relative h-56"
+                                                                    className="w-full rounded-2xl h-full"
                                                                   >
                                                                     <source
                                                                       src={
@@ -676,55 +636,84 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                                     support the
                                                                     video tag.
                                                                   </video>
-                                                                )}
-                                                                {assetPreview.assetType ===
-                                                                  "DOC" && (
-                                                                  <a
-                                                                    href={
+                                                                </div>
+                                                              )}
+                                                              {assetPreview.assetType ===
+                                                                "Image" && (
+                                                                <img
+                                                                  src={
+                                                                    assetPreview.assetFolderPath
+                                                                  }
+                                                                  alt={
+                                                                    assetPreview.assetName
+                                                                  }
+                                                                  className="imagebox w-full h-full p-2 object-contain"
+                                                                />
+                                                              )}
+                                                              {assetPreview.assetType ===
+                                                                "Video" && (
+                                                                <video
+                                                                  controls
+                                                                  className="w-full rounded-2xl relative h-56"
+                                                                >
+                                                                  <source
+                                                                    src={
                                                                       assetPreview.assetFolderPath
                                                                     }
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                  >
-                                                                    {
-                                                                      assetPreview.assetName
-                                                                    }
-                                                                  </a>
-                                                                )}
-                                                              </>
-                                                            )}
-                                                          </div>
+                                                                    type="video/mp4"
+                                                                  />
+                                                                  Your browser
+                                                                  does not
+                                                                  support the
+                                                                  video tag.
+                                                                </video>
+                                                              )}
+                                                              {assetPreview.assetType ===
+                                                                "DOC" && (
+                                                                <a
+                                                                  href={
+                                                                    assetPreview.assetFolderPath
+                                                                  }
+                                                                  target="_blank"
+                                                                  rel="noopener noreferrer"
+                                                                >
+                                                                  {
+                                                                    assetPreview.assetName
+                                                                  }
+                                                                </a>
+                                                              )}
+                                                            </>
+                                                          )}
                                                         </div>
                                                       </div>
                                                     </div>
-                                                  </>
-                                                )}
-                                              </div>
+                                                  </div>
+                                                </>
+                                              )}
                                             </div>
                                           </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                  <div className="flex justify-between items-center p-5">
-                                    <p className="text-black">
-                                      Content will always be playing Confirm
-                                    </p>
-                                    <button
-                                      className="bg-SlateBlue text-white rounded-full px-5 py-2 hover:bg-primary text-sm"
-                                      onClick={() => setShowAssetModal(false)}
-                                    >
-                                      Confirm
-                                    </button>
-                                  </div>
+                                </div>
+                                <div className="flex justify-between items-center p-5">
+                                  <p className="text-black">
+                                    Content will always be playing Confirm
+                                  </p>
+                                  <button
+                                    className="bg-SlateBlue text-white rounded-full px-5 py-2 hover:bg-primary text-sm"
+                                    onClick={() => setShowAssetModal(false)}
+                                  >
+                                    Confirm
+                                  </button>
                                 </div>
                               </div>
                             </div>
-                          </>
-                        )}
-                      </td>
-                    </tr>
-
+                          </div>
+                        </td>
+                      </tr>
+                    )}
                     {selectedScreenTypeOption === "2" && (
                       <>
                         <tr>
@@ -755,157 +744,151 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </tr>
                       </>
                     )}
-                    <tr>
-                      <td>
-                        {showScheduleModal && (
-                          <>
-                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                              <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                                  <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
-                                    <div className="flex items-center">
-                                      <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
-                                        Set Schedule
-                                      </h3>
-                                    </div>
-                                    <button
-                                      className="p-1 text-xl"
-                                      onClick={() =>
-                                        setShowScheduleModal(false)
-                                      }
-                                    >
-                                      <AiOutlineCloseCircle className="text-2xl" />
-                                    </button>
+                    {showScheduleModal && (
+                      <tr>
+                        <td>
+                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                            <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                                  <div className="flex items-center">
+                                    <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                      Set Schedule
+                                    </h3>
                                   </div>
-                                  <div className="overflow-x-auto mt-8 px-5 Set-Schedule-popup">
-                                    <table
-                                      className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto set-schedule-table"
-                                      cellPadding={20}
-                                    >
-                                      <thead className="sticky top-0">
-                                        <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                                          <th className="text-[#444] text-sm font-semibold p-2">
-                                            <div className="flex items-center">
-                                              <TbCalendarTime className="mr-2 text-xl" />
-                                              Schedule Name
-                                            </div>
-                                          </th>
-                                          <th className="text-[#444] text-sm font-semibold p-2">
-                                            <div className="flex items-center">
-                                              <TbCalendarTime className="mr-2 text-xl" />
-                                              Time Zones
-                                            </div>
-                                          </th>
-                                          <th className="text-[#444] text-sm font-semibold p-2">
-                                            <div className=" flex  items-center justify-center mx-auto">
-                                              <VscCalendar className="mr-2 text-xl" />
-                                              Date Added
-                                            </div>
-                                          </th>
-                                          <th className="text-[#444] text-sm font-semibold p-2">
-                                            <div className=" flex  items-center justify-center mx-auto">
-                                              <TbCalendarStats className="mr-2 text-xl" />
-                                              start date
-                                            </div>
-                                          </th>
-                                          <th className="text-[#444] text-sm font-semibold p-2">
-                                            <div className=" flex  items-center justify-center mx-auto">
-                                              <TbCalendarStats className="mr-2 text-xl" />
-                                              End date
-                                            </div>
-                                          </th>
-                                          <th className="text-[#444] text-sm font-semibold p-2">
-                                            <div className=" flex  items-center justify-center mx-auto">
-                                              <RiComputerLine className="mr-2 text-xl" />
-                                              screens Assigned
-                                            </div>
-                                          </th>
-                                          <th className="text-[#444] text-sm font-semibold p-2">
-                                            <div className="flex  items-center justify-center mx-auto">
-                                              <BsTags className="mr-2 text-xl" />
-                                              Tags
-                                            </div>
-                                          </th>
-                                          <th className="w-[100px]"></th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        {scheduleData.map((schedule) => (
-                                          <tr
-                                            className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                                            key={schedule.scheduleId}
-                                          >
-                                            <td className="flex items-center ">
-                                              <input
-                                                type="checkbox"
-                                                className="mr-3"
-                                                onChange={() =>
-                                                  handleScheduleAdd(schedule)
-                                                }
-                                              />
+                                  <button
+                                    className="p-1 text-xl"
+                                    onClick={() => setShowScheduleModal(false)}
+                                  >
+                                    <AiOutlineCloseCircle className="text-2xl" />
+                                  </button>
+                                </div>
+                                <div className="overflow-x-auto mt-8 px-5 Set-Schedule-popup">
+                                  <table
+                                    className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto set-schedule-table"
+                                    cellPadding={20}
+                                  >
+                                    <thead className="sticky top-0">
+                                      <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                                        <th className="text-[#444] text-sm font-semibold p-2">
+                                          <div className="flex items-center">
+                                            <TbCalendarTime className="mr-2 text-xl" />
+                                            Schedule Name
+                                          </div>
+                                        </th>
+                                        <th className="text-[#444] text-sm font-semibold p-2">
+                                          <div className="flex items-center">
+                                            <TbCalendarTime className="mr-2 text-xl" />
+                                            Time Zones
+                                          </div>
+                                        </th>
+                                        <th className="text-[#444] text-sm font-semibold p-2">
+                                          <div className=" flex  items-center justify-center mx-auto">
+                                            <VscCalendar className="mr-2 text-xl" />
+                                            Date Added
+                                          </div>
+                                        </th>
+                                        <th className="text-[#444] text-sm font-semibold p-2">
+                                          <div className=" flex  items-center justify-center mx-auto">
+                                            <TbCalendarStats className="mr-2 text-xl" />
+                                            start date
+                                          </div>
+                                        </th>
+                                        <th className="text-[#444] text-sm font-semibold p-2">
+                                          <div className=" flex  items-center justify-center mx-auto">
+                                            <TbCalendarStats className="mr-2 text-xl" />
+                                            End date
+                                          </div>
+                                        </th>
+                                        <th className="text-[#444] text-sm font-semibold p-2">
+                                          <div className=" flex  items-center justify-center mx-auto">
+                                            <RiComputerLine className="mr-2 text-xl" />
+                                            screens Assigned
+                                          </div>
+                                        </th>
+                                        <th className="text-[#444] text-sm font-semibold p-2">
+                                          <div className="flex  items-center justify-center mx-auto">
+                                            <BsTags className="mr-2 text-xl" />
+                                            Tags
+                                          </div>
+                                        </th>
+                                        <th className="w-[100px]"></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {scheduleData.map((schedule) => (
+                                        <tr
+                                          className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                          key={schedule.scheduleId}
+                                        >
+                                          <td className="flex items-center ">
+                                            <input
+                                              type="checkbox"
+                                              className="mr-3"
+                                              onChange={() =>
+                                                handleScheduleAdd(schedule)
+                                              }
+                                            />
+                                            <div>
                                               <div>
-                                                <div>
-                                                  <Link to="/screensplayer">
-                                                    {schedule.scheduleName}
-                                                  </Link>
-                                                </div>
+                                                <Link to="/screensplayer">
+                                                  {schedule.scheduleName}
+                                                </Link>
                                               </div>
-                                            </td>
-                                            <td className="text-center">
-                                              {schedule.timeZoneName}
-                                            </td>
-                                            <td className="text-center">
-                                              {moment(
-                                                schedule.createdDate
-                                              ).format("YYYY-MM-DD")}
-                                            </td>
-                                            <td className="text-center">
-                                              {moment(
-                                                schedule.startDate
-                                              ).format("YYYY-MM-DD")}
-                                            </td>
+                                            </div>
+                                          </td>
+                                          <td className="text-center">
+                                            {schedule.timeZoneName}
+                                          </td>
+                                          <td className="text-center">
+                                            {moment(
+                                              schedule.createdDate
+                                            ).format("YYYY-MM-DD")}
+                                          </td>
+                                          <td className="text-center">
+                                            {moment(schedule.startDate).format(
+                                              "YYYY-MM-DD"
+                                            )}
+                                          </td>
 
-                                            <td className="text-center">
-                                              {moment(schedule.endDate).format(
-                                                "YYYY-MM-DD"
-                                              )}
-                                            </td>
-                                            <td className="p-2 text-center">
-                                              {schedule.screenAssigned}
-                                            </td>
-                                            <td className="p-2 text-center">
-                                              {schedule.tags}
-                                            </td>
-                                            <td className="text-center">
-                                              <Link to="/myschedule">
-                                                <button className="ml-3 relative">
-                                                  <HiDotsVertical />
-                                                </button>
-                                              </Link>
-                                            </td>
-                                          </tr>
-                                        ))}
-                                      </tbody>
-                                    </table>
-                                  </div>
+                                          <td className="text-center">
+                                            {moment(schedule.endDate).format(
+                                              "YYYY-MM-DD"
+                                            )}
+                                          </td>
+                                          <td className="p-2 text-center">
+                                            {schedule.screenAssigned}
+                                          </td>
+                                          <td className="p-2 text-center">
+                                            {schedule.tags}
+                                          </td>
+                                          <td className="text-center">
+                                            <Link to="/myschedule">
+                                              <button className="ml-3 relative">
+                                                <HiDotsVertical />
+                                              </button>
+                                            </Link>
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
 
-                                  <div className="py-2 flex justify-center">
-                                    <button
-                                      onClick={() =>
-                                        setShowScheduleModal(false)
-                                      }
-                                      className="border-2 border-SlateBlue bg-SlateBlue hover:bg-primary hover:border-white px-5 py-2 rounded-full ml-3 text-white"
-                                    >
-                                      Save
-                                    </button>
-                                  </div>
+                                <div className="py-2 flex justify-center">
+                                  <button
+                                    onClick={() => setShowScheduleModal(false)}
+                                    className="border-2 border-SlateBlue bg-SlateBlue hover:bg-primary hover:border-white px-5 py-2 rounded-full ml-3 text-white"
+                                  >
+                                    Save
+                                  </button>
                                 </div>
                               </div>
                             </div>
-                          </>
-                        )}
-                      </td>
-                    </tr>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
                     {selectedScreenTypeOption === "3" && (
                       <>
                         <tr>
@@ -976,150 +959,146 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </tr>
                       </>
                     )}
-                    <tr>
-                      <td>
-                        {showCompositionModal && (
-                          <>
-                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
-                              <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
-                                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
-                                  <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
-                                    <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
-                                      Set Content to Add Media
-                                    </h3>
-                                    <button
-                                      className="p-1 text-xl"
-                                      onClick={() =>
-                                        setShowCompositionModal(false)
-                                      }
-                                    >
-                                      <AiOutlineCloseCircle className="text-2xl" />
-                                    </button>
-                                  </div>
+                    {showCompositionModal && (
+                      <tr>
+                        <td>
+                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                            <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
+                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                                <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                                  <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                    Set Content to Add Media
+                                  </h3>
+                                  <button
+                                    className="p-1 text-xl"
+                                    onClick={() =>
+                                      setShowCompositionModal(false)
+                                    }
+                                  >
+                                    <AiOutlineCloseCircle className="text-2xl" />
+                                  </button>
+                                </div>
 
-                                  <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
-                                    <div className="bg-white rounded-[30px]">
-                                      <div>
-                                        <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                          <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
-                                            <div>
-                                              <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                                                <div className="mb-5 relative ">
-                                                  <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
-                                                  <input
-                                                    type="text"
-                                                    placeholder=" Search by Name"
-                                                    className="border border-primary rounded-full px-7 py-2 search-user"
-                                                    value={searchAsset}
-                                                    onChange={handleFilter}
-                                                  />
-                                                </div>
-                                                <Link to="/addcomposition">
-                                                  <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
-                                                    Add New Composition
-                                                  </button>
-                                                </Link>
+                                <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
+                                  <div className="bg-white rounded-[30px]">
+                                    <div>
+                                      <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
+                                        <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
+                                          <div>
+                                            <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                                              <div className="mb-5 relative ">
+                                                <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
+                                                <input
+                                                  type="text"
+                                                  placeholder=" Search by Name"
+                                                  className="border border-primary rounded-full px-7 py-2 search-user"
+                                                  value={searchAsset}
+                                                  onChange={handleFilter}
+                                                />
                                               </div>
-                                              <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
-                                                <table
-                                                  style={{
-                                                    borderCollapse: "separate",
-                                                    borderSpacing: " 0 10px",
-                                                  }}
-                                                >
-                                                  <thead className="sticky top-0">
-                                                    <tr className="bg-lightgray">
-                                                      <th className="p-3 w-80 text-left">
-                                                        Composition Name
-                                                      </th>
-                                                      <th>Date Added</th>
-                                                      <th className="p-3">
-                                                        Resolution
-                                                      </th>
-                                                      <th className="p-3">
-                                                        Duration
-                                                      </th>
-                                                    </tr>
-                                                  </thead>
-                                                  {compositionData.map(
-                                                    (composition) => (
-                                                      <tbody
-                                                        key={
-                                                          composition.compositionID
-                                                        }
-                                                      >
-                                                        <tr
-                                                          className={`${
-                                                            selectedComposition ===
+                                              <Link to="/addcomposition">
+                                                <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                                                  Add New Composition
+                                                </button>
+                                              </Link>
+                                            </div>
+                                            <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
+                                              <table
+                                                style={{
+                                                  borderCollapse: "separate",
+                                                  borderSpacing: " 0 10px",
+                                                }}
+                                              >
+                                                <thead className="sticky top-0">
+                                                  <tr className="bg-lightgray">
+                                                    <th className="p-3 w-80 text-left">
+                                                      Composition Name
+                                                    </th>
+                                                    <th>Date Added</th>
+                                                    <th className="p-3">
+                                                      Resolution
+                                                    </th>
+                                                    <th className="p-3">
+                                                      Duration
+                                                    </th>
+                                                  </tr>
+                                                </thead>
+                                                {compositionData.map(
+                                                  (composition) => (
+                                                    <tbody
+                                                      key={
+                                                        composition.compositionID
+                                                      }
+                                                    >
+                                                      <tr
+                                                        className={`${
+                                                          selectedComposition ===
+                                                          composition
+                                                            ? "bg-[#f3c953]"
+                                                            : ""
+                                                        } border-b border-[#eee] `}
+                                                        onClick={() => {
+                                                          handleCompositionsAdd(
                                                             composition
-                                                              ? "bg-[#f3c953]"
-                                                              : ""
-                                                          } border-b border-[#eee] `}
-                                                          onClick={() => {
-                                                            handleCompositionsAdd(
-                                                              composition
-                                                            );
-                                                          }}
-                                                        >
-                                                          <td className="p-3 text-left">
-                                                            {
-                                                              composition.compositionName
-                                                            }
-                                                          </td>
-                                                          <td className="p-3">
-                                                            {moment(
-                                                              composition.dateAdded
-                                                            ).format(
-                                                              "YYYY-MM-DD"
-                                                            )}
-                                                          </td>
-                                                          <td className="p-3">
-                                                            {
-                                                              composition.resolution
-                                                            }
-                                                          </td>
-                                                          <td className="p-3">
-                                                            {moment
-                                                              .utc(
-                                                                composition.duration *
-                                                                  1000
-                                                              )
-                                                              .format(
-                                                                "HH:mm:ss"
-                                                              )}
-                                                          </td>
-                                                        </tr>
-                                                      </tbody>
-                                                    )
-                                                  )}
-                                                </table>
-                                              </div>
+                                                          );
+                                                        }}
+                                                      >
+                                                        <td className="p-3 text-left">
+                                                          {
+                                                            composition.compositionName
+                                                          }
+                                                        </td>
+                                                        <td className="p-3">
+                                                          {moment(
+                                                            composition.dateAdded
+                                                          ).format(
+                                                            "YYYY-MM-DD"
+                                                          )}
+                                                        </td>
+                                                        <td className="p-3">
+                                                          {
+                                                            composition.resolution
+                                                          }
+                                                        </td>
+                                                        <td className="p-3">
+                                                          {moment
+                                                            .utc(
+                                                              composition.duration *
+                                                                1000
+                                                            )
+                                                            .format("HH:mm:ss")}
+                                                        </td>
+                                                      </tr>
+                                                    </tbody>
+                                                  )
+                                                )}
+                                              </table>
                                             </div>
                                           </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
-                                  <div className="flex justify-between items-center p-5">
-                                    <p className="text-black">
-                                      Content will always be playing Confirm
-                                    </p>
-                                    <button
-                                      className="bg-primary text-white rounded-full px-5 py-2"
-                                      onClick={() => {
-                                        setShowCompositionModal(false);
-                                      }}
-                                    >
-                                      Confirm
-                                    </button>
-                                  </div>
+                                </div>
+                                <div className="flex justify-between items-center p-5">
+                                  <p className="text-black">
+                                    Content will always be playing Confirm
+                                  </p>
+                                  <button
+                                    className="bg-primary text-white rounded-full px-5 py-2"
+                                    onClick={() => {
+                                      setShowCompositionModal(false);
+                                    }}
+                                  >
+                                    Confirm
+                                  </button>
                                 </div>
                               </div>
                             </div>
-                          </>
-                        )}
-                      </td>
-                    </tr>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
                     <tr>
                       <td>
                         <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
