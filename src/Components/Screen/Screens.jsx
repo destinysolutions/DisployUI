@@ -846,7 +846,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 </span>
                 <input
                   type="text"
-                  placeholder="   Search by Name"
+                  placeholder="Search screen" //location ,screen, tag
                   className="border border-primary rounded-full px-7 py-2 search-user"
                   value={searchScreen}
                   onChange={handleScreenFilter}
@@ -1489,11 +1489,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                   {assetPreviewPopup && (
                                                     <>
                                                       <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-50 outline-none focus:outline-none">
-                                                        <div className="fixed top-1/2 left-1/2 asset-preview-popup">
-                                                          <div className="border-0 rounded-lg shadow-lg relative w-full bg-black outline-none focus:outline-none">
-                                                            <div className="p-1  rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
+                                                        <div className="fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 asset-preview-popup">
+                                                          <div className="border-0 rounded-lg shadow-lg relative min-w-[40vw] left-1/2 -translate-x-1/2 min-h-[60vh] max-h-[60vh] max-w-screen bg-black outline-none focus:outline-none">
+                                                            <div className="p-1 rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
                                                               <button
-                                                                className="p-1 text-xl"
+                                                                className="text-xl"
                                                                 onClick={() =>
                                                                   setAssetPreviewPopup(
                                                                     false
@@ -1503,12 +1503,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                 <AiOutlineCloseCircle className="text-2xl" />
                                                               </button>
                                                             </div>
-                                                            <div className="p-3 flex justify-center  items-center min-w-[300px] max-w-[300px] min-h-[300px] max-h-[300px]">
+                                                            <div className="absolute inset-0 w-full h-full">
                                                               {assetPreview && (
                                                                 <>
                                                                   {assetPreview.assetType ===
                                                                     "OnlineImage" && (
-                                                                    <div className="imagebox relative p-3">
+                                                                    <div className="imagebox p-3">
                                                                       <img
                                                                         src={
                                                                           assetPreview.assetFolderPath
@@ -1516,7 +1516,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                         alt={
                                                                           assetPreview.assetName
                                                                         }
-                                                                        className="rounded-2xl"
+                                                                        className="rounded-2xl w-full h-full object-contain"
                                                                       />
                                                                     </div>
                                                                   )}
@@ -1526,7 +1526,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                     <div className="relative videobox">
                                                                       <video
                                                                         controls
-                                                                        className="w-full rounded-2xl relative"
+                                                                        className="w-full rounded-2xl h-full"
                                                                       >
                                                                         <source
                                                                           src={
@@ -1553,7 +1553,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                       alt={
                                                                         assetPreview.assetName
                                                                       }
-                                                                      className="imagebox relative flex justify-center  items-center min-w-[250px] max-w-[250px] min-h-[250px] max-h-[250px]"
+                                                                      className="imagebox w-full h-full p-2 object-contain"
                                                                     />
                                                                   )}
                                                                   {assetPreview.assetType ===

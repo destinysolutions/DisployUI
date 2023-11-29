@@ -179,6 +179,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     );
 
     let newdatas = { ...Testasset };
+    console.log(data);
     if (newdatas?.[currentSection]) {
       newdatas[currentSection].push({
         duration: 10,
@@ -186,11 +187,18 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         sectionID: currentSection,
         compositionDetailsID: 0,
         compositionID: 0,
-        mediaID: data?.assetID,
         durationType: "Second",
         layoutDetailsID: findLayoutDetailID?.layoutID,
         userID: 0,
-        mediaTypeID: 1,
+        mediaID:
+          data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
+            ? data?.textScroll_Id
+            : data?.assetID,
+        durationType: "Second",
+        mediaTypeID:
+          data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
+            ? 4
+            : 1,
         assetName: data?.assetName,
         assetFolderPath: data?.assetFolderPath,
         resolutions: data?.resolutions,
@@ -212,11 +220,17 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           sectionID: currentSection,
           compositionDetailsID: 0,
           compositionID: 0,
-          mediaID: data?.assetID,
-          durationType: "Second",
           layoutDetailsID: findLayoutDetailID?.layoutID,
           userID: 0,
-          mediaTypeID: 1,
+          mediaID:
+            data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
+              ? data?.textScroll_Id
+              : data?.assetID,
+          durationType: "Second",
+          mediaTypeID:
+            data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
+              ? 4
+              : 1,
           assetName: data?.assetName,
           assetFolderPath: data?.assetFolderPath,
           resolutions: data?.resolutions,
@@ -554,13 +568,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
-              className={`absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 `}
-              style={{
-                maxWidth: `${compositonData?.screenWidth}px`,
-                minWidth: `${compositonData?.screenWidth}px`,
-                maxHeight: `${compositonData?.screenHeight}px`,
-                minHeight: `${compositonData?.screenHeight}px`,
-              }}
+              className={`absolute  left-1/2 -translate-x-1/2 min-h-[80vh] max-h-[80vh] min-w-[90vh] max-w-[90vh] `}
             >
               <RxCrossCircled
                 className="absolute z-50 w-[30px] h-[30px] text-white hover:bg-black/50 bg-black/20 rounded-full top-1 right-1 cursor-pointer"
@@ -576,10 +584,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       position: "absolute",
                       left: obj.leftside + "%",
                       top: obj.topside + "%",
-                      // width: "20%",
-                      // height: "20%",
-                      // width: obj?.width + "px",
-                      // height: obj?.height + "px",
                       width: obj?.width + "%",
                       height: obj?.height + "%",
                       backgroundColor: obj.fill,
@@ -837,19 +841,15 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               <td className="text-center w-24">
                                 {item?.assetType}
                               </td>
-                              <td
-                                className={`text-center w-fit ${
-                                  item?.instanceName && "hidden"
-                                }`}
-                              >
+                              <td className={`text-center w-fit `}>
                                 {!item?.isEdited ? (
                                   <span className="border whitespace-nowrap border-[#E4E6FF] rounded-full p-2">
                                     {item.duration} Sec
                                   </span>
                                 ) : (
-                                  <span className="border border-[#E4E6FF] rounded-full w-full">
+                                  <p className="flex items-center gap-2 border-[#E4E6FF] rounded-full w-full min-w-[3rem]">
                                     <input
-                                      className="outline-none border border-[#E4E6FF] rounded-full p-2 w-full"
+                                      className="outline-none border border-[#E4E6FF] rounded-full p-2 w-full min-w-fit"
                                       value={item.duration}
                                       type="number"
                                       onChange={(e) =>
@@ -861,7 +861,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                       min="0"
                                       max="300"
                                     />
-                                  </span>
+                                    <span>sec</span>
+                                  </p>
                                 )}
                               </td>
                               <td className="text-sm flex justify-end items-center gap-2 w-24">

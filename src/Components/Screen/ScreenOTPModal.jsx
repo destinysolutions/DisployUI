@@ -41,7 +41,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
         "Content-Type": "application/json",
         Authorization: authToken,
       },
-      data: data,
+      data,
     };
 
     axios
@@ -81,6 +81,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
         console.log(error);
       });
   }, []);
+  
   return (
     <>
       <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-[9999] outline-none focus:outline-none">
@@ -131,7 +132,10 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
                               value={value}
                               maxLength="1"
                               onChange={(e) =>
-                                handleOtpChange(index, e.target.value)
+                                handleOtpChange(
+                                  index,
+                                  e.target.value.toLocaleUpperCase()
+                                )
                               }
                             />
                           </div>

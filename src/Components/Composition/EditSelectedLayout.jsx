@@ -434,8 +434,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   // console.log(ad);
-  // console.log(addAsset);
-  // console.log(compositonData);
+  console.log(addAsset);
+  console.log(compositonData);
 
   return (
     <>
@@ -447,13 +447,13 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
-              className={`absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 `}
-              style={{
-                maxWidth: `${compositonData?.screenWidth}px`,
-                minWidth: `${compositonData?.screenWidth}px`,
-                maxHeight: `${compositonData?.screenHeight}px`,
-                minHeight: `${compositonData?.screenHeight}px`,
-              }}
+              className={`absolute  left-1/2 -translate-x-1/2 min-h-[80vh] max-h-[80vh] min-w-[90vh] max-w-[90vh] `}
+              // style={{
+              //   maxWidth: `${compositonData?.screenWidth}px`,
+              //   minWidth: `${compositonData?.screenWidth}px`,
+              //   maxHeight: `${compositonData?.screenHeight}px`,
+              //   minHeight: `${compositonData?.screenHeight}px`,
+              // }}
             >
               <RxCrossCircled
                 className="absolute z-50 w-[30px] h-[30px] text-white hover:bg-black/50 bg-black/20 rounded-full top-1 right-1 cursor-pointer"
