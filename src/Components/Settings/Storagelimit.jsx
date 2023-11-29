@@ -94,10 +94,14 @@ const Storagelimit = () => {
                       borderRadius: "5px",
                     }}
                   >
-                    {storageData.availableSpace}
+                    {storageData.availableSpace == 3
+                      ? `${storageData.availableSpace} GB`
+                      : `${storageData.availableSpace} MB`}
                   </span>
                 </td>
-                <td className="text-center">{storageData.usedInPercentage} %</td>
+                <td className="text-center">
+                  {storageData.usedInPercentage} %
+                </td>
               </tr>
             </tbody>
           </table>
