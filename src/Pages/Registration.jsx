@@ -23,14 +23,15 @@ import {
   facebookProvider,
   microsoftProvider,
 } from "../FireBase/firebase";
+import toast from "react-hot-toast";
 const Registration = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessge, setErrorMessge] = useState("");
   const [errorMessgeVisible, setErrorMessgeVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  console.log("errorMessgeVisible:", errorMessgeVisible); // Check if it's true
-  console.log("errorMessge:", errorMessge);
+  // console.log("errorMessgeVisible:", errorMessgeVisible); // Check if it's true
+  // console.log("errorMessge:", errorMessge);
   //using for routing
   const history = useNavigate();
 
@@ -76,7 +77,6 @@ const Registration = () => {
         .createUserWithEmailAndPassword(values.emailID, values.password)
         .then((userCredential) => {
           const user = userCredential.user;
-          console.log("created", user);
           user
             .sendEmailVerification()
             .then(() => {
@@ -102,9 +102,11 @@ const Registration = () => {
                 })
                 .then(() => {
                   history("/", {
-                    state: { message: "Registration successfull !!" },
+                    state: { message: "Registration successfull " },
                   });
+                  toast.success("Registration successfully.");
                   setLoading(false);
+                  
                   auth.signOut();
                 })
                 .catch((error) => {
@@ -319,7 +321,7 @@ const Registration = () => {
                         type="text"
                         name="firstName"
                         id="firstName"
-                        placeholder="Enter Your Name"
+                        placeholder="Enter Your First Name"
                         className="formInput"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -400,7 +402,7 @@ const Registration = () => {
                         type="text"
                         name="lastName"
                         id="lastName"
-                        placeholder="Enter Your Name"
+                        placeholder="Enter Your Last Name"
                         className="formInput"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}

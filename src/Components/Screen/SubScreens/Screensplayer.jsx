@@ -29,6 +29,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import Carousel from "../../Composition/DynamicCarousel";
+import toast from "react-hot-toast";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -93,6 +94,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleFetchPreviewScreen = async (macId) => {
+    // console.log(macId);
     let data = JSON.stringify({
       // tempId: 0,
       // otp: "string",
@@ -101,6 +103,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       // screenOrientation: "string",
       // screenResolution: "string",
       // screenID: 0,
+      // macid: "76:39:AB:FA:C1:7A",
       macid: macId,
       // ipAddress: "string",
       // postalCode: "string",
@@ -120,6 +123,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       data,
     };
 
+    toast.loading("Fetching Data...");
     await axios
       .request(config)
       .then((response) => {
@@ -127,7 +131,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           const { data, myComposition } = response?.data;
           setScreenPreviewData({ data, myComposition });
           handleChangePreviewScreen();
-          console.log(response?.data);
+          // console.log(response?.data);
+          toast.remove();
         }
         // if (response?.data?.data.length > 1) {
         //   // find current schedule & set data
@@ -139,6 +144,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .catch((error) => {
         console.log(error);
+        toast.remove();
       });
   };
 
@@ -169,10 +175,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         key,
         value,
       ] of myComposition[0]?.compositionPossition.entries()) {
-        // console.log(value);
-        // console.log();
-        // const singleObj = {...value?.schedules,width:"asd"}
-        // console.log(singleObj);
         const arr = value?.schedules.map((item) => {
           return {
             ...item,
@@ -182,33 +184,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
             left: value?.left,
           };
         });
-        console.log(arr);
-        obj[key + 1] = [
-          ...arr,
-          // value?.schedules.map((item) => {
-          //   return {
-          //     ...item,
-          //     width: value?.width,
-          //     height: value?.height,
-          //     top: value?.top,
-          //     left: value?.left,
-          //   };
-          // }),
-          // {
-          //   height: value?.height,
-          //   width: value?.width,
-          //   top: value?.top,
-          //   left: value?.left,
-          // },
-        ];
-        // if (obj[value?.sectionID]) {
-        //   obj[value?.sectionID].push(value);
-        // } else {
-        //   obj[value?.sectionID] = [value];
-        // }
+        // console.log(arr);
+        obj[key + 1] = [...arr];
       }
       const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
-      // console.log(newdd);
       return setCompositionData(newdd);
     } else {
       const findDefaultAsset = data.find(
@@ -249,10 +228,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       clearInterval(interval);
     };
   }, [screenPreviewData]);
-
-  // console.log("selectScreenOrientation", selectScreenOrientation);
-  // console.log("selectedTimezoneName", selectedTimezoneName);
-  // console.log("tagName", selectedTag);
 
   const handleScreenDetail = () => {
     if (getScreenID) {
@@ -329,12 +304,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         Authorization: authToken,
       },
     };
-
     axios
       .request(config)
       .then((response) => {
         // setPlayerData(response.data.data[0].fileType);
-        console.log(response?.data?.data);
+        // console.log(response?.data?.data);
       })
       .catch((error) => {
         console.log(error);
@@ -415,8 +389,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   // console.log(compositionData.map((item, i) => item[i]));
   // console.log(compositionData);
   // console.log(screenPreviewData);
-
-  // console.log(arr.map((i, v) => i[v]));
+  // const arr = compositionData.map((item) => {
+  //   return item;
+  // });
+  // console.log(arr.map((i, v) => compositionData[v][v + 1]));
   // console.log(arr);
 
   return (
@@ -470,26 +446,24 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   />
                 ) : */}
                 {compositionData.length > 0 ? (
-                  <div className="relative z-0 w-[90vh] h-[20rem] border">
+                  <div className="relative z-0 w-fit h-fit border border-black/10 rounded-lg p-4">
                     {compositionData.map((data, index) => {
-                      // console.log(compositionData[index][index + 1][index]);
                       return (
                         <div
                           key={index}
-                          className="absolute"
+                          // className="absolute h-full w-full "
+                          // className="w-full h-full"
                           style={{
                             width:
-                              compositionData[index][index + 1][index]?.width +
-                              "%",
+                              compositionData[index][index + 1][0]?.width +
+                              "px",
                             height:
-                              compositionData[index][index + 1][index]?.height +
-                              "%",
-                            top:
-                              compositionData[index][index + 1][index]?.top +
-                              "%",
-                            left:
-                              compositionData[index][index + 1][index] +
-                              "%"?.left,
+                              compositionData[index][index + 1][0]?.height +
+                              "px",
+                            // top:
+                            //   compositionData[index][index + 1][0]?.top + "px",
+                            // left:
+                            //   compositionData[index][index + 1][0]?.left + "px",
                           }}
                         >
                           <Carousel

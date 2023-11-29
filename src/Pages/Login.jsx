@@ -25,6 +25,7 @@ import {
 import { useDispatch } from "react-redux";
 import { loginUser, signUpUser } from "../Redux/useraction";
 import ReCAPTCHA from "react-google-recaptcha";
+import toast from "react-hot-toast";
 // import.meta.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
 // console.log(import.meta.env.REACT_APP_RECAPTCHA_SITE_KEY);
@@ -49,7 +50,6 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleCaptcha = (value) => {
-    console.log(value);
     setcaptcha(value);
   };
   //using for save token
@@ -105,7 +105,9 @@ const Login = () => {
             (trialEndDate - currentDate) / (1000 * 60 * 60 * 24)
           );
           // if (daysRemaining > 0) {
-          if (response.data.status === 200) {
+          if (response.data.status == 200) {
+            window.localStorage.setItem("timer", JSON.stringify(18_00_000));
+
             const userRole = response.data.role;
             if (userRole == 1) {
               localStorage.setItem("role_access", "ADMIN");
@@ -171,9 +173,12 @@ const Login = () => {
               setLoading(false);
             }
           } else {
+            toast.remove();
             setErrorMessge(response.data.message);
             setLoading(false);
+            toast.error(response?.data?.message);
           }
+
           // } else {
           //   alert(
           //     "Trial days has been expired please contact the Administration"

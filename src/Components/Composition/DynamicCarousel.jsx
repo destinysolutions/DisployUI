@@ -25,20 +25,25 @@ const Carousel = ({ items, compositonData, from }) => {
     <>
       <div className="h-full w-full">
         {items?.map((item, index) => {
-          // console.log(item);
+          console.log(item);
           if (currentIndex === index) {
             return (
               <div className="h-full w-full" key={index}>
                 {item.assetType === "OnlineImage" && (
-                  <>
-                    <img
-                      className="w-full h-full object-cover rounded-sm"
-                      src={item.assetFolderPath}
-                      alt={item.assetName}
-                    />
-                  </>
+                  <img
+                    className="w-full h-full object-cover rounded-sm"
+                    src={item.assetFolderPath}
+                    alt={item.assetName}
+                  />
                 )}
-                {item.assetType === "Image" ? (
+                {item.mediaType === "OnlineImage" && (
+                  <img
+                    className="w-full h-full object-cover rounded-sm"
+                    src={item.fileType}
+                    // alt={item.assetName}
+                  />
+                )}
+                {item.assetType === "Image" && (
                   <img
                     src={item.assetFolderPath}
                     alt={item.assetName}
@@ -46,12 +51,13 @@ const Carousel = ({ items, compositonData, from }) => {
                       item.assetType !== "Image" && "hidden"
                     } rounded-sm object-fill`}
                   />
-                ) : (
+                )}
+                {item.mediaType === "Image" && (
                   <img
                     src={item.fileType}
                     className={`w-full h-full ${
                       !item.fileType && "hidden"
-                    } rounded-sm object-contain`}
+                    } rounded-sm `}
                   />
                 )}
                 {item.assetType === "Video" && (
@@ -67,6 +73,17 @@ const Carousel = ({ items, compositonData, from }) => {
                     Your browser does not support the video tag.
                   </video>
                 )}
+                {item.mediaType === "Video" && (
+                  <video
+                    loop
+                    autoPlay
+                    controls
+                    className={`w-full h-full rounded-sm `}
+                  >
+                    <source src={item.fileType} type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                )}
                 {item.assetType === "DOC" && (
                   <a
                     href={item.assetFolderPath}
@@ -76,12 +93,21 @@ const Carousel = ({ items, compositonData, from }) => {
                     {item.assetName}
                   </a>
                 )}
-                {item?.assetType === "Text" && (
+                {item.mediaType === "DOC" && (
+                  <a
+                    href={item.fileType}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {item.assetName}
+                  </a>
+                )}
+                {(item?.assetType === "Text" || item?.mediaType === "Text") && (
                   <marquee
                     className="text-lg align-middle h-full flex items-center justify-center"
                     direction={item?.scrollType == 1 ? "left" : "right"}
                   >
-                    {item?.assetFolderPath}
+                    {item?.assetFolderPath ?? "asdasdasd"}
                   </marquee>
                 )}
               </div>

@@ -1099,7 +1099,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  className="flex align-middle border-white text-white items-center border-2 rounded-full p-2 text-base  "
                 >
                   <input
                     type="checkbox"
@@ -1473,7 +1473,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                             {moment(
                                                               asset.createdDate
                                                             ).format(
-                                                              "YYYY-MM-DD"
+                                                              "YYYY-MM-DD hh:mm"
                                                             )}
                                                           </td>
                                                           <td className="p-3">
@@ -1675,7 +1675,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                               {moment(
                                                                 composition.dateAdded
                                                               ).format(
-                                                                "YYYY-MM-DD"
+                                                                "YYYY-MM-DD hh:mm"
                                                               )}
                                                             </td>
                                                             <td className="p-3">
@@ -1690,7 +1690,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                                     1000
                                                                 )
                                                                 .format(
-                                                                  "HH:mm:ss"
+                                                                  "hh:mm:ss"
                                                                 )}
                                                             </td>
                                                           </tr>
@@ -1841,18 +1841,18 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                               <td className="text-center">
                                                 {moment(
                                                   schedule.createdDate
-                                                ).format("YYYY-MM-DD")}
+                                                ).format("YYYY-MM-DD hh:mm")}
                                               </td>
                                               <td className="text-center">
                                                 {moment(
                                                   schedule.startDate
-                                                ).format("YYYY-MM-DD")}
+                                                ).format("YYYY-MM-DD hh:mm")}
                                               </td>
 
                                               <td className="text-center">
                                                 {moment(
                                                   schedule.endDate
-                                                ).format("YYYY-MM-DD")}
+                                                ).format("YYYY-MM-DD hh:mm")}
                                               </td>
                                               <td className="p-2 text-center">
                                                 {schedule.screenAssigned}
