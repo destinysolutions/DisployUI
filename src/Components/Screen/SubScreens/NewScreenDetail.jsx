@@ -571,7 +571,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                       <td className="p-3">
                                                         {moment(
                                                           asset.createdDate
-                                                        ).format("YYYY-MM-DD")}
+                                                        ).format("YYYY-MM-DD hh:mm")}
                                                       </td>
                                                       <td className="p-3">
                                                         {asset.fileSize}
@@ -843,17 +843,17 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                           <td className="text-center">
                                             {moment(
                                               schedule.createdDate
-                                            ).format("YYYY-MM-DD")}
+                                            ).format("YYYY-MM-DD hh:mm")}
                                           </td>
                                           <td className="text-center">
                                             {moment(schedule.startDate).format(
-                                              "YYYY-MM-DD"
+                                              "YYYY-MM-DD hh:mm"
                                             )}
                                           </td>
 
                                           <td className="text-center">
                                             {moment(schedule.endDate).format(
-                                              "YYYY-MM-DD"
+                                              "YYYY-MM-DD hh:mm"
                                             )}
                                           </td>
                                           <td className="p-2 text-center">
@@ -1052,7 +1052,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                           {moment(
                                                             composition.dateAdded
                                                           ).format(
-                                                            "YYYY-MM-DD"
+                                                            "YYYY-MM-DD hh:mm"
                                                           )}
                                                         </td>
                                                         <td className="p-3">
@@ -1066,7 +1066,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                               composition.duration *
                                                                 1000
                                                             )
-                                                            .format("HH:mm:ss")}
+                                                            .format("hh:mm:ss")}
                                                         </td>
                                                       </tr>
                                                     </tbody>

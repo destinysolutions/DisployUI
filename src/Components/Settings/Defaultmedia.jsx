@@ -242,7 +242,9 @@ const Defaultmedia = () => {
                                                     <td className="p-3">
                                                       {moment(
                                                         asset.createdDate
-                                                      ).format("YYYY-MM-DD")}
+                                                      ).format(
+                                                        "YYYY-MM-DD hh:mm"
+                                                      )}
                                                     </td>
                                                     <td className="p-3">
                                                       {asset.fileSize}
