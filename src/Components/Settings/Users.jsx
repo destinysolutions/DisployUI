@@ -1,6 +1,6 @@
 import { useState } from "react";
 import React from "react";
-import { BiUserPlus } from "react-icons/bi";
+import { BiLeftArrow, BiUserPlus } from "react-icons/bi";
 import { FiFilter } from "react-icons/fi";
 import { AiOutlineClose, AiOutlineCloseCircle } from "react-icons/ai";
 import "../../Styles/Settings.css";
@@ -11,9 +11,10 @@ import { GET_ALL_COUNTRY } from "../../Pages/Api";
 import { CiMenuKebab } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import DataTable from "react-data-table-component";
-import { IoMdNotificationsOutline } from "react-icons/io";
+import { IoIosArrowRoundBack, IoMdNotificationsOutline } from "react-icons/io";
 import { MdLockOutline } from "react-icons/md";
 import { IoIosLink } from "react-icons/io";
+import toast from "react-hot-toast";
 const Users = () => {
   const [users, setUsers] = useState([
     {
@@ -81,11 +82,16 @@ const Users = () => {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userDetailData, setUserDetailData] = useState([]);
   const [activeTab, setActiveTab] = useState(1);
+
   const handleActionClick = (rowId) => {
-    setUserID(rowId);
-    setShowActionBox(rowId);
+    if (!showActionBox) {
+      setUserID(rowId);
+    } else {
+      setUserID("");
+    }
+    setShowActionBox(!showActionBox);
   };
-  console.log("showuserModal", showuserModal);
+
   useEffect(() => {
     fetch(GET_ALL_COUNTRY)
       .then((response) => response.json())
@@ -158,6 +164,7 @@ const Users = () => {
         console.log(error);
       });
   };
+
   const handleUpdateUser = () => {
     let data = JSON.stringify({
       orgUserSpecificID: userID,
@@ -194,6 +201,7 @@ const Users = () => {
         console.log(error);
       });
   };
+
   const handleGetOrgUsers = () => {
     let config = {
       method: "post",
@@ -214,9 +222,11 @@ const Users = () => {
         console.log(error);
       });
   };
+
   useEffect(() => {
     handleGetOrgUsers();
   }, []);
+
   const handleDeleteUser = (orgUserSpecificID) => {
     let data = JSON.stringify({
       orgUserSpecificID: orgUserSpecificID,
@@ -244,7 +254,9 @@ const Users = () => {
         console.log(error);
       });
   };
+
   const selectUserById = (OrgUserSpecificID) => {
+    toast.loading("Fetching Data...");
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -253,26 +265,42 @@ const Users = () => {
         Authorization: authToken,
       },
     };
-
     axios
       .request(config)
       .then((response) => {
-        const fetchedData = response.data.data;
-        setUserDetailData(fetchedData);
-        console.log(fetchedData);
-        setFirstName(fetchedData.firstName);
-        setLastName(fetchedData.lastName);
-        setPhone(fetchedData.phone);
-        setEmail(fetchedData.email);
-        setCompany(fetchedData.company);
-        setCountryID(fetchedData.countryID);
-        setSelectRoleID(fetchedData.userRole);
-        setIsActive(fetchedData.isActive);
+        if (response?.data?.status == 200) {
+          setshowuserModal(true)
+          const fetchedData = response.data.data;
+          setUserDetailData(fetchedData);
+          setFirstName(fetchedData.firstName);
+          setLastName(fetchedData.lastName);
+          setPhone(fetchedData.phone);
+          setEmail(fetchedData.email);
+          setCompany(fetchedData.company);
+          setCountryID(fetchedData.countryID);
+          setSelectRoleID(fetchedData.userRole);
+          setIsActive(fetchedData.isActive);
+        }
+        toast.remove();
       })
       .catch((error) => {
         console.log(error);
+        toast.remove();
       });
   };
+
+  const handleCancelPopup = () => {
+    setshowuserModal(false);
+    setFirstName("");
+    setLastName("");
+    setPhone("");
+    setEmail("");
+    setCompany("");
+    setCountryID("");
+    setSelectRoleID("");
+    setIsActive(0);
+  };
+
   const columns = [
     {
       name: "Name",
@@ -314,18 +342,22 @@ const Users = () => {
       name: "Action",
       cell: (row) => (
         <div className="relative">
-          <button onClick={() => handleActionClick(row.orgUserSpecificID)}>
+          <button
+            onClick={() => {
+              handleActionClick(row.orgUserSpecificID);
+            }}
+          >
             <CiMenuKebab />
           </button>
-          {showActionBox === row.orgUserSpecificID && (
+          {showActionBox && userID === row.orgUserSpecificID && (
             <>
               <div className="actionpopup z-10 ">
-                <button
+                {/* <button
                   onClick={() => setShowActionBox(false)}
                   className="bg-white absolute top-[-14px] left-[-8px] z-10  rounded-full drop-shadow-sm p-1"
                 >
                   <AiOutlineClose />
-                </button>
+                </button> */}
                 <div className=" my-1">
                   <button
                     onClick={() => {
@@ -340,7 +372,6 @@ const Users = () => {
                   <button
                     onClick={() => {
                       selectUserById(row.orgUserSpecificID);
-                      setshowuserModal(true);
                     }}
                   >
                     Edit User
@@ -388,6 +419,7 @@ const Users = () => {
       ),
     },
   ];
+
   return (
     <>
       {showuserModal && (
@@ -400,7 +432,9 @@ const Users = () => {
                 </h1>
                 <AiOutlineCloseCircle
                   className="text-4xl text-primary cursor-pointer"
-                  onClick={() => setshowuserModal(false)}
+                  onClick={() => {
+                    handleCancelPopup();
+                  }}
                 />
               </div>
               <hr className="border-gray " />
@@ -575,7 +609,11 @@ const Users = () => {
       {showUserProfile ? (
         <>
           <div className="lg:p-4 md:p-4 sm:p-2 xs:p-2 ">
-            <h1 className="font-medium lg:text-2xl md:text-2xl sm:text-xl mb-5">
+            <h1
+              onClick={() => setShowUserProfile(false)}
+              className="font-medium flex cursor-pointer w-fit items-center lg:text-2xl md:text-2xl sm:text-xl mb-5"
+            >
+              <IoIosArrowRoundBack size={30} />
               User Information
             </h1>
             <div className="full flex flex-wrap -mx-3 mb-3">
@@ -683,7 +721,7 @@ const Users = () => {
               </div>
               <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                 <div className="card-shadow pt-6">
-                  <ul className="flex items-center xs:mt-2 sm:mt-0 md:mt-0  lg:mt-0  xs:mr-1  mr-3  ">
+                  <ul className="flex flex-wrap gap-3 items-center xs:mt-2 sm:mt-0 md:mt-0  lg:mt-0  xs:mr-1  mr-3  ">
                     <li>
                       <button
                         className={`inline-flex items-center

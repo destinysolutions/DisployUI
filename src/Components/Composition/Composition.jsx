@@ -960,6 +960,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div
                                   key={index}
                                   style={{
+                                    position: "absolute",
+                                    left: obj.leftside + "%",
+                                    top: obj.topside + "%",
                                     width: obj?.width + "%",
                                     height: obj?.height + "%",
                                     // width: obj?.width + "px",
