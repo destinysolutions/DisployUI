@@ -158,6 +158,9 @@ const Navbar = () => {
     (trialEndDate - currentDate) / (1000 * 60 * 60 * 24)
   );
 
+  const loggedInUserEmail = JSON.parse(window.localStorage.getItem("userID"));
+  // console.log(loggedInUserEmail?.emailID);
+  console.log(regsiterdata);
   return (
     // navbar component start
     <div className="w-full topbar  bg-white py-3 shadow-none">
@@ -233,27 +236,29 @@ const Navbar = () => {
               <div className="relative">
                 {Array.isArray(regsiterdata) &&
                   regsiterdata.map((data) => {
-                    const imgSrc = "";
+                    // console.log(data);
+                    // const imgSrc = "";
+                    // if(data?.email)
                     return (
-                      <div key={data.orgSingupID}>
-                        {data.image == null ? (
+                      <div key={data?.orgSingupID}>
+                        {data?.image == null ? (
                           <img
-                            src={
-                              imgSrc.length <= 0
-                                ? createImageFromInitials(
-                                    500,
-                                    data.firstName,
-                                    color
-                                  )
-                                : imgSrc
-                            }
+                            // src={
+                            //   imgSrc?.length <= 0
+                            //     ? createImageFromInitials(
+                            //         500,
+                            //         data?.firstName,
+                            //         color
+                            //       )
+                            //     : imgSrc
+                            // }
                             alt="profile"
                             className="cursor-pointer profile"
                             onClick={handleProfileClick}
                           />
                         ) : (
                           <img
-                            src={data.image}
+                            // src={data?.image}
                             alt="profile"
                             className="cursor-pointer profile"
                             onClick={handleProfileClick}
@@ -264,24 +269,25 @@ const Navbar = () => {
                           <>
                             <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
                               <div className="flex items-center space-x-3 cursor-pointer p-2">
-                                {data.image == null ? (
+                                {data?.image == null ? (
                                   <img
-                                    src={
-                                      imgSrc.length <= 0
-                                        ? createImageFromInitials(
-                                            500,
-                                            data.firstName,
-                                            color
-                                          )
-                                        : imgSrc
-                                    }
+                                    // src={
+                                    //   imgSrc?.length <= 0
+                                    //     ? createImageFromInitials(
+                                    //         500,
+                                    //         data?.firstName,
+                                    //         color
+                                    //       )
+                                    //     : null
+                                    //     // : imgSrc
+                                    // }
                                     alt="profile"
                                     className="cursor-pointer profile"
                                     onClick={handleProfileClick}
                                   />
                                 ) : (
                                   <img
-                                    src={data.image}
+                                    src={data?.image}
                                     alt="profile"
                                     className="cursor-pointer profile"
                                     onClick={handleProfileClick}
@@ -289,7 +295,7 @@ const Navbar = () => {
                                 )}
                                 <div>
                                   <div className="text-[#7C82A7] font-semibold text-lg">
-                                    {data.firstName}
+                                    {data?.firstName}
                                   </div>
                                   {/* <div className="text-[#ACB0C7] font-medium text-base">
                                 Lead Developer

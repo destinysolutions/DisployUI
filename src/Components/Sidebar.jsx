@@ -212,6 +212,7 @@ const Sidebar = ({ sidebarOpen }) => {
       setTimeout(() => {
         localStorage.setItem("role_access", "");
         auth.signOut();
+        window.localStorage.clear("timer")
         window.location.reload();
         toast.remove();
         navigation("/");

@@ -547,7 +547,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 Add Composition
               </button>
-              <button className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="sm:ml-2 xs:ml-1  flex align-middle border-white text-white items-center border-2 rounded-full p-2 text-base ">
                 <input
                   type="checkbox"
                   className="w-6 h-5"
@@ -617,7 +617,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                         {composition.compositionName}
                       </td>
                       <td className="p-2">
-                        {moment(composition.dateAdded).format("YYYY-MM-DD")}
+                        {moment(composition.dateAdded).format("YYYY-MM-DD hh:mm")}
                       </td>
                       <td className="p-2 ">{composition.resolution}</td>
                       <td className="p-2">
@@ -751,7 +751,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                                 <button
                                   className="p-1 text-xl"
-                                  onClick={() => setSelectScreenModal(false)}
+                                  onClick={() => {
+                                    setSelectScreenModal(false);
+                                    setAddScreenModal(false);
+                                  }}
                                 >
                                   <AiOutlineCloseCircle className="text-2xl" />
                                 </button>

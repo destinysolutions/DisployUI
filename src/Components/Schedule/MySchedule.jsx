@@ -375,7 +375,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               {/* <button className="sm:ml-2 xs:ml-1 flex align-middle  bg-SlateBlue text-white items-center border-2 border-SlateBlue hover:border-white rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <HiMagnifyingGlass className="text-lg" />
               </button> */}
-              <button className="flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button className="flex align-middle border-white  text-white items-center border-2 rounded-full p-2 text-base">
                 <input
                   type="checkbox"
                   className="w-6 h-5"
@@ -459,14 +459,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     </td>
                     <td className="text-center">{schedule.timeZoneName}</td>
                     <td className="text-center">
-                      {moment(schedule.createdDate).format("YYYY-MM-DD")}
+                      {moment(schedule.createdDate).format("YYYY-MM-DD hh:mm")}
                     </td>
                     <td className="text-center">
-                      {moment(schedule.startDate).format("YYYY-MM-DD")}
+                      {moment(schedule.startDate).format("YYYY-MM-DD hh:mm")}
                     </td>
 
                     <td className="text-center">
-                      {moment(schedule.endDate).format("YYYY-MM-DD")}
+                      {moment(schedule.endDate).format("YYYY-MM-DD hh:mm")}
                     </td>
                     <td className="p-2 text-center">
                       {schedule.screenAssigned}
@@ -575,7 +575,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div>
                                   <button
                                     className="p-1 text-xl"
-                                    onClick={() => setSelectScreenModal(false)}
+                                    onClick={() => {
+                                      setSelectScreenModal(false);
+                                      setAddScreenModal(false);
+                                    }}
                                   >
                                     <AiOutlineCloseCircle className="text-2xl" />
                                   </button>
