@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import PropTypes from "prop-types";
 import Sidebar from "../Sidebar";
@@ -37,19 +37,25 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [showSetScreenModal, setShowSetScreenModal] = useState(false);
   const [playlistDeleteModal, setPlaylistDeleteModal] = useState(false);
   const [YoutubeVideo, setYoutubeVideo] = useState("");
+  const [maxVideos, setMaxVideos] = useState(10);
+  const [edited, setEdited] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [areSubtitlesOn, setAreSubtitlesOn] = useState(false);
+  const [showPreviewPopup, setShowPreviewPopup] = useState(false);
+
+  const modalRef = useRef(null);
+
   const handleYoutubeChange = (e) => {
     setYoutubeVideo(e.target.value);
   };
-  const [isMuted, setIsMuted] = useState(false);
-  const [areSubtitlesOn, setAreSubtitlesOn] = useState(false);
+
   const handleMuteChange = () => {
     setIsMuted(!isMuted);
   };
   const handleSubtitlesChange = () => {
     setAreSubtitlesOn(!areSubtitlesOn);
   };
-  const [maxVideos, setMaxVideos] = useState(10);
-  const [edited, setEdited] = useState(false);
+
   const currentDate = new Date();
 
   const [instanceName, setInstanceName] = useState(
@@ -57,15 +63,15 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   );
 
   // video preview
-  function showVideoPreview() {
-    const videoPreview = document.getElementById("videoPreview");
-    videoPreview.style.display = "block";
-  }
+  // function showVideoPreview() {
+  //   const videoPreview = document.getElementById("videoPreview");
+  //   videoPreview.style.display = "block";
+  // }
 
-  function hideVideoPreview() {
-    const videoPreview = document.getElementById("videoPreview");
-    videoPreview.style.display = "none";
-  }
+  // function hideVideoPreview() {
+  //   const videoPreview = document.getElementById("videoPreview");
+  //   videoPreview.style.display = "none";
+  // }
 
   //Insert  API
   const addYoutubeApp = () => {
@@ -101,6 +107,31 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
+  useEffect(() => {
+    const handleClickOutsideSelectScreenModal = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event?.target)) {
+        setShowPreviewPopup(false);
+        // setAddScreenModal(false);
+      }
+    };
+    document.addEventListener(
+      "click",
+      handleClickOutsideSelectScreenModal,
+      true
+    );
+    return () => {
+      document.removeEventListener(
+        "click",
+        handleClickOutsideSelectScreenModal,
+        true
+      );
+    };
+  }, [handleClickOutsideSelectScreenModal]);
+
+  function handleClickOutsideSelectScreenModal() {
+    setShowPreviewPopup(false);
+  }
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -133,7 +164,10 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
               <button
                 className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-2 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                onClick={showVideoPreview}
+                onClick={() => {
+                  if (YoutubeVideo === "") return;
+                  setShowPreviewPopup(true);
+                }}
               >
                 Preview
               </button>
@@ -477,20 +511,26 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
 
               {/* Add this container within your JSX */}
-              <div id="videoPreview" style={{ display: "none" }}>
-                {/* Place your video player here */}
-                <div className="video-preview">
-                  <ReactPlayer
-                    url={YoutubeVideo}
-                    className="w-full relative z-20 previewinner"
-                    muted={isMuted}
-                    controls={areSubtitlesOn}
-                  />
-                  <span className="absolute -top-4 -right-3 z-40 text-black">
-                    <AiOutlineCloseCircle className="text-3xl text-white bg-black rounded-full" />
-                  </span>
-                </div>
-              </div>
+              {/* Place your video player here */}
+              {showPreviewPopup && (
+                <>
+                  <div ref={modalRef} className="video-preview">
+                    <ReactPlayer
+                      url={YoutubeVideo}
+                      className="w-full relative z-20 previewinner"
+                      muted={isMuted}
+                      controls={areSubtitlesOn}
+                    />
+                    <span className="absolute -top-4 -right-3 z-40 text-black">
+                      <AiOutlineCloseCircle
+                        onClick={() => setShowPreviewPopup(false)}
+                        className="text-3xl cursor-pointer text-white bg-black rounded-full"
+                      />
+                    </span>
+                  </div>
+                  <div className="fixed z-30 bg-black/40 inset-0"></div>
+                </>
+              )}
             </div>
           </div>
         </div>
