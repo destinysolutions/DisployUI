@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MdOutlineNavigateNext } from "react-icons/md";
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import "././../Styles/sidebar.css";
 import axios from "axios";
 import { SELECT_BY_ID_USERDETAIL } from "../Pages/Api";
 import { useSelector } from "react-redux";
-import { GET_ALL_ORGANIZATION_MASTER } from "../admin/AdminAPI";
 import { auth } from "../FireBase/firebase";
+import { MdOutlineNavigateNext } from "react-icons/md";
 
 const getInitials = (name) => {
   let initials;
@@ -48,9 +47,7 @@ const Navbar = () => {
   //show profile and notification box
   const [showProfileBox, setShowProfileBox] = useState(false);
   const [showNotificationBox, setShowNotificationBox] = useState(false);
-  const [regsiterdata, setRegisterdata] = useState([]);
-  const [userCreateDate, setUserCreateDate] = useState("");
-  const [userTrialDays, setUserTrialDays] = useState("");
+  const [regsiterData, setRegisterData] = useState([]);
 
   const UserData = useSelector((Alldata) => Alldata.user);
 
@@ -84,30 +81,12 @@ const Navbar = () => {
       axios
         .get(`${SELECT_BY_ID_USERDETAIL}?ID=${UserData.user?.userID}`)
         .then((response) => {
-          setUserCreateDate(response.data.data[0].createdDate);
-          setUserTrialDays(response.data.data[0].trialDays);
+          setRegisterData(response.data.data);
         })
         .catch((error) => {
           console.log(error);
         });
     }
-  }, []);
-
-  useEffect(() => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: GET_ALL_ORGANIZATION_MASTER,
-      headers: {},
-    };
-    axios
-      .request(config)
-      .then((response) => {
-        setRegisterdata(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   }, []);
 
   //used for apply navigation
@@ -125,12 +104,10 @@ const Navbar = () => {
     auth.signOut();
   };
 
-  const [timeoutId, setTimeoutId] = useState(null);
-
   // Parse the createdDate and calculate the trial end date
-  const createdDate = new Date(userCreateDate);
+  const createdDate = new Date(regsiterData.createdDate);
   const trialEndDate = new Date(createdDate);
-  trialEndDate.setDate(trialEndDate.getDate() + userTrialDays);
+  trialEndDate.setDate(trialEndDate.getDate() + regsiterData.trialDays);
 
   // Calculate the current date
   const currentDate = new Date();
@@ -139,13 +116,6 @@ const Navbar = () => {
   const daysRemaining = Math.ceil(
     (trialEndDate - currentDate) / (1000 * 60 * 60 * 24)
   );
-
-  const loggedInUser = JSON.parse(window.localStorage.getItem("userID"));
-  const loggedInUserData = regsiterdata.find(
-    (user) => user?.email === loggedInUser?.emailID
-  );
-
-  // console.log(loggedInUserData);
 
   return (
     // navbar component start
@@ -220,12 +190,12 @@ const Navbar = () => {
               {/* Notification box end */}
               {/* profile box start */}
               <div className="relative">
-                <div key={loggedInUserData?.orgSingupID}>
-                  {loggedInUserData?.image == null ? (
+                <div>
+                  {regsiterData?.image == null ? (
                     <img
                       src={createImageFromInitials(
                         500,
-                        loggedInUserData?.firstName,
+                        regsiterData?.firstName,
                         color
                       )}
                       alt="profile"
@@ -234,7 +204,7 @@ const Navbar = () => {
                     />
                   ) : (
                     <img
-                      src={loggedInUserData?.image}
+                      src={regsiterData?.image}
                       alt="profile"
                       className="cursor-pointer profile"
                       onClick={handleProfileClick}
@@ -245,11 +215,11 @@ const Navbar = () => {
                     <>
                       <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
                         <div className="flex items-center space-x-3 cursor-pointer p-2">
-                          {loggedInUserData?.image == null ? (
+                          {regsiterData?.image == null ? (
                             <img
                               src={createImageFromInitials(
                                 500,
-                                loggedInUserData?.firstName,
+                                regsiterData?.firstName,
                                 color
                               )}
                               alt="profile"
@@ -258,7 +228,7 @@ const Navbar = () => {
                             />
                           ) : (
                             <img
-                              src={loggedInUserData?.image}
+                              src={regsiterData?.image}
                               alt="profile"
                               className="cursor-pointer profile"
                               onClick={handleProfileClick}
@@ -266,7 +236,7 @@ const Navbar = () => {
                           )}
                           <div>
                             <div className="text-[#7C82A7] font-semibold text-lg">
-                              {loggedInUserData?.firstName}
+                              {regsiterData?.firstName} {regsiterData?.lastName}
                             </div>
                             {/* <div className="text-[#ACB0C7] font-medium text-base">
                                 Lead Developer
@@ -274,21 +244,19 @@ const Navbar = () => {
                           </div>
                         </div>
                         <div className="border-b-[1px] border-[#8E94A9]"></div>
-                        <div
-                        //className="p-2"
-                        >
-                          {/* <Link to="/userprofile">
-                                  <div className="text-base font-medium mb-1 flex justify-between items-center">
-                                    My Account
-                                    <MdOutlineNavigateNext className="text-2xl text-gray" />
-                                  </div>
-                                </Link> */}
+                        <div className="p-2">
+                          <Link to="/userprofile">
+                            <div className="text-base font-medium mb-1 flex justify-between items-center">
+                              My Account
+                              <MdOutlineNavigateNext className="text-2xl text-gray" />
+                            </div>
+                          </Link>
                           {/* <div className="text-base font-medium mb-1 flex justify-between items-center">
                                   Profile settings
                                   <MdOutlineNavigateNext className="text-2xl text-gray" />
                                 </div> */}
                         </div>
-                        {/* <div className="border-b-[1px] border-[#8E94A9]"></div> */}
+                        <div className="border-b-[1px] border-[#8E94A9]"></div>
                         <div className="flex justify-center items-center p-2">
                           <div className="mr-2">
                             <RiLogoutBoxRLine className="text-xl" />
@@ -304,8 +272,8 @@ const Navbar = () => {
                     </>
                   )}
                 </div>
-                {Array.isArray(regsiterdata) &&
-                  regsiterdata.map((data) => {
+                {Array.isArray(regsiterData) &&
+                  regsiterData.map((data) => {
                     // console.log(data);
                     const imgSrc = "";
                     if (data?.email) return null;

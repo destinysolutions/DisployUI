@@ -550,7 +550,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   </button>
                 </Link>
 
-                <ul className="flex items-center xs:mt-2 sm:mt-0 md:mt-0  lg:mt-0  xs:mr-1  mr-3  rounded-full  border border-primary">
+                <ul className="flex items-center xs:mt-2 sm:mt-0 md:mt-0  lg:mt-0  xs:mr-1  mr-3  rounded-full  border-2 border-SlateBlue">
                   <li className="flex items-center ">
                     <button
                       className={
@@ -568,7 +568,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       }
                       onClick={() => updatetoggle(2)}
                     >
-                      <AiOutlineUnorderedList />
+                      <AiOutlineUnorderedList className="text-primary text-lg" />
                     </button>
                   </li>
                 </ul>
@@ -765,7 +765,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className="vdetails">
                           <div className="flex justify-end"></div>
                           <div className="text-center clickdetail">
-                            <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs  mb-1">
+                            <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs mb-1 break-words">
                               {item.assetName}
                             </h3>
                             <p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
