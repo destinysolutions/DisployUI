@@ -127,24 +127,6 @@ const Navbar = () => {
 
   const [timeoutId, setTimeoutId] = useState(null);
 
-  useEffect(() => {
-    // Create a timeout that runs after 2000 milliseconds (2 seconds)
-    const timeout = setTimeout(() => {
-      handleSignOut();
-      console.log("Timeout completed!");
-    }, 1800000);
-
-    // Store the timeout ID in state
-    setTimeoutId(timeout);
-
-    // Clean up the timeout when the component unmounts
-    return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, []);
-
   // Parse the createdDate and calculate the trial end date
   const createdDate = new Date(userCreateDate);
   const trialEndDate = new Date(createdDate);
@@ -158,9 +140,13 @@ const Navbar = () => {
     (trialEndDate - currentDate) / (1000 * 60 * 60 * 24)
   );
 
-  const loggedInUserEmail = JSON.parse(window.localStorage.getItem("userID"));
-  // console.log(loggedInUserEmail?.emailID);
-  console.log(regsiterdata);
+  const loggedInUser = JSON.parse(window.localStorage.getItem("userID"));
+  const loggedInUserData = regsiterdata.find(
+    (user) => user?.email === loggedInUser?.emailID
+  );
+
+  // console.log(loggedInUserData);
+
   return (
     // navbar component start
     <div className="w-full topbar  bg-white py-3 shadow-none">
@@ -234,106 +220,188 @@ const Navbar = () => {
               {/* Notification box end */}
               {/* profile box start */}
               <div className="relative">
-                {Array.isArray(regsiterdata) &&
-                  regsiterdata.map((data) => {
-                    // console.log(data);
-                    const imgSrc = "";
-                    if (data?.email)
-                      return (
-                        <div key={data?.orgSingupID}>
-                          {data?.image == null ? (
+                <div key={loggedInUserData?.orgSingupID}>
+                  {loggedInUserData?.image == null ? (
+                    <img
+                      src={createImageFromInitials(
+                        500,
+                        loggedInUserData?.firstName,
+                        color
+                      )}
+                      alt="profile"
+                      className="cursor-pointer profile"
+                      onClick={handleProfileClick}
+                    />
+                  ) : (
+                    <img
+                      src={loggedInUserData?.image}
+                      alt="profile"
+                      className="cursor-pointer profile"
+                      onClick={handleProfileClick}
+                    />
+                  )}
+
+                  {showProfileBox && (
+                    <>
+                      <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
+                        <div className="flex items-center space-x-3 cursor-pointer p-2">
+                          {loggedInUserData?.image == null ? (
                             <img
-                              src={
-                                imgSrc?.length <= 0
-                                  ? createImageFromInitials(
-                                      500,
-                                      data?.firstName,
-                                      color
-                                    )
-                                  : imgSrc
-                              }
+                              src={createImageFromInitials(
+                                500,
+                                loggedInUserData?.firstName,
+                                color
+                              )}
                               alt="profile"
                               className="cursor-pointer profile"
                               onClick={handleProfileClick}
                             />
                           ) : (
                             <img
-                              src={data?.image}
+                              src={loggedInUserData?.image}
                               alt="profile"
                               className="cursor-pointer profile"
                               onClick={handleProfileClick}
                             />
                           )}
-
-                          {showProfileBox && (
-                            <>
-                              <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
-                                <div className="flex items-center space-x-3 cursor-pointer p-2">
-                                  {data?.image == null ? (
-                                    <img
-                                      src={
-                                        imgSrc?.length <= 0
-                                          ? createImageFromInitials(
-                                              500,
-                                              data?.firstName,
-                                              color
-                                            )
-                                          : null
-                                        // : imgSrc
-                                      }
-                                      alt="profile"
-                                      className="cursor-pointer profile"
-                                      onClick={handleProfileClick}
-                                    />
-                                  ) : (
-                                    <img
-                                      src={data?.image}
-                                      alt="profile"
-                                      className="cursor-pointer profile"
-                                      onClick={handleProfileClick}
-                                    />
-                                  )}
-                                  <div>
-                                    <div className="text-[#7C82A7] font-semibold text-lg">
-                                      {data?.firstName}
-                                    </div>
-                                    {/* <div className="text-[#ACB0C7] font-medium text-base">
+                          <div>
+                            <div className="text-[#7C82A7] font-semibold text-lg">
+                              {loggedInUserData?.firstName}
+                            </div>
+                            {/* <div className="text-[#ACB0C7] font-medium text-base">
                                 Lead Developer
                               </div> */}
-                                  </div>
-                                </div>
-                                <div className="border-b-[1px] border-[#8E94A9]"></div>
-                                <div
-                                //className="p-2"
-                                >
-                                  {/* <Link to="/userprofile">
+                          </div>
+                        </div>
+                        <div className="border-b-[1px] border-[#8E94A9]"></div>
+                        <div
+                        //className="p-2"
+                        >
+                          {/* <Link to="/userprofile">
                                   <div className="text-base font-medium mb-1 flex justify-between items-center">
                                     My Account
                                     <MdOutlineNavigateNext className="text-2xl text-gray" />
                                   </div>
                                 </Link> */}
-                                  {/* <div className="text-base font-medium mb-1 flex justify-between items-center">
+                          {/* <div className="text-base font-medium mb-1 flex justify-between items-center">
                                   Profile settings
                                   <MdOutlineNavigateNext className="text-2xl text-gray" />
                                 </div> */}
-                                </div>
-                                {/* <div className="border-b-[1px] border-[#8E94A9]"></div> */}
-                                <div className="flex justify-center items-center p-2">
-                                  <div className="mr-2">
-                                    <RiLogoutBoxRLine className="text-xl" />
-                                  </div>
-                                  <button
-                                    className="text-[#001737] font-bold text-base "
-                                    onClick={handleSignOut}
-                                  >
-                                    Sign out
-                                  </button>
-                                </div>
-                              </div>
-                            </>
-                          )}
                         </div>
-                      );
+                        {/* <div className="border-b-[1px] border-[#8E94A9]"></div> */}
+                        <div className="flex justify-center items-center p-2">
+                          <div className="mr-2">
+                            <RiLogoutBoxRLine className="text-xl" />
+                          </div>
+                          <button
+                            className="text-[#001737] font-bold text-base "
+                            onClick={handleSignOut}
+                          >
+                            Sign out
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+                {Array.isArray(regsiterdata) &&
+                  regsiterdata.map((data) => {
+                    // console.log(data);
+                    const imgSrc = "";
+                    if (data?.email) return null;
+                    // <div key={data?.orgSingupID}>
+                    //   {data?.image == null ? (
+                    //     <img
+                    //       src={
+                    //         imgSrc?.length <= 0
+                    //           ? createImageFromInitials(
+                    //               500,
+                    //               data?.firstName,
+                    //               color
+                    //             )
+                    //           : imgSrc
+                    //       }
+                    //       alt="profile"
+                    //       className="cursor-pointer profile"
+                    //       onClick={handleProfileClick}
+                    //     />
+                    //   ) : (
+                    //     <img
+                    //       src={data?.image}
+                    //       alt="profile"
+                    //       className="cursor-pointer profile"
+                    //       onClick={handleProfileClick}
+                    //     />
+                    //   )}
+
+                    //   {showProfileBox && (
+                    //     <>
+                    //       <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
+                    //         <div className="flex items-center space-x-3 cursor-pointer p-2">
+                    //           {data?.image == null ? (
+                    //             <img
+                    //               src={
+                    //                 imgSrc?.length <= 0
+                    //                   ? createImageFromInitials(
+                    //                       500,
+                    //                       data?.firstName,
+                    //                       color
+                    //                     )
+                    //                   : null
+                    //                 // : imgSrc
+                    //               }
+                    //               alt="profile"
+                    //               className="cursor-pointer profile"
+                    //               onClick={handleProfileClick}
+                    //             />
+                    //           ) : (
+                    //             <img
+                    //               src={data?.image}
+                    //               alt="profile"
+                    //               className="cursor-pointer profile"
+                    //               onClick={handleProfileClick}
+                    //             />
+                    //           )}
+                    //           <div>
+                    //             <div className="text-[#7C82A7] font-semibold text-lg">
+                    //               {data?.firstName}
+                    //             </div>
+                    //             {/* <div className="text-[#ACB0C7] font-medium text-base">
+                    //         Lead Developer
+                    //       </div> */}
+                    //           </div>
+                    //         </div>
+                    //         <div className="border-b-[1px] border-[#8E94A9]"></div>
+                    //         <div
+                    //         //className="p-2"
+                    //         >
+                    //           {/* <Link to="/userprofile">
+                    //           <div className="text-base font-medium mb-1 flex justify-between items-center">
+                    //             My Account
+                    //             <MdOutlineNavigateNext className="text-2xl text-gray" />
+                    //           </div>
+                    //         </Link> */}
+                    //           {/* <div className="text-base font-medium mb-1 flex justify-between items-center">
+                    //           Profile settings
+                    //           <MdOutlineNavigateNext className="text-2xl text-gray" />
+                    //         </div> */}
+                    //         </div>
+                    //         {/* <div className="border-b-[1px] border-[#8E94A9]"></div> */}
+                    //         <div className="flex justify-center items-center p-2">
+                    //           <div className="mr-2">
+                    //             <RiLogoutBoxRLine className="text-xl" />
+                    //           </div>
+                    //           <button
+                    //             className="text-[#001737] font-bold text-base "
+                    //             onClick={handleSignOut}
+                    //           >
+                    //             Sign out
+                    //           </button>
+                    //         </div>
+                    //       </div>
+                    //     </>
+                    //   )}
+                    // </div>
                   })}
               </div>
 

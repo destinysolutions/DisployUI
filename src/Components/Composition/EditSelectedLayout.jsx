@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import Footer from "../Footer";
 import Navbar from "../Navbar";
@@ -98,6 +98,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
+
+  const modalRef = useRef(null);
 
   const onCancel = () => navigate("/composition");
 
@@ -433,9 +435,28 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
     handleFetchAllAssests();
   }, []);
 
+  useEffect(() => {
+    const handleClickOutsidePreviewModal = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event?.target)) {
+        closeModal();
+      }
+    };
+    document.addEventListener("click", handleClickOutsidePreviewModal, true);
+    return () => {
+      document.removeEventListener(
+        "click",
+        handleClickOutsidePreviewModal,
+        true
+      );
+    };
+  }, [handleClickOutsidePreviewModal]);
+
+  function handleClickOutsidePreviewModal() {
+    closeModal();
+  }
   // console.log(ad);
-  console.log(addAsset);
-  console.log(compositonData);
+  // console.log(addAsset);
+  // console.log(compositonData);
 
   return (
     <>
@@ -447,6 +468,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
+              ref={modalRef}
               className={`absolute  left-1/2 -translate-x-1/2 min-h-[80vh] max-h-[80vh] min-w-[90vh] max-w-[90vh] `}
               // style={{
               //   maxWidth: `${compositonData?.screenWidth}px`,

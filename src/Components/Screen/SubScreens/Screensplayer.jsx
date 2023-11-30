@@ -383,17 +383,32 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       });
   }, []);
 
+  const heightOfDiv = compositionData.reduce((acc, curr) => {
+    let height = 0;
+    for (const iterator in curr) {
+      if (curr[iterator][0]?.left === 0) {
+        height += curr[iterator][0]?.height;
+      }
+    }
+    return acc + height;
+  }, 0);
+
+  const widthOfDiv = compositionData.reduce((acc, curr) => {
+    let width = 0;
+    for (const iterator in curr) {
+      if (curr[iterator][0]?.top === 0) {
+        width += curr[iterator][0]?.width;
+      }
+    }
+    return acc + width;
+  }, 0);
+
   // console.log(screenData);
   // console.log(playerData);
   // console.log(screenPreviewData.myComposition);
   // console.log(compositionData.map((item, i) => item[i]));
   // console.log(compositionData);
-  // console.log(screenPreviewData);
-  // const arr = compositionData.map((item) => {
-  //   return item;
-  // });
-  // console.log(arr.map((i, v) => compositionData[v][v + 1]));
-  // console.log(arr);
+  // console.log(screenPreviewData.data.length);
 
   return (
     <>
@@ -446,12 +461,18 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   />
                 ) : */}
                 {compositionData.length > 0 ? (
-                  <div className="relative z-0 w-fit h-fit border border-black/10 rounded-lg p-4">
+                  <div
+                    className="relative z-0 border-2 border-black/10 rounded-lg p-4"
+                    style={{
+                      height: heightOfDiv + "px",
+                      width: widthOfDiv + "px",
+                    }}
+                  >
                     {compositionData.map((data, index) => {
                       return (
                         <div
                           key={index}
-                          // className="absolute h-full w-full "
+                          className="absolute "
                           // className="w-full h-full"
                           style={{
                             width:
@@ -460,10 +481,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             height:
                               compositionData[index][index + 1][0]?.height +
                               "px",
-                            // top:
-                            //   compositionData[index][index + 1][0]?.top + "px",
-                            // left:
-                            //   compositionData[index][index + 1][0]?.left + "px",
+                            top:
+                              compositionData[index][index + 1][0]?.top + "px",
+                            left:
+                              compositionData[index][index + 1][0]?.left + "px",
                           }}
                         >
                           <Carousel
@@ -483,13 +504,21 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                 )}
               </div>
 
-              <div className="grid  grid-cols-12  screen-player-details pb-7 sm:pb-0 border-b border-[#D5E3FF]">
+              <div className="grid  grid-cols-12 screen-player-details pb-7 sm:pb-0 border-b border-[#D5E3FF]">
                 <div className="default-media flex items-center xs-block justify-between bg-lightgray py-2 px-5 rounded-md lg:col-start-4 lg:col-span-6 md:col-start-3 md:col-span-8  sm:col-start-1 sm:col-span-12">
                   <div>
                     <p className="text-primary text-sm font-light">
                       Now Playing
                     </p>
-                    <h4 className="text-primary text-lg">Default Media</h4>
+                    <h4 className="text-primary text-lg">
+                      {compositionData.length > 0 &&
+                        screenPreviewData.data.length === 1 &&
+                        "Composition"}
+                      {screenPreviewData.data.length > 1 && "Schedule"}
+                      {screenPreviewData.data.length === 1 &&
+                        compositionData.length === 0 &&
+                        "Default Media"}
+                    </h4>
                   </div>
 
                   {/* <div className="relative">

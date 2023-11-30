@@ -613,7 +613,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                                     alt={
                                                                       assetPreview.assetName
                                                                     }
-                                                                    className="rounded-2xl w-full h-full object-contain"
+                                                                    className="rounded-2xl w-full object-contain"
                                                                   />
                                                                 </div>
                                                               )}

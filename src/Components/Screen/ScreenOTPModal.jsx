@@ -8,11 +8,14 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { GET_ALL_ORGANIZATION_MASTER } from "../../admin/AdminAPI";
 
-const ScreenOTPModal = ({ setShowOTPModal }) => {
+const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const history = useNavigate();
   const [errorMessge, setErrorMessge] = useState(false);
   const [otpValues, setOtpValues] = useState(["", "", "", "", "", ""]);
+  const [screen, setScreen] = useState();
+
   const otpRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
+  const modalRef = useRef(null);
 
   const UserData = useSelector((Alldata) => Alldata.user);
   const authToken = `Bearer ${UserData.user.data.token}`;
@@ -63,8 +66,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
         console.log(error);
       });
   };
-  const [screen, setScreen] = useState();
-  console.log(screen, "screen");
+
   useEffect(() => {
     let config = {
       method: "get",
@@ -81,15 +83,50 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
         console.log(error);
       });
   }, []);
-  
+
+  useEffect(() => {
+    // if (showSearchModal) {
+    //   window.document.body.style.overflow = "hidden";
+    // }
+    const handleClickOutside = (event) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event?.target) &&
+        showOTPModal
+      ) {
+        // window.document.body.style.overflow = "unset";
+        setShowOTPModal(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside, showOTPModal]);
+
+  function handleClickOutside() {
+    setShowOTPModal(false);
+    // window.document.body.style.overflow = "unset";
+    // setSearchTerm("");
+  }
+
+  // useEffect(() => {
+  //   return () => {
+  //     window.document.body.style.overflow = "unset";
+  //   };
+  // }, []);
+
   return (
     <>
-      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-[9999] outline-none focus:outline-none">
+      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
         <div
           className={`relative w-auto my-6 lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full sm:mx-3 xs:mx-3`}
         >
-          <div className="border-0 rounded-xl shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-            <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
+          <div
+            ref={modalRef}
+            className="border-0 rounded-xl shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
+          >
+            <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7] rounded-t">
               <h3 className="text-xl font-medium">New Screen</h3>
               <button
                 className="p-1 text-xl"
@@ -170,7 +207,7 @@ const ScreenOTPModal = ({ setShowOTPModal }) => {
           </div>
         </div>
       </div>
-      <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+      <div className="opacity-25 fixed inset-0 z-10 bg-black"></div>
     </>
   );
 };

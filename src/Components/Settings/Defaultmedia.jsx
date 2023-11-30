@@ -12,6 +12,7 @@ import moment from "moment";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import ReactPlayer from "react-player";
+import { useRef } from "react";
 
 const Defaultmedia = () => {
   const [mediaTabs, setMediaTabs] = useState(1);
@@ -26,6 +27,8 @@ const Defaultmedia = () => {
   const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
   const [assetName, setAssetName] = useState("");
   const [filePath, setFilePath] = useState("");
+
+  const modalRef = useRef(null);
 
   useEffect(() => {
     axios
@@ -84,6 +87,7 @@ const Defaultmedia = () => {
         console.log(error);
       });
   };
+
   useEffect(() => {
     handleGetAsset();
   }, []);
@@ -109,6 +113,31 @@ const Defaultmedia = () => {
       });
   };
   const isVideo = filePath && /\.(mp4|webm|ogg)$/i.test(filePath);
+
+  useEffect(() => {
+    // if (showSearchModal) {
+    //   window.document.body.style.overflow = "hidden";
+    // }
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event?.target)) {
+        // window.document.body.style.overflow = "unset";
+        setShowAssetModal(false);
+        setAssetPreviewPopup(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside]);
+
+  function handleClickOutside() {
+    setShowAssetModal(false);
+    // setAssetPreviewPopup(false);
+    // window.document.body.style.overflow = "unset";
+    // setSearchTerm("");
+  }
+
   return (
     <>
       <div>
@@ -169,9 +198,9 @@ const Defaultmedia = () => {
                     {showAssetModal && (
                       <>
                         <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
-                          <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
+                          <div  ref={modalRef} className="relative w-auto my-6 mx-auto myplaylist-popup-details">
                             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
-                              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                                 <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
                                   Set Content to Add Media
                                 </h3>
@@ -283,14 +312,14 @@ const Defaultmedia = () => {
                       </>
                     )}
                   </div>
-                  <div className="text-center">
+                  {/* <div className="text-center">
                     <button className="bg-white text-primary lg:text-base md:text-base sm:text-sm xs:text-sm lg:px-6 md:px-6 sm:px-4 xs:px-4 lg:py-3 md:py-3 sm:py-2 xs:py-2 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2">
                       Cancel
                     </button>
                     <button className="bg-primary text-white lg:text-base md:text-base sm:text-sm xs:text-sm lg:px-8 md:px-8 sm:px-6 xs:px-6 lg:py-3 md:py-3 sm:py-2 xs:py-2 border border-primary  shadow-md rounded-full hover:bg-white hover:text-primary">
                       Save
                     </button>
-                  </div>
+                  </div> */}
                 </div>
                 <div className=" lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                   {filePath && isVideo ? (

@@ -11,7 +11,8 @@ import axios from "axios";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
+
+const VideoRecorder = ({ closeModal, onVideoRecorded, videoModalRef }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
   const authToken = `Bearer ${UserData.user.data.token}`;
   const webcamRef = useRef(null);
@@ -146,7 +147,10 @@ const VideoRecorder = ({ closeModal, onVideoRecorded }) => {
   return (
     <div>
       <div className="backdrop">
-        <div className="fixed unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 pt-10 rounded-2xl lg:w-1/2 md:w-1/2 sm:w-4/5 xs:w-4/5  ">
+        <div
+          ref={videoModalRef}
+          className="fixed unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 pt-10 rounded-2xl lg:w-1/2 md:w-1/2 sm:w-4/5 xs:w-4/5  "
+        >
           <button
             onClick={closeModal}
             className="absolute right-3 top-3 text-2xl rounded-lg text-SlateBlue"

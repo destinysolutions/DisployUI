@@ -47,6 +47,18 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   const [fileSuccessModal, setfileSuccessModal] = useState(false);
   const [fileErrorModal, setfileErrorModal] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
+  const [fileList, setFileList] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [overallUploadProgress, setOverallUploadProgress] = useState(0);
+  const [showUnsplash, setShowUnsplash] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState([]);
+  const [showpexels, setShowpexels] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
+  const [savedImages, setSavedImages] = useState([]);
+  const [showPexabay, setShowPexabay] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+  const [recordedVideos, setRecordedVideos] = useState([]);
 
   /* google drive */
 
@@ -57,8 +69,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   // file drag and drop our system
 
   const wrapperRef = useRef(null);
-
-  const [fileList, setFileList] = useState([]);
 
   const onDragEnter = () => wrapperRef.current.classList.add("dragover");
 
@@ -80,11 +90,15 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     setFileList(updatedList);
   };
   // file upload
-  const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
+
   const fileInputRef = useRef(null);
 
-  const [overallUploadProgress, setOverallUploadProgress] = useState(0);
+  const cameraModalRef = useRef(null);
+  const videoModalRef = useRef(null);
+  const pixabayModalRef = useRef(null);
+  const unsplashModalRef = useRef(null);
+  const pexelsModalRef = useRef(null);
+
   const navigate = useNavigate();
 
   const onFileChange = (event) => {
@@ -251,8 +265,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     }
   };
   // unsplash code
-  const [showUnsplash, setShowUnsplash] = useState(false);
-  const [uploadedImages, setUploadedImages] = useState([]);
 
   // Function to toggle the Unsplash modal
   const handleUnsplashButtonClick = () => {
@@ -269,7 +281,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   };
 
   // start pexels code
-  const [showpexels, setShowpexels] = useState(false);
 
   const handlePexelsButtonClick = () => {
     setShowpexels((prev) => !prev);
@@ -279,7 +290,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   };
   // End pexels code
   // Start pexabay code
-  const [showPexabay, setShowPexabay] = useState(false);
 
   const handlePexabaysButtonClick = () => {
     setShowPexabay((prev) => !prev);
@@ -291,8 +301,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   // End pexabay code
 
   // start Camera
-  const [showCamera, setShowCamera] = useState(false);
-  const [savedImages, setSavedImages] = useState([]);
+
   const openCameraModal = () => {
     setShowCamera(true);
   };
@@ -306,7 +315,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
 
   // End Camera
   // start video
-  const [showVideo, setShowVideo] = useState(false);
   const openVideoModal = () => {
     setShowVideo(true);
   };
@@ -321,7 +329,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     a.download = "recorded-video.webm";
     a.click();
   };
-  const [recordedVideos, setRecordedVideos] = useState([]);
+
   const handleVideoRecorded = (blob) => {
     setRecordedVideos((prevVideos) => [...prevVideos, blob]);
   };
@@ -334,6 +342,61 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     );
     setSelectedImages(updatedImages);
   };
+
+  useEffect(() => {
+    const handleClickOutsideModal = (event) => {
+      if (
+        cameraModalRef.current &&
+        !cameraModalRef.current.contains(event?.target) &&
+        showCamera
+      ) {
+        setShowCamera(false);
+      } else if (
+        videoModalRef.current &&
+        !videoModalRef.current.contains(event?.target) &&
+        showVideo
+      ) {
+        setShowVideo(false);
+      } else if (
+        pixabayModalRef.current &&
+        !pixabayModalRef.current.contains(event?.target) &&
+        showPexabay
+      ) {
+        setShowPexabay(false);
+      } else if (
+        pexelsModalRef.current &&
+        !pexelsModalRef.current.contains(event?.target) &&
+        showpexels
+      ) {
+        setShowpexels(false);
+      } else if (
+        unsplashModalRef.current &&
+        !unsplashModalRef.current.contains(event?.target) &&
+        showUnsplash
+      ) {
+        setShowUnsplash(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutsideModal, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutsideModal, true);
+    };
+  }, [handleClickOutsideModal]);
+
+  function handleClickOutsideModal() {
+    if (showCamera) {
+      setShowCamera(false);
+    } else if (showVideo) {
+      setShowVideo(false);
+    } else if (showPexabay) {
+      setShowPexabay(false);
+    } else if (showpexels) {
+      setShowpexels(false);
+    } else if (showUnsplash) {
+      setShowUnsplash(false);
+    }
+  }
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -355,7 +418,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
             </div>
           </div>
           <div className="flex lg:justify-between md:justify-between flex-wrap sm:justify-start xs:justify-start items-center lg:mt-7 md:mt-7 sm:mt-5 xs:mt-5 media-icon">
-           {/* notepad ma che */}
+            {/* notepad ma che */}
             {/* start Camera */}
             <span className="fileUploadIcon" data-tip="Camera">
               <Tooltip
@@ -373,6 +436,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               </Tooltip>
               {showCamera && (
                 <Camera
+                  cameraModalRef={cameraModalRef}
                   onImageUpload={handleImageUpload}
                   closeModal={closeCameraModal}
                 />
@@ -397,6 +461,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
 
               {showVideo && (
                 <VideoRecorder
+                  videoModalRef={videoModalRef}
                   closeModal={closeVideoModal}
                   onDownloadVideo={handleDownloadVideo}
                   onVideoRecorded={handleVideoRecorded}
@@ -424,6 +489,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               </Tooltip>
               {showUnsplash && (
                 <Unsplash
+                  unsplashModalRef={unsplashModalRef}
                   closeModal={handleCloseModal}
                   onSelectedImages={handleSelectedImages}
                 />
@@ -448,7 +514,12 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                   <SiPexels size={30} className="relative" />
                 </button>
               </Tooltip>
-              {showpexels && <Pexels closeModal={handleClosePexelsModal} />}
+              {showpexels && (
+                <Pexels
+                  pexelsModalRef={pexelsModalRef}
+                  closeModal={handleClosePexelsModal}
+                />
+              )}
             </span>
             {/* end pixels */}
             {/* start pixabay */}
@@ -469,7 +540,12 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                   <img src={pixabayimg} className="relative w-9" />
                 </button>
               </Tooltip>
-              {showPexabay && <Pixabay closeModal={handleClosePexabaysModal} />}
+              {showPexabay && (
+                <Pixabay
+                  pixabayModalRef={pixabayModalRef}
+                  closeModal={handleClosePexabaysModal}
+                />
+              )}
               {/* end pixabay */}
             </span>
             {/*start app*/}

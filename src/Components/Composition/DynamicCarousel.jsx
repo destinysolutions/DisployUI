@@ -25,7 +25,7 @@ const Carousel = ({ items, compositonData, from }) => {
     <>
       <div className="h-full w-full">
         {items?.map((item, index) => {
-          console.log(item);
+          // console.log(item);
           if (currentIndex === index) {
             return (
               <div className="h-full w-full" key={index}>
@@ -38,7 +38,7 @@ const Carousel = ({ items, compositonData, from }) => {
                 )}
                 {item.mediaType === "OnlineImage" && (
                   <img
-                    className="w-full h-full object-cover rounded-sm"
+                    className="w-full h-full rounded-sm object-cover"
                     src={item.fileType}
                     // alt={item.assetName}
                   />
@@ -49,7 +49,7 @@ const Carousel = ({ items, compositonData, from }) => {
                     alt={item.assetName}
                     className={`w-full h-full ${
                       item.assetType !== "Image" && "hidden"
-                    } rounded-sm object-fill`}
+                    } rounded-sm object-cover`}
                   />
                 )}
                 {item.mediaType === "Image" && (
@@ -57,7 +57,7 @@ const Carousel = ({ items, compositonData, from }) => {
                     src={item.fileType}
                     className={`w-full h-full ${
                       !item.fileType && "hidden"
-                    } rounded-sm `}
+                    } rounded-sm object-cover`}
                   />
                 )}
                 {item.assetType === "Video" && (
