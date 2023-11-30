@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -52,6 +52,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const [searchComposition, setSearchComposition] = useState("");
   const [compostionAllData, setCompostionAllData] = useState([]);
   const [connection, setConnection] = useState(null);
+
+  const modalRef = useRef(null);
+  const addScreenRef = useRef(null);
+  const selectScreenRef = useRef(null);
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
@@ -510,6 +514,81 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     };
   }, []);
 
+  // preview modal
+  useEffect(() => {
+    const handleClickOutsidePreviewModal = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event?.target)) {
+        closeModal();
+      }
+    };
+    document.addEventListener("click", handleClickOutsidePreviewModal, true);
+    return () => {
+      document.removeEventListener(
+        "click",
+        handleClickOutsidePreviewModal,
+        true
+      );
+    };
+  }, [handleClickOutsidePreviewModal]);
+
+  function handleClickOutsidePreviewModal() {
+    closeModal();
+  }
+
+  // add screen modal
+  useEffect(() => {
+    const handleClickOutsideAddScreenModal = (event) => {
+      if (
+        addScreenRef.current &&
+        !addScreenRef.current.contains(event?.target)
+      ) {
+        setAddScreenModal(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutsideAddScreenModal, true);
+    return () => {
+      document.removeEventListener(
+        "click",
+        handleClickOutsideAddScreenModal,
+        true
+      );
+    };
+  }, [handleClickOutsideAddScreenModal]);
+
+  function handleClickOutsideAddScreenModal() {
+    setAddScreenModal(false);
+  }
+
+  // select screen modal
+  useEffect(() => {
+    const handleClickOutsideSelectScreenModal = (event) => {
+      if (
+        selectScreenRef.current &&
+        !selectScreenRef.current.contains(event?.target)
+      ) {
+        setSelectScreenModal(false);
+        setAddScreenModal(false);
+      }
+    };
+    document.addEventListener(
+      "click",
+      handleClickOutsideSelectScreenModal,
+      true
+    );
+    return () => {
+      document.removeEventListener(
+        "click",
+        handleClickOutsideSelectScreenModal,
+        true
+      );
+    };
+  }, [handleClickOutsideSelectScreenModal]);
+
+  function handleClickOutsideSelectScreenModal() {
+    setSelectScreenModal(false);
+    setAddScreenModal(false);
+  }
+
   // console.log(layotuDetails);
   // console.log(compositionData);
   // console.log(previewModalData);
@@ -617,7 +696,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                         {composition.compositionName}
                       </td>
                       <td className="p-2">
-                        {moment(composition.dateAdded).format("YYYY-MM-DD hh:mm")}
+                        {moment(composition.dateAdded).format(
+                          "YYYY-MM-DD hh:mm"
+                        )}
                       </td>
                       <td className="p-2 ">{composition.resolution}</td>
                       <td className="p-2">
@@ -691,9 +772,12 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                       </td>
                       {addScreenModal && (
                         <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                          <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                          <div
+                            ref={addScreenRef}
+                            className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                          >
                             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                                 <div className="flex items-center">
                                   <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
                                     Select the Screen you want composition add
@@ -715,7 +799,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className="pb-6 flex justify-center">
                                 <button
                                   className="bg-primary text-white px-8 py-2 rounded-full"
-                                  onClick={() => setSelectScreenModal(true)}
+                                  onClick={() => {
+                                    setSelectScreenModal(true);
+                                    setAddScreenModal(false);
+                                  }}
                                 >
                                   OK
                                 </button>
@@ -733,9 +820,12 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                       )}
                       {selectScreenModal && (
                         <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                          <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                          <div
+                            ref={selectScreenRef}
+                            className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                          >
                             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                                 <div className="flex items-center">
                                   <div className=" mt-1.5">
                                     <input
@@ -960,6 +1050,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             layotuDetails?.lstLayloutModelList?.map(
                               (obj, index) => (
                                 <div
+                                  ref={modalRef}
                                   key={index}
                                   style={{
                                     position: "absolute",

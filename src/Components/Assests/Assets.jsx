@@ -36,6 +36,7 @@ import {
 import { FcOpenedFolder } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import toast from "react-hot-toast";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -107,13 +108,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [tableData, setTableData] = useState([]);
   const [newFolder, setNewfolder] = useState([]);
   const [folderName, setFolderName] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const fetchData = () => {
+    setLoading(true);
     axios
       .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
       .then((response) => {
         const fetchedData = response.data;
-        console.log(fetchedData);
         setOriginalData(fetchedData);
 
         const allAssets = [
@@ -131,9 +133,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
         setGridData(sortedAssets);
         setTableData(sortedAssets);
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
 
@@ -635,7 +639,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   "page-content grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section"
                 }
               >
-                {gridData.length > 0 ? (
+                {loading ? (
+                  <div className="text-center font-semibold text-2xl col-span-full">
+                    Loading...
+                  </div>
+                ) : gridData.length > 0 ? (
                   gridData.map((item, index) => (
                     <li
                       key={`tabitem-grid-${item.assetID}-${index}`}

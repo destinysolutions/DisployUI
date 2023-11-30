@@ -10,7 +10,7 @@ import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-const Unsplash = ({ closeModal, onSelectedImages }) => {
+const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
   const authToken = `Bearer ${UserData.user.data.token}`;
   const [img, setImg] = useState("Natural");
@@ -134,7 +134,10 @@ const Unsplash = ({ closeModal, onSelectedImages }) => {
   return (
     <>
       <div className="backdrop">
-        <div className="fixed unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl">
+        <div
+          ref={unsplashModalRef}
+          className="fixed unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl"
+        >
           <button
             onClick={closeModal}
             className=" absolute right-3 top-3 text-2xl rounded-lg"

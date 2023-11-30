@@ -212,7 +212,7 @@ const Sidebar = ({ sidebarOpen }) => {
       setTimeout(() => {
         localStorage.setItem("role_access", "");
         auth.signOut();
-        window.localStorage.clear("timer")
+        window.localStorage.clear("timer");
         window.location.reload();
         toast.remove();
         navigation("/");
@@ -235,7 +235,10 @@ const Sidebar = ({ sidebarOpen }) => {
       {/* screen otp modal start */}
       {showOTPModal ? (
         <>
-          <ScreenOTPModal setShowOTPModal={setShowOTPModal} />
+          <ScreenOTPModal
+            showOTPModal={showOTPModal}
+            setShowOTPModal={setShowOTPModal}
+          />
         </>
       ) : null}
       {/* screen otp modal end */}

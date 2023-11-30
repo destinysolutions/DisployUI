@@ -122,6 +122,7 @@ const Login = () => {
                   if (!user.emailVerified) {
                     alert("Please verify your email.");
                   } else {
+                    // console.log(response?.data);
                     const user_ID = response.data.userID;
                     localStorage.setItem(
                       "userID",

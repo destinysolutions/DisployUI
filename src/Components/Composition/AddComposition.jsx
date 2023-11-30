@@ -33,7 +33,7 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
       headers: {
         Authorization: authToken,
       },
-      data: "",
+      // data: "",
     };
 
     axios

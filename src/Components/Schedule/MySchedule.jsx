@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { TiWeatherSunny } from "react-icons/ti";
@@ -49,6 +49,9 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [scheduleAllData, setScheduleAllData] = useState([]);
   const [connection, setConnection] = useState(null);
   const [selectAll, setSelectAll] = useState(false);
+
+  const addScreenRef = useRef(null);
+  const selectScreenRef = useRef(null);
 
   const loadScheduleData = () => {
     axios
@@ -323,6 +326,60 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [UserData.user?.userID]);
 
+  // add screen modal
+  useEffect(() => {
+    const handleClickOutsideAddScreenModal = (event) => {
+      if (
+        addScreenRef.current &&
+        !addScreenRef.current.contains(event?.target)
+      ) {
+        setAddScreenModal(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutsideAddScreenModal, true);
+    return () => {
+      document.removeEventListener(
+        "click",
+        handleClickOutsideAddScreenModal,
+        true
+      );
+    };
+  }, [handleClickOutsideAddScreenModal]);
+
+  function handleClickOutsideAddScreenModal() {
+    setAddScreenModal(false);
+  }
+
+  // select screen modal
+  useEffect(() => {
+    const handleClickOutsideSelectScreenModal = (event) => {
+      if (
+        selectScreenRef.current &&
+        !selectScreenRef.current.contains(event?.target)
+      ) {
+        setSelectScreenModal(false);
+        setAddScreenModal(false);
+      }
+    };
+    document.addEventListener(
+      "click",
+      handleClickOutsideSelectScreenModal,
+      true
+    );
+    return () => {
+      document.removeEventListener(
+        "click",
+        handleClickOutsideSelectScreenModal,
+        true
+      );
+    };
+  }, [handleClickOutsideSelectScreenModal]);
+
+  function handleClickOutsideSelectScreenModal() {
+    setSelectScreenModal(false);
+    setAddScreenModal(false);
+  }
+
   return (
     <>
       {/* navbar and sidebar start */}
@@ -513,7 +570,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         {/* add screen modal start */}
                         {addScreenModal && (
                           <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                            <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                            <div
+                              ref={addScreenRef}
+                              className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                            >
                               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                                 <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
                                   <div className="flex items-center">
@@ -538,7 +598,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="pb-6 flex justify-center">
                                   <button
                                     className="bg-primary text-white px-8 py-2 rounded-full"
-                                    onClick={() => setSelectScreenModal(true)}
+                                    onClick={() => {
+                                      setSelectScreenModal(true);
+                                      setAddScreenModal(false);
+                                    }}
                                   >
                                     OK
                                   </button>
@@ -557,7 +620,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         {/* add screen modal end */}
                         {selectScreenModal && (
                           <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                            <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                            <div
+                              ref={selectScreenRef}
+                              className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                            >
                               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                                 <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
                                   <div className="flex items-center">

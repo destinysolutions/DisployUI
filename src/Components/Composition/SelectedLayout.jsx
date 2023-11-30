@@ -25,6 +25,7 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 import { GoPencil } from "react-icons/go";
 import toast from "react-hot-toast";
+import { useRef } from "react";
 
 const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   SelectLayout.propTypes = {
@@ -99,6 +100,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
+
+  const modalRef = useRef(null);
 
   const onCancel = () => navigate("/addcomposition");
 
@@ -552,6 +555,26 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     handleFetchAllData();
   }, []);
 
+  useEffect(() => {
+    const handleClickOutsidePreviewModal = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event?.target)) {
+        closeModal();
+      }
+    };
+    document.addEventListener("click", handleClickOutsidePreviewModal, true);
+    return () => {
+      document.removeEventListener(
+        "click",
+        handleClickOutsidePreviewModal,
+        true
+      );
+    };
+  }, [handleClickOutsidePreviewModal]);
+
+  function handleClickOutsidePreviewModal() {
+    closeModal();
+  }
+
   // console.log(compositonData);
   // console.log(assetData);
   // console.log(addAsset);
@@ -568,6 +591,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
+              ref={modalRef}
               className={`absolute  left-1/2 -translate-x-1/2 min-h-[80vh] max-h-[80vh] min-w-[90vh] max-w-[90vh] `}
             >
               <RxCrossCircled
