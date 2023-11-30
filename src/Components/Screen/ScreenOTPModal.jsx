@@ -50,7 +50,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response.data.status === 200) {
           history("/newscreendetail", {
             state: {
