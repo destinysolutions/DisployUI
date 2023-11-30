@@ -650,23 +650,23 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               cellPadding={20}
             >
               <thead>
-                <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                  <th className="text-[#5A5881] text-base font-semibold">
+                <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Composition Name
                   </th>
-                  <th className="text-[#5A5881] text-base font-semibold">
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Date Added
                   </th>
-                  <th className="text-[#5A5881] text-base font-semibold">
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Resolution
                   </th>
-                  <th className="text-[#5A5881] text-base font-semibold">
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Duration
                   </th>
-                  <th className="text-[#5A5881] text-base font-semibold">
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Screen Assign
                   </th>
-                  <th className="text-[#5A5881] text-base font-semibold">
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Tags
                   </th>
                   <th></th>
@@ -674,7 +674,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               </thead>
               <tbody>
                 {loading ? (
-                  <tr className="text-center font-semibold text-lg w-full">
+                  <tr className="text-center justify-center font-semibold text-lg w-full">
                     <td colSpan="5">Loading...</td>
                   </tr>
                 ) : compositionData.length > 0 && !loading ? (
@@ -683,7 +683,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                       className="border-b border-b-[#E4E6FF] "
                       key={composition.compositionID}
                     >
-                      <td className="flex">
+                      <td className="flex items-center justify-center">
                         <input
                           type="checkbox"
                           className="w-6 h-5 mr-2"
@@ -695,20 +695,20 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                         />
                         {composition.compositionName}
                       </td>
-                      <td className="p-2">
+                      <td className="text-center">
                         {moment(composition.dateAdded).format(
                           "YYYY-MM-DD hh:mm"
                         )}
                       </td>
-                      <td className="p-2 ">{composition.resolution}</td>
-                      <td className="p-2">
+                      <td className="text-center ">{composition.resolution}</td>
+                      <td className="text-center">
                         {moment
                           .utc(composition.duration * 1000)
                           .format("HH:mm:ss")}
                       </td>
-                      <td className="p-2">{composition.screenIDs}</td>
-                      <td className="p-2">{composition.tags}</td>
-                      <td className="p-2 text-center relative">
+                      <td className="text-center">{composition.screenIDs}</td>
+                      <td className="text-center">{composition.tags}</td>
+                      <td className="text-center relative">
                         <div className="">
                           <button
                             className="ml-3 "
