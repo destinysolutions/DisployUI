@@ -83,9 +83,9 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
                     onClick={() => setActiveTab(value)}
                     className={`${
                       activeTab === value
-                        ? "text-blue-600 items-center rounded-full bg-blue-600 "
+                        ? "text-white items-center rounded-full bg-primary "
                         : ""
-                    } py-4 px-5 w-auto`}
+                    } py-3 px-5 w-auto`}
                   >
                     <div className="flex items-center">
                       <span className="mr-3 text-xl">{icon}</span>

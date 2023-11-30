@@ -22,6 +22,7 @@ import axios from "axios";
 import { YOUTUBE_INSTANCE_ADD_URL } from "../../Pages/Api";
 import moment from "moment";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   YoutubeDetail.propTypes = {
@@ -165,7 +166,8 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
               <button
                 className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-2 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 onClick={() => {
-                  if (YoutubeVideo === "") return;
+                  if (YoutubeVideo === "")
+                    return toast.error("Please enter YouTube URL");
                   setShowPreviewPopup(true);
                 }}
               >

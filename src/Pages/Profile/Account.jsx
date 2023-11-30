@@ -69,8 +69,7 @@ const Account = () => {
           countriesResponse,
           timezoneResponse,
         ] = responses;
-        console.log(currenciesResponse, "currenciesResponse");
-        console.log(languageResponse, "languageResponse");
+
         setCurrency(currenciesResponse.data.data);
         setLanguage(languageResponse.data.data);
         setCountries(countriesResponse.data.data);
@@ -135,23 +134,6 @@ const Account = () => {
     data.append("Operation", "Update");
     data.append("File", file);
 
-    console.log("UserID", UserData.user?.userID);
-    console.log("GoogleLocation", address);
-    console.log("FirstName", firstName);
-    console.log("LastName", lastName);
-    console.log("PhoneNumber", values.phoneNumber);
-    console.log("EmailID", values.email);
-    console.log("Organization", organization);
-    console.log("State", selectedState);
-    console.log("Country", selectedCountry);
-    console.log("ZipCode", values.zipCode);
-    console.log("Language", selectedLanguageName);
-    console.log("Currency", selectedCurrencyName);
-    console.log("TimeZone", selectedTimezoneName);
-    console.log("Mode", "Update");
-    console.log("Operation", "Update");
-    console.log("File", file);
-
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -166,7 +148,6 @@ const Account = () => {
       setSubmitting(true);
 
       const response = await axios.request(config);
-      console.log(response.data);
       setSubmitting(false);
     } catch (error) {
       console.log(error);

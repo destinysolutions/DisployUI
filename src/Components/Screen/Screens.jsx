@@ -138,9 +138,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [connection, setConnection] = useState(null);
   const [screenConnected, setScreenConnected] = useState(null);
   const [sendTvStatus, setSendTvStatus] = useState(null);
+  const [sendTvStatusScreenID, setSendTvStatusScreenID] = useState(null);
   const [showNewScreenGroupPopup, setShowNewScreenGroupPopup] = useState(false);
   const [selectedCheckboxIDs, setSelectedCheckboxIDs] = useState([]);
-
+  console.log("sendTvStatus log", sendTvStatus);
+  console.log("sendTvStatusScreen log", sendTvStatusScreenID);
   const selectedScreenIdsString = Array.isArray(selectedCheckboxIDs)
     ? selectedCheckboxIDs.join(",")
     : "";
@@ -670,9 +672,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         setScreenConnected(screenConnected);
       });
 
-      newConnection.on("TvStatus", (status) => {
-        console.log("SendTvStatus", status);
-        // setSendTvStatus(status);
+      newConnection.on("TvStatus", (UserID, ScreenID, status) => {
+        console.log("SendTvStatus", UserID, ScreenID, status);
+        setSendTvStatus(status);
+        setSendTvStatusScreenID(ScreenID);
       });
 
       try {
@@ -685,7 +688,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         console.log("Message sent:", screenConnected);
 
         // Invoke SendTvStatus method
-        await newConnection.invoke("SendTvStatus", true, "E0:76:D0:32:54:00");
+        //await newConnection.invoke("SendTvStatus", true, "E0:76:D0:32:54:00");
         //console.log("SendTvStatus", 1, "E0:76:D0:32:54:00");
       } catch (error) {
         console.error("Error during connection:", error);
@@ -885,7 +888,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                 >
                   <VscVmConnect className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
@@ -901,7 +904,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                   onClick={() => setShowOTPModal(true)}
                 >
                   <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
@@ -926,7 +929,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                   onClick={handleNewScreenGroupClick}
                 >
                   <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
@@ -977,7 +980,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                 >
                   <RiSignalTowerLine className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
@@ -993,7 +996,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                  className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                   onClick={handleDeleteAllScreen}
                   style={{ display: selectAllChecked ? "block" : "none" }}
                 >
@@ -1012,7 +1015,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   <button
                     type="button"
-                    className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                    className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                     onClick={() => setMoreModal(!moreModal)}
                   >
                     <RiArrowDownSLine className="p-1 px-2 text-4xl text-white hover:text-white" />
@@ -1124,11 +1127,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="flex align-middle border-white text-white items-center border-2 rounded-full p-2 text-base  "
+                  className="flex align-middle text-white items-center rounded-full p-2 text-base  "
                 >
                   <input
                     type="checkbox"
-                    className="w-6 h-5"
+                    className="w-7 h-6"
                     onChange={handleSelectAllCheckboxChange}
                     checked={selectAllChecked}
                   />
@@ -1160,7 +1163,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                     </th>
                   )}
-                  {/* {statusContentVisible && (
+                  {statusContentVisible && (
                     <th className=" text-[#444] text-sm font-semibold p-2">
                       <div className="flex  items-center justify-center  mx-auto ">
                         <MdLiveTv className="mr-2 text-xl" />
@@ -1168,7 +1171,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <BiFilterAlt className="ml-1 text-lg" />
                       </div>
                     </th>
-                  )} */}
+                  )}
                   {/* {lastSeenContentVisible && (
                     <th className=" text-[#444] text-sm font-semibold p-2">
                       <div className="flex  items-center justify-center   mx-auto">
@@ -1273,13 +1276,23 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           {screen.googleLocation}
                         </td>
                       )}
-                      {/* {statusContentVisible && (
+                      {statusContentVisible && (
                         <td className="p-2 text-center">
-                          <button className="rounded-full px-6 py-1 text-white text-center bg-[#3AB700]">
-                            Live
+                          <button
+                            className={`rounded-full px-6 py-2 text-white text-center ${
+                              screen.screenID === sendTvStatusScreenID &&
+                              sendTvStatus
+                                ? "bg-[#3AB700]"
+                                : "bg-[#FF0000]"
+                            }`}
+                          >
+                            {screen.screenID == sendTvStatusScreenID &&
+                            sendTvStatus == true
+                              ? "Live"
+                              : "offline"}
                           </button>
                         </td>
-                      )} */}
+                      )}
                       {/* {lastSeenContentVisible && (
                         <td className="p-2 text-center break-words">
                           25 May 2023
@@ -1478,7 +1491,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                           setShowScheduleModal(false);
                                           handleScheduleUpdate(screen.screenID);
                                         }}
-                                        className="border-2 border-primary px-5 py-2 rounded-full ml-3"
+                                        className=" border-primary px-5 py-2 rounded-full ml-3"
                                       >
                                         Save
                                       </button>
