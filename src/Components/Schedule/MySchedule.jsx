@@ -408,34 +408,34 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 />
               </div>
               {/* <Link to="/weatherschedule">
-                <button className=" flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                <button className=" flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary   hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                   <TiWeatherSunny className="text-lg mr-1" />
                   Weather Schedule
                 </button>
               </Link> */}
               <Link to="/addschedule">
-                <button className="sm:ml-2 xs:ml-1  flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                <button className="sm:ml-2 xs:ml-1  flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary   hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                   <BiAddToQueue className="text-lg mr-1" />
                   New Schedule
                 </button>
               </Link>
-              {/* <button className="sm:ml-2 xs:ml-1 flex align-middle bg-SlateBlue text-white items-center border-2 border-SlateBlue hover:border-white rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              {/* <button className="sm:ml-2 xs:ml-1 flex align-middle bg-SlateBlue text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <FiUpload className="text-lg" />
               </button> */}
               <button
-                className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center border-2 border-SlateBlue hover:border-white rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 onClick={handelDeleteAllSchedule}
                 style={{ display: selectAll ? "block" : "none" }}
               >
                 <RiDeleteBin5Line className="text-lg" />
               </button>
-              {/* <button className="sm:ml-2 xs:ml-1 flex align-middle  bg-SlateBlue text-white items-center border-2 border-SlateBlue hover:border-white rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              {/* <button className="sm:ml-2 xs:ml-1 flex align-middle  bg-SlateBlue text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <HiMagnifyingGlass className="text-lg" />
               </button> */}
-              <button className="flex align-middle border-white  text-white items-center border-2 rounded-full p-2 text-base">
+              <button className="flex align-middle   text-white items-center  rounded-full p-2 text-base">
                 <input
                   type="checkbox"
-                  className="w-6 h-5"
+                  className="w-7 h-6"
                   checked={selectAll}
                   onChange={handleSelectAll}
                 />
@@ -797,7 +797,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                                 <div className="py-4 flex justify-center">
                                   <button
-                                    className="border-2 border-primary px-5 py-2 rounded-full ml-3"
+                                    className=" border-primary px-5 py-2 rounded-full ml-3"
                                     onClick={() => {
                                       handleUpdateScreenAssign();
                                     }}
