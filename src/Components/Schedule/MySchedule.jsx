@@ -448,48 +448,27 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               cellPadding={20}
             >
               <thead>
-                <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                  <th className="text-[#444] text-sm font-semibold p-2">
-                    <div className="flex items-center">
-                      <TbCalendarTime className="mr-2 text-xl" />
-                      Schedule Name
-                    </div>
+                <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    Schedule Name
                   </th>
-                  <th className="text-[#444] text-sm font-semibold p-2">
-                    <div className="flex items-center">
-                      <TbCalendarTime className="mr-2 text-xl" />
-                      Time Zones
-                    </div>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    Time Zones
                   </th>
-                  <th className="text-[#444] text-sm font-semibold p-2">
-                    <div className=" flex  items-center justify-center mx-auto">
-                      <VscCalendar className="mr-2 text-xl" />
-                      Date Added
-                    </div>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    Date Added
                   </th>
-                  <th className="text-[#444] text-sm font-semibold p-2">
-                    <div className=" flex  items-center justify-center mx-auto">
-                      <TbCalendarStats className="mr-2 text-xl" />
-                      start date
-                    </div>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    start date
                   </th>
-                  <th className="text-[#444] text-sm font-semibold p-2">
-                    <div className=" flex  items-center justify-center mx-auto">
-                      <TbCalendarStats className="mr-2 text-xl" />
-                      End date
-                    </div>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    End date
                   </th>
-                  <th className="text-[#444] text-sm font-semibold p-2">
-                    <div className=" flex  items-center justify-center mx-auto">
-                      <RiComputerLine className="mr-2 text-xl" />
-                      screens Assigned
-                    </div>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    screens Assigned
                   </th>
-                  <th className="text-[#444] text-sm font-semibold p-2">
-                    <div className="flex  items-center justify-center mx-auto">
-                      <BsTags className="mr-2 text-xl" />
-                      Tags
-                    </div>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    Tags
                   </th>
                   <th></th>
                 </tr>
@@ -500,7 +479,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
                     key={schedule.scheduleId}
                   >
-                    <td className="flex items-center ">
+                    <td className="flex items-center justify-center">
                       <input
                         type="checkbox"
                         className="mr-3"
@@ -510,9 +489,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                           handleCheckboxChange(schedule.scheduleId)
                         }
                       />
-                      <div>
-                        <div>{schedule.scheduleName}</div>
-                      </div>
+                      {schedule.scheduleName}
                     </td>
                     <td className="text-center">{schedule.timeZoneName}</td>
                     <td className="text-center">
@@ -525,11 +502,9 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     <td className="text-center">
                       {moment(schedule.endDate).format("YYYY-MM-DD hh:mm")}
                     </td>
-                    <td className="p-2 text-center">
-                      {schedule.screenAssigned}
-                    </td>
-                    <td className="p-2 text-center">{schedule.tags}</td>
-                    <td className="p-2 text-center relative">
+                    <td className="text-center">{schedule.screenAssigned}</td>
+                    <td className="text-center">{schedule.tags}</td>
+                    <td className="text-center relative">
                       <div className="relative">
                         <button
                           className="ml-3 relative"
