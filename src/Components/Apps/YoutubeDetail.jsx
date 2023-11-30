@@ -486,6 +486,9 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     muted={isMuted}
                     controls={areSubtitlesOn}
                   />
+                  <span className="absolute -top-4 -right-3 z-40 text-black">
+                    <AiOutlineCloseCircle className="text-3xl text-white bg-black rounded-full" />
+                  </span>
                 </div>
               </div>
             </div>

@@ -122,7 +122,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
               )}
             </div>
           </div>
-          <div className="mt-5 mb-5">
+          {/* <div className="mt-5 mb-5">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] mb-4 ">
               Featured Apps
             </h1>
@@ -189,7 +189,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
                   )
               )}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <Footer />
