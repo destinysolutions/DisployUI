@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
+import {
+  AiOutlineCloseCircle,
+  AiOutlinePlusCircle,
+  AiOutlineSearch,
+} from "react-icons/ai";
 import "../../Styles/playlist.css";
 import { HiDotsVertical, HiOutlineLocationMarker } from "react-icons/hi";
 import Footer from "../Footer";
@@ -23,8 +27,9 @@ import toast from "react-hot-toast";
 import PreviewModal from "./PreviewModel";
 import { RxCrossCircled } from "react-icons/rx";
 import Carousel from "./DynamicCarousel";
-import { MdOutlineGroups } from "react-icons/md";
+import { MdOutlineGroups, MdOutlineModeEdit } from "react-icons/md";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import AddOrEditTagPopup from "../AddOrEditTagPopup";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
@@ -53,6 +58,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const [compostionAllData, setCompostionAllData] = useState([]);
   const [connection, setConnection] = useState(null);
   const [filteredCompositionData, setFilteredCompositionData] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [showTagModal, setShowTagModal] = useState(false);
+  const [updateTagComposition, setUpdateTagComposition] = useState(null);
 
   const modalRef = useRef(null);
   const addScreenRef = useRef(null);
@@ -214,6 +222,49 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         setCompositionByIdLoading(false);
         console.log(error);
       });
+  };
+
+  const handleUpdateTagsOfComposition = async (tags) => {
+    console.log(tags);
+    // const newdata = [];
+    // addAsset.map((item, index) => {
+    //   item[index + 1].map((i) => newdata.push(i));
+    // });
+    // let data = JSON.stringify({
+    //   compositionID: Number(id),
+    //   compositionName: compositionName,
+    //   resolution: "1920 * 1080",
+    //   tags: "tags",
+    //   layoutID: layoutId,
+    //   userID: 0,
+    //   duration: totalDurationSeconds,
+    //   dateAdded: new Date(),
+    //   sections: newdata,
+    // });
+
+    // let config = {
+    //   method: "post",
+    //   maxBodyLength: Infinity,
+    //   url: ADDPLAYLIST,
+    //   headers: {
+    //     Authorization: authToken,
+    //     "Content-Type": "application/json",
+    //   },
+    //   data,
+    // };
+    // await axios
+    //   .request(config)
+    //   .then((response) => {
+    //     if (response?.data?.status == 200) {
+    //       navigate("/composition");
+    //       setSavingLoader(false);
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     setSavingLoader(false);
+    //     return error;
+    //   });
   };
 
   const handleFetchLayoutById = (id) => {
@@ -620,6 +671,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
   // console.log(layotuDetails);
   // console.log(compositionData);
+  // console.log(updateTagComposition);
   // console.log(previewModalData);
 
   return (
@@ -738,7 +790,49 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             .format("HH:mm:ss")}
                         </td>
                         <td className="text-center">{composition.screenIDs}</td>
-                        <td className="text-center">{composition.tags}</td>
+                        <td className="text-center flex items-center gap-2">
+                          {" "}
+                          {composition?.tags === "" && (
+                            <span>
+                              <AiOutlinePlusCircle
+                                size={30}
+                                className="mx-auto cursor-pointer"
+                                onClick={() => setShowTagModal(true)}
+                              />
+                            </span>
+                          )}
+                          {composition.tags
+                            .split(",")
+                            .slice(
+                              0,
+                              composition.tags.split(",").length > 2
+                                ? 3
+                                : composition.tags.split(",").length
+                            )
+                            .join(",")}
+                          {composition?.tags !== "" && (
+                            <MdOutlineModeEdit
+                              onClick={() => {
+                                setShowTagModal(true);
+                                setTags(composition?.tags.split(","));
+                                setUpdateTagComposition(composition);
+                              }}
+                              className="w-5 h-5 cursor-pointer"
+                            />
+                          )}
+                          {/* add or edit tag modal */}
+                          {showTagModal && (
+                            <AddOrEditTagPopup
+                              setShowTagModal={setShowTagModal}
+                              tags={tags}
+                              setTags={setTags}
+                              handleUpdateTagsOfComposition={
+                                handleUpdateTagsOfComposition
+                              }
+                              from="composition"
+                            />
+                          )}
+                        </td>
                         <td className="text-center relative">
                           <div className="">
                             <button
@@ -1147,7 +1241,47 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             .format("HH:mm:ss")}
                         </td>
                         <td className="text-center">{composition.screenIDs}</td>
-                        <td className="text-center">{composition.tags}</td>
+                        <td className="text-center flex items-center gap-2">
+                          {composition?.tags === "" && (
+                            <span>
+                              <AiOutlinePlusCircle
+                                size={30}
+                                className="mx-auto cursor-pointer"
+                                onClick={() => setShowTagModal(true)}
+                              />
+                            </span>
+                          )}
+
+                          {composition.tags
+                            .split(",")
+                            .slice(
+                              0,
+                              composition.tags.split(",").length > 2
+                                ? 3
+                                : composition.tags.split(",").length
+                            )
+                            .join(",")}
+                          {composition?.tags !== "" && (
+                            <MdOutlineModeEdit
+                              onClick={() => {
+                                setShowTagModal(true);
+                                setTags(composition?.tags.split(","));
+                              }}
+                              className="w-5 h-5 cursor-pointer"
+                            />
+                          )}
+
+                          {/* add or edit tag modal */}
+                          {showTagModal && (
+                            <AddOrEditTagPopup
+                              setShowTagModal={setShowTagModal}
+                              tags={tags}
+                              setTags={setTags}
+                              // handleTagsUpdate={handleTagsUpdate}
+                              composition={composition}
+                            />
+                          )}
+                        </td>
                         <td className="text-center relative">
                           <div className="">
                             <button

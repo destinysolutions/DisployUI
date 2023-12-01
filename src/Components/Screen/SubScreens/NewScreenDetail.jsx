@@ -64,7 +64,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [assetAllData, setAssetAllData] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState("");
   const [selectedDefaultAsset, setSelectedDefaultAsset] = useState("");
-  const [selectedSchedule, setSelectedSchedule] = useState();
+  const [selectedSchedule, setSelectedSchedule] = useState("");
   const [selectedComposition, setSelectedComposition] = useState();
   const [assetPreview, setAssetPreview] = useState("");
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
@@ -154,13 +154,12 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     } else {
       setScreenNameError("");
       let mediaType = selectedDefaultAsset ? 0 : selectedScreenTypeOption || 0;
-      console.log("defaultAsset", mediaType);
       let getScreenID = otpData.map((item) => item.ScreenID);
       let screen_id = getScreenID[0];
       let moduleID =
-        selectedAsset.assetID ||
-        selectedSchedule.scheduleId ||
-        selectedComposition.compositionID;
+        selectedAsset?.assetID ||
+        selectedSchedule?.scheduleId ||
+        selectedComposition?.compositionID;
       let data = JSON.stringify({
         screenID: screen_id,
         screenOrientation: selectScreenOrientation,

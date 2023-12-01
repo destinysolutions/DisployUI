@@ -147,6 +147,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [filteredScreenData, setFilteredScreenData] = useState([]);
   const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
 
   console.log("sendTvStatus log", sendTvStatus);
   console.log("sendTvStatusScreen log", sendTvStatusScreenID);
@@ -583,7 +584,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  const handleTagsUpdate = (screenToUpdate, tags) => {
+  // console.log(tags, tagUpdateScreeen);
+  const handleTagsUpdate = (tags) => {
     const {
       otp,
       googleLocation,
@@ -601,10 +603,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       tvTimeZone,
       tvScreenOrientation,
       tvScreenResolution,
-    } = screenToUpdate;
+    } = tagUpdateScreeen;
 
     let data = JSON.stringify({
-      screenID: screenToUpdate?.screenID,
+      screenID: tagUpdateScreeen?.screenID,
       otp,
       googleLocation,
       timeZone,
@@ -650,7 +652,22 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           return screen;
         });
 
-        setScreenData(updatedScreenData);
+        const updatedScreenDataFilter = filteredScreenData.map((screen) => {
+          if (response?.data?.data?.model.screenID === screen?.screenID) {
+            return {
+              ...screen,
+              tags: tags,
+            };
+          }
+          return screen;
+        });
+        if (updatedScreenDataFilter.length > 0) {
+          setFilteredScreenData(updatedScreenDataFilter);
+        }
+        if (updatedScreenData.length > 0) {
+          setScreenData(updatedScreenData);
+        }
+        setTagUpdateScreeen(response?.data?.data?.model);
       })
       .catch((error) => {
         console.log(error);
@@ -693,6 +710,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleScreenSearch = (event) => {
+    // setTags([])
     const searchQuery = event.target.value.toLowerCase();
     setSearchScreen(searchQuery);
 
@@ -953,6 +971,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   //     console.warn("Connection is not established yet.");
   //   }
   // }, [connection]);
+
+  console.log("screendata", screenData);
+  console.log("filtered screendata", filteredScreenData);
 
   return (
     <>
@@ -1621,13 +1642,19 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       )}
 
                       {tagsContentVisible && (
-                        <td className="p-2 text-center flex items-center justify-center gap-2 mt-6">
+                        <td className="p-2 text-center flex flex-wrap items-center justify-center gap-2 mt-6">
                           {screen?.tags === "" && (
                             <span>
                               <AiOutlinePlusCircle
                                 size={30}
                                 className="mx-auto cursor-pointer"
-                                onClick={() => setShowTagModal(true)}
+                                onClick={() => {
+                                  setShowTagModal(true);
+                                  screen.tags === ""
+                                    ? setTags([])
+                                    : setTags(screen?.tags?.split(","));
+                                  setTagUpdateScreeen(screen);
+                                }}
                               />
                             </span>
                           )}
@@ -1645,7 +1672,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             <MdOutlineModeEdit
                               onClick={() => {
                                 setShowTagModal(true);
-                                setTags(screen?.tags.split(","));
+                                screen.tags === ""
+                                  ? setTags([])
+                                  : setTags(screen?.tags?.split(","));
+                                setTagUpdateScreeen(screen);
                               }}
                               className="w-5 h-5 cursor-pointer"
                             />
@@ -1658,7 +1688,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               tags={tags}
                               setTags={setTags}
                               handleTagsUpdate={handleTagsUpdate}
-                              screen={screen}
+                              from="screen"
+                              setTagUpdateScreeen={setTagUpdateScreeen}
                             />
                           )}
                         </td>
@@ -1723,7 +1754,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
                           {isEditingScreen &&
                           editingScreenID === screen.screenID ? (
-                            <div className="flex items-center">
+                            <div className="flex items-center gap-2">
                               <input
                                 type="text"
                                 className="border border-primary rounded-md w-full"
@@ -1741,10 +1772,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 <AiOutlineSave className="text-2xl ml-1 hover:text-primary" />
                               </button>
                               {/* {screenNameError && (
-                              <div className="text-red">
-                                {screenNameError}
-                              </div>
-                            )} */}
+                                <div className="text-red">
+                                  {screenNameError}
+                                </div>
+                              )} */}
                             </div>
                           ) : (
                             <div>
@@ -1757,9 +1788,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 onClick={() => {
                                   setIsEditingScreen(true);
                                   handleScreenNameClick(screen.screenID);
+                                  setEditedScreenName(screen?.screenName);
                                 }}
                               >
-                                <MdOutlineModeEdit className="text-sm ml-2 hover:text-primary" />
+                                <MdOutlineModeEdit className="w-6 h-6 ml-2 hover:text-primary" />
                               </button>
                             </div>
                           )}
@@ -1788,10 +1820,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       )}
                       {/* {lastSeenContentVisible && (
-                      <td className="p-2 text-center break-words">
-                        25 May 2023
-                      </td>
-                    )} */}
+                        <td className="p-2 text-center break-words">
+                          25 May 2023
+                        </td>
+                      )} */}
                       {nowPlayingContentVisible && (
                         <td
                           className="p-2 text-center "
@@ -1805,6 +1837,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 ...selectedAsset,
                                 assetName: e.target.value,
                               });
+                              setSelectedAsset(screen?.assetName);
                             }}
                             title={screen?.assetName}
                             className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
@@ -1846,7 +1879,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             </button>
                           ) : (
                             `${screen.scheduleName} Till
-                        ${moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`
+                          ${moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`
                           )}
 
                           {showScheduleModal && (
@@ -1999,8 +2032,59 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       )}
 
                       {tagsContentVisible && (
-                        <td className="p-2 text-center">{screen.tags}</td>
+                        <td className="p-2 text-center flex flex-wrap items-center justify-center gap-2 mt-6">
+                          {screen?.tags === "" && (
+                            <span>
+                              <AiOutlinePlusCircle
+                                size={30}
+                                className="mx-auto cursor-pointer"
+                                onClick={() => {
+                                  setShowTagModal(true);
+                                  screen.tags === ""
+                                    ? setTags([])
+                                    : setTags(screen?.tags?.split(","));
+                                  setTagUpdateScreeen(screen);
+                                }}
+                              />
+                            </span>
+                          )}
+
+                          {screen.tags
+                            .split(",")
+                            .slice(
+                              0,
+                              screen.tags.split(",").length > 2
+                                ? 3
+                                : screen.tags.split(",").length
+                            )
+                            .join(",")}
+                          {screen?.tags !== "" && (
+                            <MdOutlineModeEdit
+                              onClick={() => {
+                                setShowTagModal(true);
+                                screen.tags === ""
+                                  ? setTags([])
+                                  : setTags(screen?.tags?.split(","));
+                                setTagUpdateScreeen(screen);
+                              }}
+                              className="w-5 h-5 cursor-pointer"
+                            />
+                          )}
+
+                          {/* add or edit tag modal */}
+                          {showTagModal && (
+                            <AddOrEditTagPopup
+                              setShowTagModal={setShowTagModal}
+                              tags={tags}
+                              setTags={setTags}
+                              handleTagsUpdate={handleTagsUpdate}
+                              from="screen"
+                              setTagUpdateScreeen={setTagUpdateScreeen}
+                            />
+                          )}
+                        </td>
                       )}
+
                       <td className="p-2 text-center relative">
                         <div className="relative">
                           <button
