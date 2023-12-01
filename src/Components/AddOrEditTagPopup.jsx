@@ -6,26 +6,17 @@ const AddOrEditTagPopup = ({
   tags,
   setTags,
   handleTagsUpdate,
-  screen,
+  from,
+  handleUpdateTagsOfComposition,
+  setTagUpdateScreeen,
 }) => {
   const [tagValue, setTagValue] = useState("");
 
-  const modalRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event?.target)) {
-        setShowTagModal(false);
-      }
-    };
-    document.addEventListener("click", handleClickOutside, true);
-    return () => {
-      document.removeEventListener("click", handleClickOutside, true);
-    };
-  }, [handleClickOutside]);
 
   function handleClickOutside() {
     setShowTagModal(false);
+    setTags([]);
+    setTagUpdateScreeen(null);
   }
 
   const handleAddTag = (e) => {
@@ -33,20 +24,25 @@ const AddOrEditTagPopup = ({
     if (tagValue === "") return;
     setTags([...tags, tagValue]);
     setTagValue("");
-    handleTagsUpdate(screen, [...tags, tagValue].join(" , "));
+    if (from === "screen") {
+      handleTagsUpdate([...tags, tagValue].join(","));
+    }
+    if (from === "composition") {
+      return handleUpdateTagsOfComposition([...tags, tagValue].join(","));
+    }
   };
 
   const handleDeleteTag = (val) => {
     const newTags = tags.filter((tag) => tag !== val);
     setTags(newTags);
-    handleTagsUpdate(screen, newTags.join(" , "));
+    handleTagsUpdate(newTags.join(","));
   };
-
+  // console.log(tags);
   return (
     <>
       <div
-        onClick={() => setShowTagModal(false)}
-        className="inset-0 fixed z-0 bg-black/20"
+        onClick={() => handleClickOutside(false)}
+        className="inset-0 fixed z-10 bg-black/20"
       ></div>
       <div className=" bg-white z-40 space-y-3 overflow-y-scroll hide_scrollbar absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  min-w-[50%] min-h-[50%] max-w-[50%] max-h-[50%] p-5 rounded-lg">
         <div className="flex items-center justify-between w-full bg-white sticky -top-3">
@@ -56,7 +52,7 @@ const AddOrEditTagPopup = ({
           <AiOutlineClose
             size={30}
             className=" cursor-pointer  bg-black text-white rounded-full w-6 h-6 -right-0 -top-0"
-            onClick={() => setShowTagModal(false)}
+            onClick={() => handleClickOutside(false)}
           />
         </div>
         <div className="flex items-center gap-3 flwro w-full h-full flex-wrap overflow-y-scroll hide_scrollbar">
