@@ -343,6 +343,29 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //     });
   // };
 
+  const getOverallEventTimes = (events) => {
+    if (events.length === 0) return null;
+
+    let earliestStartTime = events[0].start;
+    let latestEndTime = events[0].end;
+
+    for (const event of events) {
+      if (event.start < earliestStartTime) {
+        earliestStartTime = event.start;
+      }
+
+      if (event.end > latestEndTime) {
+        latestEndTime = event.end;
+      }
+    }
+
+    return {
+      earliestStartTime,
+      latestEndTime,
+    };
+  };
+  const overallEventTimes = getOverallEventTimes(myEvents);
+
   const saveEditedSchedule = () => {
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
@@ -686,29 +709,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       setSelectedScreens([]);
     }
   };
-
-  const getOverallEventTimes = (events) => {
-    if (events.length === 0) return null;
-
-    let earliestStartTime = events[0].start;
-    let latestEndTime = events[0].end;
-
-    for (const event of events) {
-      if (event.start < earliestStartTime) {
-        earliestStartTime = event.start;
-      }
-
-      if (event.end > latestEndTime) {
-        latestEndTime = event.end;
-      }
-    }
-
-    return {
-      earliestStartTime,
-      latestEndTime,
-    };
-  };
-  const overallEventTimes = getOverallEventTimes(myEvents);
 
   return (
     <>
