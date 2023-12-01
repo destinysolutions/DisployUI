@@ -4,6 +4,7 @@ import {
   AiOutlineAppstoreAdd,
   AiOutlineCloseCircle,
   AiOutlineCloudUpload,
+  AiOutlinePlusCircle,
   AiOutlineSave,
   AiOutlineSearch,
 } from "react-icons/ai";
@@ -53,6 +54,7 @@ import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { IoBarChartSharp } from "react-icons/io5";
 import ShowAssetModal from "../ShowAssetModal";
+import AddOrEditTagPopup from "../AddOrEditTagPopup";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -141,6 +143,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [sendTvStatusScreenID, setSendTvStatusScreenID] = useState(null);
   const [showNewScreenGroupPopup, setShowNewScreenGroupPopup] = useState(false);
   const [selectedCheckboxIDs, setSelectedCheckboxIDs] = useState([]);
+  const [showTagModal, setShowTagModal] = useState(false);
+  const [filteredScreenData, setFilteredScreenData] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   console.log("sendTvStatus log", sendTvStatus);
   console.log("sendTvStatusScreen log", sendTvStatusScreenID);
   const selectedScreenIdsString = Array.isArray(selectedCheckboxIDs)
@@ -576,6 +583,80 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+  const handleTagsUpdate = (screenToUpdate, tags) => {
+    const {
+      otp,
+      googleLocation,
+      timeZone,
+      screenOrientation,
+      screenResolution,
+      macid,
+      ipAddress,
+      postalCode,
+      latitude,
+      longitude,
+      userID,
+      mediaType,
+      mediaDetailID,
+      tvTimeZone,
+      tvScreenOrientation,
+      tvScreenResolution,
+    } = screenToUpdate;
+
+    let data = JSON.stringify({
+      screenID: screenToUpdate?.screenID,
+      otp,
+      googleLocation,
+      timeZone,
+      screenOrientation,
+      screenResolution,
+      macid,
+      ipAddress,
+      postalCode,
+      latitude,
+      longitude,
+      userID,
+      mediaType,
+      tags,
+      mediaDetailID,
+      tvTimeZone,
+      tvScreenOrientation,
+      tvScreenResolution,
+      screenName: editedScreenName,
+      operation: "Update",
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: UPDATE_NEW_SCREEN,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        const updatedScreenData = screenData.map((screen) => {
+          if (response?.data?.data?.model.screenID === screen?.screenID) {
+            return {
+              ...screen,
+              tags: tags,
+            };
+          }
+          return screen;
+        });
+
+        setScreenData(updatedScreenData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const handleNewScreenGroupClick = () => {
     const checkedIDs = Object.keys(screenCheckboxes).filter(
       (screenID) => screenCheckboxes[screenID]
@@ -611,18 +692,34 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const handleScreenFilter = (event) => {
+  const handleScreenSearch = (event) => {
     const searchQuery = event.target.value.toLowerCase();
     setSearchScreen(searchQuery);
 
     if (searchQuery === "") {
       setScreenData(screenAllData);
+      setFilteredScreenData([]);
     } else {
-      const filteredData = screenData.filter((item) => {
-        const itemName = item.screenName ? item.screenName.toLowerCase() : "";
-        return itemName.includes(searchQuery);
-      });
-      setScreenData(filteredData);
+      const filteredScreen = screenData.filter((entry) =>
+        Object.values(entry).some((val) => {
+          if (typeof val === "string") {
+            const keyWords = searchQuery.split(" ");
+            for (let i = 0; i < keyWords.length; i++) {
+              return (
+                val.toLocaleLowerCase().startsWith(keyWords[i]) ||
+                val.toLocaleLowerCase().endsWith(keyWords[i]) ||
+                val.toLocaleLowerCase().includes(keyWords[i]) ||
+                val.toLocaleLowerCase().includes(searchQuery)
+              );
+            }
+          }
+        })
+      );
+      if (filteredScreen.length > 0) {
+        setFilteredScreenData(filteredScreen);
+      } else {
+        setFilteredScreenData([]);
+      }
     }
   };
 
@@ -662,6 +759,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       });
 
     const connectSignalR = async () => {
+      console.log("run signal r");
       const newConnection = new HubConnectionBuilder()
         .withUrl(SIGNAL_R)
         .configureLogging(LogLevel.Information)
@@ -713,13 +811,16 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     if (UserData.user?.userID) {
+      setLoading(true);
       axios
         .get(SELECT_BY_USER_SCREENDETAIL, {
           headers: { Authorization: authToken },
         })
         .then((response) => {
           const fetchedData = response.data.data;
-          setScreenData(fetchedData);
+          if (fetchedData !== "Data Is Not Found") {
+            setScreenData(fetchedData);
+          }
           setScreenAllData(fetchedData);
           const initialCheckboxes = {};
           if (Array.isArray(fetchedData)) {
@@ -728,8 +829,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             });
             setScreenCheckboxes(initialCheckboxes);
           }
+          setLoading(false);
         })
         .catch((error) => {
+          setLoading(false);
           console.log(error);
         });
     }
@@ -859,6 +962,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <div className="pt-6 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
+          {/* top div */}
           <div className="justify-between flex items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
               Screens
@@ -872,9 +976,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 <input
                   type="text"
                   placeholder="Search screen" //location ,screen, tag
-                  className="border border-primary rounded-full px-7 py-2 search-user"
+                  className="border border-primary rounded-full px-7 pl-10 py-2 search-user"
                   value={searchScreen}
-                  onChange={handleScreenFilter}
+                  onChange={(e) => {
+                    handleScreenSearch(e);
+                  }}
                 />
               </div>
               {/* <Tooltip
@@ -1209,8 +1315,396 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   <th className="w-4"></th>
                 </tr>
               </thead>
-              {Array.isArray(screenData) &&
+              {loading ? (
+                <td colSpan="6" className="text-center font-semibold text-xl">
+                  Loading...
+                </td>
+              ) : screenData.length === 0 && !loading ? (
+                <td colSpan="6" className="text-center font-semibold text-xl">
+                  No Screens
+                </td>
+              ) : filteredScreenData.length === 0 ? (
                 screenData.map((screen) => (
+                  <tbody key={screen.screenID}>
+                    <tr className="border-b border-b-[#E4E6FF]">
+                      {screenContentVisible && (
+                        <td className="flex items-center ">
+                          <input
+                            type="checkbox"
+                            className="mr-3"
+                            style={{
+                              display: selectAllChecked ? "block" : "none",
+                            }}
+                            onChange={() =>
+                              handleScreenCheckboxChange(screen.screenID)
+                            }
+                            checked={screenCheckboxes[screen.screenID]}
+                          />
+
+                          {isEditingScreen &&
+                          editingScreenID === screen.screenID ? (
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="text"
+                                className="border border-primary rounded-md w-full"
+                                value={editedScreenName}
+                                onChange={(e) => {
+                                  setEditedScreenName(e.target.value);
+                                }}
+                              />
+                              <button
+                                onClick={() => {
+                                  handleScreenNameUpdate(screen.screenID);
+                                  setEditingScreenID(null);
+                                }}
+                              >
+                                <AiOutlineSave className="text-2xl ml-1 hover:text-primary" />
+                              </button>
+                              {/* {screenNameError && (
+                                <div className="text-red">
+                                  {screenNameError}
+                                </div>
+                              )} */}
+                            </div>
+                          ) : (
+                            <div>
+                              <Link
+                                to={`/screensplayer?screenID=${screen.screenID}`}
+                              >
+                                {screen.screenName}
+                              </Link>
+                              <button
+                                onClick={() => {
+                                  setIsEditingScreen(true);
+                                  handleScreenNameClick(screen.screenID);
+                                  setEditedScreenName(screen?.screenName);
+                                }}
+                              >
+                                <MdOutlineModeEdit className="w-6 h-6 ml-2 hover:text-primary" />
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      )}
+                      {locContentVisible && (
+                        <td className="p-2 break-words text-center">
+                          {screen.googleLocation}
+                        </td>
+                      )}
+                      {statusContentVisible && (
+                        <td className="p-2 text-center">
+                          <button
+                            className={`rounded-full px-6 py-2 text-white text-center ${
+                              screen.screenID === sendTvStatusScreenID &&
+                              sendTvStatus
+                                ? "bg-[#3AB700]"
+                                : "bg-[#FF0000]"
+                            }`}
+                          >
+                            {screen.screenID == sendTvStatusScreenID &&
+                            sendTvStatus == true
+                              ? "Live"
+                              : "offline"}
+                          </button>
+                        </td>
+                      )}
+                      {/* {lastSeenContentVisible && (
+                        <td className="p-2 text-center break-words">
+                          25 May 2023
+                        </td>
+                      )} */}
+                      {nowPlayingContentVisible && (
+                        <td
+                          className="p-2 text-center "
+                          style={{ wordBreak: "break-all" }}
+                        >
+                          <div
+                            onClick={(e) => {
+                              setAssetScreenID(screen.screenID);
+                              setShowAssetModal(true);
+                              setSelectedAsset({
+                                ...selectedAsset,
+                                assetName: e.target.value,
+                              });
+                              setSelectedAsset(screen?.assetName);
+                            }}
+                            title={screen?.assetName}
+                            className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                          >
+                            <p className="line-clamp-3">{screen.assetName}</p>
+                            <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
+                          </div>
+                          {showAssetModal && (
+                            <ShowAssetModal
+                              handleAssetAdd={handleAssetAdd}
+                              handleAssetUpdate={handleAssetUpdate}
+                              handleCompositionsAdd={handleCompositionsAdd}
+                              popupActiveTab={popupActiveTab}
+                              setAssetPreviewPopup={setAssetPreviewPopup}
+                              setPopupActiveTab={setPopupActiveTab}
+                              setShowAssetModal={setShowAssetModal}
+                              assetPreviewPopup={assetPreviewPopup}
+                              assetData={assetData}
+                              assetPreview={assetPreview}
+                              selectedComposition={selectedComposition}
+                              handleFilter={handleFilter}
+                              searchAsset={searchAsset}
+                              selectedAsset={selectedAsset}
+                              compositionData={compositionData}
+                            />
+                          )}
+                        </td>
+                      )}
+                      {currScheduleContentVisible && (
+                        <td className="break-words	w-[150px] p-2 text-center">
+                          {screen.scheduleName == "" ? (
+                            <button
+                              onClick={() => {
+                                setShowScheduleModal(true);
+                                setScheduleScreenID(screen.screenID);
+                              }}
+                            >
+                              Set a schedule
+                            </button>
+                          ) : (
+                            `${screen.scheduleName} Till
+                          ${moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`
+                          )}
+
+                          {showScheduleModal && (
+                            <>
+                              <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                                <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                                  <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                    <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                                      <div className="flex items-center">
+                                        <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                          Set Schedule
+                                        </h3>
+                                      </div>
+                                      <button
+                                        className="p-1 text-xl"
+                                        onClick={() =>
+                                          setShowScheduleModal(false)
+                                        }
+                                      >
+                                        <AiOutlineCloseCircle className="text-2xl" />
+                                      </button>
+                                    </div>
+                                    <div className="overflow-x-auto mt-8 px-5">
+                                      <table
+                                        className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+                                        cellPadding={20}
+                                      >
+                                        <thead>
+                                          <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                                            <th className="font-medium text-[14px]">
+                                              <div className="flex items-center">
+                                                <TbCalendarTime className="mr-2 text-xl" />
+                                                Schedule Name
+                                              </div>
+                                            </th>
+                                            <th className="font-medium text-[14px]">
+                                              <div className="flex items-center">
+                                                <TbCalendarTime className="mr-2 text-xl" />
+                                                Time Zones
+                                              </div>
+                                            </th>
+                                            <th className="font-medium text-[14px]">
+                                              <div className=" flex  items-center justify-center mx-auto">
+                                                <VscCalendar className="mr-2 text-xl" />
+                                                Date Added
+                                              </div>
+                                            </th>
+                                            <th className="font-medium text-[14px]">
+                                              <div className=" flex  items-center justify-center mx-auto">
+                                                <TbCalendarStats className="mr-2 text-xl" />
+                                                start date
+                                              </div>
+                                            </th>
+                                            <th className="font-medium text-[14px]">
+                                              <div className=" flex  items-center justify-center mx-auto">
+                                                <TbCalendarStats className="mr-2 text-xl" />
+                                                End date
+                                              </div>
+                                            </th>
+                                            <th className="font-medium text-[14px]">
+                                              <div className=" flex  items-center justify-center mx-auto">
+                                                <RiComputerLine className="mr-2 text-xl" />
+                                                screens Assigned
+                                              </div>
+                                            </th>
+                                            <th className="font-medium text-[14px]">
+                                              <div className="flex  items-center justify-center mx-auto">
+                                                <BsTags className="mr-2 text-xl" />
+                                                Tags
+                                              </div>
+                                            </th>
+                                            <th></th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {scheduleData.map((schedule) => (
+                                            <tr
+                                              className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                              key={schedule.scheduleId}
+                                            >
+                                              <td className="flex items-center ">
+                                                <input
+                                                  type="checkbox"
+                                                  className="mr-3"
+                                                  onChange={() =>
+                                                    handleScheduleAdd(schedule)
+                                                  }
+                                                />
+                                                <div>
+                                                  <div>
+                                                    {schedule.scheduleName}
+                                                  </div>
+                                                </div>
+                                              </td>
+                                              <td className="text-center">
+                                                {schedule.timeZoneName}
+                                              </td>
+                                              <td className="text-center">
+                                                {moment(
+                                                  schedule.createdDate
+                                                ).format("YYYY-MM-DD hh:mm")}
+                                              </td>
+                                              <td className="text-center">
+                                                {moment(
+                                                  schedule.startDate
+                                                ).format("YYYY-MM-DD hh:mm")}
+                                              </td>
+
+                                              <td className="text-center">
+                                                {moment(
+                                                  schedule.endDate
+                                                ).format("YYYY-MM-DD hh:mm")}
+                                              </td>
+                                              <td className="p-2 text-center">
+                                                {schedule.screenAssigned}
+                                              </td>
+                                              <td className="p-2 text-center">
+                                                {schedule.tags}
+                                              </td>
+                                              <td className="text-center">
+                                                <Link to="/myschedule">
+                                                  <button className="ml-3 relative">
+                                                    <HiDotsVertical />
+                                                  </button>
+                                                </Link>
+                                              </td>
+                                            </tr>
+                                          ))}
+                                        </tbody>
+                                      </table>
+                                    </div>
+
+                                    <div className="py-4 flex justify-center">
+                                      <button
+                                        onClick={() => {
+                                          setShowScheduleModal(false);
+                                          handleScheduleUpdate(screen.screenID);
+                                        }}
+                                        className=" border-primary px-5 py-2 rounded-full ml-3"
+                                      >
+                                        Save
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </td>
+                      )}
+
+                      {tagsContentVisible && (
+                        <td className="p-2 text-center flex items-center justify-center gap-2 mt-6">
+                          {screen?.tags === "" && (
+                            <span>
+                              <AiOutlinePlusCircle
+                                size={30}
+                                className="mx-auto cursor-pointer"
+                                onClick={() => setShowTagModal(true)}
+                              />
+                            </span>
+                          )}
+
+                          {screen.tags
+                            .split(",")
+                            .slice(
+                              0,
+                              screen.tags.split(",").length > 2
+                                ? 3
+                                : screen.tags.split(",").length
+                            )
+                            .join(",")}
+                          {screen?.tags !== "" && (
+                            <MdOutlineModeEdit
+                              onClick={() => {
+                                setShowTagModal(true);
+                                setTags(screen?.tags.split(","));
+                              }}
+                              className="w-5 h-5 cursor-pointer"
+                            />
+                          )}
+
+                          {/* add or edit tag modal */}
+                          {showTagModal && (
+                            <AddOrEditTagPopup
+                              setShowTagModal={setShowTagModal}
+                              tags={tags}
+                              setTags={setTags}
+                              handleTagsUpdate={handleTagsUpdate}
+                              screen={screen}
+                            />
+                          )}
+                        </td>
+                      )}
+
+                      <td className="p-2 text-center relative">
+                        <div className="relative">
+                          <button
+                            className="ml-3 relative"
+                            onClick={() => handleScreenClick(screen.screenID)}
+                          >
+                            <HiDotsVertical />
+                          </button>
+                          {/* action popup start */}
+                          {showActionBox[screen.screenID] && (
+                            <div className="scheduleAction z-10">
+                              <div className="my-1">
+                                <Link
+                                  to={`/screensplayer?screenID=${screen.screenID}`}
+                                >
+                                  <button className="text-sm">
+                                    Edit Screen
+                                  </button>
+                                </Link>
+                              </div>
+
+                              <div className="mb-1 border border-[#F2F0F9]"></div>
+                              <div className=" mb-1 text-[#D30000]">
+                                <button
+                                  onClick={() =>
+                                    handelDeleteScreen(screen.screenID)
+                                  }
+                                  className="text-sm text-left"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                ))
+              ) : (
+                filteredScreenData.map((screen) => (
                   <tbody key={screen.screenID}>
                     <tr className="border-b border-b-[#E4E6FF]">
                       {screenContentVisible && (
@@ -1247,10 +1741,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 <AiOutlineSave className="text-2xl ml-1 hover:text-primary" />
                               </button>
                               {/* {screenNameError && (
-                                <div className="text-red">
-                                  {screenNameError}
-                                </div>
-                              )} */}
+                              <div className="text-red">
+                                {screenNameError}
+                              </div>
+                            )} */}
                             </div>
                           ) : (
                             <div>
@@ -1294,18 +1788,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                       )}
                       {/* {lastSeenContentVisible && (
-                        <td className="p-2 text-center break-words">
-                          25 May 2023
-                        </td>
-                      )} */}
+                      <td className="p-2 text-center break-words">
+                        25 May 2023
+                      </td>
+                    )} */}
                       {nowPlayingContentVisible && (
                         <td
                           className="p-2 text-center "
                           style={{ wordBreak: "break-all" }}
                         >
-                          <button
+                          <div
                             onClick={(e) => {
-                              // console.log(screen.screenID);
                               setAssetScreenID(screen.screenID);
                               setShowAssetModal(true);
                               setSelectedAsset({
@@ -1313,15 +1806,16 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 assetName: e.target.value,
                               });
                             }}
-                            className="flex items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                            title={screen?.assetName}
+                            className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           >
-                            {screen.assetName}
-                            <AiOutlineCloudUpload className="text-lg ml-3" />
-                          </button>
+                            <p className="line-clamp-3">{screen.assetName}</p>
+                            <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
+                          </div>
                           {showAssetModal && (
                             <ShowAssetModal
                               handleAssetAdd={handleAssetAdd}
-                              handleAssetUpdate={handleScheduleUpdate}
+                              handleAssetUpdate={handleAssetUpdate}
                               handleCompositionsAdd={handleCompositionsAdd}
                               popupActiveTab={popupActiveTab}
                               setAssetPreviewPopup={setAssetPreviewPopup}
@@ -1352,7 +1846,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             </button>
                           ) : (
                             `${screen.scheduleName} Till
-                          ${moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`
+                        ${moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`
                           )}
 
                           {showScheduleModal && (
@@ -1545,7 +2039,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       </td>
                     </tr>
                   </tbody>
-                ))}
+                ))
+              )}
             </table>
           </div>
         </div>
