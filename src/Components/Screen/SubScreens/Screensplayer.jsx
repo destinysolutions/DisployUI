@@ -18,11 +18,13 @@ import Footer from "../../Footer";
 import {
   GET_ALL_FILES,
   GET_ALL_SCREEN_ORIENTATION,
+  GET_ALL_SCREEN_RESOLUTION,
   GET_ALL_TAGS,
   GET_CURRENT_ASSET,
   GET_SCREEN_TIMEZONE,
   SCREEN_PREVIEW,
   SELECT_BY_SCREENID_SCREENDETAIL,
+  SIGNAL_R,
   UPDATE_NEW_SCREEN,
 } from "../../../Pages/Api";
 import axios from "axios";
@@ -30,6 +32,7 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 import Carousel from "../../Composition/DynamicCarousel";
 import toast from "react-hot-toast";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -62,7 +65,49 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     data: [],
     myComposition: [],
   });
+  const [screenName, setScreenName] = useState("");
+  const [selectScreenResolution, setSelectScreenResolution] = useState();
+  const [getScreenResolution, setScreenResolution] = useState([]);
   const [compositionData, setCompositionData] = useState([]);
+  const [connection, setConnection] = useState(null);
+  // const [sendTvStatus, setSendTvStatus] = useState(null);
+  // const [sendTvStatusScreenID, setSendTvStatusScreenID] = useState(null);
+
+  // useEffect(() => {
+  //   const newConnection = new HubConnectionBuilder()
+  //     .withUrl(SIGNAL_R)
+  //     .configureLogging(LogLevel.Information)
+  //     .build();
+
+  //   newConnection.on("TvStatus", (UserID, ScreenID, status) => {
+  //     console.log("SendTvStatus", UserID, ScreenID, status);
+  //     setSendTvStatus(status);
+  //     setSendTvStatusScreenID(ScreenID);
+  //   });
+
+  //   newConnection
+  //     .start()
+  //     .then(() => {
+  //       console.log("Connection established");
+  //       setConnection(newConnection);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error starting connection:", error);
+  //     });
+
+  //   return () => {
+  //     if (connection) {
+  //       connection
+  //         .stop()
+  //         .then(() => {
+  //           console.log("Connection stopped");
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error stopping connection:", error);
+  //         });
+  //     }
+  //   };
+  // }, []);
 
   let currentDate = new Date();
   let formatedate = moment(currentDate).format("YYYY-MM-DD hh:mm");
@@ -76,7 +121,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   function handleScreenOrientationRadio(e, optionId) {
     setSelectScreenOrientation(optionId);
   }
-
+  function handleScreenResolutionRadio(e, optionId) {
+    setSelectScreenResolution(optionId);
+  }
   function updatetoggle(id) {
     setToggle(id);
   }
@@ -233,7 +280,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     if (getScreenID) {
       const {
         otp,
-        screenResolution,
         macid,
         ipAddress,
         postalCode,
@@ -243,7 +289,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         tvTimeZone,
         tvScreenOrientation,
         tvScreenResolution,
-        screenName,
         mediaDetailID,
         mediaType,
         googleLocation,
@@ -254,7 +299,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         otp,
         timeZone: selectedTimezoneName,
         screenOrientation: selectScreenOrientation,
-        screenResolution,
+        screenResolution: selectScreenResolution,
         macid,
         ipAddress,
         postalCode,
@@ -267,7 +312,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         tvTimeZone,
         tvScreenOrientation,
         tvScreenResolution,
-        screenName,
+        screenName: screenName,
+        googleLocation,
         operation: "Update",
       });
 
@@ -321,13 +367,20 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         headers: { Authorization: authToken },
       }),
       axios.get(GET_SCREEN_TIMEZONE, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_SCREEN_RESOLUTION, {
+        headers: { Authorization: authToken },
+      }),
     ];
 
     // Use Promise.all to send all requests concurrently
     Promise.all(axiosRequests)
       .then((responses) => {
-        const [filesResponse, screenOrientationResponse, timezoneResponse] =
-          responses;
+        const [
+          filesResponse,
+          screenOrientationResponse,
+          timezoneResponse,
+          screenResolutionResponse,
+        ] = responses;
 
         // Process each response and set state accordingly
         const fetchedData = filesResponse.data;
@@ -343,6 +396,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         setScreenOrientation(screenOrientationResponse.data.data);
 
         setTimezone(timezoneResponse.data.data);
+        setScreenResolution(screenResolutionResponse.data.data);
       })
       .catch((error) => {
         console.error(error);
@@ -359,9 +413,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         handleFetchPreviewScreen(fetchedData[0]?.macid);
         setScreenData(fetchedData);
         setSelectScreenOrientation(fetchedData[0].screenOrientation);
+        setSelectScreenResolution(fetchedData[0].screenResolution);
         setSelectedTimezoneName(fetchedData[0].timeZone);
         setSelectedTag(fetchedData[0].tags);
         setGoogleLoc(fetchedData[0].googleLocation);
+        setScreenName(fetchedData[0].screenName);
       })
       .catch((error) => {
         console.log(error);
@@ -555,7 +611,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className="lg:col-start-4 lg:col-span-6 md:col-start-1 md:col-span-12  sm:col-start-1 sm:col-span-12 text-center">
                   <ul className="inline-flex items-center justify-center border border-gray rounded-full my-4 shadow-xl">
                     <li className="text-sm firstli">
-                      {" "}
                       <button
                         className={toggle === 1 ? "tabshow tabactive" : "tab"}
                         onClick={() => updatetoggle(1)}
@@ -564,7 +619,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       </button>
                     </li>
                     <li className="text-sm">
-                      {" "}
                       <button
                         className={toggle === 2 ? "tabshow tabactive" : "tab"}
                         onClick={() => updatetoggle(2)}
@@ -723,7 +777,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             {/* <tr>
                           <td colSpan={2}>
                             <div className="flex items-center justify-center">
-                              {" "}
+                              
                               <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base mr-2">
                                 Do you want to run the App at boot up time :
                               </p>
@@ -773,6 +827,24 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     >
                       <tbody>
                         <tr className="border-b border-[#D5E3FF]">
+                          <td className="text-right">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                              Screen Name:
+                            </p>
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="border border-[#D5E3FF] rounded-full px-3 py-2.5"
+                              //placeholder="132, My Street, Kingston, New York..."
+                              onChange={(e) => {
+                                setScreenName(e.target.value);
+                              }}
+                              value={screenName}
+                            />
+                          </td>
+                        </tr>
+                        <tr className="border-b border-[#D5E3FF]">
                           <td className="lg:text-right md:text-right sm:text-left xs:text-left lg:w-2/4  md:w-2/4 sm:w-full">
                             <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Orientation:
@@ -807,6 +879,41 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                           </td>
                         </tr>
+                        <tr className="border-b border-[#D5E3FF]">
+                          <td className="lg:text-right md:text-right sm:text-left xs:text-left lg:w-2/4  md:w-2/4 sm:w-full">
+                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                              Resolution:
+                            </p>
+                          </td>
+                          <td className="text-left">
+                            <div className="flex lg:justify-center md:justify-start sm:justify-start xs:justify-start lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
+                              {getScreenResolution.map((option) => (
+                                <div
+                                  key={option.resolutionsID}
+                                  className="flex"
+                                >
+                                  <input
+                                    type="radio"
+                                    value={option.resolutionsID}
+                                    checked={
+                                      option.resolutionsID ===
+                                      selectScreenResolution
+                                    }
+                                    onChange={(e) =>
+                                      handleScreenResolutionRadio(
+                                        e,
+                                        option.resolutionsID
+                                      )
+                                    }
+                                  />
+                                  <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
+                                    {option.resolutionsName}
+                                  </label>
+                                </div>
+                              ))}
+                            </div>
+                          </td>
+                        </tr>
                         <tr>
                           {/* <td className="lg:text-right md:text-right sm:text-left xs:text-left pb-0">
                             <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
@@ -816,7 +923,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           {/* <td className="text-left pb-0">
                             <ul className="inline-flex items-center justify-center  my-4 lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
                               <li className="text-sm">
-                                {" "}
+                                
                                 <button
                                   className={
                                     sync === 1
@@ -829,7 +936,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 </button>
                               </li>
                               <li className="text-sm">
-                                {" "}
+                                
                                 <button
                                   className={
                                     sync === 2
@@ -866,7 +973,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     </p>
                                   </td>
                                 </tr> */}
-                                <tr className="border-b border-[#D5E3FF]">
+                                {/* <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                       Google Location:
@@ -880,7 +987,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       readOnly
                                     />
                                   </td>
-                                </tr>
+                                </tr> */}
 
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
@@ -1102,7 +1209,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                   className="mr-3"
                                                 />
                                                 HDFC Bank **** **** **** 6246
-                                              </label>{" "}
+                                              </label>
                                               <input
                                                 type="radio"
                                                 name="payment"
@@ -1127,7 +1234,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 {/* <tr>
                                   <td colSpan={2}>
                                     <div className="flex items-center justify-center">
-                                      {" "}
+                                      
                                       <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base mr-2">
                                         Do you want to run the App at boot up
                                         time :

@@ -72,7 +72,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
       method: "get",
       maxBodyLength: Infinity,
       url: GET_ALL_ORGANIZATION_MASTER,
-      headers: {},
+      headers: { Authorization: authToken },
     };
     axios
       .request(config)
