@@ -635,7 +635,7 @@ const Userrole = () => {
             <div className="flex justify-between">
               <div className="role-name">
                 <p>Total {userrole.userCount} Users</p>
-                <h3 className="text-3xl text-primary my-2">
+                <h3 className="text-3xl text-primary my-2 break-words">
                   {userrole.orgUserRole}
                 </h3>
                 <button

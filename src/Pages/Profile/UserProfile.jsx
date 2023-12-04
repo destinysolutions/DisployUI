@@ -34,31 +34,31 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
       desc: <Account />,
       icon: <AiOutlineUser />,
     },
-    {
-      label: "Security",
-      value: "security",
-      desc: <Security />,
-      icon: <CiLock />,
-    },
+    // {
+    //   label: "Security",
+    //   value: "security",
+    //   desc: <Security />,
+    //   icon: <CiLock />,
+    // },
 
-    {
-      label: "Billing & Plans",
-      value: "billing_plans",
-      desc: <BillingsPlans />,
-      icon: <BsSdCard />,
-    },
-    {
-      label: "Notifications",
-      value: "notifications",
-      desc: <Notifications />,
-      icon: <IoIosNotificationsOutline />,
-    },
-    {
-      label: "Connections",
-      value: "connections",
-      desc: <Connection />,
-      icon: <AiOutlineLink />,
-    },
+    // {
+    //   label: "Billing & Plans",
+    //   value: "billing_plans",
+    //   desc: <BillingsPlans />,
+    //   icon: <BsSdCard />,
+    // },
+    // {
+    //   label: "Notifications",
+    //   value: "notifications",
+    //   desc: <Notifications />,
+    //   icon: <IoIosNotificationsOutline />,
+    // },
+    // {
+    //   label: "Connections",
+    //   value: "connections",
+    //   desc: <Connection />,
+    //   icon: <AiOutlineLink />,
+    // },
   ];
   return (
     <>
@@ -75,7 +75,7 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <div className="mt-5 page-contain">
             <Tabs value={activeTab}>
-              <TabsHeader className="p-0 mb-5 text-[#A7AFB7]">
+              <TabsHeader className="p-0 text-[#A7AFB7]">
                 {data.map(({ icon, label, value }) => (
                   <Tab
                     key={value}

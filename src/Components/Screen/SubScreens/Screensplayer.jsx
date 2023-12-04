@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
 import "../../../Styles/screen.css";
 import { IoMdRefresh } from "react-icons/io";
 import { MdArrowBackIosNew } from "react-icons/md";
-import { RiDeleteBin5Line } from "react-icons/ri";
+import { RiComputerLine, RiDeleteBin5Line } from "react-icons/ri";
 import { HiOutlineChevronDown } from "react-icons/hi2";
-import { AiOutlineCloudUpload } from "react-icons/ai";
+import { AiOutlineCloudUpload, AiOutlineSearch } from "react-icons/ai";
 import { MdElectricBolt } from "react-icons/md";
 import { Link, useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -14,14 +14,18 @@ import ReactPlayer from "react-player";
 import { FiPlus } from "react-icons/fi";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import { GrScheduleNew } from "react-icons/gr";
 import Footer from "../../Footer";
 import {
+  GET_ALL_COMPOSITIONS,
   GET_ALL_FILES,
+  GET_ALL_SCHEDULE,
   GET_ALL_SCREEN_ORIENTATION,
   GET_ALL_SCREEN_RESOLUTION,
   GET_ALL_TAGS,
   GET_CURRENT_ASSET,
   GET_SCREEN_TIMEZONE,
+  GET_SCREEN_TYPE,
   SCREEN_PREVIEW,
   SELECT_BY_SCREENID_SCREENDETAIL,
   SIGNAL_R,
@@ -33,6 +37,10 @@ import moment from "moment";
 import Carousel from "../../Composition/DynamicCarousel";
 import toast from "react-hot-toast";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
+import { VscCalendar } from "react-icons/vsc";
+import { BsTags } from "react-icons/bs";
+import { HiDotsVertical } from "react-icons/hi";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -69,7 +77,33 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectScreenResolution, setSelectScreenResolution] = useState();
   const [getScreenResolution, setScreenResolution] = useState([]);
   const [compositionData, setCompositionData] = useState([]);
+  const [compositionAPIData, setCompositionAPIData] = useState([]);
+  const [selectedComposition, setSelectedComposition] = useState();
+  const [selectedScreenTypeOption, setSelectedScreenTypeOption] = useState("");
+  const [selectedAsset, setSelectedAsset] = useState("");
+  const [assetPreview, setAssetPreview] = useState("");
+  const [selectedSchedule, setSelectedSchedule] = useState("");
+  const [confirmForComposition, setConfirmForComposition] = useState(false);
+  const [saveForSchedule, setSaveForSchedule] = useState(false);
+  const [getSelectedScreenTypeOption, setGetSelectedScreenTypeOption] =
+    useState([]);
+  const [showCompositionModal, setShowCompositionModal] = useState(false);
+  const [scheduleData, setScheduleData] = useState([]);
+  const [showUploadAssestModal, setShowUploadAssestModal] = useState(false);
+  const [showAssetModal, setShowAssetModal] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [selectedDefaultAsset, setSelectedDefaultAsset] = useState("");
+  const [showAssestOptionsPopup, setShowAssestOptionsPopup] = useState(false);
+  const [searchAsset, setSearchAsset] = useState("");
+  const [assetAllData, setAssetAllData] = useState([]);
+  const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
+
   const [connection, setConnection] = useState(null);
+
+  const modalRef = useRef(null);
+  const modalPreviewRef = useRef(null);
+  const scheduleRef = useRef(null);
+  const compositionRef = useRef(null);
   // const [sendTvStatus, setSendTvStatus] = useState(null);
   // const [sendTvStatusScreenID, setSendTvStatusScreenID] = useState(null);
 
@@ -108,7 +142,53 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   //     }
   //   };
   // }, []);
+  const handleFilter = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchAsset(searchQuery);
 
+    if (searchQuery === "") {
+      setAssetData(assetAllData);
+    } else {
+      const filteredData = assetData.filter((item) => {
+        const itemName = item.assetName ? item.assetName.toLowerCase() : "";
+        return itemName.includes(searchQuery);
+      });
+      setAssetData(filteredData);
+    }
+  };
+  const handleAssetAdd = (asset) => {
+    setAssetPreview(asset);
+  };
+  const handleCompositionsAdd = (composition) => {
+    setSelectedComposition(composition);
+  };
+  const handleOnConfirm = () => {
+    setShowAssetModal(false);
+    setSelectedAsset(assetPreview);
+    setShowAssestOptionsPopup(false);
+  };
+  const handleScheduleAdd = (schedule) => {
+    setSelectedSchedule(schedule);
+  };
+  const handleOnSaveSchedule = () => {
+    setShowScheduleModal(false);
+    if (selectedSchedule !== "") {
+      setSaveForSchedule(true);
+    }
+  };
+  const handleOptionChange = (e) => {
+    setSelectedScreenTypeOption(e.target.value);
+    setSelectedComposition("");
+    setSelectedAsset("");
+    setAssetPreview("");
+    setSelectedSchedule("");
+    setConfirmForComposition(false);
+    setSaveForSchedule(false);
+  };
+  const handleConfirmOnComposition = () => {
+    setShowCompositionModal(false);
+    if (selectedComposition !== "") setConfirmForComposition(true);
+  };
   let currentDate = new Date();
   let formatedate = moment(currentDate).format("YYYY-MM-DD hh:mm");
 
@@ -277,6 +357,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   }, [screenPreviewData]);
 
   const handleScreenDetail = () => {
+    let mediaType = selectedDefaultAsset ? 0 : selectedScreenTypeOption || 0;
+    let moduleID =
+      selectedAsset?.assetID ||
+      selectedSchedule?.scheduleId ||
+      selectedComposition?.compositionID;
     if (getScreenID) {
       const {
         otp,
@@ -289,8 +374,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         tvTimeZone,
         tvScreenOrientation,
         tvScreenResolution,
-        mediaDetailID,
-        mediaType,
         googleLocation,
       } = getScreenID;
 
@@ -306,9 +389,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         latitude,
         longitude,
         userID,
-        mediaType,
+        mediaType: mediaType,
         tags: selectedTag,
-        mediaDetailID,
+        mediaDetailID: moduleID || 0,
         tvTimeZone,
         tvScreenOrientation,
         tvScreenResolution,
@@ -370,6 +453,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       axios.get(GET_ALL_SCREEN_RESOLUTION, {
         headers: { Authorization: authToken },
       }),
+      axios.get(GET_SCREEN_TYPE, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_SCHEDULE, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_COMPOSITIONS, {
+        headers: { Authorization: authToken },
+      }),
     ];
 
     // Use Promise.all to send all requests concurrently
@@ -380,6 +468,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           screenOrientationResponse,
           timezoneResponse,
           screenResolutionResponse,
+          screenTypeResponse,
+          scheduleResponse,
+          compositionResponse,
         ] = responses;
 
         // Process each response and set state accordingly
@@ -392,11 +483,12 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
         ];
         setAssetData(allAssets);
-
         setScreenOrientation(screenOrientationResponse.data.data);
-
         setTimezone(timezoneResponse.data.data);
         setScreenResolution(screenResolutionResponse.data.data);
+        setGetSelectedScreenTypeOption(screenTypeResponse.data.data);
+        setScheduleData(scheduleResponse.data.data);
+        setCompositionAPIData(compositionResponse.data.data);
       })
       .catch((error) => {
         console.error(error);
@@ -1053,7 +1145,842 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     </select>
                                   </td>
                                 </tr>
+                                <tr className="border-b border-[#D5E3FF]">
+                                  <td className="text-right">
+                                    <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                      Type
+                                    </p>
+                                  </td>
+                                  <td>
+                                    <select
+                                      className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                      value={selectedScreenTypeOption}
+                                      onChange={handleOptionChange}
+                                    >
+                                      <option value="">Select Type</option>
+                                      {getSelectedScreenTypeOption.map(
+                                        (option) => (
+                                          <option
+                                            key={option.mediaTypeId}
+                                            value={option.mediaTypeId}
+                                          >
+                                            {option.mediaTypeName}
+                                          </option>
+                                        )
+                                      )}
+                                    </select>
+                                  </td>
+                                </tr>
+                                {selectedScreenTypeOption === "1" && (
+                                  <tr className={`display-none`}>
+                                    <td></td>
+                                    <td className="relative">
+                                      <input
+                                        className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                        value={
+                                          selectedAsset.assetName ||
+                                          selectedDefaultAsset
+                                        }
+                                        readOnly
+                                        placeholder="Select option"
+                                        onChange={(e) =>
+                                          setSelectedAsset({
+                                            ...selectedAsset,
+                                            assetName: e.target.value,
+                                          })
+                                        }
+                                        onClick={() =>
+                                          setShowAssestOptionsPopup(
+                                            !showAssestOptionsPopup
+                                          )
+                                        }
+                                      />
 
+                                      {showAssestOptionsPopup && (
+                                        <>
+                                          <div className="absolute left-[10%] bottom-[-3px]  text-[35px]  z-20">
+                                            <img
+                                              src="/DisployImg/Polygon.svg"
+                                              alt="notification"
+                                              className="cursor-pointer assestPopup"
+                                            />
+                                          </div>
+                                          <div className="absolute left-[2%] bottom-[-74px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10  pr-16">
+                                            <div
+                                              className="text-sm mb-1 mt-2 ml-3 cursor-pointer"
+                                              onClick={() => {
+                                                setShowAssetModal(true);
+                                                setShowAssestOptionsPopup(
+                                                  false
+                                                );
+                                              }}
+                                            >
+                                              Browse
+                                            </div>
+
+                                            <div
+                                              className="text-sm mb-3 mt-3 ml-3 cursor-pointer"
+                                              onClick={() => {
+                                                setSelectedDefaultAsset(
+                                                  "Default Asset"
+                                                );
+                                                setShowAssestOptionsPopup(
+                                                  false
+                                                );
+                                              }}
+                                            >
+                                              Default Assets
+                                            </div>
+                                          </div>
+                                        </>
+                                      )}
+                                    </td>
+                                  </tr>
+                                )}
+
+                                {showUploadAssestModal && <FileUpload />}
+                                {showAssetModal && (
+                                  <tr>
+                                    <td>
+                                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                                        <div
+                                          ref={modalRef}
+                                          className="relative w-auto my-6 mx-auto myplaylist-popup-details"
+                                        >
+                                          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                                            <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                                              <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                                Set Content to Add Media
+                                              </h3>
+                                              <button
+                                                className="p-1 text-xl"
+                                                onClick={() =>
+                                                  setShowAssetModal(false)
+                                                }
+                                              >
+                                                <AiOutlineCloseCircle className="text-2xl" />
+                                              </button>
+                                            </div>
+
+                                            <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
+                                              <div className="bg-white rounded-[30px]">
+                                                <div>
+                                                  <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
+                                                    <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
+                                                      <div>
+                                                        <div className="flex border-b border-lightgray flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                                                          <div className="mb-5 relative searchbox">
+                                                            <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
+                                                            <input
+                                                              type="text"
+                                                              placeholder=" Search by Name"
+                                                              className="border border-primary rounded-full px-7 py-2 search-user"
+                                                              value={
+                                                                searchAsset
+                                                              }
+                                                              onChange={
+                                                                handleFilter
+                                                              }
+                                                            />
+                                                          </div>
+                                                          {/* <Link
+                                                // to="/fileupload"
+                                                onClick={() =>
+                                                  window.open(
+                                                    window.location.origin.concat(
+                                                      "/fileupload"
+                                                    )
+                                                  )
+                                                }
+                                              > */}
+                                                          <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                              window.open(
+                                                                window.location.origin.concat(
+                                                                  "/fileupload"
+                                                                )
+                                                              );
+                                                              setShowAssetModal(
+                                                                false
+                                                              );
+                                                            }}
+                                                            // onClick={() => {
+                                                            //   setShowUploadAssestModal(
+                                                            //     true
+                                                            //   );
+                                                            // }}
+                                                            className="flex align-middle border-SlateBlue bg-SlateBlue text-white items-center border rounded-full px-4 py-2 text-sm  hover:text-white hover:bg-primary hover:shadow-lg hover:shadow-primary-500/50 hover:border-white"
+                                                          >
+                                                            Upload
+                                                          </button>
+                                                          {/* </Link> */}
+                                                        </div>
+                                                        <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover">
+                                                          <table
+                                                            className="AddMedia-table"
+                                                            style={{
+                                                              borderCollapse:
+                                                                "separate",
+                                                              borderSpacing:
+                                                                " 0 10px",
+                                                            }}
+                                                          >
+                                                            <thead className="sticky top-0">
+                                                              <tr className="bg-lightgray">
+                                                                <th className="p-3 w-80 text-left">
+                                                                  Media Name
+                                                                </th>
+                                                                <th>
+                                                                  Date Added
+                                                                </th>
+                                                                <th className="p-3">
+                                                                  Size
+                                                                </th>
+                                                                <th className="p-3">
+                                                                  Type
+                                                                </th>
+                                                              </tr>
+                                                            </thead>
+                                                            {assetData.map(
+                                                              (asset) => (
+                                                                <tbody
+                                                                  key={
+                                                                    asset.assetID
+                                                                  }
+                                                                >
+                                                                  <tr
+                                                                    className={`${
+                                                                      selectedAsset ===
+                                                                      asset
+                                                                        ? "bg-[#f3c953]"
+                                                                        : ""
+                                                                    } border-b border-[#eee] `}
+                                                                    onClick={() => {
+                                                                      handleAssetAdd(
+                                                                        asset
+                                                                      );
+                                                                      setAssetPreviewPopup(
+                                                                        true
+                                                                      );
+                                                                    }}
+                                                                  >
+                                                                    <td className="p-3">
+                                                                      {
+                                                                        asset.assetName
+                                                                      }
+                                                                    </td>
+                                                                    <td className="p-3">
+                                                                      {moment(
+                                                                        asset.createdDate
+                                                                      ).format(
+                                                                        "YYYY-MM-DD hh:mm"
+                                                                      )}
+                                                                    </td>
+                                                                    <td className="p-3">
+                                                                      {
+                                                                        asset.fileSize
+                                                                      }
+                                                                    </td>
+                                                                    <td className="p-3">
+                                                                      {
+                                                                        asset.assetType
+                                                                      }
+                                                                    </td>
+                                                                  </tr>
+                                                                </tbody>
+                                                              )
+                                                            )}
+                                                          </table>
+                                                          {assetPreviewPopup && (
+                                                            <div
+                                                              ref={
+                                                                modalPreviewRef
+                                                              }
+                                                              className="fixed left-1/2 -translate-x-1/2 w-10/12 h-10/12 bg-black z-50 inset-0"
+                                                            >
+                                                              {/* btn */}
+                                                              <div className="p-1 rounded-full text-white bg-primary absolute -top-3 -right-3">
+                                                                <button
+                                                                  className="text-xl"
+                                                                  onClick={() =>
+                                                                    setAssetPreviewPopup(
+                                                                      false
+                                                                    )
+                                                                  }
+                                                                >
+                                                                  <AiOutlineCloseCircle className="text-2xl" />
+                                                                </button>
+                                                              </div>
+                                                              <div className="fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 h-[90%] w-[90%]">
+                                                                {assetPreview && (
+                                                                  <>
+                                                                    {assetPreview.assetType ===
+                                                                      "OnlineImage" && (
+                                                                      <div className="imagebox p-3">
+                                                                        <img
+                                                                          src={
+                                                                            assetPreview.assetFolderPath
+                                                                          }
+                                                                          alt={
+                                                                            assetPreview.assetName
+                                                                          }
+                                                                          className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                                                                        />
+                                                                      </div>
+                                                                    )}
+
+                                                                    {assetPreview.assetType ===
+                                                                      "OnlineVideo" && (
+                                                                      <div className="relative videobox">
+                                                                        <video
+                                                                          controls
+                                                                          className="w-full rounded-2xl h-full"
+                                                                        >
+                                                                          <source
+                                                                            src={
+                                                                              assetPreview.assetFolderPath
+                                                                            }
+                                                                            type="video/mp4"
+                                                                          />
+                                                                          Your
+                                                                          browser
+                                                                          does
+                                                                          not
+                                                                          support
+                                                                          the
+                                                                          video
+                                                                          tag.
+                                                                        </video>
+                                                                      </div>
+                                                                    )}
+                                                                    {assetPreview.assetType ===
+                                                                      "Image" && (
+                                                                      <img
+                                                                        src={
+                                                                          assetPreview.assetFolderPath
+                                                                        }
+                                                                        alt={
+                                                                          assetPreview.assetName
+                                                                        }
+                                                                        className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                                                                      />
+                                                                    )}
+                                                                    {assetPreview.assetType ===
+                                                                      "Video" && (
+                                                                      <video
+                                                                        controls
+                                                                        className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                                                                      >
+                                                                        <source
+                                                                          src={
+                                                                            assetPreview.assetFolderPath
+                                                                          }
+                                                                          type="video/mp4"
+                                                                        />
+                                                                        Your
+                                                                        browser
+                                                                        does not
+                                                                        support
+                                                                        the
+                                                                        video
+                                                                        tag.
+                                                                      </video>
+                                                                    )}
+                                                                    {assetPreview.assetType ===
+                                                                      "DOC" && (
+                                                                      <a
+                                                                        href={
+                                                                          assetPreview.assetFolderPath
+                                                                        }
+                                                                        target="_blank"
+                                                                        rel="noopener noreferrer"
+                                                                        className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                                                                      >
+                                                                        {
+                                                                          assetPreview.assetName
+                                                                        }
+                                                                      </a>
+                                                                    )}
+                                                                  </>
+                                                                )}
+                                                              </div>
+                                                            </div>
+                                                          )}
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div className="flex justify-between items-center p-5">
+                                              <p className="text-black">
+                                                Content will always be playing
+                                                Confirm
+                                              </p>
+                                              <button
+                                                className="bg-SlateBlue text-white rounded-full px-5 py-2 hover:bg-primary text-sm"
+                                                onClick={() => {
+                                                  handleOnConfirm();
+                                                }}
+                                              >
+                                                Confirm
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                )}
+                                {selectedScreenTypeOption === "2" && (
+                                  <>
+                                    <tr>
+                                      <td></td>
+                                      <td>
+                                        <div className="flex">
+                                          <input
+                                            className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none"
+                                            value={
+                                              selectedSchedule !== ""
+                                                ? selectedSchedule.scheduleName
+                                                : ""
+                                            }
+                                            placeholder="Set Schedule"
+                                            readOnly
+                                            onChange={(e) =>
+                                              setSelectedSchedule({
+                                                ...selectedSchedule,
+                                                scheduleName: e.target.value,
+                                              })
+                                            }
+                                          />
+                                          <div className="flex items-center ml-5">
+                                            <span className="bg-lightgray p-2 rounded cursor-pointer">
+                                              <GrScheduleNew
+                                                size={20}
+                                                onClick={() =>
+                                                  setShowScheduleModal(true)
+                                                }
+                                              />
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </>
+                                )}
+                                {showScheduleModal && (
+                                  <tr>
+                                    <td>
+                                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                                        <div
+                                          ref={scheduleRef}
+                                          className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                                        >
+                                          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                            <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                                              <div className="flex items-center">
+                                                <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                                  Set Schedule
+                                                </h3>
+                                              </div>
+                                              <button
+                                                className="p-1 text-xl"
+                                                onClick={() =>
+                                                  setShowScheduleModal(false)
+                                                }
+                                              >
+                                                <AiOutlineCloseCircle className="text-2xl" />
+                                              </button>
+                                            </div>
+                                            <div className="overflow-x-auto mt-8 px-5 Set-Schedule-popup">
+                                              <table
+                                                className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto set-schedule-table"
+                                                cellPadding={20}
+                                              >
+                                                <thead className="sticky top-0">
+                                                  <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                                                    <th className="text-[#444] text-sm font-semibold p-2">
+                                                      <div className="flex items-center">
+                                                        <TbCalendarTime className="mr-2 text-xl" />
+                                                        Schedule Name
+                                                      </div>
+                                                    </th>
+                                                    <th className="text-[#444] text-sm font-semibold p-2">
+                                                      <div className="flex items-center">
+                                                        <TbCalendarTime className="mr-2 text-xl" />
+                                                        Time Zones
+                                                      </div>
+                                                    </th>
+                                                    <th className="text-[#444] text-sm font-semibold p-2">
+                                                      <div className=" flex  items-center justify-center mx-auto">
+                                                        <VscCalendar className="mr-2 text-xl" />
+                                                        Date Added
+                                                      </div>
+                                                    </th>
+                                                    <th className="text-[#444] text-sm font-semibold p-2">
+                                                      <div className=" flex  items-center justify-center mx-auto">
+                                                        <TbCalendarStats className="mr-2 text-xl" />
+                                                        start date
+                                                      </div>
+                                                    </th>
+                                                    <th className="text-[#444] text-sm font-semibold p-2">
+                                                      <div className=" flex  items-center justify-center mx-auto">
+                                                        <TbCalendarStats className="mr-2 text-xl" />
+                                                        End date
+                                                      </div>
+                                                    </th>
+                                                    <th className="text-[#444] text-sm font-semibold p-2">
+                                                      <div className=" flex  items-center justify-center mx-auto">
+                                                        <RiComputerLine className="mr-2 text-xl" />
+                                                        screens Assigned
+                                                      </div>
+                                                    </th>
+                                                    <th className="text-[#444] text-sm font-semibold p-2">
+                                                      <div className="flex  items-center justify-center mx-auto">
+                                                        <BsTags className="mr-2 text-xl" />
+                                                        Tags
+                                                      </div>
+                                                    </th>
+                                                    <th className="w-[100px]"></th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  {scheduleData.map(
+                                                    (schedule) => (
+                                                      <tr
+                                                        className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                                        key={
+                                                          schedule.scheduleId
+                                                        }
+                                                      >
+                                                        <td className="flex items-center ">
+                                                          <input
+                                                            type="checkbox"
+                                                            className="mr-3"
+                                                            checked={
+                                                              selectedSchedule?.scheduleName ===
+                                                              schedule?.scheduleName
+                                                            }
+                                                            onChange={() =>
+                                                              handleScheduleAdd(
+                                                                schedule
+                                                              )
+                                                            }
+                                                          />
+                                                          <div>
+                                                            <div>
+                                                              <Link to="/screensplayer">
+                                                                {
+                                                                  schedule.scheduleName
+                                                                }
+                                                              </Link>
+                                                            </div>
+                                                          </div>
+                                                        </td>
+                                                        <td className="text-center">
+                                                          {
+                                                            schedule.timeZoneName
+                                                          }
+                                                        </td>
+                                                        <td className="text-center">
+                                                          {moment(
+                                                            schedule.createdDate
+                                                          ).format(
+                                                            "YYYY-MM-DD hh:mm"
+                                                          )}
+                                                        </td>
+                                                        <td className="text-center">
+                                                          {moment(
+                                                            schedule.startDate
+                                                          ).format(
+                                                            "YYYY-MM-DD hh:mm"
+                                                          )}
+                                                        </td>
+
+                                                        <td className="text-center">
+                                                          {moment(
+                                                            schedule.endDate
+                                                          ).format(
+                                                            "YYYY-MM-DD hh:mm"
+                                                          )}
+                                                        </td>
+                                                        <td className="p-2 text-center">
+                                                          {
+                                                            schedule.screenAssigned
+                                                          }
+                                                        </td>
+                                                        <td className="p-2 text-center">
+                                                          {schedule.tags}
+                                                        </td>
+                                                        <td className="text-center">
+                                                          <Link to="/myschedule">
+                                                            <button className="ml-3 relative">
+                                                              <HiDotsVertical />
+                                                            </button>
+                                                          </Link>
+                                                        </td>
+                                                      </tr>
+                                                    )
+                                                  )}
+                                                </tbody>
+                                              </table>
+                                            </div>
+
+                                            <div className="py-2 flex justify-center">
+                                              <button
+                                                onClick={() => {
+                                                  handleOnSaveSchedule();
+                                                }}
+                                                className="border-2 border-SlateBlue bg-SlateBlue hover:bg-primary hover:border-white px-5 py-2 rounded-full ml-3 text-white"
+                                              >
+                                                Save
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                )}
+                                {selectedScreenTypeOption === "3" && (
+                                  <>
+                                    <tr>
+                                      <td></td>
+                                      <td>
+                                        <div className="flex">
+                                          <input
+                                            className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                            value={
+                                              selectedComposition !== ""
+                                                ? selectedComposition.compositionName
+                                                : ""
+                                            }
+                                            placeholder="Set Composition"
+                                            readOnly
+                                            onChange={(e) =>
+                                              setSelectedComposition({
+                                                ...selectedComposition,
+                                                compositionName: e.target.value,
+                                              })
+                                            }
+                                          />
+
+                                          <div
+                                            className="flex items-center ml-5"
+                                            onClick={() => {
+                                              setShowCompositionModal(true);
+                                              // setConfirmForComposition(false);
+                                            }}
+                                          >
+                                            <span className="bg-lightgray p-2 rounded">
+                                              <svg
+                                                width="15"
+                                                height="15"
+                                                viewBox="0 0 15 15"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                              >
+                                                <path
+                                                  d="M0.961295 0.0665965C0.610654 0.137625 0.274179 0.398062 0.0970872 0.736291L0.015625 0.89526V3.29669C0.015625 5.69136 0.015625 5.69812 0.0935454 5.85709C0.206884 6.09724 0.458355 6.334 0.716909 6.44561C1.02151 6.5809 1.41111 6.58429 1.698 6.45576C1.99905 6.32047 5.27879 4.22006 5.40984 4.078C5.81715 3.63492 5.82424 2.98552 5.43109 2.53567C5.32484 2.41729 1.91405 0.228947 1.68029 0.13086C1.50674 0.0564494 1.16318 0.0260091 0.961295 0.0665965Z"
+                                                  fill="#41479B"
+                                                />
+                                                <path
+                                                  d="M7.25131 0.0883092C7.08502 0.17676 6.95765 0.417348 6.97888 0.601327C7.00011 0.767615 7.08148 0.891447 7.22654 0.979898C7.33622 1.04712 7.43529 1.05066 11.0087 1.05066H14.6741L14.7874 0.95867C15.0846 0.70393 15.0669 0.289978 14.7449 0.0953853C14.6317 0.0246242 14.5574 0.0246242 11.0016 0.0246242C7.55912 0.0246242 7.36806 0.0281622 7.25131 0.0883092Z"
+                                                  fill="#41479B"
+                                                />
+                                                <path
+                                                  d="M7.25126 2.87848C7.08851 2.95985 6.9576 3.20398 6.97883 3.39149C7.00006 3.55778 7.08143 3.68161 7.22649 3.7736C7.33617 3.84083 7.42108 3.84083 11.0264 3.83375L14.7095 3.82314L14.805 3.73468C15.0845 3.47287 15.0562 3.07661 14.7448 2.88555C14.6316 2.81479 14.5573 2.81479 11.0016 2.81479C7.61921 2.81479 7.36801 2.81833 7.25126 2.87848Z"
+                                                  fill="#41479B"
+                                                />
+                                                <path
+                                                  d="M7.23694 5.669C6.89729 5.8742 6.9079 6.3943 7.25463 6.57474C7.34308 6.62073 7.84548 6.62781 10.9943 6.62781C14.5607 6.62781 14.635 6.62781 14.7482 6.55705C15.0843 6.35184 15.0843 5.87774 14.7482 5.67253C14.635 5.60177 14.5607 5.60177 10.9873 5.60177C7.49875 5.60177 7.33954 5.60531 7.23694 5.669Z"
+                                                  fill="#41479B"
+                                                />
+                                                <path
+                                                  d="M0.255992 8.46306C-0.0801225 8.66827 -0.0801225 9.14237 0.255992 9.34757C0.372748 9.41833 0.450585 9.41833 7.50192 9.41833C14.5533 9.41833 14.6311 9.41833 14.7479 9.34757C15.084 9.14237 15.084 8.66827 14.7479 8.46306C14.6311 8.3923 14.5533 8.3923 7.50192 8.3923C0.450585 8.3923 0.372748 8.3923 0.255992 8.46306Z"
+                                                  fill="#41479B"
+                                                />
+                                                <path
+                                                  d="M0.319748 11.2081C0.291443 11.2187 0.227758 11.2612 0.185302 11.3036C-0.0835903 11.5477 -0.0482098 11.9511 0.256063 12.1386C0.36928 12.2094 0.44358 12.2094 4.70693 12.2094C8.97028 12.2094 9.04458 12.2094 9.1578 12.1386C9.34178 12.0254 9.41962 11.8697 9.40193 11.6468C9.39131 11.477 9.37362 11.4416 9.24271 11.3178L9.09765 11.1833L4.73524 11.1869C2.33644 11.1869 0.348052 11.1975 0.319748 11.2081Z"
+                                                  fill="#41479B"
+                                                />
+                                                <path
+                                                  d="M12.758 11.3597C12.5549 11.494 12.5205 11.6111 12.5205 12.1483V12.6235H12.0489C11.6668 12.6235 11.5497 12.6338 11.4534 12.6854C11.0781 12.8714 11.085 13.4189 11.4637 13.5876C11.5807 13.6427 11.6909 13.6565 12.0661 13.6565H12.5205V14.1317C12.5205 14.6482 12.5549 14.7722 12.7339 14.9065C12.9542 15.0683 13.3122 14.9994 13.4568 14.7618C13.5291 14.6517 13.536 14.5862 13.5463 14.1489L13.5601 13.6634L14.0454 13.6496C14.4826 13.6393 14.548 13.6324 14.6582 13.5601C14.8957 13.4155 14.9645 13.0573 14.8027 12.837C14.6685 12.6579 14.5446 12.6235 14.0282 12.6235H13.5532V12.1655C13.5532 11.6386 13.4981 11.4699 13.3053 11.3494C13.147 11.253 12.9095 11.2564 12.758 11.3597Z"
+                                                  fill="#41479B"
+                                                />
+                                                <path
+                                                  d="M0.211504 14.0658C-0.0856924 14.3206 -0.0680021 14.7345 0.253961 14.9291C0.367178 14.9999 0.441477 14.9999 4.70483 14.9999C8.96818 14.9999 9.04248 14.9999 9.1557 14.9291C9.4812 14.731 9.49535 14.2392 9.18046 14.0446C9.06725 13.9738 9.01417 13.9738 4.69421 13.9738H0.324722L0.211504 14.0658Z"
+                                                  fill="#41479B"
+                                                />
+                                              </svg>
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </>
+                                )}
+
+                                {showCompositionModal && (
+                                  <tr>
+                                    <td>
+                                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                                        <div
+                                          ref={compositionRef}
+                                          className="relative w-auto my-6 mx-auto myplaylist-popup-details"
+                                        >
+                                          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                                            <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                                              <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                                Set Content to Add Media
+                                              </h3>
+                                              <button
+                                                className="p-1 text-xl"
+                                                onClick={() =>
+                                                  setShowCompositionModal(false)
+                                                }
+                                              >
+                                                <AiOutlineCloseCircle className="text-2xl" />
+                                              </button>
+                                            </div>
+
+                                            <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
+                                              <div className="bg-white rounded-[30px]">
+                                                <div>
+                                                  <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
+                                                    <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
+                                                      <div>
+                                                        <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                                                          <div className="mb-5 relative ">
+                                                            <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
+                                                            <input
+                                                              type="text"
+                                                              placeholder=" Search by Name"
+                                                              className="border border-primary rounded-full px-7 py-2 search-user"
+                                                              value={
+                                                                searchAsset
+                                                              }
+                                                              onChange={
+                                                                handleFilter
+                                                              }
+                                                            />
+                                                          </div>
+                                                          <Link to="/addcomposition">
+                                                            <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                                                              Add New
+                                                              Composition
+                                                            </button>
+                                                          </Link>
+                                                        </div>
+                                                        <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
+                                                          <table
+                                                            style={{
+                                                              borderCollapse:
+                                                                "separate",
+                                                              borderSpacing:
+                                                                " 0 10px",
+                                                            }}
+                                                          >
+                                                            <thead className="sticky top-0">
+                                                              <tr className="bg-lightgray">
+                                                                <th className="p-3 w-80 text-left">
+                                                                  Composition
+                                                                  Name
+                                                                </th>
+                                                                <th>
+                                                                  Date Added
+                                                                </th>
+                                                                <th className="p-3">
+                                                                  Resolution
+                                                                </th>
+                                                                <th className="p-3">
+                                                                  Duration
+                                                                </th>
+                                                              </tr>
+                                                            </thead>
+                                                            {compositionAPIData.map(
+                                                              (composition) => (
+                                                                <tbody
+                                                                  key={
+                                                                    composition.compositionID
+                                                                  }
+                                                                >
+                                                                  <tr
+                                                                    className={`${
+                                                                      selectedComposition?.compositionName ===
+                                                                      composition?.compositionName
+                                                                        ? "bg-[#f3c953]"
+                                                                        : ""
+                                                                    } border-b border-[#eee] `}
+                                                                    onClick={() => {
+                                                                      handleCompositionsAdd(
+                                                                        composition
+                                                                      );
+                                                                    }}
+                                                                  >
+                                                                    <td className="p-3 text-left">
+                                                                      {
+                                                                        composition.compositionName
+                                                                      }
+                                                                    </td>
+                                                                    <td className="p-3">
+                                                                      {moment(
+                                                                        composition.dateAdded
+                                                                      ).format(
+                                                                        "YYYY-MM-DD hh:mm"
+                                                                      )}
+                                                                    </td>
+                                                                    <td className="p-3">
+                                                                      {
+                                                                        composition.resolution
+                                                                      }
+                                                                    </td>
+                                                                    <td className="p-3">
+                                                                      {moment
+                                                                        .utc(
+                                                                          composition.duration *
+                                                                            1000
+                                                                        )
+                                                                        .format(
+                                                                          "hh:mm:ss"
+                                                                        )}
+                                                                    </td>
+                                                                  </tr>
+                                                                </tbody>
+                                                              )
+                                                            )}
+                                                          </table>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <div className="flex justify-between items-center p-5">
+                                              <p className="text-black">
+                                                Content will always be playing
+                                                Confirm
+                                              </p>
+                                              <button
+                                                className="bg-primary text-white rounded-full px-5 py-2"
+                                                onClick={() => {
+                                                  // setShowCompositionModal(false);
+                                                  handleConfirmOnComposition();
+                                                }}
+                                              >
+                                                Confirm
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                )}
                                 {/* <tr className="border-b border-[#D5E3FF] relative">
                                   <td className="text-right">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
@@ -1090,7 +2017,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   </td>
                                 </tr> */}
 
-                                {showhoursModal && (
+                                {/* {showhoursModal && (
                                   <>
                                     <div className="backdrop">
                                       <div className="hours-model rounded-lg">
@@ -1165,7 +2092,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       </div>
                                     </div>
                                   </>
-                                )}
+                                )} */}
                                 {/* 
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
