@@ -47,6 +47,8 @@ import Composition from "../Components/Composition/Composition";
 import SelectedLayout from "../Components/Composition/SelectedLayout";
 import { auth } from "../FireBase/firebase";
 import EditSelectedLayout from "../Components/Composition/EditSelectedLayout";
+import YoutubeDetailByID from "../Components/Apps/YoutubeDetailByID";
+import TextScrollDetailById from "../Components/Apps/TextScrollDetailById";
 
 const Routing = () => {
   //for screen resize sidebar open close
@@ -237,9 +239,27 @@ const Routing = () => {
               }
             />
             <Route
+              path="/youtubedetail/:id"
+              element={
+                <YoutubeDetailByID
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
               path="/youtubedetail"
               element={
                 <YoutubeDetail
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/textscrolldetail/:id"
+              element={
+                <TextScrollDetailById
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />

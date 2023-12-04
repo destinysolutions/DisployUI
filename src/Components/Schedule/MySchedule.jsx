@@ -13,11 +13,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { HiDotsVertical, HiOutlineLocationMarker } from "react-icons/hi";
 import { useState } from "react";
 import "../../Styles/schedule.css";
-import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
+import {
+  AiOutlineCloseCircle,
+  AiOutlinePlusCircle,
+  AiOutlineSearch,
+} from "react-icons/ai";
 import Footer from "../Footer";
 import {
   ADD_SCHEDULE,
   GET_ALL_SCHEDULE,
+  SCHEDULE_EVENT_SELECT_BY_ID,
   SELECT_BY_USER_SCREENDETAIL,
   SIGNAL_R,
   UPDATE_SCREEN_ASSIGN,
@@ -26,8 +31,9 @@ import { useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 import { useSelector } from "react-redux";
-import { MdOutlineGroups } from "react-icons/md";
+import { MdOutlineGroups, MdOutlineModeEdit } from "react-icons/md";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import AddOrEditTagPopup from "../AddOrEditTagPopup";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //for action popup
@@ -50,6 +56,9 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [connection, setConnection] = useState(null);
   const [selectAll, setSelectAll] = useState(false);
   const [filteredScheduleData, setFilteredScheduleData] = useState([]);
+  const [updateTagSchedule, setUpdateTagSchedule] = useState(null);
+  const [tags, setTags] = useState([]);
+  const [showTagModal, setShowTagModal] = useState(false);
 
   const addScreenRef = useRef(null);
   const selectScreenRef = useRef(null);
@@ -249,26 +258,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleSearchSchedule = (event) => {
-    // const searchQuery = event.target.value.toLowerCase();
-    // setSearchSchedule(searchQuery);
-
-    // if (searchQuery === "") {
-    //   setScheduleData(scheduleAllData);
-    // } else {
-    //   const filteredData = scheduleData.filter((item) => {
-    //     const itemName = item.scheduleName
-    //       ? item.scheduleName.toLowerCase()
-    //       : "";
-    //     return itemName.includes(searchQuery);
-    //   });
-    //   setScheduleData(filteredData);
-    // }
-
     const searchQuery = event.target.value.toLowerCase();
     setSearchSchedule(searchQuery);
 
     if (searchQuery === "") {
-      setScheduleData(scheduleAllData);
       setFilteredScheduleData([]);
     } else {
       const filteredSchedule = scheduleAllData.filter((entry) =>
@@ -292,6 +285,86 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         setFilteredScheduleData([]);
       }
     }
+  };
+
+  const handleFetchScheduleByID = (scheduleId) => {
+    axios
+      .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
+      .then((response) => {
+        const fetchedData = response.data.data;
+        const fetchedEvents = fetchedData.map((item) => ({
+          id: item.eventId,
+          title: item.title,
+          start: new Date(item.cStartDate),
+          end: new Date(item.cEndDate),
+          color: item.color,
+          asset: item.asset,
+          repeatDay: item.repeatDay,
+          isfutureDateExists: item.isfutureDateExists,
+          actualEndDate: item.actualEndDate,
+        }));
+        // console.log(response?.data?.data);
+        // setEvents(fetchedEvents);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleUpadteScheduleTags = (tags) => {
+    let data = JSON.stringify({
+      scheduleId: updateTagSchedule?.scheduleId,
+      scheduleName: updateTagSchedule?.scheduleName,
+      screenAssigned: updateTagSchedule?.screenAssigned,
+      startDate: updateTagSchedule?.startDate,
+      endDate: updateTagSchedule?.endDate,
+      operation: "Insert",
+      tags: tags,
+    });
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: ADD_SCHEDULE,
+      headers: {
+        Authorization: authToken,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        if (response.data.status === 200) {
+          const updatedSchedule = scheduleData.map((i) => {
+            if (i?.scheduleId === response?.data?.data?.model?.scheduleId) {
+              return { ...i, tags: response?.data?.data?.model?.tags };
+            } else {
+              return i;
+            }
+          });
+          const updateFilteredSchedule = filteredScheduleData.map((i) => {
+            if (i?.scheduleId === response?.data?.data?.model?.scheduleId) {
+              return { ...i, tags: response?.data?.data?.model?.tags };
+            } else {
+              return i;
+            }
+          });
+          if (updatedSchedule.length > 0) {
+            setScheduleData(updatedSchedule);
+          }
+          if (updateFilteredSchedule.length > 0) {
+            setFilteredScheduleData(updateFilteredSchedule);
+          }
+          // navigate("/myschedule");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -410,8 +483,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setAddScreenModal(false);
   }
 
-  // console.log(filteredScheduleData);
-
   return (
     <>
       {/* navbar and sidebar start */}
@@ -433,8 +504,8 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 </span>
                 <input
                   type="text"
-                  placeholder="Search by Name"
-                  className="border border-primary rounded-full pl-8 py-1.5 search-user"
+                  placeholder="Search schedule"
+                  className="border border-primary rounded-full pl-10 py-1.5 search-user"
                   value={searchSchedule}
                   onChange={handleSearchSchedule}
                 />
@@ -542,7 +613,63 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         <td className="text-center">
                           {schedule.screenAssigned}
                         </td>
-                        <td className="text-center">{schedule.tags}</td>
+                        <td className="text-center flex items-center  justify-center gap-2 w-40">
+                          {(schedule?.tags === "" ||
+                            schedule?.tags === null) && (
+                            <span>
+                              <AiOutlinePlusCircle
+                                size={30}
+                                className="mx-auto cursor-pointer"
+                                onClick={() => {
+                                  setShowTagModal(true);
+                                  schedule.tags === "" ||
+                                  schedule?.tags === null
+                                    ? setTags([])
+                                    : setTags(schedule?.tags?.split(","));
+                                  handleFetchScheduleByID(schedule?.scheduleId);
+                                  setUpdateTagSchedule(schedule);
+                                }}
+                              />
+                            </span>
+                          )}
+                          {schedule.tags !== null
+                            ? schedule.tags
+                                .split(",")
+                                .slice(
+                                  0,
+                                  schedule.tags.split(",").length > 2
+                                    ? 3
+                                    : schedule.tags.split(",").length
+                                )
+                                .join(",")
+                            : ""}
+                          {schedule?.tags !== "" && schedule?.tags !== null && (
+                            <MdOutlineModeEdit
+                              onClick={() => {
+                                setShowTagModal(true);
+                                schedule.tags === "" || schedule?.tags === null
+                                  ? setTags([])
+                                  : setTags(schedule?.tags?.split(","));
+                                handleFetchScheduleByID(schedule?.scheduleId);
+                                setUpdateTagSchedule(schedule);
+                              }}
+                              className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
+                            />
+                          )}
+                          {/* add or edit tag modal */}
+                          {showTagModal && (
+                            <AddOrEditTagPopup
+                              setShowTagModal={setShowTagModal}
+                              tags={tags}
+                              setTags={setTags}
+                              handleUpadteScheduleTags={
+                                handleUpadteScheduleTags
+                              }
+                              from="schedule"
+                              setUpdateTagSchedule={setUpdateTagSchedule}
+                            />
+                          )}
+                        </td>
                         <td className="text-center relative">
                           <div className="relative">
                             <button
@@ -895,7 +1022,63 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         <td className="text-center">
                           {schedule.screenAssigned}
                         </td>
-                        <td className="text-center">{schedule.tags}</td>
+                        <td className="text-center flex items-center justify-center gap-2 w-40">
+                          {(schedule?.tags === "" ||
+                            schedule?.tags === null) && (
+                            <span>
+                              <AiOutlinePlusCircle
+                                size={30}
+                                className="mx-auto cursor-pointer"
+                                onClick={() => {
+                                  setShowTagModal(true);
+                                  schedule.tags === "" ||
+                                  schedule?.tags === null
+                                    ? setTags([])
+                                    : setTags(schedule?.tags?.split(","));
+                                  handleFetchScheduleByID(schedule?.scheduleId);
+                                  setUpdateTagSchedule(schedule);
+                                }}
+                              />
+                            </span>
+                          )}
+                          {schedule.tags !== null
+                            ? schedule.tags
+                                .split(",")
+                                .slice(
+                                  0,
+                                  schedule.tags.split(",").length > 2
+                                    ? 3
+                                    : schedule.tags.split(",").length
+                                )
+                                .join(",")
+                            : ""}
+                          {schedule?.tags !== "" && schedule?.tags !== null && (
+                            <MdOutlineModeEdit
+                              onClick={() => {
+                                setShowTagModal(true);
+                                schedule.tags === "" || schedule?.tags === null
+                                  ? setTags([])
+                                  : setTags(schedule?.tags?.split(","));
+                                handleFetchScheduleByID(schedule?.scheduleId);
+                                setUpdateTagSchedule(schedule);
+                              }}
+                              className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
+                            />
+                          )}
+                          {/* add or edit tag modal */}
+                          {showTagModal && (
+                            <AddOrEditTagPopup
+                              setShowTagModal={setShowTagModal}
+                              tags={tags}
+                              setTags={setTags}
+                              handleUpadteScheduleTags={
+                                handleUpadteScheduleTags
+                              }
+                              from="schedule"
+                              setUpdateTagSchedule={setUpdateTagSchedule}
+                            />
+                          )}
+                        </td>
                         <td className="text-center relative">
                           <div className="relative">
                             <button

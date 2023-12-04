@@ -19,7 +19,6 @@ const Carousel = ({ items, compositonData, from }) => {
       clearInterval(interval);
     };
   }, [items, currentIndex]);
-  // console.log(items);
 
   return (
     <>
@@ -107,7 +106,15 @@ const Carousel = ({ items, compositonData, from }) => {
                     className="text-lg align-middle h-full flex items-center justify-center"
                     direction={item?.scrollType == 1 ? "left" : "right"}
                   >
-                    {item?.assetFolderPath ?? "asdasdasd"}
+                    {item?.assetFolderPath}
+                  </marquee>
+                )}
+                {item?.text !== undefined && (
+                  <marquee
+                    className="text-lg align-middle h-full flex items-center justify-center"
+                    direction={item?.scrollType == 1 ? "left" : "right"}
+                  >
+                    {item?.text}
                   </marquee>
                 )}
               </div>

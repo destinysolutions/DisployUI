@@ -8,20 +8,22 @@ import { BsCameraVideo, BsInfoLg } from "react-icons/bs";
 import { TbExclamationMark } from "react-icons/tb";
 import { VscBook } from "react-icons/vsc";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Footer from "../Footer";
 import { useEffect } from "react";
 import axios, { all } from "axios";
 import {
   GET_ALL_YOUTUBEDATA,
+  GET_YOUTUBEDATA_BY_ID,
   YOUTUBEDATA_ALL_DELETE,
   YOUTUBE_INSTANCE_ADD_URL,
 } from "../../Pages/Api";
 import ReactPlayer from "react-player";
 import { FiUpload } from "react-icons/fi";
-import { MdPlaylistPlay } from "react-icons/md";
+import { MdOutlineEdit, MdPlaylistPlay } from "react-icons/md";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   Youtube.propTypes = {
@@ -32,12 +34,14 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   const authToken = `Bearer ${UserData.user.data.token}`;
 
   const [appDetailModal, setAppDetailModal] = useState(false);
-
   const [youtubeData, setYoutubeData] = useState([]);
-
   const [selectAll, setSelectAll] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [appDropDown, setAppDropDown] = useState(null);
 
+  const navigate = useNavigate();
   useEffect(() => {
+    setLoading(true);
     axios
       .get(GET_ALL_YOUTUBEDATA, {
         headers: {
@@ -46,14 +50,17 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data.data;
+        setLoading(false);
         setYoutubeData(fetchedData);
       })
       .catch((error) => {
+        setLoading(false);
         console.error("Error fetching deleted data:", error);
       });
   }, []);
 
   const handelDeleteInstance = (youtubeId) => {
+    if (!window.confirm("Are you sure?")) return;
     let data = JSON.stringify({
       youtubeId: youtubeId,
       operation: "Delete",
@@ -69,16 +76,18 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
       data: data,
     };
 
+    toast.loading("Deleting...");
     axios
       .request(config)
       .then((response) => {
-        console.log(response, "response");
         const updatedInstanceData = youtubeData.filter(
           (instanceData) => instanceData.youtubeId !== youtubeId
         );
         setYoutubeData(updatedInstanceData);
+        toast.remove();
       })
       .catch((error) => {
+        toast.remove();
         console.log(error);
       });
   };
@@ -110,6 +119,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handelDeleteAllInstance = () => {
+    if (!window.confirm("Are you sure?")) return;
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -127,7 +137,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-  const [appDropDown, setAppDropDown] = useState(null);
+
   const handleAppDropDownClick = (id) => {
     if (appDropDown === id) {
       setAppDropDown(null);
@@ -234,7 +244,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                   )}
                   <button
                     onClick={handelDeleteAllInstance}
-                    className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full p-1 text-xl  hover:text-white hover:border-SlateBlue hover:bg-SlateBlue hover:shadow-lg hover:shadow-primary-500/50"
+                    className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full px-1 text-2xl  hover:text-white hover:border-SlateBlue hover:bg-SlateBlue hover:shadow-lg hover:shadow-primary-500/50"
                     style={{ display: selectAll ? "block" : "none" }}
                   >
                     <RiDeleteBinLine />
@@ -251,7 +261,11 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </div>
               <div>
-                {Array.isArray(youtubeData) && youtubeData.length > 0 ? (
+                {loading ? (
+                  <div className="text-center font-semibold text-2xl w-full">
+                    Loading...
+                  </div>
+                ) : Array.isArray(youtubeData) && youtubeData.length > 0 ? (
                   <div className=" grid grid-cols-10 gap-4 mt-5">
                     {youtubeData.map((item) => (
                       <div
@@ -284,13 +298,24 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                               </button>
                               {appDropDown === item.youtubeId && (
                                 <div className="appdw">
-                                  <ul>
-                                    {/* <li className="flex text-sm items-center">
-                                      <FiUpload className="mr-2 text-lg" />
+                                  <ul className="space-y-2">
+                                    <li
+                                      onClick={() =>
+                                        navigate(
+                                          `/youtubedetail/${item?.youtubeId}`
+                                        )
+                                      }
+                                      className="flex text-sm items-center cursor-pointer"
+                                    >
+                                      <MdOutlineEdit className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                                      Edit
+                                    </li>
+                                    <li className="flex text-sm items-center cursor-pointer">
+                                      <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
                                       Set to Screen
                                     </li>
-                                    <li className="flex text-sm items-center">
-                                      <MdPlaylistPlay className="mr-2 text-lg" />
+                                    {/* <li className="flex text-sm items-center">
+                                      <MdPlaylistPlay className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
                                       Add to Playlist
                                     </li> */}
 
@@ -300,7 +325,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                         handelDeleteInstance(item.youtubeId)
                                       }
                                     >
-                                      <RiDeleteBin5Line className="mr-2 text-lg" />
+                                      <RiDeleteBin5Line className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
                                       Delete
                                     </li>
                                   </ul>
@@ -312,7 +337,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                             <img
                               src="../../../public/AppsImg/youtube.svg"
                               alt="Logo"
-                              className="cursor-pointer mx-auto h-20 w-20"
+                              className="mx-auto h-20 w-20"
                             />
                             <h4 className="text-lg font-medium mt-3">
                               {item.instanceName}

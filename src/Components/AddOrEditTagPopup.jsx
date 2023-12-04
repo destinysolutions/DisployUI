@@ -9,14 +9,26 @@ const AddOrEditTagPopup = ({
   from,
   handleUpdateTagsOfComposition,
   setTagUpdateScreeen,
+  setUpdateTagComposition,
+  handleUpadteScheduleTags,
+  setUpdateTagSchedule,
 }) => {
   const [tagValue, setTagValue] = useState("");
 
+  const inputRef = useRef(null);
 
   function handleClickOutside() {
     setShowTagModal(false);
     setTags([]);
-    setTagUpdateScreeen(null);
+    if (from === "screen") {
+      setTagUpdateScreeen(null);
+    }
+    if (from === "composition") {
+      setUpdateTagComposition(null);
+    }
+    if (from === "schedule") {
+      setUpdateTagSchedule(null)
+    }
   }
 
   const handleAddTag = (e) => {
@@ -30,13 +42,29 @@ const AddOrEditTagPopup = ({
     if (from === "composition") {
       return handleUpdateTagsOfComposition([...tags, tagValue].join(","));
     }
+    if (from === "schedule") {
+      return handleUpadteScheduleTags([...tags, tagValue].join(","));
+    }
   };
 
   const handleDeleteTag = (val) => {
     const newTags = tags.filter((tag) => tag !== val);
     setTags(newTags);
-    handleTagsUpdate(newTags.join(","));
+    if (from === "screen") {
+      handleTagsUpdate(newTags.join(","));
+    }
+    if (from === "composition") {
+      return handleUpdateTagsOfComposition(newTags.join(","));
+    }
+    if (from === "schedule") {
+      return handleUpadteScheduleTags(newTags.join(","));
+    }
   };
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
   // console.log(tags);
   return (
     <>
@@ -77,6 +105,7 @@ const AddOrEditTagPopup = ({
             className="flex-initial w-fit"
           >
             <input
+              ref={inputRef}
               type="text"
               className="border h-auto rounded-lg p-1 w-full"
               onChange={(e) => setTagValue(e.target.value)}

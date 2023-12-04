@@ -12,6 +12,7 @@ import {
   ADDSUBPLAYLIST,
   COMPOSITION_BY_ID,
   GET_ALL_FILES,
+  GET_ALL_TEXT_SCROLL_INSTANCE,
   SELECT_BY_LIST,
 } from "../../Pages/Api";
 import AssetModal from "../Assests/AssetModal";
@@ -172,19 +173,31 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const addSeletedAsset = (data, currSection) => {
+    const findLayoutDetailID = compositonData?.lstLayloutModelList.find(
+      (item) => item?.sectionID == currentSection
+    );
+
     let newdatas = { ...Testasset };
+    console.log(data);
     if (newdatas?.[currentSection]) {
       newdatas[currentSection].push({
-        duration: data.durations ? data.durations : 10,
+        duration: 10,
         isEdited: false,
         sectionID: currentSection,
         compositionDetailsID: 0,
         compositionID: 0,
-        mediaID: data?.assetID,
         durationType: "Second",
-        layoutDetailsID: id,
+        layoutDetailsID: findLayoutDetailID?.layoutID,
         userID: 0,
-        mediaTypeID: 1,
+        mediaID:
+          data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
+            ? data?.textScroll_Id
+            : data?.assetID,
+        durationType: "Second",
+        mediaTypeID:
+          data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
+            ? 4
+            : 1,
         assetName: data?.assetName,
         assetFolderPath: data?.assetFolderPath,
         resolutions: data?.resolutions,
@@ -194,21 +207,29 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
         type: data?.type,
         perentID: data?.perentID,
         userName: data?.userName,
+        text: data?.text,
+        scrollType: data?.scrollType,
+        instanceName: data?.instanceName,
       });
     } else {
       newdatas[currentSection] = [
         {
-          duration: data.durations ? data.durations : 10,
+          duration: 10,
           isEdited: false,
           sectionID: currentSection,
           compositionDetailsID: 0,
           compositionID: 0,
-          mediaID: data?.assetID,
-          duration: 1,
-          durationType: "Second",
-          layoutDetailsID: id,
+          layoutDetailsID: findLayoutDetailID?.layoutID,
           userID: 0,
-          mediaTypeID: 1,
+          mediaID:
+            data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
+              ? data?.textScroll_Id
+              : data?.assetID,
+          durationType: "Second",
+          mediaTypeID:
+            data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
+              ? 4
+              : 1,
           assetName: data?.assetName,
           assetFolderPath: data?.assetFolderPath,
           resolutions: data?.resolutions,
@@ -218,6 +239,9 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
           type: data?.type,
           perentID: data?.perentID,
           userName: data?.userName,
+          text: data?.text,
+          scrollType: data?.scrollType,
+          instanceName: data?.instanceName,
         },
       ];
     }
@@ -423,6 +447,21 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
         ];
         setAssetData(allAssets);
+        return allAssets;
+      })
+      .then((res) => {
+        axios
+          .get(GET_ALL_TEXT_SCROLL_INSTANCE, {
+            headers: {
+              Authorization: authToken,
+            },
+          })
+          .then((response) => {
+            setAssetData([...res, ...response?.data?.data]);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.log(error);
@@ -455,7 +494,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
     closeModal();
   }
   // console.log(ad);
-  // console.log(addAsset);
+  console.log(addAsset);
   // console.log(compositonData);
 
   return (
@@ -613,8 +652,13 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                         className="border-b border-b-[#E4E6FF] cursor-pointer"
                         onClick={() => addSeletedAsset(assetdata, index + 1)}
                       >
-                        <td className="break-words"> {assetdata.assetName}</td>
-                        <td className="p-2">{assetdata.fileExtention}</td>
+                        <td className="break-words">
+                          {assetdata.assetName || assetdata?.instanceName}
+                        </td>
+                        <td className="p-2">
+                          {assetdata.fileExtention && assetdata?.fileExtention}
+                          {assetdata?.instanceName && "Text scroll"}
+                        </td>
                         <td className="p-2 ">Tags, Tags </td>
                       </tr>
                     ))}
@@ -680,7 +724,13 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               <td>
                                 <div className="flex items-center w-full">
-                                  <div className="min-w-[2rem] min-h-[2rem] max-w-[3rem] max-h-[3rem]">
+                                  <div
+                                    className={` ${
+                                      item?.instanceName
+                                        ? "w-auto"
+                                        : "min-w-[2rem] min-h-[2rem] max-w-[3rem] max-h-[3rem]"
+                                    } `}
+                                  >
                                     <>
                                       {item.assetType === "OnlineImage" && (
                                         <>
@@ -720,11 +770,21 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                           {item.assetName}
                                         </a>
                                       )}
+                                      {item.instanceName && (
+                                        <a
+                                          href={item?.instanceName}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                        >
+                                          {item.instanceName}
+                                        </a>
+                                      )}
                                     </>
                                   </div>
                                   <div className="ml-3 w-24">
                                     <p className="text-gray-900 break-words hyphens-auto">
-                                      {item?.assetName}
+                                      {item?.assetName && item?.assetName}
+                                      {item?.text && item?.text}
                                     </p>
                                   </div>
                                 </div>

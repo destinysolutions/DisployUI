@@ -55,6 +55,7 @@ import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { IoBarChartSharp } from "react-icons/io5";
 import ShowAssetModal from "../ShowAssetModal";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
+import toast from "react-hot-toast";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -139,7 +140,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   //socket signal-RRR
   const [connection, setConnection] = useState(null);
   const [screenConnected, setScreenConnected] = useState(null);
-  const [sendTvStatus, setSendTvStatus] = useState(null);
+  const [sendTvStatus, setSendTvStatus] = useState(false);
   const [sendTvStatusScreenID, setSendTvStatusScreenID] = useState(null);
   const [showNewScreenGroupPopup, setShowNewScreenGroupPopup] = useState(false);
   const [selectedCheckboxIDs, setSelectedCheckboxIDs] = useState([]);
@@ -149,8 +150,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [loading, setLoading] = useState(false);
   const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
 
-  console.log("sendTvStatus log", sendTvStatus);
-  console.log("sendTvStatusScreen log", sendTvStatusScreenID);
+  // console.log("sendTvStatus log", sendTvStatus);
+  // console.log("sendTvStatusScreen log", sendTvStatusScreenID);
   const selectedScreenIdsString = Array.isArray(selectedCheckboxIDs)
     ? selectedCheckboxIDs.join(",")
     : "";
@@ -584,7 +585,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  // console.log(tags, tagUpdateScreeen);
   const handleTagsUpdate = (tags) => {
     const {
       otp,
@@ -715,7 +715,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     setSearchScreen(searchQuery);
 
     if (searchQuery === "") {
-      setScreenData(screenAllData);
       setFilteredScreenData([]);
     } else {
       const filteredScreen = screenData.filter((entry) =>
@@ -740,6 +739,97 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       }
     }
   };
+
+  // console.log(newConnection.state);
+
+  // for call signal R
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      // .configureLogging(LogLevel.Information)
+      .withAutomaticReconnect()
+      .build();
+
+    setConnection(newConnection);
+    // toast(newConnection.state);
+
+    // const connectSignalR = async () => {
+    // console.log("run signal r");
+    // newConnection.on("ScreenConnected", (screenConnected) => {
+    //   // console.log("ScreenConnected", screenConnected);
+    //   setScreenConnected(screenConnected);
+    // });
+
+    // newConnection.on("TvStatus", (UserID, ScreenID, status) => {
+    //   // console.log("SendTvStatus", UserID,ScreenID,status);
+    //   setSendTvStatus(status);
+    //   setSendTvStatusScreenID(ScreenID);
+    // });
+
+    // try {
+    // newConnection.start();
+    // console.log("Connection established");
+    // setConnection(newConnection);
+    // Invoke ScreenConnected method
+    // newConnection.invoke("ScreenConnected");
+    // console.log("Message sent:", screenConnected);
+
+    // newConnection.on("TvStatus", (UserID, ScreenID, status) => {
+    //   // console.log("SendTvStatus", UserID,ScreenID,status);
+    //   setSendTvStatus(status);
+    //   setSendTvStatusScreenID(ScreenID);
+    // });
+    // Invoke SendTvStatus method
+    // newConnection.invoke("SendTvStatus", true, "E0:76:D0:32:54:00");
+    //console.log("SendTvStatus", 1, "E0:76:D0:32:54:00");
+    // } catch (error) {
+    //   console.error("Error during connection:", error);
+    // }
+    // };
+
+    // connectSignalR(); // Call the combined function
+
+    // return () => {
+    //   if (newConnection.state === "connected") {
+    //     newConnection
+    //       .stop()
+    //       .then(() => {
+    //         console.log("Connection stopped");
+    //         toast("Connection stopped");
+    //       })
+    //       .catch((error) => {
+    //         console.error("Error stopping connection:", error);
+    //       });
+    //   }
+    // };
+  }, []);
+
+  useEffect(() => {
+    if (connection) {
+      connection
+        .start()
+        .then((result) => {
+          console.log("Connected!");
+
+          console.log("result", result);
+
+          connection.on("ScreenConnected", (screenConnected) => {
+            console.log("ScreenConnected", screenConnected);
+            setScreenConnected(screenConnected);
+          });
+
+          connection.on("TvStatus", (UserID, ScreenID, status) => {
+            console.log("SendTvStatus", UserID, ScreenID, status);
+            setSendTvStatus(status);
+            setSendTvStatusScreenID(ScreenID);
+          });
+
+          connection.invoke("ScreenConnected");
+          console.log("Message sent:", screenConnected);
+        })
+        .catch((e) => console.log("Connection failed: ", e));
+    }
+  }, [connection]);
 
   useEffect(() => {
     // load composition
@@ -775,56 +865,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       .catch((error) => {
         console.log(error);
       });
-
-    const connectSignalR = async () => {
-      console.log("run signal r");
-      const newConnection = new HubConnectionBuilder()
-        .withUrl(SIGNAL_R)
-        .configureLogging(LogLevel.Information)
-        .build();
-
-      newConnection.on("ScreenConnected", (screenConnected) => {
-        console.log("ScreenConnected", screenConnected);
-        setScreenConnected(screenConnected);
-      });
-
-      newConnection.on("TvStatus", (UserID, ScreenID, status) => {
-        console.log("SendTvStatus", UserID, ScreenID, status);
-        setSendTvStatus(status);
-        setSendTvStatusScreenID(ScreenID);
-      });
-
-      try {
-        await newConnection.start();
-        console.log("Connection established");
-        setConnection(newConnection);
-
-        // Invoke ScreenConnected method
-        await newConnection.invoke("ScreenConnected");
-        console.log("Message sent:", screenConnected);
-
-        // Invoke SendTvStatus method
-        //await newConnection.invoke("SendTvStatus", true, "E0:76:D0:32:54:00");
-        //console.log("SendTvStatus", 1, "E0:76:D0:32:54:00");
-      } catch (error) {
-        console.error("Error during connection:", error);
-      }
-    };
-
-    connectSignalR(); // Call the combined function
-
-    return () => {
-      if (connection) {
-        connection
-          .stop()
-          .then(() => {
-            console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
   }, []);
 
   useEffect(() => {
@@ -972,8 +1012,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   //   }
   // }, [connection]);
 
-  console.log("screendata", screenData);
-  console.log("filtered screendata", filteredScreenData);
+  // console.log(sendTvStatus, sendTvStatusScreenID);
 
   return (
     <>
@@ -1388,7 +1427,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               )} */}
                             </div>
                           ) : (
-                            <div>
+                            <div className="flex items-center  gap-2">
                               <Link
                                 to={`/screensplayer?screenID=${screen.screenID}`}
                               >
@@ -1401,7 +1440,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                   setEditedScreenName(screen?.screenName);
                                 }}
                               >
-                                <MdOutlineModeEdit className="w-6 h-6 ml-2 hover:text-primary" />
+                                <MdOutlineModeEdit className="w-6 h-6 hover:text-primary" />
                               </button>
                             </div>
                           )}
@@ -1643,14 +1682,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
                       {tagsContentVisible && (
                         <td className="p-2 text-center flex flex-wrap items-center justify-center gap-2 mt-6">
-                          {screen?.tags === "" && (
+                          {(screen?.tags === "" || screen?.tags === null) && (
                             <span>
                               <AiOutlinePlusCircle
                                 size={30}
                                 className="mx-auto cursor-pointer"
                                 onClick={() => {
                                   setShowTagModal(true);
-                                  screen.tags === ""
+                                  screen.tags === "" || screen?.tags === null
                                     ? setTags([])
                                     : setTags(screen?.tags?.split(","));
                                   setTagUpdateScreeen(screen);
@@ -1659,20 +1698,22 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             </span>
                           )}
 
-                          {screen.tags
-                            .split(",")
-                            .slice(
-                              0,
-                              screen.tags.split(",").length > 2
-                                ? 3
-                                : screen.tags.split(",").length
-                            )
-                            .join(",")}
-                          {screen?.tags !== "" && (
+                          {screen?.tags !== null
+                            ? screen.tags
+                                .split(",")
+                                .slice(
+                                  0,
+                                  screen.tags.split(",").length > 2
+                                    ? 3
+                                    : screen.tags.split(",").length
+                                )
+                                .join(",")
+                            : ""}
+                          {screen?.tags !== "" && screen?.tags !== null && (
                             <MdOutlineModeEdit
                               onClick={() => {
                                 setShowTagModal(true);
-                                screen.tags === ""
+                                screen.tags === "" || screen?.tags === null
                                   ? setTags([])
                                   : setTags(screen?.tags?.split(","));
                                 setTagUpdateScreeen(screen);
@@ -1705,7 +1746,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           </button>
                           {/* action popup start */}
                           {showActionBox[screen.screenID] && (
-                            <div className="scheduleAction z-10">
+                            <div className="scheduleAction">
                               <div className="my-1">
                                 <Link
                                   to={`/screensplayer?screenID=${screen.screenID}`}
@@ -2033,14 +2074,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
                       {tagsContentVisible && (
                         <td className="p-2 text-center flex flex-wrap items-center justify-center gap-2 mt-6">
-                          {screen?.tags === "" && (
+                          {(screen?.tags === "" || screen?.tags === null) && (
                             <span>
                               <AiOutlinePlusCircle
                                 size={30}
                                 className="mx-auto cursor-pointer"
                                 onClick={() => {
                                   setShowTagModal(true);
-                                  screen.tags === ""
+                                  screen.tags === "" || screen?.tags === null
                                     ? setTags([])
                                     : setTags(screen?.tags?.split(","));
                                   setTagUpdateScreeen(screen);
@@ -2062,7 +2103,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             <MdOutlineModeEdit
                               onClick={() => {
                                 setShowTagModal(true);
-                                screen.tags === ""
+                                screen.tags === "" || screen?.tags === null
                                   ? setTags([])
                                   : setTags(screen?.tags?.split(","));
                                 setTagUpdateScreeen(screen);

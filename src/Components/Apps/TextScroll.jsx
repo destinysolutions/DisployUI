@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { TbAppsFilled } from "react-icons/tb";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BsInfoLg } from "react-icons/bs";
 import { RiDeleteBin5Line, RiDeleteBinLine } from "react-icons/ri";
 import axios from "axios";
@@ -12,10 +12,11 @@ import {
   SCROLL_ADD_TEXT,
 } from "../../Pages/Api";
 import { useState } from "react";
-import { MdPlaylistPlay } from "react-icons/md";
+import { MdOutlineEdit, MdPlaylistPlay } from "react-icons/md";
 import { FiUpload } from "react-icons/fi";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
@@ -24,8 +25,12 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const [instanceData, setInstanceData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [appDropDown, setAppDropDown] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(GET_ALL_TEXT_SCROLL_INSTANCE, {
         headers: {
@@ -34,11 +39,14 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         setInstanceData(response.data.data);
-        console.log(response.data.data);
+        setLoading(false);
       });
   }, []);
 
   const handelDeleteInstance = (scrollId) => {
+    if (!window.confirm("Are you sure?")) return;
+
+    toast.loading("Deleting...");
     let data = JSON.stringify({
       textScroll_Id: scrollId,
       operation: "Delete",
@@ -57,14 +65,15 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response, "response");
         const updatedInstanceData = instanceData.filter(
           (instanceData) => instanceData.textScroll_Id !== scrollId
         );
         setInstanceData(updatedInstanceData);
+        toast.remove();
       })
       .catch((error) => {
         console.log(error);
+        toast.remove();
       });
   };
 
@@ -95,6 +104,8 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handelDeleteAllInstance = () => {
+    if (!window.confirm("Are you sure?")) return;
+    toast.loading("Deleting...");
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -107,9 +118,11 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       .then(() => {
         setSelectAll(false);
         setInstanceData([]);
+        toast.remove();
       })
       .catch((error) => {
         console.log(error);
+        toast.remove();
       });
   };
 
@@ -169,73 +182,94 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </div>
               <div className="grid grid-cols-10 gap-4 mt-5">
-                {instanceData.map((instance) => (
-                  <div
-                    className="lg:col-span-2 md:col-span-5 sm:col-span-10 "
-                    key={instance.textScroll_Id}
-                  >
-                    <div className="shadow-md bg-[#EFF3FF] rounded-lg">
-                      <div className="relative flex justify-between">
-                        <button className="float-right p-2">
-                          <input
-                            style={{ display: selectAll ? "block" : "none" }}
-                            className="h-5 w-5"
-                            type="checkbox"
-                            checked={instance.isChecked || false}
-                            onChange={() =>
-                              handleCheckboxChange(instance.textScroll_Id)
-                            }
-                          />
-                        </button>
-                        <div className="relative">
-                          <button className="float-right">
-                            <BiDotsHorizontalRounded
-                              className="text-2xl"
-                              onClick={() =>
-                                handleAppDropDownClick(instance.textScroll_Id)
+                {loading ? (
+                  <div className="font-semibold text-center text-2xl w-full col-span-full">
+                    Loading...
+                  </div>
+                ) : instanceData.length > 0 ? (
+                  instanceData.map((instance) => (
+                    <div
+                      className="lg:col-span-2 md:col-span-5 sm:col-span-10 "
+                      key={instance.textScroll_Id}
+                    >
+                      <div className="shadow-md bg-[#EFF3FF] rounded-lg">
+                        <div className="relative flex justify-between">
+                          <button className="float-right p-2">
+                            <input
+                              style={{ display: selectAll ? "block" : "none" }}
+                              className="h-5 w-5"
+                              type="checkbox"
+                              checked={instance.isChecked || false}
+                              onChange={() =>
+                                handleCheckboxChange(instance.textScroll_Id)
                               }
                             />
                           </button>
-                          {appDropDown === instance.textScroll_Id && (
-                            <div className="appdw">
-                              <ul>
-                                {/* <li className="flex text-sm items-center">
-                                  <FiUpload className="mr-2 text-lg" />
-                                  Set to Screen
-                                </li>
-                                <li className="flex text-sm items-center">
-                                  <MdPlaylistPlay className="mr-2 text-lg" />
-                                  Add to Playlist
-                                </li> */}
+                          <div className="relative">
+                            <button className="float-right">
+                              <BiDotsHorizontalRounded
+                                className="text-2xl"
+                                onClick={() =>
+                                  handleAppDropDownClick(instance.textScroll_Id)
+                                }
+                              />
+                            </button>
+                            {appDropDown === instance.textScroll_Id && (
+                              <div className="appdw">
+                                <ul className="space-y-2">
+                                  <li
+                                    onClick={() => {
+                                      navigate(
+                                        `/textscrolldetail/${instance?.textScroll_Id}`
+                                      );
+                                    }}
+                                    className="flex text-sm items-center cursor-pointer"
+                                  >
+                                    <MdOutlineEdit className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                                    Edit
+                                  </li>
+                                  <li className="flex text-sm items-center cursor-pointer">
+                                    <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                                    Set to Screen
+                                  </li>
+                                  {/* <li className="flex text-sm items-center">
+                                      <MdPlaylistPlay className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                                      Add to Playlist
+                                    </li> */}
 
-                                <li
-                                  className="flex text-sm items-center cursor-pointer"
-                                  onClick={() =>
-                                    handelDeleteInstance(instance.textScroll_Id)
-                                  }
-                                >
-                                  <RiDeleteBin5Line className="mr-2 text-lg" />
-                                  Delete
-                                </li>
-                              </ul>
-                            </div>
-                          )}
+                                  <li
+                                    className="flex text-sm items-center cursor-pointer"
+                                    onClick={() =>
+                                      handelDeleteInstance(instance.textScroll_Id)
+                                    }
+                                  >
+                                    <RiDeleteBin5Line className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                                    Delete
+                                  </li>
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="text-center clear-both pb-8">
+                          <img
+                            src="../../../AppsImg/text-scroll-icon.svg"
+                            alt="Logo"
+                            className="cursor-pointer mx-auto h-30 w-30"
+                          />
+                          <h4 className="text-lg font-medium mt-3">
+                            {instance.instanceName}
+                          </h4>
+                          <h4 className="text-sm font-normal ">Added </h4>
                         </div>
                       </div>
-                      <div className="text-center clear-both pb-8">
-                        <img
-                          src="../../../AppsImg/text-scroll-icon.svg"
-                          alt="Logo"
-                          className="cursor-pointer mx-auto h-30 w-30"
-                        />
-                        <h4 className="text-lg font-medium mt-3">
-                          {instance.instanceName}
-                        </h4>
-                        <h4 className="text-sm font-normal ">Added </h4>
-                      </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="font-semibold text-center text-2xl w-full col-span-full">
+                    No data Found.
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>
