@@ -69,8 +69,8 @@ const ShowAssetModal = ({
           </button>
         </div>
 
-        <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex items-start gap-2 bg-white rounded-2xl">
-          <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
+        <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl">
+          <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
             <div className="flex-initial">
               <nav
                 className="flex flex-col space-y-2 "
@@ -161,13 +161,13 @@ const ShowAssetModal = ({
 
             <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1">
               <div className={popupActiveTab === 1 ? "" : "hidden"}>
-                <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                <div className="flex flex-wrap w-full items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                   <div className="mb-5 relative ">
                     <AiOutlineSearch className="absolute top-2 left-2 w-5 h-5 z-10 text-gray" />
                     <input
                       type="text"
                       placeholder=" Search by Name"
-                      className="border border-primary rounded-full px-7 py-2 search-user"
+                      className="border border-primary rounded-full pl-7 py-2 search-user"
                       value={searchAsset}
                       onChange={handleFilter}
                     />
@@ -178,12 +178,13 @@ const ShowAssetModal = ({
                     </button>
                   </Link>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover w-full addmedia-table">
                   <table
                     style={{
                       borderCollapse: "separate",
                       borderSpacing: " 0 10px",
                     }}
+                    className="w-full"
                   >
                     <thead className="sticky top-0">
                       <tr className="bg-lightgray">

@@ -97,6 +97,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //socket signal-RRR
   const [connection, setConnection] = useState(null);
   const [fileType, setFileType] = useState();
+
   useEffect(() => {
     const newConnection = new HubConnectionBuilder()
       .withUrl(SIGNAL_R)
@@ -377,6 +378,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       startDate: overallEventTimes.earliestStartTime.toLocaleString(),
       endDate: overallEventTimes.latestEndTime.toLocaleString(),
       operation: "Insert",
+      tags: "tags",
     });
     let config = {
       method: "post",

@@ -43,6 +43,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [isMuted, setIsMuted] = useState(false);
   const [areSubtitlesOn, setAreSubtitlesOn] = useState(false);
   const [showPreviewPopup, setShowPreviewPopup] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
 
   const modalRef = useRef(null);
 
@@ -95,16 +96,18 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
       },
       data: data,
     };
-
+    setSaveLoading(true);
     axios
       .request(config)
       .then((response) => {
         if (response.data.status === 200) {
           history("/youtube");
+          setSaveLoading(false);
         }
       })
       .catch((error) => {
         console.log(error);
+        setSaveLoading(false);
       });
   };
 
@@ -165,6 +168,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
               <button
                 className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-2 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                disabled={saveLoading}
                 onClick={() => {
                   if (YoutubeVideo === "")
                     return toast.error("Please enter YouTube URL");
@@ -176,8 +180,9 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
               <button
                 className="flex align-middle border-white bg-SlateBlue text-white sm:mt-2  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 .  text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 onClick={() => addYoutubeApp()}
+                disabled={saveLoading}
               >
-                Save
+                {saveLoading ? "Saving..." : "Save"}
               </button>
               {/* <div className="relative sm:mt-2">
                 <button

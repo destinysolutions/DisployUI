@@ -12,6 +12,7 @@ import { HiDotsVertical, HiOutlineLocationMarker } from "react-icons/hi";
 import Footer from "../Footer";
 import { useNavigate } from "react-router-dom";
 import {
+  ADDPLAYLIST,
   COMPOSITION_BY_ID,
   DELETE_ALL_COMPOSITIONS,
   DELETE_COMPOSITION_BY_ID,
@@ -186,7 +187,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const handleFetchCompositionById = async (id) => {
+  const handleFetchCompositionById = async (id, from) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -195,76 +196,108 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         Authorization: authToken,
       },
     };
-    toast.loading("Fetching...");
-    setCompositionByIdLoading(true);
-    axios
-      .request(config)
-      .then((response) => {
-        if (response?.data?.status == 200) {
-          const data = response?.data?.data[0]?.sections;
-          let obj = {};
-          for (const [key, value] of data.entries()) {
-            if (obj[value?.sectionID]) {
-              obj[value?.sectionID].push(value);
-            } else {
-              obj[value?.sectionID] = [value];
-            }
+    if (from === "tags") {
+      axios
+        .request(config)
+        .then((response) => {
+          if (response?.data?.status == 200) {
+            setUpdateTagComposition(response?.data?.data[0]);
+            // if (response?.data?.data[0]?.tags === null) {
+            //   setTags([]);
+            // } else {
+            //   setTags(response?.data?.data[0]?.tags.split(","));
+            // }
           }
-          const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
-          setPreviewModalData(newdd);
-          openModal();
-        }
-        toast.remove();
-        setCompositionByIdLoading(false);
-      })
-      .catch((error) => {
-        toast.remove();
-        setCompositionByIdLoading(false);
-        console.log(error);
-      });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      toast.loading("Fetching...");
+      setCompositionByIdLoading(true);
+      axios
+        .request(config)
+        .then((response) => {
+          if (response?.data?.status == 200) {
+            const data = response?.data?.data[0]?.sections;
+            let obj = {};
+            for (const [key, value] of data.entries()) {
+              if (obj[value?.sectionID]) {
+                obj[value?.sectionID].push(value);
+              } else {
+                obj[value?.sectionID] = [value];
+              }
+            }
+            const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
+            setPreviewModalData(newdd);
+            openModal();
+          }
+          toast.remove();
+          setCompositionByIdLoading(false);
+        })
+        .catch((error) => {
+          toast.remove();
+          setCompositionByIdLoading(false);
+          console.log(error);
+        });
+    }
   };
 
   const handleUpdateTagsOfComposition = async (tags) => {
-    console.log(tags);
-    // const newdata = [];
-    // addAsset.map((item, index) => {
-    //   item[index + 1].map((i) => newdata.push(i));
-    // });
-    // let data = JSON.stringify({
-    //   compositionID: Number(id),
-    //   compositionName: compositionName,
-    //   resolution: "1920 * 1080",
-    //   tags: "tags",
-    //   layoutID: layoutId,
-    //   userID: 0,
-    //   duration: totalDurationSeconds,
-    //   dateAdded: new Date(),
-    //   sections: newdata,
-    // });
+    let data = JSON.stringify({
+      compositionID: Number(updateTagComposition?.compositionID),
+      compositionName: updateTagComposition?.compositionName,
+      resolution: updateTagComposition?.resolution,
+      tags: tags,
+      layoutID: updateTagComposition?.layoutID,
+      userID: updateTagComposition?.userID,
+      duration: updateTagComposition?.duration,
+      dateAdded: updateTagComposition?.dateAdded,
+      sections: updateTagComposition?.sections,
+    });
 
-    // let config = {
-    //   method: "post",
-    //   maxBodyLength: Infinity,
-    //   url: ADDPLAYLIST,
-    //   headers: {
-    //     Authorization: authToken,
-    //     "Content-Type": "application/json",
-    //   },
-    //   data,
-    // };
-    // await axios
-    //   .request(config)
-    //   .then((response) => {
-    //     if (response?.data?.status == 200) {
-    //       navigate("/composition");
-    //       setSavingLoader(false);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //     setSavingLoader(false);
-    //     return error;
-    //   });
+    let config = {
+      method: "post",
+      url: ADDPLAYLIST,
+      headers: {
+        Authorization: authToken,
+        "Content-Type": "application/json",
+      },
+      data,
+    };
+    await axios
+      .request(config)
+      .then((response) => {
+        if (response?.data?.status == 200) {
+          const upadatedComposition = compositionData.map((item) => {
+            if (response?.data?.data?.compositionID === item?.compositionID) {
+              return { ...item, tags: response?.data?.data?.tags };
+            } else {
+              return item;
+            }
+          });
+          const upadatedFilteredComposition = filteredCompositionData.map(
+            (item) => {
+              if (response?.data?.data?.compositionID === item?.compositionID) {
+                return { ...item, tags: response?.data?.data?.tags };
+              } else {
+                return item;
+              }
+            }
+          );
+          if (upadatedComposition.length > 0) {
+            setCompositionData(upadatedComposition);
+          }
+
+          if (upadatedFilteredComposition.length > 0) {
+            setFilteredCompositionData(upadatedFilteredComposition);
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        return error;
+      });
   };
 
   const handleFetchLayoutById = (id) => {
@@ -375,22 +408,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     const searchQuery = event.target.value.toLowerCase();
     setSearchComposition(searchQuery);
 
-    // if (searchQuery === "") {
-    //   setCompositionData(compostionAllData);
-    // } else {
-    //   const filteredData = compositionData.filter((item) => {
-    //     const itemName = item.compositionName
-    //       ? item.compositionName.toLowerCase()
-    //       : "";
-    //     return itemName.includes(searchQuery);
-    //   });
-    //   setCompositionData(filteredData);
-    // }
-    // const searchQuery = event.target.value.toLowerCase();
-    // setSearchScreen(searchQuery);
-
     if (searchQuery === "") {
-      setCompositionData(compositionData);
       setFilteredCompositionData([]);
     } else {
       const filteredComposition = compositionData.filter((entry) =>
@@ -414,123 +432,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         setFilteredCompositionData([]);
       }
     }
-  };
-
-  const jsonCanvasData = {
-    version: "5.3.0",
-    objects: [
-      {
-        layoutID: 1,
-        layoutDtlID: 1,
-        type: "rect",
-        version: "5.3.0",
-        originX: "left",
-        originY: "top",
-        left: 0,
-        top: 0,
-        width: 80,
-        height: 70,
-        fill: "#D9D9D9",
-        stroke: "null",
-        strokeWidth: 1,
-        strokeDashArray: "null",
-        strokeLineCap: "butt",
-        strokeDashOffset: 0,
-        strokeLineJoin: "miter",
-        strokeUniform: false,
-        strokeMiterLimit: 4,
-        scaleX: 1,
-        scaleY: 1,
-        angle: 0,
-        flipX: false,
-        flipY: false,
-        opacity: 1,
-        shadow: "null",
-        visible: true,
-        backgroundColor: "",
-        fillRule: "nonzero",
-        paintFirst: "fill",
-        globalCompositeOperation: "source-over",
-        skewX: 0,
-        skewY: 0,
-        rx: 0,
-        ry: 0,
-      },
-      {
-        layoutID: 2,
-        layoutDtlID: 1,
-        type: "rect",
-        version: "5.3.0",
-        originX: "left",
-        originY: "top",
-        left: 0,
-        top: 70,
-        width: 80,
-        height: 30,
-        fill: "#7D87A9",
-        stroke: "null",
-        strokeWidth: 1,
-        strokeDashArray: "null",
-        strokeLineCap: "butt",
-        strokeDashOffset: 0,
-        strokeLineJoin: "miter",
-        strokeUniform: false,
-        strokeMiterLimit: 4,
-        scaleX: 1,
-        scaleY: 1,
-        angle: 0,
-        flipX: false,
-        flipY: false,
-        opacity: 1,
-        shadow: "null",
-        visible: true,
-        backgroundColor: "",
-        fillRule: "nonzero",
-        paintFirst: "fill",
-        globalCompositeOperation: "source-over",
-        skewX: 0,
-        skewY: 0,
-        rx: 0,
-        ry: 0,
-      },
-      {
-        layoutID: 2,
-        layoutDtlID: 1,
-        type: "rect",
-        version: "5.3.0",
-        originX: "left",
-        originY: "top",
-        left: 80,
-        top: 0,
-        width: 20,
-        height: 100,
-        fill: "#D5E3FF",
-        stroke: "null",
-        strokeWidth: 1,
-        strokeDashArray: "null",
-        strokeLineCap: "butt",
-        strokeDashOffset: 0,
-        strokeLineJoin: "miter",
-        strokeUniform: false,
-        strokeMiterLimit: 4,
-        scaleX: 1,
-        scaleY: 1,
-        angle: 0,
-        flipX: false,
-        flipY: false,
-        opacity: 1,
-        shadow: "null",
-        visible: true,
-        backgroundColor: "",
-        fillRule: "nonzero",
-        paintFirst: "fill",
-        globalCompositeOperation: "source-over",
-        skewX: 0,
-        skewY: 0,
-        rx: 0,
-        ry: 0,
-      },
-    ],
   };
 
   useEffect(() => {
@@ -674,6 +575,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   // console.log(updateTagComposition);
   // console.log(previewModalData);
 
+  // console.log(tags);
+
   return (
     <>
       <div className="flex bg-white py-3 border-b border-gray">
@@ -692,7 +595,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                 </span>
                 <input
                   type="text"
-                  placeholder="Search by Name"
+                  placeholder="Search composition"
                   className="border border-primary rounded-full pl-10 py-2 search-user"
                   value={searchComposition}
                   onChange={handleSearchComposition}
@@ -791,13 +694,22 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                         <td className="text-center">{composition.screenIDs}</td>
                         <td className="text-center flex items-center gap-2">
-                          {" "}
                           {composition?.tags === "" && (
                             <span>
                               <AiOutlinePlusCircle
                                 size={30}
                                 className="mx-auto cursor-pointer"
-                                onClick={() => setShowTagModal(true)}
+                                onClick={() => {
+                                  setShowTagModal(true);
+                                  composition.tags === "" ||
+                                  composition?.tags === null
+                                    ? setTags([])
+                                    : setTags(composition?.tags?.split(","));
+                                  handleFetchCompositionById(
+                                    composition?.compositionID,
+                                    "tags"
+                                  );
+                                }}
                               />
                             </span>
                           )}
@@ -814,8 +726,14 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             <MdOutlineModeEdit
                               onClick={() => {
                                 setShowTagModal(true);
-                                setTags(composition?.tags.split(","));
-                                setUpdateTagComposition(composition);
+                                composition.tags === "" ||
+                                composition?.tags === null
+                                  ? setTags([])
+                                  : setTags(composition?.tags?.split(","));
+                                handleFetchCompositionById(
+                                  composition?.compositionID,
+                                  "tags"
+                                );
                               }}
                               className="w-5 h-5 cursor-pointer"
                             />
@@ -830,6 +748,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                 handleUpdateTagsOfComposition
                               }
                               from="composition"
+                              setUpdateTagComposition={setUpdateTagComposition}
                             />
                           )}
                         </td>
@@ -1247,11 +1166,20 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                               <AiOutlinePlusCircle
                                 size={30}
                                 className="mx-auto cursor-pointer"
-                                onClick={() => setShowTagModal(true)}
+                                onClick={() => {
+                                  setShowTagModal(true);
+                                  composition.tags === "" ||
+                                  composition?.tags === null
+                                    ? setTags([])
+                                    : setTags(composition?.tags?.split(","));
+                                  handleFetchCompositionById(
+                                    composition?.compositionID,
+                                    "tags"
+                                  );
+                                }}
                               />
                             </span>
                           )}
-
                           {composition.tags
                             .split(",")
                             .slice(
@@ -1265,20 +1193,29 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             <MdOutlineModeEdit
                               onClick={() => {
                                 setShowTagModal(true);
-                                setTags(composition?.tags.split(","));
+                                composition.tags === "" ||
+                                composition?.tags === null
+                                  ? setTags([])
+                                  : setTags(composition?.tags?.split(","));
+                                handleFetchCompositionById(
+                                  composition?.compositionID,
+                                  "tags"
+                                );
                               }}
                               className="w-5 h-5 cursor-pointer"
                             />
                           )}
-
                           {/* add or edit tag modal */}
                           {showTagModal && (
                             <AddOrEditTagPopup
                               setShowTagModal={setShowTagModal}
                               tags={tags}
                               setTags={setTags}
-                              // handleTagsUpdate={handleTagsUpdate}
-                              composition={composition}
+                              handleUpdateTagsOfComposition={
+                                handleUpdateTagsOfComposition
+                              }
+                              from="composition"
+                              setUpdateTagComposition={setUpdateTagComposition}
                             />
                           )}
                         </td>
@@ -1323,8 +1260,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                   </button>
                                 </div>
                                 {/* <div className=" mb-1">
-                          <button>Duplicate</button>
-                        </div> */}
+                                <button>Duplicate</button>
+                              </div> */}
                                 <div className=" mb-1">
                                   <button
                                     onClick={() => setAddScreenModal(true)}
@@ -1661,7 +1598,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   )
                 ) : (
                   <tr className="text-center p-2 font-semibold w-full">
-                    <td colSpan="3" className="p-3 text-center">
+                    <td colSpan="6" className="p-3 text-center">
                       No CompositionData here.
                     </td>
                   </tr>

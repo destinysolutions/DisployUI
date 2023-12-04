@@ -5,14 +5,19 @@ import { AiOutlineClose } from "react-icons/ai";
 import { GoPencil } from "react-icons/go";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useEffect } from "react";
-import { SCROLL_ADD_TEXT, SCROLL_TYPE_OPTION } from "../../Pages/Api";
+import {
+  SCROLLDATA_BY_ID,
+  SCROLL_ADD_TEXT,
+  SCROLL_TYPE_OPTION,
+} from "../../Pages/Api";
 import axios from "axios";
 import { useState } from "react";
 import moment from "moment";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { MdSave } from "react-icons/md";
 
-const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
+const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
   const authToken = `Bearer ${UserData.user.data.token}`;
 
@@ -20,13 +25,12 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedScrollType, setSelectedScrollType] = useState(1);
   const [text, setText] = useState("");
   const [edited, setEdited] = useState(false);
+  const [instanceName, setInstanceName] = useState();
   const [saveLoading, setSaveLoading] = useState(false);
 
-  const currentDate = new Date();
   const history = useNavigate();
-  const [instanceName, setInstanceName] = useState(
-    moment(currentDate).format("YYYY-MM-DD hh:mm")
-  );
+
+  const { id } = useParams();
 
   useEffect(() => {
     axios
@@ -37,16 +41,17 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         setScrollType(response.data.data);
-        console.log(response.data.data);
       });
-  });
+  }, []);
 
-  const handleInsertScrollText = () => {
+  const handleUpdateScrollText = () => {
     let data = JSON.stringify({
+      instanceName: instanceName,
+      textScroll_Id: id,
       text: text,
       scrollType: selectedScrollType,
-      instanceName: instanceName,
-      operation: "Insert",
+      userID: JSON.parse(window.localStorage.getItem("userID"))?.userID,
+      operation: "Update",
     });
 
     let config = {
@@ -76,6 +81,33 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
+  const handleFetchTextScrollById = () => {
+    let config = {
+      method: "get",
+      url: `${SCROLLDATA_BY_ID}?ID=${id}`,
+      headers: {
+        Authorization: authToken,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        const data = response?.data?.data[0];
+        console.log(data);
+        setText(data?.text);
+        setSelectedScrollType(data?.scrollType);
+        setInstanceName(data?.instanceName);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    handleFetchTextScrollById();
+  }, []);
+
   return (
     <>
       <div className="flex border-b border-gray bg-white">
@@ -87,13 +119,19 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="lg:flex lg:justify-between sm:block  items-center">
             <div className="flex items-center">
               {edited ? (
-                <input
-                  type="text"
-                  className="w-full border border-primary rounded-md px-2 py-1"
-                  placeholder="Enter schedule name"
-                  value={instanceName}
-                  onChange={(e) => setInstanceName(e.target.value)}
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    className="w-full border border-primary rounded-md px-2 py-1"
+                    placeholder="Enter schedule name"
+                    value={instanceName}
+                    onChange={(e) => setInstanceName(e.target.value)}
+                  />
+                  <MdSave
+                    onClick={() => setEdited(false)}
+                    className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
+                  />
+                </div>
               ) : (
                 <>
                   <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
@@ -107,20 +145,20 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
               {/* <button className=" flex align-middle border-primary items-center border-2 rounded-full py-1 px-4 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                Preview
-              </button> */}
+              Preview
+            </button> */}
               <button
-                onClick={handleInsertScrollText}
+                onClick={handleUpdateScrollText}
                 className="sm:ml-2 xs:ml-1 flex align-middle bg-primary text-white items-center rounded-full py-1 px-4 text-base hover:shadow-lg hover:shadow-primary-500/50"
                 disabled={saveLoading}
               >
                 {saveLoading ? "Saving..." : "Save"}
               </button>
               {/* <div className="relative">
-                <button className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full py-[10px] px-[11px] text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                  <BiDotsHorizontalRounded />
-                </button>
-              </div> */}
+              <button className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full py-[10px] px-[11px] text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                <BiDotsHorizontalRounded />
+              </button>
+            </div> */}
               <button className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full px-[10px] text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <Link to="/text-scroll">
                   <AiOutlineClose />
@@ -142,6 +180,7 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       placeholder="Write your thoughts here..."
                       onChange={(e) => setText(e.target.value)}
+                      value={text}
                     ></textarea>
                   </div>
                   <div className="mb-3 relative inline-flex items-center w-full">
@@ -195,4 +234,4 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
   );
 };
 
-export default TextScrollDetail;
+export default TextScrollDetailById;

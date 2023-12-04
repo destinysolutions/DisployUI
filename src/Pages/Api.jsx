@@ -97,10 +97,16 @@ export const DeleteAllData =
 
 export const GET_ALL_APPS =
   "https://disployapi.thedestinysolutions.com/api/YoutubeApp/GetAllApps";
+
 export const YOUTUBE_INSTANCE_ADD_URL =
   "https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddYoutubeApp";
+
 export const GET_ALL_YOUTUBEDATA =
   "https://disployapi.thedestinysolutions.com/api/YoutubeApp/GetAllYoutubeApp";
+
+export const GET_YOUTUBEDATA_BY_ID =
+  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/SelectByYouTubeId";
+
 export const YOUTUBEDATA_ALL_DELETE =
   "https://disployapi.thedestinysolutions.com/api/YoutubeApp/DeleteAllYoutubeApp";
 
@@ -112,8 +118,13 @@ export const UPDATE_TRIAL_DAY =
 
 export const SCROLL_TYPE_OPTION =
   "https://disployapi.thedestinysolutions.com/api/YoutubeApp/AllScrollType";
+
 export const SCROLL_ADD_TEXT =
   "https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddTextScroll";
+
+export const SCROLLDATA_BY_ID =
+  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/SelectByTextScrollId";
+
 export const GET_ALL_TEXT_SCROLL_INSTANCE =
   "https://disployapi.thedestinysolutions.com/api/YoutubeApp/GetAlltextScroll";
 export const DELETE_ALL_TEXT_SCROLL =

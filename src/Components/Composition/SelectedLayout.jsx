@@ -537,8 +537,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
             },
           })
           .then((response) => {
-            // const newData = [...res, ...response?.data?.data];
-            // console.log(newData);
             setAssetData([...res, ...response?.data?.data]);
           })
           .catch((error) => {
@@ -729,7 +727,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                         onClick={() => addSeletedAsset(assetdata, index + 1)}
                       >
                         <td className="break-words">
-                          {" "}
                           {assetdata.assetName || assetdata?.instanceName}
                         </td>
                         <td className="p-2">{assetdata.fileExtention}</td>
