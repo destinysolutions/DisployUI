@@ -3,10 +3,10 @@ import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
 import "../../../Styles/screen.css";
 import { IoMdRefresh } from "react-icons/io";
-import { MdArrowBackIosNew } from "react-icons/md";
+import { MdArrowBackIosNew, MdOutlineModeEdit } from "react-icons/md";
 import { RiComputerLine, RiDeleteBin5Line } from "react-icons/ri";
 import { HiOutlineChevronDown } from "react-icons/hi2";
-import { AiOutlineCloudUpload, AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineCloudUpload, AiOutlinePlusCircle, AiOutlineSearch } from "react-icons/ai";
 import { MdElectricBolt } from "react-icons/md";
 import { Link, useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -41,6 +41,7 @@ import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
 import { VscCalendar } from "react-icons/vsc";
 import { BsTags } from "react-icons/bs";
 import { HiDotsVertical } from "react-icons/hi";
+import AddOrEditTagPopup from "../../AddOrEditTagPopup";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -97,7 +98,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [searchAsset, setSearchAsset] = useState("");
   const [assetAllData, setAssetAllData] = useState([]);
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
-
+  const [showTagModal, setShowTagModal] = useState(false);
+  const [tags, setTags] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
   const [connection, setConnection] = useState(null);
 
   const modalRef = useRef(null);
@@ -551,12 +555,93 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     return acc + width;
   }, 0);
 
+  const handleTagsUpdate = (tags) => {
+    const {
+      otp,
+      googleLocation,
+      timeZone,
+      screenOrientation,
+      screenResolution,
+      macid,
+      ipAddress,
+      postalCode,
+      latitude,
+      longitude,
+      userID,
+      mediaType,
+      mediaDetailID,
+      tvTimeZone,
+      tvScreenOrientation,
+      tvScreenResolution,
+    } = screenData[0];
+
+    let data = JSON.stringify({
+      screenID: screenData[0]?.screenID,
+      otp,
+      googleLocation,
+      timeZone,
+      screenOrientation,
+      screenResolution,
+      macid,
+      ipAddress,
+      postalCode,
+      latitude,
+      longitude,
+      userID,
+      mediaType,
+      tags,
+      mediaDetailID,
+      tvTimeZone,
+      tvScreenOrientation,
+      tvScreenResolution,
+      screenName: screenData[0]?.editedScreenName,
+      operation: "Update",
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: UPDATE_NEW_SCREEN,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        const updatedScreenData = screenData.map((screen) => {
+          if (response?.data?.data?.model.screenID === screen?.screenID) {
+            return {
+              ...screen,
+              tags: tags,
+            };
+          }
+          return screen;
+        });
+
+       
+        console.log(updatedScreenData);
+        if (updatedScreenData.length > 0) {
+          setScreenData(updatedScreenData);
+        }
+        setTagUpdateScreeen(response?.data?.data?.model);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   // console.log(screenData);
   // console.log(playerData);
   // console.log(screenPreviewData.myComposition);
   // console.log(compositionData.map((item, i) => item[i]));
   // console.log(compositionData);
   // console.log(screenPreviewData.data.length);
+
+  // console.log(screenData);
 
   return (
     <>
@@ -1127,8 +1212,65 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       Tags
                                     </p>
                                   </td>
-                                  <td>
-                                    <select
+                                  <td className="flex items-center gap-2">
+                                    {(screenData.length>0&&screenData[0]?.tags === "" ||
+                                     screenData.length>0&& screenData[0]?.tags === null) && (
+                                      <span>
+                                        <AiOutlinePlusCircle
+                                          size={30}
+                                          className="mx-auto cursor-pointer"
+                                          onClick={() => {
+                                            setShowTagModal(true);
+                                            screenData[0].tags === "" ||
+                                            screenData[0]?.tags === null
+                                              ? setTags([])
+                                              : setTags(
+                                                  screenData[0]?.tags?.split(",")
+                                                );
+                                            setTagUpdateScreeen(screenData[0]);
+                                          }}
+                                        />
+                                      </span>
+                                    )}
+
+                                    {screenData.length>0&&screenData[0]?.tags !== null
+                                      ?screenData.length>0&&screenData[0].tags
+                                          .split(",")
+                                          .slice(
+                                            0,
+                                            screenData.length>0&&screenData[0].tags.split(",").length > 2
+                                              ? 3
+                                              :screenData.length>0&& screenData[0].tags.split(",").length
+                                          )
+                                          .join(",")
+                                      : ""}
+                                    {screenData.length>0&&screenData[0]?.tags !== "" &&
+                                     screenData.length>0&& screenData[0]?.tags !== null && (
+                                        <MdOutlineModeEdit
+                                          onClick={() => {
+                                            setShowTagModal(true);
+                                            screenData.length>0&&  screenData[0].tags === "" ||
+                                            screenData.length>0&&   screenData[0]?.tags === null
+                                              ? setTags([])
+                                              : setTags(
+                                                screenData.length>0&&  screenData[0]?.tags?.split(",")
+                                                );
+                                            setTagUpdateScreeen(screenData.length>0&&screenData[0]);
+                                          }}
+                                          className="w-5 h-5 cursor-pointer"
+                                        />
+                                      )}
+                                       {showTagModal && (
+                            <AddOrEditTagPopup
+                              setShowTagModal={setShowTagModal}
+                              tags={tags}
+                              setTags={setTags}
+                              handleTagsUpdate={handleTagsUpdate}
+                              from="screen"
+                              setTagUpdateScreeen={setTagUpdateScreeen}
+                            />
+                          )}
+                                    {/* <select
                                       value={selectedTag}
                                       onChange={(e) =>
                                         setSelectedTag(e.target.value)
@@ -1142,7 +1284,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                           {tag.tagName}
                                         </option>
                                       ))}
-                                    </select>
+                                    </select> */}
                                   </td>
                                 </tr>
                                 <tr className="border-b border-[#D5E3FF]">
@@ -1157,7 +1299,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       value={selectedScreenTypeOption}
                                       onChange={handleOptionChange}
                                     >
-                                      <option value="">Select Type</option>
+                                      <option label="Select Type"></option>
                                       {getSelectedScreenTypeOption.map(
                                         (option) => (
                                           <option

@@ -399,7 +399,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     const screenToUpdate = screenData.find(
       (screen) => screen.screenID === assetScreenID
     );
-    console.log("screenToUpdate.screenID", assetScreenID);
     let moduleID = selectedAsset.assetID || selectedComposition.compositionID;
     let mediaType = selectedAsset.assetID ? 1 : 3;
     if (screenToUpdate) {
@@ -744,92 +743,86 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   // for call signal R
   useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      // .configureLogging(LogLevel.Information)
-      .withAutomaticReconnect()
-      .build();
+    const connectSignalR = async () => {
+      console.log("run signal r");
+      const newConnection = new HubConnectionBuilder()
+        .withUrl(SIGNAL_R)
+        .configureLogging(LogLevel.Information)
+        .withAutomaticReconnect()
+        .build();
 
-    setConnection(newConnection);
-    // toast(newConnection.state);
+      newConnection.on("ScreenConnected", (screenConnected) => {
+        console.log("ScreenConnected", screenConnected);
+        setScreenConnected(screenConnected);
+      });
 
-    // const connectSignalR = async () => {
-    // console.log("run signal r");
-    // newConnection.on("ScreenConnected", (screenConnected) => {
-    //   // console.log("ScreenConnected", screenConnected);
-    //   setScreenConnected(screenConnected);
-    // });
+      newConnection.on("TvStatus", (UserID, ScreenID, status) => {
+        console.log("SendTvStatus", UserID, ScreenID, status);
+        setSendTvStatus(status);
+        setSendTvStatusScreenID(ScreenID);
+      });
 
-    // newConnection.on("TvStatus", (UserID, ScreenID, status) => {
-    //   // console.log("SendTvStatus", UserID,ScreenID,status);
-    //   setSendTvStatus(status);
-    //   setSendTvStatusScreenID(ScreenID);
-    // });
+      try {
+        await newConnection.start();
+        console.log("Connection established");
+        setConnection(newConnection);
 
-    // try {
-    // newConnection.start();
-    // console.log("Connection established");
-    // setConnection(newConnection);
-    // Invoke ScreenConnected method
-    // newConnection.invoke("ScreenConnected");
-    // console.log("Message sent:", screenConnected);
+        // Invoke ScreenConnected method
+        await newConnection.invoke("ScreenConnected");
+        console.log("Message sent:", screenConnected);
 
-    // newConnection.on("TvStatus", (UserID, ScreenID, status) => {
-    //   // console.log("SendTvStatus", UserID,ScreenID,status);
-    //   setSendTvStatus(status);
-    //   setSendTvStatusScreenID(ScreenID);
-    // });
-    // Invoke SendTvStatus method
-    // newConnection.invoke("SendTvStatus", true, "E0:76:D0:32:54:00");
-    //console.log("SendTvStatus", 1, "E0:76:D0:32:54:00");
-    // } catch (error) {
-    //   console.error("Error during connection:", error);
-    // }
-    // };
+        // Invoke SendTvStatus method
+        //await newConnection.invoke("SendTvStatus", true, "E0:76:D0:32:54:00");
+        //console.log("SendTvStatus", 1, "E0:76:D0:32:54:00");
+      } catch (error) {
+        console.error("Error during connection:", error);
+      }
+    };
 
-    // connectSignalR(); // Call the combined function
+    connectSignalR(); // Call the combined function
 
-    // return () => {
-    //   if (newConnection.state === "connected") {
-    //     newConnection
-    //       .stop()
-    //       .then(() => {
-    //         console.log("Connection stopped");
-    //         toast("Connection stopped");
-    //       })
-    //       .catch((error) => {
-    //         console.error("Error stopping connection:", error);
-    //       });
-    //   }
-    // };
+    return () => {
+      if (connection) {
+        connection
+          .stop()
+          .then(() => {
+            console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
   }, []);
 
-  useEffect(() => {
-    if (connection) {
-      connection
-        .start()
-        .then((result) => {
-          console.log("Connected!");
+  // console.log(sendTvStatus, sendTvStatusScreenID,connection?.state);
 
-          console.log("result", result);
+  // useEffect(() => {
+  //   if (connection) {
+  //     connection
+  //       .start()
+  //       .then((result) => {
+  //         console.log("Connected!");
 
-          connection.on("ScreenConnected", (screenConnected) => {
-            console.log("ScreenConnected", screenConnected);
-            setScreenConnected(screenConnected);
-          });
+  //         console.log("result", result);
 
-          connection.on("TvStatus", (UserID, ScreenID, status) => {
-            console.log("SendTvStatus", UserID, ScreenID, status);
-            setSendTvStatus(status);
-            setSendTvStatusScreenID(ScreenID);
-          });
+  //         connection.on("ScreenConnected", (screenConnected) => {
+  //           console.log("ScreenConnected", screenConnected);
+  //           setScreenConnected(screenConnected);
+  //         });
 
-          connection.invoke("ScreenConnected");
-          console.log("Message sent:", screenConnected);
-        })
-        .catch((e) => console.log("Connection failed: ", e));
-    }
-  }, [connection]);
+  //         connection.on("TvStatus", (UserID, ScreenID, status) => {
+  //           console.log("SendTvStatus", UserID, ScreenID, status);
+  //           setSendTvStatus(status);
+  //           setSendTvStatusScreenID(ScreenID);
+  //         });
+
+  //         connection.invoke("ScreenConnected");
+  //         console.log("Message sent:", screenConnected);
+  //       })
+  //       .catch((e) => console.log("Connection failed: ", e));
+  //   }
+  // }, [connection]);
 
   useEffect(() => {
     // load composition
@@ -1455,7 +1448,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <td className="p-2 text-center">
                           <button
                             className={`rounded-full px-6 py-2 text-white text-center ${
-                              screen.screenID === sendTvStatusScreenID &&
+                              screen.screenID ==sendTvStatusScreenID &&
                               sendTvStatus
                                 ? "bg-[#3AB700]"
                                 : "bg-[#FF0000]"

@@ -69,7 +69,10 @@ const ShowAssetModal = ({
           </button>
         </div>
 
-        <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl">
+        <div
+          onClick={() => assetPreviewPopup && setAssetPreviewPopup(false)}
+          className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl"
+        >
           <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
             <div className="flex-initial">
               <nav
