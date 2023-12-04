@@ -89,9 +89,9 @@ const EventEditor = ({
         setTitle(selectedEvent.title);
         setSelectedColor(selectedEvent.color);
         setEditedStartDate(moment(selectedEvent.start).format("YYYY-MM-DD"));
-        setEditedStartTime(moment(selectedEvent.start).format("hh:mm"));
+        setEditedStartTime(moment(selectedEvent.start).format("HH:mm"));
         setEditedEndDate(moment(selectedEvent.end).format("YYYY-MM-DD"));
-        setEditedEndTime(moment(selectedEvent.end).format("hh:mm"));
+        setEditedEndTime(moment(selectedEvent.end).format("HH:mm"));
       } else if (selectedSlot) {
         setSelectedRepeatDay("");
         setSelectedAsset(null);
@@ -99,9 +99,9 @@ const EventEditor = ({
         setTitle("");
         setSelectedColor("");
         setEditedStartDate(moment(selectedSlot.start).format("YYYY-MM-DD"));
-        setEditedStartTime(moment(selectedSlot.start).format("hh:mm"));
+        setEditedStartTime(moment(selectedSlot.start).format("HH:mm"));
         setEditedEndDate(moment(selectedSlot.end).format("YYYY-MM-DD"));
-        setEditedEndTime(moment(selectedSlot.end).format("hh:mm"));
+        setEditedEndTime(moment(selectedSlot.end).format("HH:mm"));
       }
     }
   }, [isOpen, selectedEvent, selectedSlot, allAssets]);
@@ -531,7 +531,7 @@ const EventEditor = ({
                             <td className="border-b border-[#eee]">
                               <p className="text-black font-medium">
                                 {moment(item.createdDate).format(
-                                  "YYYY-MM-DD hh:mm"
+                                  "YYYY-MM-DD HH:mm"
                                 )}
                               </p>
                             </td>

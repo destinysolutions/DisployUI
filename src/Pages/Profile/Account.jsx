@@ -38,6 +38,7 @@ const Account = () => {
   const [selectedState, setSelectedState] = useState("");
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
@@ -114,24 +115,44 @@ const Account = () => {
     },
   });
 
+  useEffect(() => {
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `https://disployapi.thedestinysolutions.com/api/UserMaster/GetOrgUsers?OrgUserSpecificID=${UserData.user?.userID}`,
+      headers: {
+        Authorization: authToken,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   const updateUser = async (values, setSubmitting) => {
     let data = new FormData();
-
-    data.append("UserID", UserData.user?.userID);
-    data.append("GoogleLocation", address);
-    data.append("FirstName", firstName);
-    data.append("LastName", lastName);
-    data.append("PhoneNumber", values.phoneNumber);
-    data.append("EmailID", values.email);
-    data.append("Organization", organization);
-    data.append("State", selectedState);
-    data.append("Country", selectedCountry);
-    data.append("ZipCode", values.zipCode);
-    data.append("Language", selectedLanguageName);
-    data.append("Currency", selectedCurrencyName);
-    data.append("TimeZone", selectedTimezoneName);
-    data.append("Mode", "Update");
-    data.append("Operation", "Update");
+    data.append("orgUserSpecificID", "1");
+    data.append("firstName", firstName);
+    data.append("lastName", lastName);
+    data.append("email", values.email);
+    data.append("phone", values.phoneNumber);
+    data.append("isActive", "1");
+    data.append("orgUserID", UserData.user?.userID);
+    data.append("userRole", "1");
+    data.append("countryID", selectedCountry);
+    data.append("company", organization);
+    data.append("operation", "Save");
+    data.append("address", address);
+    data.append("stateId", selectedState);
+    data.append("zipCode", values.zipCode);
+    data.append("languageId", selectedLanguageName);
+    data.append("timeZoneId", selectedTimezoneName);
+    data.append("currencyId", selectedCurrencyName);
     data.append("File", file);
 
     let config = {
@@ -251,6 +272,7 @@ const Account = () => {
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Email*</label>
                 <input
+                  readOnly
                   className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                   type="email"
                   name="email"
@@ -291,8 +313,9 @@ const Account = () => {
                 />
               </div>
               <div className="md:w-1/2 px-3">
-                <label className="label_top text-xs">Organization*</label>
+                <label className="label_top text-xs">Roles*</label>
                 <input
+                  readOnly
                   className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
                   type="text"
                   placeholder="Manager"
@@ -433,7 +456,7 @@ const Account = () => {
           </div>
         </form>
       </div>
-      <div className="rounded-xl mt-8 shadow bg-white p-5">
+      {/* <div className="rounded-xl mt-8 shadow bg-white p-5">
         <h4 className="text-xl font-bold ">Delete Account</h4>
         <div className="flex items-start space-x-3 py-6">
           <input type="checkbox" className="border-gray-300 rounded h-5 w-5" />
@@ -446,7 +469,7 @@ const Account = () => {
         <button className="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
           Deactivate Account
         </button>
-      </div>
+      </div> */}
     </>
   );
 };

@@ -136,14 +136,14 @@ const Navbar = () => {
               {/* <img
                 src="/NavbarIcons/Union.svg"
                 alt="Union"
-                className="m-1 cursor-pointer bg-lightgray"
+                className="m-1  bg-lightgray"
               /> */}
               {/* Notification box start */}
               {/* <div className="relative">
                 <img
                   src="/NavbarIcons/notification.svg"
                   alt="notification"
-                  className="m-1 cursor-pointer relative bg-lightgray"
+                  className="m-1  relative bg-lightgray"
                   onClick={handleNotificationClick}
                 />
                 {showNotificationBox && (
@@ -199,14 +199,14 @@ const Navbar = () => {
                         color
                       )}
                       alt="profile"
-                      className="cursor-pointer profile"
+                      className="profile cursor-pointer"
                       onClick={handleProfileClick}
                     />
                   ) : (
                     <img
                       src={regsiterData?.image}
                       alt="profile"
-                      className="cursor-pointer profile"
+                      className="profile cursor-pointer"
                       onClick={handleProfileClick}
                     />
                   )}
@@ -214,7 +214,7 @@ const Navbar = () => {
                   {showProfileBox && (
                     <>
                       <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
-                        <div className="flex items-center space-x-3 cursor-pointer p-2">
+                        <div className="flex items-center space-x-3  p-2">
                           {regsiterData?.image == null ? (
                             <img
                               src={createImageFromInitials(
@@ -223,14 +223,14 @@ const Navbar = () => {
                                 color
                               )}
                               alt="profile"
-                              className="cursor-pointer profile"
+                              className=" profile"
                               onClick={handleProfileClick}
                             />
                           ) : (
                             <img
                               src={regsiterData?.image}
                               alt="profile"
-                              className="cursor-pointer profile"
+                              className=" profile"
                               onClick={handleProfileClick}
                             />
                           )}
@@ -290,14 +290,14 @@ const Navbar = () => {
                     //           : imgSrc
                     //       }
                     //       alt="profile"
-                    //       className="cursor-pointer profile"
+                    //       className=" profile"
                     //       onClick={handleProfileClick}
                     //     />
                     //   ) : (
                     //     <img
                     //       src={data?.image}
                     //       alt="profile"
-                    //       className="cursor-pointer profile"
+                    //       className=" profile"
                     //       onClick={handleProfileClick}
                     //     />
                     //   )}
@@ -305,7 +305,7 @@ const Navbar = () => {
                     //   {showProfileBox && (
                     //     <>
                     //       <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
-                    //         <div className="flex items-center space-x-3 cursor-pointer p-2">
+                    //         <div className="flex items-center space-x-3  p-2">
                     //           {data?.image == null ? (
                     //             <img
                     //               src={
@@ -319,14 +319,14 @@ const Navbar = () => {
                     //                 // : imgSrc
                     //               }
                     //               alt="profile"
-                    //               className="cursor-pointer profile"
+                    //               className=" profile"
                     //               onClick={handleProfileClick}
                     //             />
                     //           ) : (
                     //             <img
                     //               src={data?.image}
                     //               alt="profile"
-                    //               className="cursor-pointer profile"
+                    //               className=" profile"
                     //               onClick={handleProfileClick}
                     //             />
                     //           )}
