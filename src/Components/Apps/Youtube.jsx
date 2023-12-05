@@ -335,7 +335,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
                           <div className="text-center clear-both pb-8">
                             <img
-                              src="../../../public/AppsImg/youtube.svg"
+                              src={require("../../../public/AppsImg/youtube.svg")}
                               alt="Logo"
                               className="mx-auto h-20 w-20"
                             />
