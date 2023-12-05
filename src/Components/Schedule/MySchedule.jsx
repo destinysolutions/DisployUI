@@ -34,6 +34,7 @@ import { useSelector } from "react-redux";
 import { MdOutlineGroups, MdOutlineModeEdit } from "react-icons/md";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
+import toast from "react-hot-toast";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //for action popup
@@ -62,6 +63,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const addScreenRef = useRef(null);
   const selectScreenRef = useRef(null);
+  const showActionModalRef = useRef(null)
 
   const loadScheduleData = () => {
     axios
@@ -282,6 +284,8 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       if (filteredSchedule.length > 0) {
         setFilteredScheduleData(filteredSchedule);
       } else {
+        toast.remove()
+        toast.error("Schedule not found!!")
         setFilteredScheduleData([]);
       }
     }
@@ -483,6 +487,30 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setAddScreenModal(false);
   }
 
+  useEffect(() => {
+    // if (showSearchModal) {
+    //   window.document.body.style.overflow = "hidden";
+    // }
+    const handleClickOutside = (event) => {
+      if (
+        showActionModalRef.current &&
+        !showActionModalRef.current.contains(event?.target)
+      ) {
+        // window.document.body.style.overflow = "unset";
+        setShowActionBox(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside]);
+
+  function handleClickOutside() {
+    setShowActionBox(false);
+  }
+
+
   return (
     <>
       {/* navbar and sidebar start */}
@@ -682,7 +710,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             </button>
                             {/* action popup start */}
                             {showActionBox[schedule.scheduleId] && (
-                              <div className="scheduleAction z-10 ">
+                              <div ref={showActionModalRef} className="scheduleAction z-10 ">
                                 <div className="my-1">
                                   <Link
                                     to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
@@ -1091,7 +1119,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             </button>
                             {/* action popup start */}
                             {showActionBox[schedule.scheduleId] && (
-                              <div className="scheduleAction z-10 ">
+                              <div ref={showActionModalRef}  className="scheduleAction z-10 ">
                                 <div className="my-1">
                                   <Link
                                     to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}

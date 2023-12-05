@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useState } from "react";
 import { FaCertificate } from "react-icons/fa";
 import {
@@ -11,6 +11,7 @@ import DataTable from "react-data-table-component";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { CiMenuKebab } from "react-icons/ci";
+
 const Userrole = () => {
   const [showdata, setShowdata] = useState(false);
   const handleDropupClick = () => {
@@ -20,193 +21,15 @@ const Userrole = () => {
     /*model */
   }
   const [showuserroleModal, setshowuserroleModal] = useState(false);
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
-
-  const tableData = [
-    {
-      id: 1,
-      name: "Screen",
-      create: true,
-      edit: false,
-      delete: true,
-      proposeChanges: false,
-      approveChanges: true,
-    },
-    {
-      id: 2,
-      name: "My Schedule",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-    {
-      id: 3,
-      name: "Apps",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-    {
-      id: 4,
-      name: "Settings",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-    {
-      id: 5,
-      name: "Reports",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-    {
-      id: 6,
-      name: "Trash",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-  ];
-  //   const [checkboxStates, setCheckboxStates] = useState({});
-
-  //   const handleCheckboxChange = (id) => {
-  //     setCheckboxStates((prevStates) => ({
-  //       ...prevStates,
-  //       [id]: !prevStates[id], // Toggle the checkbox state
-  //     }));
-  //   };
-
   const [checkboxStates, setCheckboxStates] = useState({});
 
   const [showPopup, setShowPopup] = useState(false); // New state to control the popup visibility
   const [selectedRows, setSelectedRows] = useState([]);
-  // const handleCheckboxChange = (checkboxId, rowId) => {
-  //   // Update checkbox state when clicked
-  //   setCheckboxStates((prevState) => ({
-  //     ...prevState,
-  //     [rowId]: {
-  //       ...prevState[rowId],
-  //       [checkboxId]: !prevState[rowId]?.[checkboxId] || true,
-  //     },
-  //   }));
-  // };
-
-  // Check if any checkbox is checked
-  const isAnyCheckboxChecked = Object.values(checkboxStates).some(
-    (isChecked) => isChecked
-  );
-
-  // Function to handle the "Set Approval" button click
-  const handleSetApprovalClick = (rowId) => {
-    if (isAnyCheckboxChecked) {
-      // If any checkbox is checked, fetch selected row names and show the popup
-      const rowData = tableData.find((row) => row.id === rowId);
-      setSelectedRows(rowData ? [rowData.name] : []);
-      setShowPopup(true);
-    }
-  };
-
-  // Function to close the popup
-  const closePopup = () => {
-    setShowPopup(false);
-  };
-
-  // Billing
-  const BillingData = [
-    {
-      id: 7,
-      name: "Payment Method",
-      create: true,
-      edit: false,
-      delete: true,
-      proposeChanges: false,
-      approveChanges: true,
-    },
-    {
-      id: 8,
-      name: "receive bank Access",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-  ];
-
-  // content
-  const contentData = [
-    {
-      id: 9,
-      name: "Assets",
-      create: true,
-      edit: false,
-      delete: true,
-      proposeChanges: false,
-      approveChanges: true,
-    },
-    {
-      id: 10,
-      name: "Disploy Studio",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-    {
-      id: 11,
-      name: "Playlist",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-    {
-      id: 12,
-      name: "Template",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-  ];
-
   // State to store the checkbox and dropdown states retrieved from localStorage
   const [localStorageData, setLocalStorageData] = useState({
     checkboxState: {},
     dropdownStates: {},
   });
-  // Destructure checkboxStates and dropdownStates from localStorageData
-  const { checkboxState, dropdownStates } = localStorageData;
-  // Effect hook to retrieve data from localStorage on component mount
-  useEffect(() => {
-    const storedCheckboxStates = JSON.parse(
-      localStorage.getItem("approvalReqCheckboxes")
-    );
-    const storedDropdownStates = JSON.parse(
-      localStorage.getItem("approvalReqDropdowns")
-    );
-
-    setLocalStorageData({
-      checkboxState: storedCheckboxStates || {},
-      dropdownStates: storedDropdownStates || {},
-    });
-  }, []);
-
   const [userRoleData, setUserRoleData] = useState([]);
   const [screenIsApprovarID, setScreenIsApprovarID] = useState("");
   const [screenIsReviwerID, setScreenIsReviwerID] = useState("");
@@ -219,9 +42,6 @@ const Userrole = () => {
   const [userData, setUserData] = useState([]);
   const [showActionBox, setShowActionBox] = useState(false);
   const [deletePopup, setdeletePopup] = useState(false);
-  const handleActionClick = (rowId) => {
-    setShowActionBox(rowId);
-  };
   const [checkboxValues, setCheckboxValues] = useState({
     screenView: false,
     screenCreateEdit: false,
@@ -239,32 +59,44 @@ const Userrole = () => {
     appsApprovar: false,
     appsReviewer: false,
   });
-  useEffect(() => {
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/UserMaster/GetOrgUsers",
-      headers: {
-        Authorization: authToken,
-      },
-    };
 
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(response.data.data);
-        setUserData(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  const modalRef = useRef(null);
+
+  const UserData = useSelector((Alldata) => Alldata.user);
+
+  const authToken = `Bearer ${UserData.user.data.token}`;
+
+  //   const [checkboxStates, setCheckboxStates] = useState({});
+
+  //   const handleCheckboxChange = (id) => {
+  //     setCheckboxStates((prevStates) => ({
+  //       ...prevStates,
+  //       [id]: !prevStates[id], // Toggle the checkbox state
+  //     }));
+  //   };
+
+  // const handleCheckboxChange = (checkboxId, rowId) => {
+  //   // Update checkbox state when clicked
+  //   setCheckboxStates((prevState) => ({
+  //     ...prevState,
+  //     [rowId]: {
+  //       ...prevState[rowId],
+  //       [checkboxId]: !prevState[rowId]?.[checkboxId] || true,
+  //     },
+  //   }));
+  // };
+
+  const handleActionClick = (rowId) => {
+    setShowActionBox(rowId);
+  };
+
   const handleCheckboxChange = (category, value) => {
     setCheckboxValues((prevValues) => ({
       ...prevValues,
       [category]: value,
     }));
   };
+
   const handleFetchUserRoleData = () => {
     let data = JSON.stringify({
       mode: "Selectlist",
@@ -291,9 +123,6 @@ const Userrole = () => {
         console.log(error);
       });
   };
-  useEffect(() => {
-    handleFetchUserRoleData();
-  }, []);
 
   const handleSaveUserRole = () => {
     let data = JSON.stringify({
@@ -417,6 +246,7 @@ const Userrole = () => {
         console.log(error);
       });
   };
+
   const handleUpdateUserRole = () => {
     let data = JSON.stringify({
       orgUserRoleID: userRoleID,
@@ -509,6 +339,30 @@ const Userrole = () => {
         console.log(error);
       });
   };
+
+  // Function to handle the "Set Approval" button click
+  const handleSetApprovalClick = (rowId) => {
+    if (isAnyCheckboxChecked) {
+      // If any checkbox is checked, fetch selected row names and show the popup
+      const rowData = tableData.find((row) => row.id === rowId);
+      setSelectedRows(rowData ? [rowData.name] : []);
+      setShowPopup(true);
+    }
+  };
+
+  // Function to close the popup
+  const closePopup = () => {
+    setShowPopup(false);
+  };
+
+  // Check if any checkbox is checked
+  const isAnyCheckboxChecked = Object.values(checkboxStates).some(
+    (isChecked) => isChecked
+  );
+
+  // Destructure checkboxStates and dropdownStates from localStorageData
+  const { checkboxState, dropdownStates } = localStorageData;
+
   const columns = [
     {
       name: "Name",
@@ -608,6 +462,181 @@ const Userrole = () => {
     //   ),
     // },
   ];
+
+  // Billing
+  const BillingData = [
+    {
+      id: 7,
+      name: "Payment Method",
+      create: true,
+      edit: false,
+      delete: true,
+      proposeChanges: false,
+      approveChanges: true,
+    },
+    {
+      id: 8,
+      name: "receive bank Access",
+      create: false,
+      edit: true,
+      delete: true,
+      proposeChanges: true,
+      approveChanges: false,
+    },
+  ];
+
+  // content
+  const contentData = [
+    {
+      id: 9,
+      name: "Assets",
+      create: true,
+      edit: false,
+      delete: true,
+      proposeChanges: false,
+      approveChanges: true,
+    },
+    {
+      id: 10,
+      name: "Disploy Studio",
+      create: false,
+      edit: true,
+      delete: true,
+      proposeChanges: true,
+      approveChanges: false,
+    },
+    {
+      id: 11,
+      name: "Playlist",
+      create: false,
+      edit: true,
+      delete: true,
+      proposeChanges: true,
+      approveChanges: false,
+    },
+    {
+      id: 12,
+      name: "Template",
+      create: false,
+      edit: true,
+      delete: true,
+      proposeChanges: true,
+      approveChanges: false,
+    },
+  ];
+
+  const tableData = [
+    {
+      id: 1,
+      name: "Screen",
+      create: true,
+      edit: false,
+      delete: true,
+      proposeChanges: false,
+      approveChanges: true,
+    },
+    {
+      id: 2,
+      name: "My Schedule",
+      create: false,
+      edit: true,
+      delete: true,
+      proposeChanges: true,
+      approveChanges: false,
+    },
+    {
+      id: 3,
+      name: "Apps",
+      create: false,
+      edit: true,
+      delete: true,
+      proposeChanges: true,
+      approveChanges: false,
+    },
+    {
+      id: 4,
+      name: "Settings",
+      create: false,
+      edit: true,
+      delete: true,
+      proposeChanges: true,
+      approveChanges: false,
+    },
+    {
+      id: 5,
+      name: "Reports",
+      create: false,
+      edit: true,
+      delete: true,
+      proposeChanges: true,
+      approveChanges: false,
+    },
+    {
+      id: 6,
+      name: "Trash",
+      create: false,
+      edit: true,
+      delete: true,
+      proposeChanges: true,
+      approveChanges: false,
+    },
+  ];
+
+  useEffect(() => {
+    handleFetchUserRoleData();
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://disployapi.thedestinysolutions.com/api/UserMaster/GetOrgUsers",
+      headers: {
+        Authorization: authToken,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data.data);
+        setUserData(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    const storedCheckboxStates = JSON.parse(
+      localStorage.getItem("approvalReqCheckboxes")
+    );
+    const storedDropdownStates = JSON.parse(
+      localStorage.getItem("approvalReqDropdowns")
+    );
+
+    setLocalStorageData({
+      checkboxState: storedCheckboxStates || {},
+      dropdownStates: storedDropdownStates || {},
+    });
+  }, []);
+
+  useEffect(() => {
+    // if (showSearchModal) {
+    //   window.document.body.style.overflow = "hidden";
+    // }
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event?.target)) {
+        // window.document.body.style.overflow = "unset";
+        setshowuserroleModal(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside]);
+
+  function handleClickOutside() {
+    setshowuserroleModal(false);
+  }
+
   return (
     <>
       <div className="grid grid-cols-12 lg:px-5 md:px-5 sm:px-2 xs:px-2 mt-5 ">
@@ -717,7 +746,7 @@ const Userrole = () => {
       {showuserroleModal && (
         <>
           <div className="backdrop">
-            <div className="user-model">
+            <div ref={modalRef} className="user-model">
               <div className="hours-heading flex justify-between items-center p-5 border-b border-gray">
                 <h1 className="text-lg font-medium text-primary">
                   Add New Role

@@ -157,6 +157,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     : "";
 
   const moreModalRef = useRef(null);
+  const showActionModalRef = useRef(null);
 
   const loadComposition = () => {
     let config = {
@@ -712,6 +713,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     // setTags([])
     const searchQuery = event.target.value.toLowerCase();
     setSearchScreen(searchQuery);
+    
 
     if (searchQuery === "") {
       setFilteredScreenData([]);
@@ -734,6 +736,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       if (filteredScreen.length > 0) {
         setFilteredScreenData(filteredScreen);
       } else {
+        toast.remove()
+        toast.error("Screen not found!!")
         setFilteredScreenData([]);
       }
     }
@@ -906,6 +910,29 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   function handleClickOutside() {
     setMoreModal(false);
+  }
+
+  useEffect(() => {
+    // if (showSearchModal) {
+    //   window.document.body.style.overflow = "hidden";
+    // }
+    const handleClickOutside = (event) => {
+      if (
+        showActionModalRef.current &&
+        !showActionModalRef.current.contains(event?.target)
+      ) {
+        // window.document.body.style.overflow = "unset";
+        setShowActionBox(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside]);
+
+  function handleClickOutside() {
+    setShowActionBox(false);
   }
 
   // useEffect(() => {
@@ -1305,9 +1332,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               cellPadding={20}
             >
               <thead>
-              <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
                   {screenContentVisible && (
-                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       <div className="flex  items-center ">
                         {/* <SlScreenDesktop className="mr-2 text-xl" /> */}
                         Screen
@@ -1739,7 +1766,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           </button>
                           {/* action popup start */}
                           {showActionBox[screen.screenID] && (
-                            <div className="scheduleAction">
+                            <div
+                              ref={showActionModalRef}
+                              className="scheduleAction"
+                            >
                               <div className="my-1">
                                 <Link
                                   to={`/screensplayer?screenID=${screen.screenID}`}
@@ -2129,7 +2159,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           </button>
                           {/* action popup start */}
                           {showActionBox[screen.screenID] && (
-                            <div className="scheduleAction">
+                            <div
+                              ref={showActionModalRef}
+                              className="scheduleAction"
+                            >
                               <div className="my-1">
                                 <Link
                                   to={`/screensplayer?screenID=${screen.screenID}`}
