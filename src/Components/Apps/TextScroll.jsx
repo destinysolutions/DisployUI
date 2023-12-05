@@ -33,6 +33,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const [addScreenModal, setAddScreenModal] = useState(false);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
+  const [textScrollId, setTextScrollId] = useState();
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
     : "";
@@ -75,11 +76,12 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       }
     };
   }, []);
+
   const handleUpdateScreenAssign = () => {
     let config = {
-      method: "post",
+      method: "get",
       maxBodyLength: Infinity,
-      url: `${UPDATE_SCREEN_ASSIGN}?ScheduleID=${scheduleId}&ScreenID=${selectedScreenIdsString}`,
+      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AssignTextScrollToScreen?TextScrollId=${textScrollId}&ScreenID=${selectedScreenIdsString}`,
       headers: {
         Authorization: authToken,
         "Content-Type": "application/json",
@@ -208,6 +210,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleAppDropDownClick = (id) => {
+    setTextScrollId(id);
     if (appDropDown === id) {
       setAppDropDown(null);
     } else {
