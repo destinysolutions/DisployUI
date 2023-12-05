@@ -1305,19 +1305,19 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               cellPadding={20}
             >
               <thead>
-                <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+              <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
                   {screenContentVisible && (
-                    <th className=" text-[#444] text-sm font-semibold p-2">
+                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       <div className="flex  items-center ">
-                        <SlScreenDesktop className="mr-2 text-xl" />
+                        {/* <SlScreenDesktop className="mr-2 text-xl" /> */}
                         Screen
                       </div>
                     </th>
                   )}
                   {locContentVisible && (
-                    <th className=" text-[#444] text-sm font-semibold p-2">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       <div className="flex  items-center justify-center ">
-                        <HiOutlineLocationMarker className="mr-2 text-xl" />
+                        {/* <HiOutlineLocationMarker className="mr-2 text-xl" /> */}
                         Google Location
                       </div>
                     </th>
@@ -1325,9 +1325,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   {statusContentVisible && (
                     <th className=" text-[#444] text-sm font-semibold p-2">
                       <div className="flex  items-center justify-center  mx-auto ">
-                        <MdLiveTv className="mr-2 text-xl" />
+                        {/* <MdLiveTv className="mr-2 text-xl" /> */}
                         status
-                        <BiFilterAlt className="ml-1 text-lg" />
+                        {/* <BiFilterAlt className="ml-1 text-lg" /> */}
                       </div>
                     </th>
                   )}
@@ -1343,7 +1343,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   {nowPlayingContentVisible && (
                     <th className=" text-[#444] text-sm font-semibold p-2">
                       <div className="flex  items-center justify-center  mx-auto">
-                        <BsCollectionPlay className="mr-2 text-xl" />
+                        {/* <BsCollectionPlay className="mr-2 text-xl" /> */}
                         Now Playing
                       </div>
                     </th>
@@ -1351,7 +1351,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   {currScheduleContentVisible && (
                     <th className=" text-[#444] text-sm font-semibold p-2">
                       <div className=" flex  items-center mx-auto justify-center">
-                        <MdOutlineCalendarMonth className="mr-2 text-xl" />
+                        {/* <MdOutlineCalendarMonth className="mr-2 text-xl" /> */}
                         Current Schedule
                       </div>
                     </th>
@@ -1359,9 +1359,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   {tagsContentVisible && (
                     <th className="text-[#444] text-sm font-semibold p-2">
                       <div className=" flex mx-auto items-center justify-center">
-                        <BsPencilSquare className="mr-2 text-xl" />
+                        {/* <BsPencilSquare className="mr-2 text-xl" /> */}
                         Tags
-                        <BiFilterAlt className="ml-1 text-lg" />
+                        {/* <BiFilterAlt className="ml-1 text-lg" /> */}
                       </div>
                     </th>
                   )}
@@ -1448,7 +1448,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <td className="p-2 text-center">
                           <button
                             className={`rounded-full px-6 py-2 text-white text-center ${
-                              screen.screenID ==sendTvStatusScreenID &&
+                              screen.screenID == sendTvStatusScreenID &&
                               sendTvStatus
                                 ? "bg-[#3AB700]"
                                 : "bg-[#FF0000]"
@@ -2129,7 +2129,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           </button>
                           {/* action popup start */}
                           {showActionBox[screen.screenID] && (
-                            <div className="scheduleAction z-10">
+                            <div className="scheduleAction">
                               <div className="my-1">
                                 <Link
                                   to={`/screensplayer?screenID=${screen.screenID}`}
