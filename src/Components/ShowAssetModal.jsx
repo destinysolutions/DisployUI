@@ -169,7 +169,7 @@ const ShowAssetModal = ({
                     <AiOutlineSearch className="absolute top-2 left-2 w-5 h-5 z-10 text-gray" />
                     <input
                       type="text"
-                      placeholder=" Search by Name"
+                      placeholder=" Search Asset"
                       className="border border-primary rounded-full pl-7 py-2 search-user"
                       value={searchAsset}
                       onChange={handleFilter}
@@ -299,12 +299,12 @@ const ShowAssetModal = ({
               </div>
               <div className={popupActiveTab === 2 ? "" : "hidden"}>
                 <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                  <div className="mb-5 relative ">
-                    <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
+                  <div className="mb-5 relative w-[32%]">
+                    <AiOutlineSearch className="absolute top-2 left-2 w-6 h-5 z-10 text-gray" />
                     <input
                       type="text"
-                      placeholder=" Search by Name"
-                      className="border border-primary rounded-full px-7 py-2 search-user"
+                      placeholder=" Search Composition"
+                      className="border border-primary rounded-full px-7 py-2 search-user w-full"
                       value={searchAsset}
                       onChange={handleFilter}
                     />
@@ -321,6 +321,7 @@ const ShowAssetModal = ({
                       borderCollapse: "separate",
                       borderSpacing: " 0 10px",
                     }}
+                    className="w-full"
                   >
                     <thead className="sticky top-0">
                       <tr className="bg-lightgray">
