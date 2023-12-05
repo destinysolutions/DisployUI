@@ -11,6 +11,8 @@ import { useState } from "react";
 import moment from "moment";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { MdSave } from "react-icons/md";
+import toast from "react-hot-toast";
 
 const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
@@ -42,6 +44,10 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
   });
 
   const handleInsertScrollText = () => {
+    if (instanceName === "" || text === "") {
+      toast.remove();
+      return toast.error("Please fill all the fields.");
+    }
     let data = JSON.stringify({
       text: text,
       scrollType: selectedScrollType,
@@ -76,6 +82,14 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
+  const handleOnSavetextScroll = () => {
+    if (!instanceName.replace(/\s/g, "").length) {
+      toast.remove();
+      return toast.error("please enter a character.");
+    }
+    setEdited(false);
+  };
+
   return (
     <>
       <div className="flex border-b border-gray bg-white">
@@ -87,13 +101,19 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="lg:flex lg:justify-between sm:block  items-center">
             <div className="flex items-center">
               {edited ? (
-                <input
-                  type="text"
-                  className="w-full border border-primary rounded-md px-2 py-1"
-                  placeholder="Enter schedule name"
-                  value={instanceName}
-                  onChange={(e) => setInstanceName(e.target.value)}
-                />
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    className="w-full border border-primary rounded-md px-2 py-1"
+                    placeholder="Enter schedule name"
+                    value={instanceName}
+                    onChange={(e) => setInstanceName(e.target.value)}
+                  />
+                  <MdSave
+                    onClick={() => handleOnSavetextScroll()}
+                    className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
+                  />
+                </div>
               ) : (
                 <>
                   <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
