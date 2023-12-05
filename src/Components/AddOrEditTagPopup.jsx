@@ -13,6 +13,7 @@ const AddOrEditTagPopup = ({
   setUpdateTagComposition,
   handleUpadteScheduleTags,
   setUpdateTagSchedule,
+  handleUpdateTagsYoutube,
 }) => {
   const [tagValue, setTagValue] = useState("");
 
@@ -50,6 +51,9 @@ const AddOrEditTagPopup = ({
     if (from === "schedule") {
       return handleUpadteScheduleTags([...tags, tagValue].join(","));
     }
+    if (from === "youtube") {
+      return handleUpdateTagsYoutube([...tags, tagValue].join(","));
+    }
   };
 
   const handleDeleteTag = (val) => {
@@ -63,6 +67,9 @@ const AddOrEditTagPopup = ({
     }
     if (from === "schedule") {
       return handleUpadteScheduleTags(newTags.join(","));
+    }
+    if (from === "youtube") {
+      return handleUpdateTagsYoutube(newTags.join(","));
     }
   };
 

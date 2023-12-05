@@ -20,8 +20,8 @@ const App = () => {
   };
   var { start, getRemainingTime, isIdle } = useIdleTimer({
     onIdle,
-    startManually: true,
-    startOnMount: false,
+    // startManually: true,
+    // startOnMount: false,
     timeout: 18_00_000,
     throttle: 500,
     stopOnIdle: true,
@@ -52,9 +52,9 @@ const App = () => {
           window.localStorage.setItem(
             "timer",
             JSON.stringify(Math.ceil(getRemainingTime() / 1000))
-          );
-        }, 1000);
-      } else if (loggedInUser && timer < 18_00_000) {
+            );
+          }, 1000);
+        } else if (loggedInUser && timer < 18_00_000) {
         start();
         interval = setInterval(() => {
           window.localStorage.setItem(
@@ -76,6 +76,7 @@ const App = () => {
       start();
     }
   }, [loggedInUser]);
+
 
   return (
     <>

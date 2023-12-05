@@ -20,6 +20,7 @@ import { TiFolderOpen } from "react-icons/ti";
 import { FcOpenedFolder } from "react-icons/fc";
 import { CgMoveRight } from "react-icons/cg";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   NewFolderDialog.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -249,6 +250,10 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
   const updateFolderNameInAPI = async (folderID, newName) => {
+    if (!newName.replace(/\s/g, "").length) {
+      toast.remove();
+      return toast.error("Please enter a character");
+    }
     try {
       const formData = new FormData();
       formData.append("folderID", folderID);
@@ -264,14 +269,15 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
       const updatedFolder = response.data.data.model;
       loadFolderByID(folderID);
 
-      console.log("Folder name updated:", updatedFolder);
+    setEditMode(null);
+    console.log("Folder name updated:", updatedFolder);
     } catch (error) {
-      console.error("Error updating folder name:", error);
+    setEditMode(null);
+    console.error("Error updating folder name:", error);
     }
   };
   const saveFolderName = (folderID, newName) => {
     updateFolderNameInAPI(folderID, newName); // Use newName instead of folderName
-    setEditMode(null);
   };
 
   const [isMoveToOpen, setIsMoveToOpen] = useState(false);
