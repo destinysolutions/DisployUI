@@ -16,6 +16,7 @@ import moment from "moment";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { MdSave } from "react-icons/md";
+import toast from "react-hot-toast";
 
 const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
@@ -45,6 +46,10 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   const handleUpdateScrollText = () => {
+    if (instanceName === "" || text === "") {
+      toast.remove();
+      return toast.error("Please fill all the fields.");
+    }
     let data = JSON.stringify({
       instanceName: instanceName,
       textScroll_Id: id,
@@ -108,6 +113,14 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
     handleFetchTextScrollById();
   }, []);
 
+  const handleOnSavetextScroll = () => {
+    if (!instanceName.replace(/\s/g, "").length) {
+      toast.remove();
+      return toast.error("please enter a character.");
+    }
+    setEdited(false);
+  };
+
   return (
     <>
       <div className="flex border-b border-gray bg-white">
@@ -128,7 +141,7 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
                     onChange={(e) => setInstanceName(e.target.value)}
                   />
                   <MdSave
-                    onClick={() => setEdited(false)}
+                    onClick={() => handleOnSavetextScroll(false)}
                     className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
                   />
                 </div>
