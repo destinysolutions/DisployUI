@@ -6,9 +6,13 @@ import { IoMdRefresh } from "react-icons/io";
 import { MdArrowBackIosNew, MdOutlineModeEdit } from "react-icons/md";
 import { RiComputerLine, RiDeleteBin5Line } from "react-icons/ri";
 import { HiOutlineChevronDown } from "react-icons/hi2";
-import { AiOutlineCloudUpload, AiOutlinePlusCircle, AiOutlineSearch } from "react-icons/ai";
+import {
+  AiOutlineCloudUpload,
+  AiOutlinePlusCircle,
+  AiOutlineSearch,
+} from "react-icons/ai";
 import { MdElectricBolt } from "react-icons/md";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import ReactPlayer from "react-player";
 import { FiPlus } from "react-icons/fi";
@@ -68,7 +72,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [paymentpop, setPaymentpop] = useState(false);
   const [toggle, setToggle] = useState(1);
   const [sync, setsyncToggle] = useState(1);
-  const [playerData, setPlayerData] = useState();
+  const [playerData, setPlayerData] = useState(null);
   const [buttonStates, setButtonStates] = useState(Array(3).fill(false));
   const [screenPreviewData, setScreenPreviewData] = useState({
     data: [],
@@ -108,6 +112,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const modalPreviewRef = useRef(null);
   const scheduleRef = useRef(null);
   const compositionRef = useRef(null);
+
+  const navigate = useNavigate();
+
   // const [sendTvStatus, setSendTvStatus] = useState(null);
   // const [sendTvStatusScreenID, setSendTvStatusScreenID] = useState(null);
 
@@ -160,26 +167,32 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       setAssetData(filteredData);
     }
   };
+
   const handleAssetAdd = (asset) => {
     setAssetPreview(asset);
   };
+
   const handleCompositionsAdd = (composition) => {
     setSelectedComposition(composition);
   };
+
   const handleOnConfirm = () => {
     setShowAssetModal(false);
     setSelectedAsset(assetPreview);
     setShowAssestOptionsPopup(false);
   };
+
   const handleScheduleAdd = (schedule) => {
     setSelectedSchedule(schedule);
   };
+
   const handleOnSaveSchedule = () => {
     setShowScheduleModal(false);
     if (selectedSchedule !== "") {
       setSaveForSchedule(true);
     }
   };
+
   const handleOptionChange = (e) => {
     setSelectedScreenTypeOption(e.target.value);
     setSelectedComposition("");
@@ -189,10 +202,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setConfirmForComposition(false);
     setSaveForSchedule(false);
   };
+
   const handleConfirmOnComposition = () => {
     setShowCompositionModal(false);
+    setSelectedDefaultAsset("");
     if (selectedComposition !== "") setConfirmForComposition(true);
   };
+
   let currentDate = new Date();
   let formatedate = moment(currentDate).format("YYYY-MM-DD hh:mm");
 
@@ -200,14 +216,14 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
   const buttons = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
-  // console.log("formatedate", formatedate);
-
   function handleScreenOrientationRadio(e, optionId) {
     setSelectScreenOrientation(optionId);
   }
+
   function handleScreenResolutionRadio(e, optionId) {
     setSelectScreenResolution(optionId);
   }
+
   function updatetoggle(id) {
     setToggle(id);
   }
@@ -253,8 +269,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       },
       data,
     };
-
-    toast.loading("Fetching Data...");
+    setLoading(true);
+    // toast.loading("Fetching Data...");
     await axios
       .request(config)
       .then((response) => {
@@ -263,7 +279,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           setScreenPreviewData({ data, myComposition });
           handleChangePreviewScreen();
           // console.log(response?.data);
-          toast.remove();
+          setLoading(false);
         }
         // if (response?.data?.data.length > 1) {
         //   // find current schedule & set data
@@ -275,11 +291,12 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .catch((error) => {
         console.log(error);
-        toast.remove();
+        setLoading(false);
       });
   };
 
   function handleChangePreviewScreen() {
+    setLoading(true);
     const { data, myComposition } = screenPreviewData;
 
     const findCurrentSchedule = data.find((item) => {
@@ -299,6 +316,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       }
     });
     if (findCurrentSchedule !== undefined && findCurrentSchedule !== null) {
+      setLoading(false);
       return setPlayerData(findCurrentSchedule?.fileType);
     } else if (myComposition[0]?.compositionPossition.length > 0) {
       let obj = {};
@@ -319,11 +337,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         obj[key + 1] = [...arr];
       }
       const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
+      setLoading(false);
       return setCompositionData(newdd);
     } else {
       const findDefaultAsset = data.find(
         (item) => item?.isdefaultAsset == "true"
       );
+      setLoading(false);
       return setPlayerData(findDefaultAsset?.fileType);
     }
     // if (data.length > 1 || myComposition[0]?.compositionPossition.length > 0) {
@@ -403,6 +423,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         googleLocation,
         operation: "Update",
       });
+      toast.loading("Saving...");
 
       let config = {
         method: "post",
@@ -418,10 +439,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       axios
         .request(config)
         .then((response) => {
-          console.log("response", response);
+          // console.log("response", response);
+          navigate("/screens");
+          toast.remove();
         })
         .catch((error) => {
           console.log(error);
+          toast.remove();
         });
     } else {
       console.error("Screen not update");
@@ -622,7 +646,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           return screen;
         });
 
-       
         console.log(updatedScreenData);
         if (updatedScreenData.length > 0) {
           setScreenData(updatedScreenData);
@@ -634,6 +657,27 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
+  useEffect(() => {
+    // if (showSearchModal) {
+    //   window.document.body.style.overflow = "hidden";
+    // }
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event?.target)) {
+        // window.document.body.style.overflow = "unset";
+        setShowAssetModal(false);
+        setAssetPreviewPopup(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside]);
+
+  function handleClickOutside() {
+    setShowAssetModal(false);
+    setAssetPreviewPopup(false);
+  }
   // console.log(screenData);
   // console.log(playerData);
   // console.log(screenPreviewData.myComposition);
@@ -682,8 +726,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className="relative bg-white shadow-lg rounded-e-md screenplayer-section">
-              <div className="screen-palyer-img ">
+            <div className="relative  screenplayer-section w-[75vw] h-[80vh]">
+              <div className="screen-palyer-img w-full h-full pb-5">
                 {/* playerData && isVideo ? (
                   <ReactPlayer
                     url={playerData}
@@ -693,48 +737,60 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     height="100%"
                   />
                 ) : */}
-                {compositionData.length > 0 ? (
-                  <div
-                    className="relative z-0 border-2 border-black/10 rounded-lg p-4"
-                    style={{
-                      height: heightOfDiv + "px",
-                      width: widthOfDiv + "px",
-                    }}
-                  >
-                    {compositionData.map((data, index) => {
-                      return (
-                        <div
-                          key={index}
-                          className="absolute "
-                          // className="w-full h-full"
-                          style={{
-                            width:
-                              compositionData[index][index + 1][0]?.width +
-                              "px",
-                            height:
-                              compositionData[index][index + 1][0]?.height +
-                              "px",
-                            top:
-                              compositionData[index][index + 1][0]?.top + "px",
-                            left:
-                              compositionData[index][index + 1][0]?.left + "px",
-                          }}
-                        >
-                          <Carousel
-                            from="screen"
-                            items={compositionData[index][index + 1]}
-                          />
-                        </div>
-                      );
-                    })}
+                {loading ? (
+                  <div className="text-center font-semibold text-2xl">
+                    Loading...
                   </div>
                 ) : (
-                  <img
-                    src={playerData}
-                    alt="Media"
-                    className="max-w-full max-h-full min-h-[10rem] min-w-[10rem]"
-                  />
+                  compositionData.length > 0 &&
+                  !loading && (
+                    <div
+                      className="relative z-0 rounded-lg p-4 h-full w-full overflow-scroll "
+                      // style={{
+                      //   height: heightOfDiv + "px",
+                      //   width: widthOfDiv + "px",
+                      // }}
+                    >
+                      {compositionData.map((data, index) => {
+                        return (
+                          <div
+                            key={index}
+                            className="absolute"
+                            style={{
+                              width:
+                                compositionData[index][index + 1][0]?.width +
+                                "px",
+                              height:
+                                compositionData[index][index + 1][0]?.height +
+                                "px",
+                              top:
+                                compositionData[index][index + 1][0]?.top +
+                                "px",
+                              left:
+                                compositionData[index][index + 1][0]?.left +
+                                "px",
+                            }}
+                          >
+                            <Carousel
+                              from="screen"
+                              items={compositionData[index][index + 1]}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )
                 )}
+                {!loading &&
+                  compositionData.length === 0 &&
+                  playerData !== null &&
+                  playerData !== undefined && (
+                    <img
+                      src={playerData}
+                      alt="Media"
+                      className="max-w-full max-h-full min-h-[10rem] min-w-[10rem]"
+                    />
+                  )}
               </div>
 
               <div className="grid  grid-cols-12 screen-player-details pb-7 sm:pb-0 border-b border-[#D5E3FF]">
@@ -1001,6 +1057,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     <table
                       cellPadding={10}
                       className="w-full border-[#D5E3FF] border rounded-xl synctable responsive-table"
+                      onClick={() => {
+                        assetPreviewPopup && setAssetPreviewPopup(false);
+                      }}
                     >
                       <tbody>
                         <tr className="border-b border-[#D5E3FF]">
@@ -1209,12 +1268,14 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                      Tags
+                                      Tags:
                                     </p>
                                   </td>
                                   <td className="flex items-center gap-2">
-                                    {(screenData.length>0&&screenData[0]?.tags === "" ||
-                                     screenData.length>0&& screenData[0]?.tags === null) && (
+                                    {((screenData.length > 0 &&
+                                      screenData[0]?.tags === "") ||
+                                      (screenData.length > 0 &&
+                                        screenData[0]?.tags === null)) && (
                                       <span>
                                         <AiOutlinePlusCircle
                                           size={30}
@@ -1225,7 +1286,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                             screenData[0]?.tags === null
                                               ? setTags([])
                                               : setTags(
-                                                  screenData[0]?.tags?.split(",")
+                                                  screenData[0]?.tags?.split(
+                                                    ","
+                                                  )
                                                 );
                                             setTagUpdateScreeen(screenData[0]);
                                           }}
@@ -1233,43 +1296,61 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       </span>
                                     )}
 
-                                    {screenData.length>0&&screenData[0]?.tags !== null
-                                      ?screenData.length>0&&screenData[0].tags
+                                    {screenData.length > 0 &&
+                                    screenData[0]?.tags !== null
+                                      ? screenData.length > 0 &&
+                                        screenData[0].tags
                                           .split(",")
                                           .slice(
                                             0,
-                                            screenData.length>0&&screenData[0].tags.split(",").length > 2
+                                            screenData.length > 0 &&
+                                              screenData[0].tags.split(",")
+                                                .length > 2
                                               ? 3
-                                              :screenData.length>0&& screenData[0].tags.split(",").length
+                                              : screenData.length > 0 &&
+                                                  screenData[0].tags.split(",")
+                                                    .length
                                           )
                                           .join(",")
                                       : ""}
-                                    {screenData.length>0&&screenData[0]?.tags !== "" &&
-                                     screenData.length>0&& screenData[0]?.tags !== null && (
+                                    {screenData.length > 0 &&
+                                      screenData[0]?.tags !== "" &&
+                                      screenData.length > 0 &&
+                                      screenData[0]?.tags !== null && (
                                         <MdOutlineModeEdit
                                           onClick={() => {
                                             setShowTagModal(true);
-                                            screenData.length>0&&  screenData[0].tags === "" ||
-                                            screenData.length>0&&   screenData[0]?.tags === null
+                                            (screenData.length > 0 &&
+                                              screenData[0].tags === "") ||
+                                            (screenData.length > 0 &&
+                                              screenData[0]?.tags === null)
                                               ? setTags([])
                                               : setTags(
-                                                screenData.length>0&&  screenData[0]?.tags?.split(",")
+                                                  screenData.length > 0 &&
+                                                    screenData[0]?.tags?.split(
+                                                      ","
+                                                    )
                                                 );
-                                            setTagUpdateScreeen(screenData.length>0&&screenData[0]);
+                                            setTagUpdateScreeen(
+                                              screenData.length > 0 &&
+                                                screenData[0]
+                                            );
                                           }}
                                           className="w-5 h-5 cursor-pointer"
                                         />
                                       )}
-                                       {showTagModal && (
-                            <AddOrEditTagPopup
-                              setShowTagModal={setShowTagModal}
-                              tags={tags}
-                              setTags={setTags}
-                              handleTagsUpdate={handleTagsUpdate}
-                              from="screen"
-                              setTagUpdateScreeen={setTagUpdateScreeen}
-                            />
-                          )}
+                                    {showTagModal && (
+                                      <AddOrEditTagPopup
+                                        setShowTagModal={setShowTagModal}
+                                        tags={tags}
+                                        setTags={setTags}
+                                        handleTagsUpdate={handleTagsUpdate}
+                                        from="screen"
+                                        setTagUpdateScreeen={
+                                          setTagUpdateScreeen
+                                        }
+                                      />
+                                    )}
                                     {/* <select
                                       value={selectedTag}
                                       onChange={(e) =>
@@ -1287,7 +1368,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     </select> */}
                                   </td>
                                 </tr>
-                                <tr className="border-b border-[#D5E3FF]">
+                                <tr className=" border-[#D5E3FF]">
                                   <td className="text-right">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                       Type
@@ -1314,7 +1395,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   </td>
                                 </tr>
                                 {selectedScreenTypeOption === "1" && (
-                                  <tr className={`display-none`}>
+                                  <tr
+                                    className={`display-none border-b border-[#D5E3FF]`}
+                                  >
                                     <td></td>
                                     <td className="relative">
                                       <input
@@ -1366,6 +1449,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                 setSelectedDefaultAsset(
                                                   "Default Asset"
                                                 );
+                                                setSelectedAsset("");
                                                 setShowAssestOptionsPopup(
                                                   false
                                                 );
@@ -1411,12 +1495,16 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                     <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
                                                       <div>
                                                         <div className="flex border-b border-lightgray flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                                                          <div className="mb-5 relative searchbox">
-                                                            <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
+                                                          <div className="mb-5 relative">
+                                                            <AiOutlineSearch className="absolute top-3 left-2 w-5 h-5 z-10 text-gray" />
                                                             <input
                                                               type="text"
-                                                              placeholder=" Search by Name"
-                                                              className="border border-primary rounded-full px-7 py-2 search-user"
+                                                              placeholder="Search"
+                                                              className="border border-primary rounded-full search-user"
+                                                              style={{
+                                                                paddingLeft:
+                                                                  "2rem ",
+                                                              }}
                                                               value={
                                                                 searchAsset
                                                               }
@@ -2000,8 +2088,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                             <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
                                                             <input
                                                               type="text"
-                                                              placeholder=" Search by Name"
-                                                              className="border border-primary rounded-full px-7 py-2 search-user"
+                                                              placeholder=" Search"
+                                                              className="border border-primary rounded-full pl-8 py-2 search-user"
                                                               value={
                                                                 searchAsset
                                                               }
@@ -2352,7 +2440,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       }
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

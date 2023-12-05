@@ -665,43 +665,46 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                     compositionData.map((composition) => (
                       <tr
                         className="border-b border-b-[#E4E6FF] "
-                        key={composition.compositionID}
+                        key={composition?.compositionID}
                       >
                         <td className="flex items-center justify-center">
                           <input
                             type="checkbox"
                             className="w-6 h-5 mr-2"
                             style={{ display: selectAll ? "block" : "none" }}
-                            checked={composition.isChecked || false}
+                            checked={composition?.isChecked || false}
                             onChange={() =>
-                              handleSelectComposition(composition.compositionID)
+                              handleSelectComposition(
+                                composition?.compositionID
+                              )
                             }
                           />
-                          {composition.compositionName}
+                          {composition?.compositionName}
                         </td>
                         <td className="text-center">
-                          {moment(composition.dateAdded).format(
+                          {moment(composition?.dateAdded).format(
                             "YYYY-MM-DD hh:mm"
                           )}
                         </td>
                         <td className="text-center ">
-                          {composition.resolution}
+                          {composition?.resolution}
                         </td>
                         <td className="text-center">
                           {moment
-                            .utc(composition.duration * 1000)
+                            .utc(composition?.duration * 1000)
                             .format("HH:mm:ss")}
                         </td>
                         <td className="text-center">{composition.screenIDs}</td>
                         <td className="text-center flex items-center gap-2">
-                          {composition?.tags === "" && (
+                          {(composition?.tags === "" ||
+                            composition?.tags === null) && (
                             <span>
                               <AiOutlinePlusCircle
                                 size={30}
                                 className="mx-auto cursor-pointer"
                                 onClick={() => {
                                   setShowTagModal(true);
-                                  composition.tags === "" ||
+                                  composition?.tags === "" ||
                                   composition?.tags === null
                                     ? setTags([])
                                     : setTags(composition?.tags?.split(","));
@@ -713,31 +716,34 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                               />
                             </span>
                           )}
-                          {composition.tags
-                            .split(",")
-                            .slice(
-                              0,
-                              composition.tags.split(",").length > 2
-                                ? 3
-                                : composition.tags.split(",").length
-                            )
-                            .join(",")}
-                          {composition?.tags !== "" && (
-                            <MdOutlineModeEdit
-                              onClick={() => {
-                                setShowTagModal(true);
-                                composition.tags === "" ||
-                                composition?.tags === null
-                                  ? setTags([])
-                                  : setTags(composition?.tags?.split(","));
-                                handleFetchCompositionById(
-                                  composition?.compositionID,
-                                  "tags"
-                                );
-                              }}
-                              className="w-5 h-5 cursor-pointer"
-                            />
-                          )}
+                          {composition?.tags !== null
+                            ? composition?.tags
+                                .split(",")
+                                .slice(
+                                  0,
+                                  composition?.tags.split(",").length > 2
+                                    ? 3
+                                    : composition?.tags.split(",").length
+                                )
+                                .join(",")
+                            : ""}
+                          {composition?.tags !== "" &&
+                            composition?.tags !== null && (
+                              <MdOutlineModeEdit
+                                onClick={() => {
+                                  setShowTagModal(true);
+                                  composition?.tags === "" ||
+                                  composition?.tags === null
+                                    ? setTags([])
+                                    : setTags(composition?.tags?.split(","));
+                                  handleFetchCompositionById(
+                                    composition?.compositionID,
+                                    "tags"
+                                  );
+                                }}
+                                className="w-5 h-5 cursor-pointer"
+                              />
+                            )}
                           {/* add or edit tag modal */}
                           {showTagModal && (
                             <AddOrEditTagPopup
@@ -1132,43 +1138,46 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                     filteredCompositionData.map((composition) => (
                       <tr
                         className="border-b border-b-[#E4E6FF] "
-                        key={composition.compositionID}
+                        key={composition?.compositionID}
                       >
                         <td className="flex items-center justify-center">
                           <input
                             type="checkbox"
                             className="w-6 h-5 mr-2"
                             style={{ display: selectAll ? "block" : "none" }}
-                            checked={composition.isChecked || false}
+                            checked={composition?.isChecked || false}
                             onChange={() =>
-                              handleSelectComposition(composition.compositionID)
+                              handleSelectComposition(
+                                composition?.compositionID
+                              )
                             }
                           />
-                          {composition.compositionName}
+                          {composition?.compositionName}
                         </td>
                         <td className="text-center">
-                          {moment(composition.dateAdded).format(
+                          {moment(composition?.dateAdded).format(
                             "YYYY-MM-DD hh:mm"
                           )}
                         </td>
                         <td className="text-center ">
-                          {composition.resolution}
+                          {composition?.resolution}
                         </td>
                         <td className="text-center">
                           {moment
-                            .utc(composition.duration * 1000)
+                            .utc(composition?.duration * 1000)
                             .format("HH:mm:ss")}
                         </td>
                         <td className="text-center">{composition.screenIDs}</td>
                         <td className="text-center flex items-center gap-2">
-                          {composition?.tags === "" && (
+                          {(composition?.tags === "" ||
+                            composition?.tags === null) && (
                             <span>
                               <AiOutlinePlusCircle
                                 size={30}
                                 className="mx-auto cursor-pointer"
                                 onClick={() => {
                                   setShowTagModal(true);
-                                  composition.tags === "" ||
+                                  composition?.tags === "" ||
                                   composition?.tags === null
                                     ? setTags([])
                                     : setTags(composition?.tags?.split(","));
@@ -1180,31 +1189,34 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                               />
                             </span>
                           )}
-                          {composition.tags
-                            .split(",")
-                            .slice(
-                              0,
-                              composition.tags.split(",").length > 2
-                                ? 3
-                                : composition.tags.split(",").length
-                            )
-                            .join(",")}
-                          {composition?.tags !== "" && (
-                            <MdOutlineModeEdit
-                              onClick={() => {
-                                setShowTagModal(true);
-                                composition.tags === "" ||
-                                composition?.tags === null
-                                  ? setTags([])
-                                  : setTags(composition?.tags?.split(","));
-                                handleFetchCompositionById(
-                                  composition?.compositionID,
-                                  "tags"
-                                );
-                              }}
-                              className="w-5 h-5 cursor-pointer"
-                            />
-                          )}
+                          {composition?.tags !== null
+                            ? composition?.tags
+                                .split(",")
+                                .slice(
+                                  0,
+                                  composition?.tags.split(",").length > 2
+                                    ? 3
+                                    : composition?.tags.split(",").length
+                                )
+                                .join(",")
+                            : ""}
+                          {composition?.tags !== "" &&
+                            composition?.tags !== null && (
+                              <MdOutlineModeEdit
+                                onClick={() => {
+                                  setShowTagModal(true);
+                                  composition?.tags === "" ||
+                                  composition?.tags === null
+                                    ? setTags([])
+                                    : setTags(composition?.tags?.split(","));
+                                  handleFetchCompositionById(
+                                    composition?.compositionID,
+                                    "tags"
+                                  );
+                                }}
+                                className="w-5 h-5 cursor-pointer"
+                              />
+                            )}
                           {/* add or edit tag modal */}
                           {showTagModal && (
                             <AddOrEditTagPopup
@@ -1260,8 +1272,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                   </button>
                                 </div>
                                 {/* <div className=" mb-1">
-                                <button>Duplicate</button>
-                              </div> */}
+                              <button>Duplicate</button>
+                            </div> */}
                                 <div className=" mb-1">
                                   <button
                                     onClick={() => setAddScreenModal(true)}
