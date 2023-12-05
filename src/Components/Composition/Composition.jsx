@@ -722,7 +722,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             .format("HH:mm:ss")}
                         </td>
                         <td className="text-center">{composition.screenIDs}</td>
-                        <td className="text-center flex items-center gap-2">
+                        <td className="text-center flex items-center justify-center w-full flex-wrap gap-2">
                           {(composition?.tags === "" ||
                             composition?.tags === null) && (
                             <span>
@@ -900,12 +900,13 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
                         )}
                         {selectScreenModal && (
-                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed w-screen hsc inset-0 z-50 outline-none focus:outline-none">
+
                             <div
                               ref={selectScreenRef}
                               className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
                             >
-                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full h-[90vh] bg-white outline-none focus:outline-none">
                                 <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                                   <div className="flex items-center">
                                     <div className=" mt-1.5">
@@ -1103,7 +1104,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                                 <div className="py-4 flex justify-center">
                                   <button
-                                    className=" border-primary px-5 py-2 rounded-full ml-3"
+                                    className=" border-primary bg-yellow-400 text-white px-5 py-2 rounded-full ml-3"
                                     onClick={() => {
                                       handleUpdateScreenAssign();
                                     }}
@@ -1195,7 +1196,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             .format("HH:mm:ss")}
                         </td>
                         <td className="text-center">{composition.screenIDs}</td>
-                        <td className="text-center flex items-center gap-2">
+                        <td className="text-center flex items-center justify-center w-full flex-wrap gap-2">
                           {(composition?.tags === "" ||
                             composition?.tags === null) && (
                             <span>

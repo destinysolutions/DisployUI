@@ -182,7 +182,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     );
 
     let newdatas = { ...Testasset };
-    console.log(data);
     if (newdatas?.[currentSection]) {
       newdatas[currentSection].push({
         duration: 10,
@@ -286,9 +285,16 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           ...item,
           [currentSection]: item[currentSection].map((items, i) => {
             if (i == id) {
-              return { ...items, isEdited: !items.isEdited };
+              return {
+                ...items,
+                isEdited: !items.isEdited,
+                duration: items?.duration === "" ? "1" : items?.duration,
+              };
             } else {
-              return items;
+              return {
+                ...items,
+                duration: items?.duration === "" ? "1" : items?.duration,
+              };
             }
           }),
         };
@@ -301,9 +307,16 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       ChnagedObject[currentSection] = ChnagedObject[currentSection].map(
         (items, i) => {
           if (i == id) {
-            return { ...items, isEdited: !items.isEdited };
+            return {
+              ...items,
+              isEdited: !items.isEdited,
+              duration: items?.duration === "" ? "1" : items?.duration,
+            };
           } else {
-            return items;
+            return {
+              ...items,
+              duration: items?.duration === "" ? "1" : items?.duration,
+            };
           }
         }
       );
@@ -313,15 +326,16 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const onChangeSelectedAsset = (e, id) => {
-    if (Number(e) > 300) {
+    if (e.length > 3) {
       toast.remove();
-      toast.error("Seconds should be less than or equal to 300.");
-    }
-    if (Number(e) < 1) {
-      toast.remove();
-      toast.error("Minimum number should 1.");
+      toast.error("Seconds should be less than or equal to 3 digits.");
       return;
     }
+    // if (Number(e) < 1) {
+    //   toast.remove();
+    //   toast.error("Minimum number should 1.");
+    //   return;
+    // }
 
     const CompositionData = [...addAsset];
 
@@ -879,7 +893,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         )
                                       }
                                       min="0"
-                                      max="300"
+                                      max="999"
                                     />
                                     <span>sec</span>
                                   </p>

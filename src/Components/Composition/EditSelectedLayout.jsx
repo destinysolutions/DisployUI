@@ -282,9 +282,16 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
           ...item,
           [currentSection]: item[currentSection].map((items, i) => {
             if (i == id) {
-              return { ...items, isEdited: !items.isEdited };
+              return {
+                ...items,
+                isEdited: !items.isEdited,
+                duration: items?.duration === "" ? "1" : items?.duration,
+              };
             } else {
-              return items;
+              return {
+                ...items,
+                duration: items?.duration === "" ? "1" : items?.duration,
+              };
             }
           }),
         };
@@ -297,9 +304,16 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       ChnagedObject[currentSection] = ChnagedObject[currentSection].map(
         (items, i) => {
           if (i == id) {
-            return { ...items, isEdited: !items.isEdited };
+            return {
+              ...items,
+              isEdited: !items.isEdited,
+              duration: items?.duration === "" ? "1" : items?.duration,
+            };
           } else {
-            return items;
+            return {
+              ...items,
+              duration: items?.duration === "" ? "1" : items?.duration,
+            };
           }
         }
       );
@@ -309,15 +323,16 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const onChangeSelectedAsset = (e, id) => {
-    if (Number(e) > 300) {
+    if (e.length > 3) {
       toast.remove();
-      toast.error("Seconds should be less than or equal to 300.");
-    }
-    if (Number(e) < 1) {
-      toast.remove();
-      toast.error("Minimum number should 1.");
+      toast.error("Seconds should be less than or equal to 3 digits.");
       return;
     }
+    // if (Number(e) < 1) {
+    //   toast.remove();
+    //   toast.error("Minimum number should 1.");
+    //   return;
+    // }
 
     const CompositionData = [...addAsset];
 
@@ -503,18 +518,12 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-6 px-5 page-contain">
+      <div className="pt-6 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
               ref={modalRef}
               className={`absolute  left-1/2 -translate-x-1/2 min-h-[80vh] max-h-[80vh] min-w-[90vh] max-w-[90vh] `}
-              // style={{
-              //   maxWidth: `${compositonData?.screenWidth}px`,
-              //   minWidth: `${compositonData?.screenWidth}px`,
-              //   maxHeight: `${compositonData?.screenHeight}px`,
-              //   minHeight: `${compositonData?.screenHeight}px`,
-              // }}
             >
               <RxCrossCircled
                 className="absolute z-50 w-[30px] h-[30px] text-white hover:bg-black/50 bg-black/20 rounded-full top-1 right-1 cursor-pointer"
@@ -530,17 +539,14 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       position: "absolute",
                       left: obj.leftside + "%",
                       top: obj.topside + "%",
-                      // width: obj.width + "px",
-                      // height: obj.height + "px",
-                      width: obj.width + "%",
-                      height: obj.height + "%",
+                      width: obj?.width + "%",
+                      height: obj?.height + "%",
                       backgroundColor: obj.fill,
                     }}
                   >
                     {modalVisible && (
                       <Carousel
                         items={addAsset[index][index + 1]}
-                        // items={items}
                         compositonData={obj}
                       />
                     )}
@@ -655,10 +661,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                         <td className="break-words">
                           {assetdata.assetName || assetdata?.instanceName}
                         </td>
-                        <td className="p-2">
-                          {assetdata.fileExtention && assetdata?.fileExtention}
-                          {assetdata?.instanceName && "Text scroll"}
-                        </td>
+                        <td className="p-2">{assetdata.fileExtention}</td>
                         <td className="p-2 ">Tags, Tags </td>
                       </tr>
                     ))}
@@ -680,7 +683,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
                 <div className="layout-detaills">
                   <h3 className="text-lg font-medium block mb-3">
-                    Duration:-<span>{totalDurationSeconds} Sec</span>
+                    Duration:-&nbsp;<span>{totalDurationSeconds} Sec</span>
                   </h3>
                   <div className="flex">
                     {Array(compositonData?.lstLayloutModelList?.length)
@@ -712,8 +715,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                   cellPadding={10}
                 >
                   <tbody>
-                    {!compositionLoading &&
-                      addAsset.length > 0 &&
+                    {addAsset.length > 0 &&
                       addAsset[currentSection - 1] &&
                       addAsset[currentSection - 1][currentSection].map(
                         (item, index) => {
@@ -792,15 +794,15 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               <td className="text-center w-24">
                                 {item?.assetType}
                               </td>
-                              <td className="text-center w-fit">
+                              <td className={`text-center w-fit `}>
                                 {!item?.isEdited ? (
                                   <span className="border whitespace-nowrap border-[#E4E6FF] rounded-full p-2">
                                     {item.duration} Sec
                                   </span>
                                 ) : (
-                                  <span className="border border-[#E4E6FF] rounded-full w-full">
+                                  <p className="flex items-center gap-2 border-[#E4E6FF] rounded-full w-full min-w-[3rem]">
                                     <input
-                                      className="outline-none border border-[#E4E6FF] rounded-full p-2 w-full"
+                                      className="outline-none border border-[#E4E6FF] rounded-full p-2 w-full min-w-fit"
                                       value={item.duration}
                                       type="number"
                                       onChange={(e) =>
@@ -810,9 +812,10 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         )
                                       }
                                       min="0"
-                                      max="300"
+                                      max="999"
                                     />
-                                  </span>
+                                    <span>sec</span>
+                                  </p>
                                 )}
                               </td>
                               <td className="text-sm flex justify-end items-center gap-2 w-24">

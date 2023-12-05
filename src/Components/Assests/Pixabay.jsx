@@ -4,6 +4,7 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const Pixabay = ({ closeModal, pixabayModalRef }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
@@ -15,7 +16,10 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [uploadInProgress, setUploadInProgress] = useState(false);
   const [imageUploadProgress, setImageUploadProgress] = useState({});
+  const [uploading, setUploading] = useState(false);
+
   const navigate = useNavigate();
+
   useEffect(() => {
     const API_KEY = "38694421-d79007fafdaa5464faa5f9999";
     const BASE_URL = "https://pixabay.com/api/?key=" + API_KEY;
@@ -68,7 +72,6 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
   const handleImageUpload = () => {
     setUploadInProgress(true);
     selectedImages.forEach((image) => {
-      console.log(image, "image");
       const formData = new FormData();
       formData.append("AssetFolderPath", image.webformatURL);
       formData.append("Operation", "Insert");
@@ -98,7 +101,8 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
           },
         })
         .then((response) => {
-          console.log("Upload Success:", response.data);
+          // console.log("Upload Success:", response.data);
+          toast.success("Uploaded successfully.");
           navigate(-1);
         })
         .catch((error) => {
@@ -126,12 +130,14 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
     }
   }, [selectedImages, imageUploadProgress]);
 
+  console.log(uploadInProgress);
+
   return (
     <>
       <div className="backdrop">
         <div
           ref={pixabayModalRef}
-          className="fixed unsplash-model bg-black lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl"
+          className="fixed unsplash-model h-[90vh] bg-black lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl"
         >
           <button
             onClick={closeModal}
@@ -155,7 +161,7 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
             </div>
           </div>
 
-          <div className="unsplash-section bg-white rounded-lg">
+          <div className="unsplash-section h-[60vh] bg-white rounded-lg">
             <div className="grid grid-cols-12 px-3 gap-4 ">
               {images.map((image) => (
                 <div
@@ -192,8 +198,9 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
             <button
               onClick={handleImageUpload}
               className="text-white py-3 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
+              disabled={uploadInProgress}
             >
-              Upload Images
+              {uploadInProgress ? "Uploading..." : "Upload Images"}
             </button>
           </div>
 

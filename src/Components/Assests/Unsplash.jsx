@@ -9,6 +9,7 @@ import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
@@ -97,6 +98,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
             ...prevStatus,
             [image.id]: "success",
           }));
+          toast.success("Uploaded Successfully.");
           navigate(-1);
         })
         .catch((error) => {
@@ -136,7 +138,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
       <div className="backdrop">
         <div
           ref={unsplashModalRef}
-          className="fixed unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl"
+          className="fixed h-[90vh] unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl"
         >
           <button
             onClick={closeModal}
@@ -157,7 +159,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
             />
           </div>
           <div className="container mx-auto">
-            <div className="unsplash-section bg-white rounded-lg">
+            <div className="unsplash-section h-[60vh] bg-white rounded-lg">
               <div className="grid grid-cols-12 px-3 gap-4 ">
                 {res.map((val) => {
                   return (
@@ -224,8 +226,9 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
               type="button"
               onClick={handleImageUpload}
               className="text-white py-5 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
+              disabled={uploadInProgress}
             >
-              Upload Images
+              {uploadInProgress ? "Uploading...." : "Upload Images"}
             </button>
           </div>
         </div>

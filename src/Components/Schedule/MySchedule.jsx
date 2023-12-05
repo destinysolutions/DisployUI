@@ -641,7 +641,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         <td className="text-center">
                           {schedule.screenAssigned}
                         </td>
-                        <td className="text-center flex items-center  justify-center gap-2 w-40">
+                        <td className="text-center flex items-center justify-center gap-2 w-full flex-wrap">
                           {(schedule?.tags === "" ||
                             schedule?.tags === null) && (
                             <span>
@@ -1050,7 +1050,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         <td className="text-center">
                           {schedule.screenAssigned}
                         </td>
-                        <td className="text-center flex items-center justify-center gap-2 w-40">
+                        <td className="text-center flex items-center justify-center gap-2 w-full flex-wrap">
                           {(schedule?.tags === "" ||
                             schedule?.tags === null) && (
                             <span>

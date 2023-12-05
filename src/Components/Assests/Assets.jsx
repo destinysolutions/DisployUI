@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
@@ -44,15 +44,40 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
-  const history = useNavigate();
+  // move to data in folder
+
+  const [isMoveToOpen, setIsMoveToOpen] = useState(false);
   const [asstab, setTogglebtn] = useState(1);
+  const [hoveredTabIcon, setHoveredTabIcon] = useState(null);
+  const [assetsdw, setassetsdw] = useState(null);
+  const [assetsdw2, setassetsdw2] = useState(null);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [activetab, setActivetab] = useState(1);
+  const [originalData, setOriginalData] = useState([]);
+  const [gridData, setGridData] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [newFolder, setNewfolder] = useState([]);
+  const [folderName, setFolderName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [selectAll, setSelectAll] = useState(false);
+  const [deleteMessage, setDeleteMessage] = useState(false);
+  const [openAssetsdwId, setOpenAssetsdwId] = useState(null);
+  const [openAssetsdwIdList, setOpenAssetsdwIdList] = useState(null);
+  const [editMode, setEditMode] = useState(null);
+  const [trashData, setTrashData] = useState([]);
+
+  const actionBoxRef = useRef(null);
+
+  const UserData = useSelector((Alldata) => Alldata.user);
+
+  const authToken = `Bearer ${UserData.user.data.token}`;
+
+  const history = useNavigate();
+
   const updatetoggle = (id) => {
     setTogglebtn(id);
   };
 
-  const [hoveredTabIcon, setHoveredTabIcon] = useState(null);
   const handleIconClick = (item) => {
     // Toggle the visibility of the details for the clicked item
     if (clickedTabIcon === item) {
@@ -62,10 +87,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       setassetsdw(null);
     }
   };
-
-  /* tab1 threedot dwopdown */
-
-  const [assetsdw, setassetsdw] = useState(null);
 
   const updateassetsdw = (id) => {
     if (assetsdw === id) {
@@ -77,7 +98,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   /* tab2 threedot dwopdown */
 
-  const [assetsdw2, setassetsdw2] = useState(null);
   const updateassetsdw2 = (id) => {
     if (assetsdw2 === id) {
       setassetsdw2(null);
@@ -87,9 +107,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   /*checkedbox */
-
-  const [selectedItems, setSelectedItems] = useState([]);
-
   const handleCheckboxChange = (item) => {
     if (selectedItems.includes(item)) {
       setSelectedItems(
@@ -99,16 +116,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       setSelectedItems([...selectedItems, item]);
     }
   };
-
-  /*API */
-
-  const [activetab, setActivetab] = useState(1);
-  const [originalData, setOriginalData] = useState([]);
-  const [gridData, setGridData] = useState([]);
-  const [tableData, setTableData] = useState([]);
-  const [newFolder, setNewfolder] = useState([]);
-  const [folderName, setFolderName] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const fetchData = () => {
     setLoading(true);
@@ -140,11 +147,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         setLoading(false);
       });
   };
-
-  useEffect(() => {
-    fetchData();
-    handleActiveBtnClick(1);
-  }, []);
 
   const handleActiveBtnClick = (btnNumber) => {
     setActivetab(btnNumber);
@@ -192,8 +194,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
   // Delete API
-
-  const [trashData, setTrashData] = useState([]);
 
   const handelDeletedata = (assetId) => {
     console.log("idid", assetId);
@@ -270,8 +270,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   // select All checkbox
 
-  const [selectAll, setSelectAll] = useState(false);
-
   const handleSelectAll = () => {
     if (selectAll) {
       setSelectedItems([]);
@@ -280,6 +278,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
     setSelectAll(!selectAll);
   };
+
   const handleDelete = () => {
     let data = JSON.stringify({
       operation: "ALLDelete",
@@ -345,6 +344,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     checkFolderNameAndCreate();
   };
   //Delete new folder
+
   const deleteFolder = (folderID) => {
     const data = JSON.stringify({
       folderID: folderID,
@@ -366,10 +366,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-  const [deleteMessage, setDeleteMessage] = useState(false);
 
   const handleWarning = (assetId) => {
-    console.log("wZAn id:", assetId);
+    // console.log("wZAn id:", assetId);
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -380,7 +379,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         if (response.data.data == true) {
           setDeleteMessage(true);
         } else {
@@ -392,8 +391,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  // new folder dropdown
-  const [openAssetsdwId, setOpenAssetsdwId] = useState(null);
   const toggleAssetsdw = (folderId) => {
     if (openAssetsdwId === folderId) {
       setOpenAssetsdwId(null);
@@ -402,7 +399,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  const [openAssetsdwIdList, setOpenAssetsdwIdList] = useState(null);
   const toggleAssetsdwList = (folderId) => {
     if (openAssetsdwIdList === folderId) {
       setOpenAssetsdwIdList(null);
@@ -410,9 +406,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       setOpenAssetsdwIdList(folderId);
     }
   };
-
-  // edit folder Name
-  const [editMode, setEditMode] = useState(null);
 
   const handleKeyDown = (e, folderID) => {
     if (e.key === "Enter") {
@@ -449,13 +442,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     setEditMode(null);
   };
 
-  // move to data in folder
-
-  const [isMoveToOpen, setIsMoveToOpen] = useState(false);
-
   const toggleMoveTo = () => {
     setIsMoveToOpen(!isMoveToOpen);
   };
+
   const moveDataToFolder = async (dataId, folderId, assetType) => {
     let data = JSON.stringify({
       folderID: folderId,
@@ -484,11 +474,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       console.log(error);
     }
   };
+
   const handleMoveTo = (folderId) => {
     selectedItems.forEach((item) => {
       moveDataToFolder(item.assetID, folderId, item.assetType);
     });
   };
+
   const updateFolderContent = (folderId) => {
     try {
       axios.get(`${FetchdataFormFolder}?ID=${folderId}`).then((response) => {
@@ -500,6 +492,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       console.error("Error updating folder content:", error);
     }
   };
+
   const navigateToFolder = (folderId, selectedData) => {
     console.log("selectedData before navigation:", selectedData);
     history(`/NewFolderDialog/${folderId}`, { selectedData });
@@ -521,6 +514,36 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
     moveDataToFolder(itemId, folderId);
   };
+
+  useEffect(() => {
+    fetchData();
+    handleActiveBtnClick(1);
+  }, []);
+
+  useEffect(() => {
+    // if (showSearchModal) {
+    //   window.document.body.style.overflow = "hidden";
+    // }
+    const handleClickOutside = (event) => {
+      if (
+        actionBoxRef.current &&
+        !actionBoxRef.current.contains(event?.target)
+      ) {
+        // window.document.body.style.overflow = "unset";
+        setassetsdw(null);
+        setassetsdw2(null);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside]);
+
+  function handleClickOutside() {
+    setassetsdw2(null);
+    setassetsdw(null);
+  }
 
   return (
     <>
@@ -809,8 +832,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           <BsThreeDots className="text-2xl" />
                         </button>
                         {assetsdw === item && selectedItems.includes(item) && (
-                          <div className="assetsdw">
-                            <ul>
+                          <div ref={actionBoxRef} className="assetsdw">
+                            <ul className="space-y-2">
                               {/* <li className="flex text-sm items-center">
                                 <FiUpload className="mr-2 text-lg" />
                                 Set to Screen
@@ -822,7 +845,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               {item.assetType === "Image" && (
                                 <li className="flex text-sm items-center">
                                   <FiDownload className="mr-2 text-lg" />
-                                  <a href={item.assetFolderPath} download>
+                                  <a
+                                    href={item.assetFolderPath}
+                                    target="_blank"
+                                    download
+                                  >
                                     Download
                                   </a>
                                 </li>
@@ -831,7 +858,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               {item.assetType === "Video" && (
                                 <li className="flex text-sm items-center">
                                   <FiDownload className="mr-2 text-lg" />
-                                  <a href={item.assetFolderPath} download>
+                                  <a
+                                    href={item.assetFolderPath}
+                                    target="_blank"
+                                    download
+                                  >
                                     Download
                                   </a>
                                 </li>
@@ -839,7 +870,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               {item.assetType === "OnlineImage" && (
                                 <li className="flex text-sm items-center">
                                   <FiDownload className="mr-2 text-lg" />
-                                  <a href={item.assetFolderPath} download>
+                                  <a
+                                    href={item.assetFolderPath}
+                                    target="_blank"
+                                    download
+                                  >
                                     Download
                                   </a>
                                 </li>
@@ -848,7 +883,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               {item.assetType === "OnlineVideo" && (
                                 <li className="flex text-sm items-center">
                                   <FiDownload className="mr-2 text-lg" />
-                                  <a href={item.assetFolderPath} download>
+                                  <a
+                                    href={item.assetFolderPath}
+                                    target="_blank"
+                                    download
+                                  >
                                     Download
                                   </a>
                                 </li>
@@ -856,7 +895,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               {item.assetType === "DOC" && (
                                 <li className="flex text-sm items-center">
                                   <FiDownload className="mr-2 text-lg" />
-                                  <a href={item.assetFolderPath} download>
+                                  <a
+                                    href={item.assetFolderPath}
+                                    target="_blank"
+                                    download
+                                  >
                                     Download
                                   </a>
                                 </li>
@@ -1154,7 +1197,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               <BsThreeDotsVertical className="text-2xl relative" />
                             </button>
                             {assetsdw2 === item && (
-                              <div className="assetsdw">
+                              <div ref={actionBoxRef} className="assetsdw">
                                 <ul>
                                   {/* <li className="flex text-sm items-center">
                                     <FiUpload className="mr-2 text-lg" />
@@ -1166,7 +1209,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   </li> */}
                                   <li className="flex text-sm items-center">
                                     <FiDownload className="mr-2 text-lg" />
-                                    <a href={item.assetFolderPath} download>
+                                    <a
+                                      href={item.assetFolderPath}
+                                      target="_blank"
+                                      download
+                                    >
                                       Download
                                     </a>
                                   </li>
