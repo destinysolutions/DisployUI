@@ -126,6 +126,9 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   const onSave = async () => {
     toast.remove();
+    if (compositionName === "") {
+      return toast.error("Please add compostition name");
+    }
     if (
       addAsset.map((e, index) => e[index + 1].length).includes(0) ||
       addAsset.length === 0 ||
@@ -562,6 +565,14 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
+  const handleOnSaveCompositionName = () => {
+    if (!compositionName.replace(/\s/g, "").length) {
+      toast.remove();
+      return toast.error("please enter a character.");
+    }
+    setEdited(false);
+  };
+
   useEffect(() => {
     handleFetchLayoutById();
     handleFetchAllData();
@@ -650,7 +661,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 <button
                   type="button"
                   onClick={() => {
-                    setEdited(false);
+                    handleOnSaveCompositionName();
                   }}
                 >
                   Save
@@ -808,11 +819,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               <td>
                                 <div className="flex items-center w-full">
                                   <div
-                                    className={` ${
-                                      item?.instanceName
-                                        ? "w-auto"
-                                        : "min-w-[2rem] min-h-[2rem] max-w-[3rem] max-h-[3rem]"
-                                    } `}
+                                    className={` "min-w-[2rem] min-h-[2rem] max-w-[3rem] max-h-[3rem]"
+                                    break-words hyphens-auto`}
                                   >
                                     <>
                                       {item.assetType === "OnlineImage" && (
@@ -865,7 +873,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                     </>
                                   </div>
                                   <div className="ml-3 w-24">
-                                    <p className="text-gray-900 break-words hyphens-auto">
+                                    <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
                                       {item?.assetName && item?.assetName}
                                       {item?.text && item?.text}
                                     </p>
@@ -873,7 +881,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                               </td>
                               <td className="text-center w-24">
-                                {item?.assetType}
+                                {item?.assetType??"-"}
                               </td>
                               <td className={`text-center w-fit `}>
                                 {!item?.isEdited ? (

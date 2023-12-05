@@ -39,9 +39,8 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         setScrollType(response.data.data);
-        console.log(response.data.data);
       });
-  });
+  },[]);
 
   const handleInsertScrollText = () => {
     if (instanceName === "" || text === "") {

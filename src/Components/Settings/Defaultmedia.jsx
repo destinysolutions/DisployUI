@@ -13,6 +13,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import ReactPlayer from "react-player";
 import { useRef } from "react";
+import toast from "react-hot-toast";
 
 const Defaultmedia = () => {
   const [mediaTabs, setMediaTabs] = useState(1);
@@ -27,6 +28,7 @@ const Defaultmedia = () => {
   const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
   const [assetName, setAssetName] = useState("");
   const [filePath, setFilePath] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
   const modalRef = useRef(null);
 
@@ -53,20 +55,37 @@ const Defaultmedia = () => {
     setSelectedAsset(asset);
   };
   const [searchAsset, setSearchAsset] = useState("");
+
   const handleFilter = (event) => {
     const searchQuery = event.target.value.toLowerCase();
     setSearchAsset(searchQuery);
-
     if (searchQuery === "") {
-      setAssetData(assetAllData);
+      setFilteredData([]);
+    }
+    const filteredScreen = assetData.filter((entry) =>
+      Object.values(entry).some((val) => {
+        if (typeof val === "string") {
+          const keyWords = searchQuery.split(" ");
+          for (let i = 0; i < keyWords.length; i++) {
+            return (
+              val.toLocaleLowerCase().startsWith(keyWords[i]) ||
+              val.toLocaleLowerCase().endsWith(keyWords[i]) ||
+              val.toLocaleLowerCase().includes(keyWords[i]) ||
+              val.toLocaleLowerCase().includes(searchQuery)
+            );
+          }
+        }
+      })
+    );
+    if (filteredScreen.length > 0) {
+      setFilteredData(filteredScreen);
     } else {
-      const filteredData = assetData.filter((item) => {
-        const itemName = item.assetName ? item.assetName.toLowerCase() : "";
-        return itemName.includes(searchQuery);
-      });
-      setAssetData(filteredData);
+      toast.remove();
+      toast.error("asset not found!!");
+      setFilteredData([]);
     }
   };
+
   const handleGetAsset = () => {
     let config = {
       method: "post",
@@ -122,7 +141,8 @@ const Defaultmedia = () => {
       if (modalRef.current && !modalRef.current.contains(event?.target)) {
         // window.document.body.style.overflow = "unset";
         setShowAssetModal(false);
-        setAssetPreviewPopup(false);
+        setFilteredData([]);
+        setSearchAsset("")
       }
     };
     document.addEventListener("click", handleClickOutside, true);
@@ -130,12 +150,11 @@ const Defaultmedia = () => {
       document.removeEventListener("click", handleClickOutside, true);
     };
   }, [handleClickOutside]);
-
+  
   function handleClickOutside() {
     setShowAssetModal(false);
-    // setAssetPreviewPopup(false);
-    // window.document.body.style.overflow = "unset";
-    // setSearchTerm("");
+    setSearchAsset("")
+    setFilteredData([]);
   }
 
   return (
@@ -196,120 +215,153 @@ const Defaultmedia = () => {
                       <AiOutlineCloudUpload className="ml-2 text-lg" />
                     </button>
                     {showAssetModal && (
-                      <>
-                        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
-                          <div  ref={modalRef} className="relative w-auto my-6 mx-auto myplaylist-popup-details">
-                            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
-                              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                                <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
-                                  Set Content to Add Media
-                                </h3>
-                                <button
-                                  className="p-1 text-xl"
-                                  onClick={() => setShowAssetModal(false)}
-                                >
-                                  <AiOutlineCloseCircle className="text-2xl" />
-                                </button>
-                              </div>
+                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                        <div
+                          ref={modalRef}
+                          className="relative w-auto my-6 mx-auto myplaylist-popup-details"
+                        >
+                          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                            <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                              <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                Set Content to Add Media
+                              </h3>
+                              <button
+                                className="p-1 text-xl"
+                                onClick={() => setShowAssetModal(false)}
+                              >
+                                <AiOutlineCloseCircle className="text-2xl" />
+                              </button>
+                            </div>
 
-                              <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
-                                <div className="bg-white rounded-[30px]">
-                                  <div>
-                                    <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                      <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
-                                        <div>
-                                          <div className="flex border-b border-lightgray flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                                            <div className="mb-5 relative searchbox">
-                                              <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
-                                              <input
-                                                type="text"
-                                                placeholder=" Search by Name"
-                                                className="border border-primary rounded-full px-7 py-2 search-user"
-                                                value={searchAsset}
-                                                onChange={handleFilter}
-                                              />
-                                            </div>
-                                            <Link to="/fileupload">
-                                              <button className="flex align-middle border-SlateBlue bg-SlateBlue text-white items-center border rounded-full px-4 py-2 text-sm  hover:text-white hover:bg-primary hover:shadow-lg hover:shadow-primary-500/50 hover:border-white">
-                                                Upload
-                                              </button>
-                                            </Link>
+                            <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
+                              <div className="bg-white rounded-[30px]">
+                                <div>
+                                  <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
+                                    <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
+                                      <div>
+                                        <div className="flex border-b border-lightgray flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                                          <div className="mb-5 relative searchbox">
+                                            <AiOutlineSearch className="absolute top-2 left-[12px] z-10 min-w-[1.5rem] min-h-[1.5rem] text-gray" />
+                                            <input
+                                              type="text"
+                                              placeholder="Search asset"
+                                              className="border border-primary rounded-full pl-10 py-2 search-user"
+                                              value={searchAsset}
+                                              onChange={handleFilter}
+                                            />
                                           </div>
-                                          <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover">
-                                            <table
-                                              className="AddMedia-table"
-                                              style={{
-                                                borderCollapse: "separate",
-                                                borderSpacing: " 0 10px",
-                                              }}
-                                            >
-                                              <thead className="sticky top-0">
-                                                <tr className="bg-lightgray">
-                                                  <th className="p-3 w-80 text-left">
-                                                    Media Name
-                                                  </th>
-                                                  <th>Date Added</th>
-                                                  <th className="p-3">Size</th>
-                                                  <th className="p-3">Type</th>
-                                                </tr>
-                                              </thead>
-                                              {assetData.map((asset) => (
-                                                <tbody key={asset.assetID}>
-                                                  <tr
-                                                    className={`${
-                                                      selectedAsset === asset
-                                                        ? "bg-[#f3c953]"
-                                                        : ""
-                                                    } border-b border-[#eee] `}
-                                                    onClick={() => {
-                                                      handleAssetAdd(asset);
-                                                    }}
-                                                  >
-                                                    <td className="p-3">
-                                                      {asset.assetName}
-                                                    </td>
-                                                    <td className="p-3">
-                                                      {moment(
-                                                        asset.createdDate
-                                                      ).format(
-                                                        "YYYY-MM-DD hh:mm"
-                                                      )}
-                                                    </td>
-                                                    <td className="p-3">
-                                                      {asset.fileSize}
-                                                    </td>
-                                                    <td className="p-3">
-                                                      {asset.assetType}
-                                                    </td>
-                                                  </tr>
-                                                </tbody>
-                                              ))}
-                                            </table>
-                                          </div>
+                                          <Link to="/fileupload">
+                                            <button className="flex align-middle border-SlateBlue bg-SlateBlue text-white items-center border rounded-full px-4 py-2 text-sm  hover:text-white hover:bg-primary hover:shadow-lg hover:shadow-primary-500/50 hover:border-white">
+                                              Upload
+                                            </button>
+                                          </Link>
+                                        </div>
+                                        <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover">
+                                          <table
+                                            className="AddMedia-table"
+                                            style={{
+                                              borderCollapse: "separate",
+                                              borderSpacing: " 0 10px",
+                                            }}
+                                          >
+                                            <thead className="sticky top-0">
+                                              <tr className="bg-lightgray">
+                                                <th className="p-3 w-80 text-left">
+                                                  Media Name
+                                                </th>
+                                                <th>Date Added</th>
+                                                <th className="p-3">Size</th>
+                                                <th className="p-3">Type</th>
+                                              </tr>
+                                            </thead>
+                                            {filteredData.length === 0
+                                              ? assetData.map((asset) => (
+                                                  <tbody key={asset.assetID}>
+                                                    <tr
+                                                      className={`${
+                                                        selectedAsset === asset
+                                                          ? "bg-[#f3c953]"
+                                                          : ""
+                                                      } border-b border-[#eee] `}
+                                                      onClick={() => {
+                                                        handleAssetAdd(asset);
+                                                      }}
+                                                    >
+                                                      <td className="p-3">
+                                                        {asset.assetName}
+                                                      </td>
+                                                      <td className="p-3">
+                                                        {moment(
+                                                          asset.createdDate
+                                                        ).format(
+                                                          "YYYY-MM-DD hh:mm"
+                                                        )}
+                                                      </td>
+                                                      <td className="p-3">
+                                                        {asset.fileSize}
+                                                      </td>
+                                                      <td className="p-3">
+                                                        {asset.assetType}
+                                                      </td>
+                                                    </tr>
+                                                  </tbody>
+                                                ))
+                                              : filteredData.map((asset) => (
+                                                  <tbody key={asset.assetID}>
+                                                    <tr
+                                                      className={`${
+                                                        selectedAsset === asset
+                                                          ? "bg-[#f3c953]"
+                                                          : ""
+                                                      } border-b border-[#eee] `}
+                                                      onClick={() => {
+                                                        handleAssetAdd(asset);
+                                                      }}
+                                                    >
+                                                      <td className="p-3">
+                                                        {asset.assetName}
+                                                      </td>
+                                                      <td className="p-3">
+                                                        {moment(
+                                                          asset.createdDate
+                                                        ).format(
+                                                          "YYYY-MM-DD hh:mm"
+                                                        )}
+                                                      </td>
+                                                      <td className="p-3">
+                                                        {asset.fileSize}
+                                                      </td>
+                                                      <td className="p-3">
+                                                        {asset.assetType}
+                                                      </td>
+                                                    </tr>
+                                                  </tbody>
+                                                ))}
+                                          </table>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                              <div className="flex justify-between items-center p-5">
-                                <p className="text-black">
-                                  Content will always be playing Confirm
-                                </p>
-                                <button
-                                  className="bg-SlateBlue text-white rounded-full px-5 py-2 hover:bg-primary text-sm"
-                                  onClick={() => {
-                                    setShowAssetModal(false);
-                                    handleChangeMedia();
-                                  }}
-                                >
-                                  Confirm
-                                </button>
-                              </div>
+                            </div>
+                            <div className="flex justify-between items-center p-5">
+                              <p className="text-black">
+                                Content will always be playing Confirm
+                              </p>
+                              <button
+                                className="bg-SlateBlue text-white rounded-full px-5 py-2 hover:bg-primary text-sm"
+                                onClick={() => {
+                                  setShowAssetModal(false);
+                                  handleChangeMedia();
+                                }}
+                              >
+                                Confirm
+                              </button>
                             </div>
                           </div>
                         </div>
-                      </>
+                      </div>
                     )}
                   </div>
                   {/* <div className="text-center">

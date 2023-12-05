@@ -7,6 +7,7 @@ import { useRef } from "react";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { GET_ALL_ORGANIZATION_MASTER } from "../../admin/AdminAPI";
+import toast from "react-hot-toast";
 
 const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const history = useNavigate();
@@ -47,6 +48,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
       data,
     };
 
+    toast.loading("Validating....");
     axios
       .request(config)
       .then((response) => {
@@ -58,12 +60,15 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
               message: response.data.message,
             },
           });
+          toast.remove();
         } else {
           setErrorMessge(response.data.message);
+          toast.remove();
         }
       })
       .catch((error) => {
         console.log(error);
+        toast.remove();
       });
   };
 
