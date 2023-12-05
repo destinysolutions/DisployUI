@@ -27,6 +27,7 @@ import youtube from "../../../public/AppsImg/youtube.svg";
 import { useRef } from "react";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import ScreenAssignModal from "../ScreenAssignModal";
+import AddOrEditTagPopup from "../AddOrEditTagPopup";
 
 const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   Youtube.propTypes = {
@@ -53,45 +54,16 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   const [instanceName, setInstanceName] = useState("");
   const [screenAssignName, setScreenAssignName] = useState("");
   const [YoutubeVideo, setYoutubeVideo] = useState("");
+  const [showTagModal, setShowTagModal] = useState(false);
+  const [tags, setTags] = useState([]);
+  const [updateTagYoutube, setUpdateTagYoutube] = useState(null);
+  const [showTags, setShowTags] = useState(null);
 
   const navigate = useNavigate();
   const addScreenRef = useRef(null);
   const modalRef = useRef(null);
   const appDropdownRef = useRef(null);
 
-  useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
-
-    newConnection.on("ScreenConnected", (screenConnected) => {
-      // console.log("ScreenConnected", screenConnected);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        // console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            // console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
-  }, []);
   const handleUpdateScreenAssign = () => {
     let config = {
       method: "get",
@@ -124,24 +96,6 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get(GET_ALL_YOUTUBEDATA, {
-        headers: {
-          Authorization: authToken,
-        },
-      })
-      .then((response) => {
-        const fetchedData = response.data.data;
-        setLoading(false);
-        setYoutubeData(fetchedData);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.error("Error fetching deleted data:", error);
-      });
-  }, []);
 
   const handelDeleteInstance = (youtubeId) => {
     if (!window.confirm("Are you sure?")) return;
@@ -231,6 +185,116 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+  function handleClickOutside() {
+    setAppDetailModal(false);
+    setInstanceView(false);
+  }
+
+  function handleClickOutside() {
+    setAppDropDown(false);
+  }
+
+  const handleFetchYoutubeById = (id) => {
+    let config = {
+      method: "get",
+      url: `${GET_YOUTUBEDATA_BY_ID}?ID=${id}`,
+      headers: {
+        Authorization: authToken,
+      },
+    };
+
+    toast.loading("Fetching Data....");
+    axios
+      .request(config)
+      .then((response) => {
+        const data = response?.data?.data[0];
+        setYoutubeVideo(data?.youTubeURL);
+        setInstanceName(data?.instanceName);
+        setScreenAssignName(data?.screens);
+        setShowTags(data?.tags);
+        toast.remove();
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+        toast.remove();
+      });
+  };
+
+  const handleUpdateTagsYoutube = (tags) => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddYoutubeTags?YoutubeId=${updateTagYoutube?.youtubeId}&Tags=${tags}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+      // data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {})
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    newConnection.on("ScreenConnected", (screenConnected) => {
+      // console.log("ScreenConnected", screenConnected);
+    });
+
+    newConnection
+      .start()
+      .then(() => {
+        // console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
+    return () => {
+      if (newConnection) {
+        newConnection
+          .stop()
+          .then(() => {
+            // console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get(GET_ALL_YOUTUBEDATA, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
+      .then((response) => {
+        const fetchedData = response.data.data;
+        setLoading(false);
+        setYoutubeData(fetchedData);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error fetching deleted data:", error);
+      });
+  }, []);
+
   useEffect(() => {
     // if (showSearchModal) {
     //   window.document.body.style.overflow = "hidden";
@@ -247,11 +311,6 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
       document.removeEventListener("click", handleClickOutside, true);
     };
   }, [handleClickOutside]);
-
-  function handleClickOutside() {
-    setAppDetailModal(false);
-    setInstanceView(false);
-  }
 
   useEffect(() => {
     // if (showSearchModal) {
@@ -272,36 +331,6 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
     };
   }, [handleClickOutside]);
 
-  function handleClickOutside() {
-    setAppDropDown(false);
-  }
-  const handleFetchYoutubeById = (id) => {
-    let config = {
-      method: "get",
-      url: `${GET_YOUTUBEDATA_BY_ID}?ID=${id}`,
-      headers: {
-        Authorization: authToken,
-      },
-    };
-
-    toast.loading("Fetching Data....");
-    axios
-
-      .request(config)
-      .then((response) => {
-        const data = response?.data?.data[0];
-        setYoutubeVideo(data?.youTubeURL);
-        setInstanceName(data?.instanceName);
-        setScreenAssignName(data?.screens);
-        toast.remove();
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-        toast.remove();
-      });
-  };
   return (
     <>
       <div className="flex border-b border-gray">
@@ -573,11 +602,34 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                             <h4 className="text-lg font-medium mt-3">
                               {item.instanceName}
                             </h4>
-                            <h4 className="text-sm font-normal">Add tags</h4>
+                            <h4
+                              onClick={() => {
+                                item?.tags !== null &&
+                                item?.tags !== undefined &&
+                                item?.tags !== ""
+                                  ? setTags(item?.tags?.split(","))
+                                  : setTags([]);
+                                setShowTagModal(true);
+                                setUpdateTagYoutube(item);
+                              }}
+                              className="text-sm font-normal cursor-pointer"
+                            >
+                              Add tags +
+                            </h4>
                           </div>
                         </div>
                       </div>
                     ))}
+                    {showTagModal && (
+                      <AddOrEditTagPopup
+                        setShowTagModal={setShowTagModal}
+                        tags={tags}
+                        setTags={setTags}
+                        handleUpdateTagsYoutube={handleUpdateTagsYoutube}
+                        from="youtube"
+                        setUpdateTagYoutube={setUpdateTagYoutube}
+                      />
+                    )}
                     {instanceView && (
                       <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                         <div
@@ -613,8 +665,9 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                               />
                             </div>
                             <div className="py-2 px-6">
-                              <div>
+                              <div className="flex items-center gap-2 flex-wrap">
                                 <label className="font-semibold">Tags :</label>
+                                <p className="line-clamp-1">{showTags}</p>
                               </div>
                               <div>
                                 <label className="font-semibold">

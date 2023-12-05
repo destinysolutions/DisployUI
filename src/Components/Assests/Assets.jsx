@@ -196,7 +196,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   // Delete API
 
   const handelDeletedata = (assetId) => {
-
     const formData = new FormData();
     formData.append("AssetID", assetId);
     formData.append("Operation", "Delete");
@@ -225,12 +224,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         // };
 
         // setTrashData([...trashData, deletedWithInfo]);
-
-        const updatedGridData = gridData.filter(
-          (item) => item.assetID !== assetId
-        );
-        setGridData(updatedGridData);
-        setTableData(updatedGridData);
+        if (response?.data?.data === true) {
+          const updatedGridData = gridData.filter((item) => {
+            return item.assetID !== assetId;
+          });
+          setGridData(updatedGridData);
+          setTableData(updatedGridData);
+        }
       })
       .catch((error) => {
         console.error("Error deleting data:", error);
@@ -307,6 +307,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     let folderNameToCheck = baseFolderName;
     let counter = 1;
 
+    toast.loading("Creating Folder...");
     const checkFolderNameAndCreate = () => {
       // Check if the folder name exists in the list of folders
       if (folderNameExists(folderNameToCheck)) {
@@ -327,10 +328,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           })
           .then((response) => {
             console.log("Folder created:", response.data);
+            toast.remove();
             fetchData();
           })
           .catch((error) => {
             console.error("Error creating folder:", error);
+            toast.remove();
           });
       }
     };
@@ -344,29 +347,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
   //Delete new folder
 
-  const deleteFolder = (folderID) => {
-    const data = JSON.stringify({
-      folderID: folderID,
-      operation: "Delete",
-    });
-    toast.loading("Deleting...")
-    axios
-      .post(CREATE_NEW_FOLDER, data, {
-        headers: {
-          Authorization: authToken,
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        fetchData();
-        toast.remove()
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.remove(ś)
-      });
-  };
-
   const handleWarning = (assetId) => {
     // console.log("wZAn id:", assetId);
     let config = {
@@ -379,15 +359,40 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        // console.log(response.data);
-        if (response.data.data == true) {
+        if (response?.data?.data == true) {
           setDeleteMessage(true);
-        } else {
-          handelDeletedata(assetId);
         }
+        //  else {
+        //   handelDeletedata(assetId);
+        // }
       })
       .catch((error) => {
         console.log(error);
+      });
+  };
+
+  const deleteFolder = (folderID) => {
+    const data = JSON.stringify({
+      folderID: folderID,
+      operation: "Delete",
+    });
+    toast.loading("Deleting...");
+
+    handleWarning(folderID);
+    axios
+      .post(CREATE_NEW_FOLDER, data, {
+        headers: {
+          Authorization: authToken,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        fetchData();
+        toast.remove();
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.remove();
       });
   };
 
@@ -416,9 +421,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const updateFolderNameInAPI = async (folderID, newName) => {
-    if(newName===""){
-      toast.remove()
-      return toast.error("Please enter a character")
+    if (!newName.replace(/\s/g, "").length) {
+      toast.remove();
+      return toast.error("Please enter a character");
     }
     try {
       const formData = new FormData();
@@ -435,13 +440,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
       const updatedFolder = response.data.data.model;
       fetchData();
-    setEditMode(null);
+      setEditMode(null);
 
       // console.log("Folder name updated:", updatedFolder);
     } catch (error) {
       console.error("Error updating folder name:", error);
-    setEditMode(null);
-
+      setEditMode(null);
     }
   };
 
@@ -952,7 +956,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               <li>
                                 <button
                                   onClick={() => {
-                                    handleWarning(item.assetID);
+                                    // handleWarning(item.assetID);
                                     deleteFolder(item.assetID);
                                   }}
                                   className="flex text-sm items-center"
@@ -1260,7 +1264,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   <li>
                                     <button
                                       onClick={() => {
-                                        handleWarning(item.assetID);
+                                        // handleWarning(item.assetID);
                                         deleteFolder(item.assetID);
                                       }}
                                       className="flex text-sm items-center"
