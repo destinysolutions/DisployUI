@@ -24,6 +24,7 @@ import { MdOutlineEdit, MdPlaylistPlay } from "react-icons/md";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import youtube from '../../../public/AppsImg/youtube.svg'
 
 const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   Youtube.propTypes = {
@@ -335,7 +336,8 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
                           <div className="text-center clear-both pb-8">
                             <img
-                              src={require("../../../public/AppsImg/youtube.svg")}
+                              // src={require("../../../public/AppsImg/youtube.svg")}
+                              src={youtube}
                               alt="Logo"
                               className="mx-auto h-20 w-20"
                             />
