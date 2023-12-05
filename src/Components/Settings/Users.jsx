@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import React from "react";
 import { BiLeftArrow, BiUserPlus } from "react-icons/bi";
 import { FiFilter } from "react-icons/fi";
@@ -15,6 +15,7 @@ import { IoIosArrowRoundBack, IoMdNotificationsOutline } from "react-icons/io";
 import { MdLockOutline } from "react-icons/md";
 import { IoIosLink } from "react-icons/io";
 import toast from "react-hot-toast";
+
 const Users = () => {
   const [users, setUsers] = useState([
     {
@@ -82,6 +83,9 @@ const Users = () => {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userDetailData, setUserDetailData] = useState([]);
   const [activeTab, setActiveTab] = useState(1);
+
+  const modalRef = useRef(null);
+  const actionPopupRef = useRef(null)
 
   const handleActionClick = (rowId) => {
     if (!showActionBox) {
@@ -338,7 +342,7 @@ const Users = () => {
     },
 
     {
-      name: "Action",
+      name: "",
       cell: (row) => (
         <div className="relative">
           <button
@@ -350,14 +354,14 @@ const Users = () => {
           </button>
           {showActionBox && userID === row.orgUserSpecificID && (
             <>
-              <div className="actionpopup z-10 ">
+              <div ref={actionPopupRef} className="actionpopup z-10 ">
                 {/* <button
                   onClick={() => setShowActionBox(false)}
                   className="bg-white absolute top-[-14px] left-[-8px] z-10  rounded-full drop-shadow-sm p-1"
                 >
                   <AiOutlineClose />
                 </button> */}
-                <div className=" my-1">
+                <div  className=" my-1">
                   <button
                     onClick={() => {
                       selectUserById(row.orgUserSpecificID);
@@ -371,7 +375,7 @@ const Users = () => {
                   <button
                     onClick={() => {
                       selectUserById(row.orgUserSpecificID);
-                      setshowuserModal(true)
+                      setshowuserModal(true);
                     }}
                   >
                     Edit User
@@ -420,12 +424,55 @@ const Users = () => {
     },
   ];
 
+  useEffect(() => {
+    // if (showSearchModal) {
+    //   window.document.body.style.overflow = "hidden";
+    // }
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event?.target)) {
+        // window.document.body.style.overflow = "unset";
+        setshowuserModal(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside]);
+
+  function handleClickOutside() {
+    setshowuserModal(false);
+  }
+
+  useEffect(() => {
+    // if (showSearchModal) {
+    //   window.document.body.style.overflow = "hidden";
+    // }
+    const handleClickOutside = (event) => {
+      if (
+        actionPopupRef.current &&
+        !actionPopupRef.current.contains(event?.target)
+      ) {
+        // window.document.body.style.overflow = "unset";
+        setShowActionBox(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside]);
+
+  function handleClickOutside() {
+    setShowActionBox(false);
+  }
+
   return (
     <>
       {showuserModal && (
         <>
           <div className="backdrop">
-            <div className="user-model">
+            <div ref={modalRef} className="user-model">
               <div className="hours-heading flex justify-between items-center p-5 border-b border-gray">
                 <h1 className="text-lg font-medium text-primary">
                   Add New User

@@ -66,6 +66,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const modalRef = useRef(null);
   const addScreenRef = useRef(null);
   const selectScreenRef = useRef(null);
+  const showActionModalRef=  useRef(null)
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
@@ -429,6 +430,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       if (filteredComposition.length > 0) {
         setFilteredCompositionData(filteredComposition);
       } else {
+        toast.remove()
+        toast.error("Composition not found!!")
         setFilteredCompositionData([]);
       }
     }
@@ -569,6 +572,30 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectScreenModal(false);
     setAddScreenModal(false);
   }
+
+  useEffect(() => {
+    // if (showSearchModal) {
+    //   window.document.body.style.overflow = "hidden";
+    // }
+    const handleClickOutside = (event) => {
+      if (
+        showActionModalRef.current &&
+        !showActionModalRef.current.contains(event?.target)
+      ) {
+        // window.document.body.style.overflow = "unset";
+        setShowActionBox(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside]);
+
+  function handleClickOutside() {
+    setShowActionBox(false);
+  }
+
 
   // console.log(layotuDetails);
   // console.log(compositionData);
@@ -772,7 +799,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             </button>
                             {/* action popup start */}
                             {showActionBox[composition.compositionID] && (
-                              <div className="scheduleAction z-20">
+                              <div ref={showActionModalRef} className="scheduleAction z-20">
                                 <div className="my-1">
                                   <button
                                     onClick={() =>
@@ -1245,7 +1272,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             </button>
                             {/* action popup start */}
                             {showActionBox[composition.compositionID] && (
-                              <div className="scheduleAction z-20">
+                              <div  ref={showActionModalRef}  className="scheduleAction z-20">
                                 <div className="my-1">
                                   <button
                                     onClick={() =>
