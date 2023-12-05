@@ -494,7 +494,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
     closeModal();
   }
   // console.log(ad);
-  console.log(addAsset);
+  // console.log(addAsset);
   // console.log(compositonData);
 
   return (

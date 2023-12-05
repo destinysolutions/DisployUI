@@ -614,7 +614,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                     {modalVisible && (
                       <Carousel
                         items={addAsset[index][index + 1]}
-                        // items={items}
                         compositonData={obj}
                       />
                     )}

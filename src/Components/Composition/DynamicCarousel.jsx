@@ -30,14 +30,14 @@ const Carousel = ({ items, compositonData, from }) => {
               <div className="h-full w-full" key={index}>
                 {item.assetType === "OnlineImage" && (
                   <img
-                    className="w-full h-full object-cover rounded-sm"
+                    className="w-full h-full object-fill rounded-sm"
                     src={item.assetFolderPath}
                     alt={item.assetName}
                   />
                 )}
                 {item.mediaType === "OnlineImage" && (
                   <img
-                    className="w-full h-full rounded-sm object-cover"
+                    className="w-full h-full rounded-sm object-fill "
                     src={item.fileType}
                     // alt={item.assetName}
                   />
@@ -48,7 +48,7 @@ const Carousel = ({ items, compositonData, from }) => {
                     alt={item.assetName}
                     className={`w-full h-full ${
                       item.assetType !== "Image" && "hidden"
-                    } rounded-sm object-cover`}
+                    } rounded-sm object-fill`}
                   />
                 )}
                 {item.mediaType === "Image" && (
@@ -56,7 +56,7 @@ const Carousel = ({ items, compositonData, from }) => {
                     src={item.fileType}
                     className={`w-full h-full ${
                       !item.fileType && "hidden"
-                    } rounded-sm object-cover`}
+                    } rounded-sm object-fill`}
                   />
                 )}
                 {item.assetType === "Video" && (
