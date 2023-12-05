@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { AiOutlineClose } from "react-icons/ai";
 
 const AddOrEditTagPopup = ({
@@ -27,13 +28,17 @@ const AddOrEditTagPopup = ({
       setUpdateTagComposition(null);
     }
     if (from === "schedule") {
-      setUpdateTagSchedule(null)
+      setUpdateTagSchedule(null);
     }
   }
 
   const handleAddTag = (e) => {
     e.preventDefault();
-    if (tagValue === "") return;
+
+    if (!tagValue.replace(/\s/g, "").length) {
+      toast.remove();
+      return toast.error("please enter a character.");
+    }
     setTags([...tags, tagValue]);
     setTagValue("");
     if (from === "screen") {
@@ -65,7 +70,6 @@ const AddOrEditTagPopup = ({
     inputRef.current.focus();
   }, []);
 
-  // console.log(tags);
   return (
     <>
       <div

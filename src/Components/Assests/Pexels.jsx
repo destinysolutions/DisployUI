@@ -7,6 +7,7 @@ import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const Pexels = ({ closeModal, pexelsModalRef }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
@@ -193,7 +194,9 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
           },
         })
         .then((response) => {
-          console.log("Upload Success:", response.data);
+          // console.log("Upload Success:", response.data);
+          toast.success("Uploaded successfully.");
+
           navigate(-1);
         })
         .catch((error) => {
@@ -220,7 +223,7 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
       <div className="backdrop">
         <div
           ref={pexelsModalRef}
-          className="fixed unsplash-model bg-black lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl "
+          className="fixed unsplash-model h-[90vh] bg-black lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl "
         >
           <button
             onClick={closeModal}
@@ -253,7 +256,7 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
           {/* Conditional rendering based on selected media type */}
           <div className="container mx-auto">
             <div>
-              <div className="unsplash-section bg-white rounded-lg">
+              <div className="unsplash-section h-[60vh] bg-white rounded-lg">
                 {selectedMediaType === "images" ? (
                   <div className="grid grid-cols-12 px-3 gap-4 unsplash-section bg-white rounded-lg">
                     {photos.map((photo, index) => (
@@ -319,8 +322,9 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
                   <button
                     onClick={handleMediaUpload}
                     className="text-white py-3 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
+                    disabled={uploadInProgress}
                   >
-                    Upload Media
+                    {uploadInProgress ? "Uploading..." : "Upload Media"}
                   </button>
                 </Link>
               </div>

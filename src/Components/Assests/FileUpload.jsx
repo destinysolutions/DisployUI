@@ -34,6 +34,7 @@ import { useNavigate } from "react-router-dom";
 import { FcFile } from "react-icons/fc";
 import { AiOutlineAppstore } from "react-icons/ai";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 {
   /* end of video*/
 }
@@ -198,9 +199,9 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
           });
 
           if (response.status === 200) {
-            console.log(`File ${image.name} uploaded successfully.`);
+            toast.success(`File ${image.name} uploaded successfully.`);
           } else {
-            console.error(`Upload failed for file ${image.name}`);
+            toast.error(`Upload failed for file ${image.name}`);
           }
         } catch (error) {
           console.error(`Upload failed for file ${image.name}:`, error);
@@ -285,6 +286,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   const handlePexelsButtonClick = () => {
     setShowpexels((prev) => !prev);
   };
+
   const handleClosePexelsModal = () => {
     setShowpexels(false);
   };

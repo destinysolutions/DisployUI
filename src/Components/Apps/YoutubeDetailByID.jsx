@@ -48,6 +48,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   const [showPreviewPopup, setShowPreviewPopup] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [instanceName, setInstanceName] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const modalRef = useRef(null);
 
@@ -64,6 +65,14 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
     setAreSubtitlesOn(!areSubtitlesOn);
   };
 
+  const handleOnSaveInstanceName = (e) => {
+    if (!instanceName.replace(/\s/g, "").length) {
+      toast.remove();
+      return toast.error("please enter a character.");
+    }
+    setEdited(false);
+  };
+
   // video preview
   // function showVideoPreview() {
   //   const videoPreview = document.getElementById("videoPreview");
@@ -78,6 +87,10 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   //Insert  API
 
   const handleUpdateYoutubeApp = () => {
+    if (instanceName === "" || YoutubeVideo === "") {
+      toast.remove();
+      return toast.error("Please fill all the details");
+    }
     let data = JSON.stringify({
       youtubeId: id,
       instanceName: instanceName,
@@ -147,8 +160,10 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
         Authorization: authToken,
       },
     };
-
+    setLoading(true);
+    toast.loading("Fetching Data....");
     axios
+
       .request(config)
       .then((response) => {
         const data = response?.data?.data[0];
@@ -156,9 +171,13 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
         setIsMuted(data?.muteVideos);
         setAreSubtitlesOn(data?.toggleSubtitles);
         setInstanceName(data?.instanceName);
+        toast.remove();
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
+        toast.remove();
       });
   };
 
@@ -172,55 +191,63 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-6 px-5 page-contain">
-        <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-          <div className="lg:flex lg:justify-between sm:block  items-center">
-            <div className="flex items-center">
-              {edited ? (
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    className="w-full border border-primary rounded-md px-2 py-1"
-                    placeholder="Enter schedule name"
-                    value={instanceName}
-                    onChange={(e) => setInstanceName(e.target.value)}
-                  />
-                  <MdSave
-                    onClick={() => setEdited(false)}
-                    className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
-                  />
+      {loading ? (
+        <div className="text-center font-semibold text-2xl h-[80vh] flex items-center justify-center w-[100vw]">
+          Loading...
+        </div>
+      ) : (
+        <>
+          <div className="pt-6 px-5 page-contain">
+            <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
+              <div className="lg:flex lg:justify-between sm:block  items-center">
+                <div className="flex items-center">
+                  {edited ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        className="w-full border border-primary rounded-md px-2 py-1"
+                        placeholder="Enter schedule name"
+                        value={instanceName}
+                        onChange={(e) => {
+                          setInstanceName(e.target.value);
+                        }}
+                      />
+                      <MdSave
+                        onClick={() => handleOnSaveInstanceName()}
+                        className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
+                        {instanceName}
+                      </h1>
+                      <button onClick={() => setEdited(true)}>
+                        <GoPencil className="ml-4 text-lg" />
+                      </button>
+                    </>
+                  )}
                 </div>
-              ) : (
-                <>
-                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
-                    {instanceName}
-                  </h1>
-                  <button onClick={() => setEdited(true)}>
-                    <GoPencil className="ml-4 text-lg" />
+                <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
+                  <button
+                    className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-2 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                    disabled={saveLoading}
+                    onClick={() => {
+                      if (YoutubeVideo === "")
+                        return toast.error("Please enter YouTube URL");
+                      setShowPreviewPopup(true);
+                    }}
+                  >
+                    Preview
                   </button>
-                </>
-              )}
-            </div>
-            <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
-              <button
-                className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-2 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                disabled={saveLoading}
-                onClick={() => {
-                  if (YoutubeVideo === "")
-                    return toast.error("Please enter YouTube URL");
-                  setShowPreviewPopup(true);
-                }}
-              >
-                Preview
-              </button>
-              <button
-                className="flex align-middle border-white bg-SlateBlue text-white sm:mt-2  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 .  text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                onClick={() => handleUpdateYoutubeApp()}
-                disabled={saveLoading}
-              >
-                {saveLoading ? "Saving..." : "Save"}
-              </button>
-              {/* <div className="relative sm:mt-2">
+                  <button
+                    className="flex align-middle border-white bg-SlateBlue text-white sm:mt-2  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 .  text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                    onClick={() => handleUpdateYoutubeApp()}
+                    disabled={saveLoading}
+                  >
+                    {saveLoading ? "Saving..." : "Save"}
+                  </button>
+                  {/* <div className="relative sm:mt-2">
               <button
                 onClick={() => setShowPopup(!showPopup)}
                 className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full p-2 text-xl  hover:bg-SlateBlue hover:text-white  hover:shadow-lg hover:shadow-primary-500/50 hover:border-white"
@@ -432,155 +459,162 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
               )}
             </div> */}
 
-              <button className="sm:ml-2 xs:ml-1 sm:mt-2 border-primary items-center border-2  rounded-full text-xl  hover:text-white hover:bg-SlateBlue hover:border-white hover:shadow-lg hover:shadow-primary-500/50 p-2 ">
-                <Link to="/youtube">
-                  <AiOutlineClose />
-                </Link>
-              </button>
-            </div>
-          </div>
-          <div className="mt-6">
-            <div className="grid grid-cols-12 gap-4">
-              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 shadow-md bg-white rounded-lg p-5  items-center">
-                <div className=" ">
-                  <table
-                    className="youtubetable w-full align-middle"
-                    cellPadding={10}
-                    cellSpacing={10}
-                  >
-                    <tbody>
-                      <tr></tr>
-                      <tr>
-                        <td>
-                          <label className="text-base font-normal">
-                            YouTube URL:
-                          </label>
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            placeholder="e.g. https://youtu.be/dQw4w9WgXcQ"
-                            onChange={handleYoutubeChange}
-                            value={YoutubeVideo}
-                          />
-                        </td>
-                      </tr>
-
-                      <tr className="mutebtn">
-                        <td>
-                          <span className="text-base font-normal">
-                            Mute videos:
-                          </span>
-                        </td>
-                        <td className="text-right  items-end">
-                          <label className="inline-flex relative items-center cursor-pointer">
-                            <input
-                              type="checkbox"
-                              className="sr-only peer"
-                              readOnly
-                              checked={isMuted}
-                              onChange={handleMuteChange}
-                            />
-                            <div
-                              onClick={() => {
-                                setEnabled(!enabled);
-                              }}
-                              className="w-11 h-6 bg-lightgray rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all "
-                            ></div>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr className="mutebtn">
-                        <td>
-                          <span className="text-base font-normal">
-                            Toggle subtitles:
-                          </span>
-                        </td>
-                        <td className="text-right">
-                          <label className="inline-flex relative items-center  cursor-pointer">
-                            <input
-                              type="checkbox"
-                              className="sr-only peer"
-                              readOnly
-                              checked={areSubtitlesOn}
-                              onChange={handleSubtitlesChange}
-                            />
-                            <div
-                              onClick={() => {
-                                setEnabled(!enabled);
-                              }}
-                              className="w-11 h-6 bg-lightgray rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all "
-                            ></div>
-                          </label>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <label className="text-base font-normal">
-                            Max number of videos to play
-                            <br /> within a YouTube playlist:
-                          </label>
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            placeholder="e.g.10"
-                            value={maxVideos}
-                            onChange={(e) => setMaxVideos(e.target.value)}
-                          />
-                        </td>
-                      </tr>
-
-                      <tr></tr>
-                    </tbody>
-                  </table>
+                  <button className="sm:ml-2 xs:ml-1 sm:mt-2 border-primary items-center border-2  rounded-full text-xl  hover:text-white hover:bg-SlateBlue hover:border-white hover:shadow-lg hover:shadow-primary-500/50 p-2 ">
+                    <Link to="/youtube">
+                      <AiOutlineClose />
+                    </Link>
+                  </button>
                 </div>
               </div>
-              <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative">
-                <div className="w-full videoplayer relative bg-white">
-                  <ReactPlayer
-                    url={YoutubeVideo}
-                    className="w-full relative z-20 videoinner"
-                    muted={isMuted}
-                    controls={true} // Enable video controls
-                    captions={{
-                      active: areSubtitlesOn, // Enable subtitles based on the areSubtitlesOn state
-                      file: areSubtitlesOn ? "URL_TO_SUBTITLE_FILE" : undefined, // Provide the URL to the subtitle file if subtitles are enabled
-                    }}
-                  />
-                </div>
-                <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-10">
-                  <img src="../../../public/Assets/img.png" />
-                </div>
-              </div>
+              <div className="mt-6">
+                <div className="grid grid-cols-12 gap-4">
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 shadow-md bg-white rounded-lg p-5  items-center">
+                    <div className=" ">
+                      <table
+                        className="youtubetable w-full align-middle"
+                        cellPadding={10}
+                        cellSpacing={10}
+                      >
+                        <tbody>
+                          <tr></tr>
+                          <tr>
+                            <td>
+                              <label className="text-base font-normal">
+                                YouTube URL:
+                              </label>
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                placeholder="e.g. https://youtu.be/dQw4w9WgXcQ"
+                                onChange={handleYoutubeChange}
+                                value={YoutubeVideo}
+                              />
+                            </td>
+                          </tr>
 
-              {/* Add this container within your JSX */}
-              {/* Place your video player here */}
-              {showPreviewPopup && (
-                <>
-                  <div ref={modalRef} className="video-preview">
-                    <ReactPlayer
-                      url={YoutubeVideo}
-                      className="w-full relative z-20 previewinner"
-                      muted={isMuted}
-                      controls={areSubtitlesOn}
-                    />
-                    <span className="absolute -top-4 -right-3 z-40 text-black">
-                      <AiOutlineCloseCircle
-                        onClick={() => setShowPreviewPopup(false)}
-                        className="text-3xl cursor-pointer text-white bg-black rounded-full"
-                      />
-                    </span>
+                          <tr className="mutebtn">
+                            <td>
+                              <span className="text-base font-normal">
+                                Mute videos:
+                              </span>
+                            </td>
+                            <td className="text-right  items-end">
+                              <label className="inline-flex relative items-center cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  className="sr-only peer"
+                                  readOnly
+                                  checked={isMuted}
+                                  onChange={handleMuteChange}
+                                />
+                                <div
+                                  onClick={() => {
+                                    setEnabled(!enabled);
+                                  }}
+                                  className={`w-11 h-6 ${
+                                    isMuted ? "bg-SlateBlue" : "bg-lightgray"
+                                  } rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all `}
+                                ></div>
+                              </label>
+                            </td>
+                          </tr>
+                          <tr className="mutebtn">
+                            <td>
+                              <span className="text-base font-normal">
+                                Toggle subtitles:
+                              </span>
+                            </td>
+                            <td className="text-right">
+                              <label className="inline-flex relative items-center  cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  className="sr-only peer"
+                                  readOnly
+                                  checked={areSubtitlesOn}
+                                  onChange={handleSubtitlesChange}
+                                />
+                                <div
+                                  onClick={() => {
+                                    setEnabled(!enabled);
+                                  }}
+                                  className={`w-11 h-6 ${
+                                    areSubtitlesOn ? "bg-SlateBlue" : "bg-lightgray"
+                                  } rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all `}
+                                ></div>
+                              </label>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <label className="text-base font-normal">
+                                Max number of videos to play
+                                <br /> within a YouTube playlist:
+                              </label>
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                placeholder="e.g.10"
+                                value={maxVideos}
+                                onChange={(e) => setMaxVideos(e.target.value)}
+                              />
+                            </td>
+                          </tr>
+
+                          <tr></tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                  <div className="fixed z-30 bg-black/40 inset-0"></div>
-                </>
-              )}
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative">
+                    <div className="w-full videoplayer relative bg-white">
+                      <ReactPlayer
+                        url={YoutubeVideo}
+                        className="w-full relative z-20 videoinner"
+                        muted={isMuted}
+                        controls={true} // Enable video controls
+                        captions={{
+                          active: areSubtitlesOn, // Enable subtitles based on the areSubtitlesOn state
+                          file: areSubtitlesOn
+                            ? "URL_TO_SUBTITLE_FILE"
+                            : undefined, // Provide the URL to the subtitle file if subtitles are enabled
+                        }}
+                      />
+                    </div>
+                    <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-10">
+                      <img src="../../../public/Assets/img.png" />
+                    </div>
+                  </div>
+
+                  {/* Add this container within your JSX */}
+                  {/* Place your video player here */}
+                  {showPreviewPopup && (
+                    <>
+                      <div ref={modalRef} className="video-preview">
+                        <ReactPlayer
+                          url={YoutubeVideo}
+                          className="w-full relative z-20 previewinner"
+                          muted={isMuted}
+                          controls={areSubtitlesOn}
+                        />
+                        <span className="absolute -top-4 -right-3 z-40 text-black">
+                          <AiOutlineCloseCircle
+                            onClick={() => setShowPreviewPopup(false)}
+                            className="text-3xl cursor-pointer text-white bg-black rounded-full"
+                          />
+                        </span>
+                      </div>
+                      <div className="fixed z-30 bg-black/40 inset-0"></div>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <Footer />
+          <Footer />
+        </>
+      )}
     </>
   );
 };
