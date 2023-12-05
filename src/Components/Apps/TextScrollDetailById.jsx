@@ -99,7 +99,6 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         const data = response?.data?.data[0];
-        console.log(data);
         setText(data?.text);
         setSelectedScrollType(data?.scrollType);
         setInstanceName(data?.instanceName);

@@ -122,6 +122,9 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   const onSave = async () => {
     toast.remove();
+    if (compositionName === "") {
+      return toast.error("Please fill composition name");
+    }
     if (
       addAsset.map((e, index) => e[index + 1].length).includes(0) ||
       addAsset.length === 0 ||
@@ -178,7 +181,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
     );
 
     let newdatas = { ...Testasset };
-    console.log(data);
     if (newdatas?.[currentSection]) {
       newdatas[currentSection].push({
         duration: 10,
@@ -483,6 +485,14 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
+  const handleOnSaveCompositionName = () => {
+    if (!compositionName.replace(/\s/g, "").length) {
+      toast.remove();
+      return toast.error("please enter a character.");
+    }
+    setEdited(false);
+  };
+
   useEffect(() => {
     handleFetchLayoutById();
     handleFetchCompositionById();
@@ -569,7 +579,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 <button
                   type="button"
                   onClick={() => {
-                    setEdited(false);
+                    handleOnSaveCompositionName();
                   }}
                 >
                   Save
@@ -729,7 +739,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                   <div
                                     className={` ${
                                       item?.instanceName
-                                        ? "w-auto"
+                                        ? "min-w-[2rem] min-h-[2rem] max-w-[3rem] max-h-[3rem] hyphens-auto"
                                         : "min-w-[2rem] min-h-[2rem] max-w-[3rem] max-h-[3rem]"
                                     } `}
                                   >
@@ -773,18 +783,19 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         </a>
                                       )}
                                       {item.instanceName && (
-                                        <a
-                                          href={item?.instanceName}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
+                                        <span
+                                        className="whitespace-normal w-20"
+                                          // href={item?.instanceName}
+                                          // target="_blank"
+                                          // rel="noopener noreferrer"
                                         >
                                           {item.instanceName}
-                                        </a>
+                                        </span>
                                       )}
                                     </>
                                   </div>
                                   <div className="ml-3 w-24">
-                                    <p className="text-gray-900 break-words hyphens-auto">
+                                    <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
                                       {item?.assetName && item?.assetName}
                                       {item?.text && item?.text}
                                     </p>
@@ -792,7 +803,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                               </td>
                               <td className="text-center w-24">
-                                {item?.assetType}
+                                {item?.assetType??"-"}
                               </td>
                               <td className={`text-center w-fit `}>
                                 {!item?.isEdited ? (

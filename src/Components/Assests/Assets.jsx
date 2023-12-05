@@ -196,7 +196,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   // Delete API
 
   const handelDeletedata = (assetId) => {
-    console.log("idid", assetId);
 
     const formData = new FormData();
     formData.append("AssetID", assetId);
@@ -215,7 +214,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         },
       })
       .then((response) => {
-        console.log("response", response);
+        // console.log("response", response);
         // const deletedWithInfo = {
         //   id: id,
         //   deletedDate: new Date(),
@@ -350,7 +349,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       folderID: folderID,
       operation: "Delete",
     });
-
+    toast.loading("Deleting...")
     axios
       .post(CREATE_NEW_FOLDER, data, {
         headers: {
@@ -359,11 +358,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         },
       })
       .then((response) => {
-        console.log(response, "response");
         fetchData();
+        toast.remove()
       })
       .catch((error) => {
         console.log(error);
+        toast.remove(ś)
       });
   };
 
@@ -416,6 +416,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const updateFolderNameInAPI = async (folderID, newName) => {
+    if(newName===""){
+      toast.remove()
+      return toast.error("Please enter a character")
+    }
     try {
       const formData = new FormData();
       formData.append("folderID", folderID);
@@ -431,15 +435,18 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
       const updatedFolder = response.data.data.model;
       fetchData();
-      console.log("Folder name updated:", updatedFolder);
+    setEditMode(null);
+
+      // console.log("Folder name updated:", updatedFolder);
     } catch (error) {
       console.error("Error updating folder name:", error);
+    setEditMode(null);
+
     }
   };
 
   const saveFolderName = (folderID, newName) => {
     updateFolderNameInAPI(folderID, newName);
-    setEditMode(null);
   };
 
   const toggleMoveTo = () => {
@@ -494,7 +501,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const navigateToFolder = (folderId, selectedData) => {
-    console.log("selectedData before navigation:", selectedData);
+    // console.log("selectedData before navigation:", selectedData);
     history(`/NewFolderDialog/${folderId}`, { selectedData });
   };
 
@@ -521,15 +528,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   useEffect(() => {
-    // if (showSearchModal) {
-    //   window.document.body.style.overflow = "hidden";
-    // }
     const handleClickOutside = (event) => {
       if (
         actionBoxRef.current &&
         !actionBoxRef.current.contains(event?.target)
       ) {
-        // window.document.body.style.overflow = "unset";
         setassetsdw(null);
         setassetsdw2(null);
       }

@@ -103,10 +103,10 @@ const Carousel = ({ items, compositonData, from }) => {
                 )}
                 {(item?.assetType === "Text" || item?.mediaType === "Text") && (
                   <marquee
-                    className="text-lg align-middle h-full flex items-center justify-center"
+                    className="text-lg align-middle h-full flex items-center justify-center bg-lightgray"
                     direction={item?.scrollType == 1 ? "left" : "right"}
                   >
-                    {item?.assetFolderPath}
+                    {item?.assetFolderPath??item?.fileType}
                   </marquee>
                 )}
                 {item?.text !== undefined && (
