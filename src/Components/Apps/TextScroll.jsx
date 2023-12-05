@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { TbAppsFilled } from "react-icons/tb";
@@ -10,13 +10,17 @@ import {
   DELETE_ALL_TEXT_SCROLL,
   GET_ALL_TEXT_SCROLL_INSTANCE,
   SCROLL_ADD_TEXT,
+  SIGNAL_R,
 } from "../../Pages/Api";
 import { useState } from "react";
-import { MdOutlineEdit, MdPlaylistPlay } from "react-icons/md";
+import { MdOutlineEdit } from "react-icons/md";
 import { FiUpload } from "react-icons/fi";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { AiOutlineCloseCircle } from "react-icons/ai";
+import ScreenAssignModal from "../ScreenAssignModal";
 
 const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
@@ -26,9 +30,86 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectAll, setSelectAll] = useState(false);
   const [appDropDown, setAppDropDown] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [addScreenModal, setAddScreenModal] = useState(false);
+  const [selectScreenModal, setSelectScreenModal] = useState(false);
+  const [selectedScreens, setSelectedScreens] = useState([]);
+  const selectedScreenIdsString = Array.isArray(selectedScreens)
+    ? selectedScreens.join(",")
+    : "";
+  const [connection, setConnection] = useState(null);
 
   const navigate = useNavigate();
+  const addScreenRef = useRef(null);
+  const appDropdownRef = useRef(null);
 
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    newConnection.on("ScreenConnected", (screenConnected) => {
+      // console.log("ScreenConnected", screenConnected);
+    });
+
+    newConnection
+      .start()
+      .then(() => {
+        // console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
+    return () => {
+      if (newConnection) {
+        newConnection
+          .stop()
+          .then(() => {
+            // console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  }, []);
+  const handleUpdateScreenAssign = () => {
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `${UPDATE_SCREEN_ASSIGN}?ScheduleID=${scheduleId}&ScreenID=${selectedScreenIdsString}`,
+      headers: {
+        Authorization: authToken,
+        "Content-Type": "application/json",
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        if (response.data.status == 200) {
+          if (connection) {
+            connection
+              .invoke("ScreenConnected")
+              .then(() => {
+                // console.log("SignalR method invoked after screen update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
+          setSelectScreenModal(false);
+          setAddScreenModal(false);
+          setShowActionBox(false);
+          loadScheduleData();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   useEffect(() => {
     setLoading(true);
     axios
@@ -133,7 +214,28 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       setAppDropDown(id);
     }
   };
+  useEffect(() => {
+    // if (showSearchModal) {
+    //   window.document.body.style.overflow = "hidden";
+    // }
+    const handleClickOutside = (event) => {
+      if (
+        appDropdownRef.current &&
+        !appDropdownRef.current.contains(event?.target)
+      ) {
+        // window.document.body.style.overflow = "unset";
+        setAppDropDown(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside]);
 
+  function handleClickOutside() {
+    setAppDropDown(false);
+  }
   return (
     <>
       <div className="flex border-b border-gray bg-white">
@@ -215,7 +317,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                               />
                             </button>
                             {appDropDown === instance.textScroll_Id && (
-                              <div className="appdw">
+                              <div className="appdw" ref={appDropdownRef}>
                                 <ul className="space-y-2">
                                   <li
                                     onClick={() => {
@@ -228,7 +330,10 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                     <MdOutlineEdit className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
                                     Edit
                                   </li>
-                                  <li className="flex text-sm items-center cursor-pointer">
+                                  <li
+                                    className="flex text-sm items-center cursor-pointer"
+                                    onClick={() => setAddScreenModal(true)}
+                                  >
                                     <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
                                     Set to Screen
                                   </li>
@@ -240,7 +345,9 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                   <li
                                     className="flex text-sm items-center cursor-pointer"
                                     onClick={() =>
-                                      handelDeleteInstance(instance.textScroll_Id)
+                                      handelDeleteInstance(
+                                        instance.textScroll_Id
+                                      )
                                     }
                                   >
                                     <RiDeleteBin5Line className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
@@ -249,13 +356,74 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                 </ul>
                               </div>
                             )}
+                            {addScreenModal && (
+                              <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                                <div
+                                  ref={addScreenRef}
+                                  className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                                >
+                                  <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                    <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                                      <div className="flex items-center">
+                                        <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
+                                          Select the Screen you want Apps
+                                          Content
+                                        </h3>
+                                      </div>
+                                      <button
+                                        className="p-1 text-xl ml-8"
+                                        onClick={() => setAddScreenModal(false)}
+                                      >
+                                        <AiOutlineCloseCircle className="text-2xl" />
+                                      </button>
+                                    </div>
+                                    <div className="flex justify-center p-9 ">
+                                      <p className="break-words w-[280px] text-base text-black">
+                                        New Text-Scroll App Instance would be
+                                        applied. Do you want to proceed?
+                                      </p>
+                                    </div>
+                                    <div className="pb-6 flex justify-center">
+                                      <button
+                                        className="bg-primary text-white px-8 py-2 rounded-full"
+                                        onClick={() => {
+                                          setSelectScreenModal(true);
+                                          setAddScreenModal(false);
+                                        }}
+                                      >
+                                        OK
+                                      </button>
+
+                                      <button
+                                        className="bg-primary text-white px-4 py-2 rounded-full ml-3"
+                                        onClick={() => setAddScreenModal(false)}
+                                      >
+                                        Cancel
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                            {/* add screen modal end */}
+                            {selectScreenModal && (
+                              <ScreenAssignModal
+                                setAddScreenModal={setAddScreenModal}
+                                setSelectScreenModal={setSelectScreenModal}
+                                handleUpdateScreenAssign={
+                                  handleUpdateScreenAssign
+                                }
+                                selectedScreens={selectedScreens}
+                                setSelectedScreens={setSelectedScreens}
+                              />
+                            )}
                           </div>
                         </div>
                         <div className="text-center clear-both pb-8">
                           <img
                             src="../../../AppsImg/text-scroll-icon.svg"
                             alt="Logo"
-                            className="cursor-pointer mx-auto h-30 w-30"
+                            className="mx-auto h-30 w-30"
                           />
                           <h4 className="text-lg font-medium mt-3">
                             {instance.instanceName}

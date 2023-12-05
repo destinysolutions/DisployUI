@@ -4,28 +4,29 @@ import Navbar from "../Navbar";
 import { TbAppsFilled } from "react-icons/tb";
 import { useState } from "react";
 import { RiDeleteBin5Line, RiDeleteBinLine } from "react-icons/ri";
-import { BsCameraVideo, BsInfoLg } from "react-icons/bs";
-import { TbExclamationMark } from "react-icons/tb";
-import { VscBook } from "react-icons/vsc";
+import { BsInfoLg } from "react-icons/bs";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 import Footer from "../Footer";
 import { useEffect } from "react";
-import axios, { all } from "axios";
+import axios from "axios";
 import {
   GET_ALL_YOUTUBEDATA,
   GET_YOUTUBEDATA_BY_ID,
+  SIGNAL_R,
   YOUTUBEDATA_ALL_DELETE,
   YOUTUBE_INSTANCE_ADD_URL,
 } from "../../Pages/Api";
 import ReactPlayer from "react-player";
 import { FiUpload } from "react-icons/fi";
-import { MdOutlineEdit, MdPlaylistPlay } from "react-icons/md";
+import { MdOutlineEdit } from "react-icons/md";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import youtube from "../../../public/AppsImg/youtube.svg";
 import { useRef } from "react";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import ScreenAssignModal from "../ScreenAssignModal";
 
 const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   Youtube.propTypes = {
@@ -40,11 +41,89 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectAll, setSelectAll] = useState(false);
   const [loading, setLoading] = useState(false);
   const [appDropDown, setAppDropDown] = useState(null);
+  const [addScreenModal, setAddScreenModal] = useState(false);
+  const [selectScreenModal, setSelectScreenModal] = useState(false);
+  const [selectedScreens, setSelectedScreens] = useState([]);
+  const [instanceView, setInstanceView] = useState(false);
+  const [instanceID, setInstanceID] = useState();
+  const selectedScreenIdsString = Array.isArray(selectedScreens)
+    ? selectedScreens.join(",")
+    : "";
+  const [connection, setConnection] = useState(null);
+  const [instanceName, setInstanceName] = useState("");
+  const [screenAssignName, setScreenAssignName] = useState("");
+  const [YoutubeVideo, setYoutubeVideo] = useState("");
 
   const navigate = useNavigate();
+  const addScreenRef = useRef(null);
   const modalRef = useRef(null);
   const appDropdownRef = useRef(null);
 
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    newConnection.on("ScreenConnected", (screenConnected) => {
+      // console.log("ScreenConnected", screenConnected);
+    });
+
+    newConnection
+      .start()
+      .then(() => {
+        // console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
+    return () => {
+      if (newConnection) {
+        newConnection
+          .stop()
+          .then(() => {
+            // console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  }, []);
+  const handleUpdateScreenAssign = () => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AssignYoutubeToScreen?YoutubeId=${instanceID}&ScreenID=${selectedScreenIdsString}`,
+      headers: {
+        Authorization: authToken,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        if (response.data.status == 200) {
+          if (connection) {
+            connection
+              .invoke("ScreenConnected")
+              .then(() => {
+                // console.log("SignalR method invoked after screen update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
+          setSelectScreenModal(false);
+          setAddScreenModal(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   useEffect(() => {
     setLoading(true);
     axios
@@ -144,6 +223,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleAppDropDownClick = (id) => {
+    setInstanceID(id);
     if (appDropDown === id) {
       setAppDropDown(null);
     } else {
@@ -193,7 +273,33 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   function handleClickOutside() {
     setAppDropDown(false);
   }
+  const handleFetchYoutubeById = (id) => {
+    let config = {
+      method: "get",
+      url: `${GET_YOUTUBEDATA_BY_ID}?ID=${id}`,
+      headers: {
+        Authorization: authToken,
+      },
+    };
+    setLoading(true);
+    toast.loading("Fetching Data....");
+    axios
 
+      .request(config)
+      .then((response) => {
+        const data = response?.data?.data[0];
+        setYoutubeVideo(data?.youTubeURL);
+        setInstanceName(data?.instanceName);
+        setScreenAssignName(data?.screens);
+        toast.remove();
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+        toast.remove();
+      });
+  };
   return (
     <>
       <div className="flex border-b border-gray">
@@ -361,7 +467,10 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                       <MdOutlineEdit className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
                                       Edit
                                     </li>
-                                    <li className="flex text-sm items-center cursor-pointer">
+                                    <li
+                                      className="flex text-sm items-center cursor-pointer"
+                                      onClick={() => setAddScreenModal(true)}
+                                    >
                                       <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
                                       Set to Screen
                                     </li>
@@ -382,14 +491,82 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                   </ul>
                                 </div>
                               )}
+                              {addScreenModal && (
+                                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                                  <div
+                                    ref={addScreenRef}
+                                    className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                                  >
+                                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                      <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                                        <div className="flex items-center">
+                                          <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
+                                            Select the Screen you want Apps
+                                            Content
+                                          </h3>
+                                        </div>
+                                        <button
+                                          className="p-1 text-xl ml-8"
+                                          onClick={() =>
+                                            setAddScreenModal(false)
+                                          }
+                                        >
+                                          <AiOutlineCloseCircle className="text-2xl" />
+                                        </button>
+                                      </div>
+                                      <div className="flex justify-center p-9 ">
+                                        <p className="break-words w-[280px] text-base text-black">
+                                          New Youtube App Instance would be
+                                          applied. Do you want to proceed?
+                                        </p>
+                                      </div>
+                                      <div className="pb-6 flex justify-center">
+                                        <button
+                                          className="bg-primary text-white px-8 py-2 rounded-full"
+                                          onClick={() => {
+                                            setSelectScreenModal(true);
+                                            setAddScreenModal(false);
+                                          }}
+                                        >
+                                          OK
+                                        </button>
+
+                                        <button
+                                          className="bg-primary text-white px-4 py-2 rounded-full ml-3"
+                                          onClick={() =>
+                                            setAddScreenModal(false)
+                                          }
+                                        >
+                                          Cancel
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                              {/* add screen modal end */}
+                              {selectScreenModal && (
+                                <ScreenAssignModal
+                                  setAddScreenModal={setAddScreenModal}
+                                  setSelectScreenModal={setSelectScreenModal}
+                                  handleUpdateScreenAssign={
+                                    handleUpdateScreenAssign
+                                  }
+                                  selectedScreens={selectedScreens}
+                                  setSelectedScreens={setSelectedScreens}
+                                />
+                              )}
                             </div>
                           </div>
                           <div className="text-center clear-both pb-8">
                             <img
-                              // src={require("../../../public/AppsImg/youtube.svg")}
                               src={youtube}
                               alt="Logo"
-                              className="mx-auto h-20 w-20"
+                              className="mx-auto h-20 w-20 cursor-pointer "
+                              onClick={() => {
+                                handleFetchYoutubeById(item.youtubeId);
+                                setInstanceView(true);
+                              }}
                             />
                             <h4 className="text-lg font-medium mt-3">
                               {item.instanceName}
@@ -399,6 +576,48 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       </div>
                     ))}
+                    {instanceView && (
+                      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none ">
+                        <div
+                          ref={modalRef}
+                          className="relative w-auto my-6 mx-auto"
+                        >
+                          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                            <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7]  rounded-t">
+                              <div className="flex items-center">
+                                <div>
+                                  <img
+                                    src="../../../AppsImg/youtube.svg"
+                                    className="w-10"
+                                  />
+                                </div>
+                                <div className="ml-3">
+                                  <h4 className="text-lg font-medium">
+                                    {instanceName}
+                                  </h4>
+                                </div>
+                              </div>
+                              <button
+                                className="p-1 text-3xl"
+                                onClick={() => setInstanceView(false)}
+                              >
+                                <AiOutlineCloseCircle />
+                              </button>
+                            </div>
+                            <div className="p-2">
+                              <ReactPlayer
+                                url={YoutubeVideo}
+                                className="app-instance-preview"
+                              />
+                            </div>
+                            <div className="py-2 px-6">
+                              <p>Tags : </p>
+                              <p>Screen Assign : {screenAssignName}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <p>No YouTube data available.</p>
