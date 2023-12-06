@@ -226,7 +226,9 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddYoutubeTags?YoutubeId=${updateTagYoutube?.youtubeId}&Tags=${tags}`,
+      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddYoutubeTags?YoutubeId=${
+        updateTagYoutube?.youtubeId
+      }&Tags=${tags.length === 0 ? "" : tags}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken,
