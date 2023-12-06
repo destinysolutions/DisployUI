@@ -116,8 +116,9 @@ const Userrole = () => {
     axios
       .request(config)
       .then((response) => {
-        setUserRoleData(response.data.data);
-        console.log(response.data.data);
+        if (response?.data?.message !== "Data not found.") {
+          setUserRoleData(response.data.data);
+        }
       })
       .catch((error) => {
         console.log(error);

@@ -579,7 +579,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 </tr>
               </thead>
               <tbody>
-                {filteredScheduleData.length === 0 && searchSchedule !== "" ? (
+                {scheduleData.length === 0 ? (
+                  <td colSpan={7} className="font-semibold text-center text-xl">No Schedule here.</td>
+                ) : filteredScheduleData.length === 0 &&
+                  searchSchedule !== "" ? (
                   <td colSpan="8" className="text-center font-semibold text-xl">
                     Schedule not found
                   </td>

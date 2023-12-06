@@ -45,6 +45,7 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
         console.error("Error fetching data from Pixabay API:", error);
       });
   }, [searchTerm, currentPage]);
+
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -70,6 +71,11 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
 
   //API
   const handleImageUpload = () => {
+    if(selectedImages.length===0) {
+      toast.remove()
+      return toast.error("Please select atleast one image")
+    }
+    toast.remove()
     setUploadInProgress(true);
     selectedImages.forEach((image) => {
       const formData = new FormData();
@@ -115,8 +121,10 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
             setUploadInProgress(false);
           }
         });
+      setUploadInProgress(false);
     });
   };
+
   useEffect(() => {
     const allImagesUploaded = selectedImages.every(
       (img) => imageUploadProgress[img.id] === 100

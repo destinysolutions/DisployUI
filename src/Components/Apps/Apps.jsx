@@ -20,22 +20,29 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+
+  const [appData, setAppData] = useState([]);
+  const [appDropDown, setAppDropDown] = useState(null);
+  const [loading, setLoading] = useState(false)
+
   const UserData = useSelector((Alldata) => Alldata.user);
   const authToken = `Bearer ${UserData.user.data.token}`;
-  const [appData, setAppData] = useState([]);
+
   useEffect(() => {
+    setLoading(true)
     axios
-      .get(GET_ALL_APPS, { headers: { Authorization: authToken } })
-      .then((response) => {
-        const fetchedData = response.data.data;
-        setAppData(fetchedData);
-      })
-      .catch((error) => {
-        console.log(error);
+    .get(GET_ALL_APPS, { headers: { Authorization: authToken } })
+    .then((response) => {
+      const fetchedData = response.data.data;
+      setAppData(fetchedData);
+      setLoading(false)
+    })
+    .catch((error) => {
+      console.log(error);
+      setLoading(false)
       });
   }, []);
 
-  const [appDropDown, setAppDropDown] = useState(null);
   const handleAppDropDownClick = (id) => {
     if (appDropDown === id) {
       setAppDropDown(null);
@@ -63,15 +70,20 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <div className="mt-5 mb-5">
             <div className="grid grid-cols-10 gap-4">
-              {appData.map(
-                (app) =>
-                  app.appType == "Apps" && (
-                    <div
-                      className="lg:col-span-2 md:col-span-5 sm:col-span-10 xs:col-span-10 "
-                      key={app.app_Id}
-                    >
-                      <div className="shadow-md bg-white rounded-lg p-3">
-                        {/* <div className="relative">
+              {loading ?<div className="text-center col-span-full font-semibold text-xl">Loading...</div>:appData.length === 0 ? (
+                <div className="w-full text-center font-semibold text-xl col-span-full">
+                  No Apps here.
+                </div>
+              ) : (
+                appData.map(
+                  (app) =>
+                    app.appType == "Apps" && (
+                      <div
+                        className="lg:col-span-2 md:col-span-5 sm:col-span-10 xs:col-span-10 "
+                        key={app.app_Id}
+                      >
+                        <div className="shadow-md bg-white rounded-lg p-3">
+                          {/* <div className="relative">
                           <button className="float-right">
                             <BiDotsHorizontalRounded
                               className="text-2xl"
@@ -101,24 +113,25 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                           )}
                         </div> */}
-                        <Link to={`/${app.appName}`}>
-                          <div className="text-center clear-both">
-                            <img
-                              src={app.appPath}
-                              alt="Logo"
-                              className="cursor-pointer mx-auto h-20 w-20"
-                            />
-                            <h4 className="text-lg font-medium mt-3">
-                              {app.appName}
-                            </h4>
-                            <h4 className="text-sm font-normal ">
-                              {app.appUse}
-                            </h4>
-                          </div>
-                        </Link>
+                          <Link to={`/${app.appName}`}>
+                            <div className="text-center clear-both">
+                              <img
+                                src={app.appPath}
+                                alt="Logo"
+                                className="cursor-pointer mx-auto h-20 w-20"
+                              />
+                              <h4 className="text-lg font-medium mt-3">
+                                {app.appName}
+                              </h4>
+                              <h4 className="text-sm font-normal ">
+                                {app.appUse}
+                              </h4>
+                            </div>
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                  )
+                    )
+                )
               )}
             </div>
           </div>

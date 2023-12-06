@@ -202,7 +202,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           })
         );
         if (filteredScreen.length > 0) {
-          toast.remove()
+          toast.remove();
           setFilteredData(filteredScreen);
         } else {
           toast.remove();
@@ -341,7 +341,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   function handleChangePreviewScreen() {
-    setLoading(true);
     const { data, myComposition } = screenPreviewData;
 
     const findCurrentSchedule = data.find((item) => {
@@ -361,9 +360,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       }
     });
     if (findCurrentSchedule !== undefined && findCurrentSchedule !== null) {
-      setLoading(false);
-      return setPlayerData(findCurrentSchedule?.fileType);
-    } else if (myComposition[0]?.compositionPossition.length > 0) {
+      setPlayerData(findCurrentSchedule?.fileType);
+      setCompositionData([]);
+      return true;
+    } else if (
+      (findCurrentSchedule == null || findCurrentSchedule === undefined) &&
+      myComposition[0]?.compositionPossition.length > 0
+    ) {
       let obj = {};
       for (const [
         key,
@@ -382,14 +385,18 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         obj[key + 1] = [...arr];
       }
       const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
-      setLoading(false);
-      return setCompositionData(newdd);
+      if (compositionData.length === 0) {
+        setCompositionData(newdd);
+        setPlayerData(null);
+      }
+      return true;
     } else {
       const findDefaultAsset = data.find(
         (item) => item?.isdefaultAsset == "true"
       );
-      setLoading(false);
-      return setPlayerData(findDefaultAsset?.fileType);
+      setPlayerData(findDefaultAsset?.fileType);
+      setCompositionData([]);
+      return true;
     }
     // if (data.length > 1 || myComposition[0]?.compositionPossition.length > 0) {
     // }
@@ -413,10 +420,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     // ) {
     //   return true;
     // }
-    // interval = window.setInterval(() => {
-    //   handleChangePreviewScreen();
-    // }, 1000);
+    // if(playerData!==undefined){
+
+    interval = window.setInterval(() => {
       handleChangePreviewScreen();
+    }, 1000);
+    // }
+    handleChangePreviewScreen();
   }
 
   useEffect(() => {
@@ -424,7 +434,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     return () => {
       clearInterval(interval);
     };
-  }, [screenPreviewData]);
+  }, [screenPreviewData, playerData]);
 
   const handleScreenDetail = () => {
     let mediaType = selectedDefaultAsset ? 0 : selectedScreenTypeOption || 0;
@@ -771,9 +781,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setSearchAsset("");
     setFilteredData([]);
   }
-
-  // console.log(compositionData);
-
+  
   return (
     <>
       <div className="flex border-b border-gray">
@@ -888,9 +896,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     </p>
                     <h4 className="text-primary text-lg">
                       {compositionData.length > 0 &&
-                        screenPreviewData.data.length === 1 &&
+                        playerData === null &&
                         "Composition"}
-                      {screenPreviewData.data.length > 1 && "Schedule"}
+                      {screenPreviewData.data.length > 1 &&
+                        playerData !== null &&
+                        "Schedule"}
                       {screenPreviewData.data.length === 1 &&
                         compositionData.length === 0 &&
                         "Default Media"}
