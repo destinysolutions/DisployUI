@@ -178,6 +178,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           })
         );
         if (filteredScreen.length > 0) {
+          toast.remove();
           setFilteredData(filteredScreen);
         } else {
           toast.remove();
@@ -201,6 +202,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           })
         );
         if (filteredScreen.length > 0) {
+          toast.remove()
           setFilteredData(filteredScreen);
         } else {
           toast.remove();

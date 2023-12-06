@@ -14,6 +14,9 @@ const AddOrEditTagPopup = ({
   handleUpadteScheduleTags,
   setUpdateTagSchedule,
   handleUpdateTagsYoutube,
+  handleUpdateTagsTextScroll,
+  setUpdateTextscrollTag,
+  setUpdateTagYoutube
 }) => {
   const [tagValue, setTagValue] = useState("");
 
@@ -28,8 +31,11 @@ const AddOrEditTagPopup = ({
     if (from === "composition") {
       setUpdateTagComposition(null);
     }
-    if (from === "schedule") {
-      setUpdateTagSchedule(null);
+    if (from === "youtube") {
+      setUpdateTagYoutube(null);
+    }
+    if (from === "textscroll") {
+      setUpdateTextscrollTag(null);
     }
   }
 
@@ -40,6 +46,7 @@ const AddOrEditTagPopup = ({
       toast.remove();
       return toast.error("please enter a character.");
     }
+    toast.remove();
     setTags([...tags, tagValue]);
     setTagValue("");
     if (from === "screen") {
@@ -53,6 +60,9 @@ const AddOrEditTagPopup = ({
     }
     if (from === "youtube") {
       return handleUpdateTagsYoutube([...tags, tagValue].join(","));
+    }
+    if (from === "textscroll") {
+      return handleUpdateTagsTextScroll([...tags, tagValue].join(","));
     }
   };
 
@@ -71,6 +81,9 @@ const AddOrEditTagPopup = ({
     if (from === "youtube") {
       return handleUpdateTagsYoutube(newTags.join(","));
     }
+    if (from === "textscroll") {
+      return handleUpdateTagsTextScroll(newTags.join(","));
+    }
   };
 
   useEffect(() => {
@@ -84,7 +97,7 @@ const AddOrEditTagPopup = ({
         className="inset-0 fixed z-10 bg-black/20"
       ></div>
       <div className=" bg-white z-40 space-y-3 overflow-y-scroll hide_scrollbar absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  min-w-[50%] min-h-[50%] max-w-[50%] max-h-[50%] p-5 rounded-lg">
-        <div className="flex items-center justify-between w-full bg-white sticky -top-3">
+        <div className="flex items-center justify-between w-full bg-white sticky -top-6 p-2">
           <h3 className="text-left font-semibold text-3xl sticky top-0 bg-white w-full">
             Add Tags
           </h3>

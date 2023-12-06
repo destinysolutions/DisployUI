@@ -47,6 +47,7 @@ const ShowAssetModal = ({
     }
 
     if (searchQuery === "") {
+      
       setFilteredData([]);
     } else {
       if (from === "asset") {
@@ -66,6 +67,7 @@ const ShowAssetModal = ({
           })
         );
         if (filteredScreen.length > 0) {
+          toast.remove()
           setFilteredData(filteredScreen);
         } else {
           toast.remove();
@@ -89,6 +91,7 @@ const ShowAssetModal = ({
           })
         );
         if (filteredScreen.length > 0) {
+          toast.remove()
           setFilteredData(filteredScreen);
         } else {
           toast.remove();

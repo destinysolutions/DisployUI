@@ -475,7 +475,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           </label>
                         </td>
                       </tr>
-                      <tr className="mutebtn">
+                      {/* <tr className="mutebtn">
                         <td>
                           <span className="text-base font-normal">
                             Toggle subtitles:
@@ -500,8 +500,8 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                             ></div>
                           </label>
                         </td>
-                      </tr>
-                      <tr>
+                      </tr> */}
+                      {/* <tr>
                         <td>
                           <label className="text-base font-normal">
                             Max number of videos to play
@@ -516,7 +516,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                             onChange={(e) => setMaxVideos(e.target.value)}
                           />
                         </td>
-                      </tr>
+                      </tr> */}
 
                       <tr></tr>
                     </tbody>
@@ -530,10 +530,28 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     className="w-full relative z-20 videoinner"
                     muted={isMuted}
                     controls={true} // Enable video controls
-                    captions={{
-                      active: areSubtitlesOn, // Enable subtitles based on the areSubtitlesOn state
-                      file: areSubtitlesOn ? "URL_TO_SUBTITLE_FILE" : undefined, // Provide the URL to the subtitle file if subtitles are enabled
-                    }}
+                    // captions={{
+                    //   active: areSubtitlesOn, // Enable subtitles based on the areSubtitlesOn state
+                    //   file: areSubtitlesOn ? "URL_TO_SUBTITLE_FILE" : undefined, // Provide the URL to the subtitle file if subtitles are enabled
+                    // }}
+
+                    // config={{
+                    //   file: {
+                    //     tracks: [
+                    //       {
+                    //         kind: "subtitles",
+                    //         src: "",
+                    //         srcLang: "en",
+                    //         default: true,
+                    //         label:"English"
+                    //       },
+                    //     ],
+                    //   },
+
+                      // youtube:{
+                      //   playerVars:
+                      // }
+                    // }}
                   />
                 </div>
                 <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-10">

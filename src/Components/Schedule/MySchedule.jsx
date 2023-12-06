@@ -229,8 +229,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       if (filteredSchedule.length > 0) {
         setFilteredScheduleData(filteredSchedule);
       } else {
-        toast.remove();
-        toast.error("Schedule not found!!");
         setFilteredScheduleData([]);
       }
     }
@@ -581,74 +579,48 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 </tr>
               </thead>
               <tbody>
-                {filteredScheduleData.length === 0
-                  ? scheduleData.map((schedule) => (
-                      <tr
-                        className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                        key={schedule.scheduleId}
-                      >
-                        <td className="flex items-center justify-center">
-                          <input
-                            type="checkbox"
-                            className="mr-3"
-                            style={{ display: selectAll ? "block" : "none" }}
-                            checked={schedule.isChecked || false}
-                            onChange={() =>
-                              handleCheckboxChange(schedule.scheduleId)
-                            }
-                          />
-                          {schedule.scheduleName}
-                        </td>
-                        <td className="text-center">{schedule.timeZoneName}</td>
-                        <td className="text-center">
-                          {moment(schedule.createdDate).format(
-                            "YYYY-MM-DD hh:mm"
-                          )}
-                        </td>
-                        <td className="text-center">
-                          {moment(schedule.startDate).format(
-                            "YYYY-MM-DD hh:mm"
-                          )}
-                        </td>
+                {filteredScheduleData.length === 0 && searchSchedule !== "" ? (
+                  <td colSpan="8" className="text-center font-semibold text-xl">
+                    Schedule not found
+                  </td>
+                ) : filteredScheduleData.length === 0 ? (
+                  scheduleData.map((schedule) => (
+                    <tr
+                      className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                      key={schedule.scheduleId}
+                    >
+                      <td className="flex items-center justify-center">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          style={{ display: selectAll ? "block" : "none" }}
+                          checked={schedule.isChecked || false}
+                          onChange={() =>
+                            handleCheckboxChange(schedule.scheduleId)
+                          }
+                        />
+                        {schedule.scheduleName}
+                      </td>
+                      <td className="text-center">{schedule.timeZoneName}</td>
+                      <td className="text-center">
+                        {moment(schedule.createdDate).format(
+                          "YYYY-MM-DD hh:mm"
+                        )}
+                      </td>
+                      <td className="text-center">
+                        {moment(schedule.startDate).format("YYYY-MM-DD hh:mm")}
+                      </td>
 
-                        <td className="text-center">
-                          {moment(schedule.endDate).format("YYYY-MM-DD hh:mm")}
-                        </td>
-                        <td className="text-center">
-                          {schedule.screenAssigned}
-                        </td>
-                        <td className="text-center flex items-center justify-center gap-2 w-full flex-wrap">
-                          {(schedule?.tags === "" ||
-                            schedule?.tags === null) && (
-                            <span>
-                              <AiOutlinePlusCircle
-                                size={30}
-                                className="mx-auto cursor-pointer"
-                                onClick={() => {
-                                  setShowTagModal(true);
-                                  schedule.tags === "" ||
-                                  schedule?.tags === null
-                                    ? setTags([])
-                                    : setTags(schedule?.tags?.split(","));
-                                  handleFetchScheduleByID(schedule?.scheduleId);
-                                  setUpdateTagSchedule(schedule);
-                                }}
-                              />
-                            </span>
-                          )}
-                          {schedule.tags !== null
-                            ? schedule.tags
-                                .split(",")
-                                .slice(
-                                  0,
-                                  schedule.tags.split(",").length > 2
-                                    ? 3
-                                    : schedule.tags.split(",").length
-                                )
-                                .join(",")
-                            : ""}
-                          {schedule?.tags !== "" && schedule?.tags !== null && (
-                            <MdOutlineModeEdit
+                      <td className="text-center">
+                        {moment(schedule.endDate).format("YYYY-MM-DD hh:mm")}
+                      </td>
+                      <td className="text-center">{schedule.screenAssigned}</td>
+                      <td className="text-center flex items-center justify-center gap-2 w-full flex-wrap">
+                        {(schedule?.tags === "" || schedule?.tags === null) && (
+                          <span>
+                            <AiOutlinePlusCircle
+                              size={30}
+                              className="mx-auto cursor-pointer"
                               onClick={() => {
                                 setShowTagModal(true);
                                 schedule.tags === "" || schedule?.tags === null
@@ -657,137 +629,128 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 handleFetchScheduleByID(schedule?.scheduleId);
                                 setUpdateTagSchedule(schedule);
                               }}
-                              className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
                             />
-                          )}
-                          {/* add or edit tag modal */}
-                          {showTagModal && (
-                            <AddOrEditTagPopup
-                              setShowTagModal={setShowTagModal}
-                              tags={tags}
-                              setTags={setTags}
-                              handleUpadteScheduleTags={
-                                handleUpadteScheduleTags
-                              }
-                              from="schedule"
-                              setUpdateTagSchedule={setUpdateTagSchedule}
-                            />
-                          )}
-                        </td>
-                        <td className="text-center relative">
-                          <div className="relative">
-                            <button
-                              className="ml-3 relative"
-                              onClick={() => {
-                                handleScheduleItemClick(schedule.scheduleId);
-                              }}
-                            >
-                              <HiDotsVertical />
-                            </button>
-                            {/* action popup start */}
-                            {showActionBox[schedule.scheduleId] && (
-                              <div
-                                ref={showActionModalRef}
-                                className="scheduleAction z-10 "
-                              >
-                                <div className="my-1">
-                                  <Link
-                                    to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
-                                  >
-                                    <button>Edit Schedule</button>
-                                  </Link>
-                                </div>
-                                <div className=" mb-1">
-                                  <button
-                                    onClick={() => setAddScreenModal(true)}
-                                  >
-                                    Add Screens
-                                  </button>
-                                </div>
-                                <div className="mb-1 border border-[#F2F0F9]"></div>
-                                <div className=" mb-1 text-[#D30000]">
-                                  <button
-                                    onClick={() =>
-                                      handelDeleteSchedule(schedule.scheduleId)
-                                    }
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                            {/* action popup end */}
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  : filteredScheduleData.map((schedule) => (
-                      <tr
-                        className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                        key={schedule.scheduleId}
-                      >
-                        <td className="flex items-center justify-center">
-                          <input
-                            type="checkbox"
-                            className="mr-3"
-                            style={{ display: selectAll ? "block" : "none" }}
-                            checked={schedule.isChecked || false}
-                            onChange={() =>
-                              handleCheckboxChange(schedule.scheduleId)
-                            }
+                          </span>
+                        )}
+                        {schedule.tags !== null
+                          ? schedule.tags
+                              .split(",")
+                              .slice(
+                                0,
+                                schedule.tags.split(",").length > 2
+                                  ? 3
+                                  : schedule.tags.split(",").length
+                              )
+                              .join(",")
+                          : ""}
+                        {schedule?.tags !== "" && schedule?.tags !== null && (
+                          <MdOutlineModeEdit
+                            onClick={() => {
+                              setShowTagModal(true);
+                              schedule.tags === "" || schedule?.tags === null
+                                ? setTags([])
+                                : setTags(schedule?.tags?.split(","));
+                              handleFetchScheduleByID(schedule?.scheduleId);
+                              setUpdateTagSchedule(schedule);
+                            }}
+                            className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
                           />
-                          {schedule.scheduleName}
-                        </td>
-                        <td className="text-center">{schedule.timeZoneName}</td>
-                        <td className="text-center">
-                          {moment(schedule.createdDate).format(
-                            "YYYY-MM-DD hh:mm"
+                        )}
+                        {/* add or edit tag modal */}
+                        {showTagModal && (
+                          <AddOrEditTagPopup
+                            setShowTagModal={setShowTagModal}
+                            tags={tags}
+                            setTags={setTags}
+                            handleUpadteScheduleTags={handleUpadteScheduleTags}
+                            from="schedule"
+                            setUpdateTagSchedule={setUpdateTagSchedule}
+                          />
+                        )}
+                      </td>
+                      <td className="text-center relative">
+                        <div className="relative">
+                          <button
+                            className="ml-3 relative"
+                            onClick={() => {
+                              handleScheduleItemClick(schedule.scheduleId);
+                            }}
+                          >
+                            <HiDotsVertical />
+                          </button>
+                          {/* action popup start */}
+                          {showActionBox[schedule.scheduleId] && (
+                            <div
+                              ref={showActionModalRef}
+                              className="scheduleAction z-10 "
+                            >
+                              <div className="my-1">
+                                <Link
+                                  to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
+                                >
+                                  <button>Edit Schedule</button>
+                                </Link>
+                              </div>
+                              <div className=" mb-1">
+                                <button onClick={() => setAddScreenModal(true)}>
+                                  Add Screens
+                                </button>
+                              </div>
+                              <div className="mb-1 border border-[#F2F0F9]"></div>
+                              <div className=" mb-1 text-[#D30000]">
+                                <button
+                                  onClick={() =>
+                                    handelDeleteSchedule(schedule.scheduleId)
+                                  }
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
                           )}
-                        </td>
-                        <td className="text-center">
-                          {moment(schedule.startDate).format(
-                            "YYYY-MM-DD hh:mm"
-                          )}
-                        </td>
+                          {/* action popup end */}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  filteredScheduleData.map((schedule) => (
+                    <tr
+                      className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                      key={schedule.scheduleId}
+                    >
+                      <td className="flex items-center justify-center">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          style={{ display: selectAll ? "block" : "none" }}
+                          checked={schedule.isChecked || false}
+                          onChange={() =>
+                            handleCheckboxChange(schedule.scheduleId)
+                          }
+                        />
+                        {schedule.scheduleName}
+                      </td>
+                      <td className="text-center">{schedule.timeZoneName}</td>
+                      <td className="text-center">
+                        {moment(schedule.createdDate).format(
+                          "YYYY-MM-DD hh:mm"
+                        )}
+                      </td>
+                      <td className="text-center">
+                        {moment(schedule.startDate).format("YYYY-MM-DD hh:mm")}
+                      </td>
 
-                        <td className="text-center">
-                          {moment(schedule.endDate).format("YYYY-MM-DD hh:mm")}
-                        </td>
-                        <td className="text-center">
-                          {schedule.screenAssigned}
-                        </td>
-                        <td className="text-center flex items-center justify-center gap-2 w-full flex-wrap">
-                          {(schedule?.tags === "" ||
-                            schedule?.tags === null) && (
-                            <span>
-                              <AiOutlinePlusCircle
-                                size={30}
-                                className="mx-auto cursor-pointer"
-                                onClick={() => {
-                                  setShowTagModal(true);
-                                  schedule.tags === "" ||
-                                  schedule?.tags === null
-                                    ? setTags([])
-                                    : setTags(schedule?.tags?.split(","));
-                                  handleFetchScheduleByID(schedule?.scheduleId);
-                                  setUpdateTagSchedule(schedule);
-                                }}
-                              />
-                            </span>
-                          )}
-                          {schedule.tags !== null
-                            ? schedule.tags
-                                .split(",")
-                                .slice(
-                                  0,
-                                  schedule.tags.split(",").length > 2
-                                    ? 3
-                                    : schedule.tags.split(",").length
-                                )
-                                .join(",")
-                            : ""}
-                          {schedule?.tags !== "" && schedule?.tags !== null && (
-                            <MdOutlineModeEdit
+                      <td className="text-center">
+                        {moment(schedule.endDate).format("YYYY-MM-DD hh:mm")}
+                      </td>
+                      <td className="text-center">{schedule.screenAssigned}</td>
+                      <td className="text-center flex items-center justify-center gap-2 w-full flex-wrap">
+                        {(schedule?.tags === "" || schedule?.tags === null) && (
+                          <span>
+                            <AiOutlinePlusCircle
+                              size={30}
+                              className="mx-auto cursor-pointer"
                               onClick={() => {
                                 setShowTagModal(true);
                                 schedule.tags === "" || schedule?.tags === null
@@ -796,70 +759,91 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 handleFetchScheduleByID(schedule?.scheduleId);
                                 setUpdateTagSchedule(schedule);
                               }}
-                              className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
                             />
-                          )}
-                          {/* add or edit tag modal */}
-                          {showTagModal && (
-                            <AddOrEditTagPopup
-                              setShowTagModal={setShowTagModal}
-                              tags={tags}
-                              setTags={setTags}
-                              handleUpadteScheduleTags={
-                                handleUpadteScheduleTags
-                              }
-                              from="schedule"
-                              setUpdateTagSchedule={setUpdateTagSchedule}
-                            />
-                          )}
-                        </td>
-                        <td className="text-center relative">
-                          <div className="relative">
-                            <button
-                              className="ml-3 relative"
-                              onClick={() => {
-                                handleScheduleItemClick(schedule.scheduleId);
-                              }}
+                          </span>
+                        )}
+                        {schedule.tags !== null
+                          ? schedule.tags
+                              .split(",")
+                              .slice(
+                                0,
+                                schedule.tags.split(",").length > 2
+                                  ? 3
+                                  : schedule.tags.split(",").length
+                              )
+                              .join(",")
+                          : ""}
+                        {schedule?.tags !== "" && schedule?.tags !== null && (
+                          <MdOutlineModeEdit
+                            onClick={() => {
+                              setShowTagModal(true);
+                              schedule.tags === "" || schedule?.tags === null
+                                ? setTags([])
+                                : setTags(schedule?.tags?.split(","));
+                              handleFetchScheduleByID(schedule?.scheduleId);
+                              setUpdateTagSchedule(schedule);
+                            }}
+                            className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
+                          />
+                        )}
+                        {/* add or edit tag modal */}
+                        {showTagModal && (
+                          <AddOrEditTagPopup
+                            setShowTagModal={setShowTagModal}
+                            tags={tags}
+                            setTags={setTags}
+                            handleUpadteScheduleTags={handleUpadteScheduleTags}
+                            from="schedule"
+                            setUpdateTagSchedule={setUpdateTagSchedule}
+                          />
+                        )}
+                      </td>
+                      <td className="text-center relative">
+                        <div className="relative">
+                          <button
+                            className="ml-3 relative"
+                            onClick={() => {
+                              handleScheduleItemClick(schedule.scheduleId);
+                            }}
+                          >
+                            <HiDotsVertical />
+                          </button>
+                          {/* action popup start */}
+                          {showActionBox[schedule.scheduleId] && (
+                            <div
+                              ref={showActionModalRef}
+                              className="scheduleAction z-10 "
                             >
-                              <HiDotsVertical />
-                            </button>
-                            {/* action popup start */}
-                            {showActionBox[schedule.scheduleId] && (
-                              <div
-                                ref={showActionModalRef}
-                                className="scheduleAction z-10 "
-                              >
-                                <div className="my-1">
-                                  <Link
-                                    to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
-                                  >
-                                    <button>Edit Schedule</button>
-                                  </Link>
-                                </div>
-                                <div className=" mb-1">
-                                  <button
-                                    onClick={() => setAddScreenModal(true)}
-                                  >
-                                    Add Screens
-                                  </button>
-                                </div>
-                                <div className="mb-1 border border-[#F2F0F9]"></div>
-                                <div className=" mb-1 text-[#D30000]">
-                                  <button
-                                    onClick={() =>
-                                      handelDeleteSchedule(schedule.scheduleId)
-                                    }
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
+                              <div className="my-1">
+                                <Link
+                                  to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
+                                >
+                                  <button>Edit Schedule</button>
+                                </Link>
                               </div>
-                            )}
-                            {/* action popup end */}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                              <div className=" mb-1">
+                                <button onClick={() => setAddScreenModal(true)}>
+                                  Add Screens
+                                </button>
+                              </div>
+                              <div className="mb-1 border border-[#F2F0F9]"></div>
+                              <div className=" mb-1 text-[#D30000]">
+                                <button
+                                  onClick={() =>
+                                    handelDeleteSchedule(schedule.scheduleId)
+                                  }
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                          {/* action popup end */}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
