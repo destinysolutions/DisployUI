@@ -372,7 +372,7 @@ const Defaultmedia = () => {
                                 </span>
                                 Assets
                               </button>
-                              <button
+                              {/* <button
                                 type="button"
                                 className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
                                   popupActiveTab === 2 ? "active" : ""
@@ -389,7 +389,7 @@ const Defaultmedia = () => {
                                   <RiPlayListFill size={15} />
                                 </span>
                                 Compositions
-                              </button>
+                              </button> */}
                               {/* <button
                         type="button"
                         className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
