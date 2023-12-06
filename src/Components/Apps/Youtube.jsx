@@ -236,7 +236,19 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
 
     axios
       .request(config)
-      .then((response) => {})
+      .then((response) => {
+        if (response?.data?.status == 200) {
+          const updatedData = youtubeData.map((item) => {
+            if (item?.youtubeId === updateTagYoutube?.youtubeId) {
+              return { ...item, tags: tags };
+            } else {
+              return item;
+            }
+          });
+          setYoutubeData(updatedData);
+        }
+      })
+
       .catch((error) => {
         console.log(error);
       });
@@ -330,6 +342,8 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
       document.removeEventListener("click", handleClickOutside, true);
     };
   }, [handleClickOutside]);
+
+  // console.log(updateTagYoutube);
 
   return (
     <>
@@ -665,9 +679,11 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                               />
                             </div>
                             <div className="py-2 px-6">
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <label className="font-semibold">Tags :</label>
-                                <p className="line-clamp-1">{showTags}</p>
+                              <div className="flex items-center gap-2 w-full">
+                                <div className="font-semibold w-fit">
+                                  Tags:-
+                                </div>
+                                <div className=" w-full">{showTags}</div>
                               </div>
                               <div>
                                 <label className="font-semibold">

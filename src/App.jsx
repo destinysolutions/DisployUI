@@ -6,22 +6,26 @@ import { Toaster } from "react-hot-toast";
 import { useIdleTimer } from "react-idle-timer";
 import { useEffect } from "react";
 import { auth } from "./FireBase/firebase";
+import { useState } from "react";
 
 const App = () => {
+  const [timer, setTimer] = useState(0);
+  const [loggedInUser, setLoggedInUser] = useState(null);
   let interval;
 
   const onIdle = () => {
     clearInterval(interval);
     auth.signOut();
-    window.location.href = "/";
+    window.location.href = window.location.origin;
     window.localStorage.clear("timer");
     localStorage.setItem("role_access", "");
     window.location.reload();
   };
+
   var { start, getRemainingTime, isIdle } = useIdleTimer({
     onIdle,
-    // startManually: true,
-    // startOnMount: false,
+    startManually: true,
+    startOnMount: false,
     timeout: 18_00_000,
     throttle: 500,
     stopOnIdle: true,
@@ -41,9 +45,6 @@ const App = () => {
     ],
   });
 
-  const loggedInUser = JSON.parse(window.localStorage.getItem("user"));
-  const timer = JSON.parse(window.localStorage.getItem("timer"));
-
   // for timer
   useEffect(() => {
     if (!isIdle()) {
@@ -52,9 +53,10 @@ const App = () => {
           window.localStorage.setItem(
             "timer",
             JSON.stringify(Math.ceil(getRemainingTime() / 1000))
-            );
-          }, 1000);
-        } else if (loggedInUser && timer < 18_00_000) {
+          );
+        }, 1000);
+      }
+      if (loggedInUser !== null && timer < 1800) {
         start();
         interval = setInterval(() => {
           window.localStorage.setItem(
@@ -64,19 +66,24 @@ const App = () => {
         }, 1000);
       }
     }
-
     return () => {
       clearInterval(interval);
     };
-  }, [loggedInUser]);
+  }, [loggedInUser, timer]);
 
   // when user enter first time after login
   useEffect(() => {
-    if (loggedInUser && timer === 18_00_000) {
+    if (loggedInUser !== null && timer == 1800) {
       start();
     }
-  }, [loggedInUser]);
+  }, [loggedInUser, timer]);
 
+  useEffect(() => {
+    const user = JSON.parse(window.localStorage.getItem("user"));
+    const TIMER = JSON.parse(window.localStorage.getItem("timer"));
+    setLoggedInUser(user);
+    setTimer(TIMER);
+  }, []);
 
   return (
     <>

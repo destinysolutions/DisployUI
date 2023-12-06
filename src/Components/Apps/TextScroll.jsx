@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-import { TbAppsFilled } from "react-icons/tb";
+import { TbAppsFilled, TbSolarPanel } from "react-icons/tb";
 import { Link, useNavigate } from "react-router-dom";
 import { BsInfoLg } from "react-icons/bs";
 import { RiDeleteBin5Line, RiDeleteBinLine } from "react-icons/ri";
@@ -21,6 +21,8 @@ import toast from "react-hot-toast";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import ScreenAssignModal from "../ScreenAssignModal";
+import AddOrEditTagPopup from "../AddOrEditTagPopup";
+import ReactPlayer from "react-player";
 
 const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
@@ -38,44 +40,19 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
     ? selectedScreens.join(",")
     : "";
   const [connection, setConnection] = useState(null);
+  const [showTagModal, setShowTagModal] = useState(false);
+  const [tags, setTags] = useState([]);
+  const [updateTextscrollTag, setUpdateTextscrollTag] = useState(null);
+  const [showTags, setShowTags] = useState(null);
+  const [instanceName, setInstanceName] = useState("");
+  const [textScrollData, setTextScrollData] = useState("");
+  const [screenAssignName, setScreenAssignName] = useState("");
+  const [instanceView, setInstanceView] = useState(false);
+  const [scrollType, setScrollType] = useState(1);
 
   const navigate = useNavigate();
   const addScreenRef = useRef(null);
   const appDropdownRef = useRef(null);
-
-  useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
-
-    newConnection.on("ScreenConnected", (screenConnected) => {
-      // console.log("ScreenConnected", screenConnected);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        // console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            // console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
-  }, []);
 
   const handleUpdateScreenAssign = () => {
     let config = {
@@ -112,19 +89,6 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get(GET_ALL_TEXT_SCROLL_INSTANCE, {
-        headers: {
-          Authorization: authToken,
-        },
-      })
-      .then((response) => {
-        setInstanceData(response.data.data);
-        setLoading(false);
-      });
-  }, []);
 
   const handelDeleteInstance = (scrollId) => {
     if (!window.confirm("Are you sure?")) return;
@@ -217,6 +181,121 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       setAppDropDown(id);
     }
   };
+
+  const handleUpdateTagsTextScroll = (tags) => {
+    const empty = ""
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddTextScrollTags?TextScrollId=${
+        updateTextscrollTag?.textScroll_Id
+      }&Tags=${tags.length === 0 ? empty : tags}`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+      // data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        if (response?.data?.status == 200) {
+          const updatedData = instanceData.map((item) => {
+            if (item?.textScroll_Id === updateTextscrollTag?.textScroll_Id) {
+              return { ...item, tags: tags };
+            } else {
+              return item;
+            }
+          });
+          setInstanceData(updatedData);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleFetchTextscrollById = (id) => {
+    let config = {
+      method: "get",
+      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/SelectByTextScrollId?ID=${id}`,
+      headers: {
+        Authorization: authToken,
+      },
+    };
+
+    toast.loading("Fetching Data....");
+    axios
+      .request(config)
+      .then((response) => {
+        if (response?.data?.status == 200) {
+          const data = response?.data?.data[0];
+          setInstanceView(true);
+          setTextScrollData(data?.text);
+          setInstanceName(data?.instanceName);
+          setScreenAssignName(data?.screens);
+          setScrollType(data?.scrollType);
+          setShowTags(data?.tags);
+          setLoading(false);
+        }
+        toast.remove();
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+        toast.remove();
+      });
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get(GET_ALL_TEXT_SCROLL_INSTANCE, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
+      .then((response) => {
+        setInstanceData(response.data.data);
+        setLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    newConnection.on("ScreenConnected", (screenConnected) => {
+      // console.log("ScreenConnected", screenConnected);
+    });
+
+    newConnection
+      .start()
+      .then(() => {
+        // console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
+    return () => {
+      if (newConnection) {
+        newConnection
+          .stop()
+          .then(() => {
+            // console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  }, []);
+
   useEffect(() => {
     // if (showSearchModal) {
     //   window.document.body.style.overflow = "hidden";
@@ -228,6 +307,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       ) {
         // window.document.body.style.overflow = "unset";
         setAppDropDown(false);
+        setInstanceView(false);
       }
     };
     document.addEventListener("click", handleClickOutside, true);
@@ -238,7 +318,9 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
 
   function handleClickOutside() {
     setAppDropDown(false);
+    setInstanceView(false);
   }
+
   return (
     <>
       <div className="flex border-b border-gray bg-white">
@@ -423,16 +505,106 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
                         </div>
                         <div className="text-center clear-both pb-8">
-                          <img
-                            src="../../../AppsImg/text-scroll-icon.svg"
-                            alt="Logo"
-                            className="mx-auto h-30 w-30"
-                          />
-                          <h4 className="text-lg font-medium mt-3">
-                            {instance.instanceName}
-                          </h4>
-                          <h4 className="text-sm font-normal ">Added </h4>
+                          <div
+                            className="cursor-pointer"
+                            onClick={() =>
+                              handleFetchTextscrollById(instance?.textScroll_Id)
+                            }
+                          >
+                            <img
+                              src="../../../AppsImg/text-scroll-icon.svg"
+                              alt="Logo"
+                              className="mx-auto h-30 w-30"
+                            />
+                            <h4 className="text-lg font-medium mt-3">
+                              {instance.instanceName}
+                            </h4>
+                          </div>
+                          <h4
+                            onClick={() => {
+                              instance?.tags !== null &&
+                              instance?.tags !== undefined &&
+                              instance?.tags !== ""
+                                ? setTags(instance?.tags?.split(","))
+                                : setTags([]);
+                              setShowTagModal(true);
+                              setUpdateTextscrollTag(instance);
+                            }}
+                            className="text-sm font-normal cursor-pointer"
+                          >
+                            Add tags +
+                          </h4>{" "}
+                          {showTagModal && (
+                            <AddOrEditTagPopup
+                              setShowTagModal={setShowTagModal}
+                              tags={tags}
+                              setTags={setTags}
+                              handleUpdateTagsTextScroll={
+                                handleUpdateTagsTextScroll
+                              }
+                              from="textscroll"
+                              setUpdateTextscrollTag={setUpdateTextscrollTag}
+                            />
+                          )}
                         </div>
+                        {instanceView && (
+                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                            <div
+                              ref={appDropdownRef}
+                              className="w-[600px] my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                            >
+                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7]  rounded-t">
+                                  <div className="flex items-center">
+                                    <div>
+                                      <img
+                                        src="../../../AppsImg/text-scroll-icon.svg"
+                                        className="w-10"
+                                      />
+                                    </div>
+                                    <div className="ml-3">
+                                      <h4 className="text-lg font-medium">
+                                        {instanceName}
+                                      </h4>
+                                    </div>
+                                  </div>
+                                  <button
+                                    className="p-1 text-3xl"
+                                    onClick={() => setInstanceView(false)}
+                                  >
+                                    <AiOutlineCloseCircle />
+                                  </button>
+                                </div>
+                                <div className="bg-lightgray min-h-[10rem] align-middle leading-[10rem]">
+                                  <marquee
+                                    direction={
+                                      scrollType == 1 ? "left" : "right"
+                                    }
+                                  >
+                                    {textScrollData}
+                                  </marquee>
+                                </div>
+
+                                <div className="py-2 px-6 space-y-3">
+                                  <div className="flex items-center gap-2 w-full">
+                                    <div className="font-semibold w-fit">
+                                      Tags:-
+                                    </div>
+                                    <div className=" w-full">{showTags}</div>
+                                  </div>
+                                  <div>
+                                    <label className="font-semibold">
+                                      Screen Assign :
+                                    </label>
+                                    {screenAssignName == ""
+                                      ? " No Screen"
+                                      : screenAssignName}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))

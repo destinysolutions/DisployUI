@@ -816,11 +816,10 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               key={index}
                               className="w-full flex items-center md:gap-5 gap-3"
                             >
-                              <td>
+                              <td className="min-w-[40%]">
                                 <div className="flex items-center w-full">
                                   <div
-                                    className={` "min-w-[2rem] min-h-[2rem] max-w-[3rem] max-h-[3rem]"
-                                    break-words hyphens-auto`}
+                                    className={`w-1/2 break-words hyphens-auto`}
                                   >
                                     <>
                                       {item.assetType === "OnlineImage" && (
@@ -842,7 +841,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                       {item.assetType === "Video" && (
                                         <video
                                           controls
-                                          className="w-full h-full rounded-sm"
+                                          className="w-fit h-fit rounded-sm"
                                         >
                                           <source
                                             src={item?.assetFolderPath}
@@ -872,7 +871,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                       )}
                                     </>
                                   </div>
-                                  <div className="ml-3 w-24">
+                                  <div className="ml-3 w-1/2">
                                     <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
                                       {item?.assetName && item?.assetName}
                                       {item?.text && item?.text}
@@ -880,18 +879,18 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div>
                                 </div>
                               </td>
-                              <td className="text-center w-24">
+                              <td className="text-center min-w-[20%]">
                                 {item?.assetType??"-"}
                               </td>
-                              <td className={`text-center w-fit `}>
+                              <td className={`text-center min-w-[20%] `}>
                                 {!item?.isEdited ? (
-                                  <span className="border whitespace-nowrap border-[#E4E6FF] rounded-full p-2">
+                                  <p className="border min-w-full whitespace-nowrap border-[#E4E6FF] rounded-full p-2">
                                     {item.duration} Sec
-                                  </span>
+                                  </p>
                                 ) : (
                                   <p className="flex items-center gap-2 border-[#E4E6FF] rounded-full w-full min-w-[3rem]">
                                     <input
-                                      className="outline-none border border-[#E4E6FF] rounded-full p-2 w-full min-w-fit"
+                                      className="outline-none border border-[#E4E6FF] rounded-full p-2 w-full min-w-full"
                                       value={item.duration}
                                       type="number"
                                       onChange={(e) =>
@@ -907,17 +906,17 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                   </p>
                                 )}
                               </td>
-                              <td className="text-sm flex justify-end items-center gap-2 w-24">
+                              <td className="text-sm flex justify-end items-center gap-4 min-w-[20%]">
                                 <a onClick={() => onEditSelectedAsset(index)}>
                                   <img
                                     src="../../../Settings/edit-icon.svg"
-                                    className="min-w-[2rem] cursor-pointer"
+                                    className="min-w-[2vw] cursor-pointer"
                                   />
                                 </a>
                                 <a onClick={() => deleteSeletedAsset(index)}>
                                   <img
                                     src="../../../Settings/delete-icon.svg"
-                                    className="min-w-[2rem] cursor-pointer"
+                                    className="min-w-[2vw] cursor-pointer"
                                   />
                                 </a>
                               </td>

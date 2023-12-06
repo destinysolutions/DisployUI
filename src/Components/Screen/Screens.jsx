@@ -736,8 +736,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       if (filteredScreen.length > 0) {
         setFilteredScreenData(filteredScreen);
       } else {
-        toast.remove()
-        toast.error("Screen not found!!")
         setFilteredScreenData([]);
       }
     }
@@ -1403,7 +1401,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 <td colSpan="6" className="text-center font-semibold text-xl">
                   No Screens
                 </td>
-              ) : filteredScreenData.length === 0 ? (
+              ) : filteredScreenData.length===0 && searchScreen!=="" ?<td colSpan="6" className="text-center font-semibold text-xl">screen not found</td> : filteredScreenData.length === 0 ? (
                 screenData.map((screen) => (
                   <tbody key={screen.screenID}>
                     <tr className="border-b border-b-[#E4E6FF]">

@@ -106,7 +106,7 @@ const Login = () => {
           );
           // if (daysRemaining > 0) {
           if (response.data.status == 200) {
-            window.localStorage.setItem("timer", JSON.stringify(18_00_000));
+            window.localStorage.setItem("timer", JSON.stringify(18_00));
 
             const userRole = response.data.role;
             if (userRole == 1) {
