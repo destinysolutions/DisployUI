@@ -657,7 +657,7 @@ const Userrole = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:px-5 md:px-5 sm:px-2 xs:px-2">
-        {userRoleData.map((userrole) => (
+        {userRoleData && userRoleData.length > 0 &&  userRoleData?.map((userrole) => (
           <div
             className="rounded-xl p-6 bg-[#E7EFFF] user-role-card"
             key={userrole.orgUserRoleID}
@@ -682,6 +682,7 @@ const Userrole = () => {
           </div>
         ))}
       </div>
+      
       {/* <div className="md:px-5 sm:px-2 xs:px-2 mt-5">
         <div className="my-2 flex sm:flex-row flex-col">
           <div className="flex flex-row mb-1 sm:mb-0">
