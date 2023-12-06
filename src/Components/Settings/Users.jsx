@@ -12,9 +12,10 @@ import { CiMenuKebab } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import DataTable from "react-data-table-component";
 import { IoIosArrowRoundBack, IoMdNotificationsOutline } from "react-icons/io";
-import { MdLockOutline } from "react-icons/md";
+import { MdLockOutline, MdOutlinePhotoCamera } from "react-icons/md";
 import { IoIosLink } from "react-icons/io";
 import toast from "react-hot-toast";
+import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 
 const Users = () => {
   const [users, setUsers] = useState([
@@ -63,14 +64,24 @@ const Users = () => {
   {
     /*model */
   }
+  const hiddenFileInput = useRef(null);
+  const [errors, setErrors] = useState({});
+
+  const [passowrdErrors, setErrorsPassword] = useState('');
+  const [emailErrors, setErrorsEmail] = useState('');
+
+
+
   const UserData = useSelector((Alldata) => Alldata.user);
   const authToken = `Bearer ${UserData.user.data.token}`;
   const [showuserModal, setshowuserModal] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [userRoleData, setUserRoleData] = useState([]);
   const [selectRoleID, setSelectRoleID] = useState("");
   const [countries, setCountries] = useState([]);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [isActive, setIsActive] = useState(0);
@@ -79,10 +90,15 @@ const Users = () => {
   const [userData, setUserData] = useState([]);
   const [showActionBox, setShowActionBox] = useState(false);
   const [deletePopup, setdeletePopup] = useState(false);
-  const [userID, setUserID] = useState("");
+  const [userID, setUserID] = useState();
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userDetailData, setUserDetailData] = useState([]);
   const [activeTab, setActiveTab] = useState(1);
+  const [isImageUploaded, setIsImageUploaded] = useState(false);
+  const [file, setFile] = useState();
+  const [fileEdit, setFileEdit] = useState();
+
+  const [labelTitle, setLabelTitle] = useState('Add New User')
 
   const modalRef = useRef(null);
   const actionPopupRef = useRef(null)
@@ -91,7 +107,7 @@ const Users = () => {
     if (!showActionBox) {
       setUserID(rowId);
     } else {
-      setUserID("");
+      setUserID();
     }
     setShowActionBox(!showActionBox);
   };
@@ -133,63 +149,108 @@ const Users = () => {
       });
   }, []);
 
+
   const handleAddUser = () => {
-    let data = JSON.stringify({
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      phone: phone,
-      isActive: isActive,
-      orgUserID: 0,
-      userRole: selectRoleID,
-      countryID: countryID,
-      company: company,
-      operation: "Save",
-    });
+    let data = new FormData();
+
+    if (!password) {
+      setErrorsPassword("Password is required");
+      return;
+    } else if (!email) {
+      setErrorsEmail("Email is required");
+      return
+    }
+
+    // let data = JSON.stringify({
+    //   firstName: firstName,
+    //   lastName: lastName,
+    //   email: email,
+    //   phone: phone,
+    //   isActive: isActive,
+    //   orgUserID: 0,
+    //   userRole: selectRoleID,
+    //   countryID: countryID,
+    //   company: company,
+    //   file:file,
+    //   operation: "Save",
+    // });
+
+    data.append("firstName", firstName);
+    data.append("lastName", lastName);
+    data.append("password", password);
+    data.append("email", email);
+    data.append("phone", phone);
+    data.append("isActive", isActive);
+    data.append("orgUserID", 0);
+    data.append("userRole", selectRoleID);
+    data.append("countryID", countryID);
+    data.append("File", file);
+    data.append('languageId', 0);
+    data.append('timeZoneId', 0);
+    data.append('currencyId', 0);
+    data.append("operation", 'Save');
 
     let config = {
       method: "post",
       maxBodyLength: Infinity,
       url: "https://disployapi.thedestinysolutions.com/api/UserMaster/AddOrgUserMaster",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data;",
         Authorization: authToken,
       },
       data: data,
     };
 
-    axios
-      .request(config)
-      .then((response) => {
-        setshowuserModal(false);
-        handleGetOrgUsers();
-      })
+    axios.request(config).then((response) => {
+      setshowuserModal(false);
+      handleGetOrgUsers();
+    })
       .catch((error) => {
         console.log(error);
       });
   };
 
   const handleUpdateUser = () => {
-    let data = JSON.stringify({
-      orgUserSpecificID: userID,
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      phone: phone,
-      isActive: isActive,
-      orgUserID: 0,
-      userRole: selectRoleID,
-      countryID: countryID,
-      company: company,
-      operation: "Save",
-    });
+    // let data = JSON.stringify({
+    //   orgUserSpecificID: userID,
+    //   firstName: firstName,
+    //   lastName: lastName,
+    //   email: email,
+    //   phone: phone,
+    //   isActive: isActive,
+    //   orgUserID: 0,
+    //   userRole: selectRoleID,
+    //   countryID: countryID,
+    //   company: company,
+    //   operation: "Save",
+    // });
+
+
+    let data = new FormData();
+
+    data.append("orgUserSpecificID", userID);
+    data.append("firstName", firstName);
+    data.append("lastName", lastName);
+    data.append("password", password);
+    data.append("email", email);
+    data.append("phone", phone);
+    data.append("isActive", isActive);
+    data.append("orgUserID", 0);
+    data.append("userRole", selectRoleID);
+    data.append("countryID", countryID);
+    data.append("company", company);
+    data.append("File", file);
+    data.append('languageId', 0);
+    data.append('timeZoneId', 0);
+    data.append('currencyId', 0);
+    data.append("operation", 'Save');
 
     let config = {
       method: "post",
       maxBodyLength: Infinity,
       url: "https://disployapi.thedestinysolutions.com/api/UserMaster/AddOrgUserMaster",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data;",
         Authorization: authToken,
       },
       data: data,
@@ -260,6 +321,7 @@ const Users = () => {
   };
 
   const selectUserById = (OrgUserSpecificID) => {
+    setLabelTitle('Update User')
     toast.loading("Fetching Data...");
     let config = {
       method: "post",
@@ -277,6 +339,9 @@ const Users = () => {
           setUserDetailData(fetchedData);
           setFirstName(fetchedData.firstName);
           setLastName(fetchedData.lastName);
+          setPassword('');
+          setFileEdit(fetchedData.profilePhoto);
+          setIsImageUploaded(true)
           setPhone(fetchedData.phone);
           setEmail(fetchedData.email);
           setCompany(fetchedData.company);
@@ -293,9 +358,14 @@ const Users = () => {
   };
 
   const handleCancelPopup = () => {
+    setLabelTitle('Add New User')
+    setUserID()
     setshowuserModal(false);
     setFirstName("");
     setLastName("");
+    setPassword("");
+    setFile(null);
+    setIsImageUploaded(false)
     setPhone("");
     setEmail("");
     setCompany("");
@@ -305,6 +375,24 @@ const Users = () => {
   };
 
   const columns = [
+    {
+      name: "Profile Image",
+      // selector: (row) => row.isActive,
+      sortable: true,
+      cell: (row) => (
+        <div>
+          {row?.profilePhoto ? (
+            <img
+              src={row?.profilePhoto}
+              alt="Profile Image"
+              className="w-10 rounded-lg"
+            />
+          ) : (
+            <MdOutlinePhotoCamera className="w-32 h-32 text-gray" />
+          )}
+        </div>
+      ),
+    },
     {
       name: "Name",
       selector: (row) => row.firstName,
@@ -361,7 +449,7 @@ const Users = () => {
                 >
                   <AiOutlineClose />
                 </button> */}
-                <div  className=" my-1">
+                <div className=" my-1">
                   <button
                     onClick={() => {
                       selectUserById(row.orgUserSpecificID);
@@ -424,6 +512,21 @@ const Users = () => {
     },
   ];
 
+
+  const handleFileChange = (e) => {
+    setFileEdit()
+    const selectedFile = e.target.files[0];
+    // console.log("selectedFile -", selectedFile);
+    setFile(selectedFile);
+    setIsImageUploaded(true);
+
+  }
+
+  const handleClick = (e) => {
+    hiddenFileInput.current.click();
+  };
+
+
   useEffect(() => {
     // if (showSearchModal) {
     //   window.document.body.style.overflow = "hidden";
@@ -475,7 +578,7 @@ const Users = () => {
             <div ref={modalRef} className="user-model">
               <div className="hours-heading flex justify-between items-center p-5 border-b border-gray">
                 <h1 className="text-lg font-medium text-primary">
-                  Add New User
+                  {labelTitle}
                 </h1>
                 <AiOutlineCloseCircle
                   className="text-4xl text-primary cursor-pointer"
@@ -514,19 +617,7 @@ const Users = () => {
                         />
                       </div>
                     </div>
-                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                      <div className="relative">
-                        <label className="formLabel">Phone No</label>
-                        <input
-                          type="number"
-                          placeholder="Enter Phone No"
-                          name="phoneno"
-                          className="formInput"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                        />
-                      </div>
-                    </div>
+
                     <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                       <div className="relative">
                         <label className="formLabel">Email</label>
@@ -537,6 +628,54 @@ const Users = () => {
                           className="formInput"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
+                        />
+                        {emailErrors ? (
+                          <p className="error">
+                            {emailErrors}
+                          </p>
+                        ) : null}
+                      </div>
+                    </div>
+                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                      <div className="relative">
+                        <label className="formLabel">Password</label>
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter User Password"
+                          name="fname"
+                          className="formInput"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                        />
+                        {passowrdErrors ? (
+                          <p className="error">
+                            {passowrdErrors}
+                          </p>
+                        ) : null}
+                        <div className="icon">
+                          {showPassword ? (
+                            <BsFillEyeFill
+                              onClick={() => setShowPassword(!showPassword)}
+                            />
+                          ) : (
+                            <BsFillEyeSlashFill
+                              onClick={() => setShowPassword(!showPassword)}
+                            />
+                          )}
+
+                        </div>
+                      </div>
+                    </div>
+                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                      <div className="relative">
+                        <label className="formLabel">Phone No</label>
+                        <input
+                          type="number"
+                          placeholder="Enter Phone No"
+                          name="phoneno"
+                          className="formInput"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
                         />
                       </div>
                     </div>
@@ -593,17 +732,66 @@ const Users = () => {
                           onChange={(e) => setSelectRoleID(e.target.value)}
                         >
                           <option label="select User Role"></option>
-                          {userRoleData.map((userrole) => (
-                            <option
-                              key={userrole.orgUserRoleID}
-                              value={userrole.orgUserRoleID}
-                            >
-                              {userrole.orgUserRole}
-                            </option>
-                          ))}
+                          {userRoleData?.length === 0 ? (
+                            <div>Data not here.</div>
+                          ) : (
+                            userRoleData.map((userrole) => (
+                              <option
+                                key={userrole.orgUserRoleID}
+                                value={userrole.orgUserRoleID}
+                              >
+                                {userrole.orgUserRole}
+                              </option>
+                            ))
+                          )}
                         </select>
                       </div>
                     </div>
+
+                    {console.log("file", file)}
+                    {console.log("fileEdit", fileEdit)}
+                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                      <div className="flex items-center">
+                        <div className="layout-img me-5">
+                          {file ? (
+                            <img
+                              // src={file}
+                              src={URL.createObjectURL(file)}
+                              alt="Uploaded"
+                              className="w-10 rounded-lg"
+                            />
+                          ) : null}
+
+                          {fileEdit && userID ? (
+                            <img
+                              src={fileEdit}
+                              // src={URL.createObjectURL(file)}
+                              alt="Uploaded"
+                              className="w-10 rounded-lg"
+                            />
+                          ) : null}
+                        </div>
+
+                        <div className="layout-detaills">
+                          <div className="flex">
+                            <button
+                              className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3 "
+                              onClick={handleClick}
+                            >
+                              Profile photo
+                            </button>
+                            <input
+                              type="file"
+                              id="upload-button"
+                              style={{ display: "none" }}
+                              ref={hiddenFileInput}
+                              onChange={(e) => handleFileChange(e)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                       <div className="mt-3 flex items-center">
                         <label>isActive :</label>
@@ -624,11 +812,11 @@ const Users = () => {
                       >
                         Cancel
                       </button>
-                      {userID == "" ? (
+                      {!userID ? (
                         <button
                           onClick={() => {
                             handleAddUser();
-                            setshowuserModal(false);
+                            // setshowuserModal(false);
                           }}
                           className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
                         >
@@ -638,11 +826,11 @@ const Users = () => {
                         <button
                           onClick={() => {
                             handleUpdateUser();
-                            setshowuserModal(false);
+                            // setshowuserModal(false);
                           }}
                           className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
                         >
-                          Edit
+                          Update
                         </button>
                       )}
                     </div>
@@ -668,7 +856,11 @@ const Users = () => {
                 <div className="card-shadow pt-6">
                   <div className="user-details text-center border-b border-b-[#E4E6FF]">
                     <span className="user-img flex justify-center mb-3">
-                      <img src="../../../Settings/3user-img.png" />
+                      {userDetailData.profilePhoto ?
+                        <img src={userDetailData?.profilePhoto}  className="h-50"/>
+                        :
+                        <img src="../../../Settings/3user-img.png" />
+                      }
                     </span>
                     <span className="user-name">
                       {userDetailData.firstName} {userDetailData.lastName}
