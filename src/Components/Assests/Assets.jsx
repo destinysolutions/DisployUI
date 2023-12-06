@@ -9,8 +9,6 @@ import { AiOutlineCloudUpload, AiOutlineUnorderedList } from "react-icons/ai";
 import { RxDashboard } from "react-icons/rx";
 import { BsThreeDots } from "react-icons/bs";
 import "../../Styles/assest.css";
-import { FiUpload } from "react-icons/fi";
-import { MdPlaylistPlay } from "react-icons/md";
 import { FiDownload } from "react-icons/fi";
 import { RiDeleteBin5Line, RiDeleteBin6Line } from "react-icons/ri";
 import { CgMoveRight } from "react-icons/cg";
@@ -23,13 +21,11 @@ import { RiGalleryFill } from "react-icons/ri";
 import { HiDocumentDuplicate } from "react-icons/hi";
 
 import {
-  ADD_TRASH,
   ALL_FILES_UPLOAD,
   CREATE_NEW_FOLDER,
   DeleteAllData,
   FetchdataFormFolder,
   GET_ALL_FILES,
-  GET_ALL_NEW_FOLDER,
   MOVE_TO_FOLDER,
   SELECT_BY_ASSET_ID,
 } from "../../Pages/Api";
@@ -56,7 +52,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [originalData, setOriginalData] = useState([]);
   const [gridData, setGridData] = useState([]);
   const [tableData, setTableData] = useState([]);
-  const [newFolder, setNewfolder] = useState([]);
   const [folderName, setFolderName] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
@@ -64,7 +59,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [openAssetsdwId, setOpenAssetsdwId] = useState(null);
   const [openAssetsdwIdList, setOpenAssetsdwIdList] = useState(null);
   const [editMode, setEditMode] = useState(null);
-  const [trashData, setTrashData] = useState([]);
+  const [deleteAssetID, setDeleteAssetID] = useState();
 
   const actionBoxRef = useRef(null);
 
@@ -88,21 +83,25 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  const updateassetsdw = (id) => {
-    if (assetsdw === id) {
+  const updateassetsdw = (item) => {
+    console.log("id passsdsdsdsdf", item);
+    setDeleteAssetID(item.assetID);
+    if (assetsdw === item) {
       setassetsdw(null);
     } else {
-      setassetsdw(id);
+      setassetsdw(item);
     }
   };
 
   /* tab2 threedot dwopdown */
 
-  const updateassetsdw2 = (id) => {
-    if (assetsdw2 === id) {
+  const updateassetsdw2 = (item) => {
+    console.log("id passsdsdsdsdf 222222222222", item);
+    setDeleteAssetID(item.assetID);
+    if (assetsdw2 === item) {
       setassetsdw2(null);
     } else {
-      setassetsdw2(id);
+      setassetsdw2(item);
     }
   };
 
@@ -163,6 +162,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       ];
       setGridData(allAssets);
       setTableData(allAssets);
+      fetchData();
     } else if (btnNumber === 2) {
       if (originalData.image) {
         gridData.push(...originalData.image);
@@ -195,12 +195,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
   // Delete API
 
-  const handelDeletedata = (assetId) => {
+  const handelDeletedata = () => {
+    console.log(deleteAssetID, "assetId");
     const formData = new FormData();
-    formData.append("AssetID", assetId);
+    formData.append("AssetID", deleteAssetID);
     formData.append("Operation", "Delete");
     formData.append("IsActive", "true");
-    formData.append("IsDelete", "false");
+    formData.append("IsDelete", "true");
     formData.append("FolderID", "0");
     formData.append("UserID", "0");
     formData.append("AssetType", "Image");
@@ -213,20 +214,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         },
       })
       .then((response) => {
-        // console.log("response", response);
-        // const deletedWithInfo = {
-        //   id: id,
-        //   deletedDate: new Date(),
-        //   name: deletedItem.assetName,
-        //   categorieType: deletedItem.assetType,
-        //   fileType: deletedItem.assetFolderPath,
-        //   fileSize: deletedItem.fileSize,
-        // };
-
-        // setTrashData([...trashData, deletedWithInfo]);
         if (response?.data?.data === true) {
           const updatedGridData = gridData.filter((item) => {
-            return item.assetID !== assetId;
+            return item.assetID !== deleteAssetID;
           });
           setGridData(updatedGridData);
           setTableData(updatedGridData);
@@ -234,71 +224,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .catch((error) => {
         console.error("Error deleting data:", error);
-      });
-  };
-
-  // useEffect(() => {
-  //   let data = JSON.stringify({
-  //     trashId: trashData.id,
-  //     fileName: trashData.name,
-  //     fileLocation: trashData.fileType,
-  //     dateDeleted: trashData.deletedDate,
-  //     fileSize: trashData.fileSize,
-  //     itemType: trashData.categorieType,
-  //     dateModified: "",
-  //     operation: "Insert",
-  //   });
-
-  //   let config = {
-  //     method: "post",
-  //     maxBodyLength: Infinity,
-  //     url: ADD_TRASH,
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     data: data,
-  //   };
-
-  //   axios
-  //     .request(config)
-  //     .then((response) => {})
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // });
-
-  // select All checkbox
-
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedItems([]);
-    } else {
-      setSelectedItems([...gridData]);
-    }
-    setSelectAll(!selectAll);
-  };
-
-  const handleDelete = () => {
-    let data = JSON.stringify({
-      operation: "ALLDelete",
-    });
-
-    let config = {
-      method: "get",
-      url: DeleteAllData,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then(() => {
-        setGridData([]);
-      })
-      .catch((error) => {
-        console.log(error);
       });
   };
 
@@ -362,9 +287,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         if (response?.data?.data == true) {
           setDeleteMessage(true);
         }
-        //  else {
-        //   handelDeletedata(assetId);
-        // }
       })
       .catch((error) => {
         console.log(error);
@@ -372,6 +294,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const deleteFolder = (folderID) => {
+    console.log("deleteFolder ====", folderID);
     const data = JSON.stringify({
       folderID: folderID,
       operation: "Delete",
@@ -386,7 +309,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           "Content-Type": "application/json",
         },
       })
-      .then((response) => {
+      .then(() => {
         fetchData();
         toast.remove();
       })
@@ -394,22 +317,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
         toast.remove();
       });
-  };
-
-  const toggleAssetsdw = (folderId) => {
-    if (openAssetsdwId === folderId) {
-      setOpenAssetsdwId(null);
-    } else {
-      setOpenAssetsdwId(folderId);
-    }
-  };
-
-  const toggleAssetsdwList = (folderId) => {
-    if (openAssetsdwIdList === folderId) {
-      setOpenAssetsdwIdList(null);
-    } else {
-      setOpenAssetsdwIdList(folderId);
-    }
   };
 
   const handleKeyDown = (e, folderID) => {
@@ -437,12 +344,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           "Content-Type": "application/json",
         },
       });
-
-      const updatedFolder = response.data.data.model;
       fetchData();
       setEditMode(null);
-
-      // console.log("Folder name updated:", updatedFolder);
     } catch (error) {
       console.error("Error updating folder name:", error);
       setEditMode(null);
@@ -505,7 +408,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const navigateToFolder = (folderId, selectedData) => {
-    // console.log("selectedData before navigation:", selectedData);
     history(`/NewFolderDialog/${folderId}`, { selectedData });
   };
 
@@ -602,26 +504,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     </button>
                   </li>
                 </ul>
-                {/* <button
-                  onClick={handleSelectAll}
-                  className="flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                >
-                  <input
-                    type="checkbox"
-                    className="w-6 h-5"
-                    readOnly
-                    checked={selectAll}
-                  />
-                </button> */}
-
-                {/* {selectedItems.length > 0 && (
-                  <button
-                    onClick={handleDelete}
-                    className="rounded-full px-2 py-2 m-1 text-center border hover:text-white hover:bg-red hover:border-red"
-                  >
-                    <RiDeleteBin5Line className=" text-lg" />
-                  </button>
-                )} */}
               </div>
             </div>
 
@@ -650,9 +532,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 Doc
               </button>
-              {/* <button className={activetab === 5 ? "tabactivebtn " : "tabbtn"}>
-                App
-              </button> */}
             </div>
 
             {/*start grid view */}
@@ -841,14 +720,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         {assetsdw === item && selectedItems.includes(item) && (
                           <div ref={actionBoxRef} className="assetsdw">
                             <ul className="space-y-2">
-                              {/* <li className="flex text-sm items-center">
-                                <FiUpload className="mr-2 text-lg" />
-                                Set to Screen
-                              </li> */}
-                              {/* <li className="flex text-sm items-center">
-                                <MdPlaylistPlay className="mr-2 text-lg" />
-                                Add to Playlist
-                              </li> */}
                               {item.assetType === "Image" && (
                                 <li className="flex text-sm items-center">
                                   <FiDownload className="mr-2 text-lg" />
@@ -926,7 +797,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       <div className="move-to-dropdown">
                                         <ul>
                                           {originalData.folder.map((folder) => (
-                                            // Check if the folder is not in the selectedItems array
                                             <>
                                               {selectedItems.every(
                                                 (item) =>
@@ -953,18 +823,31 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div>
                                 )}
                               </li>
-                              <li>
-                                <button
-                                  onClick={() => {
-                                    // handleWarning(item.assetID);
-                                    deleteFolder(item.assetID);
-                                  }}
-                                  className="flex text-sm items-center"
-                                >
-                                  <RiDeleteBin5Line className="mr-2 text-lg" />
-                                  Move to Trash
-                                </button>
-                              </li>
+                              {item.assetType === "Folder" ? (
+                                <li>
+                                  <button
+                                    onClick={() => {
+                                      deleteFolder(item.assetID);
+                                    }}
+                                    className="flex text-sm items-center"
+                                  >
+                                    <RiDeleteBin5Line className="mr-2 text-lg" />
+                                    Move to Trash
+                                  </button>
+                                </li>
+                              ) : (
+                                <li>
+                                  <button
+                                    onClick={() => {
+                                      handelDeletedata();
+                                    }}
+                                    className="flex text-sm items-center"
+                                  >
+                                    <RiDeleteBin5Line className="mr-2 text-lg" />
+                                    Move to Trash
+                                  </button>
+                                </li>
+                              )}
                             </ul>
                           </div>
                         )}
@@ -1051,7 +934,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       <th className="text-black font-medium">Resolution</th>
                       <th className="text-black font-medium">Type</th>
                       <th className="text-black font-medium">Size</th>
-                      {/* <th></th> */}
+
                       <th></th>
                     </tr>
                   </thead>
@@ -1190,12 +1073,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           </td>
                           <td>{item.fileSize}</td>
 
-                          {/* <td>
-                            <input
-                              type="checkbox"
-                              className="w-[20px] h-[20px]"
-                            />
-                          </td> */}
                           <td className="relative w-[40px]">
                             <button
                               onClick={() => updateassetsdw2(item)}
@@ -1206,14 +1083,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             {assetsdw2 === item && (
                               <div ref={actionBoxRef} className="assetsdw">
                                 <ul>
-                                  {/* <li className="flex text-sm items-center">
-                                    <FiUpload className="mr-2 text-lg" />
-                                    Set to Screen
-                                  </li>
-                                  <li className="flex text-sm items-center">
-                                    <MdPlaylistPlay className="mr-2 text-lg" />
-                                    Add to Playlist
-                                  </li> */}
                                   <li className="flex text-sm items-center">
                                     <FiDownload className="mr-2 text-lg" />
                                     <a
@@ -1224,55 +1093,31 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       Download
                                     </a>
                                   </li>
-                                  {/* <li className="flex text-sm items-center">
-                                    <CgMoveRight className="mr-2 text-lg" />
-                                    Move to
-                                  </li> */}
-                                  {/* <li className="flex text-sm items-center relative">
-                                    <div className="move-to-button">
+                                  {item.assetType === "Folder" ? (
+                                    <li>
                                       <button
-                                        onClick={toggleMoveTo}
-                                        className="flex"
+                                        onClick={() => {
+                                          deleteFolder(item.assetID);
+                                        }}
+                                        className="flex text-sm items-center"
                                       >
-                                        <CgMoveRight className="mr-2 text-lg" />
-                                        Move to
+                                        <RiDeleteBin5Line className="mr-2 text-lg" />
+                                        Move to Trash
                                       </button>
-
-                                      {isMoveToOpen && (
-                                        <div className="move-to-dropdown">
-                                          <ul>
-                                            {originalData.folder.map(
-                                              (folder) => (
-                                                <li key={folder.assetID}>
-                                                  <button
-                                                    onClick={() =>
-                                                      handleMoveTo(
-                                                        folder.assetID
-                                                      )
-                                                    }
-                                                  >
-                                                    {folder.assetName}
-                                                  </button>
-                                                </li>
-                                              )
-                                            )}
-                                          </ul>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </li> */}
-                                  <li>
-                                    <button
-                                      onClick={() => {
-                                        // handleWarning(item.assetID);
-                                        deleteFolder(item.assetID);
-                                      }}
-                                      className="flex text-sm items-center"
-                                    >
-                                      <RiDeleteBin5Line className="mr-2 text-lg" />
-                                      Move to Trash
-                                    </button>
-                                  </li>
+                                    </li>
+                                  ) : (
+                                    <li>
+                                      <button
+                                        onClick={() => {
+                                          handelDeletedata();
+                                        }}
+                                        className="flex text-sm items-center"
+                                      >
+                                        <RiDeleteBin5Line className="mr-2 text-lg" />
+                                        Move to Trash
+                                      </button>
+                                    </li>
+                                  )}
                                 </ul>
                               </div>
                             )}
