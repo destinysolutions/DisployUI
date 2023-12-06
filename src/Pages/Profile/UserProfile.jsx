@@ -34,12 +34,12 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
       desc: <Account />,
       icon: <AiOutlineUser />,
     },
-    // {
-    //   label: "Security",
-    //   value: "security",
-    //   desc: <Security />,
-    //   icon: <CiLock />,
-    // },
+    {
+      label: "Security",
+      value: "security",
+      desc: <Security />,
+      icon: <CiLock />,
+    },
 
     // {
     //   label: "Billing & Plans",
