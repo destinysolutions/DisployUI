@@ -3,7 +3,11 @@ import React, { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
+import {
+  AiOutlineAppstoreAdd,
+  AiOutlineCloseCircle,
+  AiOutlineSearch,
+} from "react-icons/ai";
 import { IoBarChartSharp } from "react-icons/io5";
 import { RiPlayListFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
@@ -24,7 +28,10 @@ const ShowAssetModal = ({
   handleFilter,
   selectedAsset,
   compositionData,
+  appsData,
 }) => {
+  console.log("appsData", appsData);
+
   const [filteredData, setFilteredData] = useState([]);
   const [searchAssest, setSearchAssest] = useState("");
   const [searchComposition, setSearchComposition] = useState("");
@@ -47,7 +54,6 @@ const ShowAssetModal = ({
     }
 
     if (searchQuery === "") {
-      
       setFilteredData([]);
     } else {
       if (from === "asset") {
@@ -67,7 +73,7 @@ const ShowAssetModal = ({
           })
         );
         if (filteredScreen.length > 0) {
-          toast.remove()
+          toast.remove();
           setFilteredData(filteredScreen);
         } else {
           toast.remove();
@@ -91,7 +97,7 @@ const ShowAssetModal = ({
           })
         );
         if (filteredScreen.length > 0) {
-          toast.remove()
+          toast.remove();
           setFilteredData(filteredScreen);
         } else {
           toast.remove();
@@ -194,7 +200,7 @@ const ShowAssetModal = ({
                             ? "active"
                             : ""
                         }`}
-                        // onClick={() => handleTabClick(3)}
+                        onClick={() => setPopupActiveTab(3)}
                       >
                         <span
                           className={`p-1 rounded ${
@@ -206,29 +212,25 @@ const ShowAssetModal = ({
                           <BiAnchor size={15} />
                         </span>
                         Disploy Studio
-                      </button>
-                      <button
-                        type="button"
-                        className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                          popupActiveTab === 4
-                            ? "active"
-                            : ""
-                        }`}
-                        // onClick={() => handleTabClick(4)}
-                      >
-                        <span
-                          className={`p-1 rounded ${
-                            popupActiveTab === 4
-                              ? "bg-primary text-white"
-                              : "bg-lightgray"
-                          } `}
-                        >
-                          <AiOutlineAppstoreAdd
-                            size={15}
-                          />
-                        </span>
-                        Apps
                       </button> */}
+                <button
+                  type="button"
+                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                    popupActiveTab === 3 ? "active" : ""
+                  }`}
+                  onClick={() => setPopupActiveTab(3)}
+                >
+                  <span
+                    className={`p-1 rounded ${
+                      popupActiveTab === 3
+                        ? "bg-primary text-white"
+                        : "bg-lightgray"
+                    } `}
+                  >
+                    <AiOutlineAppstoreAdd size={15} />
+                  </span>
+                  Apps
+                </button>
               </nav>
             </div>
 
@@ -458,6 +460,93 @@ const ShowAssetModal = ({
                                   .utc(composition.duration * 1000)
                                   .format("hh:mm:ss")}
                               </td>
+                            </tr>
+                          </tbody>
+                        ))
+                      : filteredData.map((composition) => (
+                          <tbody key={composition.compositionID}>
+                            <tr
+                              className={`${
+                                selectedComposition === composition
+                                  ? "bg-[#f3c953]"
+                                  : ""
+                              } border-b border-[#eee] `}
+                              onClick={() => {
+                                handleCompositionsAdd(composition);
+                              }}
+                            >
+                              <td className="p-3 text-left">
+                                {composition.compositionName}
+                              </td>
+                              <td className="p-3">
+                                {moment(composition.dateAdded).format(
+                                  "YYYY-MM-DD hh:mm"
+                                )}
+                              </td>
+                              <td className="p-3">{composition.resolution}</td>
+                              <td className="p-3">
+                                {moment
+                                  .utc(composition.duration * 1000)
+                                  .format("hh:mm:ss")}
+                              </td>
+                            </tr>
+                          </tbody>
+                        ))}
+                  </table>
+                </div>
+              </div>
+
+              <div className={popupActiveTab !== 3 && "hidden"}>
+                <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                  <Link to="/apps">
+                    <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                      Add New App
+                    </button>
+                  </Link>
+                </div>
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
+                  <table
+                    style={{
+                      borderCollapse: "separate",
+                      borderSpacing: " 0 10px",
+                    }}
+                    className="w-full"
+                  >
+                    <thead className="sticky top-0">
+                      <tr className="bg-lightgray">
+                        <th className="p-3 w-80 text-left">Instance Name</th>
+                        {/* <th>Date Added</th>
+                        <th className="p-3">Resolution</th>
+                        <th className="p-3">Duration</th> */}
+                      </tr>
+                    </thead>
+                    {filteredData.length === 0
+                      ? appsData.map((instance, index) => (
+                          <tbody key={index}>
+                            <tr
+                            // className={`${
+                            //   selectedComposition === composition
+                            //     ? "bg-[#f3c953]"
+                            //     : ""
+                            // } border-b border-[#eee] `}
+                            // onClick={() => {
+                            //   handleCompositionsAdd(composition);
+                            // }}
+                            >
+                              <td className="p-3 text-left">
+                                {instance.instanceName}
+                              </td>
+                              {/* <td className="p-3">
+                                {moment(composition.dateAdded).format(
+                                  "YYYY-MM-DD hh:mm"
+                                )}
+                              </td>
+                              <td className="p-3">{composition.resolution}</td>
+                              <td className="p-3">
+                                {moment
+                                  .utc(composition.duration * 1000)
+                                  .format("hh:mm:ss")}
+                              </td> */}
                             </tr>
                           </tbody>
                         ))

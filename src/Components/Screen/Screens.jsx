@@ -42,6 +42,8 @@ import {
   GET_ALL_COMPOSITIONS,
   GET_ALL_FILES,
   GET_ALL_SCHEDULE,
+  GET_ALL_TEXT_SCROLL_INSTANCE,
+  GET_ALL_YOUTUBEDATA,
   SCREEN_GROUP,
   SELECT_BY_USER_SCREENDETAIL,
   SIGNAL_R,
@@ -137,6 +139,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenNameError, setScreenNameError] = useState("");
   const [searchAsset, setSearchAsset] = useState("");
 
+  const [appsData, setAppsData] = useState([]);
   //socket signal-RRR
   const [connection, setConnection] = useState(null);
   const [screenConnected, setScreenConnected] = useState(null);
@@ -713,7 +716,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     // setTags([])
     const searchQuery = event.target.value.toLowerCase();
     setSearchScreen(searchQuery);
-    
 
     if (searchQuery === "") {
       setFilteredScreenData([]);
@@ -1031,6 +1033,44 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   // }, [connection]);
 
   // console.log(sendTvStatus, sendTvStatusScreenID);
+  useEffect(() => {
+    axios
+      .get(GET_ALL_YOUTUBEDATA, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
+      .then((response) => {
+        const fetchedData = response.data.data;
+
+        return fetchedData;
+      })
+      .then((res) => {
+        axios
+          .get(GET_ALL_TEXT_SCROLL_INSTANCE, {
+            headers: {
+              Authorization: authToken,
+            },
+          })
+          .then((response) => {
+            setAppsData([...res, ...response?.data?.data]);
+          });
+      })
+      .catch((error) => {
+        console.error("Error fetching deleted data:", error);
+      });
+  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get(GET_ALL_TEXT_SCROLL_INSTANCE, {
+  //       headers: {
+  //         Authorization: authToken,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       setTextScrollData(response.data.data);
+  //     });
+  // }, []);
 
   return (
     <>
@@ -1401,7 +1441,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 <td colSpan="6" className="text-center font-semibold text-xl">
                   No Screens
                 </td>
-              ) : filteredScreenData.length===0 && searchScreen!=="" ?<td colSpan="6" className="text-center font-semibold text-xl">screen not found</td> : filteredScreenData.length === 0 ? (
+              ) : filteredScreenData.length === 0 && searchScreen !== "" ? (
+                <td colSpan="6" className="text-center font-semibold text-xl">
+                  screen not found
+                </td>
+              ) : filteredScreenData.length === 0 ? (
                 screenData.map((screen) => (
                   <tbody key={screen.screenID}>
                     <tr className="border-b border-b-[#E4E6FF]">
@@ -1529,6 +1573,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               searchAsset={searchAsset}
                               selectedAsset={selectedAsset}
                               compositionData={compositionData}
+                              appsData={appsData}
                             />
                           )}
                         </td>
