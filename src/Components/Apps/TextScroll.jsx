@@ -189,7 +189,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       maxBodyLength: Infinity,
       url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddTextScrollTags?TextScrollId=${
         updateTextscrollTag?.textScroll_Id
-      }&Tags=${tags.length === 0 ? empty : tags}`,
+      }&Tags=${tags.length === 0 ? "" : tags}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken,
