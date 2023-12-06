@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Footer from "../Footer";
 import Navbar from "../Navbar";
@@ -12,6 +12,7 @@ import {
   ADDSUBPLAYLIST,
   GET_ALL_FILES,
   GET_ALL_TEXT_SCROLL_INSTANCE,
+  GET_ALL_YOUTUBEDATA,
   SELECT_BY_LIST,
 } from "../../Pages/Api";
 import AssetModal from "../Assests/AssetModal";
@@ -184,6 +185,16 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       (item) => item?.sectionID == currentSection
     );
 
+    function findMediaId() {
+      if (data?.textScroll_Id !== null && data?.textScroll_Id !== undefined) {
+        return data?.textScroll_Id;
+      } else if (data?.assetID !== null && data?.assetID !== undefined) {
+        return data?.assetID;
+      } else if (data?.youtubeId !== null && data?.youtubeId !== undefined) {
+        return data?.youtubeId;
+      }
+    }
+
     let newdatas = { ...Testasset };
     if (newdatas?.[currentSection]) {
       newdatas[currentSection].push({
@@ -192,24 +203,28 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         sectionID: currentSection,
         compositionDetailsID: 0,
         compositionID: 0,
-        durationType: "Second",
         layoutDetailsID: findLayoutDetailID?.layoutID,
         userID: 0,
-        mediaID:
-          data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
-            ? data?.textScroll_Id
-            : data?.assetID,
+        mediaID: findMediaId(),
         durationType: "Second",
         mediaTypeID:
           data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
             ? 4
+            : data?.youtubeId !== null && data?.youtubeId !== undefined
+            ? 5
             : 1,
         assetName: data?.assetName,
-        assetFolderPath: data?.assetFolderPath,
+        assetFolderPath:
+          data?.assetFolderPath === undefined && data?.youTubeURL !== undefined
+            ? data?.youTubeURL
+            : data?.assetFolderPath,
         resolutions: data?.resolutions,
         fileExtention: data?.fileExtention,
         fileSize: data?.fileSize,
-        assetType: data?.assetType,
+        assetType:
+          data?.assetType === undefined && data?.youTubeURL !== undefined
+            ? "Video"
+            : data?.assetType,
         type: data?.type,
         perentID: data?.perentID,
         userName: data?.userName,
@@ -227,21 +242,27 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           compositionID: 0,
           layoutDetailsID: findLayoutDetailID?.layoutID,
           userID: 0,
-          mediaID:
-            data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
-              ? data?.textScroll_Id
-              : data?.assetID,
+          mediaID: findMediaId(),
           durationType: "Second",
           mediaTypeID:
             data?.textScroll_Id !== null && data?.textScroll_Id !== undefined
               ? 4
+              : data?.youtubeId !== null && data?.youtubeId !== undefined
+              ? 5
               : 1,
           assetName: data?.assetName,
-          assetFolderPath: data?.assetFolderPath,
+          assetFolderPath:
+            data?.assetFolderPath === undefined &&
+            data?.youTubeURL !== undefined
+              ? data?.youTubeURL
+              : data?.assetFolderPath,
           resolutions: data?.resolutions,
           fileExtention: data?.fileExtention,
           fileSize: data?.fileSize,
-          assetType: data?.assetType,
+          assetType:
+            data?.assetType === undefined && data?.youTubeURL !== undefined
+              ? "Video"
+              : data?.assetType,
           type: data?.type,
           perentID: data?.perentID,
           userName: data?.userName,
@@ -517,6 +538,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
+          // console.log(response.data?.data);
           setcompositonData(response.data?.data[0]);
         }
         setLoading(false);
@@ -554,12 +576,23 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
             },
           })
           .then((response) => {
-            setAssetData([...res, ...response?.data?.data]);
+            const data = [...res, ...response?.data?.data];
+            return data;
           })
-          .catch((error) => {
-            console.log(error);
+          .then((res) => {
+            axios
+              .get(GET_ALL_YOUTUBEDATA, {
+                headers: {
+                  Authorization: authToken,
+                },
+              })
+              .then((response) => {
+                const fetchedData = response.data.data;
+                setAssetData([...res, ...fetchedData]);
+              });
           });
       })
+
       .catch((error) => {
         console.log(error);
       });
@@ -577,6 +610,20 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     handleFetchLayoutById();
     handleFetchAllData();
   }, []);
+
+  // useEffect(() => {
+  //   const handleBeforeUnload = (e) => {
+  //     const message = "Are you sure you want to leave? asdasdasd";
+  //     e.returnValue = message; // Standard for most browsers
+  //     return message; // For some older browsers
+  //   };
+
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
+
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, [navigate]);
 
   useEffect(() => {
     const handleClickOutsidePreviewModal = (event) => {
@@ -875,12 +922,13 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                     <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
                                       {item?.assetName && item?.assetName}
                                       {item?.text && item?.text}
+                                      {item?.youTubeURL && item?.youTubeURL}
                                     </p>
                                   </div>
                                 </div>
                               </td>
                               <td className="text-center min-w-[20%]">
-                                {item?.assetType??"-"}
+                                {item?.assetType ?? "-"}
                               </td>
                               <td className={`text-center min-w-[20%] `}>
                                 {!item?.isEdited ? (

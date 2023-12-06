@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReactPlayer from "react-player";
 
 const Carousel = ({ items, compositonData, from }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -59,29 +60,46 @@ const Carousel = ({ items, compositonData, from }) => {
                     } rounded-sm object-fill`}
                   />
                 )}
-                {item.assetType === "Video" && (
-                  <video
-                    loop
-                    autoPlay
-                    controls
-                    className={`w-full h-full ${
-                      item.assetType !== "Video" && "hidden"
-                    } rounded-sm `}
-                  >
-                    <source src={item.assetFolderPath} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
+                {(item.assetType === "Video" ||
+                  item?.assetType === "Youtube") && (
+                  <ReactPlayer
+                    url={item?.assetFolderPath}
+                    className="w-full relative z-20 videoinner"
+                    controls={true}
+                    playing={true}
+                  />
+                  // <video
+                  //   loop
+                  //   autoPlay
+                  //   controls
+                  //   className={`w-full h-full ${
+                  //     item.assetType !== "Video" && "hidden"
+                  //   } rounded-sm `}
+                  // >
+                  //   <source
+                  //     itemType="video/youtube"
+                  //     src={item.assetFolderPath}
+                  //     type="video/mp4"
+                  //   />
+                  //   Your browser does not support the video tag.
+                  // </video>
                 )}
                 {item.mediaType === "Video" && (
-                  <video
-                    loop
-                    autoPlay
-                    controls
-                    className={`w-full h-full rounded-sm `}
-                  >
-                    <source src={item.fileType} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
+                  <ReactPlayer
+                    url={item?.assetFolderPath}
+                    className="w-full relative z-20 videoinner"
+                    controls={true}
+                    playing={true}
+                  />
+                  // <video
+                  //   loop
+                  //   autoPlay
+                  //   controls
+                  //   className={`w-full h-full rounded-sm `}
+                  // >
+                  //   <source src={item.fileType} type="video/mp4" />
+                  //   Your browser does not support the video tag.
+                  // </video>
                 )}
                 {item.assetType === "DOC" && (
                   <a
@@ -105,8 +123,9 @@ const Carousel = ({ items, compositonData, from }) => {
                   <marquee
                     className="text-lg align-middle h-full flex items-center justify-center bg-lightgray"
                     direction={item?.scrollType == 1 ? "left" : "right"}
+                    // direction="left"
                   >
-                    {item?.assetFolderPath??item?.fileType}
+                    {item?.assetFolderPath ?? item?.fileType}
                   </marquee>
                 )}
                 {item?.text !== undefined && (
