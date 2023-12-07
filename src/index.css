@@ -24,3 +24,7 @@ input[type="number"] {
 .hide_scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* 
+.info-table ul{margin-top: 15px;}
+ */

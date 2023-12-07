@@ -21,6 +21,7 @@ import { FcOpenedFolder } from "react-icons/fc";
 import { CgMoveRight } from "react-icons/cg";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import ShowAssetImageModal from "./showAssetImageModal";
 const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   NewFolderDialog.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -32,11 +33,14 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const [folderData, setFolderData] = useState([]);
   const [folderNames, setFolderNames] = useState([]);
   const [NestedNewFolder, setNestedNewFolder] = useState([]);
+  const [folderName, setFolderName] = useState("");
+  const [showImageAssetModal, setShowImageAssetModal] = useState(false);
+  const [imageAssetModal, setImageAssetModal] = useState(null);
+
   const location = useLocation();
   const folderId = location.pathname.split("/").pop();
 
   const history = useNavigate();
-  const [folderName, setFolderName] = useState("");
   const loadFolderByID = (folderId) => {
     axios
       .get(`${GET_ALL_FILES}?FolderID=${folderId}`, {
@@ -269,11 +273,11 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
       const updatedFolder = response.data.data.model;
       loadFolderByID(folderID);
 
-    setEditMode(null);
-    console.log("Folder name updated:", updatedFolder);
+      setEditMode(null);
+      console.log("Folder name updated:", updatedFolder);
     } catch (error) {
-    setEditMode(null);
-    console.error("Error updating folder name:", error);
+      setEditMode(null);
+      console.error("Error updating folder name:", error);
     }
   };
   const saveFolderName = (folderID, newName) => {
@@ -293,8 +297,18 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const handleDragStart = (event, itemId) => {
     event.dataTransfer.setData("text/plain", itemId);
   };
+
+  console.log(folderData);
   return (
     <>
+      {showImageAssetModal && (
+        <ShowAssetImageModal
+          setImageAssetModal={setImageAssetModal}
+          setShowImageAssetModal={setShowImageAssetModal}
+          showImageAssetModal={showImageAssetModal}
+          imageAssetModal={imageAssetModal}
+        />
+      )}
       <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
@@ -333,6 +347,10 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                               src={folderAsset.assetFolderPath}
                               alt={folderAsset.assetName}
                               className="imagebox relative opacity-1 w-full rounded-2xl"
+                              onClick={() => {
+                                setShowImageAssetModal(true);
+                                setImageAssetModal(folderAsset?.assetFolderPath);
+                              }}
                             />
                           )}
 
@@ -340,6 +358,10 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                             <video
                               controls
                               className="w-full rounded-2xl relative imagebox"
+                              onClick={() => {
+                                setShowImageAssetModal(true);
+                                setImageAssetModal(folderAsset?.assetFolderPath);
+                              }}
                             >
                               <source
                                 src={folderAsset.assetFolderPath}
@@ -353,12 +375,20 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                               src={folderAsset.assetFolderPath}
                               alt={folderAsset.assetName}
                               className="imagebox relative opacity-1 w-full rounded-2xl"
+                              onClick={() => {
+                                setShowImageAssetModal(true);
+                                setImageAssetModal(folderAsset?.assetFolderPath);
+                              }}
                             />
                           )}
                           {folderAsset.assetType === "Video" && (
                             <video
                               controls
                               className="w-full rounded-2xl relative h-56  list-none imagebox"
+                              onClick={() => {
+                                setShowImageAssetModal(true);
+                                setImageAssetModal(folderAsset?.assetFolderPath);
+                              }}
                             >
                               <source
                                 src={folderAsset.assetFolderPath}
@@ -373,6 +403,10 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                               target="_blank"
                               rel="noopener noreferrer"
                               className="imagebox relative opacity-1 w-full rounded-2xl"
+                              onClick={() => {
+                                setShowImageAssetModal(true);
+                                setImageAssetModal(folderAsset?.assetFolderPath);
+                              }}
                             >
                               {folderAsset.name}
                             </a>
@@ -455,7 +489,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className="flex justify-end">
                                 <div className="storage mb-1">
                                   {/* <span className="bg-white text-primary rounded-sm p-1 text-sm">
-                                {item.fileSize}
+                                {folderAsset.fileSize}
                               </span> */}
                                 </div>
                               </div>

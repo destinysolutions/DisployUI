@@ -826,8 +826,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className="relative  screenplayer-section w-[75vw] h-[80vh] mx-auto">
-              <div className="screen-palyer-img w-full h-full pb-5 mx-auto">
+            <div className="relative screenplayer-section w-[40vw] max-h-[60vh] mx-auto">
+            {/* <div className="relative  screenplayer-section w-[75vw] h-[80vh] mx-auto"> */}
+            {/* <div className="screen-palyer-img w-full h-full pb-5 mx-auto"> */}
+              <div className="w-full h-full pb-5 mx-auto">
                 {/* playerData && isVideo ? (
                   <ReactPlayer
                     url={playerData}
@@ -888,14 +890,14 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     <img
                       src={playerData}
                       alt="Media"
-                      className="max-w-full max-h-full min-h-[10rem] min-w-[10rem] mx-auto"
+                      className="w-full h-full mx-auto object-fill"
                     />
                   )}
               </div>
 
-              <div className="grid  grid-cols-12 screen-player-details pb-7 sm:pb-0 border-b border-[#D5E3FF]">
-                <div className="default-media flex items-center xs-block justify-between bg-lightgray py-2 px-5 rounded-md lg:col-start-4 lg:col-span-6 md:col-start-3 md:col-span-8  sm:col-start-1 sm:col-span-12">
-                  <div>
+              <div className="grid grid-cols-12 screen-player-details min-w-full pb-7 sm:pb-0 border-b border-[#D5E3FF]">
+                <div className="default-media w-full flex items-center xs-block justify-between bg-lightgray py-2 px-5 rounded-md lg:col-start-4 lg:col-span-6 md:col-start-3 md:col-span-8  sm:col-start-1 sm:col-span-12">
+                  <div className="w-full">
                     <p className="text-primary text-sm font-light">
                       Now Playing
                     </p>
@@ -1558,7 +1560,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                 </tr>
               )}
 
-              <div className="grid  grid-cols-12">
+              <div className="grid grid-cols-12 info-table">
                 <div className="lg:col-start-4 lg:col-span-6 md:col-start-1 md:col-span-12  sm:col-start-1 sm:col-span-12 text-center">
                   <ul className="inline-flex items-center justify-center border border-gray rounded-full my-4 shadow-xl">
                     <li className="text-sm firstli">

@@ -113,8 +113,9 @@ input::placeholder {
 }
 
 .screen-player-details {
-  padding-top: 12%;
-  margin-top: 10%;
+  /* padding-top: 12%;
+  margin-top: 10%; */
+  margin-top: 2%;
 }
 
 .show-togglecontent {
