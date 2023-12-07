@@ -33,6 +33,7 @@ import { FcOpenedFolder } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import toast from "react-hot-toast";
+import ShowAssetImageModal from "./showAssetImageModal";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -56,10 +57,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [loading, setLoading] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState(false);
-  const [openAssetsdwId, setOpenAssetsdwId] = useState(null);
-  const [openAssetsdwIdList, setOpenAssetsdwIdList] = useState(null);
   const [editMode, setEditMode] = useState(null);
   const [deleteAssetID, setDeleteAssetID] = useState();
+  const [showImageAssetModal, setShowImageAssetModal] = useState(false);
+  const [imageAssetModal, setImageAssetModal] = useState(null);
 
   const actionBoxRef = useRef(null);
 
@@ -465,6 +466,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
+      {showImageAssetModal && (
+        <ShowAssetImageModal
+          setImageAssetModal={setImageAssetModal}
+          setShowImageAssetModal={setShowImageAssetModal}
+          showImageAssetModal={showImageAssetModal}
+          imageAssetModal={imageAssetModal}
+        />
+      )}
       <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
@@ -626,6 +635,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               ? "active opacity-1 w-full rounded-2xl"
                               : "opacity-1 w-full rounded-2xl border border-slate-200"
                           }`}
+                          onClick={() => {
+                            setShowImageAssetModal(true);
+                            setImageAssetModal(item?.assetFolderPath);
+                          }}
                         />
                       )}
 
@@ -638,6 +651,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               ? "active opacity-1 w-full rounded-2xl"
                               : "opacity-1 w-full rounded-2xl border border-slate-200"
                           }`}
+                          onClick={() => {
+                            setShowImageAssetModal(true);
+                            setImageAssetModal(item?.assetFolderPath);
+                          }}
                         />
                       )}
 
@@ -645,6 +662,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <video
                           controls
                           className="w-full rounded-2xl relative h-56 border border-slate-200"
+                          onClick={() => {
+                            setShowImageAssetModal(true);
+                            setImageAssetModal(item?.assetFolderPath);
+                          }}
                         >
                           <source src={item.assetFolderPath} type="video/mp4" />
                           Your browser does not support the video tag.
@@ -655,6 +676,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <video
                           controls
                           className="w-full rounded-2xl relative h-56 border border-slate-200"
+                          onClick={() => {
+                            setShowImageAssetModal(true);
+                            setImageAssetModal(item?.assetFolderPath);
+                          }}
                         >
                           <source src={item.assetFolderPath} type="video/mp4" />
                           Your browser does not support the video tag.
