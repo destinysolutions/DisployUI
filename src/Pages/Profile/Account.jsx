@@ -39,6 +39,11 @@ const Account = () => {
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const UserData = useSelector((Alldata) => Alldata.user);
   const authToken = `Bearer ${UserData.user.data.token}`;
+
+  console.log("selectedTimezoneName", selectedTimezoneName);
+  console.log("selectedCurrencyName", selectedCurrencyName);
+  console.log("selectedLanguageName", selectedLanguageName);
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
@@ -75,6 +80,7 @@ const Account = () => {
         setLanguage(languageResponse.data.data);
         setCountries(countriesResponse.data.data);
         setTimezone(timezoneResponse.data.data);
+        console.log("timezoneResponse", timezoneResponse);
       })
       .catch((error) => {
         console.error(error);
@@ -128,24 +134,25 @@ const Account = () => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
+
   const updateUser = async (values, setSubmitting) => {
     let data = new FormData();
-    data.append("orgUserSpecificID", "1");
+    data.append("orgUserSpecificID", UserData.user?.userID);
     data.append("firstName", firstName);
     data.append("lastName", lastName);
-    data.append("email", values.email);
+    data.append("email", "hetal.prajapati@thedestinysolutions.com");
     data.append("phone", values.phoneNumber);
     data.append("isActive", "1");
     data.append("orgUserID", UserData.user?.userID);
     data.append("userRole", "1");
     data.append("countryID", selectedCountry);
-    data.append("company", organization);
+    data.append("company", "Admin");
     data.append("operation", "Save");
     data.append("address", address);
     data.append("stateId", selectedState);
@@ -158,9 +165,10 @@ const Account = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: ADD_REGISTER_URL,
+      url: "https://disployapi.thedestinysolutions.com/api/UserMaster/AddOrgUserMaster",
       headers: {
         "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
+        Authorization: authToken,
       },
       data: data,
     };
@@ -196,6 +204,8 @@ const Account = () => {
     setSelectedState("");
     setIsImageUploaded(false);
   };
+
+  
   return (
     <>
       <div className="rounded-xl mt-8 shadow bg-white">
@@ -388,7 +398,7 @@ const Account = () => {
                   >
                     {language.map((language) => (
                       <option
-                        value={language.languageName}
+                        value={language.languageId}
                         key={language.languageId}
                       >
                         {language.languageName}
@@ -407,8 +417,8 @@ const Account = () => {
                   >
                     {timezone.map((timezone) => (
                       <option
-                        value={timezone.timeZoneName}
-                        key={timezone.timeZoneId}
+                        value={timezone.timeZoneID}
+                        key={timezone.timeZoneID}
                       >
                         {timezone.timeZoneName}
                       </option>
@@ -426,7 +436,7 @@ const Account = () => {
                   >
                     {currency.map((currency) => (
                       <option
-                        value={currency.currencyName}
+                        value={currency.currencyId}
                         key={currency.currencyId}
                       >
                         {currency.currencyName}
@@ -441,7 +451,7 @@ const Account = () => {
                 <button
                   type="submit"
                   className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3"
-                  //   onClick={() => updateUser()}
+                  onClick={() => updateUser()}
                 >
                   Save Changes
                 </button>

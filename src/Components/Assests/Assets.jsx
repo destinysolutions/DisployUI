@@ -390,6 +390,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleMoveTo = (folderId) => {
+    console.log("sdfffffffffffffffffffffffffffffffffffff");
     selectedItems.forEach((item) => {
       moveDataToFolder(item.assetID, folderId, item.assetType);
     });
@@ -609,7 +610,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           className={`imagebox relative ${
                             selectedItems.includes(item)
                               ? "active opacity-1 w-full rounded-2xl"
-                              : "opacity-1 w-full rounded-2xl"
+                              : "opacity-1 w-full rounded-2xl border border-slate-200"
                           }`}
                         />
                       )}
@@ -621,7 +622,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           className={`imagebox relative ${
                             selectedItems.includes(item)
                               ? "active opacity-1 w-full rounded-2xl"
-                              : "opacity-1 w-full rounded-2xl"
+                              : "opacity-1 w-full rounded-2xl border border-slate-200"
                           }`}
                         />
                       )}
@@ -629,7 +630,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       {item.assetType === "OnlineVideo" && (
                         <video
                           controls
-                          className="w-full rounded-2xl relative h-56"
+                          className="w-full rounded-2xl relative h-56 border border-slate-200"
                         >
                           <source src={item.assetFolderPath} type="video/mp4" />
                           Your browser does not support the video tag.
@@ -639,7 +640,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       {item.assetType === "Video" && (
                         <video
                           controls
-                          className="w-full rounded-2xl relative h-56"
+                          className="w-full rounded-2xl relative h-56 border border-slate-200"
                         >
                           <source src={item.assetFolderPath} type="video/mp4" />
                           Your browser does not support the video tag.
@@ -797,13 +798,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       <div className="move-to-dropdown">
                                         <ul>
                                           {originalData.folder.map((folder) => (
-                                            <>
+                                            <div key={folder.assetID}>
                                               {selectedItems.every(
                                                 (item) =>
                                                   item.assetID !==
                                                   folder.assetID
                                               ) && (
-                                                <li key={folder.assetID}>
+                                                <li>
                                                   <button
                                                     onClick={() =>
                                                       handleMoveTo(
@@ -815,7 +816,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                   </button>
                                                 </li>
                                               )}
-                                            </>
+                                            </div>
                                           ))}
                                         </ul>
                                       </div>
@@ -1092,6 +1093,49 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     >
                                       Download
                                     </a>
+                                  </li>
+                                  <li className="flex text-sm items-center">
+                                    {/* {selectedItems.length > 0 && ( */}
+                                    <div className="move-to-button relative">
+                                      <button
+                                        onClick={toggleMoveTo}
+                                        className="flex relative"
+                                      >
+                                        <CgMoveRight className="mr-2 text-lg" />
+                                        Move to
+                                      </button>
+
+                                      {isMoveToOpen && (
+                                        <div className="move-to-dropdown">
+                                          <ul>
+                                            {originalData.folder.map(
+                                              (folder) => (
+                                                <div key={folder.assetID}>
+                                                  {selectedItems.every(
+                                                    (item) =>
+                                                      item.assetID !==
+                                                      folder.assetID
+                                                  ) && (
+                                                    <li>
+                                                      <button
+                                                        onClick={() =>
+                                                          handleMoveTo(
+                                                            folder.assetID
+                                                          )
+                                                        }
+                                                      >
+                                                        {folder.assetName}
+                                                      </button>
+                                                    </li>
+                                                  )}
+                                                </div>
+                                              )
+                                            )}
+                                          </ul>
+                                        </div>
+                                      )}
+                                    </div>
+                                    {/* )} */}
                                   </li>
                                   {item.assetType === "Folder" ? (
                                     <li>
