@@ -29,6 +29,9 @@ const ShowAssetModal = ({
   selectedAsset,
   compositionData,
   appsData,
+  handleAppsAdd,
+  selectedTextScroll,
+  selectedYoutube,
 }) => {
   console.log("appsData", appsData);
 
@@ -515,70 +518,42 @@ const ShowAssetModal = ({
                     <thead className="sticky top-0">
                       <tr className="bg-lightgray">
                         <th className="p-3 w-80 text-left">Instance Name</th>
-                        {/* <th>Date Added</th>
-                        <th className="p-3">Resolution</th>
+                        <th>App Type</th>
+                        {/*<th className="p-3">Resolution</th>
                         <th className="p-3">Duration</th> */}
                       </tr>
                     </thead>
-                    {filteredData.length === 0
-                      ? appsData.map((instance, index) => (
-                          <tbody key={index}>
-                            <tr
-                            // className={`${
-                            //   selectedComposition === composition
-                            //     ? "bg-[#f3c953]"
-                            //     : ""
-                            // } border-b border-[#eee] `}
-                            // onClick={() => {
-                            //   handleCompositionsAdd(composition);
-                            // }}
-                            >
-                              <td className="p-3 text-left">
-                                {instance.instanceName}
-                              </td>
-                              {/* <td className="p-3">
-                                {moment(composition.dateAdded).format(
-                                  "YYYY-MM-DD hh:mm"
-                                )}
-                              </td>
-                              <td className="p-3">{composition.resolution}</td>
+
+                    {appsData.map((instance, index) => (
+                      <tbody key={index}>
+                        <tr
+                          className={`${
+                            selectedTextScroll === instance ||
+                            selectedYoutube === instance
+                              ? "bg-[#f3c953]"
+                              : ""
+                          } border-b border-[#eee] `}
+                          onClick={() => {
+                            handleAppsAdd(instance);
+                          }}
+                        >
+                          <td className="p-3 text-left">
+                            {instance.instanceName}
+                          </td>
+                          <td className="p-3">
+                            {instance.youTubePlaylist
+                              ? "Youtube Video"
+                              : "Text scroll"}
+                          </td>
+                          {/* <td className="p-3">{composition.resolution}</td>
                               <td className="p-3">
                                 {moment
                                   .utc(composition.duration * 1000)
                                   .format("hh:mm:ss")}
                               </td> */}
-                            </tr>
-                          </tbody>
-                        ))
-                      : filteredData.map((composition) => (
-                          <tbody key={composition.compositionID}>
-                            <tr
-                              className={`${
-                                selectedComposition === composition
-                                  ? "bg-[#f3c953]"
-                                  : ""
-                              } border-b border-[#eee] `}
-                              onClick={() => {
-                                handleCompositionsAdd(composition);
-                              }}
-                            >
-                              <td className="p-3 text-left">
-                                {composition.compositionName}
-                              </td>
-                              <td className="p-3">
-                                {moment(composition.dateAdded).format(
-                                  "YYYY-MM-DD hh:mm"
-                                )}
-                              </td>
-                              <td className="p-3">{composition.resolution}</td>
-                              <td className="p-3">
-                                {moment
-                                  .utc(composition.duration * 1000)
-                                  .format("hh:mm:ss")}
-                              </td>
-                            </tr>
-                          </tbody>
-                        ))}
+                        </tr>
+                      </tbody>
+                    ))}
                   </table>
                 </div>
               </div>
