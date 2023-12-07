@@ -21,6 +21,8 @@ const Carousel = ({ items, compositonData, from }) => {
     };
   }, [items, currentIndex]);
 
+  // console.log(items);
+  
   return (
     <>
       <div className="h-full w-full">
@@ -122,8 +124,8 @@ const Carousel = ({ items, compositonData, from }) => {
                 {(item?.assetType === "Text" || item?.mediaType === "Text") && (
                   <marquee
                     className="text-lg align-middle h-full flex items-center justify-center bg-lightgray"
-                    direction={item?.scrollType == 1 ? "left" : "right"}
-                    // direction="left"
+                    // direction={item?.scrollType == 1 ? "left" : "right"}
+                    direction="left"
                   >
                     {item?.assetFolderPath ?? item?.fileType}
                   </marquee>

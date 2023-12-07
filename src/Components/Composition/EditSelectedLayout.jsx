@@ -48,6 +48,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [loading, setLoading] = useState(false);
   const [compositionLoading, setCompositionLoading] = useState(false);
   const [savingLoader, setSavingLoader] = useState(false);
+  const [isDataChanges, setIsDataChanges] = useState(false);
   // const [jsonCanvasData, setJsonCanvasData] = useState([
   //   {
   //     layoutID: 1,
@@ -177,6 +178,9 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const addSeletedAsset = (data, currSection) => {
+    if (!isDataChanges) {
+      setIsDataChanges(true);
+    }
     const findLayoutDetailID = compositonData?.lstLayloutModelList.find(
       (item) => item?.sectionID == currentSection
     );
@@ -274,6 +278,9 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const deleteSeletedAsset = (id) => {
+    if (!isDataChanges) {
+      setIsDataChanges(true);
+    }
     const updated = addAsset.map((item, index) => {
       if (index + 1 == currentSection) {
         return {
@@ -298,6 +305,9 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const onEditSelectedAsset = (id) => {
+    if (!isDataChanges) {
+      setIsDataChanges(true);
+    }
     const CompositionData = [...addAsset];
     const updated = CompositionData.map((item, index) => {
       if (index + 1 == currentSection) {
@@ -346,6 +356,9 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const onChangeSelectedAsset = (e, id) => {
+    if (!isDataChanges) {
+      setIsDataChanges(true);
+    }
     if (e.length > 3) {
       toast.remove();
       toast.error("Seconds should be less than or equal to 3 digits.");
@@ -525,6 +538,19 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
     setEdited(false);
   };
 
+  const handleClickOnCancel = () => {
+    if (
+      !addAsset.map((e, index) => e[index + 1].length).every((i) => i == 0) &&
+      isDataChanges
+    ) {
+      if (window.confirm("Changes are unsaved, Are you sure?")) {
+        navigate("/composition");
+      }
+    } else {
+      navigate("/composition");
+    }
+  };
+
   useEffect(() => {
     handleFetchLayoutById();
     handleFetchCompositionById();
@@ -565,7 +591,14 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
               ref={modalRef}
-              className={`absolute  left-1/2 -translate-x-1/2 min-h-[80vh] max-h-[80vh] min-w-[90vh] max-w-[90vh] `}
+              // className={`absolute left-1/2 -translate-x-1/2 `}
+              // style={{
+              //   minHeight: compositonData?.screenHeight + "px",
+              //   maxHeight: compositonData?.screenHeight + "px",
+              //   maxWidth: compositonData?.screenWidth + "px",
+              //   minWidth: compositonData?.screenWidth + "px",
+              // }}
+              className={`absolute left-1/2 -translate-x-1/2 min-h-[80vh] max-h-[80vh] min-w-[90vh] max-w-[90vh] `}
             >
               <RxCrossCircled
                 className="absolute z-50 w-[30px] h-[30px] text-white hover:bg-black/50 bg-black/20 rounded-full top-1 right-1 cursor-pointer"
@@ -635,7 +668,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
             {/* cancel + preview + save btns */}
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn">
               <button
-                onClick={onCancel}
+                onClick={handleClickOnCancel}
                 disabled={savingLoader}
                 className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
               >
@@ -659,13 +692,21 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <div className="flex flex-wrap rounded-xl mt-8 shadow bg-white">
             <div className="w-full md:w-1/2 border-r-2 border-r-[#E4E6FF] p-5">
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 mb-4">
                 <Link to="/FileUpload">
                   <button
                     //onClick={() => setShowAssetModal(true)}
                     className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                   >
                     New Assets Upload
+                  </button>
+                </Link>
+                <Link to="/apps">
+                  <button
+                    //onClick={() => setShowAssetModal(true)}
+                    className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  >
+                    Add New Apps
                   </button>
                 </Link>
                 {showAssetModal ? (
@@ -742,6 +783,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               : "text-primary"
                           }  rounded-full py-2 border border-primary me-3`}
                           key={index}
+                          // disabled={addAsset.length !== currentSection - 1}
                           onClick={() => setcurrentSection(index + 1)}
                         >
                           Section {index + 1}
@@ -758,8 +800,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   <tbody>
                     {addAsset.length > 0 &&
-                      addAsset[currentSection - 1] &&
-                      addAsset[currentSection - 1][currentSection].map(
+                      addAsset[currentSection - 1] !== undefined &&
+                      addAsset[currentSection - 1][currentSection]?.map(
                         (item, index) => {
                           return (
                             <tr
