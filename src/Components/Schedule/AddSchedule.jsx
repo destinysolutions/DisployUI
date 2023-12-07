@@ -70,6 +70,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [allAssets, setAllAssets] = useState([]);
   const current_date = new Date();
   const [createdScheduleId, setCreatedScheduleId] = useState("");
+
   const [searchParams] = useSearchParams();
   const getScheduleId = searchParams.get("scheduleId");
 
@@ -144,6 +145,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   const handleSelectEvent = useCallback((event) => {
+    // console.log("running",event);
     setSelectedEvent(event);
     setCreatePopupOpen(true);
   }, []);
@@ -271,7 +273,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     if (getScheduleId) {
       loadEventsForSchedule(getScheduleId);
     }
-  }, [getScheduleId, myEvents]);
+  }, [getScheduleId]);
 
   const handleTimezoneSelect = (e) => {
     if (e.target.value != selectedTimezoneName && isEditingSchedule) {
@@ -507,7 +509,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
-
+      
     const data = {
       startDate: eventData.start,
       endDate: eventData.end,
@@ -557,7 +559,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           const updatedEvent = fetchedData.find(
             (event) => event.eventId === eventId
           );
-          console.log(updateEvent, "updateEvent");
+          console.log(updatedEvent, "updateEvent");
           // if (updatedEvent && connection) {
           //   connection
           //     .invoke(
@@ -711,6 +713,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       setSelectedScreens([]);
     }
   };
+
+  console.log(myEvents);
 
   return (
     <>

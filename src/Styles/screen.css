@@ -527,8 +527,8 @@ button.daysbtn {
   font-size:13px;
 }
 .imagebox.relative.p-3 img {
-  min-height: 250px;
-  max-height: 250px;
+  /* min-height: 250px;
+  max-height: 250px; */
 }
 .relative.searchbox input {
   border: 1px solid #ccc;
