@@ -364,6 +364,7 @@ const Users = () => {
     setFirstName("");
     setLastName("");
     setPassword("");
+    setFileEdit();
     setFile(null);
     setIsImageUploaded(false)
     setPhone("");
@@ -732,24 +733,22 @@ const Users = () => {
                           onChange={(e) => setSelectRoleID(e.target.value)}
                         >
                           <option label="select User Role"></option>
-                          {userRoleData?.length === 0 ? (
-                            <div>Data not here.</div>
-                          ) : (
+
+                          {userRoleData && userRoleData?.length > 0  ?  
                             userRoleData.map((userrole) => (
                               <option
-                                key={userrole.orgUserRoleID}
-                                value={userrole.orgUserRoleID}
+                                key={userrole?.orgUserRoleID}
+                                value={userrole?.orgUserRoleID}
                               >
                                 {userrole.orgUserRole}
                               </option>
                             ))
-                          )}
+                           : <div>Data not here.</div>}
+                           
                         </select>
                       </div>
                     </div>
 
-                    {console.log("file", file)}
-                    {console.log("fileEdit", fileEdit)}
                     <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                       <div className="flex items-center">
                         <div className="layout-img me-5">
