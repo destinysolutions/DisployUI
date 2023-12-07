@@ -586,14 +586,16 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data.data;
-        handleFetchPreviewScreen(fetchedData[0]?.macid);
-        setScreenData(fetchedData);
-        setSelectScreenOrientation(fetchedData[0].screenOrientation);
-        setSelectScreenResolution(fetchedData[0].screenResolution);
-        setSelectedTimezoneName(fetchedData[0].timeZone);
-        setSelectedTag(fetchedData[0].tags);
-        setGoogleLoc(fetchedData[0].googleLocation);
-        setScreenName(fetchedData[0].screenName);
+        if(response.data?.data!== "Data Is Not Found"){
+            handleFetchPreviewScreen(fetchedData[0]?.macid);
+            setScreenData(fetchedData);
+            setSelectScreenOrientation(fetchedData[0].screenOrientation);
+            setSelectScreenResolution(fetchedData[0].screenResolution);
+            setSelectedTimezoneName(fetchedData[0].timeZone);
+            setSelectedTag(fetchedData[0].tags);
+            setGoogleLoc(fetchedData[0].googleLocation);
+            setScreenName(fetchedData[0].screenName);
+          }
       })
       .catch((error) => {
         console.log(error);
@@ -2009,19 +2011,19 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       </span>
                                     )}
 
-                                    {screenData.length > 0 &&
+                                    {screenData?.length > 0 &&
                                     screenData[0]?.tags !== null
                                       ? screenData.length > 0 &&
-                                        screenData[0].tags
+                                        screenData[0]?.tags
                                           .split(",")
                                           .slice(
                                             0,
                                             screenData.length > 0 &&
-                                              screenData[0].tags.split(",")
+                                              screenData[0]?.tags.split(",")
                                                 .length > 2
                                               ? 3
                                               : screenData.length > 0 &&
-                                                  screenData[0].tags.split(",")
+                                                  screenData[0]?.tags.split(",")
                                                     .length
                                           )
                                           .join(",")

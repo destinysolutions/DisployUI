@@ -926,7 +926,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                               onClick={closeModal}
                             />
 
-                            {!loading &&
+                            {!loading && layotuDetails?.lstLayloutModelList.length>0&&
                               layotuDetails?.lstLayloutModelList?.map(
                                 (obj, index) => (
                                   <div
@@ -937,8 +937,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                       top: obj.topside + "%",
                                       width: obj?.width + "%",
                                       height: obj?.height + "%",
-                                      // width: obj?.width + "px",
-                                      // height: obj?.height + "px",
                                       backgroundColor: obj.fill,
                                     }}
                                   >
