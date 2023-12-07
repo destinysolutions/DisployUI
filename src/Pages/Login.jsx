@@ -302,6 +302,10 @@ const Login = () => {
     return () => clearTimeout(timeout);
   }, [errorMessge, messageVisible]);
 
+  const handleForgotPassword = () => {
+    history("/forgotpassword");
+  };
+
   return (
     <>
       {/* register success meg display start */}
@@ -441,9 +445,13 @@ const Login = () => {
                       {!captcha ? "Please Select Captcha" : ""}
                     </div> */}
 
-                    {/* <p className="ml-1 mt-2 not-italic text-white font-medium  text-right hover:text-SlateBlue">
+                   {/*  <p
+                      className="ml-1 mt-2 not-italic text-white font-medium  text-right hover:text-SlateBlue"
+                      onClick={handleForgotPassword}
+                    >
                       Forgot Password?
                     </p> */}
+                    
                   </div>
 
                   {/* {formik.errors.terms && formik.touched.terms && (
