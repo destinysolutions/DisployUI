@@ -124,7 +124,7 @@ const Navbar = () => {
         <div className="flex-col flex">
           <div className="w-full">
             <div className=" justify-end items-center mx-auto px-4 flex relative">
-              <div className="mr-3 dayremaining-box">
+              {/* <div className="mr-3 dayremaining-box">
                 {daysRemaining > 0 ? (
                   <p className="text-sm ">
                     Trial Days Remaining : {daysRemaining}
@@ -132,7 +132,7 @@ const Navbar = () => {
                 ) : (
                   <p>Your trial has expired.</p>
                 )}
-              </div>
+              </div> */}
               {/* <img
                 src="/NavbarIcons/Union.svg"
                 alt="Union"

@@ -548,8 +548,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                       <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                                         <div className="flex items-center">
                                           <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                                            Select the Screen you want Apps
-                                            Content
+                                            Select the screen to set the App
                                           </h3>
                                         </div>
                                         <button
@@ -562,7 +561,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                         </button>
                                       </div>
                                       <div className="flex justify-center p-9 ">
-                                        <p className="break-words w-[280px] text-base text-black">
+                                        <p className="break-words w-[280px] text-base text-black text-center">
                                           New Youtube App Instance would be
                                           applied. Do you want to proceed?
                                         </p>
