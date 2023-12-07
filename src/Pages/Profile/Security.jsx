@@ -1,51 +1,193 @@
-import React from "react";
+import React, { useState } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { CHNAGE_PASSWORD } from "../Api";
+import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 
 const Security = () => {
+  const UserData = useSelector((Alldata) => Alldata.user);
+  const authToken = `Bearer ${UserData.user.data.token}`;
+
+  const validationSchema = Yup.object().shape({
+    currentPassword: Yup.string().required("Current Password is required"),
+    newPassword: Yup.string()
+      .min(8, "Password must be at least 8 characters long")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
+      )
+      .required("New Password is required"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
+      .required("Confirm New Password is required"),
+  });
+
+  const [currentPasswordShow, setCurrentPassword] = useState(false);
+  const [newPasswordShow, setNewPassword] = useState(false);
+  const [confirmPasswordShow, setConfirmPassword] = useState(false);
+
+  const [ischeck, setIsCheck] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Custom handleChange function for acceptTerms checkbox
+  const handleAcceptTermsChange = (event) => {
+    setIsCheck(event.target.checked);
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+      acceptTerms: false,
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      toast.loading("Updating...");
+      setLoading(true);
+      const payload = {
+        currentPassword: values.currentPassword,
+        newPassword: values.newPassword,
+        confirmPassword: values.confirmPassword,
+        acceptTerms: ischeck,
+      };
+
+      const config = {
+        method: "post", // Change method to 'put' for changing the password
+        url: CHNAGE_PASSWORD, // Assuming CHNAGE_PASSWORD is your API endpoint
+        headers: {
+          Authorization: authToken,
+        },
+        params: {
+          OldPassowrd: payload.currentPassword, // Note: Typo in OldPassword corrected
+          NewPassword: payload.newPassword,
+        },
+        maxBodyLength: Infinity,
+      };
+
+      axios.request(config)
+        .then((response) => {
+          toast.success("Your password chnage successFully");
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
+    },
+  });
+
+  const resetForm = () =>{
+    formik.resetForm()
+  }
+
   return (
     <div>
       <div className="rounded-xl mt-8 shadow bg-white p-5">
         <h4 className="user-name mb-3">Change Password</h4>
         <div className="-mx-3 flex mb-6">
           <div className="md:w-1/2 px-3 mb-6 md:mb-0">
-            <form className="space-y-2" action="#">
-              <div>
+            <form
+              className="space-y-2"
+              action="#"
+              onSubmit={formik.handleSubmit}
+            >
+              <div className="relative">
                 <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
                   Current Password
                 </label>
                 <input
-                  type="email"
-                  name="email"
-                  id="email"
+                  type={currentPasswordShow ? "text" : "password"}
+                  name="currentPassword"
+                  id="currentPassword"
                   className="bg-gray-200 border input-bor-color text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Enter Current Password"
-                  required=""
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.currentPassword}
                 />
+                <div className="icon mt-3">
+                  {currentPasswordShow ? (
+                    <BsFillEyeFill
+                      onClick={() => setCurrentPassword(!currentPasswordShow)}
+                    />
+                  ) : (
+                    <BsFillEyeSlashFill
+                      onClick={() => setCurrentPassword(!currentPasswordShow)}
+                    />
+                  )}
+                </div>
+                {formik.touched.currentPassword &&
+                formik.errors.currentPassword ? (
+                  <div className="text-red-500 error">
+                    {formik.errors.currentPassword}
+                  </div>
+                ) : null}
               </div>
-              <div>
+              <div className="relative">
                 <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
                   New Password
                 </label>
                 <input
-                  type="password"
-                  name="password"
-                  id="password"
+                  type={newPasswordShow ? "text" : "password"}
+                  name="newPassword"
+                  id="newPassword"
                   placeholder="Enter New Password"
                   className="bg-gray-200 border input-bor-color text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required=""
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.password}
                 />
+                <div className="icon mt-3">
+                {newPasswordShow ? (
+                  <BsFillEyeFill
+                    onClick={() => setNewPassword(!newPasswordShow)}
+                  />
+                ) : (
+                  <BsFillEyeSlashFill
+                    onClick={() => setNewPassword(!newPasswordShow)}
+                  />
+                )}
               </div>
-              <div>
+                {formik.touched.newPassword && formik.errors.newPassword ? (
+                  <div className="text-red-500 error">
+                    {formik.errors.newPassword}
+                  </div>
+                ) : null}
+              </div>
+              <div className="relative">
                 <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
                   Confirm password
                 </label>
                 <input
-                  type="confirm-password"
-                  name="confirm-password"
-                  id="confirm-password"
+                  type={confirmPasswordShow ? "text" : "password"}
+                  name="confirmPassword"
+                  id="confirmPassword"
                   placeholder="Enter Confirm New Password"
                   className="bg-gray-200 border input-bor-color text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required=""
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.password}
                 />
+                <div className="icon mt-3">
+                {confirmPasswordShow ? (
+                  <BsFillEyeFill
+                    onClick={() => setConfirmPassword(!confirmPasswordShow)}
+                  />
+                ) : (
+                  <BsFillEyeSlashFill
+                    onClick={() => setConfirmPassword(!confirmPasswordShow)}
+                  />
+                )}
+                </div>
+                {formik.touched.confirmPassword &&
+                formik.errors.confirmPassword ? (
+                  <div className="text-red-500 error">
+                    {formik.errors.confirmPassword}
+                  </div>
+                ) : null}
               </div>
               <div className="flex items-center pb-2">
                 <div className="flex items-center h-5">
@@ -54,7 +196,8 @@ const Security = () => {
                     aria-describedby="newsletter"
                     type="checkbox"
                     className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                    required=""
+                    checked={ischeck}
+                    onChange={handleAcceptTermsChange}
                   />
                 </div>
                 <div className="ml-3 text-sm">
@@ -70,10 +213,13 @@ const Security = () => {
                 </div>
               </div>
               <div className="md:w-full px-3 flex">
-                <button className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3">
-                  Save Changes
+                <button
+                  className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3"
+                  disabled={loading}
+                >
+                  {loading ? "Saving..." : "Save Changes"}
                 </button>
-                <button className=" px-5 py-2 border border-primary rounded-full text-primary">
+                <button className=" px-5 py-2 border border-primary rounded-full text-primary"  onClick={() => resetForm()}>
                   Reset
                 </button>
               </div>

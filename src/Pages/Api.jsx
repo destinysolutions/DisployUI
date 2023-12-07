@@ -153,5 +153,12 @@ export const COMPOSITION_BY_ID =
 export const SCREEN_PREVIEW =
   "https://disployapi.thedestinysolutions.com/api/NewScreen/GetRegisterOtp";
 
+  export const FORGOTPASSWORD =
+  "https://disployapi.thedestinysolutions.com/api/NewScreen/ForgotPasswor";
+
+  export const CHNAGE_PASSWORD =
+  "https://disployapi.thedestinysolutions.com/api/UserMaster/ResetPassword?";
+
+
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115
