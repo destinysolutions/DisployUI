@@ -500,7 +500,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
                     <div className="flex items-center">
                       <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                        Select the Screen you want Schedule Content
+                        Select the Screen you want Schedule add
                       </h3>
                     </div>
                     <button
@@ -511,7 +511,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     </button>
                   </div>
                   <div className="flex justify-center p-9 ">
-                    <p className="break-words w-[280px] text-base text-black">
+                    <p className="break-words w-[280px] text-base text-black text-center">
                       New schedule would be applied. Do you want to proceed?
                     </p>
                   </div>
@@ -580,7 +580,9 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               </thead>
               <tbody>
                 {scheduleData.length === 0 ? (
-                  <td colSpan={7} className="font-semibold text-center text-xl">No Schedule here.</td>
+                  <td colSpan={7} className="font-semibold text-center text-xl">
+                    No Schedule here.
+                  </td>
                 ) : filteredScheduleData.length === 0 &&
                   searchSchedule !== "" ? (
                   <td colSpan="8" className="text-center font-semibold text-xl">
