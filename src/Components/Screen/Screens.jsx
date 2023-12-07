@@ -152,6 +152,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
+  const [selectedYoutube, setSelectedYoutube] = useState();
+  const [selectedTextScroll, setSelectedTextScroll] = useState();
 
   // console.log("sendTvStatus log", sendTvStatus);
   // console.log("sendTvStatusScreen log", sendTvStatusScreenID);
@@ -189,6 +191,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleCompositionsAdd = (composition) => {
     setSelectedComposition(composition);
+  };
+
+  const handleAppsAdd = (apps) => {
+    setSelectedYoutube(apps);
+    setSelectedTextScroll(apps);
   };
 
   const handleFilter = (event) => {
@@ -403,8 +410,26 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     const screenToUpdate = screenData.find(
       (screen) => screen.screenID === assetScreenID
     );
-    let moduleID = selectedAsset.assetID || selectedComposition.compositionID;
-    let mediaType = selectedAsset.assetID ? 1 : 3;
+    let moduleID =
+      selectedAsset.assetID ||
+      selectedComposition.compositionID ||
+      selectedYoutube.youtubeId ||
+      selectedTextScroll.textScroll_Id;
+
+    let mediaType = selectedAsset.assetID
+      ? 1
+      : selectedTextScroll?.textScroll_Id !== null &&
+        selectedTextScroll?.textScroll_Id !== undefined
+      ? 4
+      : selectedYoutube?.youtubeId !== null &&
+        selectedYoutube?.youtubeId !== undefined
+      ? 5
+      : selectedComposition?.compositionID !== null &&
+        selectedComposition?.compositionID !== undefined
+      ? 3
+      : 0;
+
+    console.log(mediaType, "mediaType");
     if (screenToUpdate) {
       const {
         otp,
@@ -478,7 +503,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 ...screen,
                 assetName:
                   selectedAsset.assetName ||
-                  selectedComposition.compositionName,
+                  selectedComposition.compositionName ||
+                  selectedYoutube.instanceName ||
+                  selectedTextScroll.instanceName,
               };
             }
             return screen;
@@ -1561,6 +1588,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               handleAssetAdd={handleAssetAdd}
                               handleAssetUpdate={handleAssetUpdate}
                               handleCompositionsAdd={handleCompositionsAdd}
+                              handleAppsAdd={handleAppsAdd}
                               popupActiveTab={popupActiveTab}
                               setAssetPreviewPopup={setAssetPreviewPopup}
                               setPopupActiveTab={setPopupActiveTab}
@@ -1569,6 +1597,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               assetData={assetData}
                               assetPreview={assetPreview}
                               selectedComposition={selectedComposition}
+                              selectedTextScroll={selectedTextScroll}
+                              selectedYoutube={selectedYoutube}
                               handleFilter={handleFilter}
                               searchAsset={searchAsset}
                               selectedAsset={selectedAsset}
@@ -1957,6 +1987,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               handleAssetAdd={handleAssetAdd}
                               handleAssetUpdate={handleAssetUpdate}
                               handleCompositionsAdd={handleCompositionsAdd}
+                              handleAppsAdd={handleAppsAdd}
                               popupActiveTab={popupActiveTab}
                               setAssetPreviewPopup={setAssetPreviewPopup}
                               setPopupActiveTab={setPopupActiveTab}
@@ -1965,6 +1996,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               assetData={assetData}
                               assetPreview={assetPreview}
                               selectedComposition={selectedComposition}
+                              selectedTextScroll={selectedTextScroll}
+                              selectedYoutube={selectedYoutube}
                               handleFilter={handleFilter}
                               searchAsset={searchAsset}
                               selectedAsset={selectedAsset}
