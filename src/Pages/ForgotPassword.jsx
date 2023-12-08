@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import video from "../../public/DisployImg/iStock-1137481126.mp4";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 
+
 const ForgotPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -56,6 +57,8 @@ const ForgotPassword = () => {
         callback(userExists.data); // Invoke the callback with the data
       }, 2000);
     } catch (error) {
+      toast,error(error.message)
+      setShowPassword(false)
       console.error("Error checking email:", error.message);
       callback(false); // Invoke the callback with false in case of an error
     } finally {
@@ -65,16 +68,8 @@ const ForgotPassword = () => {
 
   const changePassword = async (values) => {
     try {
-      const payload = { email: values.email, newPassword: values.newPassword };
-      // Check if a user is signed in
-      const user = auth.currentUser;
-      if (user) {
-        const userRecord = await auth.getUserByEmail(email);
-        return userRecord;
-      } else {
-        // User not signed in, handle accordingly
-        console.error("User not signed in");
-      }
+      const payload = { email: getEmail, newPassword: values.newPassword };
+      console.log("payload",payload);
     } catch (error) {
       console.error("Error changing password:", error.message);
     }
@@ -92,6 +87,7 @@ const ForgotPassword = () => {
           if (data.Status !== false) {
             setShowPassword(true); // Show the password change form
           } else {
+            setShowPassword(false);
             toast.error("Email does not exist");
           }
           toast.dismiss();
