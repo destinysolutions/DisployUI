@@ -783,8 +783,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setFilteredData([]);
   }
 
-  // console.log(screenPreviewData);
-
   return (
     <>
       <div className="flex border-b border-gray">
@@ -792,7 +790,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {
-        <div className="pt-16 lg:px-5 md:px-5 sm:px-2 xs:px-1">
+        <div className="pt-24 lg:px-5 md:px-5 sm:px-2 xs:px-1">
           <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
             <div className="justify-between flex items-center xs-block">
               <div className="section-title">
@@ -824,19 +822,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className="relative screenplayer-section w-[40vw]  mx-auto">
+            <div className="relative screenplayer-section w-[60vw] h-[70vh] mx-auto">
               {/* <div className="relative  screenplayer-section w-[75vw] h-[80vh] mx-auto"> */}
               {/* <div className="screen-palyer-img w-full h-full pb-5 mx-auto"> */}
               <div className="w-full h-full pb-5 mx-auto">
-                {/* playerData && isVideo ? (
-                  <ReactPlayer
-                    url={playerData}
-                    className="max-w-full max-h-full reactplayer min-w-full"
-                    controls={true} // Add controls for video
-                    width="100%"
-                    height="100%"
-                  />
-                ) : */}
                 {loading ? (
                   <div className="text-center font-semibold text-2xl">
                     Loading...
@@ -1613,7 +1602,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             </td>
                             <td className="text-left">
                               <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                                Sony, S01-5000035, 5120 x 2880, (Ultrawide 5K)
+                                {/* Sony, S01-5000035, 5120 x 2880, (Ultrawide 5K) */}
+                                {screen.screendetails}
                               </p>
                             </td>
                           </tr>
@@ -1637,7 +1627,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             </td>
                             <td className="text-left">
                               <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                                Apple TV
+                                {/* Apple TV */}
+                                {screen.os}
                               </p>
                             </td>
                           </tr>

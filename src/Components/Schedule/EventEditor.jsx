@@ -1,6 +1,6 @@
 import axios from "axios";
 import moment from "moment";
-import React from "react";
+import React, { useRef } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { SketchPicker } from "react-color";
@@ -15,6 +15,7 @@ import { MdOutlineArrowBackIosNew } from "react-icons/md";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import toast from "react-hot-toast";
 const EventEditor = ({
   isOpen,
   onClose,
@@ -25,6 +26,7 @@ const EventEditor = ({
   assetData,
   setAssetData,
   allAssets,
+  myEvents,
 }) => {
   const UserData = useSelector((Alldata) => Alldata.user);
   const authToken = `Bearer ${UserData.user.data.token}`;
@@ -61,8 +63,10 @@ const EventEditor = ({
   const [editEndDateChangeMessage, setEditEndDateChangeMessage] = useState("");
   const [editEndDateChangeMessageVisible, setEditEndDateChangeMessageVisible] =
     useState(false);
-
   const [repeatDayWarning, setRepeatDayWarning] = useState(false);
+  const [searchAsset, setSearchAsset] = useState("");
+
+  const modalRef = useRef(null);
 
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
   useEffect(() => {
@@ -115,6 +119,7 @@ const EventEditor = ({
 
   const handleEndTimeChange = (e) => {
     setEditedEndTime(e.target.value);
+    handleCheckboxChange();
   };
 
   const handleStartDateChange = (e) => {
@@ -181,7 +186,9 @@ const EventEditor = ({
     currentDate.setDate(startDate.getDate() + dayIndex);
     return currentDate >= startDate && currentDate <= endDate;
   };
-  const handleCheckboxChange = () => {
+
+  // for select all days to repeat day
+  function handleCheckboxChange() {
     const newSelectAllDays = !selectAllDays;
     if (
       moment(selectedSlot?.end).format("YYYY-MM-DD") === editedEndDate &&
@@ -193,13 +200,23 @@ const EventEditor = ({
       setSelectAllDays(false);
       return;
     }
-    setSelectAllDays(newSelectAllDays);
-    const newSelectedDays = newSelectAllDays
-      ? Array(buttons.length).fill(true)
-      : Array(buttons.length).fill(false);
-    setSelectedDays(newSelectedDays);
-  };
 
+    const daysDiff = moment(endDate).diff(startDate, "days");
+    let days = [];
+    for (let i = 0; i < daysDiff; i++) {
+      days[i] = moment(moment(startDate).add(i, "day")).format("dddd");
+    }
+    days[days.length] = moment(endDate).format("dddd");
+    let changeDayTrueOrFalse;
+
+    for (let i = 0; i < days.length; i++) {
+      changeDayTrueOrFalse = buttons.map((i) => days.includes(i));
+    }
+    // console.log(changeDayTrueOrFalse);
+    setSelectedDays(changeDayTrueOrFalse);
+  }
+
+  // for select repeat day
   const handleDayButtonClick = (index) => {
     if (isDayInRange(index)) {
       const newSelectedDays = [...selectedDays];
@@ -241,7 +258,9 @@ const EventEditor = ({
       setRepeatDayWarning(true);
     }
   };
+
   const handleSave = (updateAllValue) => {
+    // return
     // Check if the title is empty
     if (!title) {
       setEmptyTitleMessage("Please enter a title for the event.");
@@ -253,7 +272,16 @@ const EventEditor = ({
       setEmptyTitleMessageVisible(true);
       return;
     }
-
+    if (
+      !editedStartTime ||
+      editedStartTime == "00:00" ||
+      !editedEndTime ||
+      editedEndTime == "00:00"
+    ) {
+      toast.remove();
+      return toast.error("Please enter start time & end time");
+    }
+    toast.remove();
     // Convert edited dates and times to actual Date objects
     const start = new Date(editedStartDate + " " + editedStartTime);
     const end = new Date(editedEndDate + " " + editedEndTime);
@@ -276,8 +304,9 @@ const EventEditor = ({
         : selectedDaysInString;
       setSelectedRepeatDay(repeatDayValue);
     }
+
     if (
-      moment(selectedSlot?.end).format("YYYY-MM-DD") !== editedEndDate &&
+      moment(selectedEvent?.end).format("YYYY-MM-DD") !== editedEndDate &&
       !selectAllDays && // Check if no checkbox is selected
       !areSpecificDaysSelected // Check if no individual day is selected
     ) {
@@ -302,13 +331,20 @@ const EventEditor = ({
       end: end,
       color: selectedColor,
       asset: selectedAsset,
-      //UpdateALL: updateAllValue,
+      UpdateALL: updateAllValue
+        ? updateAllValue
+        : selectedRepeatDay.length > 0
+        ? 1
+        : 0,
     };
-
+    let updateAllValueFlag = updateAllValue
+      ? updateAllValue
+      : repeatDayValue !== null
+      ? 1
+      : 0;
     if (areSpecificDaysSelected || selectAllDays) {
       eventData.repeatDay = repeatDayValue;
     }
-
     // Check if the selected event is present and has the same data as the form data
     if (
       selectedEvent &&
@@ -320,18 +356,27 @@ const EventEditor = ({
       selectedEvent.repeatDay === selectedRepeatDay
     ) {
       onClose();
+      setSelectedDays([]);
+      setSelectedRepeatDay("");
     } else {
       if (selectedEvent) {
         onSave(
           selectedEvent?.id || selectedEvent?.eventId,
           eventData,
-          updateAllValue,
+          updateAllValueFlag,
           setShowRepeatSettings(false)
         );
       } else {
-        onSave(null, eventData, updateAllValue, setShowRepeatSettings(false));
+        onSave(
+          null,
+          eventData,
+          updateAllValueFlag,
+          setShowRepeatSettings(false)
+        );
       }
       onClose();
+      setSelectedRepeatDay("");
+      setSelectedDays([]);
     }
 
     // Check if the repeat days have changed and show the message
@@ -348,7 +393,6 @@ const EventEditor = ({
     setSelectedDays(new Array(buttons.length).fill(false));
   };
 
-  const [searchAsset, setSearchAsset] = useState("");
   const handleFilter = (event) => {
     const searchQuery = event.target.value.toLowerCase();
     setSearchAsset(searchQuery);
@@ -365,6 +409,7 @@ const EventEditor = ({
   };
 
   const handelDeletedata = () => {
+    toast.loading("Deleting...");
     let data = JSON.stringify({
       eventId: selectedEvent.id,
       operation: "Delete",
@@ -386,11 +431,80 @@ const EventEditor = ({
         console.log(response, "responsedelete");
         onDelete(selectedEvent.id);
         onClose();
+        toast.remove();
       })
       .catch((error) => {
+        toast.remove();
         console.log(error);
       });
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event?.target)) {
+        setAssetPreviewPopup(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside]);
+
+  function handleClickOutside() {
+    setAssetPreviewPopup(false);
+  }
+
+  const daysDiff = moment(selectedEvent?.actualEndDate).diff(
+    myEvents[0]?.start,
+    "days"
+  );
+
+  const DAYS = new Promise((resolve, reject) => {
+    let days = [];
+    for (let i = 0; i < daysDiff; i++) {
+      days[i] = moment(moment(myEvents[0]?.start).add(i, "day")).format("dddd");
+      if (days.length === daysDiff) {
+        days.push(moment(selectedEvent?.actualEndDate).format("dddd"));
+      }
+    }
+    if (
+      days.length == selectedEvent?.repeatDay?.split(",").length &&
+      days.length < buttons.length
+    ) {
+      let data;
+      for (let i = 0; i < selectedEvent?.repeatDay?.split(",").length; i++) {
+        data = buttons.map((i) => days.includes(i));
+      }
+      return resolve(data);
+    } else if (days.length > buttons.length) {
+      return resolve(buttons);
+    } else {
+      return reject("error");
+    }
+  });
+
+  useEffect(() => {
+    if (selectedEvent?.isfutureDateExists == 1) {
+      setShowRepeatSettings(true);
+    }
+  }, [selectedEvent]);
+
+  useEffect(() => {
+    if (!isNaN(daysDiff)) {
+      DAYS.then((res) => {
+        setSelectedDays(res);
+      }).catch(err=>{
+        console.log(err);
+      })
+    }
+  }, [daysDiff]);
+
+  useEffect(() => {
+    return () => {
+      setSelectedDays([]);
+    };
+  }, []);
 
   return (
     <>
@@ -557,8 +671,11 @@ const EventEditor = ({
                             {assetPreviewPopup && (
                               <>
                                 <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-50 outline-none focus:outline-none">
-                                  <div className="fixed top-1/3 left-1/2 -translate-y-1/2 -translate-x-1/2 asset-preview-popup">
-                                    <div className="border-0 rounded-lg shadow-lg relative min-w-[50vw] left-1/2 -translate-x-1/2 min-h-[70vh] max-h-[70vh] max-w-screen bg-black outline-none focus:outline-none">
+                                  <div
+                                    ref={modalRef}
+                                    className="fixed top-1/3 left-1/2 -translate-y-1/2 -translate-x-1/2 asset-preview-popup"
+                                  >
+                                    <div className="border-0 rounded-lg shadow-lg relative min-w-[50vw] left-1/2 -translate-x-1/2 min-h-[70vh] max-h-[70vh] max-w-[80vw] bg-black outline-none focus:outline-none">
                                       <div className="p-1 rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
                                         <button
                                           className="text-xl"
@@ -569,25 +686,25 @@ const EventEditor = ({
                                           <AiOutlineCloseCircle className="text-2xl" />
                                         </button>
                                       </div>
-                                      <div className="absolute inset-0 w-full h-full">
+                                      <div className="absolute inset-0 min-h-full min-w-full max-h-full max-w-full">
                                         {assetPreview && (
                                           <>
                                             {assetPreview.assetType ===
                                               "OnlineImage" && (
-                                              <div className="imagebox p-3">
+                                              <div className="imagebox p-3 w-full h-full">
                                                 <img
                                                   src={
                                                     assetPreview.assetFolderPath
                                                   }
                                                   alt={assetPreview.assetName}
-                                                  className="rounded-2xl w-full h-full object-contain"
+                                                  className="rounded-2xl w-full h-full object-fill"
                                                 />
                                               </div>
                                             )}
 
                                             {assetPreview.assetType ===
                                               "OnlineVideo" && (
-                                              <div className="relative videobox">
+                                              <div className="relative videobox w-full h-full">
                                                 <video
                                                   controls
                                                   className="w-full rounded-2xl h-full"
@@ -803,51 +920,51 @@ const EventEditor = ({
                 {showRepeatSettings ? (
                   <>
                     <div className="relative md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0  p-4">
-                      {selectedEvent?.isfutureDateExists === 1 ||
+                      {/* {selectedEvent?.isfutureDateExists === 1 ||
                       selectedEvent?.isfutureDateExists === 0 ? (
                         ""
-                      ) : (
-                        <>
-                          <div className="backbtn absolute top-[5px] left-[-10px] ">
-                            <button
-                              className="border border-SlateBlue rounded-full p-1 bg-SlateBlue"
-                              onClick={() => setShowRepeatSettings(false)}
-                            >
-                              <MdOutlineArrowBackIosNew className="text-white" />
-                            </button>
-                          </div>
-                          <div className="mt-3">
-                            <div>
-                              <label>Start Date:</label>
-                              <div className="mt-1">
-                                <input
-                                  type="date"
-                                  value={editedStartDate}
-                                  onChange={handleStartDateChange}
-                                  className="bg-lightgray rounded-full px-3 py-2 w-full"
-                                />
-                              </div>
-                            </div>
-                            <div className=" mt-5">
-                              <label>End Date:</label>
-                              <div className="mt-1">
-                                <input
-                                  type="date"
-                                  value={editedEndDate}
-                                  onChange={handleEndDateChange}
-                                  className="bg-lightgray rounded-full px-3 py-2 w-full"
-                                />
-                              </div>
+                      ) : ( */}
+                      <>
+                        <div className="backbtn absolute top-[5px] left-[-10px] ">
+                          <button
+                            className="border border-SlateBlue rounded-full p-1 bg-SlateBlue"
+                            onClick={() => setShowRepeatSettings(false)}
+                          >
+                            <MdOutlineArrowBackIosNew className="text-white" />
+                          </button>
+                        </div>
+                        <div className="mt-3">
+                          <div>
+                            <label>Start Date:</label>
+                            <div className="mt-1">
+                              <input
+                                type="date"
+                                value={editedStartDate}
+                                onChange={handleStartDateChange}
+                                className="bg-lightgray rounded-full px-3 py-2 w-full"
+                              />
                             </div>
                           </div>
+                          <div className=" mt-5">
+                            <label>End Date:</label>
+                            <div className="mt-1">
+                              <input
+                                type="date"
+                                value={editedEndDate}
+                                onChange={handleEndDateChange}
+                                className="bg-lightgray rounded-full px-3 py-2 w-full"
+                              />
+                            </div>
+                          </div>
+                        </div>
 
-                          <div className="mt-5 text-black font-medium text-lg">
-                            <label>
-                              Repeating {countAllDaysInRange()} Day(s)
-                            </label>
-                          </div>
-                        </>
-                      )}
+                        <div className="mt-5 text-black font-medium text-lg">
+                          <label>
+                            Repeating {countAllDaysInRange()} Day(s)
+                          </label>
+                        </div>
+                      </>
+                      {/* )} */}
                       <div className="lg:flex md:block sm:block xs:block items-center mt-5 lg:flex-nowrap md:flex-wrap sm:flex-wrap">
                         <div className="mr-2 w-full">
                           <label className="ml-2">Start Time</label>
@@ -873,20 +990,26 @@ const EventEditor = ({
                           </div>
                         </div>
                       </div>
-                      {selectedEvent?.isfutureDateExists === 1 ||
+                      {/* {selectedEvent?.isfutureDateExists === 1 ||
                       selectedEvent?.isfutureDateExists === 0 ? (
                         ""
-                      ) : (
-                        <>
-                          <div className="mt-5 text-black font-medium text-lg mr-2">
-                            <input
-                              type="checkbox"
-                              checked={selectAllDays}
-                              onChange={handleCheckboxChange}
-                            />
-                            <label className="ml-3">Repeat for All Day</label>
-                          </div>
-                          {/* {console.log(
+                      ) : ( */}
+                      <>
+                        <div className="mt-5 text-black font-medium text-lg mr-2">
+                          <input
+                            type="checkbox"
+                            checked={selectAllDays}
+                            onChange={handleCheckboxChange}
+                            id="repeat_all_day"
+                          />
+                          <label
+                            className="ml-3 select-none"
+                            htmlFor="repeat_all_day"
+                          >
+                            Repeat for All Day
+                          </label>
+                        </div>
+                        {/* {console.log(
                             "selectedEvent?.end == editedEndDate",
                             //selectedSlot?.end
                             // ==
@@ -898,36 +1021,24 @@ const EventEditor = ({
                             "moment(selectedEvent?.end :",
                             moment(selectedEvent?.end).format("YYYY-MM-DD")
                           )} */}
-                          <div>
-                            {buttons.map((label, index) => (
-                              <button
-                                className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
-                                  (selectAllDays || selectedDays[index]) &&
-                                  isDayInRange(index)
-                                    ? // &&
-                                      // moment(selectedSlot?.end).format(
-                                      //   "YYYY-MM-DD"
-                                      // ) === editedEndDate
-                                      "bg-SlateBlue border-white"
-                                    : ""
-                                } 
-                             
+                        <div>
+                          {buttons.map((label, index) => (
+                            <button
+                              className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
+                                selectedDays[index] &&
+                                "bg-SlateBlue border-white"
+                              } 
                                 `}
-                                key={index}
-                                disabled={!isDayInRange(index)}
-                                onClick={() => handleDayButtonClick(index)}
-                                // ${
-                                //   previousSetedRepeatDay.includes(label)
-                                //     ? "bg-SlateBlue border-white"
-                                //     : ""
-                                // }
-                              >
-                                {label}
-                              </button>
-                            ))}
-                          </div>
-                        </>
-                      )}
+                              key={index}
+                              disabled={!isDayInRange(index)}
+                              onClick={() => handleDayButtonClick(index)}
+                            >
+                              {label}
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                      {/* )} */}
                     </div>
                     <div className="border-b-2 border-lightgray mt-2"></div>
                   </>
@@ -979,24 +1090,24 @@ const EventEditor = ({
                           </li>
                         </ul>
                       </div>
-                      {isEditMode ? (
+                      {/* {isEditMode ? (
                         ""
                       ) : (
-                        <>
-                          <div className="p-3 flex justify-between items-center">
-                            <div>Repeat Multiple Day</div>
+                        <> */}
+                      <div className="p-3 flex justify-between items-center">
+                        <div>Repeat Multiple Day</div>
 
-                            <div>
-                              <button
-                                onClick={() => setShowRepeatSettings(true)}
-                                className="border border-primary rounded-full px-4 py-1"
-                              >
-                                Repeat
-                              </button>
-                            </div>
-                          </div>
-                        </>
-                      )}
+                        <div>
+                          <button
+                            onClick={() => setShowRepeatSettings(true)}
+                            className="border border-primary rounded-full px-4 py-1"
+                          >
+                            Repeat
+                          </button>
+                        </div>
+                      </div>
+                      {/* </>
+                      )} */}
                     </div>
                   </>
                 )}
@@ -1034,7 +1145,9 @@ const EventEditor = ({
                   <button
                     className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
                     onClick={() => {
-                      selectedEvent?.repeatDay == ""
+                      // handleSave()
+                      // handleWarn()
+                      selectedEvent?.isfutureDateExists == 0
                         ? handleSave()
                         : handleWarn();
                     }}

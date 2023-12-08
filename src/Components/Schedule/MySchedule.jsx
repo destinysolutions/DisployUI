@@ -52,12 +52,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [updateTagSchedule, setUpdateTagSchedule] = useState(null);
   const [tags, setTags] = useState([]);
   const [showTagModal, setShowTagModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const addScreenRef = useRef(null);
   const selectScreenRef = useRef(null);
   const showActionModalRef = useRef(null);
 
   const loadScheduleData = () => {
+    setLoading(true);
     axios
       .get(GET_ALL_SCHEDULE, {
         headers: {
@@ -68,10 +70,12 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         const fetchedData = response.data.data;
         // console.log(fetchedData, "schedule data");
         setScheduleData(fetchedData);
+        setLoading(false);
         setScheduleAllData(fetchedData);
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
 
@@ -254,7 +258,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
           isfutureDateExists: item.isfutureDateExists,
           actualEndDate: item.actualEndDate,
         }));
-        // console.log(response?.data?.data);
+        // console.log(fetchedEvents);
         // setEvents(fetchedEvents);
       })
       .catch((error) => {
@@ -435,7 +439,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {/* navbar and sidebar end */}
-      <div className="pt-6 px-5 page-contain ">
+      <div className="pt-20 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -579,7 +583,11 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 </tr>
               </thead>
               <tbody>
-                {scheduleData.length === 0 ? (
+                {loading ? (
+                  <td colSpan={8} className="text-center font-semibold text-xl">
+                    Loading...
+                  </td>
+                ) : scheduleData.length === 0 ? (
                   <td colSpan={7} className="font-semibold text-center text-xl">
                     No Schedule here.
                   </td>

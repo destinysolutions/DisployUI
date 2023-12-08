@@ -38,6 +38,7 @@ import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { MdOutlineGroups } from "react-icons/md";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
@@ -97,7 +98,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const selectedScreenIdsString = selectedScreens.join(",");
   //socket signal-RRR
   const [connection, setConnection] = useState(null);
-  const [fileType, setFileType] = useState();
 
   useEffect(() => {
     const newConnection = new HubConnectionBuilder()
@@ -230,7 +230,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data, "response.data[0]");
+        // console.log(response.data, "response.data[0]");
         if (
           Array.isArray(response.data.data) &&
           response.data.data.length > 0
@@ -392,14 +392,18 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       },
       data: data,
     };
+
+    toast.loading("Saving...");
     axios
       .request(config)
       .then((response) => {
         if (response.data.status === 200) {
+          toast.remove();
           navigate("/myschedule");
         }
       })
       .catch((error) => {
+        toast.remove();
         console.log(error);
       });
   };
@@ -438,6 +442,153 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
+
+ // Fetch events associated with the scheduleId
+ const loadEventsForSchedule = (scheduleId) => {
+  axios
+    .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`, {
+      headers: {
+        Authorization: authToken,
+      },
+    })
+    .then((response) => {
+      const fetchedData = response.data.data;
+      setScheduleAsset(response.data.data);
+      const fetchedEvents = fetchedData.map((item) => ({
+        id: item.eventId,
+        title: item.title,
+        start: new Date(item.cStartDate),
+        end: new Date(item.cEndDate),
+        color: item.color,
+        asset: item.asset,
+        repeatDay: item.repeatDay,
+        isfutureDateExists: item.isfutureDateExists,
+        actualEndDate: item.actualEndDate,
+      }));
+      console.log(fetchedData);
+      // setEvents(fetchedData);
+      setEvents(fetchedEvents)
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+  const handleSaveEvent = (eventId, eventData, updateAllValue) => {
+    const scheduleIdToUse = isEditingSchedule
+      ? getScheduleId
+      : createdScheduleId;
+    toast.loading("Saving...");
+
+    const data = {
+      startDate: eventData.start,
+      endDate: eventData.end,
+      asset: eventData.asset ? eventData.asset.assetID : null,
+      title: eventData.title,
+      color: eventData.color,
+      repeatDay: eventData.repeatDay,
+      operation: "Insert",
+      scheduleId: scheduleIdToUse,
+      UpdateALL: updateAllValue,
+    };
+
+    if (eventId) {
+      data.eventId = eventId;
+    }
+
+    const config = {
+      method: "post",
+      url: ADD_EVENT,
+      headers: {
+        Authorization: authToken,
+        "Content-Type": "application/json",
+      },
+      data: data,
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        const fetchedData = response.data.data.eventTables;
+        const updateEvent = fetchedData.map((item) => ({
+          id: item.eventId,
+          title: item.title,
+          start: new Date(item.cStartDate),
+          end: new Date(item.cEndDate),
+          color: item.color,
+          repeatDay: item.repeatDay,
+          day: item.day,
+          asset: item.asset,
+        }));
+        toast.remove();
+
+        // console.log(fetchedData);
+        // console.log(updateEvent);
+        // // Sending a SignalR message for the updated event
+        if (eventId) {
+          const updatedEvent = fetchedData.find(
+            (event) => event.eventId === eventId
+          );
+
+          // console.log(updatedEvent, "updateEvent");
+          // if (updatedEvent && connection) {
+          //   connection
+          //     .invoke(
+          //       "SendMessage",
+          //       updatedEvent.cEndDate,
+          //       updatedEvent.cStartDate,
+          //       fileType
+          //     )
+          //     .then(() => {
+          //       console.log("SignalR message sent for updated event");
+          //     })
+          //     .catch((error) => {
+          //       console.error("Error sending SignalR message:", error);
+          //     });
+          // }
+          if (connection) {
+            connection
+              .invoke("ScreenConnected")
+              .then(() => {
+                console.log("SignalR method invoked after screen update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
+        }
+        if (eventId) {
+          const updatedEventsMap = Object.fromEntries(
+            updateEvent.map((event) => [event.id, event])
+          );
+          const updatedMyEvents = myEvents.map((event) => {
+            const updatedEvent = updatedEventsMap[event.id];
+            return updatedEvent ? { ...event, ...updatedEvent } : event;
+          });
+// console.log(updatedMyEvents,myEvents);
+          setEvents(updatedMyEvents);
+
+          if (selectedEvent && selectedEvent.eventId === eventId) {
+            const updatedEvent = fetchedData.find(
+              (event) => event.eventId === eventId
+            );
+            if (updatedEvent) {
+              setSelectedEvent(updatedEvent);
+            }
+          }
+        } else {
+          // Add new event to events
+          setEvents((prevEvents) => [...prevEvents, ...updateEvent]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.remove();
+      });
+    setSelectedSlot(null);
+    setSelectedEvent(null);
+    setCreatePopupOpen(false);
+  };
+
   // Function to handle event drag and drop
   const handleEventDrop = ({ event, start, end }) => {
     const scheduleIdToUse = isEditingSchedule
@@ -476,147 +627,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     handleSaveEvent(resizedEvent.id, resizedEvent);
   };
 
-  // Fetch events associated with the scheduleId
-  const loadEventsForSchedule = (scheduleId) => {
-    axios
-      .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`, {
-        headers: {
-          Authorization: authToken,
-        },
-      })
-      .then((response) => {
-        const fetchedData = response.data.data;
-        setScheduleAsset(response.data.data);
-        const fetchedEvents = fetchedData.map((item) => ({
-          id: item.eventId,
-          title: item.title,
-          start: new Date(item.cStartDate),
-          end: new Date(item.cEndDate),
-          color: item.color,
-          asset: item.asset,
-          repeatDay: item.repeatDay,
-          isfutureDateExists: item.isfutureDateExists,
-          actualEndDate: item.actualEndDate,
-        }));
-        setEvents(fetchedEvents);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const handleSaveEvent = (eventId, eventData, updateAllValue) => {
-    const scheduleIdToUse = isEditingSchedule
-      ? getScheduleId
-      : createdScheduleId;
-      
-    const data = {
-      startDate: eventData.start,
-      endDate: eventData.end,
-      asset: eventData.asset ? eventData.asset.assetID : null,
-      title: eventData.title,
-      color: eventData.color,
-      repeatDay: eventData.repeatDay,
-      operation: "Insert",
-      scheduleId: scheduleIdToUse,
-      UpdateALL: updateAllValue,
-    };
-
-    if (eventId) {
-      data.eventId = eventId;
-    }
-
-    const config = {
-      method: "post",
-      url: ADD_EVENT,
-      headers: {
-        Authorization: authToken,
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        const fetchedData = response.data.data.eventTables;
-        const updateEvent = fetchedData.map((item) => ({
-          id: item.eventId,
-          title: item.title,
-          start: new Date(item.cStartDate),
-          end: new Date(item.cEndDate),
-          color: item.color,
-          repeatDay: item.repeatDay,
-          day: item.day,
-          asset: item.asset,
-        }));
-        // console.log(
-        //   updateEvent,
-        //   "updateEventDFTUOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
-        // );
-        // // Sending a SignalR message for the updated event
-        if (eventId) {
-          const updatedEvent = fetchedData.find(
-            (event) => event.eventId === eventId
-          );
-          console.log(updatedEvent, "updateEvent");
-          // if (updatedEvent && connection) {
-          //   connection
-          //     .invoke(
-          //       "SendMessage",
-          //       updatedEvent.cEndDate,
-          //       updatedEvent.cStartDate,
-          //       fileType
-          //     )
-          //     .then(() => {
-          //       console.log("SignalR message sent for updated event");
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error sending SignalR message:", error);
-          //     });
-          // }
-          if (connection) {
-            connection
-              .invoke("ScreenConnected")
-              .then(() => {
-                console.log("SignalR method invoked after screen update");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          }
-        }
-        if (eventId) {
-          const updatedEventsMap = Object.fromEntries(
-            updateEvent.map((event) => [event.id, event])
-          );
-          const updatedMyEvents = myEvents.map((event) => {
-            const updatedEvent = updatedEventsMap[event.id];
-            return updatedEvent ? { ...event, ...updatedEvent } : event;
-          });
-
-          setEvents(updatedMyEvents);
-
-          if (selectedEvent && selectedEvent.eventId === eventId) {
-            const updatedEvent = fetchedData.find(
-              (event) => event.eventId === eventId
-            );
-            if (updatedEvent) {
-              setSelectedEvent(updatedEvent);
-            }
-          }
-        } else {
-          // Add new event to events
-          setEvents((prevEvents) => [...prevEvents, ...updateEvent]);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    setSelectedSlot(null);
-    setSelectedEvent(null);
-    setCreatePopupOpen(false);
-  };
+ 
 
   const handleCloseCreatePopup = () => {
     setSelectedSlot(null);
@@ -714,7 +725,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  console.log(myEvents);
+  // console.log(myEvents);
+  // console.log();
 
   return (
     <>
@@ -745,7 +757,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       )}
 
-      <div className=" px-5 page-contain ">
+      <div className="pt-16 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="grid grid-cols-12 mt-5">
             <div className="lg:col-span-9 md:col-span-7 sm:col-span-6 xs:col-span-12 flex items-center">
@@ -805,6 +817,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 setSelectedEvent={setSelectedEvent}
                 handleAssetChange={handleAssetChange}
                 scheduleAsset={scheduleAsset}
+                myEvents={myEvents}
               />
             </div>
             <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-5 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
@@ -830,14 +843,22 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     <li className="border-b-2 border-lightgray p-3">
                       <h3>Start Date & Time:</h3>
                       <div className="bg-lightgray rounded-full px-3 py-2 mt-2">
-                        {overallEventTimes
+                      {overallEventTimes
                           ? overallEventTimes.earliestStartTime.toLocaleString()
                           : "No events found"}
+                        {/* {myEvents.length > 0
+                          ? moment(myEvents[0]?.startDate).format("lll")
+                          : "No events found"} */}
                       </div>
                     </li>
                     <li className="border-b-2 border-lightgray p-3">
                       <h3>End Date & Time:</h3>
                       <div className="bg-lightgray rounded-full px-3 py-2 mt-2">
+                        {/* {myEvents.length > 0
+                          ? moment(
+                              myEvents[myEvents.length - 1]?.actualEndDate
+                            ).format("lll")
+                          : "No events found"} */}
                         {overallEventTimes
                           ? overallEventTimes.latestEndTime.toLocaleString()
                           : "No events found"}
