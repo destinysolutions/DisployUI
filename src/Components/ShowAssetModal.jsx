@@ -33,7 +33,7 @@ const ShowAssetModal = ({
   selectedTextScroll,
   selectedYoutube,
 }) => {
-  console.log("appsData", appsData);
+  // console.log("appsData", appsData);
 
   const [filteredData, setFilteredData] = useState([]);
   const [searchAssest, setSearchAssest] = useState("");
@@ -135,7 +135,7 @@ const ShowAssetModal = ({
 
   return (
     <>
-      <div className="border-0 rounded-lg shadow-lg absolute z-50 w-[70vw] h-auto top-0 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none addmediapopup">
+      <div className="border-0 rounded-lg shadow-lg absolute z-50 w-[70vw] h-auto top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none addmediapopup">
         <div className="flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black">
           <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
             Set Content to Add Media
