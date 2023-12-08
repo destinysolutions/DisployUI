@@ -1061,6 +1061,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 <video
                                   controls
                                   className="w-full rounded-2xl relative"
+                                  onClick={() => {
+                                    setShowImageAssetModal(true);
+                                    setImageAssetModal(item?.assetFolderPath);
+                                  }}
                                 >
                                   <source
                                     src={item.assetFolderPath}
@@ -1081,6 +1085,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 <img
                                   src={item.assetFolderPath}
                                   className="rounded-2xl"
+                                  onClick={() => {
+                                    setShowImageAssetModal(true);
+                                    setImageAssetModal(item?.assetFolderPath);
+                                  }}
                                 />
                                 <div className="tabicon text-center absolute left-[6px] top-[-25px]">
                                   {item.assetType === "OnlineImage" && (
@@ -1095,6 +1103,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 <video
                                   controls
                                   className="w-full rounded-2xl relative"
+                                  onClick={() => {
+                                    setShowImageAssetModal(true);
+                                    setImageAssetModal(item?.assetFolderPath);
+                                  }}
                                 >
                                   <source
                                     src={item.assetFolderPath}

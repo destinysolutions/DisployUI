@@ -58,8 +58,6 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.folder ? fetchedData.folder : []),
         ];
         setFolderData(allAssets);
-
-        console.log(fetchedData, "fetchedData");
       });
   };
 
@@ -298,7 +296,6 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     event.dataTransfer.setData("text/plain", itemId);
   };
 
-  console.log(folderData);
   return (
     <>
       {showImageAssetModal && (
@@ -346,10 +343,12 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                             <img
                               src={folderAsset.assetFolderPath}
                               alt={folderAsset.assetName}
-                              className="imagebox relative opacity-1 w-full rounded-2xl"
+                              className="imagebox relative opacity-1 w-full rounded-2xl h-full object-fill"
                               onClick={() => {
                                 setShowImageAssetModal(true);
-                                setImageAssetModal(folderAsset?.assetFolderPath);
+                                setImageAssetModal(
+                                  folderAsset?.assetFolderPath
+                                );
                               }}
                             />
                           )}
@@ -360,7 +359,9 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                               className="w-full rounded-2xl relative imagebox"
                               onClick={() => {
                                 setShowImageAssetModal(true);
-                                setImageAssetModal(folderAsset?.assetFolderPath);
+                                setImageAssetModal(
+                                  folderAsset?.assetFolderPath
+                                );
                               }}
                             >
                               <source
@@ -377,7 +378,9 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                               className="imagebox relative opacity-1 w-full rounded-2xl"
                               onClick={() => {
                                 setShowImageAssetModal(true);
-                                setImageAssetModal(folderAsset?.assetFolderPath);
+                                setImageAssetModal(
+                                  folderAsset?.assetFolderPath
+                                );
                               }}
                             />
                           )}
@@ -387,7 +390,9 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                               className="w-full rounded-2xl relative h-56  list-none imagebox"
                               onClick={() => {
                                 setShowImageAssetModal(true);
-                                setImageAssetModal(folderAsset?.assetFolderPath);
+                                setImageAssetModal(
+                                  folderAsset?.assetFolderPath
+                                );
                               }}
                             >
                               <source
@@ -405,7 +410,9 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                               className="imagebox relative opacity-1 w-full rounded-2xl"
                               onClick={() => {
                                 setShowImageAssetModal(true);
-                                setImageAssetModal(folderAsset?.assetFolderPath);
+                                setImageAssetModal(
+                                  folderAsset?.assetFolderPath
+                                );
                               }}
                             >
                               {folderAsset.name}

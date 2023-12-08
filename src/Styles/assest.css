@@ -250,39 +250,42 @@ td .tabicon svg {
 .assets-section li.assetsbox,
 .assetsbox {
   width: 100%;
-  max-height: 300px;
-  min-height: 300px;
-  object-fit: cover;
+  height: 100%;
+  /* max-height: 300px;
+  min-height: 300px; */
+  /* object-fit: cover; */
 }
 
 .assets-section .assetsbox img,
 .assets-section .assetsbox video {
-  width: 100%;
+  width: fit-content;
   height: 100%;
-  object-fit: cover;
+  border: 1px lightgray solid;
+  object-fit:cover;
 }
 @media (max-width: 1240px) {
   .assets-section li.assetsbox,
   .assetsbox {
     width: 100%;
-    max-height: 200px;
-    min-height: 200px;
-    object-fit: cover;
+    height: 100%;
+    /* max-height: 200px;
+    min-height: 200px; */
+    /* object-fit: cover; */
   }
 }
 
 .assetstable .imagebox,
 .assetstable .videobox {
-  width: 150px;
+  /* width: 150px;
   height: 100px;
-  min-height: 100px;
+  min-height: 100px; */
 }
 
 .assetstable .imagebox img,
 .assetstable .videobox video {
-  width: 100% !important;
+  /* width: 100% !important;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; */
 }
 
 /* unsplash page */
