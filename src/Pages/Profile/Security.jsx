@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { CHNAGE_PASSWORD } from "../Api";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
+import { auth } from "../../FireBase/firebase"; // Import your Firebase auth instance
+import toast from "react-hot-toast";
 
 const Security = () => {
   const UserData = useSelector((Alldata) => Alldata.user);
@@ -44,44 +46,55 @@ const Security = () => {
       acceptTerms: false,
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      toast.loading("Updating...");
-      setLoading(true);
-      const payload = {
-        currentPassword: values.currentPassword,
-        newPassword: values.newPassword,
-        confirmPassword: values.confirmPassword,
-        acceptTerms: ischeck,
-      };
+    onSubmit: async (values) => {
+      try {
+        toast.loading("Updating...");
+        // Reauthenticate the user with their current password
+        await auth
+          .signInWithEmailAndPassword(
+            auth.currentUser.email,
+            values.currentPassword
+          )
+          .then(async () => {
+            await auth.currentUser.updatePassword(values.newPassword);
+          });
 
-      const config = {
-        method: "post", // Change method to 'put' for changing the password
-        url: CHNAGE_PASSWORD, // Assuming CHNAGE_PASSWORD is your API endpoint
-        headers: {
-          Authorization: authToken,
-        },
-        params: {
-          OldPassowrd: payload.currentPassword, // Note: Typo in OldPassword corrected
-          NewPassword: payload.newPassword,
-        },
-        maxBodyLength: Infinity,
-      };
+        const payload = {
+          currentPassword: values.currentPassword,
+          newPassword: values.newPassword,
+          confirmPassword: values.confirmPassword,
+          acceptTerms: ischeck,
+        };
 
-      axios.request(config)
-        .then((response) => {
-          toast.success("Your password chnage successFully");
-          setLoading(false);
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.log(error);
-        });
+        const config = {
+          method: "post", // Change method to 'put' for changing the password
+          url: CHNAGE_PASSWORD, // Assuming CHNAGE_PASSWORD is your API endpoint
+          headers: {
+            Authorization: authToken,
+          },
+          params: {
+            OldPassowrd: payload.currentPassword, // Note: Typo in OldPassword corrected
+            NewPassword: payload.newPassword,
+          },
+          maxBodyLength: Infinity,
+        };
+
+        toast.dismiss();
+        await axios.request(config);
+        toast.success("Your password change was successful");
+        // navigator('/settings')
+      } catch (error) {
+        console.error("Error updating password:", error.message);
+        toast.error("Error updating password. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     },
   });
 
-  const resetForm = () =>{
-    formik.resetForm()
-  }
+  const resetForm = () => {
+    formik.resetForm();
+  };
 
   return (
     <div>
@@ -119,13 +132,13 @@ const Security = () => {
                     />
                   )}
                 </div>
-                {formik.touched.currentPassword &&
-                formik.errors.currentPassword ? (
-                  <div className="text-red-500 error">
-                    {formik.errors.currentPassword}
-                  </div>
-                ) : null}
               </div>
+              {formik.touched.currentPassword &&
+              formik.errors.currentPassword ? (
+                <div className="text-red-500 error">
+                  {formik.errors.currentPassword}
+                </div>
+              ) : null}
               <div className="relative">
                 <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
                   New Password
@@ -141,22 +154,22 @@ const Security = () => {
                   value={formik.values.password}
                 />
                 <div className="icon mt-3">
-                {newPasswordShow ? (
-                  <BsFillEyeFill
-                    onClick={() => setNewPassword(!newPasswordShow)}
-                  />
-                ) : (
-                  <BsFillEyeSlashFill
-                    onClick={() => setNewPassword(!newPasswordShow)}
-                  />
-                )}
+                  {newPasswordShow ? (
+                    <BsFillEyeFill
+                      onClick={() => setNewPassword(!newPasswordShow)}
+                    />
+                  ) : (
+                    <BsFillEyeSlashFill
+                      onClick={() => setNewPassword(!newPasswordShow)}
+                    />
+                  )}
+                </div>
               </div>
-                {formik.touched.newPassword && formik.errors.newPassword ? (
-                  <div className="text-red-500 error">
-                    {formik.errors.newPassword}
-                  </div>
-                ) : null}
-              </div>
+              {formik.touched.newPassword && formik.errors.newPassword ? (
+                <div className="text-red-500 error">
+                  {formik.errors.newPassword}
+                </div>
+              ) : null}
               <div className="relative">
                 <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
                   Confirm password
@@ -172,23 +185,23 @@ const Security = () => {
                   value={formik.values.password}
                 />
                 <div className="icon mt-3">
-                {confirmPasswordShow ? (
-                  <BsFillEyeFill
-                    onClick={() => setConfirmPassword(!confirmPasswordShow)}
-                  />
-                ) : (
-                  <BsFillEyeSlashFill
-                    onClick={() => setConfirmPassword(!confirmPasswordShow)}
-                  />
-                )}
+                  {confirmPasswordShow ? (
+                    <BsFillEyeFill
+                      onClick={() => setConfirmPassword(!confirmPasswordShow)}
+                    />
+                  ) : (
+                    <BsFillEyeSlashFill
+                      onClick={() => setConfirmPassword(!confirmPasswordShow)}
+                    />
+                  )}
                 </div>
-                {formik.touched.confirmPassword &&
-                formik.errors.confirmPassword ? (
-                  <div className="text-red-500 error">
-                    {formik.errors.confirmPassword}
-                  </div>
-                ) : null}
               </div>
+              {formik.touched.confirmPassword &&
+              formik.errors.confirmPassword ? (
+                <div className="text-red-500 error">
+                  {formik.errors.confirmPassword}
+                </div>
+              ) : null}
               <div className="flex items-center pb-2">
                 <div className="flex items-center h-5">
                   <input
@@ -219,7 +232,10 @@ const Security = () => {
                 >
                   {loading ? "Saving..." : "Save Changes"}
                 </button>
-                <button className=" px-5 py-2 border border-primary rounded-full text-primary"  onClick={() => resetForm()}>
+                <button
+                  className=" px-5 py-2 border border-primary rounded-full text-primary"
+                  onClick={() => resetForm()}
+                >
                   Reset
                 </button>
               </div>

@@ -154,7 +154,7 @@ export const SCREEN_PREVIEW =
   "https://disployapi.thedestinysolutions.com/api/NewScreen/GetRegisterOtp";
 
   export const FORGOTPASSWORD =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/ForgotPasswor";
+  "https://disployapi.thedestinysolutions.com/api/UserMaster/ForgotPassword";
 
   export const CHNAGE_PASSWORD =
   "https://disployapi.thedestinysolutions.com/api/UserMaster/ResetPassword?";
