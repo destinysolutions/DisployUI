@@ -586,16 +586,16 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data.data;
-        if(response.data?.data!== "Data Is Not Found"){
-            handleFetchPreviewScreen(fetchedData[0]?.macid);
-            setScreenData(fetchedData);
-            setSelectScreenOrientation(fetchedData[0].screenOrientation);
-            setSelectScreenResolution(fetchedData[0].screenResolution);
-            setSelectedTimezoneName(fetchedData[0].timeZone);
-            setSelectedTag(fetchedData[0].tags);
-            setGoogleLoc(fetchedData[0].googleLocation);
-            setScreenName(fetchedData[0].screenName);
-          }
+        if (response.data?.data !== "Data Is Not Found") {
+          handleFetchPreviewScreen(fetchedData[0]?.macid);
+          setScreenData(fetchedData);
+          setSelectScreenOrientation(fetchedData[0].screenOrientation);
+          setSelectScreenResolution(fetchedData[0].screenResolution);
+          setSelectedTimezoneName(fetchedData[0].timeZone);
+          setSelectedTag(fetchedData[0].tags);
+          setGoogleLoc(fetchedData[0].googleLocation);
+          setScreenName(fetchedData[0].screenName);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -784,9 +784,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setFilteredData([]);
   }
 
-
   // console.log(compositionData);
-  
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -826,9 +825,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className="relative screenplayer-section w-[40vw] max-h-[60vh] mx-auto">
-            {/* <div className="relative  screenplayer-section w-[75vw] h-[80vh] mx-auto"> */}
-            {/* <div className="screen-palyer-img w-full h-full pb-5 mx-auto"> */}
+            <div className="relative screenplayer-section w-[40vw]  mx-auto">
+              {/* <div className="relative  screenplayer-section w-[75vw] h-[80vh] mx-auto"> */}
+              {/* <div className="screen-palyer-img w-full h-full pb-5 mx-auto"> */}
               <div className="w-full h-full pb-5 mx-auto">
                 {/* playerData && isVideo ? (
                   <ReactPlayer
@@ -895,54 +894,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   )}
               </div>
 
-              <div className="grid grid-cols-12 screen-player-details min-w-full pb-7 sm:pb-0 border-b border-[#D5E3FF]">
-                <div className="default-media w-full flex items-center xs-block justify-between bg-lightgray py-2 px-5 rounded-md lg:col-start-4 lg:col-span-6 md:col-start-3 md:col-span-8  sm:col-start-1 sm:col-span-12">
-                  <div className="w-full">
-                    <p className="text-primary text-sm font-light">
-                      Now Playing
-                    </p>
-                    <h4 className="text-primary text-lg">
-                      {compositionData.length > 0 &&
-                        playerData === null &&
-                        "Composition"}
-                      {screenPreviewData.data.length > 1 &&
-                        playerData !== null &&
-                        "Schedule"}
-                      {screenPreviewData.data.length === 1 &&
-                        compositionData.length === 0 &&
-                        "Default Media"}
-                    </h4>
-                  </div>
-
-                  {/* <div className="relative">
-                    <div className="relative">
-                      <button
-                        className="bg-white p-1 rounded-md shadow mr-2 hover:bg-SlateBlue relative"
-                        onClick={() => setMediadw((prev) => !prev)}
-                      >
-                        <HiOutlineChevronDown className="text-primary text-lg hover:text-white" />
-                      </button>
-                      <button className="bg-white p-1 rounded-md shadow hover:bg-SlateBlue">
-                        <AiOutlineCloudUpload className="text-primary text-lg hover:text-white" />
-                      </button>
-                    </div>
-                    {mediadw && (
-                      <div className="mediadw">
-                        <ul>
-                          <li className="flex text-sm  items-center">
-                            <MdElectricBolt className="mr-2 text-lg" />
-                            Default Media
-                          </li>
-                          <li className="flex text-sm items-center">
-                            <AiOutlineCloudUpload className="mr-2 text-lg" />
-                            Browse More
-                          </li>
-                        </ul>
-                      </div>
-                    )}
-                  </div> */}
-                </div>
-              </div>
               {showUploadAssestModal && <FileUpload />}
               {showAssetModal && (
                 <tr>
@@ -1559,126 +1510,175 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   </td>
                 </tr>
               )}
+            </div>
+            {/* now playing */}
+            <div className="grid grid-cols-12 screen-player-details min-w-full pb-7 sm:pb-0 border-b border-[#D5E3FF]">
+              <div className="default-media w-full flex items-center xs-block justify-between bg-lightgray py-2 px-5 rounded-md lg:col-start-4 lg:col-span-6 md:col-start-3 md:col-span-8  sm:col-start-1 sm:col-span-12">
+                <div className="w-full">
+                  <p className="text-primary text-sm font-light">Now Playing</p>
+                  <h4 className="text-primary text-lg">
+                    {compositionData.length > 0 &&
+                      playerData === null &&
+                      "Composition"}
+                    {screenPreviewData.data.length > 1 &&
+                      playerData !== null &&
+                      "Schedule"}
+                    {screenPreviewData.data.length === 1 &&
+                      compositionData.length === 0 &&
+                      "Default Media"}
+                  </h4>
+                </div>
 
-              <div className="grid grid-cols-12 info-table">
-                <div className="lg:col-start-4 lg:col-span-6 md:col-start-1 md:col-span-12  sm:col-start-1 sm:col-span-12 text-center">
-                  <ul className="inline-flex items-center justify-center border border-gray rounded-full my-4 shadow-xl">
-                    <li className="text-sm firstli">
+                {/* <div className="relative">
+                    <div className="relative">
                       <button
-                        className={toggle === 1 ? "tabshow tabactive" : "tab"}
-                        onClick={() => updatetoggle(1)}
+                        className="bg-white p-1 rounded-md shadow mr-2 hover:bg-SlateBlue relative"
+                        onClick={() => setMediadw((prev) => !prev)}
                       >
-                        Info
+                        <HiOutlineChevronDown className="text-primary text-lg hover:text-white" />
                       </button>
-                    </li>
-                    <li className="text-sm">
-                      <button
-                        className={toggle === 2 ? "tabshow tabactive" : "tab"}
-                        onClick={() => updatetoggle(2)}
-                      >
-                        Setting
+                      <button className="bg-white p-1 rounded-md shadow hover:bg-SlateBlue">
+                        <AiOutlineCloudUpload className="text-primary text-lg hover:text-white" />
                       </button>
-                    </li>
-                  </ul>
-                  <div
-                    className={
-                      toggle === 1
-                        ? "show-togglecontent active mb-5"
-                        : "togglecontent"
-                    }
-                  >
-                    <table
-                      cellPadding={10}
-                      className="w-full border-[#D5E3FF] border rounded-xl screen-status"
+                    </div>
+                    {mediadw && (
+                      <div className="mediadw">
+                        <ul>
+                          <li className="flex text-sm  items-center">
+                            <MdElectricBolt className="mr-2 text-lg" />
+                            Default Media
+                          </li>
+                          <li className="flex text-sm items-center">
+                            <AiOutlineCloudUpload className="mr-2 text-lg" />
+                            Browse More
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </div> */}
+              </div>
+            </div>
+
+            {/* info table */}
+            <div className="grid grid-cols-12 info-table">
+              <div className="lg:col-start-4 lg:col-span-6 md:col-start-1 md:col-span-12  sm:col-start-1 sm:col-span-12 text-center">
+                <ul className="inline-flex items-center justify-center border border-gray rounded-full my-4 shadow-xl">
+                  <li className="text-sm firstli">
+                    <button
+                      className={toggle === 1 ? "tabshow tabactive" : "tab"}
+                      onClick={() => updatetoggle(1)}
                     >
-                      {Array.isArray(screenData) &&
-                        screenData.map((screen) => (
-                          <tbody key={screen.screenID}>
-                            <tr className="border-b border-[#D5E3FF]">
-                              <td className="text-right lg:w-2/4 md:w-2/4 sm:w-full">
-                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                  Screen Status:
-                                </p>
-                              </td>
-                              <td className="text-left">
-                                <button className="bg-gray py-2 px-8 rounded-full text-primary hover:bg-primary hover:text-white">
-                                  Offline
-                                </button>
-                              </td>
-                            </tr>
-                            <tr className="border-b border-[#D5E3FF]">
-                              <td className="text-right">
-                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                  Screen Details:
-                                </p>
-                              </td>
-                              <td className="text-left">
-                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                                  Sony, S01-5000035, 5120 x 2880, (Ultrawide 5K)
-                                </p>
-                              </td>
-                            </tr>
-                            <tr className="border-b border-[#D5E3FF]">
-                              <td className="text-right">
-                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                  Mac ID:
-                                </p>
-                              </td>
-                              <td className="text-left">
-                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                                  {screen.macid}
-                                </p>
-                              </td>
-                            </tr>
-                            <tr className="border-b border-[#D5E3FF]">
-                              <td className="text-right">
-                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                  Operating System:
-                                </p>
-                              </td>
-                              <td className="text-left">
-                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                                  Apple TV
-                                </p>
-                              </td>
-                            </tr>
-                            <tr className="border-b border-[#D5E3FF]">
-                              <td className="text-right">
-                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                  Google Location:
-                                </p>
-                              </td>
-                              <td className="text-left">
-                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                                  {screen.googleLocation}
-                                </p>
-                              </td>
-                            </tr>
-                            <tr className="border-b border-[#D5E3FF]">
-                              <td className="text-right">
-                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                  Time Zone:
-                                </p>
-                              </td>
-                              <td className="text-left">
-                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                                  {screen.timeZoneName}
-                                </p>
-                              </td>
-                            </tr>
-                            <tr className="border-b border-[#D5E3FF]">
-                              <td className="text-right">
-                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                  Tags:
-                                </p>
-                              </td>
-                              <td className="text-left">
-                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                                  {screen.tags}
-                                </p>
-                              </td>
-                            </tr>
-                            {/* <tr className="border-b border-[#D5E3FF]">
+                      Info
+                    </button>
+                  </li>
+                  <li className="text-sm">
+                    <button
+                      className={toggle === 2 ? "tabshow tabactive" : "tab"}
+                      onClick={() => updatetoggle(2)}
+                    >
+                      Setting
+                    </button>
+                  </li>
+                </ul>
+                <div
+                  className={
+                    toggle === 1
+                      ? "show-togglecontent active mb-5"
+                      : "togglecontent"
+                  }
+                >
+                  <table
+                    cellPadding={10}
+                    className="w-full border-[#D5E3FF] border rounded-xl screen-status"
+                  >
+                    {Array.isArray(screenData) &&
+                      screenData.map((screen) => (
+                        <tbody key={screen.screenID}>
+                          <tr className="border-b border-[#D5E3FF]">
+                            <td className="text-right lg:w-2/4 md:w-2/4 sm:w-full">
+                              <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                Screen Status:
+                              </p>
+                            </td>
+                            <td className="text-left">
+                              <button className="bg-gray py-2 px-8 rounded-full text-primary hover:bg-primary hover:text-white">
+                                Offline
+                              </button>
+                            </td>
+                          </tr>
+                          <tr className="border-b border-[#D5E3FF]">
+                            <td className="text-right">
+                              <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                Screen Details:
+                              </p>
+                            </td>
+                            <td className="text-left">
+                              <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                Sony, S01-5000035, 5120 x 2880, (Ultrawide 5K)
+                              </p>
+                            </td>
+                          </tr>
+                          <tr className="border-b border-[#D5E3FF]">
+                            <td className="text-right">
+                              <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                Mac ID:
+                              </p>
+                            </td>
+                            <td className="text-left">
+                              <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                {screen.macid}
+                              </p>
+                            </td>
+                          </tr>
+                          <tr className="border-b border-[#D5E3FF]">
+                            <td className="text-right">
+                              <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                Operating System:
+                              </p>
+                            </td>
+                            <td className="text-left">
+                              <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                Apple TV
+                              </p>
+                            </td>
+                          </tr>
+                          <tr className="border-b border-[#D5E3FF]">
+                            <td className="text-right">
+                              <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                Google Location:
+                              </p>
+                            </td>
+                            <td className="text-left">
+                              <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                {screen.googleLocation}
+                              </p>
+                            </td>
+                          </tr>
+                          <tr className="border-b border-[#D5E3FF]">
+                            <td className="text-right">
+                              <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                Time Zone:
+                              </p>
+                            </td>
+                            <td className="text-left">
+                              <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                {screen.timeZoneName}
+                              </p>
+                            </td>
+                          </tr>
+                          <tr className="border-b border-[#D5E3FF]">
+                            <td className="text-right">
+                              <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                Tags:
+                              </p>
+                            </td>
+                            <td className="text-left">
+                              <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                {screen.tags}
+                              </p>
+                            </td>
+                          </tr>
+                          {/* <tr className="border-b border-[#D5E3FF]">
                               <td className="text-right">
                                 <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                   Connected Since:
@@ -1690,19 +1690,19 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 </p>
                               </td>
                             </tr> */}
-                            <tr className="border-b border-[#D5E3FF]">
-                              <td className="text-right">
-                                <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                  Connected By:
-                                </p>
-                              </td>
-                              <td className="text-left">
-                                <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                                  {screen.userName}
-                                </p>
-                              </td>
-                            </tr>
-                            {/* <tr className="border-b border-[#D5E3FF]">
+                          <tr className="border-b border-[#D5E3FF]">
+                            <td className="text-right">
+                              <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                Connected By:
+                              </p>
+                            </td>
+                            <td className="text-left">
+                              <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
+                                {screen.userName}
+                              </p>
+                            </td>
+                          </tr>
+                          {/* <tr className="border-b border-[#D5E3FF]">
                               <td className="text-right">
                                 <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                   Operating Hours:
@@ -1714,7 +1714,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 </p>
                               </td>
                             </tr> */}
-                            {/* <tr className="border-b border-[#D5E3FF]">
+                          {/* <tr className="border-b border-[#D5E3FF]">
                               <td className="text-right">
                                 <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                   payment method:
@@ -1727,7 +1727,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               </td>
                             </tr> */}
 
-                            {/* <tr>
+                          {/* <tr>
                           <td colSpan={2}>
                             <div className="flex items-center justify-center">
                               
@@ -1757,126 +1757,120 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                           </td>
                         </tr> */}
-                          </tbody>
-                        ))}
-                    </table>
-                    {/* <div className="text-right my-5">
+                        </tbody>
+                      ))}
+                  </table>
+                  {/* <div className="text-right my-5">
                       <button className="bg-primary text-base px-5 py-2 rounded-full text-white">
                         Save
                       </button>
                     </div> */}
-                  </div>
+                </div>
 
-                  <div
-                    className={
-                      toggle === 2
-                        ? "show-togglecontent active mb-5"
-                        : "togglecontent"
-                    }
+                <div
+                  className={
+                    toggle === 2
+                      ? "show-togglecontent active mb-5"
+                      : "togglecontent"
+                  }
+                >
+                  <table
+                    cellPadding={10}
+                    className="w-full border-[#D5E3FF] border rounded-xl synctable responsive-table"
+                    onClick={() => {
+                      assetPreviewPopup && setAssetPreviewPopup(false);
+                    }}
                   >
-                    <table
-                      cellPadding={10}
-                      className="w-full border-[#D5E3FF] border rounded-xl synctable responsive-table"
-                      onClick={() => {
-                        assetPreviewPopup && setAssetPreviewPopup(false);
-                      }}
-                    >
-                      <tbody>
-                        <tr className="border-b border-[#D5E3FF]">
-                          <td className="text-right">
-                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                              Screen Name:
-                            </p>
-                          </td>
-                          <td>
-                            <input
-                              type="text"
-                              className="border border-[#D5E3FF] rounded-full px-3 py-2.5"
-                              //placeholder="132, My Street, Kingston, New York..."
-                              onChange={(e) => {
-                                setScreenName(e.target.value);
-                              }}
-                              value={screenName}
-                            />
-                          </td>
-                        </tr>
-                        <tr className="border-b border-[#D5E3FF]">
-                          <td className="lg:text-right md:text-right sm:text-left xs:text-left lg:w-2/4  md:w-2/4 sm:w-full">
-                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                              Orientation:
-                            </p>
-                          </td>
-                          <td className="text-left">
-                            <div className="flex lg:justify-center md:justify-start sm:justify-start xs:justify-start lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
-                              {getScreenOrientation.map((option) => (
-                                <div
-                                  key={option.orientationID}
-                                  className="flex"
-                                >
-                                  <input
-                                    type="radio"
-                                    value={option.orientationID}
-                                    checked={
-                                      option.orientationID ===
-                                      selectScreenOrientation
-                                    }
-                                    onChange={(e) =>
-                                      handleScreenOrientationRadio(
-                                        e,
-                                        option.orientationID
-                                      )
-                                    }
-                                  />
-                                  <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                                    {option.orientationName}
-                                  </label>
-                                </div>
-                              ))}
-                            </div>
-                          </td>
-                        </tr>
-                        <tr className="border-b border-[#D5E3FF]">
-                          <td className="lg:text-right md:text-right sm:text-left xs:text-left lg:w-2/4  md:w-2/4 sm:w-full">
-                            <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                              Resolution:
-                            </p>
-                          </td>
-                          <td className="text-left">
-                            <div className="flex lg:justify-center md:justify-start sm:justify-start xs:justify-start lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
-                              {getScreenResolution.map((option) => (
-                                <div
-                                  key={option.resolutionsID}
-                                  className="flex"
-                                >
-                                  <input
-                                    type="radio"
-                                    value={option.resolutionsID}
-                                    checked={
-                                      option.resolutionsID ===
-                                      selectScreenResolution
-                                    }
-                                    onChange={(e) =>
-                                      handleScreenResolutionRadio(
-                                        e,
-                                        option.resolutionsID
-                                      )
-                                    }
-                                  />
-                                  <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                                    {option.resolutionsName}
-                                  </label>
-                                </div>
-                              ))}
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          {/* <td className="lg:text-right md:text-right sm:text-left xs:text-left pb-0">
+                    <tbody>
+                      <tr className="border-b border-[#D5E3FF]">
+                        <td className="text-right">
+                          <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                            Screen Name:
+                          </p>
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            className="border border-[#D5E3FF] rounded-full px-3 py-2.5"
+                            //placeholder="132, My Street, Kingston, New York..."
+                            onChange={(e) => {
+                              setScreenName(e.target.value);
+                            }}
+                            value={screenName}
+                          />
+                        </td>
+                      </tr>
+                      <tr className="border-b border-[#D5E3FF]">
+                        <td className="lg:text-right md:text-right sm:text-left xs:text-left lg:w-2/4  md:w-2/4 sm:w-full">
+                          <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                            Orientation:
+                          </p>
+                        </td>
+                        <td className="text-left">
+                          <div className="flex lg:justify-center md:justify-start sm:justify-start xs:justify-start lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
+                            {getScreenOrientation.map((option) => (
+                              <div key={option.orientationID} className="flex">
+                                <input
+                                  type="radio"
+                                  value={option.orientationID}
+                                  checked={
+                                    option.orientationID ===
+                                    selectScreenOrientation
+                                  }
+                                  onChange={(e) =>
+                                    handleScreenOrientationRadio(
+                                      e,
+                                      option.orientationID
+                                    )
+                                  }
+                                />
+                                <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
+                                  {option.orientationName}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </td>
+                      </tr>
+                      <tr className="border-b border-[#D5E3FF]">
+                        <td className="lg:text-right md:text-right sm:text-left xs:text-left lg:w-2/4  md:w-2/4 sm:w-full">
+                          <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                            Resolution:
+                          </p>
+                        </td>
+                        <td className="text-left">
+                          <div className="flex lg:justify-center md:justify-start sm:justify-start xs:justify-start lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
+                            {getScreenResolution.map((option) => (
+                              <div key={option.resolutionsID} className="flex">
+                                <input
+                                  type="radio"
+                                  value={option.resolutionsID}
+                                  checked={
+                                    option.resolutionsID ===
+                                    selectScreenResolution
+                                  }
+                                  onChange={(e) =>
+                                    handleScreenResolutionRadio(
+                                      e,
+                                      option.resolutionsID
+                                    )
+                                  }
+                                />
+                                <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
+                                  {option.resolutionsName}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        {/* <td className="lg:text-right md:text-right sm:text-left xs:text-left pb-0">
                             <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                               Playback Mode:
                             </p>
                           </td> */}
-                          {/* <td className="text-left pb-0">
+                        {/* <td className="text-left pb-0">
                             <ul className="inline-flex items-center justify-center  my-4 lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
                               <li className="text-sm">
                                 
@@ -1906,21 +1900,21 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               </li>
                             </ul>
                           </td> */}
-                        </tr>
-                        <tr
-                        // className={
-                        //   sync === 1
-                        //     ? "show-togglesynccontent active w-full"
-                        //     : "togglesynccontent"
-                        // }
-                        >
-                          <td colSpan={2}>
-                            <table
-                              cellPadding={10}
-                              className="sync-table w-full responsive-table"
-                            >
-                              <tbody>
-                                {/* <tr className="border-b border-[#D5E3FF]">
+                      </tr>
+                      <tr
+                      // className={
+                      //   sync === 1
+                      //     ? "show-togglesynccontent active w-full"
+                      //     : "togglesynccontent"
+                      // }
+                      >
+                        <td colSpan={2}>
+                          <table
+                            cellPadding={10}
+                            className="sync-table w-full responsive-table"
+                          >
+                            <tbody>
+                              {/* <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-center pt-0" colSpan={2}>
                                     <p className="text-primary text-sm font-medium">
                                       Sync mode will keep your screens in sync
@@ -1929,7 +1923,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     </p>
                                   </td>
                                 </tr> */}
-                                {/* <tr className="border-b border-[#D5E3FF]">
+                              {/* <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                       Google Location:
@@ -1945,33 +1939,33 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   </td>
                                 </tr> */}
 
-                                <tr className="border-b border-[#D5E3FF]">
-                                  <td className="text-right">
-                                    <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                      Overwrite Time Zone:
-                                    </p>
-                                  </td>
-                                  <td className="relative">
-                                    <select
-                                      className="relative"
-                                      value={selectedTimezoneName}
-                                      onChange={(e) =>
-                                        setSelectedTimezoneName(e.target.value)
-                                      }
-                                    >
-                                      {getTimezone.map((timezone) => (
-                                        <option
-                                          value={timezone.timeZoneID}
-                                          key={timezone.timeZoneID}
-                                        >
-                                          {timezone.timeZoneName}
-                                        </option>
-                                      ))}
-                                    </select>
-                                  </td>
-                                </tr>
+                              <tr className="border-b border-[#D5E3FF]">
+                                <td className="text-right">
+                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                    Overwrite Time Zone:
+                                  </p>
+                                </td>
+                                <td className="relative">
+                                  <select
+                                    className="relative"
+                                    value={selectedTimezoneName}
+                                    onChange={(e) =>
+                                      setSelectedTimezoneName(e.target.value)
+                                    }
+                                  >
+                                    {getTimezone.map((timezone) => (
+                                      <option
+                                        value={timezone.timeZoneID}
+                                        key={timezone.timeZoneID}
+                                      >
+                                        {timezone.timeZoneName}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </td>
+                              </tr>
 
-                                {/* <tr className="border-b border-[#D5E3FF]">
+                              {/* <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                       Screen Group:
@@ -1985,93 +1979,89 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   </td>
                                 </tr> */}
 
-                                <tr className="border-b border-[#D5E3FF]">
-                                  <td className="text-right">
-                                    <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                      Tags:
-                                    </p>
-                                  </td>
-                                  <td className="flex items-center gap-2">
-                                    {((screenData.length > 0 &&
-                                      screenData[0]?.tags === "") ||
-                                      (screenData.length > 0 &&
-                                        screenData[0]?.tags === null)) && (
-                                      <span>
-                                        <AiOutlinePlusCircle
-                                          size={30}
-                                          className="mx-auto cursor-pointer"
-                                          onClick={() => {
-                                            setShowTagModal(true);
-                                            screenData[0].tags === "" ||
-                                            screenData[0]?.tags === null
-                                              ? setTags([])
-                                              : setTags(
+                              <tr className="border-b border-[#D5E3FF]">
+                                <td className="text-right">
+                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                    Tags:
+                                  </p>
+                                </td>
+                                <td className="flex items-center gap-2">
+                                  {((screenData.length > 0 &&
+                                    screenData[0]?.tags === "") ||
+                                    (screenData.length > 0 &&
+                                      screenData[0]?.tags === null)) && (
+                                    <span>
+                                      <AiOutlinePlusCircle
+                                        size={30}
+                                        className="mx-auto cursor-pointer"
+                                        onClick={() => {
+                                          setShowTagModal(true);
+                                          screenData[0].tags === "" ||
+                                          screenData[0]?.tags === null
+                                            ? setTags([])
+                                            : setTags(
+                                                screenData[0]?.tags?.split(",")
+                                              );
+                                          setTagUpdateScreeen(screenData[0]);
+                                        }}
+                                      />
+                                    </span>
+                                  )}
+
+                                  {screenData?.length > 0 &&
+                                  screenData[0]?.tags !== null
+                                    ? screenData.length > 0 &&
+                                      screenData[0]?.tags
+                                        .split(",")
+                                        .slice(
+                                          0,
+                                          screenData.length > 0 &&
+                                            screenData[0]?.tags.split(",")
+                                              .length > 2
+                                            ? 3
+                                            : screenData.length > 0 &&
+                                                screenData[0]?.tags.split(",")
+                                                  .length
+                                        )
+                                        .join(",")
+                                    : ""}
+                                  {screenData.length > 0 &&
+                                    screenData[0]?.tags !== "" &&
+                                    screenData.length > 0 &&
+                                    screenData[0]?.tags !== null && (
+                                      <MdOutlineModeEdit
+                                        onClick={() => {
+                                          setShowTagModal(true);
+                                          (screenData.length > 0 &&
+                                            screenData[0].tags === "") ||
+                                          (screenData.length > 0 &&
+                                            screenData[0]?.tags === null)
+                                            ? setTags([])
+                                            : setTags(
+                                                screenData.length > 0 &&
                                                   screenData[0]?.tags?.split(
                                                     ","
                                                   )
-                                                );
-                                            setTagUpdateScreeen(screenData[0]);
-                                          }}
-                                        />
-                                      </span>
-                                    )}
-
-                                    {screenData?.length > 0 &&
-                                    screenData[0]?.tags !== null
-                                      ? screenData.length > 0 &&
-                                        screenData[0]?.tags
-                                          .split(",")
-                                          .slice(
-                                            0,
+                                              );
+                                          setTagUpdateScreeen(
                                             screenData.length > 0 &&
-                                              screenData[0]?.tags.split(",")
-                                                .length > 2
-                                              ? 3
-                                              : screenData.length > 0 &&
-                                                  screenData[0]?.tags.split(",")
-                                                    .length
-                                          )
-                                          .join(",")
-                                      : ""}
-                                    {screenData.length > 0 &&
-                                      screenData[0]?.tags !== "" &&
-                                      screenData.length > 0 &&
-                                      screenData[0]?.tags !== null && (
-                                        <MdOutlineModeEdit
-                                          onClick={() => {
-                                            setShowTagModal(true);
-                                            (screenData.length > 0 &&
-                                              screenData[0].tags === "") ||
-                                            (screenData.length > 0 &&
-                                              screenData[0]?.tags === null)
-                                              ? setTags([])
-                                              : setTags(
-                                                  screenData.length > 0 &&
-                                                    screenData[0]?.tags?.split(
-                                                      ","
-                                                    )
-                                                );
-                                            setTagUpdateScreeen(
-                                              screenData.length > 0 &&
-                                                screenData[0]
-                                            );
-                                          }}
-                                          className="w-5 h-5 cursor-pointer"
-                                        />
-                                      )}
-                                    {showTagModal && (
-                                      <AddOrEditTagPopup
-                                        setShowTagModal={setShowTagModal}
-                                        tags={tags}
-                                        setTags={setTags}
-                                        handleTagsUpdate={handleTagsUpdate}
-                                        from="screen"
-                                        setTagUpdateScreeen={
-                                          setTagUpdateScreeen
-                                        }
+                                              screenData[0]
+                                          );
+                                        }}
+                                        className="w-5 h-5 cursor-pointer"
                                       />
                                     )}
-                                    {/* <select
+                                  {showTagModal && (
+                                    <AddOrEditTagPopup
+                                      setShowTagModal={setShowTagModal}
+                                      tags={tags}
+                                      setTags={setTags}
+                                      handleTagsUpdate={handleTagsUpdate}
+                                      from="screen"
+                                      setTagUpdateScreeen={setTagUpdateScreeen}
+                                    />
+                                  )}
+                                  {/* <select
                                       value={selectedTag}
                                       onChange={(e) =>
                                         setSelectedTag(e.target.value)
@@ -2086,220 +2076,216 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                         </option>
                                       ))}
                                     </select> */}
-                                  </td>
-                                </tr>
-                                <tr className=" border-[#D5E3FF]">
-                                  <td className="text-right">
-                                    <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
-                                      Type
-                                    </p>
-                                  </td>
-                                  <td>
-                                    <select
-                                      className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                      value={selectedScreenTypeOption}
-                                      onChange={handleOptionChange}
-                                    >
-                                      <option label="Select Type"></option>
-                                      {getSelectedScreenTypeOption.map(
-                                        (option) => (
-                                          <option
-                                            key={option.mediaTypeId}
-                                            value={option.mediaTypeId}
-                                          >
-                                            {option.mediaTypeName}
-                                          </option>
-                                        )
-                                      )}
-                                    </select>
-                                  </td>
-                                </tr>
-                                {selectedScreenTypeOption === "1" && (
-                                  <tr
-                                    className={`display-none border-b border-[#D5E3FF]`}
+                                </td>
+                              </tr>
+                              <tr className=" border-[#D5E3FF]">
+                                <td className="text-right">
+                                  <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
+                                    Type
+                                  </p>
+                                </td>
+                                <td>
+                                  <select
+                                    className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                    value={selectedScreenTypeOption}
+                                    onChange={handleOptionChange}
                                   >
-                                    <td></td>
-                                    <td className="relative">
-                                      <input
-                                        className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                        value={
-                                          selectedAsset.assetName ||
-                                          selectedDefaultAsset
-                                        }
-                                        readOnly
-                                        placeholder="Select option"
-                                        onChange={(e) =>
-                                          setSelectedAsset({
-                                            ...selectedAsset,
-                                            assetName: e.target.value,
-                                          })
-                                        }
-                                        onClick={() =>
-                                          setShowAssestOptionsPopup(
-                                            !showAssestOptionsPopup
-                                          )
-                                        }
-                                      />
+                                    <option label="Select Type"></option>
+                                    {getSelectedScreenTypeOption.map(
+                                      (option) => (
+                                        <option
+                                          key={option.mediaTypeId}
+                                          value={option.mediaTypeId}
+                                        >
+                                          {option.mediaTypeName}
+                                        </option>
+                                      )
+                                    )}
+                                  </select>
+                                </td>
+                              </tr>
+                              {selectedScreenTypeOption === "1" && (
+                                <tr
+                                  className={`display-none border-b border-[#D5E3FF]`}
+                                >
+                                  <td></td>
+                                  <td className="relative">
+                                    <input
+                                      className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                      value={
+                                        selectedAsset.assetName ||
+                                        selectedDefaultAsset
+                                      }
+                                      readOnly
+                                      placeholder="Select option"
+                                      onChange={(e) =>
+                                        setSelectedAsset({
+                                          ...selectedAsset,
+                                          assetName: e.target.value,
+                                        })
+                                      }
+                                      onClick={() =>
+                                        setShowAssestOptionsPopup(
+                                          !showAssestOptionsPopup
+                                        )
+                                      }
+                                    />
 
-                                      {showAssestOptionsPopup && (
-                                        <>
-                                          <div className="absolute left-[10%] bottom-[-3px]  text-[35px]  z-20">
-                                            <img
-                                              src="/DisployImg/Polygon.svg"
-                                              alt="notification"
-                                              className="cursor-pointer assestPopup"
-                                            />
-                                          </div>
-                                          <div className="absolute left-[2%] bottom-[-74px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10  pr-16">
-                                            <div
-                                              className="text-sm mb-1 mt-2 ml-3 cursor-pointer"
-                                              onClick={() => {
-                                                setShowAssetModal(true);
-                                                setShowAssestOptionsPopup(
-                                                  false
-                                                );
-                                              }}
-                                            >
-                                              Browse
-                                            </div>
-
-                                            <div
-                                              className="text-sm mb-3 mt-3 ml-3 cursor-pointer"
-                                              onClick={() => {
-                                                setSelectedDefaultAsset(
-                                                  "Default Asset"
-                                                );
-                                                setSelectedAsset("");
-                                                setShowAssestOptionsPopup(
-                                                  false
-                                                );
-                                              }}
-                                            >
-                                              Default Assets
-                                            </div>
-                                          </div>
-                                        </>
-                                      )}
-                                    </td>
-                                  </tr>
-                                )}
-                                {selectedScreenTypeOption === "2" && (
-                                  <>
-                                    <tr>
-                                      <td></td>
-                                      <td>
-                                        <div className="flex">
-                                          <input
-                                            className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none"
-                                            value={
-                                              selectedSchedule !== ""
-                                                ? selectedSchedule.scheduleName
-                                                : ""
-                                            }
-                                            placeholder="Set Schedule"
-                                            readOnly
-                                            onChange={(e) =>
-                                              setSelectedSchedule({
-                                                ...selectedSchedule,
-                                                scheduleName: e.target.value,
-                                              })
-                                            }
+                                    {showAssestOptionsPopup && (
+                                      <>
+                                        <div className="absolute left-[10%] bottom-[-3px]  text-[35px]  z-20">
+                                          <img
+                                            src="/DisployImg/Polygon.svg"
+                                            alt="notification"
+                                            className="cursor-pointer assestPopup"
                                           />
-                                          <div className="flex items-center ml-5">
-                                            <span className="bg-lightgray p-2 rounded cursor-pointer">
-                                              <GrScheduleNew
-                                                size={20}
-                                                onClick={() =>
-                                                  setShowScheduleModal(true)
-                                                }
-                                              />
-                                            </span>
-                                          </div>
                                         </div>
-                                      </td>
-                                    </tr>
-                                  </>
-                                )}
-                                {selectedScreenTypeOption === "3" && (
-                                  <>
-                                    <tr>
-                                      <td></td>
-                                      <td>
-                                        <div className="flex">
-                                          <input
-                                            className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                            value={
-                                              selectedComposition !== ""
-                                                ? selectedComposition.compositionName
-                                                : ""
-                                            }
-                                            placeholder="Set Composition"
-                                            readOnly
-                                            onChange={(e) =>
-                                              setSelectedComposition({
-                                                ...selectedComposition,
-                                                compositionName: e.target.value,
-                                              })
-                                            }
-                                          />
-
+                                        <div className="absolute left-[2%] bottom-[-74px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10  pr-16">
                                           <div
-                                            className="flex items-center ml-5"
+                                            className="text-sm mb-1 mt-2 ml-3 cursor-pointer"
                                             onClick={() => {
-                                              setShowCompositionModal(true);
-                                              // setConfirmForComposition(false);
+                                              setShowAssetModal(true);
+                                              setShowAssestOptionsPopup(false);
                                             }}
                                           >
-                                            <span className="bg-lightgray p-2 rounded">
-                                              <svg
-                                                width="15"
-                                                height="15"
-                                                viewBox="0 0 15 15"
-                                                fill="none"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                              >
-                                                <path
-                                                  d="M0.961295 0.0665965C0.610654 0.137625 0.274179 0.398062 0.0970872 0.736291L0.015625 0.89526V3.29669C0.015625 5.69136 0.015625 5.69812 0.0935454 5.85709C0.206884 6.09724 0.458355 6.334 0.716909 6.44561C1.02151 6.5809 1.41111 6.58429 1.698 6.45576C1.99905 6.32047 5.27879 4.22006 5.40984 4.078C5.81715 3.63492 5.82424 2.98552 5.43109 2.53567C5.32484 2.41729 1.91405 0.228947 1.68029 0.13086C1.50674 0.0564494 1.16318 0.0260091 0.961295 0.0665965Z"
-                                                  fill="#41479B"
-                                                />
-                                                <path
-                                                  d="M7.25131 0.0883092C7.08502 0.17676 6.95765 0.417348 6.97888 0.601327C7.00011 0.767615 7.08148 0.891447 7.22654 0.979898C7.33622 1.04712 7.43529 1.05066 11.0087 1.05066H14.6741L14.7874 0.95867C15.0846 0.70393 15.0669 0.289978 14.7449 0.0953853C14.6317 0.0246242 14.5574 0.0246242 11.0016 0.0246242C7.55912 0.0246242 7.36806 0.0281622 7.25131 0.0883092Z"
-                                                  fill="#41479B"
-                                                />
-                                                <path
-                                                  d="M7.25126 2.87848C7.08851 2.95985 6.9576 3.20398 6.97883 3.39149C7.00006 3.55778 7.08143 3.68161 7.22649 3.7736C7.33617 3.84083 7.42108 3.84083 11.0264 3.83375L14.7095 3.82314L14.805 3.73468C15.0845 3.47287 15.0562 3.07661 14.7448 2.88555C14.6316 2.81479 14.5573 2.81479 11.0016 2.81479C7.61921 2.81479 7.36801 2.81833 7.25126 2.87848Z"
-                                                  fill="#41479B"
-                                                />
-                                                <path
-                                                  d="M7.23694 5.669C6.89729 5.8742 6.9079 6.3943 7.25463 6.57474C7.34308 6.62073 7.84548 6.62781 10.9943 6.62781C14.5607 6.62781 14.635 6.62781 14.7482 6.55705C15.0843 6.35184 15.0843 5.87774 14.7482 5.67253C14.635 5.60177 14.5607 5.60177 10.9873 5.60177C7.49875 5.60177 7.33954 5.60531 7.23694 5.669Z"
-                                                  fill="#41479B"
-                                                />
-                                                <path
-                                                  d="M0.255992 8.46306C-0.0801225 8.66827 -0.0801225 9.14237 0.255992 9.34757C0.372748 9.41833 0.450585 9.41833 7.50192 9.41833C14.5533 9.41833 14.6311 9.41833 14.7479 9.34757C15.084 9.14237 15.084 8.66827 14.7479 8.46306C14.6311 8.3923 14.5533 8.3923 7.50192 8.3923C0.450585 8.3923 0.372748 8.3923 0.255992 8.46306Z"
-                                                  fill="#41479B"
-                                                />
-                                                <path
-                                                  d="M0.319748 11.2081C0.291443 11.2187 0.227758 11.2612 0.185302 11.3036C-0.0835903 11.5477 -0.0482098 11.9511 0.256063 12.1386C0.36928 12.2094 0.44358 12.2094 4.70693 12.2094C8.97028 12.2094 9.04458 12.2094 9.1578 12.1386C9.34178 12.0254 9.41962 11.8697 9.40193 11.6468C9.39131 11.477 9.37362 11.4416 9.24271 11.3178L9.09765 11.1833L4.73524 11.1869C2.33644 11.1869 0.348052 11.1975 0.319748 11.2081Z"
-                                                  fill="#41479B"
-                                                />
-                                                <path
-                                                  d="M12.758 11.3597C12.5549 11.494 12.5205 11.6111 12.5205 12.1483V12.6235H12.0489C11.6668 12.6235 11.5497 12.6338 11.4534 12.6854C11.0781 12.8714 11.085 13.4189 11.4637 13.5876C11.5807 13.6427 11.6909 13.6565 12.0661 13.6565H12.5205V14.1317C12.5205 14.6482 12.5549 14.7722 12.7339 14.9065C12.9542 15.0683 13.3122 14.9994 13.4568 14.7618C13.5291 14.6517 13.536 14.5862 13.5463 14.1489L13.5601 13.6634L14.0454 13.6496C14.4826 13.6393 14.548 13.6324 14.6582 13.5601C14.8957 13.4155 14.9645 13.0573 14.8027 12.837C14.6685 12.6579 14.5446 12.6235 14.0282 12.6235H13.5532V12.1655C13.5532 11.6386 13.4981 11.4699 13.3053 11.3494C13.147 11.253 12.9095 11.2564 12.758 11.3597Z"
-                                                  fill="#41479B"
-                                                />
-                                                <path
-                                                  d="M0.211504 14.0658C-0.0856924 14.3206 -0.0680021 14.7345 0.253961 14.9291C0.367178 14.9999 0.441477 14.9999 4.70483 14.9999C8.96818 14.9999 9.04248 14.9999 9.1557 14.9291C9.4812 14.731 9.49535 14.2392 9.18046 14.0446C9.06725 13.9738 9.01417 13.9738 4.69421 13.9738H0.324722L0.211504 14.0658Z"
-                                                  fill="#41479B"
-                                                />
-                                              </svg>
-                                            </span>
+                                            Browse
+                                          </div>
+
+                                          <div
+                                            className="text-sm mb-3 mt-3 ml-3 cursor-pointer"
+                                            onClick={() => {
+                                              setSelectedDefaultAsset(
+                                                "Default Asset"
+                                              );
+                                              setSelectedAsset("");
+                                              setShowAssestOptionsPopup(false);
+                                            }}
+                                          >
+                                            Default Assets
                                           </div>
                                         </div>
-                                      </td>
-                                    </tr>
-                                  </>
-                                )}
+                                      </>
+                                    )}
+                                  </td>
+                                </tr>
+                              )}
+                              {selectedScreenTypeOption === "2" && (
+                                <>
+                                  <tr>
+                                    <td></td>
+                                    <td>
+                                      <div className="flex">
+                                        <input
+                                          className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none"
+                                          value={
+                                            selectedSchedule !== ""
+                                              ? selectedSchedule.scheduleName
+                                              : ""
+                                          }
+                                          placeholder="Set Schedule"
+                                          readOnly
+                                          onChange={(e) =>
+                                            setSelectedSchedule({
+                                              ...selectedSchedule,
+                                              scheduleName: e.target.value,
+                                            })
+                                          }
+                                        />
+                                        <div className="flex items-center ml-5">
+                                          <span className="bg-lightgray p-2 rounded cursor-pointer">
+                                            <GrScheduleNew
+                                              size={20}
+                                              onClick={() =>
+                                                setShowScheduleModal(true)
+                                              }
+                                            />
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </>
+                              )}
+                              {selectedScreenTypeOption === "3" && (
+                                <>
+                                  <tr>
+                                    <td></td>
+                                    <td>
+                                      <div className="flex">
+                                        <input
+                                          className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                          value={
+                                            selectedComposition !== ""
+                                              ? selectedComposition.compositionName
+                                              : ""
+                                          }
+                                          placeholder="Set Composition"
+                                          readOnly
+                                          onChange={(e) =>
+                                            setSelectedComposition({
+                                              ...selectedComposition,
+                                              compositionName: e.target.value,
+                                            })
+                                          }
+                                        />
 
-                                {/* <tr className="border-b border-[#D5E3FF] relative">
+                                        <div
+                                          className="flex items-center ml-5"
+                                          onClick={() => {
+                                            setShowCompositionModal(true);
+                                            // setConfirmForComposition(false);
+                                          }}
+                                        >
+                                          <span className="bg-lightgray p-2 rounded">
+                                            <svg
+                                              width="15"
+                                              height="15"
+                                              viewBox="0 0 15 15"
+                                              fill="none"
+                                              xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                              <path
+                                                d="M0.961295 0.0665965C0.610654 0.137625 0.274179 0.398062 0.0970872 0.736291L0.015625 0.89526V3.29669C0.015625 5.69136 0.015625 5.69812 0.0935454 5.85709C0.206884 6.09724 0.458355 6.334 0.716909 6.44561C1.02151 6.5809 1.41111 6.58429 1.698 6.45576C1.99905 6.32047 5.27879 4.22006 5.40984 4.078C5.81715 3.63492 5.82424 2.98552 5.43109 2.53567C5.32484 2.41729 1.91405 0.228947 1.68029 0.13086C1.50674 0.0564494 1.16318 0.0260091 0.961295 0.0665965Z"
+                                                fill="#41479B"
+                                              />
+                                              <path
+                                                d="M7.25131 0.0883092C7.08502 0.17676 6.95765 0.417348 6.97888 0.601327C7.00011 0.767615 7.08148 0.891447 7.22654 0.979898C7.33622 1.04712 7.43529 1.05066 11.0087 1.05066H14.6741L14.7874 0.95867C15.0846 0.70393 15.0669 0.289978 14.7449 0.0953853C14.6317 0.0246242 14.5574 0.0246242 11.0016 0.0246242C7.55912 0.0246242 7.36806 0.0281622 7.25131 0.0883092Z"
+                                                fill="#41479B"
+                                              />
+                                              <path
+                                                d="M7.25126 2.87848C7.08851 2.95985 6.9576 3.20398 6.97883 3.39149C7.00006 3.55778 7.08143 3.68161 7.22649 3.7736C7.33617 3.84083 7.42108 3.84083 11.0264 3.83375L14.7095 3.82314L14.805 3.73468C15.0845 3.47287 15.0562 3.07661 14.7448 2.88555C14.6316 2.81479 14.5573 2.81479 11.0016 2.81479C7.61921 2.81479 7.36801 2.81833 7.25126 2.87848Z"
+                                                fill="#41479B"
+                                              />
+                                              <path
+                                                d="M7.23694 5.669C6.89729 5.8742 6.9079 6.3943 7.25463 6.57474C7.34308 6.62073 7.84548 6.62781 10.9943 6.62781C14.5607 6.62781 14.635 6.62781 14.7482 6.55705C15.0843 6.35184 15.0843 5.87774 14.7482 5.67253C14.635 5.60177 14.5607 5.60177 10.9873 5.60177C7.49875 5.60177 7.33954 5.60531 7.23694 5.669Z"
+                                                fill="#41479B"
+                                              />
+                                              <path
+                                                d="M0.255992 8.46306C-0.0801225 8.66827 -0.0801225 9.14237 0.255992 9.34757C0.372748 9.41833 0.450585 9.41833 7.50192 9.41833C14.5533 9.41833 14.6311 9.41833 14.7479 9.34757C15.084 9.14237 15.084 8.66827 14.7479 8.46306C14.6311 8.3923 14.5533 8.3923 7.50192 8.3923C0.450585 8.3923 0.372748 8.3923 0.255992 8.46306Z"
+                                                fill="#41479B"
+                                              />
+                                              <path
+                                                d="M0.319748 11.2081C0.291443 11.2187 0.227758 11.2612 0.185302 11.3036C-0.0835903 11.5477 -0.0482098 11.9511 0.256063 12.1386C0.36928 12.2094 0.44358 12.2094 4.70693 12.2094C8.97028 12.2094 9.04458 12.2094 9.1578 12.1386C9.34178 12.0254 9.41962 11.8697 9.40193 11.6468C9.39131 11.477 9.37362 11.4416 9.24271 11.3178L9.09765 11.1833L4.73524 11.1869C2.33644 11.1869 0.348052 11.1975 0.319748 11.2081Z"
+                                                fill="#41479B"
+                                              />
+                                              <path
+                                                d="M12.758 11.3597C12.5549 11.494 12.5205 11.6111 12.5205 12.1483V12.6235H12.0489C11.6668 12.6235 11.5497 12.6338 11.4534 12.6854C11.0781 12.8714 11.085 13.4189 11.4637 13.5876C11.5807 13.6427 11.6909 13.6565 12.0661 13.6565H12.5205V14.1317C12.5205 14.6482 12.5549 14.7722 12.7339 14.9065C12.9542 15.0683 13.3122 14.9994 13.4568 14.7618C13.5291 14.6517 13.536 14.5862 13.5463 14.1489L13.5601 13.6634L14.0454 13.6496C14.4826 13.6393 14.548 13.6324 14.6582 13.5601C14.8957 13.4155 14.9645 13.0573 14.8027 12.837C14.6685 12.6579 14.5446 12.6235 14.0282 12.6235H13.5532V12.1655C13.5532 11.6386 13.4981 11.4699 13.3053 11.3494C13.147 11.253 12.9095 11.2564 12.758 11.3597Z"
+                                                fill="#41479B"
+                                              />
+                                              <path
+                                                d="M0.211504 14.0658C-0.0856924 14.3206 -0.0680021 14.7345 0.253961 14.9291C0.367178 14.9999 0.441477 14.9999 4.70483 14.9999C8.96818 14.9999 9.04248 14.9999 9.1557 14.9291C9.4812 14.731 9.49535 14.2392 9.18046 14.0446C9.06725 13.9738 9.01417 13.9738 4.69421 13.9738H0.324722L0.211504 14.0658Z"
+                                                fill="#41479B"
+                                              />
+                                            </svg>
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </>
+                              )}
+
+                              {/* <tr className="border-b border-[#D5E3FF] relative">
                                   <td className="text-right">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
                                       Operating Hours:
@@ -2335,7 +2321,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   </td>
                                 </tr> */}
 
-                                {/* {showhoursModal && (
+                              {/* {showhoursModal && (
                                   <>
                                     <div className="backdrop">
                                       <div className="hours-model rounded-lg">
@@ -2411,7 +2397,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     </div>
                                   </>
                                 )} */}
-                                {/* 
+                              {/* 
                                 <tr className="border-b border-[#D5E3FF]">
                                   <td className="text-right">
                                     <p className="text-primary lg:text-lg md:text-lg font-medium sm:font-base xs:font-base">
@@ -2476,7 +2462,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   </td>
                                 </tr> */}
 
-                                {/* <tr>
+                              {/* <tr>
                                   <td colSpan={2}>
                                     <div className="flex items-center justify-center">
                                       
@@ -2507,21 +2493,20 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     </div>
                                   </td>
                                 </tr> */}
-                              </tbody>
-                            </table>
-                            <div className="text-right mt-3">
-                              <button
-                                onClick={handleScreenDetail}
-                                className="bg-primary text-base px-5 py-2 rounded-full text-white hover:bg-SlateBlue"
-                              >
-                                Save
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                            </tbody>
+                          </table>
+                          <div className="text-right mt-3">
+                            <button
+                              onClick={handleScreenDetail}
+                              className="bg-primary text-base px-5 py-2 rounded-full text-white hover:bg-SlateBlue"
+                            >
+                              Save
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
