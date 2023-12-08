@@ -783,6 +783,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setFilteredData([]);
   }
 
+  // console.log(screenPreviewData);
+
   return (
     <>
       <div className="flex border-b border-gray">
