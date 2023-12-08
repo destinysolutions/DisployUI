@@ -22,7 +22,7 @@ const Carousel = ({ items, compositonData, from }) => {
   }, [items, currentIndex]);
 
   // console.log(items);
-  
+
   return (
     <>
       <div className="h-full w-full">
@@ -66,7 +66,7 @@ const Carousel = ({ items, compositonData, from }) => {
                   item?.assetType === "Youtube") && (
                   <ReactPlayer
                     url={item?.assetFolderPath}
-                    className="w-full relative z-20 videoinner"
+                    className="w-full relative z-20 videoinner object-fill"
                     controls={true}
                     playing={true}
                   />
@@ -86,9 +86,14 @@ const Carousel = ({ items, compositonData, from }) => {
                   //   Your browser does not support the video tag.
                   // </video>
                 )}
-                {item.mediaType === "Video" && (
+                {(item.mediaType === "Video" ||
+                  item.mediaType === "Youtube") && (
                   <ReactPlayer
-                    url={item?.assetFolderPath}
+                    url={
+                      item?.assetFolderPath
+                        ? item?.assetFolderPath
+                        : item?.fileType
+                    }
                     className="w-full relative z-20 videoinner"
                     controls={true}
                     playing={true}
@@ -124,7 +129,9 @@ const Carousel = ({ items, compositonData, from }) => {
                 {(item?.assetType === "Text" || item?.mediaType === "Text") && (
                   <marquee
                     className="text-lg align-middle h-full flex items-center justify-center bg-lightgray"
-                    direction={item?.direction == "Left to Right" ? "left" : "right"}
+                    direction={
+                      item?.direction == "Left to Right" ? "left" : "right"
+                    }
                   >
                     {item?.assetFolderPath ?? item?.fileType}
                   </marquee>
