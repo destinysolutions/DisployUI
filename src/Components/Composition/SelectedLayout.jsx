@@ -660,7 +660,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-6 px-5 page-contain ">
+      <div className="pt-16 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
@@ -891,8 +891,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                       {item.assetType === "OnlineImage" && (
                                         <>
                                           <img
-                                            className="w-full h-full rounded-sm"
-                                            src={item?.assetFolderPath}
+                                          className="imagebox relative w-full h-28 object-cover"
+                                          src={item?.assetFolderPath}
                                             alt={item?.assetName}
                                           />
                                         </>
@@ -901,13 +901,13 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         <img
                                           src={item?.assetFolderPath}
                                           alt={item?.assetName}
-                                          className="imagebox relative"
+                                          className="imagebox relative w-full h-28 object-cover"
                                         />
                                       )}
                                       {item.assetType === "Video" && (
                                         <video
                                           controls
-                                          className="w-fit h-fit rounded-sm"
+                                          className="imagebox relative w-full h-28 object-cover"
                                         >
                                           <source
                                             src={item?.assetFolderPath}
@@ -918,22 +918,22 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         </video>
                                       )}
                                       {item.assetType === "DOC" && (
-                                        <a
+                                        <p
                                           href={item?.assetFolderPath}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
+                                          // target="_blank"
+                                          // rel="noopener noreferrer"
                                         >
                                           {item.assetName}
-                                        </a>
+                                        </p>
                                       )}
                                       {item.instanceName && (
-                                        <a
+                                        <p
                                           href={item?.instanceName}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
+                                          // target="_blank"
+                                          // rel="noopener noreferrer"
                                         >
                                           {item.instanceName}
-                                        </a>
+                                        </p>
                                       )}
                                     </>
                                   </div>

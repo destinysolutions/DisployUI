@@ -704,7 +704,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           return screen;
         });
 
-        console.log(updatedScreenData);
         if (updatedScreenData.length > 0) {
           setScreenData(updatedScreenData);
         }
@@ -784,7 +783,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setFilteredData([]);
   }
 
-  // console.log(compositionData);
+  // console.log(screenPreviewData);
 
   return (
     <>
@@ -793,7 +792,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {
-        <div className="pt-6 lg:px-5 md:px-5 sm:px-2 xs:px-1">
+        <div className="pt-16 lg:px-5 md:px-5 sm:px-2 xs:px-1">
           <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
             <div className="justify-between flex items-center xs-block">
               <div className="section-title">
