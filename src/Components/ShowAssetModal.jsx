@@ -216,7 +216,7 @@ const ShowAssetModal = ({
                         </span>
                         Disploy Studio
                       </button> */}
-                {/* <button
+                <button
                   type="button"
                   className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
                     popupActiveTab === 3 ? "active" : ""
@@ -233,7 +233,7 @@ const ShowAssetModal = ({
                     <AiOutlineAppstoreAdd size={15} />
                   </span>
                   Apps
-                </button> */}
+                </button>
               </nav>
             </div>
 

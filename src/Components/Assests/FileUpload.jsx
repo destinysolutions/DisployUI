@@ -256,7 +256,10 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
       (mime.startsWith("application/pdf") ||
         mime.startsWith("text/") ||
         mime === "application/msword" ||
-        mime === "application/vnd.ms-excel" ||
+        mime ===
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+        mime ===
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
         mime ===
           "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     ) {
@@ -405,7 +408,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-6 px-5 page-contain">
+      <div className="pt-16 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between md:justify-between sm:justify-between sm:flex flex-wrap items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4">

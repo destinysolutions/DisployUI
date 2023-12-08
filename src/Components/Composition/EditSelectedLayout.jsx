@@ -15,6 +15,7 @@ import {
   GET_ALL_TEXT_SCROLL_INSTANCE,
   GET_ALL_YOUTUBEDATA,
   SELECT_BY_LIST,
+  SIGNAL_R,
 } from "../../Pages/Api";
 import AssetModal from "../Assests/AssetModal";
 import PreviewModal from "./PreviewModel";
@@ -27,6 +28,7 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 import { GoPencil } from "react-icons/go";
 import toast from "react-hot-toast";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   EditSelectedLayout.propTypes = {
@@ -49,6 +51,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [compositionLoading, setCompositionLoading] = useState(false);
   const [savingLoader, setSavingLoader] = useState(false);
   const [isDataChanges, setIsDataChanges] = useState(false);
+  const [connection, setConnection] = useState(null);
   // const [jsonCanvasData, setJsonCanvasData] = useState([
   //   {
   //     layoutID: 1,
@@ -122,6 +125,40 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       return acc + Number(curr?.duration);
     }, 0);
 
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    newConnection.on("ScreenConnected", (screenConnected) => {
+      // console.log("ScreenConnected", screenConnected);
+    });
+
+    newConnection
+      .start()
+      .then(() => {
+        // console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
+    return () => {
+      if (newConnection) {
+        newConnection
+          .stop()
+          .then(() => {
+            // console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  }, []);
+
   const onSave = async () => {
     toast.remove();
     if (compositionName === "") {
@@ -166,6 +203,16 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
+          if (connection) {
+            connection
+              .invoke("ScreenConnected")
+              .then(() => {
+                // console.log("SignalR method invoked after screen update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
           navigate("/composition");
           setSavingLoader(false);
         }
@@ -586,7 +633,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-6 px-5 page-contain ">
+      <div className="pt-16 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
@@ -811,13 +858,13 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               <td className="min-w-[40%]">
                                 <div className="flex items-center w-full">
                                   <div
-                                    className={`w-1/2 break-words hyphens-auto`}
+                                    className={`w-1/2 break-words hyphens-auto h-full`}
                                   >
                                     <>
                                       {item.assetType === "OnlineImage" && (
                                         <>
                                           <img
-                                            className="w-full h-full rounded-sm"
+                                            className="imagebox relative w-full h-28 object-cover"
                                             src={item?.assetFolderPath}
                                             alt={item?.assetName}
                                           />
@@ -827,13 +874,13 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         <img
                                           src={item?.assetFolderPath}
                                           alt={item?.assetName}
-                                          className="imagebox relative"
+                                          className="imagebox relative w-full h-28 object-cover"
                                         />
                                       )}
                                       {item.assetType === "Video" && (
                                         <video
                                           controls
-                                          className="w-fit h-fit rounded-sm"
+                                          className="imagebox relative w-full h-28 object-cover"
                                         >
                                           <source
                                             src={item?.assetFolderPath}
@@ -853,13 +900,9 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         </a>
                                       )}
                                       {item.instanceName && (
-                                        <a
-                                          href={item?.instanceName}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                        >
+                                        <p href={item?.instanceName}>
                                           {item.instanceName}
-                                        </a>
+                                        </p>
                                       )}
                                     </>
                                   </div>

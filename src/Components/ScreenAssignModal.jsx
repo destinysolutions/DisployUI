@@ -29,7 +29,6 @@ const ScreenAssignModal = ({
         })
         .then((response) => {
           const fetchedData = response.data.data;
-
           setScreenData(fetchedData);
           const initialCheckboxes = {};
           if (Array.isArray(fetchedData)) {
@@ -43,7 +42,7 @@ const ScreenAssignModal = ({
           console.log(error);
         });
     }
-  }, [UserData.user?.userID]);
+  }, []);
 
   const handleSelectAllCheckboxChange = (e) => {
     const checked = e.target.checked;

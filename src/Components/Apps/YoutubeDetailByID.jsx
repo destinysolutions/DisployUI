@@ -197,7 +197,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       ) : (
         <>
-          <div className="pt-6 px-5 page-contain">
+          <div className="pt-24 px-5 page-contain">
             <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
               <div className="lg:flex lg:justify-between sm:block  items-center">
                 <div className="flex items-center">
