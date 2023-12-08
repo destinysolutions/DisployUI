@@ -33,7 +33,7 @@ import { FcOpenedFolder } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import toast from "react-hot-toast";
-import ShowAssetImageModal from "./showAssetImageModal";
+import ShowAssetImageModal from "./ShowAssetImageModal";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {

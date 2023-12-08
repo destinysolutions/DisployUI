@@ -21,7 +21,7 @@ import { FcOpenedFolder } from "react-icons/fc";
 import { CgMoveRight } from "react-icons/cg";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import ShowAssetImageModal from "./showAssetImageModal";
+import ShowAssetImageModal from "./ShowAssetImageModal";
 const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   NewFolderDialog.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
