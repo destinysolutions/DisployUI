@@ -443,14 +443,14 @@ const Login = () => {
                     /> */}
                     {/* <div className="error">
                       {!captcha ? "Please Select Captcha" : ""}
-                    </div> */}
+                    </div> 
 
                      <p
                       className="ml-1 mt-2 not-italic text-white font-medium  text-right hover:text-SlateBlue"
                       onClick={handleForgotPassword}
                     >
                       Forgot Password?
-                    </p>
+                    </p> */}
                     
                   </div>
 
