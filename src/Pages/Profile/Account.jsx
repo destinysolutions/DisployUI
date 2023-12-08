@@ -180,9 +180,7 @@ const Account = () => {
       setSubmitting(false);
     } catch (error) {
       console.log(error);
-
-      setErrorMessge("Registration failed.");
-
+      // setErrorMessge("Registration failed.");
       setSubmitting(false);
     }
   };
@@ -434,7 +432,7 @@ const Account = () => {
                     value={selectedCurrencyName}
                     onChange={(e) => setSelectedCurrencyName(e.target.value)}
                   >
-                    {currency.map((currency) => (
+                    {currency && currency.length > 0 && currency?.map((currency) => (
                       <option
                         value={currency.currencyId}
                         key={currency.currencyId}
