@@ -124,6 +124,20 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         console.log(JSON.stringify(response.data));
+        if (response.data.status == 200) {
+          if (connection) {
+            connection
+              .invoke("ScreenConnected")
+              .then(() => {
+                // console.log("SignalR method invoked after screen update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
+          setSelectScreenModal(false);
+          setAddScreenModal(false);
+        }
         const newArr = compositionData.filter(
           (item) => item?.compositionID !== com_id
         );
@@ -181,6 +195,20 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
+        if (response.data.status == 200) {
+          if (connection) {
+            connection
+              .invoke("ScreenConnected")
+              .then(() => {
+                // console.log("SignalR method invoked after screen update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
+          setSelectScreenModal(false);
+          setAddScreenModal(false);
+        }
         console.log(JSON.stringify(response.data));
         loadComposition();
       })
@@ -603,7 +631,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
 
-      <div className="pt-6 px-5 page-contain">
+      <div className="pt-16 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 "></h1>

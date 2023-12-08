@@ -5,11 +5,15 @@ import { useEffect } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { TiFolderOpen } from "react-icons/ti";
-import { AiOutlineCloudUpload, AiOutlineUnorderedList } from "react-icons/ai";
+import {
+  AiOutlineCloseCircle,
+  AiOutlineCloudUpload,
+  AiOutlineUnorderedList,
+} from "react-icons/ai";
 import { RxDashboard } from "react-icons/rx";
 import { BsThreeDots } from "react-icons/bs";
 import "../../Styles/assest.css";
-import { FiDownload } from "react-icons/fi";
+import { FiDownload, FiUpload } from "react-icons/fi";
 import { RiDeleteBin5Line, RiDeleteBin6Line } from "react-icons/ri";
 import { CgMoveRight } from "react-icons/cg";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -28,12 +32,15 @@ import {
   GET_ALL_FILES,
   MOVE_TO_FOLDER,
   SELECT_BY_ASSET_ID,
+  SIGNAL_R,
 } from "../../Pages/Api";
 import { FcOpenedFolder } from "react-icons/fc";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import toast from "react-hot-toast";
 import ShowAssetImageModal from "./ShowAssetImageModal";
+import ScreenAssignModal from "../ScreenAssignModal";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -61,14 +68,87 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [deleteAssetID, setDeleteAssetID] = useState();
   const [showImageAssetModal, setShowImageAssetModal] = useState(false);
   const [imageAssetModal, setImageAssetModal] = useState(null);
-
+  const [addScreenModal, setAddScreenModal] = useState(false);
+  const [selectScreenModal, setSelectScreenModal] = useState(false);
+  const [connection, setConnection] = useState(null);
+  const [selectedScreens, setSelectedScreens] = useState([]);
+  const selectedScreenIdsString = Array.isArray(selectedScreens)
+    ? selectedScreens.join(",")
+    : "";
   const actionBoxRef = useRef(null);
-
+  const addScreenRef = useRef(null);
   const UserData = useSelector((Alldata) => Alldata.user);
-
+  const [screenAssetID, setScreenAssetID] = useState();
   const authToken = `Bearer ${UserData.user.data.token}`;
 
   const history = useNavigate();
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    newConnection.on("ScreenConnected", (screenConnected) => {
+      // console.log("ScreenConnected", screenConnected);
+    });
+
+    newConnection
+      .start()
+      .then(() => {
+        // console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
+    return () => {
+      if (newConnection) {
+        newConnection
+          .stop()
+          .then(() => {
+            // console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  }, []);
+
+  const handleUpdateScreenAssign = () => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `https://disployapi.thedestinysolutions.com/api/AssetMaster/AssignAssetToScreen?AssetId=${screenAssetID}&ScreenID=${selectedScreenIdsString}`,
+      headers: {
+        Authorization: authToken,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        if (response.data.status == 200) {
+          toast.success("Asset added to Screen Successfully");
+          if (connection) {
+            connection
+              .invoke("ScreenConnected")
+              .then(() => {
+                // console.log("SignalR method invoked after screen update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
+          setSelectScreenModal(false);
+          setAddScreenModal(false);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const updatetoggle = (id) => {
     setTogglebtn(id);
@@ -87,6 +167,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const updateassetsdw = (item) => {
     // console.log("id passsdsdsdsdf", item);
     setDeleteAssetID(item.assetID);
+    setScreenAssetID(item.assetID);
     if (assetsdw === item) {
       setassetsdw(null);
     } else {
@@ -98,6 +179,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const updateassetsdw2 = (item) => {
     setDeleteAssetID(item.assetID);
+    setScreenAssetID(item.assetID);
     if (assetsdw2 === item) {
       setassetsdw2(null);
     } else {
@@ -479,7 +561,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {
-        <div className="pt-6 px-5 page-contain">
+        <div className="pt-24 px-5 page-contain">
           <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
             <div className="lg:flex lg:justify-between sm:block items-center">
               <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
@@ -822,6 +904,23 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   </a>
                                 </li>
                               )}
+                              {item.assetType !== "Folder" && (
+                                <li className="flex text-sm items-center relative w-full">
+                                  <div className="move-to-button relative">
+                                    <button
+                                      className="flex relative w-full"
+                                      onClick={() => {
+                                        setAddScreenModal(true);
+                                        setassetsdw(null);
+                                      }}
+                                    >
+                                      <FiUpload className="mr-2 text-lg" />
+                                      Set to Screen
+                                    </button>
+                                  </div>
+                                </li>
+                              )}
+
                               <li className="flex text-sm items-center relative w-full">
                                 {selectedItems.length > 0 && (
                                   <div className="move-to-button relative">
@@ -874,6 +973,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div>
                                 )}
                               </li>
+
                               {item.assetType === "Folder" ? (
                                 <li>
                                   <button
@@ -1143,9 +1243,26 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               <BsThreeDotsVertical className="text-2xl relative" />
                             </button>
+
                             {assetsdw2 === item && (
                               <div ref={actionBoxRef} className="assetsdw">
                                 <ul>
+                                  {item.assetType !== "Folder" && (
+                                    <li className="flex text-sm items-center">
+                                      <div className="move-to-button relative">
+                                        <button
+                                          className="flex relative w-full"
+                                          onClick={() => {
+                                            setAddScreenModal(true);
+                                            setassetsdw(null);
+                                          }}
+                                        >
+                                          <FiUpload className="mr-2 text-lg" />
+                                          Set to Screen
+                                        </button>
+                                      </div>
+                                    </li>
+                                  )}
                                   <li className="flex text-sm items-center">
                                     <FiDownload className="mr-2 text-lg" />
                                     <a
@@ -1283,7 +1400,62 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                 </table>
               </div>
             </div>
+            {addScreenModal && (
+              <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                <div
+                  ref={addScreenRef}
+                  className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                >
+                  <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                    <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                      <div className="flex items-center">
+                        <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
+                          Select the screen to set the Asset
+                        </h3>
+                      </div>
+                      <button
+                        className="p-1 text-xl ml-8"
+                        onClick={() => setAddScreenModal(false)}
+                      >
+                        <AiOutlineCloseCircle className="text-2xl" />
+                      </button>
+                    </div>
+                    <div className="flex justify-center p-9 ">
+                      <p className="break-words w-[280px] text-base text-black text-center">
+                        New Asset would be applied. Do you want to proceed?
+                      </p>
+                    </div>
+                    <div className="pb-6 flex justify-center">
+                      <button
+                        className="bg-primary text-white px-8 py-2 rounded-full"
+                        onClick={() => {
+                          setSelectScreenModal(true);
+                          setAddScreenModal(false);
+                        }}
+                      >
+                        OK
+                      </button>
 
+                      <button
+                        className="bg-primary text-white px-4 py-2 rounded-full ml-3"
+                        onClick={() => setAddScreenModal(false)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {selectScreenModal && (
+              <ScreenAssignModal
+                setAddScreenModal={setAddScreenModal}
+                setSelectScreenModal={setSelectScreenModal}
+                handleUpdateScreenAssign={handleUpdateScreenAssign}
+                selectedScreens={selectedScreens}
+                setSelectedScreens={setSelectedScreens}
+              />
+            )}
             {/*End of List View */}
 
             {/* sucess popup */}
