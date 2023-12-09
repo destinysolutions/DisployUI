@@ -606,21 +606,29 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
 
                                           {isMoveToOpen && (
                                             <div className="move-to-dropdown">
-                                              <ul>
-                                                {NestedNewFolder.folder.map(
-                                                  (folder) => (
-                                                    <li key={folder.assetID}>
-                                                      <button
-                                                        onClick={() =>
-                                                          handleMoveTo(
-                                                            folder.assetID
-                                                          )
-                                                        }
-                                                      >
-                                                        {folder.assetName}
-                                                      </button>
-                                                    </li>
+                                              <ul className="space-y-3">
+                                                {NestedNewFolder?.folder
+                                                  ?.length > 0 ? (
+                                                  NestedNewFolder.folder.map(
+                                                    (folder) => (
+                                                      <li key={folder.assetID}>
+                                                        <button
+                                                          onClick={() =>
+                                                            handleMoveTo(
+                                                              folder.assetID
+                                                            )
+                                                          }
+                                                        >
+                                                          {folder.assetName}
+                                                        </button>
+                                                      </li>
+                                                    )
                                                   )
+                                                ) : (
+                                                  <div className="w-full">
+                                                    No folders, Please create a
+                                                    new folder.
+                                                  </div>
                                                 )}
                                               </ul>
                                             </div>

@@ -439,7 +439,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {/* navbar and sidebar end */}
-      <div className="pt-20 px-5 page-contain ">
+      <div className="pt-28 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">

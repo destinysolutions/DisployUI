@@ -67,10 +67,8 @@ const Users = () => {
   const hiddenFileInput = useRef(null);
   const [errors, setErrors] = useState({});
 
-  const [passowrdErrors, setErrorsPassword] = useState('');
-  const [emailErrors, setErrorsEmail] = useState('');
-
-
+  const [passowrdErrors, setErrorsPassword] = useState("");
+  const [emailErrors, setErrorsEmail] = useState("");
 
   const UserData = useSelector((Alldata) => Alldata.user);
   const authToken = `Bearer ${UserData.user.data.token}`;
@@ -98,10 +96,10 @@ const Users = () => {
   const [file, setFile] = useState();
   const [fileEdit, setFileEdit] = useState();
 
-  const [labelTitle, setLabelTitle] = useState('Add New User')
+  const [labelTitle, setLabelTitle] = useState("Add New User");
 
   const modalRef = useRef(null);
-  const actionPopupRef = useRef(null)
+  const actionPopupRef = useRef(null);
 
   const handleActionClick = (rowId) => {
     if (!showActionBox) {
@@ -149,7 +147,6 @@ const Users = () => {
       });
   }, []);
 
-
   const handleAddUser = () => {
     let data = new FormData();
 
@@ -158,7 +155,7 @@ const Users = () => {
       return;
     } else if (!email) {
       setErrorsEmail("Email is required");
-      return
+      return;
     }
 
     // let data = JSON.stringify({
@@ -185,10 +182,10 @@ const Users = () => {
     data.append("userRole", selectRoleID);
     data.append("countryID", countryID);
     data.append("File", file);
-    data.append('languageId', 0);
-    data.append('timeZoneId', 0);
-    data.append('currencyId', 0);
-    data.append("operation", 'Save');
+    data.append("languageId", 0);
+    data.append("timeZoneId", 0);
+    data.append("currencyId", 0);
+    data.append("operation", "Save");
 
     let config = {
       method: "post",
@@ -201,10 +198,12 @@ const Users = () => {
       data: data,
     };
 
-    axios.request(config).then((response) => {
-      setshowuserModal(false);
-      handleGetOrgUsers();
-    })
+    axios
+      .request(config)
+      .then((response) => {
+        setshowuserModal(false);
+        handleGetOrgUsers();
+      })
       .catch((error) => {
         console.log(error);
       });
@@ -225,7 +224,6 @@ const Users = () => {
     //   operation: "Save",
     // });
 
-
     let data = new FormData();
 
     data.append("orgUserSpecificID", userID);
@@ -240,10 +238,10 @@ const Users = () => {
     data.append("countryID", countryID);
     data.append("company", company);
     data.append("File", file);
-    data.append('languageId', 0);
-    data.append('timeZoneId', 0);
-    data.append('currencyId', 0);
-    data.append("operation", 'Save');
+    data.append("languageId", 0);
+    data.append("timeZoneId", 0);
+    data.append("currencyId", 0);
+    data.append("operation", "Save");
 
     let config = {
       method: "post",
@@ -321,7 +319,7 @@ const Users = () => {
   };
 
   const selectUserById = (OrgUserSpecificID) => {
-    setLabelTitle('Update User')
+    setLabelTitle("Update User");
     toast.loading("Fetching Data...");
     let config = {
       method: "post",
@@ -339,9 +337,9 @@ const Users = () => {
           setUserDetailData(fetchedData);
           setFirstName(fetchedData.firstName);
           setLastName(fetchedData.lastName);
-          setPassword('');
+          setPassword("");
           setFileEdit(fetchedData.profilePhoto);
-          setIsImageUploaded(true)
+          setIsImageUploaded(true);
           setPhone(fetchedData.phone);
           setEmail(fetchedData.email);
           setCompany(fetchedData.company);
@@ -358,15 +356,15 @@ const Users = () => {
   };
 
   const handleCancelPopup = () => {
-    setLabelTitle('Add New User')
-    setUserID()
+    setLabelTitle("Add New User");
+    setUserID();
     setshowuserModal(false);
     setFirstName("");
     setLastName("");
     setPassword("");
     setFileEdit();
     setFile(null);
-    setIsImageUploaded(false)
+    setIsImageUploaded(false);
     setPhone("");
     setEmail("");
     setCompany("");
@@ -513,20 +511,17 @@ const Users = () => {
     },
   ];
 
-
   const handleFileChange = (e) => {
-    setFileEdit()
+    setFileEdit();
     const selectedFile = e.target.files[0];
     // console.log("selectedFile -", selectedFile);
     setFile(selectedFile);
     setIsImageUploaded(true);
-
-  }
+  };
 
   const handleClick = (e) => {
     hiddenFileInput.current.click();
   };
-
 
   useEffect(() => {
     // if (showSearchModal) {
@@ -631,9 +626,7 @@ const Users = () => {
                           onChange={(e) => setEmail(e.target.value)}
                         />
                         {emailErrors ? (
-                          <p className="error">
-                            {emailErrors}
-                          </p>
+                          <p className="error">{emailErrors}</p>
                         ) : null}
                       </div>
                     </div>
@@ -649,9 +642,7 @@ const Users = () => {
                           onChange={(e) => setPassword(e.target.value)}
                         />
                         {passowrdErrors ? (
-                          <p className="error">
-                            {passowrdErrors}
-                          </p>
+                          <p className="error">{passowrdErrors}</p>
                         ) : null}
                         <div className="icon">
                           {showPassword ? (
@@ -663,7 +654,6 @@ const Users = () => {
                               onClick={() => setShowPassword(!showPassword)}
                             />
                           )}
-
                         </div>
                       </div>
                     </div>
@@ -734,7 +724,7 @@ const Users = () => {
                         >
                           <option label="select User Role"></option>
 
-                          {userRoleData && userRoleData?.length > 0  ?  
+                          {userRoleData && userRoleData?.length > 0 ? (
                             userRoleData.map((userrole) => (
                               <option
                                 key={userrole?.orgUserRoleID}
@@ -743,8 +733,9 @@ const Users = () => {
                                 {userrole.orgUserRole}
                               </option>
                             ))
-                           : <div>Data not here.</div>}
-                           
+                          ) : (
+                            <div>Data not here.</div>
+                          )}
                         </select>
                       </div>
                     </div>
@@ -855,11 +846,14 @@ const Users = () => {
                 <div className="card-shadow pt-6">
                   <div className="user-details text-center border-b border-b-[#E4E6FF]">
                     <span className="user-img flex justify-center mb-3">
-                      {userDetailData.profilePhoto ?
-                        <img src={userDetailData?.profilePhoto}  className="h-50"/>
-                        :
+                      {userDetailData.profilePhoto ? (
+                        <img
+                          src={userDetailData?.profilePhoto}
+                          className="h-50"
+                        />
+                      ) : (
                         <img src="../../../Settings/3user-img.png" />
-                      }
+                      )}
                     </span>
                     <span className="user-name">
                       {userDetailData.firstName} {userDetailData.lastName}
@@ -1011,8 +1005,8 @@ const Users = () => {
                           name="signupForm"
                           id="signupForm"
                         >
-                          <div class="inputDiv relative mb-5">
-                            <label class="w-full inputLabel" for="password">
+                          <div className="inputDiv relative mb-5">
+                            <label className="w-full inputLabel" for="password">
                               Old Password
                             </label>
                             <input
@@ -1024,8 +1018,8 @@ const Users = () => {
                               required
                             />
                           </div>
-                          <div class="inputDiv relative mb-5">
-                            <label class="w-full inputLabel" for="password">
+                          <div className="inputDiv relative mb-5">
+                            <label className="w-full inputLabel" for="password">
                               New Password
                             </label>
                             <input
@@ -1038,8 +1032,8 @@ const Users = () => {
                             />
                           </div>
 
-                          <div class="inputDiv relative mb-5">
-                            <label class="inputLabel" for="confirmPassword">
+                          <div className="inputDiv relative mb-5">
+                            <label className="inputLabel" for="confirmPassword">
                               Confirm Password
                             </label>
                             <input
@@ -1050,12 +1044,12 @@ const Users = () => {
                             />
                           </div>
 
-                          <div class="buttonWrapper">
+                          <div className="buttonWrapper">
                             <button
                               type="submit"
                               id="submitButton"
                               onclick="validateSignupForm()"
-                              class="me-3 hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
+                              className="me-3 hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
                             >
                               <span>Change Password</span>
                               <span id="loader"></span>
@@ -1074,38 +1068,38 @@ const Users = () => {
                       </p>
 
                       <div className="w-full my-6">
-                        <table class="min-w-full leading-normal border border-[#E4E6FF] bg-white mb-8">
+                        <table className="min-w-full leading-normal border border-[#E4E6FF] bg-white mb-8">
                           <thead>
                             <tr className="border-b border-b-[#E4E6FF]">
-                              <th class="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                              <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
                                 Type
                               </th>
-                              <th class="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                              <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
                                 Send alerts
                               </th>
-                              <th class="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                              <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
                                 Email
                               </th>
-                              <th class="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                              <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
                                 Phone
                               </th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td class="px-5 py-3 bg-white text-sm">
-                                <div class="flex items-center">
-                                  <div class="ml-3">
-                                    <p class="text-gray-900 whitespace-no-wrap">
+                              <td className="px-5 py-3 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="ml-3">
+                                    <p className="text-gray-900 whitespace-no-wrap">
                                       Screen Offline
                                     </p>
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <div class="relative ">
+                              <td className="px-5 py-3 text-sm">
+                                <div className="relative ">
                                   <select
-                                    class="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                    className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
                                     name="whatever"
                                     id="frm-whatever"
                                   >
@@ -1114,9 +1108,9 @@ const Users = () => {
                                     <option value="2">Item 2</option>
                                     <option value="3">Item 3</option>
                                   </select>
-                                  <div class="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                  <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
                                     <svg
-                                      class="h-4 w-4"
+                                      className="h-4 w-4"
                                       xmlns="http://www.w3.org/2000/svg"
                                       viewBox="0 0 20 20"
                                     >
@@ -1125,35 +1119,35 @@ const Users = () => {
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <label class="checkbox" for="offline1">
-                                  <span class="checkbox__label"></span>
+                              <td className="px-5 py-3 text-sm">
+                                <label className="checkbox" for="offline1">
+                                  <span className="checkbox__label"></span>
                                   <input type="checkbox" id="offline1" />
-                                  <div class="checkbox__indicator"></div>
+                                  <div className="checkbox__indicator"></div>
                                 </label>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <label class="checkbox" for="offline2">
-                                  <span class="checkbox__label"></span>
+                              <td className="px-5 py-3 text-sm">
+                                <label className="checkbox" for="offline2">
+                                  <span className="checkbox__label"></span>
                                   <input type="checkbox" id="offline2" />
-                                  <div class="checkbox__indicator"></div>
+                                  <div className="checkbox__indicator"></div>
                                 </label>
                               </td>
                             </tr>
                             <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td class="px-5 py-3 bg-white text-sm">
-                                <div class="flex items-center">
-                                  <div class="ml-3">
-                                    <p class="text-gray-900 whitespace-no-wrap">
+                              <td className="px-5 py-3 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="ml-3">
+                                    <p className="text-gray-900 whitespace-no-wrap">
                                       Purchased Plan
                                     </p>
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <div class="relative ">
+                              <td className="px-5 py-3 text-sm">
+                                <div className="relative ">
                                   <select
-                                    class="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                    className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
                                     name="whatever"
                                     id="frm-whatever"
                                   >
@@ -1162,9 +1156,9 @@ const Users = () => {
                                     <option value="2">Item 2</option>
                                     <option value="3">Item 3</option>
                                   </select>
-                                  <div class="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                  <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
                                     <svg
-                                      class="h-4 w-4"
+                                      className="h-4 w-4"
                                       xmlns="http://www.w3.org/2000/svg"
                                       viewBox="0 0 20 20"
                                     >
@@ -1173,35 +1167,41 @@ const Users = () => {
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <label class="checkbox" for="purchased-plan1">
-                                  <span class="checkbox__label"></span>
+                              <td className="px-5 py-3 text-sm">
+                                <label
+                                  className="checkbox"
+                                  for="purchased-plan1"
+                                >
+                                  <span className="checkbox__label"></span>
                                   <input type="checkbox" id="purchased-plan1" />
-                                  <div class="checkbox__indicator"></div>
+                                  <div className="checkbox__indicator"></div>
                                 </label>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <label class="checkbox" for="purchased-plan2">
-                                  <span class="checkbox__label"></span>
+                              <td className="px-5 py-3 text-sm">
+                                <label
+                                  className="checkbox"
+                                  for="purchased-plan2"
+                                >
+                                  <span className="checkbox__label"></span>
                                   <input type="checkbox" id="purchased-plan2" />
-                                  <div class="checkbox__indicator"></div>
+                                  <div className="checkbox__indicator"></div>
                                 </label>
                               </td>
                             </tr>
                             <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td class="px-5 py-3 bg-white text-sm">
-                                <div class="flex items-center">
-                                  <div class="ml-3">
-                                    <p class="text-gray-900 whitespace-no-wrap">
+                              <td className="px-5 py-3 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="ml-3">
+                                    <p className="text-gray-900 whitespace-no-wrap">
                                       Added Users
                                     </p>
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <div class="relative ">
+                              <td className="px-5 py-3 text-sm">
+                                <div className="relative ">
                                   <select
-                                    class="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                    className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
                                     name="whatever"
                                     id="frm-whatever"
                                   >
@@ -1210,9 +1210,9 @@ const Users = () => {
                                     <option value="2">25 Minute</option>
                                     <option value="3">30 Minute</option>
                                   </select>
-                                  <div class="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                  <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
                                     <svg
-                                      class="h-4 w-4"
+                                      className="h-4 w-4"
                                       xmlns="http://www.w3.org/2000/svg"
                                       viewBox="0 0 20 20"
                                     >
@@ -1221,33 +1221,33 @@ const Users = () => {
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <label class="checkbox" for="added-users1">
-                                  <span class="checkbox__label"></span>
+                              <td className="px-5 py-3 text-sm">
+                                <label className="checkbox" for="added-users1">
+                                  <span className="checkbox__label"></span>
                                   <input type="checkbox" id="added-users1" />
-                                  <div class="checkbox__indicator"></div>
+                                  <div className="checkbox__indicator"></div>
                                 </label>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <label class="checkbox" for="added-users2">
-                                  <span class="checkbox__label"></span>
+                              <td className="px-5 py-3 text-sm">
+                                <label className="checkbox" for="added-users2">
+                                  <span className="checkbox__label"></span>
                                   <input type="checkbox" id="added-users2" />
-                                  <div class="checkbox__indicator"></div>
+                                  <div className="checkbox__indicator"></div>
                                 </label>
                               </td>
                             </tr>
                             <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td class="px-5 py-3 bg-white text-sm">
-                                <div class="flex items-center">
-                                  <div class="ml-3">
-                                    <p class="text-gray-900 whitespace-no-wrap">
+                              <td className="px-5 py-3 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="ml-3">
+                                    <p className="text-gray-900 whitespace-no-wrap">
                                       Changing Details
                                     </p>
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <div class="relative ">
+                              <td className="px-5 py-3 text-sm">
+                                <div className="relative ">
                                   <input
                                     type="text"
                                     className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
@@ -1255,41 +1255,47 @@ const Users = () => {
                                   />
                                 </div>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <label class="checkbox" for="changing-details1">
-                                  <span class="checkbox__label"></span>
+                              <td className="px-5 py-3 text-sm">
+                                <label
+                                  className="checkbox"
+                                  for="changing-details1"
+                                >
+                                  <span className="checkbox__label"></span>
                                   <input
                                     type="checkbox"
                                     id="changing-details1"
                                   />
-                                  <div class="checkbox__indicator"></div>
+                                  <div className="checkbox__indicator"></div>
                                 </label>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <label class="checkbox" for="changing-details2">
-                                  <span class="checkbox__label"></span>
+                              <td className="px-5 py-3 text-sm">
+                                <label
+                                  className="checkbox"
+                                  for="changing-details2"
+                                >
+                                  <span className="checkbox__label"></span>
                                   <input
                                     type="checkbox"
                                     id="changing-details2"
                                   />
-                                  <div class="checkbox__indicator"></div>
+                                  <div className="checkbox__indicator"></div>
                                 </label>
                               </td>
                             </tr>
                             <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td class="px-5 py-3 bg-white text-sm">
-                                <div class="flex items-center">
-                                  <div class="ml-3">
-                                    <p class="text-gray-900 whitespace-no-wrap">
+                              <td className="px-5 py-3 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="ml-3">
+                                    <p className="text-gray-900 whitespace-no-wrap">
                                       Playlist
                                     </p>
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <div class="relative ">
+                              <td className="px-5 py-3 text-sm">
+                                <div className="relative ">
                                   <select
-                                    class="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                    className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
                                     name="whatever"
                                     id="frm-whatever"
                                   >
@@ -1298,9 +1304,9 @@ const Users = () => {
                                     <option value="2">Playlist 2</option>
                                     <option value="3">Playlist 3</option>
                                   </select>
-                                  <div class="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                  <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
                                     <svg
-                                      class="h-4 w-4"
+                                      className="h-4 w-4"
                                       xmlns="http://www.w3.org/2000/svg"
                                       viewBox="0 0 20 20"
                                     >
@@ -1309,35 +1315,35 @@ const Users = () => {
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <label class="checkbox" for="Playlist1">
-                                  <span class="checkbox__label"></span>
+                              <td className="px-5 py-3 text-sm">
+                                <label className="checkbox" for="Playlist1">
+                                  <span className="checkbox__label"></span>
                                   <input type="checkbox" id="Playlist1" />
-                                  <div class="checkbox__indicator"></div>
+                                  <div className="checkbox__indicator"></div>
                                 </label>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <label class="checkbox" for="Playlist2">
-                                  <span class="checkbox__label"></span>
+                              <td className="px-5 py-3 text-sm">
+                                <label className="checkbox" for="Playlist2">
+                                  <span className="checkbox__label"></span>
                                   <input type="checkbox" id="Playlist2" />
-                                  <div class="checkbox__indicator"></div>
+                                  <div className="checkbox__indicator"></div>
                                 </label>
                               </td>
                             </tr>
                             <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td class="px-5 py-3 bg-white text-sm">
-                                <div class="flex items-center">
-                                  <div class="ml-3">
-                                    <p class="text-gray-900 whitespace-no-wrap">
+                              <td className="px-5 py-3 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="ml-3">
+                                    <p className="text-gray-900 whitespace-no-wrap">
                                       Assets
                                     </p>
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <div class="relative ">
+                              <td className="px-5 py-3 text-sm">
+                                <div className="relative ">
                                   <select
-                                    class="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                    className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
                                     name="whatever"
                                     id="frm-whatever"
                                   >
@@ -1346,9 +1352,9 @@ const Users = () => {
                                     <option value="2">Assets 2</option>
                                     <option value="3">Assets 3</option>
                                   </select>
-                                  <div class="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                  <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
                                     <svg
-                                      class="h-4 w-4"
+                                      className="h-4 w-4"
                                       xmlns="http://www.w3.org/2000/svg"
                                       viewBox="0 0 20 20"
                                     >
@@ -1357,29 +1363,29 @@ const Users = () => {
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <label class="checkbox" for="Assets1">
-                                  <span class="checkbox__label"></span>
+                              <td className="px-5 py-3 text-sm">
+                                <label className="checkbox" for="Assets1">
+                                  <span className="checkbox__label"></span>
                                   <input type="checkbox" id="Assets1" />
-                                  <div class="checkbox__indicator"></div>
+                                  <div className="checkbox__indicator"></div>
                                 </label>
                               </td>
-                              <td class="px-5 py-3 text-sm">
-                                <label class="checkbox" for="Assets2">
-                                  <span class="checkbox__label"></span>
+                              <td className="px-5 py-3 text-sm">
+                                <label className="checkbox" for="Assets2">
+                                  <span className="checkbox__label"></span>
                                   <input type="checkbox" id="Assets2" />
-                                  <div class="checkbox__indicator"></div>
+                                  <div className="checkbox__indicator"></div>
                                 </label>
                               </td>
                             </tr>
                           </tbody>
                         </table>
-                        <div class="buttonWrapper flex justify-center  w-full">
+                        <div className="buttonWrapper flex justify-center  w-full">
                           <button
                             type="submit"
                             id="submitButton"
                             onclick="validateSignupForm()"
-                            class="me-3 hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
+                            className="me-3 hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
                           >
                             <span>Save Change</span>
                           </button>
@@ -1399,62 +1405,62 @@ const Users = () => {
                       </p>
 
                       <div className="w-full my-6">
-                        <table class="min-w-full leading-normal border border-[#E4E6FF] bg-white mb-4">
+                        <table className="min-w-full leading-normal border border-[#E4E6FF] bg-white mb-4">
                           <thead>
                             <tr className="border-b border-b-[#E4E6FF]">
-                              <th class="px-5 py-3 text-left text-lg font-semibold text-gray-600 uppercase tracking-wider">
+                              <th className="px-5 py-3 text-left text-lg font-semibold text-gray-600 uppercase tracking-wider">
                                 Apps
                               </th>
-                              <th class="px-5 py-3 text-right text-lg font-semibold text-gray-600 uppercase tracking-wider">
+                              <th className="px-5 py-3 text-right text-lg font-semibold text-gray-600 uppercase tracking-wider">
                                 Status
                               </th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td class="px-5 py-2 bg-white text-sm">
-                                <div class="flex items-center">
-                                  <div class="flex-shrink-0 w-10 h-10">
+                              <td className="px-5 py-2 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="flex-shrink-0 w-10 h-10">
                                     <img
-                                      class="w-full h-full rounded-full"
+                                      className="w-full h-full rounded-full"
                                       src="../../../Settings/Google__G__Logo.svg"
                                       alt=""
                                     />
                                   </div>
-                                  <div class="ml-3 text-left">
+                                  <div className="ml-3 text-left">
                                     <strong>Google</strong>
-                                    <p class="text-gray-900 whitespace-no-wrap">
+                                    <p className="text-gray-900 whitespace-no-wrap">
                                       Calendar and contacts
                                     </p>
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-2 text-sm text-right">
-                                <span class="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight rounded-full">
+                              <td className="px-5 py-2 text-sm text-right">
+                                <span className="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight rounded-full">
                                   Connect
                                 </span>
                               </td>
                             </tr>
                             <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td class="px-5 py-2 bg-white text-sm">
-                                <div class="flex items-center">
-                                  <div class="flex-shrink-0 w-10 h-10">
+                              <td className="px-5 py-2 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="flex-shrink-0 w-10 h-10">
                                     <img
-                                      class="w-full h-full rounded-full"
+                                      className="w-full h-full rounded-full"
                                       src="../../../Settings/Slack_Technologies_Logo.svg"
                                       alt=""
                                     />
                                   </div>
-                                  <div class="ml-3 text-left">
+                                  <div className="ml-3 text-left">
                                     <strong>Slack</strong>
-                                    <p class="text-gray-900 whitespace-no-wrap">
+                                    <p className="text-gray-900 whitespace-no-wrap">
                                       Communication
                                     </p>
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-2 text-sm text-right">
-                                <span class="bg-red-200 px-3 py-1 font-semibold text-red-900 leading-tight rounded-full">
+                              <td className="px-5 py-2 text-sm text-right">
+                                <span className="bg-red-200 px-3 py-1 font-semibold text-red-900 leading-tight rounded-full">
                                   Disconnect
                                 </span>
                               </td>
@@ -1467,75 +1473,75 @@ const Users = () => {
                           Display content from social accounts on your site.
                         </p>
 
-                        <table class="min-w-full leading-normal border border-[#E4E6FF] bg-white mb-6">
+                        <table className="min-w-full leading-normal border border-[#E4E6FF] bg-white mb-6">
                           <tbody>
                             <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td class="px-5 py-3 bg-white text-sm">
-                                <div class="flex items-center">
-                                  <div class="flex-shrink-0 w-10 h-10">
+                              <td className="px-5 py-3 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="flex-shrink-0 w-10 h-10">
                                     <img
-                                      class="w-full h-full rounded-full"
+                                      className="w-full h-full rounded-full"
                                       src="../../../Settings/facebook-logo.svg"
                                       alt=""
                                     />
                                   </div>
-                                  <div class="ml-3 text-left">
+                                  <div className="ml-3 text-left">
                                     <strong>Facebook</strong>
-                                    <p class="text-gray-900 whitespace-no-wrap">
+                                    <p className="text-gray-900 whitespace-no-wrap">
                                       Not connected
                                     </p>
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-2 text-sm">
+                              <td className="px-5 py-2 text-sm">
                                 <a href="#" className="link-icon-bg">
                                   <img src="../../../Settings/link-icon.svg" />
                                 </a>
                               </td>
                             </tr>
                             <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td class="px-5 py-2 bg-white text-sm">
-                                <div class="flex items-center">
-                                  <div class="flex-shrink-0 w-10 h-10">
+                              <td className="px-5 py-2 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="flex-shrink-0 w-10 h-10">
                                     <img
-                                      class="w-full h-full rounded-full"
+                                      className="w-full h-full rounded-full"
                                       src="../../../Settings/twitter-logo.svg"
                                       alt=""
                                     />
                                   </div>
-                                  <div class="ml-3 text-left">
+                                  <div className="ml-3 text-left">
                                     <strong>Twitter</strong>
-                                    <p class="text-gray-900 whitespace-no-wrap">
+                                    <p className="text-gray-900 whitespace-no-wrap">
                                       @Pixinvent
                                     </p>
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-2 text-sm">
+                              <td className="px-5 py-2 text-sm">
                                 <a href="#" className="delete-icon-bg">
                                   <img src="../../../Settings/delete.svg" />
                                 </a>
                               </td>
                             </tr>
                             <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td class="px-5 py-2 bg-white text-sm">
-                                <div class="flex items-center">
-                                  <div class="flex-shrink-0 w-10 h-10">
+                              <td className="px-5 py-2 bg-white text-sm">
+                                <div className="flex items-center">
+                                  <div className="flex-shrink-0 w-10 h-10">
                                     <img
-                                      class="w-full h-full rounded-full"
+                                      className="w-full h-full rounded-full"
                                       src="../../../Settings/dribbble-logo.svg"
                                       alt=""
                                     />
                                   </div>
-                                  <div class="ml-3 text-left">
+                                  <div className="ml-3 text-left">
                                     <strong>Dribbble</strong>
-                                    <p class="text-gray-900 whitespace-no-wrap">
+                                    <p className="text-gray-900 whitespace-no-wrap">
                                       Not connected
                                     </p>
                                   </div>
                                 </div>
                               </td>
-                              <td class="px-5 py-2 text-sm">
+                              <td className="px-5 py-2 text-sm">
                                 <a href="#" className="delete-icon-bg">
                                   <img src="../../../Settings/delete.svg" />
                                 </a>
@@ -1544,12 +1550,12 @@ const Users = () => {
                           </tbody>
                         </table>
 
-                        <div class="buttonWrapper flex justify-center  w-full">
+                        <div className="buttonWrapper flex justify-center  w-full">
                           <button
                             type="submit"
                             id="submitButton"
                             onclick="validateSignupForm()"
-                            class="me-3 hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
+                            className="me-3 hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
                           >
                             <span>Save Change</span>
                           </button>
@@ -1565,156 +1571,164 @@ const Users = () => {
             </div>
           </div>
           <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full">
-            <h3 class="user-name my-4">Selected Screens</h3>
-            <div class="inline-block min-w-full shadow rounded-lg overflow-hidden">
-              <table class="min-w-full leading-normal">
+            <h3 className="user-name my-4">Selected Screens</h3>
+            <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
+              <table className="min-w-full leading-normal">
                 <thead>
                   <tr className=" bg-[#EFF3FF] border-b border-b-[#E4E6FF]">
-                    <th class="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
                       Screen Name
                     </th>
-                    <th class="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
                       Google Location
                     </th>
-                    <th class="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
                       Associated Schedule
                     </th>
 
-                    <th class="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
                       Status
                     </th>
-                    <th class="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
                       Tags
                     </th>
-                    <th class="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
                       Group
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-b border-b-[#E4E6FF]">
-                    <td class="p-3 bg-white text-sm">
-                      <label class="checkbox" for="screen1">
-                        <span class="checkbox__label">Harry McCall</span>
+                    <td className="p-3 bg-white text-sm">
+                      <label className="checkbox" for="screen1">
+                        <span className="checkbox__label">Harry McCall</span>
                         <input type="checkbox" id="screen1" />
-                        <div class="checkbox__indicator"></div>
+                        <div className="checkbox__indicator"></div>
                       </label>
                     </td>
-                    <td class="p-3 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
+                    <td className="p-3 bg-white text-sm">
+                      <p className="text-gray-900 whitespace-no-wrap">
                         132, My Street, Kingston, New York 12401.
                       </p>
                     </td>
-                    <td class="p-3 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
+                    <td className="p-3 bg-white text-sm">
+                      <p className="text-gray-900 whitespace-no-wrap">
                         Schedule Name Till 28 June 2023
                       </p>
                     </td>
-                    <td class="p-3 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
-                        <span class="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
+                    <td className="p-3 bg-white text-sm">
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        <span className="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
                           Live
                         </span>
                       </p>
                     </td>
-                    <td class="p-3 bg-white text-sm">Add Tags</td>
-                    <td class="px-3 py-6 bg-white text-sm flex ">Group Name</td>
+                    <td className="p-3 bg-white text-sm">Add Tags</td>
+                    <td className="px-3 py-6 bg-white text-sm flex ">
+                      Group Name
+                    </td>
                   </tr>
                   <tr className="border-b border-b-[#E4E6FF]">
-                    <td class="p-3 bg-white text-sm">
-                      <label class="checkbox" for="screen2">
-                        <span class="checkbox__label">Harry McCall</span>
+                    <td className="p-3 bg-white text-sm">
+                      <label className="checkbox" for="screen2">
+                        <span className="checkbox__label">Harry McCall</span>
                         <input type="checkbox" id="screen2" />
-                        <div class="checkbox__indicator"></div>
+                        <div className="checkbox__indicator"></div>
                       </label>
                     </td>
-                    <td class="p-3 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
+                    <td className="p-3 bg-white text-sm">
+                      <p className="text-gray-900 whitespace-no-wrap">
                         132, My Street, Kingston, New York 12401.
                       </p>
                     </td>
-                    <td class="p-3 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
+                    <td className="p-3 bg-white text-sm">
+                      <p className="text-gray-900 whitespace-no-wrap">
                         Schedule Name Till 28 June 2023
                       </p>
                     </td>
-                    <td class="p-3 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
-                        <span class="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
+                    <td className="p-3 bg-white text-sm">
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        <span className="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
                           Live
                         </span>
                       </p>
                     </td>
-                    <td class="p-3 bg-white text-sm">Add Tags</td>
-                    <td class="px-3 py-6 bg-white text-sm flex ">Group Name</td>
+                    <td className="p-3 bg-white text-sm">Add Tags</td>
+                    <td className="px-3 py-6 bg-white text-sm flex ">
+                      Group Name
+                    </td>
                   </tr>
                   <tr className="border-b border-b-[#E4E6FF]">
-                    <td class="p-3 bg-white text-sm">
-                      <label class="checkbox" for="screen3">
-                        <span class="checkbox__label">Harry McCall</span>
+                    <td className="p-3 bg-white text-sm">
+                      <label className="checkbox" for="screen3">
+                        <span className="checkbox__label">Harry McCall</span>
                         <input type="checkbox" id="screen3" />
-                        <div class="checkbox__indicator"></div>
+                        <div className="checkbox__indicator"></div>
                       </label>
                     </td>
-                    <td class="p-3 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
+                    <td className="p-3 bg-white text-sm">
+                      <p className="text-gray-900 whitespace-no-wrap">
                         132, My Street, Kingston, New York 12401.
                       </p>
                     </td>
-                    <td class="p-3 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
+                    <td className="p-3 bg-white text-sm">
+                      <p className="text-gray-900 whitespace-no-wrap">
                         Schedule Name Till 28 June 2023
                       </p>
                     </td>
-                    <td class="p-3 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
-                        <span class="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
+                    <td className="p-3 bg-white text-sm">
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        <span className="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
                           Live
                         </span>
                       </p>
                     </td>
-                    <td class="p-3 bg-white text-sm">Add Tags</td>
-                    <td class="px-3 py-6 bg-white text-sm flex ">Group Name</td>
+                    <td className="p-3 bg-white text-sm">Add Tags</td>
+                    <td className="px-3 py-6 bg-white text-sm flex ">
+                      Group Name
+                    </td>
                   </tr>
                   <tr className="border-b border-b-[#E4E6FF]">
-                    <td class="p-3 bg-white text-sm">
-                      <label class="checkbox" for="screen4">
-                        <span class="checkbox__label">Harry McCall</span>
+                    <td className="p-3 bg-white text-sm">
+                      <label className="checkbox" for="screen4">
+                        <span className="checkbox__label">Harry McCall</span>
                         <input type="checkbox" id="screen4" />
-                        <div class="checkbox__indicator"></div>
+                        <div className="checkbox__indicator"></div>
                       </label>
                     </td>
-                    <td class="p-3 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
+                    <td className="p-3 bg-white text-sm">
+                      <p className="text-gray-900 whitespace-no-wrap">
                         132, My Street, Kingston, New York 12401.
                       </p>
                     </td>
-                    <td class="p-3 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
+                    <td className="p-3 bg-white text-sm">
+                      <p className="text-gray-900 whitespace-no-wrap">
                         Schedule Name Till 28 June 2023
                       </p>
                     </td>
-                    <td class="p-3 bg-white text-sm">
-                      <p class="text-gray-900 whitespace-no-wrap">
-                        <span class="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
+                    <td className="p-3 bg-white text-sm">
+                      <p className="text-gray-900 whitespace-no-wrap">
+                        <span className="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
                           Live
                         </span>
                       </p>
                     </td>
-                    <td class="p-3 bg-white text-sm">Add Tags</td>
-                    <td class="px-3 py-6 bg-white text-sm flex ">Group Name</td>
+                    <td className="p-3 bg-white text-sm">Add Tags</td>
+                    <td className="px-3 py-6 bg-white text-sm flex ">
+                      Group Name
+                    </td>
                   </tr>
                 </tbody>
               </table>
-              <div class="px-5 py-5 bg-white flex flex-col xs:flex-row items-center xs:justify-between          ">
-                <span class="text-xs xs:text-sm text-gray-900">
+              <div className="px-5 py-5 bg-white flex flex-col xs:flex-row items-center xs:justify-between          ">
+                <span className="text-xs xs:text-sm text-gray-900">
                   Showing 1 to 4 of 50 Entries
                 </span>
-                <div class="inline-flex mt-2 xs:mt-0">
-                  <button class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
+                <div className="inline-flex mt-2 xs:mt-0">
+                  <button className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
                     Prev
                   </button>
-                  <button class="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r">
+                  <button className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r">
                     Next
                   </button>
                 </div>
