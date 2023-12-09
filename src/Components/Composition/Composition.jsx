@@ -555,7 +555,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
 
-      <div className="pt-16 px-5 page-contain">
+      <div className="pt-20 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 "></h1>
@@ -598,6 +598,62 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             </div>
           </div>
+          {addScreenModal && (
+            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+              <div
+                ref={addScreenRef}
+                className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+              >
+                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                  <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                    <div className="flex items-center">
+                      <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
+                        Select the screen to set the composition
+                      </h3>
+                    </div>
+                    <button
+                      className="p-1 text-xl ml-8"
+                      onClick={() => setAddScreenModal(false)}
+                    >
+                      <AiOutlineCloseCircle className="text-2xl" />
+                    </button>
+                  </div>
+                  <div className="flex justify-center p-9 ">
+                    <p className="break-words w-[280px] text-base text-black text-center">
+                      New composition would be applied. Do you want to proceed?
+                    </p>
+                  </div>
+                  <div className="pb-6 flex justify-center">
+                    <button
+                      className="bg-primary text-white px-8 py-2 rounded-full"
+                      onClick={() => {
+                        setSelectScreenModal(true);
+                        setAddScreenModal(false);
+                      }}
+                    >
+                      OK
+                    </button>
+
+                    <button
+                      className="bg-primary text-white px-4 py-2 rounded-full ml-3"
+                      onClick={() => setAddScreenModal(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          {selectScreenModal && (
+            <ScreenAssignModal
+              setAddScreenModal={setAddScreenModal}
+              setSelectScreenModal={setSelectScreenModal}
+              handleUpdateScreenAssign={handleUpdateScreenAssign}
+              selectedScreens={selectedScreens}
+              setSelectedScreens={setSelectedScreens}
+            />
+          )}
           <div className="rounded-xl mt-8 shadow bg-white mb-6">
             <table
               className="w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
@@ -806,63 +862,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             )}
                           </div>
                         </td>
-                        {addScreenModal && (
-                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                            <div
-                              ref={addScreenRef}
-                              className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
-                            >
-                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                                <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                                  <div className="flex items-center">
-                                    <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                                      Select the screen to set the composition
-                                    </h3>
-                                  </div>
-                                  <button
-                                    className="p-1 text-xl ml-8"
-                                    onClick={() => setAddScreenModal(false)}
-                                  >
-                                    <AiOutlineCloseCircle className="text-2xl" />
-                                  </button>
-                                </div>
-                                <div className="flex justify-center p-9 ">
-                                  <p className="break-words w-[280px] text-base text-black text-center">
-                                    New composition would be applied. Do you
-                                    want to proceed?
-                                  </p>
-                                </div>
-                                <div className="pb-6 flex justify-center">
-                                  <button
-                                    className="bg-primary text-white px-8 py-2 rounded-full"
-                                    onClick={() => {
-                                      setSelectScreenModal(true);
-                                      setAddScreenModal(false);
-                                    }}
-                                  >
-                                    OK
-                                  </button>
 
-                                  <button
-                                    className="bg-primary text-white px-4 py-2 rounded-full ml-3"
-                                    onClick={() => setAddScreenModal(false)}
-                                  >
-                                    Cancel
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        {selectScreenModal && (
-                          <ScreenAssignModal
-                            setAddScreenModal={setAddScreenModal}
-                            setSelectScreenModal={setSelectScreenModal}
-                            handleUpdateScreenAssign={handleUpdateScreenAssign}
-                            selectedScreens={selectedScreens}
-                            setSelectedScreens={setSelectedScreens}
-                          />
-                        )}
                         <PreviewModal show={modalVisible} onClose={closeModal}>
                           <div
                             className={`fixed  left-1/2 -translate-x-1/2 min-h-[80vh] max-h-[80vh] min-w-[90vh] max-w-[90vh] `}
@@ -1074,63 +1074,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             )}
                           </div>
                         </td>
-                        {addScreenModal && (
-                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                            <div
-                              ref={addScreenRef}
-                              className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
-                            >
-                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                                <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                                  <div className="flex items-center">
-                                    <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                                      Select the Screen you want composition add
-                                    </h3>
-                                  </div>
-                                  <button
-                                    className="p-1 text-xl ml-8"
-                                    onClick={() => setAddScreenModal(false)}
-                                  >
-                                    <AiOutlineCloseCircle className="text-2xl" />
-                                  </button>
-                                </div>
-                                <div className="flex justify-center p-9 ">
-                                  <p className="break-words w-[280px] text-base text-black">
-                                    New composition would be applied. Do you
-                                    want to proceed?
-                                  </p>
-                                </div>
-                                <div className="pb-6 flex justify-center">
-                                  <button
-                                    className="bg-primary text-white px-8 py-2 rounded-full"
-                                    onClick={() => {
-                                      setSelectScreenModal(true);
-                                      setAddScreenModal(false);
-                                    }}
-                                  >
-                                    OK
-                                  </button>
 
-                                  <button
-                                    className="bg-primary text-white px-4 py-2 rounded-full ml-3"
-                                    onClick={() => setAddScreenModal(false)}
-                                  >
-                                    Cancel
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        {selectScreenModal && (
-                          <ScreenAssignModal
-                            setAddScreenModal={setAddScreenModal}
-                            setSelectScreenModal={setSelectScreenModal}
-                            handleUpdateScreenAssign={handleUpdateScreenAssign}
-                            selectedScreens={selectedScreens}
-                            setSelectedScreens={setSelectedScreens}
-                          />
-                        )}
                         <PreviewModal show={modalVisible} onClose={closeModal}>
                           <div
                             className={`absolute  left-1/2 -translate-x-1/2 min-h-[80vh] max-h-[80vh] min-w-[90vh] max-w-[90vh] `}

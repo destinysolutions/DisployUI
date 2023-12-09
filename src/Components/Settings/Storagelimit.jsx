@@ -94,9 +94,10 @@ const Storagelimit = () => {
                       borderRadius: "5px",
                     }}
                   >
-                    {storageData.availableSpace == 3
+                    {/* {storageData.availableSpace == 3
                       ? `${storageData.availableSpace} GB`
-                      : `${storageData.availableSpace} MB`}
+                      : `${storageData.availableSpace} MB`} */}
+                    {storageData.availableSpace} GB
                   </span>
                 </td>
                 <td className="text-center">

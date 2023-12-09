@@ -22,7 +22,7 @@ import PropTypes from "prop-types";
 import Footer from "../Footer";
 import { HiOutlineVideoCamera } from "react-icons/hi2";
 import { RiGalleryFill } from "react-icons/ri";
-import { HiDocumentDuplicate } from "react-icons/hi";
+import { HiDocumentDuplicate, HiDotsVertical } from "react-icons/hi";
 
 import {
   ALL_FILES_UPLOAD,
@@ -933,7 +933,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     </button>
 
                                     {isMoveToOpen && (
-                                      <div className="move-to-dropdown ">
+                                      <div className="move-to-dropdown">
                                         <ul>
                                           {originalData.folder?.length > 0 ? (
                                             originalData.folder.map(
@@ -944,7 +944,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                       item.assetID !==
                                                       folder.assetID
                                                   ) && (
-                                                    <li>
+                                                    <li className="mb-3 text-center">
                                                       <button
                                                         onClick={() =>
                                                           handleMoveTo(
@@ -1076,15 +1076,31 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   : "togglecontent"
               }
             >
-              <div className="assetstable">
-                <table className="w-full text-left" cellPadding={15}>
+              <div className="schedual-table bg-white rounded-xl mt-8 shadow">
+                <table
+                  className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+                  cellPadding={20}
+                >
                   <thead>
-                    <tr className=" bg-lightgray rounded-xl">
-                      <th className="text-black font-medium">Recent</th>
-                      <th className="text-black font-medium">Duration</th>
-                      <th className="text-black font-medium">Resolution</th>
-                      <th className="text-black font-medium">Type</th>
-                      <th className="text-black font-medium">Size</th>
+                    <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        Preview
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        Name
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        Duration
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        Resolution
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        Type
+                      </th>
+                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                        Size
+                      </th>
 
                       <th></th>
                     </tr>
@@ -1094,16 +1110,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       tableData.map((item, index) => (
                         <tr
                           key={`tabitem-table-${item.assetID}-${index}`}
-                          className=" mt-2 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] shadow-inner"
+                          className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
                         >
-                          <td className="flex items-center relative">
+                          <td className="text-center">
                             {item.assetType === "Folder" && (
                               <div
                                 onDragOver={handleDragOver}
                                 onDrop={(event) =>
                                   handleDrop(event, item.assetID)
                                 }
-                                className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col"
                               >
                                 <FcOpenedFolder
                                   className="text-8xl text-center mx-auto"
@@ -1143,251 +1158,231 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             )}
 
                             {item.assetType === "Image" && (
-                              <div className="imagebox relative">
-                                <img
-                                  src={item.assetFolderPath}
-                                  className="rounded-2xl"
-                                />
-                                <div className="tabicon text-center absolute left-[6px] top-[-25px]">
-                                  {item.assetType === "Image" && (
-                                    <RiGalleryFill className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
-                                  )}
+                              <div className="img-cover ivratio img-cover-ratio">
+                                <div>
+                                  <img src={item.assetFolderPath} />
                                 </div>
                               </div>
                             )}
 
                             {item.assetType === "Video" && (
-                              <div className="relative videobox">
-                                <video
-                                  controls
-                                  className="w-full rounded-2xl relative"
-                                  onClick={() => {
-                                    setShowImageAssetModal(true);
-                                    setImageAssetModal(item?.assetFolderPath);
-                                  }}
-                                >
-                                  <source
-                                    src={item.assetFolderPath}
-                                    type="video/mp4"
-                                  />
-                                  Your browser does not support the video tag.
-                                </video>
-                                <div className="tabicon text-center absolute left-[6px] top-[-25px]">
-                                  {item.assetType === "Video" && (
-                                    <HiOutlineVideoCamera className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
-                                  )}
+                              <div className="img-cover ivratio img-cover-ratio">
+                                <div>
+                                  <video
+                                    controls
+                                    onClick={() => {
+                                      setShowImageAssetModal(true);
+                                      setImageAssetModal(item?.assetFolderPath);
+                                    }}
+                                  >
+                                    <source
+                                      src={item.assetFolderPath}
+                                      type="video/mp4"
+                                    />
+                                    Your browser does not support the video tag.
+                                  </video>
                                 </div>
                               </div>
                             )}
 
                             {item.assetType === "OnlineImage" && (
-                              <div className="imagebox relative">
-                                <img
-                                  src={item.assetFolderPath}
-                                  className="rounded-2xl"
-                                  onClick={() => {
-                                    setShowImageAssetModal(true);
-                                    setImageAssetModal(item?.assetFolderPath);
-                                  }}
-                                />
-                                <div className="tabicon text-center absolute left-[6px] top-[-25px]">
-                                  {item.assetType === "OnlineImage" && (
-                                    <RiGalleryFill className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
-                                  )}
+                              <div className="img-cover ivratio img-cover-ratio">
+                                <div>
+                                  <img
+                                    src={item.assetFolderPath}
+                                    onClick={() => {
+                                      setShowImageAssetModal(true);
+                                      setImageAssetModal(item?.assetFolderPath);
+                                    }}
+                                  />
                                 </div>
                               </div>
                             )}
 
                             {item.assetType === "OnlineVideo" && (
-                              <div className="relative videobox">
-                                <video
-                                  controls
-                                  className="w-full rounded-2xl relative"
-                                  onClick={() => {
-                                    setShowImageAssetModal(true);
-                                    setImageAssetModal(item?.assetFolderPath);
-                                  }}
-                                >
-                                  <source
-                                    src={item.assetFolderPath}
-                                    type="video/mp4"
-                                  />
-                                  Your browser does not support the video tag.
-                                </video>
-                                <div className="tabicon text-center absolute left-[6px] top-[-25px]">
-                                  {item.assetType === "OnlineVideo" && (
-                                    <HiOutlineVideoCamera className="bg-primary text-white p-2 text-3xl rounded-full shadow-lg" />
-                                  )}
+                              <div className="img-cover ivratio img-cover-ratio">
+                                <div>
+                                  <video
+                                    controls
+                                    onClick={() => {
+                                      setShowImageAssetModal(true);
+                                      setImageAssetModal(item?.assetFolderPath);
+                                    }}
+                                  >
+                                    <source
+                                      src={item.assetFolderPath}
+                                      type="video/mp4"
+                                    />
+                                    Your browser does not support the video tag.
+                                  </video>
                                 </div>
                               </div>
                             )}
-
-                            <div className="ml-2">
-                              <h1 className="font-medium lg:text-base md:text-sm sm:text-sm xs:text-xs">
-                                {item.assetName}
-                              </h1>
-                            </div>
+                            {item.assetType === "DOC" && (
+                              <div className="items-center flex justify-center">
+                                <HiDocumentDuplicate className=" text-primary text-4xl mt-10 " />
+                              </div>
+                            )}
                           </td>
-
-                          <td>{item.durations}</td>
-                          <td>{item.resolutions}</td>
+                          <td className="text-center">
+                            {item.assetType !== "Folder" && item.assetName}
+                          </td>
+                          <td className="text-center">{item.durations}</td>
+                          <td className="text-center">{item.resolutions}</td>
                           <td className=" break-all max-w-sm">
                             {item.assetType}
                           </td>
-                          <td>{item.fileSize}</td>
+                          <td className="text-center">{item.fileSize}</td>
 
-                          <td className="relative w-[40px]">
-                            <button
-                              onClick={() => updateassetsdw2(item)}
-                              className="relative"
-                            >
-                              <BsThreeDotsVertical className="text-2xl relative" />
-                            </button>
+                          <td className="text-center relative">
+                            <div className="relative">
+                              <button
+                                onClick={() => updateassetsdw2(item)}
+                                className="ml-3 relative"
+                              >
+                                <HiDotsVertical />
+                              </button>
 
-                            {assetsdw2 === item && (
-                              <div ref={actionBoxRef} className="assetsdw">
-                                <ul>
-                                  {item.assetType !== "Folder" && (
+                              {assetsdw2 === item && (
+                                <div
+                                  ref={actionBoxRef}
+                                  className="scheduleAction z-10"
+                                >
+                                  <ul>
+                                    {item.assetType !== "Folder" && (
+                                      <li className="flex text-sm items-center">
+                                        <div className="move-to-button relative">
+                                          <button
+                                            className="flex relative w-full"
+                                            onClick={() => {
+                                              setAddScreenModal(true);
+                                              setassetsdw(null);
+                                            }}
+                                          >
+                                            <FiUpload className="mr-2 text-lg" />
+                                            Set to Screen
+                                          </button>
+                                        </div>
+                                      </li>
+                                    )}
+
                                     <li className="flex text-sm items-center">
+                                      {/* {selectedItems.length > 0 && ( */}
                                       <div className="move-to-button relative">
                                         <button
-                                          className="flex relative w-full"
-                                          onClick={() => {
-                                            setAddScreenModal(true);
-                                            setassetsdw(null);
-                                          }}
+                                          onClick={toggleMoveTo}
+                                          className="flex relative"
                                         >
-                                          <FiUpload className="mr-2 text-lg" />
-                                          Set to Screen
+                                          <CgMoveRight className="mr-2 text-lg" />
+                                          Move to
                                         </button>
-                                      </div>
-                                    </li>
-                                  )}
-                                  <li className="flex text-sm items-center">
-                                    <FiDownload className="mr-2 text-lg" />
-                                    <a
-                                      href={item.assetFolderPath}
-                                      target="_blank"
-                                      download
-                                    >
-                                      Download
-                                    </a>
-                                  </li>
-                                  <li className="flex text-sm items-center">
-                                    {/* {selectedItems.length > 0 && ( */}
-                                    <div className="move-to-button relative">
-                                      <button
-                                        onClick={toggleMoveTo}
-                                        className="flex relative"
-                                      >
-                                        <CgMoveRight className="mr-2 text-lg" />
-                                        Move to
-                                      </button>
 
-                                      {isMoveToOpen && (
-                                        <div className="move-to-dropdown">
-                                          <ul className="space-y-3">
-                                            {originalData.folder?.length > 0 ? (
-                                              originalData.folder.map(
-                                                (folder) => (
-                                                  <div key={folder.assetID}>
-                                                    {/* {selectedItems.every(
+                                        {isMoveToOpen && (
+                                          <div className="move-to-dropdown">
+                                            <ul className="space-y-3">
+                                              {originalData.folder?.length >
+                                              0 ? (
+                                                originalData.folder.map(
+                                                  (folder) => (
+                                                    <div key={folder.assetID}>
+                                                      {/* {selectedItems.every(
                                                       (item) =>
                                                         item.assetID !==
                                                         folder.assetID
                                                     ) && ( */}
-                                                    <li className="hover:bg-black hover:text-white">
-                                                      <button
-                                                        onClick={() =>
-                                                          handleMoveTo(
-                                                            folder.assetID,
-                                                            folder,
-                                                            "table"
-                                                          )
-                                                        }
-                                                      >
-                                                        {folder.assetName}
-                                                      </button>
-                                                    </li>
-                                                    {/* )} */}
-                                                  </div>
+                                                      <li className="hover:bg-black hover:text-white">
+                                                        <button
+                                                          onClick={() =>
+                                                            handleMoveTo(
+                                                              folder.assetID,
+                                                              folder,
+                                                              "table"
+                                                            )
+                                                          }
+                                                        >
+                                                          {folder.assetName}
+                                                        </button>
+                                                      </li>
+                                                      {/* )} */}
+                                                    </div>
+                                                  )
                                                 )
-                                              )
-                                            ) : (
-                                              <div className="w-full">
-                                                No folders, Please create a new
-                                                folder.
-                                              </div>
-                                            )}
-                                          </ul>
-                                        </div>
-                                      )}
-                                    </div>
-                                    {/* )} */}
-                                  </li>
-                                  {item.assetType === "Folder" ? (
-                                    <li>
-                                      <button
-                                        onClick={() => {
-                                          deleteFolder(item.assetID);
-                                        }}
-                                        className="flex text-sm items-center"
-                                      >
-                                        <RiDeleteBin5Line className="mr-2 text-lg" />
-                                        Move to Trash
-                                      </button>
+                                              ) : (
+                                                <div className="w-full">
+                                                  No folders, Please create a
+                                                  new folder.
+                                                </div>
+                                              )}
+                                            </ul>
+                                          </div>
+                                        )}
+                                      </div>
+                                      {/* )} */}
                                     </li>
-                                  ) : (
-                                    <li>
-                                      <button
-                                        onClick={() => {
-                                          handelDeletedata();
-                                        }}
-                                        className="flex text-sm items-center"
-                                      >
-                                        <RiDeleteBin5Line className="mr-2 text-lg" />
-                                        Move to Trash
-                                      </button>
-                                    </li>
-                                  )}
-                                </ul>
-                              </div>
-                            )}
-                            {deleteMessage && (
-                              <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                                <div className="relative w-full max-w-xl max-h-full">
-                                  <div className="relative bg-white rounded-lg shadow">
-                                    <div className="py-6 text-center">
-                                      <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
-                                      <h3 className="mb-5 text-xl text-primary">
-                                        Are you sure you want to delete this
-                                        Asset?
-                                      </h3>
-                                      <div className="flex justify-center items-center space-x-4">
+                                    {item.assetType === "Folder" ? (
+                                      <li>
                                         <button
-                                          className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
-                                          onClick={() =>
-                                            setDeleteMessage(false)
-                                          }
-                                        >
-                                          No, cancel
-                                        </button>
-
-                                        <button
-                                          className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
                                           onClick={() => {
-                                            handelDeletedata(item.assetID);
-                                            setDeleteMessage(false);
+                                            deleteFolder(item.assetID);
                                           }}
+                                          className="flex text-sm items-center"
                                         >
-                                          Yes, I'm sure
+                                          <RiDeleteBin5Line className="mr-2 text-lg" />
+                                          Move to Trash
                                         </button>
+                                      </li>
+                                    ) : (
+                                      <li>
+                                        <button
+                                          onClick={() => {
+                                            handelDeletedata();
+                                          }}
+                                          className="flex text-sm items-center"
+                                        >
+                                          <RiDeleteBin5Line className="mr-2 text-lg" />
+                                          Move to Trash
+                                        </button>
+                                      </li>
+                                    )}
+                                  </ul>
+                                </div>
+                              )}
+                              {deleteMessage && (
+                                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                                  <div className="relative w-full max-w-xl max-h-full">
+                                    <div className="relative bg-white rounded-lg shadow">
+                                      <div className="py-6 text-center">
+                                        <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
+                                        <h3 className="mb-5 text-xl text-primary">
+                                          Are you sure you want to delete this
+                                          Asset?
+                                        </h3>
+                                        <div className="flex justify-center items-center space-x-4">
+                                          <button
+                                            className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
+                                            onClick={() =>
+                                              setDeleteMessage(false)
+                                            }
+                                          >
+                                            No, cancel
+                                          </button>
+
+                                          <button
+                                            className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
+                                            onClick={() => {
+                                              handelDeletedata(item.assetID);
+                                              setDeleteMessage(false);
+                                            }}
+                                          >
+                                            Yes, I'm sure
+                                          </button>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                            )}
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))
