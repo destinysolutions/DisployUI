@@ -305,6 +305,16 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         const updatedScreenData = screenData.filter(
           (screenData) => screenData.screenID !== screenId
         );
+        if (connection) {
+          connection
+            .invoke("ScreenConnected")
+            .then(() => {
+              console.log("SignalR method invoked after Asset update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
+        }
         setScreenData(updatedScreenData);
       })
       .catch((error) => {
@@ -791,6 +801,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         console.log("SendTvStatus", UserID, ScreenID, status);
         setSendTvStatus(status);
         setSendTvStatusScreenID(ScreenID);
+        debugger;
+        var b = document.getElementById("changetvstatus" + ScreenID);
+        b.setAttribute(
+          "class",
+          "rounded-full px-6 py-2 text-white text-center " +
+            (status == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
+        );
+        b.textContent = status == true ? "Live" : "offline";
       });
 
       try {
@@ -1540,20 +1558,20 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           {screen.googleLocation}
                         </td>
                       )}
+
+                      {console.log("screen.screenStatus", screen.screenStatus)}
+
                       {statusContentVisible && (
                         <td className="p-2 text-center">
                           <button
+                            id={`changetvstatus${screen.screenID}`}
                             className={`rounded-full px-6 py-2 text-white text-center ${
-                              screen.screenID == sendTvStatusScreenID &&
-                              sendTvStatus
+                              screen.screenStatus == 1
                                 ? "bg-[#3AB700]"
                                 : "bg-[#FF0000]"
                             }`}
                           >
-                            {screen.screenID == sendTvStatusScreenID &&
-                            sendTvStatus == true
-                              ? "Live"
-                              : "offline"}
+                            {screen.screenStatus == 1 ? "Live" : "offline"}
                           </button>
                         </td>
                       )}
