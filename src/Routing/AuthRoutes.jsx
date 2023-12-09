@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "../Pages/Login";
 import Registration from "../Pages/Registration";
 import ForgotPassword from "../Pages/ForgotPassword";
+import EmailVerified from "../Pages/EmailVerified";
 import TermsConditions from "../Pages/TermsConditions";
 
 const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
@@ -63,6 +64,15 @@ const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
                 />
               }
             />
+            <Route
+            path="/email-verified"
+            element={
+              <EmailVerified
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
             <Route
               path="/termsconditions"
               element={

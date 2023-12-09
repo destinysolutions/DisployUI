@@ -21,7 +21,8 @@ const ForgotPassword = () => {
   const [confirmPasswordShow, setConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isShowPassword, setShowPassword] = useState(false);
-  const [getEmail, setEmail] = useState("");
+  const [userID, setUserId] = useState("");
+  const [getEmail, setEmail] = useState("")
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().required("Emial is required"),
@@ -68,8 +69,16 @@ const ForgotPassword = () => {
 
   const changePassword = async (values) => {
     try {
-      const payload = { email: getEmail, newPassword: values.newPassword };
-      console.log("payload",payload);
+      const payload = { userID: userID, Email : getEmail, Password: values.newPassword };
+      const config = {
+        method: "post", // Change method to 'get' for changing the passwordp
+        url: UpdatePassword, // Assuming FORGOTPASSWORD is your API endpoint
+        params: { payload },
+        maxBodyLength: Infinity,
+      };
+      const userExists = await axios.request(config);
+      callback(userExists.data); // Invoke the callback with the data
+
     } catch (error) {
       console.error("Error changing password:", error.message);
     }
@@ -81,10 +90,11 @@ const ForgotPassword = () => {
     onSubmit: async (values) => {
       try {
         const payload = { email: values.email };
-        setEmail(payload.email);
         toast.loading("Your email has been verified...");
         await checkEmail(payload, async (data) => {
           if (data.Status !== false) {
+            setUserId(data.UserID)
+            setEmail(values.email)
             setShowPassword(true); // Show the password change form
           } else {
             setShowPassword(false);
@@ -103,8 +113,18 @@ const ForgotPassword = () => {
     validationSchema: validationSchema2,
     onSubmit: async (values) => {
       try {
-        // Find the user by email
-        await changePassword(values);
+        // Find the user by UserId
+        toast.loading("Updateting...");
+        await changePassword(values, async (data) => {
+          if (data.Status !== false) {
+            toast.success("Password updated successfully..");
+            navigate('/')
+          } else {
+            setShowPassword(false);
+            toast.error("Email does not exist");
+          }
+          toast.dismiss();
+        });
 
         // Optionally, you can perform additional logic after changing the password
         toast.success("Password changed successfully");
