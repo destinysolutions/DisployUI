@@ -77,6 +77,8 @@ const Registration = () => {
         .createUserWithEmailAndPassword(values.emailID, values.password)
         .then((userCredential) => {
           const user = userCredential.user;
+          const usertoken = user.za;
+          console.log({usertoken,user});
           user
             .sendEmailVerification()
             .then(() => {
@@ -92,6 +94,7 @@ const Registration = () => {
               formData.append("Email", values.emailID);
               formData.append("GoogleLocation", values.googleLocation);
               formData.append("Phone", values.phoneNumber);
+              formData.append("UserTokan", usertoken);
               formData.append("Operation", "Insert");
               setLoading(true);
               axios

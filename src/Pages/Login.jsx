@@ -89,21 +89,14 @@ const Login = () => {
         data: data,
       };
       setLoading(true);
-      axios
-        .request(config)
-        .then((response) => {
+      axios.request(config).then((response) => {
           localStorage.setItem("userID", JSON.stringify(response.data));
           const createdDate = new Date(response.data.createdDate);
           const trialEndDate = new Date(createdDate);
-          trialEndDate.setDate(
-            trialEndDate.getDate() + response.data.trialDays
-          );
+          trialEndDate.setDate(trialEndDate.getDate() + response.data.trialDays);
 
           const currentDate = new Date();
-
-          const daysRemaining = Math.ceil(
-            (trialEndDate - currentDate) / (1000 * 60 * 60 * 24)
-          );
+          const daysRemaining = Math.ceil((trialEndDate - currentDate) / (1000 * 60 * 60 * 24));
           // if (daysRemaining > 0) {
           if (response.data.status == 200) {
             window.localStorage.setItem("timer", JSON.stringify(18_00));
@@ -115,58 +108,55 @@ const Login = () => {
               // navigate("/");
             } else if (userRole == 2) {
               // User login logic
-              auth
-                .signInWithEmailAndPassword(values.emailID, values.password)
-                .then((userCredential) => {
-                  const user = userCredential.user;
-                  if (!user.emailVerified) {
-                    alert("Please verify your email.");
-                  } else {
-                    // console.log(response?.data);
+              // auth.signInWithEmailAndPassword(values.emailID, values.password)
+              // auth.signInWithCustomToken(response.data.userTokan)
+                // .then((userCredential) => {
+                //   console.log("userCredential",userCredential);
+                //   const user = userCredential.user;
+                //   if (!user.emailVerified) {
+                //     alert("Please verify your email.");
+                //   } else {
                     const user_ID = response.data.userID;
-                    localStorage.setItem(
-                      "userID",
-                      JSON.stringify(response.data)
-                    );
+                    localStorage.setItem("userID",JSON.stringify(response.data));
                     localStorage.setItem("role_access", "USER");
                     window.location.href = "/";
                     // navigate("/");
-                  }
+                  // }
                   setLoading(false);
-                })
-                .catch((error) => {
-                  var errorMessage = JSON.parse(error.message);
-                  console.log("errorMessage", errorMessage);
-                  switch (errorMessage.error.message) {
-                    case "ERROR_INVALID_EMAIL":
-                      alert("Your email address appears to be malformed.");
-                      break;
-                    case "ERROR_WRONG_PASSWORD":
-                      alert("Your password is wrong.");
-                      break;
-                    case "ERROR_USER_NOT_FOUND":
-                      alert("User with this email doesn't exist.");
-                      break;
-                    case "ERROR_USER_DISABLED":
-                      alert("User with this email has been disabled.");
-                      break;
-                    case "ERROR_TOO_MANY_REQUESTS":
-                      alert("Too many requests. Try again later.");
-                      break;
-                    case "ERROR_OPERATION_NOT_ALLOWED":
-                      alert(
-                        "Signing in with Email and Password is not enabled."
-                      );
-                      break;
-                    case "INVALID_LOGIN_CREDENTIALS":
-                      alert("Invaild Email Or Password");
-                      break;
+                // })
+                // .catch((error) => {
+                //   var errorMessage = JSON.parse(error.message);
+                //   console.log("errorMessage", errorMessage);
+                //   switch (errorMessage.error.message) {
+                //     case "ERROR_INVALID_EMAIL":
+                //       alert("Your email address appears to be malformed.");
+                //       break;
+                //     case "ERROR_WRONG_PASSWORD":
+                //       alert("Your password is wrong.");
+                //       break;
+                //     case "ERROR_USER_NOT_FOUND":
+                //       alert("User with this email doesn't exist.");
+                //       break;
+                //     case "ERROR_USER_DISABLED":
+                //       alert("User with this email has been disabled.");
+                //       break;
+                //     case "ERROR_TOO_MANY_REQUESTS":
+                //       alert("Too many requests. Try again later.");
+                //       break;
+                //     case "ERROR_OPERATION_NOT_ALLOWED":
+                //       alert(
+                //         "Signing in with Email and Password is not enabled."
+                //       );
+                //       break;
+                //     case "INVALID_LOGIN_CREDENTIALS":
+                //       alert("Invaild Email Or Password");
+                //       break;
 
-                    default:
-                      alert("Something went wrong");
-                  }
-                  setLoading(false);
-                });
+                //     default:
+                //       alert("Something went wrong");
+                //   }
+                //   setLoading(false);
+                // });
             } else {
               // Handle other roles or unknown roles
               console.log("Unexpected role value:", userRole);
@@ -303,6 +293,7 @@ const Login = () => {
   }, [errorMessge, messageVisible]);
 
   const handleForgotPassword = () => {
+    // history("/email-verified");
     history("/forgotpassword");
   };
 
@@ -443,14 +434,14 @@ const Login = () => {
                     /> */}
                     {/* <div className="error">
                       {!captcha ? "Please Select Captcha" : ""}
-                    </div> 
+                    </div> */}
 
                      <p
                       className="ml-1 mt-2 not-italic text-white font-medium  text-right hover:text-SlateBlue"
                       onClick={handleForgotPassword}
                     >
                       Forgot Password?
-                    </p> */}
+                    </p> 
                     
                   </div>
 
