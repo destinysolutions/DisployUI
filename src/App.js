@@ -17,8 +17,6 @@ const App = () => {
 
   let interval;
 
-  console.log("testing");
-
   const onIdle = () => {
     clearInterval(interval);
     auth.signOut();
