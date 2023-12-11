@@ -1,4 +1,4 @@
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Routing from "./Routing/Routing";
 // import Toaster from 'reho'
 import { Toaster } from "react-hot-toast";
