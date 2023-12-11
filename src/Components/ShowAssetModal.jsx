@@ -135,7 +135,7 @@ const ShowAssetModal = ({
 
   return (
     <>
-      <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] h-auto top-16 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
+      <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] h-auto top-12 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
         <div className="flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black">
           <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
             Set Content to Add Media
@@ -575,7 +575,7 @@ const ShowAssetModal = ({
       </div>
       <div
         onClick={() => handleClickOutside()}
-        className="fixed inset-0 z-0 bg-black/20"
+        className="fixed inset-0 z-30 bg-black/20"
       ></div>
     </>
   );
