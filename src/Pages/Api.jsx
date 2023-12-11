@@ -159,6 +159,8 @@ export const SCREEN_PREVIEW =
   export const CHNAGE_PASSWORD =
   "https://disployapi.thedestinysolutions.com/api/UserMaster/ResetPassword?";
 
+  export const UPDATE_fIREBASE_ACCESS_TOKEN =
+  "https://disployapi.thedestinysolutions.com/api/Register/UpdateFirebaseAccessToken?";
 
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115

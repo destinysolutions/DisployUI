@@ -12,7 +12,7 @@ import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { LOGIN_URL, ADD_REGISTER_URL } from "./Api";
+import { LOGIN_URL, ADD_REGISTER_URL, UPDATE_fIREBASE_ACCESS_TOKEN } from "./Api";
 import video from "../../public/DisployImg/iStock-1137481126.mp4";
 import { useUser } from "../UserContext";
 import {
@@ -66,6 +66,7 @@ const Login = () => {
     //   .required("You must accept the terms and conditions"),
   });
 
+  
   const formik = useFormik({
     initialValues: {
       password: "",
@@ -73,11 +74,22 @@ const Login = () => {
       // terms: false,
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
+    onSubmit: async(values) => {
       let data = JSON.stringify({
         emailID: values.emailID,
         password: values.password,
       });
+      
+      console.log("auth",auth.currentUser.za,values.emailID);
+
+
+      const config2 = {
+        method: 'get',
+        url : `${UPDATE_fIREBASE_ACCESS_TOKEN}Email=${values.emailID}&Token=${auth.currentUser.za}`,
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const response = await axios(config2);
 
       let config = {
         method: "post",
@@ -89,8 +101,7 @@ const Login = () => {
         data: data,
       };
       setLoading(true);
-      axios
-        .request(config)
+      axios.request(config)
         .then((response) => {
           localStorage.setItem("userID", JSON.stringify(response.data));
           const createdDate = new Date(response.data.createdDate);
@@ -124,10 +135,7 @@ const Login = () => {
                     alert("Please verify your email.");
                   } else {
                     const user_ID = response.data.userID;
-                    localStorage.setItem(
-                      "userID",
-                      JSON.stringify(response.data)
-                    );
+                    localStorage.setItem("userID",JSON.stringify(response.data));
                     localStorage.setItem("role_access", "USER");
                     window.location.href = "/";
                     // navigate("/");

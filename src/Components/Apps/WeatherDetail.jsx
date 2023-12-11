@@ -8,9 +8,28 @@ import moment from "moment";
 import { GoPencil } from "react-icons/go";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import ReactApexChart from 'react-apexcharts';
+
 
 const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   let api_key = "41b5176532e682fd8b4cb6a44e3bd1a4";
+
+  const chartOptions = {
+    chart: {
+      id: 'basic-line',
+    },
+    xaxis: {
+      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    },
+  };
+
+  const chartSeries = [
+    {
+      name: 'Series 1',
+      data: [30, 40, 25, 50, 49, 21, 70, 51, 42, 60, 45, 80],
+    },
+  ];
+
 
   const [edited, setEdited] = useState(false);
   const currentDate = new Date();
@@ -19,6 +38,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   );
   const [weatherData, setWeatherData] = useState(null);
   const [language, setLanguage] = useState("");
+  const [loadFirst, setLoadFirst] = useState(true);
   //  const [countryLocation,setCountryLocation]=useState("india");
   //  const [cityLocation,setCityLocation]=useState('');
   //  const [stateLocation,setStateLocation]=useState('');
@@ -35,48 +55,57 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   //       console.error("Error fetching weather data: ", error);
   //     });
   // }, [city, api_key]);
+
   const [locations, setLocations] = useState([
-    { id: 1, location: "india", weatherData: null },
+    { id: 1, location: "ahmedabad", weatherData: null },
     { id: 2, location: "", weatherData: null },
     { id: 3, location: "", weatherData: null },
   ]);
+
   const handleLocationChange = (id, newLocation) => {
+    setLoadFirst(true);
     setLocations((prevLocations) =>
       prevLocations.map((location) =>
         location.id === id ? { ...location, location: newLocation } : location
       )
     );
   };
-  useEffect(() => {
-    // Fetch weather data for each location
-    locations.forEach((location) => {
-      const { id, location: loc } = location;
-      if (loc) {
-        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${loc}&appid=${api_key}`;
 
-        axios
-          .get(apiUrl)
-          .then((response) => {
-            // Update weather data for the specific location
-            setLocations((prevLocations) => {
-              const updatedLocations = prevLocations.map((prevLocation) =>
-                prevLocation.id === id
-                  ? { ...prevLocation, weatherData: response.data }
-                  : prevLocation
+  useEffect(() => {
+    if (loadFirst) {
+      locations.forEach((location) => {
+        const { id, location: loc } = location;
+        if (loc) {
+          // const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${loc}&appid=${api_key}`;
+          const apiUrl = ``;
+
+          axios
+            .get(apiUrl)
+            .then((response) => {
+              // Update weather data for the specific location
+              setLocations((prevLocations) => {
+                const updatedLocations = prevLocations.map((prevLocation) =>
+                  prevLocation.id === id
+                    ? { ...prevLocation, weatherData: response.data }
+                    : prevLocation
+                );
+                return updatedLocations;
+                setLoadFirst(false);
+              });
+              console.log(response.data);
+            })
+            .catch((error) => {
+              console.error(
+                `Error fetching weather data for location ${loc}: `,
+                error
               );
-              return updatedLocations;
             });
-            console.log(response.data);
-          })
-          .catch((error) => {
-            console.error(
-              `Error fetching weather data for location ${loc}: `,
-              error
-            );
-          });
-      }
-    });
-  }, [locations, api_key]);
+        }
+      });
+      setLoadFirst(false);
+    }
+  }, [loadFirst, locations, api_key]);
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -250,9 +279,9 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </div>
               <div className="lg:col-span-6 md:col-span-6 sm:col-span-10 ">
-                <div className="shadow-md bg-white rounded-lg p-5 h-full">
+                <div className="shadow-md bg-white rounded-lg h-full">
                   <div
-                    className="w-full p-12 flex items-center justify-center"
+                    className="w-full p-8 flex items-center justify-center"
                     style={{
                       borderRadius: "0.625rem",
                       border: "2px solid #FFF",
@@ -261,7 +290,122 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       boxShadow: "0px 10px 15px 0px rgba(0, 0, 0, 0.25)",
                       height: "100%",
                     }}
-                  ></div>
+                  >
+                    <div className="contents">
+                      <div className="grid grid-cols-6 gap-4">
+                      
+                        <div className="col-span-3">
+                          <p className="text-3xl font-bold text-white">
+                            Ahmedabad
+                          </p>
+                          <div className="flex justify-start">
+                            <div>
+                              <button className="ml-2 text-white bg-blue-700 py-1 px-4 text-base">
+                                Today
+                              </button>
+                            </div>
+                            <div className="ml-4 text-white">
+                              <p className="text-sm">Monday</p>
+                              <p className="text-sm">02:53 PM</p>
+                            </div>
+                          </div>
+
+                          <div className="items-center text-center ">
+                            <img
+                              src="../../../public/AppsImg/weather-icon.svg"
+                              alt="Logo"
+                              className="cursor-pointer h-100 w-100 mt-3"
+                            />
+                            <p className="text-center text-xl font-bold text-white mt-4">
+                              Clear. Pleasantly warm.
+                            </p>
+                          </div>
+                        </div>
+                         
+
+                        <div className="col-span-3">
+                          <div className="flex justify-start ">
+                            <div>
+                              <p className="ml-2 text-white py-1 px-4 text-base">
+                                Feels like 82°
+                              </p>
+                            </div>
+                            <div className="text-white">
+                              <p className="text-8xl">82°</p>
+                            </div>
+                          </div>
+
+                          <div class="grid grid-cols-4 gap-4">
+                            <div className="shadow-none bg-blue-700 p-1 w-64 flex justify-start">
+                              <div className="flex justify-start">
+                                <div>
+                                  <p className="text-sm">Tuesday</p>
+                                  <p className="text-sm">43°/33°</p>
+                                </div>
+                                <div className="text-white">
+                                  <img
+                                    src="../../../public/AppsImg/weather-icon.svg"
+                                    alt="Logo"
+                                    className="cursor-pointer mx-auto h-10 w-8 "
+                                  />
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="shadow-none bg-blue-700 p-1 ">
+                              <div className="flex justify-start">
+                                <div>
+                                  <p className="text-sm">Wednesday</p>
+                                  <p className="text-sm">43°/33°</p>
+                                </div>
+                                <div className="text-white">
+                                  <img
+                                    src="../../../public/AppsImg/weather-icon.svg"
+                                    alt="Logo"
+                                    className="cursor-pointer mx-auto h-10 w-8 "
+                                  />
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="shadow-none bg-blue-700 p-1">
+                              <div className="flex justify-start">
+                                <div>
+                                  <p className="text-sm">Thursday</p>
+                                  <p className="text-sm">43°/33°</p>
+                                </div>
+                                <div className="text-white">
+                                  <img
+                                    src="../../../public/AppsImg/weather-icon.svg"
+                                    alt="Logo"
+                                    className="cursor-pointer mx-auto h-10 w-8 "
+                                  />
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="shadow-none bg-blue-700 p-1">
+                              <div className="flex justify-start">
+                                <div>
+                                  <p className="text-sm">Friday</p>
+                                  <p className="text-sm">43°/33°</p>
+                                </div>
+                                <div className="text-white">
+                                  <img
+                                    src="../../../public/AppsImg/weather-icon.svg"
+                                    alt="Logo"
+                                    className="cursor-pointer mx-auto h-10 w-8 "
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            
+                            </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -273,3 +417,5 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
 };
 
 export default WeatherDetail;
+
+
