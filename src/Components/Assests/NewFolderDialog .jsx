@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { HiOutlineVideoCamera } from "react-icons/hi2";
-import { RiDeleteBin5Line, RiGalleryFill } from "react-icons/ri";
+import {
+  RiDeleteBin5Line,
+  RiDeleteBin6Line,
+  RiGalleryFill,
+} from "react-icons/ri";
 import { BsThreeDots } from "react-icons/bs";
 import { FiDownload, FiUpload } from "react-icons/fi";
 import { MdPlaylistPlay } from "react-icons/md";
@@ -11,10 +15,12 @@ import Navbar from "../Navbar";
 import PropTypes from "prop-types";
 import { MdArrowBackIosNew } from "react-icons/md";
 import {
+  ALL_FILES_UPLOAD,
   CREATE_NEW_FOLDER,
   FetchdataFormFolder,
   GET_ALL_FILES,
   MOVE_TO_FOLDER,
+  SELECT_BY_ASSET_ID,
 } from "../../Pages/Api";
 import { TiFolderOpen } from "react-icons/ti";
 import { FcOpenedFolder } from "react-icons/fc";
@@ -37,8 +43,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const [showImageAssetModal, setShowImageAssetModal] = useState(false);
   const [imageAssetModal, setImageAssetModal] = useState(null);
   const [clickedTabIcon, setClickedTabIcon] = useState(null);
-
-
+  const [deleteMessage, setDeleteMessage] = useState(false);
   const location = useLocation();
   const folderId = location.pathname.split("/").pop();
 
@@ -100,40 +105,6 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
   const [selectAll, setSelectAll] = useState(false);
-
-  // delete data
-
-  const handleMoveToTrash = (assetId, assetType) => {
-    let data = JSON.stringify({
-      assetID: assetId,
-      type: assetType == "Folder" ? "Folder" : "Image",
-      operation: "Delete",
-      userID: 0,
-    });
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: MOVE_TO_FOLDER,
-      headers: {
-        Authorization: authToken,
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        const updateAsset = folderData.filter(
-          (asset) => asset.assetID !== assetId
-        );
-        setFolderData(updateAsset);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
 
   const createNestedFolder = () => {
     let baseFolderName = "New Folder";
@@ -297,7 +268,77 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const handleDragStart = (event, itemId) => {
     event.dataTransfer.setData("text/plain", itemId);
   };
+  const handleWarning = (assetId) => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${SELECT_BY_ASSET_ID}?Id=${assetId}`,
+      headers: { Authorization: authToken },
+    };
 
+    axios
+      .request(config)
+      .then((response) => {
+        if (response?.data?.data == true) {
+          setDeleteMessage(true);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const deleteFolder = (folderID) => {
+    console.log("deleteFolder ====", folderID);
+    const data = JSON.stringify({
+      folderID: folderID,
+      operation: "Delete",
+    });
+    toast.loading("Deleting...");
+
+    handleWarning(folderID);
+    axios
+      .post(CREATE_NEW_FOLDER, data, {
+        headers: {
+          Authorization: authToken,
+          "Content-Type": "application/json",
+        },
+      })
+      .then(() => {
+        loadFolderByID(folderId);
+        toast.remove();
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.remove();
+      });
+  };
+  const handelDeletedata = (deleteAssetID) => {
+    console.log(deleteAssetID, "assetId");
+    const formData = new FormData();
+    formData.append("AssetID", deleteAssetID);
+    formData.append("Operation", "Delete");
+    formData.append("IsActive", "true");
+    formData.append("IsDelete", "true");
+    formData.append("FolderID", "0");
+    formData.append("UserID", "0");
+    formData.append("AssetType", "Image");
+
+    axios
+      .post(ALL_FILES_UPLOAD, formData, {
+        headers: {
+          Authorization: authToken,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        if (response?.data?.data === true) {
+          loadFolderByID(folderId);
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting data:", error);
+      });
+  };
   return (
     <>
       {showImageAssetModal && (
@@ -547,10 +588,10 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                                       <FiUpload className="mr-2 text-lg" />
                                       Set to Screen
                                     </li>
-                                    <li className="flex text-sm items-center">
+                                    {/* <li className="flex text-sm items-center">
                                       <MdPlaylistPlay className="mr-2 text-lg" />
                                       Add to Playlist
-                                    </li>
+                                    </li> */}
                                     {folderAsset.assetType === "Image" && (
                                       <li className="flex text-sm items-center">
                                         <FiDownload className="mr-2 text-lg" />
@@ -597,10 +638,10 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                                     )}
                                     <li className="flex text-sm items-center relative">
                                       {selectedItems.length > 0 && (
-                                        <div className="move-to-button">
+                                        <div className="move-to-button relative">
                                           <button
                                             onClick={toggleMoveTo}
-                                            className="flex"
+                                            className="flex relative w-full"
                                           >
                                             <CgMoveRight className="mr-2 text-lg" />
                                             Move to
@@ -608,22 +649,30 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
 
                                           {isMoveToOpen && (
                                             <div className="move-to-dropdown">
-                                              <ul className="space-y-3">
+                                              <ul>
                                                 {NestedNewFolder?.folder
                                                   ?.length > 0 ? (
                                                   NestedNewFolder.folder.map(
                                                     (folder) => (
-                                                      <li key={folder.assetID}>
-                                                        <button
-                                                          onClick={() =>
-                                                            handleMoveTo(
-                                                              folder.assetID
-                                                            )
-                                                          }
-                                                        >
-                                                          {folder.assetName}
-                                                        </button>
-                                                      </li>
+                                                      <div key={folder.assetID}>
+                                                        {selectedItems.every(
+                                                          (item) =>
+                                                            item.assetID !==
+                                                            folder.assetID
+                                                        ) && (
+                                                          <li className="mb-3 text-center">
+                                                            <button
+                                                              onClick={() =>
+                                                                handleMoveTo(
+                                                                  folder.assetID
+                                                                )
+                                                              }
+                                                            >
+                                                              {folder.assetName}
+                                                            </button>
+                                                          </li>
+                                                        )}
+                                                      </div>
                                                     )
                                                   )
                                                 ) : (
@@ -638,23 +687,75 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                                         </div>
                                       )}
                                     </li>
-                                    <li>
-                                      <button
-                                        onClick={() =>
-                                          handleMoveToTrash(
-                                            folderAsset.assetID,
-                                            folderAsset.assetType
-                                          )
-                                        }
-                                        className="flex text-sm items-center"
-                                      >
-                                        <RiDeleteBin5Line className="mr-2 text-lg" />
-                                        Move to Trash
-                                      </button>
-                                    </li>
+                                    {folderAsset.assetType === "Folder" ? (
+                                      <li>
+                                        <button
+                                          onClick={() => {
+                                            deleteFolder(folderAsset.assetID);
+                                          }}
+                                          className="flex text-sm items-center"
+                                        >
+                                          <RiDeleteBin5Line className="mr-2 text-lg" />
+                                          Move to Trash
+                                        </button>
+                                      </li>
+                                    ) : (
+                                      <li>
+                                        <button
+                                          onClick={() => {
+                                            handelDeletedata(
+                                              folderAsset.assetID
+                                            );
+                                          }}
+                                          className="flex text-sm items-center"
+                                        >
+                                          <RiDeleteBin5Line className="mr-2 text-lg" />
+                                          Move to Trash
+                                        </button>
+                                      </li>
+                                    )}
                                   </ul>
                                 </div>
                               )}
+                            {deleteMessage && (
+                              <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                                <div className="relative w-full max-w-xl max-h-full">
+                                  <div className="relative bg-white rounded-lg shadow">
+                                    <div className="py-6 text-center">
+                                      <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
+                                      <h3 className="mb-5 text-xl text-primary  px-5">
+                                        Are you sure you want to delete this
+                                        Asset? Because this Asset is being use
+                                        in another place.If you click on yes it
+                                        will get removed from the places where
+                                        the asset is used.
+                                      </h3>
+                                      <div className="flex justify-center items-center space-x-4">
+                                        <button
+                                          className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
+                                          onClick={() =>
+                                            setDeleteMessage(false)
+                                          }
+                                        >
+                                          No, cancel
+                                        </button>
+                                        <button
+                                          className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
+                                          onClick={() => {
+                                            handelDeletedata(
+                                              folderAsset.assetID
+                                            );
+                                            setDeleteMessage(false);
+                                          }}
+                                        >
+                                          Yes, I'm sure
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>

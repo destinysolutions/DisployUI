@@ -26,10 +26,36 @@ const ShowAssetImageModal = ({
           >
             <AiOutlineCloseCircle size={30} />
           </div>
-          <img
-            className="fixed max-h-full max-w-full min-w-full min-h-full object-fill inset-0"
-            src={imageAssetModal}
-          />
+          {imageAssetModal?.assetType === "Image" && (
+            <img
+              className="fixed max-h-full max-w-full min-w-full min-h-full object-fill inset-0"
+              src={imageAssetModal?.assetFolderPath}
+            />
+          )}
+          {imageAssetModal?.assetType === "OnlineImage" && (
+            <img
+              className="fixed max-h-full max-w-full min-w-full min-h-full object-fill inset-0"
+              src={imageAssetModal?.assetFolderPath}
+            />
+          )}
+          {imageAssetModal?.assetType === "Video" && (
+            <video
+              className="fixed max-h-full max-w-full min-w-full min-h-full object-fill inset-0"
+              controls
+            >
+              <source src={imageAssetModal?.assetFolderPath} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          )}
+          {imageAssetModal?.assetType === "OnlineVideo" && (
+            <video
+              className="fixed max-h-full max-w-full min-w-full min-h-full object-fill inset-0"
+              controls
+            >
+              <source src={imageAssetModal?.assetFolderPath} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          )}
         </div>
       </div>
     </>
