@@ -722,7 +722,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           }`}
                           onClick={() => {
                             setShowImageAssetModal(true);
-                            setImageAssetModal(item?.assetFolderPath);
+                            setImageAssetModal(item);
                           }}
                         />
                       )}
@@ -738,7 +738,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           }`}
                           onClick={() => {
                             setShowImageAssetModal(true);
-                            setImageAssetModal(item?.assetFolderPath);
+                            setImageAssetModal(item);
                           }}
                         />
                       )}
@@ -749,7 +749,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           className="w-full rounded-2xl relative h-56 border border-slate-200"
                           onClick={() => {
                             setShowImageAssetModal(true);
-                            setImageAssetModal(item?.assetFolderPath);
+                            setImageAssetModal(item);
                           }}
                         >
                           <source src={item.assetFolderPath} type="video/mp4" />
@@ -763,7 +763,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           className="w-full rounded-2xl relative h-56 border border-slate-200"
                           onClick={() => {
                             setShowImageAssetModal(true);
-                            setImageAssetModal(item?.assetFolderPath);
+                            setImageAssetModal(item);
                           }}
                         >
                           <source src={item.assetFolderPath} type="video/mp4" />
@@ -951,9 +951,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                       <button
                                                         onClick={() =>
                                                           handleMoveTo(
-                                                            folder.assetID,
-                                                            folder,
-                                                            "grid"
+                                                            folder.assetID
+                                                            // folder,
+                                                            // "grid"
                                                           )
                                                         }
                                                       >
@@ -1081,7 +1081,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
             >
               <div className="schedual-table bg-white rounded-xl mt-8 shadow">
                 <table
-                  className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+                  className="w-full  lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                   cellPadding={20}
                 >
                   <thead>
@@ -1163,7 +1163,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             {item.assetType === "Image" && (
                               <div className="img-cover ivratio img-cover-ratio">
                                 <div>
-                                  <img src={item.assetFolderPath} />
+                                  <img
+                                    src={item.assetFolderPath}
+                                    onClick={() => {
+                                      setShowImageAssetModal(true);
+                                      setImageAssetModal(item);
+                                    }}
+                                  />
                                 </div>
                               </div>
                             )}
@@ -1175,7 +1181,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     controls
                                     onClick={() => {
                                       setShowImageAssetModal(true);
-                                      setImageAssetModal(item?.assetFolderPath);
+                                      setImageAssetModal(item);
                                     }}
                                   >
                                     <source
@@ -1195,7 +1201,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     src={item.assetFolderPath}
                                     onClick={() => {
                                       setShowImageAssetModal(true);
-                                      setImageAssetModal(item?.assetFolderPath);
+                                      setImageAssetModal(item);
                                     }}
                                   />
                                 </div>
@@ -1209,7 +1215,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     controls
                                     onClick={() => {
                                       setShowImageAssetModal(true);
-                                      setImageAssetModal(item?.assetFolderPath);
+                                      setImageAssetModal(item);
                                     }}
                                   >
                                     <source
@@ -1227,7 +1233,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               </div>
                             )}
                           </td>
-                          <td className="text-center">
+                          <td className="text-center break-words">
                             {item.assetType !== "Folder" && item.assetName}
                           </td>
                           <td className="text-center">{item.durations}</td>
@@ -1269,58 +1275,58 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       </li>
                                     )}
 
-                                    <li className="flex text-sm items-center">
-                                      {/* {selectedItems.length > 0 && ( */}
-                                      <div className="move-to-button relative">
-                                        <button
-                                          onClick={toggleMoveTo}
-                                          className="flex relative"
-                                        >
-                                          <CgMoveRight className="mr-2 text-lg" />
-                                          Move to
-                                        </button>
+                                    <li className="flex text-sm items-center relative">
+                                      {selectedItems?.length > 0 && (
+                                        <div className="move-to-button relative">
+                                          <button
+                                            onClick={toggleMoveTo}
+                                            className="flex relative w-full"
+                                          >
+                                            <CgMoveRight className="mr-2 text-lg" />
+                                            Move to
+                                          </button>
 
-                                        {isMoveToOpen && (
-                                          <div className="move-to-dropdown">
-                                            <ul className="space-y-3">
-                                              {originalData.folder?.length >
-                                              0 ? (
-                                                originalData.folder.map(
-                                                  (folder) => (
-                                                    <div key={folder.assetID}>
-                                                      {/* {selectedItems.every(
-                                                      (item) =>
-                                                        item.assetID !==
-                                                        folder.assetID
-                                                    ) && ( */}
-                                                      <li className="hover:bg-black hover:text-white">
-                                                        <button
-                                                          onClick={() =>
-                                                            handleMoveTo(
-                                                              folder.assetID,
-                                                              folder,
-                                                              "table"
-                                                            )
-                                                          }
-                                                        >
-                                                          {folder.assetName}
-                                                        </button>
-                                                      </li>
-                                                      {/* )} */}
-                                                    </div>
+                                          {isMoveToOpen && (
+                                            <div className="move-to-dropdown">
+                                              <ul className="space-y-3">
+                                                {originalData.folder?.length >
+                                                0 ? (
+                                                  originalData.folder.map(
+                                                    (folder) => (
+                                                      <div key={folder.assetID}>
+                                                        {selectedItems.every(
+                                                          (item) =>
+                                                            item.assetID !==
+                                                            folder.assetID
+                                                        ) && (
+                                                          <li className="hover:bg-black hover:text-white">
+                                                            <button
+                                                              onClick={() =>
+                                                                handleMoveTo(
+                                                                  folder.assetID
+                                                                  // folder,
+                                                                  // "table"
+                                                                )
+                                                              }
+                                                            >
+                                                              {folder.assetName}
+                                                            </button>
+                                                          </li>
+                                                        )}
+                                                      </div>
+                                                    )
                                                   )
-                                                )
-                                              ) : (
-                                                <div className="w-full">
-                                                  No folders, Please create a
-                                                  new folder.
-                                                </div>
-                                              )}
-                                            </ul>
-                                          </div>
-                                        )}
-                                      </div>
-                                      {/* )} */}
+                                                ) : (
+                                                  <div className="w-full">
+                                                    No folders, Please create a
+                                                    new folder.
+                                                  </div>
+                                                )}
+                                              </ul>
+                                            </div>
+                                          )}
+                                        </div>
+                                      )}
                                     </li>
                                     {item.assetType === "Folder" ? (
                                       <li>
