@@ -133,6 +133,24 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
                     )
                 )
               )}
+              <div
+                className="lg:col-span-2 md:col-span-5 sm:col-span-10 xs:col-span-10 "
+                // key={app.app_Id}
+              >
+                <div className="shadow-md bg-white rounded-lg p-3">
+                  <Link to='/weather-detail'>
+                    <div className="text-center clear-both">
+                      <img
+                        src="../../../public/AppsImg/weather-icon.svg"
+                        alt="Logo"
+                        className="cursor-pointer mx-auto h-20 w-20"
+                      />
+                      <h4 className="text-lg font-medium mt-3">Weather</h4>
+                      <h4 className="text-sm font-normal ">Added</h4>
+                    </div>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
           {/* <div className="mt-5 mb-5">
