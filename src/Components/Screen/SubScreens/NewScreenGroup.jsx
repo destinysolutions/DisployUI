@@ -379,7 +379,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                       <td className="p-2 text-center">25 May 2023</td>
                       <td className="p-2 text-center">
                         <button
-                          onClick={() => setShowAssetModal(true)}
+                          // onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         >
                           Asset Name
@@ -406,7 +406,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                       <td className="p-2 text-center">25 May 2023</td>
                       <td className="p-2 text-center">
                         <button
-                          onClick={() => setShowAssetModal(true)}
+                          // onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         >
                           Asset Name
@@ -434,7 +434,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                       <td className="p-2 text-center">25 May 2023</td>
                       <td className="p-2 text-center">
                         <button
-                          onClick={() => setShowAssetModal(true)}
+                          // onClick={() => setShowAssetModal(true)}
                           className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                         >
                           Asset Name

@@ -364,7 +364,7 @@ button.tabsyncshow.tabsyncactive {
 .synctable.responsive-table select {
   appearance: none;
   position: relative;
-  background: url("../../public/ScreenImg/down.png") no-repeat;
+  background: url("../images/ScreenImg/down.png") no-repeat;
   background-position: calc(100% - 20px) calc(1em + -2px),
     calc(100% - 15px) calc(1em + 2px), 100% 0;
   background-size: 18px;
@@ -375,7 +375,7 @@ select.w-full.paymentlabel.relative,
 table.screen-details select {
   position: relative;
   appearance: none;
-  background: url(/public/ScreenImg/down.png) no-repeat;
+  background: url(../images/ScreenImg/down.png) no-repeat;
   background-position: calc(100% - 10px) calc(1em + -5px),
     calc(100% - 15px) calc(1em + 8px), 100% 0;
   background-size: 18px;

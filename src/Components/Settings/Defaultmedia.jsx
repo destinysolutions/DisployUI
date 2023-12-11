@@ -22,8 +22,9 @@ const Defaultmedia = () => {
   function updateMediaTab(id) {
     setMediaTabs(id);
   }
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token ,user} = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+  
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [assetData, setAssetData] = useState([]);
   const [assetAllData, setAssetAllData] = useState([]);

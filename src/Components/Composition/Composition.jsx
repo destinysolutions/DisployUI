@@ -34,8 +34,9 @@ import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import ScreenAssignModal from "../ScreenAssignModal";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+
   const navigation = useNavigate();
 
   const [showActionBox, setShowActionBox] = useState(false);

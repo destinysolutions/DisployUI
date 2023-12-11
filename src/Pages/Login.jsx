@@ -13,8 +13,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { LOGIN_URL, ADD_REGISTER_URL } from "./Api";
-import video from "../../public/DisployImg/iStock-1137481126.mp4";
-import { useUser } from "../UserContext";
+import video from "../images/DisployImg/iStock-1137481126.mp4";
 import {
   Googleauthprovider,
   appleProvider,
@@ -22,10 +21,13 @@ import {
   facebookProvider,
   microsoftProvider,
 } from "../FireBase/firebase";
-import { useDispatch } from "react-redux";
-import { loginUser, signUpUser } from "../Redux/useraction";
+import { useDispatch, useSelector } from "react-redux";
 import ReCAPTCHA from "react-google-recaptcha";
 import toast from "react-hot-toast";
+import { handleLoginUser } from "../Redux/Authslice";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import logo from "../images/DisployImg/logo.svg";
+
 // import.meta.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
 // console.log(import.meta.env.REACT_APP_RECAPTCHA_SITE_KEY);
@@ -45,7 +47,8 @@ const Login = () => {
   const message = location?.state?.message || null;
   const [messageVisible, setMessageVisible] = useState(false);
   const [captcha, setcaptcha] = useState("");
-  const [loading, setLoading] = useState(false);
+
+  const { loading, user } = useSelector((state) => state.root.auth);
 
   const navigate = useNavigate();
 
@@ -88,109 +91,105 @@ const Login = () => {
         },
         data: data,
       };
-      setLoading(true);
-      axios
-        .request(config)
-        .then((response) => {
-          localStorage.setItem("userID", JSON.stringify(response.data));
-          const createdDate = new Date(response.data.createdDate);
-          const trialEndDate = new Date(createdDate);
-          trialEndDate.setDate(
-            trialEndDate.getDate() + response.data.trialDays
-          );
 
-          const currentDate = new Date();
-          const daysRemaining = Math.ceil(
-            (trialEndDate - currentDate) / (1000 * 60 * 60 * 24)
-          );
-          // if (daysRemaining > 0) {
-          if (response.data.status == 200) {
-            window.localStorage.setItem("timer", JSON.stringify(18_00));
+      const response = dispatch(handleLoginUser({ config }));
+      if (response) {
+        response
+          .then((res) => {
+            const response = res?.payload;
+            localStorage.setItem("userID", JSON.stringify(response));
+            const createdDate = new Date(response.createdDate);
+            const trialEndDate = new Date(createdDate);
+            trialEndDate.setDate(trialEndDate.getDate() + response.trialDays);
 
-            const userRole = response.data.role;
-            if (userRole == 1) {
-              localStorage.setItem("role_access", "ADMIN");
-              window.location.href = "/";
-              // navigate("/");
-            } else if (userRole == 2) {
-              // User login logic
-              auth
-                .signInWithEmailAndPassword(values.emailID, values.password)
-                // auth.signInWithCustomToken(response.data.userTokan)
-                .then((userCredential) => {
-                  console.log("userCredential", userCredential);
-                  const user = userCredential.user;
-                  if (!user.emailVerified) {
-                    alert("Please verify your email.");
-                  } else {
-                    const user_ID = response.data.userID;
-                    localStorage.setItem(
-                      "userID",
-                      JSON.stringify(response.data)
-                    );
-                    localStorage.setItem("role_access", "USER");
-                    window.location.href = "/";
-                    // navigate("/");
-                  }
-                  setLoading(false);
-                });
-              // .catch((error) => {
-              //   var errorMessage = JSON.parse(error.message);
-              //   console.log("errorMessage", errorMessage);
-              //   switch (errorMessage.error.message) {
-              //     case "ERROR_INVALID_EMAIL":
-              //       alert("Your email address appears to be malformed.");
-              //       break;
-              //     case "ERROR_WRONG_PASSWORD":
-              //       alert("Your password is wrong.");
-              //       break;
-              //     case "ERROR_USER_NOT_FOUND":
-              //       alert("User with this email doesn't exist.");
-              //       break;
-              //     case "ERROR_USER_DISABLED":
-              //       alert("User with this email has been disabled.");
-              //       break;
-              //     case "ERROR_TOO_MANY_REQUESTS":
-              //       alert("Too many requests. Try again later.");
-              //       break;
-              //     case "ERROR_OPERATION_NOT_ALLOWED":
-              //       alert(
-              //         "Signing in with Email and Password is not enabled."
-              //       );
-              //       break;
-              //     case "INVALID_LOGIN_CREDENTIALS":
-              //       alert("Invaild Email Or Password");
-              //       break;
+            const currentDate = new Date();
+            const daysRemaining = Math.ceil(
+              (trialEndDate - currentDate) / (1000 * 60 * 60 * 24)
+            );
+            // if (daysRemaining > 0) {
+            if (response.status == 200) {
+              window.localStorage.setItem("timer", JSON.stringify(18_00));
 
-              //     default:
-              //       alert("Something went wrong");
-              //   }
-              //   setLoading(false);
-              // });
+              const userRole = response.role;
+              if (userRole == 1) {
+                localStorage.setItem("role_access", "ADMIN");
+                window.location.href = "/";
+                // navigate("/");
+              } else if (userRole == 2) {
+                // User login logic
+                signInWithEmailAndPassword(
+                  auth,
+                  values.emailID,
+                  values.password
+                )
+                  // auth.signInWithCustomToken(response.data.userTokan)
+                  .then((userCredential) => {
+                    const user = userCredential.user;
+                    if (!user.emailVerified) {
+                      alert("Please verify your email.");
+                    } else {
+                      const user_ID = response.userID;
+                      localStorage.setItem("userID", JSON.stringify(response));
+                      localStorage.setItem("role_access", "USER");
+                      // window.location.href = "/";
+                      navigate("/");
+                    }
+                  });
+                // .catch((error) => {
+                //   var errorMessage = JSON.parse(error.message);
+                //   console.log("errorMessage", errorMessage);
+                //   switch (errorMessage.error.message) {
+                //     case "ERROR_INVALID_EMAIL":
+                //       alert("Your email address appears to be malformed.");
+                //       break;
+                //     case "ERROR_WRONG_PASSWORD":
+                //       alert("Your password is wrong.");
+                //       break;
+                //     case "ERROR_USER_NOT_FOUND":
+                //       alert("User with this email doesn't exist.");
+                //       break;
+                //     case "ERROR_USER_DISABLED":
+                //       alert("User with this email has been disabled.");
+                //       break;
+                //     case "ERROR_TOO_MANY_REQUESTS":
+                //       alert("Too many requests. Try again later.");
+                //       break;
+                //     case "ERROR_OPERATION_NOT_ALLOWED":
+                //       alert(
+                //         "Signing in with Email and Password is not enabled."
+                //       );
+                //       break;
+                //     case "INVALID_LOGIN_CREDENTIALS":
+                //       alert("Invaild Email Or Password");
+                //       break;
+
+                //     default:
+                //       alert("Something went wrong");
+                //   }
+                //
+                // });
+              } else {
+                // Handle other roles or unknown roles
+                console.log("Unexpected role value:", userRole);
+                alert("Invalid role: " + userRole);
+              }
             } else {
-              // Handle other roles or unknown roles
-              console.log("Unexpected role value:", userRole);
-              alert("Invalid role: " + userRole);
-              setLoading(false);
-            }
-          } else {
-            toast.remove();
-            setErrorMessge(response.data.message);
-            setLoading(false);
-            toast.error(response?.data?.message);
-          }
+              toast.remove();
+              setErrorMessge(response.message);
 
-          // } else {
-          //   alert(
-          //     "Trial days has been expired please contact the Administration"
-          //   );
-          // }
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          setLoading(false);
-        });
+              toast.error(response?.message);
+            }
+
+            // } else {
+            //   alert(
+            //     "Trial days has been expired please contact the Administration"
+            //   );
+            // }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
   });
 
@@ -346,11 +345,7 @@ const Login = () => {
         <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center loginbg  lg:px-6 md:px-6 sm:px-2 xs:px-2 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-2  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
             <div className="flex items-center pb-5">
-              <img
-                className="w-227 h-50"
-                src="/DisployImg/logo.svg"
-                alt="title"
-              />
+              <img className="w-fit h-fit" alt="logo" src={logo} />
             </div>
             <div className="w-full border-[#ffffff6e] border rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
               <div className="lg:p-6 md:p-6  sm:px-4 xs:p-2 py-6">

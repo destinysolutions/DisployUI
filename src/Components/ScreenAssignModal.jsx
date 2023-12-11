@@ -11,8 +11,9 @@ const ScreenAssignModal = ({
   selectedScreens,
   setSelectedScreens,
 }) => {
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token ,user} = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
   const [screenData, setScreenData] = useState([]);
@@ -20,9 +21,9 @@ const ScreenAssignModal = ({
   const selectScreenRef = useRef(null);
 
   useEffect(() => {
-    if (UserData.user?.userID) {
+    if (user?.userID) {
       axios
-        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${UserData.user?.userID}`, {
+        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${user?.userID}`, {
           headers: {
             Authorization: authToken,
           },

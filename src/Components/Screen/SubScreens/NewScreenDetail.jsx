@@ -39,8 +39,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token ,user} = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
 
   const [tagName, setTagName] = useState("");
   const [showTagBox, setShowTagBox] = useState(false);

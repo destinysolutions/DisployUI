@@ -12,8 +12,9 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 
 const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+
   const [img, setImg] = useState("Natural");
   const [res, setRes] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);

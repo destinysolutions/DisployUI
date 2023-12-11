@@ -46,13 +46,15 @@ import { VscCalendar } from "react-icons/vsc";
 import { BsTags } from "react-icons/bs";
 import { HiDotsVertical } from "react-icons/hi";
 import AddOrEditTagPopup from "../../AddOrEditTagPopup";
+import FileUpload from "../../Assests/FileUpload";
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const {user,token} = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+
   const [searchParams] = useSearchParams();
   const getScreenID = searchParams.get("screenID");
   const [screenData, setScreenData] = useState([]);

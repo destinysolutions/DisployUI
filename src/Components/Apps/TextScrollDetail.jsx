@@ -15,8 +15,8 @@ import { MdSave } from "react-icons/md";
 import toast from "react-hot-toast";
 
 const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
 
   const [scrollType, setScrollType] = useState([]);
   const [selectedScrollType, setSelectedScrollType] = useState(1);

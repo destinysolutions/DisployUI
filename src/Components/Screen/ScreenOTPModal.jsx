@@ -18,8 +18,8 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const otpRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
   const modalRef = useRef(null);
 
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token ,user} = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
 
   const handleOtpChange = (index, value) => {
     const updatedOtpValues = [...otpValues];

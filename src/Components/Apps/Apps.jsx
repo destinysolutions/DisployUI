@@ -23,23 +23,23 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [appData, setAppData] = useState([]);
   const [appDropDown, setAppDropDown] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     axios
-    .get(GET_ALL_APPS, { headers: { Authorization: authToken } })
-    .then((response) => {
-      const fetchedData = response.data.data;
-      setAppData(fetchedData);
-      setLoading(false)
-    })
-    .catch((error) => {
-      console.log(error);
-      setLoading(false)
+      .get(GET_ALL_APPS, { headers: { Authorization: authToken } })
+      .then((response) => {
+        const fetchedData = response.data.data;
+        setAppData(fetchedData);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
       });
   }, []);
 
@@ -70,7 +70,11 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <div className="mt-5 mb-5">
             <div className="grid grid-cols-10 gap-4">
-              {loading ?<div className="text-center col-span-full font-semibold text-xl">Loading...</div>:appData.length === 0 ? (
+              {loading ? (
+                <div className="text-center col-span-full font-semibold text-xl">
+                  Loading...
+                </div>
+              ) : appData.length === 0 ? (
                 <div className="w-full text-center font-semibold text-xl col-span-full">
                   No Apps here.
                 </div>

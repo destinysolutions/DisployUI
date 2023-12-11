@@ -37,8 +37,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [addScreenModal, setAddScreenModal] = useState(false);
   const [scheduleData, setScheduleData] = useState([]);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  
+  const { token, user } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+
   const [selectedScreens, setSelectedScreens] = useState([]);
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")

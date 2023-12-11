@@ -37,8 +37,9 @@ const Account = () => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [isImageUploaded, setIsImageUploaded] = useState(false);
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+
+  const { token ,user} = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
 
   console.log("selectedTimezoneName", selectedTimezoneName);
   console.log("selectedCurrencyName", selectedCurrencyName);
@@ -125,7 +126,7 @@ const Account = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/UserMaster/GetOrgUsers?OrgUserSpecificID=${UserData.user?.userID}`,
+      url: `https://disployapi.thedestinysolutions.com/api/UserMaster/GetOrgUsers?OrgUserSpecificID=${user?.userID}`,
       headers: {
         Authorization: authToken,
       },
@@ -143,13 +144,13 @@ const Account = () => {
 
   const updateUser = async (values, setSubmitting) => {
     let data = new FormData();
-    data.append("orgUserSpecificID", UserData.user?.userID);
+    data.append("orgUserSpecificID", user?.userID);
     data.append("firstName", firstName);
     data.append("lastName", lastName);
     data.append("email", "hetal.prajapati@thedestinysolutions.com");
     data.append("phone", values.phoneNumber);
     data.append("isActive", "1");
-    data.append("orgUserID", UserData.user?.userID);
+    data.append("orgUserID", user?.userID);
     data.append("userRole", "1");
     data.append("countryID", selectedCountry);
     data.append("company", "Admin");

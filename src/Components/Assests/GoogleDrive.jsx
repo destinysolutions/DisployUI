@@ -2,13 +2,14 @@ import React from "react";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import useDrivePicker from "react-google-drive-picker";
-import Googledrive from "../../../public/Assets/google-drive.png";
+import Googledrive from "../../images/Assets/google-drive.png";
 import { Tooltip } from "@material-tailwind/react";
 import { ALL_FILES_UPLOAD, GOOGLE_DRIVE } from "../../Pages/Api";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 const GoogleDrive = () => {
-  const UserData = useSelector((Alldata) => Alldata.user);
+  const { user } = useSelector((state) => state.root.auth);
+
   const [openPicker] = useDrivePicker();
   const [selectedFiles, setSelectedFiles] = useState([]);
   // const [accessToken, setAccessToken] = useState("");
@@ -53,7 +54,7 @@ const GoogleDrive = () => {
 
   const handleGet = () => {
     let data = JSON.stringify({
-      userId: UserData.user?.userID,
+      userId: user?.userID,
       operation: "CheckExists",
       mode: "CheckAuthToken",
       type: "GoogleDrive",
@@ -92,7 +93,7 @@ const GoogleDrive = () => {
     const authorizationCode = urlParams.get("code");
     if (authorizationCode) {
       let data = JSON.stringify({
-        userId: UserData.user?.userID,
+        userId: user?.userID,
         operation: "GetAuthToken",
         mode: "Insert",
         code: authorizationCode,

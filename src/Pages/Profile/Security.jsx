@@ -9,8 +9,8 @@ import { auth } from "../../FireBase/firebase"; // Import your Firebase auth ins
 import toast from "react-hot-toast";
 
 const Security = () => {
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token ,user} = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
 
   const validationSchema = Yup.object().shape({
     currentPassword: Yup.string().required("Current Password is required"),

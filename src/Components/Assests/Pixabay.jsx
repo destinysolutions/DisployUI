@@ -7,8 +7,10 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 
 const Pixabay = ({ closeModal, pixabayModalRef }) => {
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+
+  
   const [images, setImages] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);

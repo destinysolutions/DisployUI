@@ -28,8 +28,9 @@ const EventEditor = ({
   allAssets,
   myEvents,
 }) => {
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token ,user} = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+  
   const [title, setTitle] = useState("");
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
   const [editedStartDate, setEditedStartDate] = useState("");

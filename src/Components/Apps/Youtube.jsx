@@ -23,7 +23,7 @@ import { MdOutlineEdit } from "react-icons/md";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import youtube from "../../../public/AppsImg/youtube.svg";
+import youtube from "../../images/AppsImg/youtube.svg";
 import { useRef } from "react";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import ScreenAssignModal from "../ScreenAssignModal";
@@ -34,8 +34,8 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
 
   const [appDetailModal, setAppDetailModal] = useState(false);
   const [youtubeData, setYoutubeData] = useState([]);

@@ -15,7 +15,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { AiOutlineClose } from "react-icons/ai";
 import { ADD_REGISTER_URL } from "./Api";
-import video from "../../public/DisployImg/iStock-1137481126.mp4";
+import video from "../images/DisployImg/iStock-1137481126.mp4";
 import {
   Googleauthprovider,
   appleProvider,
@@ -24,6 +24,14 @@ import {
   microsoftProvider,
 } from "../FireBase/firebase";
 import toast from "react-hot-toast";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { handleRegisterUser } from "../Redux/Authslice";
+import logo from "../images/DisployImg/logo.svg";
+
 const Registration = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessge, setErrorMessge] = useState("");
@@ -34,6 +42,8 @@ const Registration = () => {
   // console.log("errorMessge:", errorMessge);
   //using for routing
   const history = useNavigate();
+
+  const dispatch = useDispatch();
 
   //using for validation and register api calling
   const phoneRegExp =
@@ -73,20 +83,17 @@ const Registration = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      auth
-        .createUserWithEmailAndPassword(values.emailID, values.password)
+      createUserWithEmailAndPassword(auth, values.emailID, values.password)
         .then((userCredential) => {
           const user = userCredential.user;
           const usertoken = user.za;
-          console.log({usertoken,user});
-          user
-            .sendEmailVerification()
+          console.log({ usertoken, user });
+          sendEmailVerification()
             .then(() => {
               console.log("Verification email sent.");
               alert("Verification email sent.");
 
               const formData = new FormData();
-
               formData.append("OrganizationName", values.companyName);
               formData.append("Password", values.password);
               formData.append("FirstName", values.firstName);
@@ -97,27 +104,36 @@ const Registration = () => {
               formData.append("UserTokan", usertoken);
               formData.append("Operation", "Insert");
               setLoading(true);
-              axios
-                .post(ADD_REGISTER_URL, formData, {
-                  headers: {
-                    "Content-Type": "multipart/form-data",
-                  },
-                })
-                .then(() => {
-                  history("/", {
-                    state: { message: "Registration successfull " },
+
+              let config = {
+                method: "post",
+                maxBodyLength: Infinity,
+                url: ADD_REGISTER_URL,
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+                data: formData,
+              };
+
+              const response = dispatch(handleRegisterUser({ config }));
+              if (response) {
+                response
+                  .then(() => {
+                    history("/", {
+                      state: { message: "Registration successfull " },
+                    });
+                    toast.success("Registration successfully.");
+                    setLoading(false);
+
+                    auth.signOut();
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                    setErrorMessgeVisible(true);
+                    setErrorMessge(error.response.data);
+                    setLoading(false);
                   });
-                  toast.success("Registration successfully.");
-                  setLoading(false);
-                  
-                  auth.signOut();
-                })
-                .catch((error) => {
-                  console.log(error);
-                  setErrorMessgeVisible(true);
-                  setErrorMessge(error.response.data);
-                  setLoading(false);
-                });
+              }
             })
             .catch((error) => {
               console.error(error);
@@ -282,9 +298,9 @@ const Registration = () => {
           <div className="flex flex-col items-center justify-center loginbg  lg:px-6 md:px-6 sm:px-2 xs:px-2 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-2  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
             <div className="flex items-center pb-5">
               <img
-                className="w-227 h-50"
-                src="/DisployImg/logo.svg"
-                alt="title"
+                className="w-fit h-fit"
+                alt="logo"
+                src={logo}
               />
             </div>
             <div className="w-full border-[#ffffff6e] border rounded-lg shadow-md md:mt-0  xl:p-0 lg:min-w-[600px] md:min-w-[600px] sm:min-w-auto xs:min-w-auto">

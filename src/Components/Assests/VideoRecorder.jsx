@@ -13,8 +13,9 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const VideoRecorder = ({ closeModal, onVideoRecorded, videoModalRef }) => {
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+  
   const webcamRef = useRef(null);
   const [recording, setRecording] = useState(false);
   const [recordedChunksList, setRecordedChunksList] = useState([]);

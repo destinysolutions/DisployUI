@@ -75,11 +75,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
     : "";
+  const [clickedTabIcon, setClickedTabIcon] = useState(null);
+
   const actionBoxRef = useRef(null);
   const addScreenRef = useRef(null);
-  const UserData = useSelector((Alldata) => Alldata.user);
+  const { user, token } = useSelector((state) => state.root.auth);
+
   const [screenAssetID, setScreenAssetID] = useState();
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const authToken = `Bearer ${token}`;
 
   const history = useNavigate();
   useEffect(() => {

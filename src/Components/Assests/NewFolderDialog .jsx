@@ -27,8 +27,8 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
   // folder wise show asset
   const [folderData, setFolderData] = useState([]);
   const [folderNames, setFolderNames] = useState([]);
@@ -36,6 +36,8 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const [folderName, setFolderName] = useState("");
   const [showImageAssetModal, setShowImageAssetModal] = useState(false);
   const [imageAssetModal, setImageAssetModal] = useState(null);
+  const [clickedTabIcon, setClickedTabIcon] = useState(null);
+
 
   const location = useLocation();
   const folderId = location.pathname.split("/").pop();

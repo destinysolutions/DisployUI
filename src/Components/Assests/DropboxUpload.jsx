@@ -7,8 +7,9 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 const DropboxUpload = () => {
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+  
   const handleSuccess = (files) => {
     files.forEach((image) => {
       const formData = new FormData();

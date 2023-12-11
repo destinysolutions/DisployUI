@@ -123,8 +123,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   });
   const [searchScreen, setSearchScreen] = useState("");
   const [screenAllData, setScreenAllData] = useState([]);
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+
+  const { user, token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+
   const [groupName, setGroupName] = useState("");
   const [assetData, setAssetData] = useState([]);
   const [assetAllData, setAssetAllData] = useState([]);
@@ -255,7 +257,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const handleDeleteAllScreen = () => {
     if (!window.confirm("Are you sure?")) return;
     let data = JSON.stringify({
-      userID: UserData.user?.userID,
+      userID: user?.userID,
       operation: "DeleteUserIdScreenOtp",
     });
 
@@ -910,7 +912,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   useEffect(() => {
-    if (UserData.user?.userID) {
+    if (user?.userID) {
       setLoading(true);
       axios
         .get(SELECT_BY_USER_SCREENDETAIL, {
@@ -936,7 +938,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           console.log(error);
         });
     }
-  }, [UserData.user?.userID]);
+  }, [user?.userID]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {

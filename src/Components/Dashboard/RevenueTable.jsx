@@ -1,6 +1,6 @@
 import React from "react";
 import DataTable from "react-data-table-component";
-import "../../../public/DisployImg/india.png";
+import "../../images/DisployImg/india.png";
 
 const RevenueTable = () => {
   const revenueData = [

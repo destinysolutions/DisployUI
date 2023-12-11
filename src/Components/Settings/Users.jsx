@@ -70,8 +70,9 @@ const Users = () => {
   const [passowrdErrors, setErrorsPassword] = useState("");
   const [emailErrors, setErrorsEmail] = useState("");
 
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token ,user} = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+  
   const [showuserModal, setshowuserModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [userRoleData, setUserRoleData] = useState([]);

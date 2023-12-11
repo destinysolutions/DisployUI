@@ -10,6 +10,16 @@ import ScreenOTPModal from "./Screen/ScreenOTPModal";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 import toast from "react-hot-toast";
 import { auth } from "../FireBase/firebase";
+import screenIcon from "../images/MenuIcons/screens_icon.svg";
+import settingIcon from "../images/MenuIcons/setting_icon.svg";
+import logoutIcon from "../images/MenuIcons/logout_icon.svg";
+import assetsIcon from "../images/MenuIcons/assets_icon.svg";
+import appsIcon from "../images/MenuIcons/apps_icon.svg";
+import compositionIcon from "../images/MenuIcons/playlist_icon.svg";
+import scheduleIcon from "../images/MenuIcons/schedule_icon.svg";
+import logo from "../images/DisployImg/logo.svg";
+import { useDispatch } from "react-redux";
+import { handleLogout } from "../Redux/Authslice";
 
 const Sidebar = ({ sidebarOpen }) => {
   Sidebar.propTypes = {
@@ -22,6 +32,8 @@ const Sidebar = ({ sidebarOpen }) => {
   const [submenuStates, setSubmenuStates] = useState({});
 
   const navigation = useNavigate();
+
+  const dispatch = useDispatch();
 
   //for menu list
   const Menus = [
@@ -41,9 +53,7 @@ const Sidebar = ({ sidebarOpen }) => {
       title: "Screens",
       cName: "nav-text link-items",
       path: "/screens",
-      icon: (
-        <img src="/MenuIcons/screens_icon.svg" alt="Screens" className="w-6" />
-      ),
+      icon: <img src={screenIcon} alt="Screens" className="w-6" />,
       subMenus: [
         {
           title: (
@@ -71,21 +81,13 @@ const Sidebar = ({ sidebarOpen }) => {
       title: "Assets",
       cName: "nav-text link-items",
       path: "/assets",
-      icon: (
-        <img src="/MenuIcons/assets_icon.svg" alt="Assets" className="w-6" />
-      ),
+      icon: <img src={assetsIcon} alt="Assets" className="w-6" />,
     },
     {
       title: "My Composition",
       cName: "nav-text link-items",
       path: "/composition",
-      icon: (
-        <img
-          src="/MenuIcons/playlist_icon.svg"
-          alt="Playlist"
-          className="w-6"
-        />
-      ),
+      icon: <img src={compositionIcon} alt="Playlist" className="w-6" />,
     },
     // {
     //   title: "Disploy Studio",
@@ -103,19 +105,13 @@ const Sidebar = ({ sidebarOpen }) => {
       title: "My Schedule",
       cName: "nav-text link-items",
       path: "/myschedule",
-      icon: (
-        <img
-          src="/MenuIcons/schedule_icon.svg"
-          alt="My_Schedule"
-          className="w-6"
-        />
-      ),
+      icon: <img src={scheduleIcon} alt="My_Schedule" className="w-6" />,
     },
     {
       title: "Apps",
       cName: "nav-text link-items",
       path: "/apps",
-      icon: <img src="/MenuIcons/apps_icon.svg" alt="Apps" className="w-6" />,
+      icon: <img src={appsIcon} alt="Apps" className="w-6" />,
     },
 
     // {
@@ -164,9 +160,7 @@ const Sidebar = ({ sidebarOpen }) => {
       title: "Settings",
       cName: "nav-text link-items",
       path: "/settings",
-      icon: (
-        <img src="/MenuIcons/setting_icon.svg" alt="Settings" className="w-6" />
-      ),
+      icon: <img src={settingIcon} alt="Settings" className="w-6" />,
     },
     // {
     //   title: "Take Tour",
@@ -189,9 +183,7 @@ const Sidebar = ({ sidebarOpen }) => {
     {
       title: "Log Out",
       cName: "nav-text link-items",
-      icon: (
-        <img src="/MenuIcons/logout_icon.svg" alt="LogOut" className="w-6" />
-      ),
+      icon: <img src={logoutIcon} alt="LogOut" className="w-6" />,
     },
   ];
 
@@ -210,10 +202,7 @@ const Sidebar = ({ sidebarOpen }) => {
     if (title == "Log Out") {
       toast.loading("Logout...");
       setTimeout(() => {
-        localStorage.setItem("role_access", "");
-        auth.signOut();
-        window.localStorage.clear("timer");
-        window.location.reload();
+        dispatch(handleLogout());
         toast.remove();
         navigation("/");
       }, 1000);
@@ -250,8 +239,8 @@ const Sidebar = ({ sidebarOpen }) => {
             <div className="w-60 fixed top-0 md:left-0 lg:left-0  z-20 px-4 h-screen lg:rounded-tr-[50px] md:rounded-tr-[50px] sm:rounded-tr-[30px] bg-primary">
               <div className="flex items-center lg:py-6 md:py-6 sm:pt-6 sm:pb-3 pt">
                 <img
-                  src="/DisployImg/logo.svg"
                   alt="Logo"
+                  src={logo}
                   className="cursor-pointer duration-500"
                 />
               </div>

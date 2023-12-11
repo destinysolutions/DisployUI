@@ -10,8 +10,9 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 
 const Pexels = ({ closeModal, pexelsModalRef }) => {
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+  
   const [photos, setPhotos] = useState([]);
   const [media, setMedia] = useState([]);
   const [searchQuery, setSearchQuery] = useState("Nature");

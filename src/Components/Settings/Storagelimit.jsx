@@ -5,8 +5,9 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 const Storagelimit = () => {
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token ,user} = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+  
   const [storageData, setStorageData] = useState("");
   useEffect(() => {
     let config = {

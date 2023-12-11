@@ -27,8 +27,6 @@
 //             return tokenResponse.accessToken;
 //         };
 
-
-
 //         const accounts = msalInstance.getAllAccounts();
 //         setIsLoggedIn(accounts.length > 0);
 //     }, []);
@@ -86,158 +84,158 @@
 
 // export default OneDrive;
 
-
 import React, { useEffect, useState } from "react";
 import * as msal from "@azure/msal-browser";
 import { Tooltip } from "@material-tailwind/react";
-import Onedrive from "../../../public/Assets/one-drive.png";
+import Onedrive from "../../images/Assets/one-drive.png";
 
 const OneDrive = () => {
-    const [app, setApp] = useState(null);
+  const [app, setApp] = useState(null);
 
-    const baseUrl = "https://onedrive.live.com/picker";
-    const authority = "https://login.microsoftonline.com/common";
-    const redirectUri = "http://localhost:5173"; // Update with your web URL
-    const clientId = "3e34f72d-7f91-48fe-9805-4946b9b17997"; // Update with your client ID
+  const baseUrl = "https://onedrive.live.com/picker";
+  const authority = "https://login.microsoftonline.com/common";
+  const redirectUri = "http://localhost:5173"; // Update with your web URL
+  const clientId = "3e34f72d-7f91-48fe-9805-4946b9b17997"; // Update with your client ID
 
-    useEffect(() => {
-        const msalParams = {
-            auth: {
-                clientId: clientId,
-                authority: authority,
-                redirectUri: redirectUri,
-            },
-        };
-
-        const msalInstance = new msal.PublicClientApplication(msalParams);
-        setApp(msalInstance);
-
-      
-        const accounts = msalInstance.getAllAccounts();
-        if (accounts.length > 0) {
-       
-        }
-    }, []);
-
-    const launchPicker = async (e) => {
-        e.preventDefault();
-        const button = e.target;
-        button.disabled = true;
-
-        try {
-            const authToken = await getToken();
-
-            const params = {
-                sdk: "8.0",
-                entry: {
-                    oneDrive: {
-                        files: {},
-                    },
-                },
-                authentication: {},
-                messaging: {
-                    origin: "http://localhost:5173", // Update with your origin
-                    channelId: "27",
-                },
-                typesAndSources: {
-                    mode: "files",
-                    pivots: {
-                        oneDrive: true,
-                        recent: true,
-                    },
-                },
-            };
-
-            const queryString = new URLSearchParams({
-                filePicker: JSON.stringify(params),
-            });
-
-            const url = `${baseUrl}?${queryString}`;
-            const pickerWindow = window.open(url, "OneDrivePicker", "width=800,height=600");
-
-            if (!pickerWindow) {
-                alert("Popup blocked. Please allow popups for this site.");
-            }
-
-            // Listen for messages from the picker window
-            window.addEventListener("message", (event) => {
-                if (event.data.type === "fileSelected") {
-                    const selectedFile = event.data.file;
-                    uploadFileToOneDrive(selectedFile);
-                }
-            });
-        } catch (error) {
-            console.error("Error launching picker:", error);
-        } finally {
-            button.disabled = false;
-        }
+  useEffect(() => {
+    const msalParams = {
+      auth: {
+        clientId: clientId,
+        authority: authority,
+        redirectUri: redirectUri,
+      },
     };
 
-    async function getToken() {
-        let accessToken = "";
+    const msalInstance = new msal.PublicClientApplication(msalParams);
+    setApp(msalInstance);
 
-        let authParams = { scopes: ["Files.ReadWrite"] }; // Update with the required scopes
+    const accounts = msalInstance.getAllAccounts();
+    if (accounts.length > 0) {
+    }
+  }, []);
 
-        try {
-            const resp = await app.acquireTokenSilent(authParams);
-            accessToken = resp.accessToken;
-        } catch (e) {
-            const resp = await app.loginPopup(authParams);
-            app.setActiveAccount(resp.account);
+  const launchPicker = async (e) => {
+    e.preventDefault();
+    const button = e.target;
+    button.disabled = true;
 
-            if (resp.idToken) {
-                const resp2 = await app.acquireTokenSilent(authParams);
-                accessToken = resp2.accessToken;
-            }
+    try {
+      const authToken = await getToken();
+
+      const params = {
+        sdk: "8.0",
+        entry: {
+          oneDrive: {
+            files: {},
+          },
+        },
+        authentication: {},
+        messaging: {
+          origin: "http://localhost:5173", // Update with your origin
+          channelId: "27",
+        },
+        typesAndSources: {
+          mode: "files",
+          pivots: {
+            oneDrive: true,
+            recent: true,
+          },
+        },
+      };
+
+      const queryString = new URLSearchParams({
+        filePicker: JSON.stringify(params),
+      });
+
+      const url = `${baseUrl}?${queryString}`;
+      const pickerWindow = window.open(
+        url,
+        "OneDrivePicker",
+        "width=800,height=600"
+      );
+
+      if (!pickerWindow) {
+        alert("Popup blocked. Please allow popups for this site.");
+      }
+
+      // Listen for messages from the picker window
+      window.addEventListener("message", (event) => {
+        if (event.data.type === "fileSelected") {
+          const selectedFile = event.data.file;
+          uploadFileToOneDrive(selectedFile);
         }
+      });
+    } catch (error) {
+      console.error("Error launching picker:", error);
+    } finally {
+      button.disabled = false;
+    }
+  };
 
-        return accessToken;
+  async function getToken() {
+    let accessToken = "";
+
+    let authParams = { scopes: ["Files.ReadWrite"] }; // Update with the required scopes
+
+    try {
+      const resp = await app.acquireTokenSilent(authParams);
+      accessToken = resp.accessToken;
+    } catch (e) {
+      const resp = await app.loginPopup(authParams);
+      app.setActiveAccount(resp.account);
+
+      if (resp.idToken) {
+        const resp2 = await app.acquireTokenSilent(authParams);
+        accessToken = resp2.accessToken;
+      }
     }
 
-    const uploadFileToOneDrive = async (file) => {
-        try {
-            const accessToken = await getToken();
-            // Define the API endpoint and path to upload the file
-            const uploadUrl = "https://graph.microsoft.com/v1.0/me/drive/root:/path/to/upload/folder/yourfile.jpg:/content";
+    return accessToken;
+  }
 
-            const response = await fetch(uploadUrl, {
-                method: "PUT",
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    "Content-Type": file.type,
-                },
-                body: file, // The actual file content
-            });
+  const uploadFileToOneDrive = async (file) => {
+    try {
+      const accessToken = await getToken();
+      // Define the API endpoint and path to upload the file
+      const uploadUrl =
+        "https://graph.microsoft.com/v1.0/me/drive/root:/path/to/upload/folder/yourfile.jpg:/content";
 
-            if (response.ok) {
-                console.log("File uploaded successfully!");
-            } else {
-                console.error("File upload failed:", response.status);
-            }
-        } catch (error) {
-            console.error("Error uploading file:", error);
-        }
-    };
+      const response = await fetch(uploadUrl, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": file.type,
+        },
+        body: file, // The actual file content
+      });
 
-    return (
-        <span id="original-tab-id">
-            <Tooltip
-                content="OneDrive"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-6"
-                animate={{
-                    mount: { scale: 1, y: 0 },
-                    unmount: { scale: 1, y: 10 },
-                }}
-            >
-                <button onClick={launchPicker}>
-                    <img src={Onedrive} className="w-9" />
-                </button>
-            </Tooltip>
-        </span>
-    );
+      if (response.ok) {
+        console.log("File uploaded successfully!");
+      } else {
+        console.error("File upload failed:", response.status);
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
+  return (
+    <span id="original-tab-id">
+      <Tooltip
+        content="OneDrive"
+        placement="bottom-end"
+        className=" bg-SlateBlue text-white z-10 ml-6"
+        animate={{
+          mount: { scale: 1, y: 0 },
+          unmount: { scale: 1, y: 10 },
+        }}
+      >
+        <button onClick={launchPicker}>
+          <img src={Onedrive} className="w-9" />
+        </button>
+      </Tooltip>
+    </span>
+  );
 };
 
 export default OneDrive;
-
-

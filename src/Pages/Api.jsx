@@ -1,164 +1,99 @@
-export const LOGIN_URL =
-  "https://disployapi.thedestinysolutions.com/api/Register/Login";
-export const ADD_REGISTER_URL =
-  "https://disployapi.thedestinysolutions.com/api/UserMaster/AddOrganizationSignups";
-export const All_REGISTER_URL =
-  "https://disployapi.thedestinysolutions.com/api/Register/GetAllRegister";
-export const GET_ALL_CURRENCIES =
-  "https://disployapi.thedestinysolutions.com/api/Register/GetAllCurrency";
-export const GET_ALL_LANGUAGES =
-  "https://disployapi.thedestinysolutions.com/api/Register/GetAllLanguage";
-export const SELECT_BY_ID_USERDETAIL =
-  "https://disployapi.thedestinysolutions.com/api/Register/SelectByID";
-export const ALL_SCREEN_URL =
-  "https://disployapi.thedestinysolutions.com/api/Screen/GetAllScreen";
-export const ALL_MAPSTORE_GET =
-  "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByStore";
-export const GET_ALL_COUNTRY =
-  "https://disployapi.thedestinysolutions.com/api/Cascading/GetAllCountry";
-export const GET_SELECT_BY_STATE =
-  "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByState";
-export const GET_SELECT_BY_CITY =
-  "https://disployapi.thedestinysolutions.com/api/Cascading/SelectByCity";
-export const DELETE_USER =
-  "https://disployapi.thedestinysolutions.com/api/Register/DeleteUser";
-export const SCREEN_GROUP =
-  "https://disployapi.thedestinysolutions.com/api/GroupScreen/AddGroupScreen";
-export const SELECT_ALL_SCREENGROUP =
-  "https://disployapi.thedestinysolutions.com/api/GroupScreen/SelectAll";
-export const UPDATE_NEW_SCREEN =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/UpdateNewScreen";
-export const GET_SCREEN_TYPE =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllScreenType";
-export const SELECT_BY_USER_SCREENDETAIL =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/SelectByUserScreen";
-export const SELECT_BY_SCREENID_SCREENDETAIL =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/SelectByScreen";
-export const GET_ALL_SCREEN_RESOLUTION =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllScreenResolution";
-export const GET_ALL_SCREEN_ORIENTATION =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllScreenOrientation";
-export const GET_SCREEN_TIMEZONE =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/GetAllTimeZone";
+export const baseUrl = "https://disployapi.thedestinysolutions.com/";
+
+export const LOGIN_URL = `${baseUrl}api/Register/Login`;
+export const ADD_REGISTER_URL = `${baseUrl}api/UserMaster/AddOrganizationSignups`;
+export const All_REGISTER_URL = `${baseUrl}api/Register/GetAllRegister`;
+export const GET_ALL_CURRENCIES = `${baseUrl}api/Register/GetAllCurrency`;
+export const GET_ALL_LANGUAGES = `${baseUrl}api/Register/GetAllLanguage`;
+export const SELECT_BY_ID_USERDETAIL = `${baseUrl}api/Register/SelectByID`;
+export const ALL_SCREEN_URL = `${baseUrl}api/Screen/GetAllScreen`;
+export const ALL_MAPSTORE_GET = `${baseUrl}api/Cascading/SelectByStore`;
+export const GET_ALL_COUNTRY = `${baseUrl}api/Cascading/GetAllCountry`;
+export const GET_SELECT_BY_STATE = `${baseUrl}api/Cascading/SelectByState`;
+export const GET_SELECT_BY_CITY = `${baseUrl}api/Cascading/SelectByCity`;
+export const DELETE_USER = `${baseUrl}api/Register/DeleteUser`;
+export const SCREEN_GROUP = `${baseUrl}api/GroupScreen/AddGroupScreen`;
+export const SELECT_ALL_SCREENGROUP = `${baseUrl}api/GroupScreen/SelectAll`;
+export const UPDATE_NEW_SCREEN = `${baseUrl}api/NewScreen/UpdateNewScreen`;
+export const GET_SCREEN_TYPE = `${baseUrl}api/NewScreen/GetAllScreenType`;
+export const SELECT_BY_USER_SCREENDETAIL = `${baseUrl}api/NewScreen/SelectByUserScreen`;
+export const SELECT_BY_SCREENID_SCREENDETAIL = `${baseUrl}api/NewScreen/SelectByScreen`;
+export const GET_ALL_SCREEN_RESOLUTION = `${baseUrl}api/NewScreen/GetAllScreenResolution`;
+export const GET_ALL_SCREEN_ORIENTATION = `${baseUrl}api/NewScreen/GetAllScreenOrientation`;
+export const GET_SCREEN_TIMEZONE = `${baseUrl}api/NewScreen/GetAllTimeZone`;
 export const GET_SCEDULE_TIMEZONE =
   "https://disployapi.thedestinysolutions.com​/api/EventMaster/GetAllTimeZone";
-export const GET_TIMEZONE =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/GetAllTimeZone";
+export const GET_TIMEZONE = `${baseUrl}api/EventMaster/GetAllTimeZone`;
 
-export const GET_ALL_FILES =
-  "https://disployapi.thedestinysolutions.com/api/AssetMaster/GetAll";
-export const ALL_FILES_UPLOAD =
-  "https://disployapi.thedestinysolutions.com/api/AssetMaster/AssetUpload";
+export const GET_ALL_FILES = `${baseUrl}api/AssetMaster/GetAll`;
+export const ALL_FILES_UPLOAD = `${baseUrl}api/AssetMaster/AssetUpload`;
 
-export const GOOGLE_DRIVE =
-  "https://disployapi.thedestinysolutions.com/api/GoogleDrive/GoogleDrive";
-export const OTP_VERIFY =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/NewScreenVerify";
-export const GET_ALL_EVENTS =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/GetAllEvent";
-export const ADD_EVENT =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/AddEvent";
-export const GET_ALL_SCHEDULE =
-  "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/GetAllSchedule";
-export const ADD_SCHEDULE =
-  "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/AddSchedule";
+export const GOOGLE_DRIVE = `${baseUrl}api/GoogleDrive/GoogleDrive`;
+export const OTP_VERIFY = `${baseUrl}api/NewScreen/NewScreenVerify`;
+export const GET_ALL_EVENTS = `${baseUrl}api/EventMaster/GetAllEvent`;
+export const ADD_EVENT = `${baseUrl}api/EventMaster/AddEvent`;
+export const GET_ALL_SCHEDULE = `${baseUrl}api/ScheduleMaster/GetAllSchedule`;
+export const ADD_SCHEDULE = `${baseUrl}api/ScheduleMaster/AddSchedule`;
 
-export const UPDATE_SCREEN_ASSIGN =
-  "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/UpdateAssignScreen";
+export const UPDATE_SCREEN_ASSIGN = `${baseUrl}api/ScheduleMaster/UpdateAssignScreen`;
 
-export const SCHEDULE_EVENT_SELECT_BY_ID =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/SelectByID";
-export const SCHEDULE_SELECT_BY_ID =
-  "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/SelectByID";
-export const UPDATED_SCHEDULE_DATA =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/SelectAllGetScheduleList";
-export const UPDATE_TIMEZONE =
-  "https://disployapi.thedestinysolutions.com/api/ScheduleMaster/UpdateTimeZone";
-export const SIGNAL_R = "https://disployapi.thedestinysolutions.com/chatHub";
+export const SCHEDULE_EVENT_SELECT_BY_ID = `${baseUrl}api/EventMaster/SelectByID`;
+export const SCHEDULE_SELECT_BY_ID = `${baseUrl}api/ScheduleMaster/SelectByID`;
+export const UPDATED_SCHEDULE_DATA = `${baseUrl}api/EventMaster/SelectAllGetScheduleList`;
+export const UPDATE_TIMEZONE = `${baseUrl}api/ScheduleMaster/UpdateTimeZone`;
+export const SIGNAL_R = `${baseUrl}chatHub`;
 
-export const GET_ALL_TRASHDATA =
-  "https://disployapi.thedestinysolutions.com/api/Trash/GetAllTrash";
-export const ADD_TRASH =
-  "https://disployapi.thedestinysolutions.com/api/Trash/AddTrash";
+export const GET_ALL_TRASHDATA = `${baseUrl}api/Trash/GetAllTrash`;
+export const ADD_TRASH = `${baseUrl}api/Trash/AddTrash`;
 
-export const CREATE_NEW_FOLDER =
-  "https://disployapi.thedestinysolutions.com/api/AssetMaster/FolderMaster";
+export const CREATE_NEW_FOLDER = `${baseUrl}api/AssetMaster/FolderMaster`;
 
-export const GET_ALL_NEW_FOLDER =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/GetAllFolder";
-export const MOVE_TO_FOLDER =
-  "https://disployapi.thedestinysolutions.com/api/AssetMaster/Move";
+export const GET_ALL_NEW_FOLDER = `${baseUrl}api/ImageVideoDoc/GetAllFolder`;
+export const MOVE_TO_FOLDER = `${baseUrl}api/AssetMaster/Move`;
 
-export const FetchdataFormFolder =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/SelectByFolder";
+export const FetchdataFormFolder = `${baseUrl}api/ImageVideoDoc/SelectByFolder`;
 
-export const DeleteAllData =
-  "https://disployapi.thedestinysolutions.com/api/ImageVideoDoc/DeleteAll";
+export const DeleteAllData = `${baseUrl}api/ImageVideoDoc/DeleteAll`;
 
-export const GET_ALL_APPS =
-  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/GetAllApps";
+export const GET_ALL_APPS = `${baseUrl}api/YoutubeApp/GetAllApps`;
 
-export const YOUTUBE_INSTANCE_ADD_URL =
-  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddYoutubeApp";
+export const YOUTUBE_INSTANCE_ADD_URL = `${baseUrl}api/YoutubeApp/AddYoutubeApp`;
 
-export const GET_ALL_YOUTUBEDATA =
-  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/GetAllYoutubeApp";
+export const GET_ALL_YOUTUBEDATA = `${baseUrl}api/YoutubeApp/GetAllYoutubeApp`;
 
-export const GET_YOUTUBEDATA_BY_ID =
-  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/SelectByYouTubeId";
+export const GET_YOUTUBEDATA_BY_ID = `${baseUrl}api/YoutubeApp/SelectByYouTubeId`;
 
-export const YOUTUBEDATA_ALL_DELETE =
-  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/DeleteAllYoutubeApp";
+export const YOUTUBEDATA_ALL_DELETE = `${baseUrl}api/YoutubeApp/DeleteAllYoutubeApp`;
 
-export const SELECT_BY_LIST =
-  "https://disployapi.thedestinysolutions.com/api/LayoutMaster/SelectByList";
+export const SELECT_BY_LIST = `${baseUrl}api/LayoutMaster/SelectByList`;
 
-export const UPDATE_TRIAL_DAY =
-  "https://disployapi.thedestinysolutions.com/api/Register/UpdateTrialDay";
+export const UPDATE_TRIAL_DAY = `${baseUrl}api/Register/UpdateTrialDay`;
 
-export const SCROLL_TYPE_OPTION =
-  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/AllScrollType";
+export const SCROLL_TYPE_OPTION = `${baseUrl}api/YoutubeApp/AllScrollType`;
 
-export const SCROLL_ADD_TEXT =
-  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddTextScroll";
+export const SCROLL_ADD_TEXT = `${baseUrl}api/YoutubeApp/AddTextScroll`;
 
-export const SCROLLDATA_BY_ID =
-  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/SelectByTextScrollId";
+export const SCROLLDATA_BY_ID = `${baseUrl}api/YoutubeApp/SelectByTextScrollId`;
 
-export const GET_ALL_TEXT_SCROLL_INSTANCE =
-  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/GetAlltextScroll";
-export const DELETE_ALL_TEXT_SCROLL =
-  "https://disployapi.thedestinysolutions.com/api/YoutubeApp/DeleteAllTextScroll";
-export const SELECT_BY_ASSET_ID =
-  "https://disployapi.thedestinysolutions.com/api/AssetMaster/SelectByAssetID";
-export const ADDPLAYLIST =
-  "https://disployapi.thedestinysolutions.com/api/CompositionMaster/AddCompositionMaster";
-export const ADDSUBPLAYLIST =
-  "https://disployapi.thedestinysolutions.com/api/CompositionMaster/AddSubCompositionMaster";
-export const GET_ALL_COMPOSITIONS =
-  "https://disployapi.thedestinysolutions.com/api/CompositionMaster/GetAllCompositionMaster";
+export const GET_ALL_TEXT_SCROLL_INSTANCE = `${baseUrl}api/YoutubeApp/GetAlltextScroll`;
+export const DELETE_ALL_TEXT_SCROLL = `${baseUrl}api/YoutubeApp/DeleteAllTextScroll`;
+export const SELECT_BY_ASSET_ID = `${baseUrl}api/AssetMaster/SelectByAssetID`;
+export const ADDPLAYLIST = `${baseUrl}api/CompositionMaster/AddCompositionMaster`;
+export const ADDSUBPLAYLIST = `${baseUrl}api/CompositionMaster/AddSubCompositionMaster`;
+export const GET_ALL_COMPOSITIONS = `${baseUrl}api/CompositionMaster/GetAllCompositionMaster`;
 
-export const DELETE_COMPOSITION_BY_ID =
-  "https://disployapi.thedestinysolutions.com/api/CompositionMaster/DeleteCompositionByID";
-export const DELETE_ALL_COMPOSITIONS =
-  "https://disployapi.thedestinysolutions.com/api/CompositionMaster/DeleteAllComposition";
-export const GET_ALL_TAGS =
-  "https://disployapi.thedestinysolutions.com/api/CompositionMaster/GetAllTag";
-export const GET_CURRENT_ASSET =
-  "https://disployapi.thedestinysolutions.com/api/EventMaster/GetCurrentAsset";
+export const DELETE_COMPOSITION_BY_ID = `${baseUrl}api/CompositionMaster/DeleteCompositionByID`;
+export const DELETE_ALL_COMPOSITIONS = `${baseUrl}api/CompositionMaster/DeleteAllComposition`;
+export const GET_ALL_TAGS = `${baseUrl}api/CompositionMaster/GetAllTag`;
+export const GET_CURRENT_ASSET = `${baseUrl}api/EventMaster/GetCurrentAsset`;
 
-export const COMPOSITION_BY_ID =
-  "https://disployapi.thedestinysolutions.com/api/CompositionMaster/SelectCompositionByID";
+export const COMPOSITION_BY_ID = `${baseUrl}api/CompositionMaster/SelectCompositionByID`;
 
-export const SCREEN_PREVIEW =
-  "https://disployapi.thedestinysolutions.com/api/NewScreen/GetRegisterOtp";
+export const SCREEN_PREVIEW = `${baseUrl}api/NewScreen/GetRegisterOtp`;
 
-  export const FORGOTPASSWORD =
-  "https://disployapi.thedestinysolutions.com/api/UserMaster/ForgotPassword";
+export const FORGOTPASSWORD = `${baseUrl}api/UserMaster/ForgotPassword`;
 
-  export const CHNAGE_PASSWORD =
-  "https://disployapi.thedestinysolutions.com/api/UserMaster/ResetPassword?";
-
+export const CHNAGE_PASSWORD = `${baseUrl}api/UserMaster/ResetPassword?`;
 
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115

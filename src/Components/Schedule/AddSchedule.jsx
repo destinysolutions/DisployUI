@@ -86,8 +86,10 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   );
 
   const [screenData, setScreenData] = useState([]);
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+
+  const { token ,user} = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+  
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
@@ -654,9 +656,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   useEffect(() => {
-    if (UserData.user?.userID) {
+    if (user?.userID) {
       axios
-        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${UserData.user?.userID}`, {
+        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${user?.userID}`, {
           headers: {
             Authorization: authToken,
           },
@@ -676,7 +678,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           console.log(error);
         });
     }
-  }, [UserData.user?.userID]);
+  }, [user?.userID]);
 
   const handleScreenCheckboxChange = (screenID) => {
     const updatedCheckboxes = { ...screenCheckboxes };

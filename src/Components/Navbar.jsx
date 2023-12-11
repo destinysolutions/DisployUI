@@ -49,7 +49,7 @@ const Navbar = () => {
   const [showNotificationBox, setShowNotificationBox] = useState(false);
   const [regsiterData, setRegisterData] = useState([]);
 
-  const UserData = useSelector((Alldata) => Alldata.user);
+  const { user } = useSelector((state) => state.root.auth);
 
   const handleProfileClick = (e) => {
     e.stopPropagation();
@@ -77,9 +77,9 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    if (UserData) {
+    if (user) {
       axios
-        .get(`${SELECT_BY_ID_USERDETAIL}?ID=${UserData.user?.userID}`)
+        .get(`${SELECT_BY_ID_USERDETAIL}?ID=${user?.userID}`)
         .then((response) => {
           setRegisterData(response.data.data);
         })

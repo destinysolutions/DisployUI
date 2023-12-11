@@ -22,7 +22,6 @@ import PreviewModal from "./PreviewModel";
 import { RxCrossCircled } from "react-icons/rx";
 import Carousel from "./DynamicCarousel";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-const DEFAULT_IMAGE = "";
 
 import { useSelector } from "react-redux";
 import moment from "moment";
@@ -30,6 +29,7 @@ import { GoPencil } from "react-icons/go";
 import toast from "react-hot-toast";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
+const DEFAULT_IMAGE = "";
 const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   EditSelectedLayout.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -93,10 +93,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   // ]);
 
   const { state } = useLocation();
-
-  const UserData = useSelector((Alldata) => Alldata.user);
-
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
 
   const { editor, onReady } = useFabricJSEditor();
 

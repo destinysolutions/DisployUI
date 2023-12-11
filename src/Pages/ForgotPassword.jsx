@@ -9,7 +9,7 @@ import { FORGOTPASSWORD } from "./Api";
 import { useDispatch } from "react-redux";
 import { auth } from "../FireBase/firebase"; // Import your Firebase auth instance
 import toast from "react-hot-toast";
-import video from "../../public/DisployImg/iStock-1137481126.mp4";
+import video from "../images/DisployImg/iStock-1137481126.mp4";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 
 
@@ -58,7 +58,7 @@ const ForgotPassword = () => {
         callback(userExists.data); // Invoke the callback with the data
       }, 2000);
     } catch (error) {
-      toast,error(error.message)
+      toast.error(error.message)
       setShowPassword(false)
       console.error("Error checking email:", error.message);
       callback(false); // Invoke the callback with false in case of an error
@@ -67,12 +67,12 @@ const ForgotPassword = () => {
     }
   };
 
-  const changePassword = async (values) => {
+  const changePassword = async (values,callback) => {
     try {
       const payload = { userID: userID, Email : getEmail, Password: values.newPassword };
       const config = {
         method: "post", // Change method to 'get' for changing the passwordp
-        url: UpdatePassword, // Assuming FORGOTPASSWORD is your API endpoint
+        url: FORGOTPASSWORD, // Assuming FORGOTPASSWORD is your API endpoint
         params: { payload },
         maxBodyLength: Infinity,
       };

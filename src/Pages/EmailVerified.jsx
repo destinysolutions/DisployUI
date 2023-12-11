@@ -6,7 +6,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FORGOTPASSWORD } from "./Api";
 import toast from "react-hot-toast";
-import video from "../../public/DisployImg/iStock-1137481126.mp4";
+import video from "../images/DisployImg/iStock-1137481126.mp4";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ const ForgotPassword = () => {
         callback(userExists.data); // Invoke the callback with the data
       }, 2000);
     } catch (error) {
-      toast,error(error.message)
+      toast.error(error.message)
       console.error("Error checking email:", error.message);
       callback(false); // Invoke the callback with false in case of an error
     } finally {

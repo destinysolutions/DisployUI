@@ -23,10 +23,11 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import ScreenAssignModal from "../ScreenAssignModal";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import ReactPlayer from "react-player";
+import textScrollLogo from '../../images/AppsImg/text-scroll-icon.svg'
 
 const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
 
   const [instanceData, setInstanceData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -81,8 +82,8 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
           }
           setSelectScreenModal(false);
           setAddScreenModal(false);
-          setShowActionBox(false);
-          loadScheduleData();
+          // setShowActionBox(false);
+          // loadScheduleData();
         }
       })
       .catch((error) => {
@@ -511,7 +512,8 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                             }
                           >
                             <img
-                              src="../../../AppsImg/text-scroll-icon.svg"
+                              // src="../../../AppsImg/text-scroll-icon.svg"
+                              src={textScrollLogo}
                               alt="Logo"
                               className="mx-auto h-30 w-30"
                             />

@@ -61,10 +61,8 @@ const Userrole = () => {
   });
 
   const modalRef = useRef(null);
-
-  const UserData = useSelector((Alldata) => Alldata.user);
-
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { token ,user} = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
 
   //   const [checkboxStates, setCheckboxStates] = useState({});
 

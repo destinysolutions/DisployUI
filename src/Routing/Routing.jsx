@@ -27,13 +27,11 @@ import EventEditor from "../Components/Schedule/EventEditor";
 import Userrole from "../Components/Settings/Userrole";
 import Trash from "../Components/Trash";
 import NewFolderDialog from "../Components/Assests/NewFolderDialog ";
-import { UserProvider } from "../UserContext";
 import LoginContainer from "./AuthRoutes";
 import UserProfile from "../Pages/Profile/UserProfile";
 import AdminContainer from "./AdminRoutes";
 
 import { useDispatch } from "react-redux";
-import { loginUser } from "../Redux/useraction";
 import Youtube from "../Components/Apps/Youtube";
 import YoutubeDetail from "../Components/Apps/YoutubeDetail";
 import Weather from "../Components/Apps/Weather";
@@ -49,6 +47,8 @@ import { auth } from "../FireBase/firebase";
 import EditSelectedLayout from "../Components/Composition/EditSelectedLayout";
 import YoutubeDetailByID from "../Components/Apps/YoutubeDetailByID";
 import TextScrollDetailById from "../Components/Apps/TextScrollDetailById";
+import { ErrorBoundary } from "react-error-boundary";
+import ErrorFallback from "../Components/ErrorFallback";
 
 const Routing = () => {
   //for screen resize sidebar open close
@@ -118,11 +118,16 @@ const Routing = () => {
     );
   if (accessDetails === "USER" && isAuthicate) {
     const data = localStorage.getItem("userID");
-    dispatch(loginUser(JSON.parse(data)));
+    // dispatch(loginUser(JSON.parse(data)));
 
     return (
-      <UserProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <ErrorBoundary
+          fallback={ErrorFallback}
+          onReset={() => {
+            window.location.reload();
+          }}
+        >
           <Routes>
             <Route path="/" element={<Navigate to="/screens" />} />
             <Route path="/register" element={<Navigate to="/screens" />} />
@@ -504,8 +509,8 @@ const Routing = () => {
               }
             />
           </Routes>
-        </BrowserRouter>
-      </UserProvider>
+        </ErrorBoundary>
+      </BrowserRouter>
     );
   }
 

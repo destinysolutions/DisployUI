@@ -27,9 +27,9 @@ import VideoRecorder from "./VideoRecorder";
 
 import Pixabay from "./Pixabay";
 import { Tooltip } from "@material-tailwind/react";
-import cameraimg from "../../../public/Assets/photography.png";
-import videoimg from "../../../public/Assets/camera.png";
-import pixabayimg from "../../../public/Assets/pixabay.png";
+import cameraimg from "../../images/Assets/photography.png";
+import videoimg from "../../images/Assets/camera.png";
+import pixabayimg from "../../images/Assets/pixabay.png";
 import { useNavigate } from "react-router-dom";
 import { FcFile } from "react-icons/fc";
 import { AiOutlineAppstore } from "react-icons/ai";
@@ -43,8 +43,9 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const UserData = useSelector((Alldata) => Alldata.user);
-  const authToken = `Bearer ${UserData.user.data.token}`;
+  const { user, token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+
   const [fileSuccessModal, setfileSuccessModal] = useState(false);
   const [fileErrorModal, setfileErrorModal] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);

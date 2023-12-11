@@ -1,60 +1,36 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { auth } from "../FireBase/firebase";
 
-// export const handleRegisterUser = createAsyncThunk(
-//   "auth/handleRegisterUser",
-//   async (
-//     {
-//       fname,
-//       lname,
-//       email,
-//       phone,
-//       civility,
-//       password,
-//       mobile,
-//       company,
-//       shippingAddress,
-//       signal,
-//     },
-//     { rejectWithValue }
-//   ) => {
-//     try {
-//       signal.current = new AbortController();
-//       const response = await PostUrl("signup", {
-//         data: {
-//           fname,
-//           lname,
-//           email,
-//           phone,
-//           password,
-//           civility,
-//           mobile,
-//           company,
-//           shippingAddress,
-//         },
-//         signal: signal.current.signal,
-//       });
-//       return response.data;
-//     } catch (error) {
-//       if (error?.response) {
-//         toast.error(error?.response?.data?.message);
-//         return rejectWithValue(error?.response?.data);
-//       }
-//     }
-//   }
-// );
-
-export const handleLoginUser = createAsyncThunk(
-  "auth/handleLoginUser",
-  async ({ email, password, signal }, { rejectWithValue }) => {
+export const handleRegisterUser = createAsyncThunk(
+  "auth/handleRegisterUser",
+  async ({ config }, { rejectWithValue }) => {
     try {
-      signal.current = new AbortController();
-      const response = await PostUrl("login", {
-        data: { email, password },
-        signal: signal.current.signal,
-      });
+      const response = await axios.request(config);
       return response.data;
     } catch (error) {
       if (error?.response) {
+        toast.error(error?.response?.data?.message);
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
+export const handleLoginUser = createAsyncThunk(
+  "auth/handleLoginUser",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status == 200) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        console.log(error?.response);
         toast.error(error?.response?.data?.message);
         return rejectWithValue(error?.response?.data);
       }
@@ -72,9 +48,58 @@ const initialState = {
 const Authslice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    handleLogout: (state, { payload }) => {
+      state.loading = true;
+      state.user = null;
+      state.token = null;
+      state.error = null;
+      state.loading = false;
+      auth.signOut();
+      window.location.href = window.location.origin;
+      window.localStorage.clear("timer");
+      localStorage.setItem("role_access", "");
+      window.location.reload();
+    },
+  },
+  extraReducers: (builder) => {
+    // login user
+    builder.addCase(handleRegisterUser.pending, (state, {}) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(handleRegisterUser.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.user = payload;
+      state.error = null;
+      state.token = payload?.data?.token;
+    });
+    builder.addCase(handleRegisterUser.rejected, (state, { payload }) => {
+      state.loading = false;
+      state.user = null;
+      state.error = payload ?? null;
+      state.token = null;
+    });
+    // login user
+    builder.addCase(handleLoginUser.pending, (state, {}) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(handleLoginUser.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.user = payload;
+      state.error = null;
+      state.token = payload?.data?.token;
+    });
+    builder.addCase(handleLoginUser.rejected, (state, { payload }) => {
+      state.loading = false;
+      state.user = null;
+      state.error = payload ?? null;
+      state.token = null;
+    });
+  },
 });
 
-export const {} = Authslice.actions;
+export const { handleLogout } = Authslice.actions;
 
 export default Authslice.reducer;
