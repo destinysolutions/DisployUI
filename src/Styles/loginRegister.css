@@ -1,0 +1,238 @@
+.main {
+  background: url(/DisployImg/bg-img.jpg);
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: auto;
+}
+
+.videobg video {
+  position: absolute;
+  width: 100%;
+  min-height: 100vh;
+  left: 0;
+  top: 0;
+  object-fit: cover;
+  object-position: center;
+}
+
+.formLabel {
+  position: absolute;
+  top: -9px;
+  left: 13px;
+  z-index: 9;
+  background: #fff;
+  font-size: 12px;
+  color: #808080;
+  margin-bottom: 0;
+  padding: 0 5px;
+}
+
+.formInput {
+  position: relative;
+  border: 1px solid #19191b;
+  border-radius: 9px;
+  width: 100%;
+  padding: 14px;
+}
+.icon {
+  position: absolute;
+  top: 50%;
+  right: 0%;
+  z-index: 9;
+  margin-bottom: 0;
+  padding: 0 5px;
+  transform: translate(-50%, -50%);
+}
+
+.socialIcon {
+  background: #ffffff;
+  padding: 8px;
+  margin: 7px;
+  border-radius: 9px;
+  font-size: 25px;
+  fill: #00072e;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+}
+
+.socialIcon.socialIcon1:hover,
+.socialIcon.socialIcon1:hover svg {
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#cc0000+0,cc0000+100;Red+Flat */
+  background: #cc0000;
+  /* Old browsers */
+  background: -moz-linear-gradient(left, #cc0000 0%, #cc0000 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, #cc0000 0%, #cc0000 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, #cc0000 0%, #cc0000 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#cc0000', endColorstr='#cc0000', GradientType=1);
+  /* IE6-9 */
+}
+
+.socialIcon.socialIcon2:hover,
+.socialIcon.socialIcon2:hover svg {
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#2c539e+0,2c539e+100;Blue+3D+%232 */
+  background: #2c539e;
+  /* Old browsers */
+  background: -moz-linear-gradient(left, #2c539e 0%, #2c539e 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(left, #2c539e 0%, #2c539e 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, #2c539e 0%, #2c539e 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2c539e', endColorstr='#2c539e', GradientType=1);
+  /* IE6-9 */
+}
+
+.socialIcon.socialIcon3:hover,
+.socialIcon.socialIcon3:hover svg {
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#4c4c4c+0,595959+51,666666+100,2c2c2c+100,131313+100,666666+101 */
+  background: #4c4c4c;
+  /* Old browsers */
+  background: -moz-linear-gradient(
+    left,
+    #4c4c4c 0%,
+    #595959 51%,
+    #666666 100%,
+    #2c2c2c 100%,
+    #131313 100%,
+    #666666 101%
+  );
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(
+    left,
+    #4c4c4c 0%,
+    #595959 51%,
+    #666666 100%,
+    #2c2c2c 100%,
+    #131313 100%,
+    #666666 101%
+  );
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(
+    to right,
+    #4c4c4c 0%,
+    #595959 51%,
+    #666666 100%,
+    #2c2c2c 100%,
+    #131313 100%,
+    #666666 101%
+  );
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4c4c4c', endColorstr='#666666', GradientType=1);
+  /* IE6-9 */
+}
+
+.socialIcon.socialIcon4:hover,
+.socialIcon.socialIcon4:hover svg {
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#1e5799+0,2989d8+50,7db9e8+100 */
+  background: #1e5799;
+  /* Old browsers */
+  background: -moz-linear-gradient(left, #1e5799 0%, #2989d8 50%, #7db9e8 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(
+    left,
+    #1e5799 0%,
+    #2989d8 50%,
+    #7db9e8 100%
+  );
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to right, #1e5799 0%, #2989d8 50%, #7db9e8 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1e5799', endColorstr='#7db9e8', GradientType=1);
+  /* IE6-9 */
+  color: #fff;
+}
+
+input#email::placeholder,
+input#password::placeholder {
+  font-size: 16px !important;
+}
+
+@media (max-width: 450px) {
+  input#email::placeholder,
+  input#password::placeholder,
+  .formInput::placeholder {
+    font-size: 13px !important;
+  }
+
+  .formInput {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 330px) {
+  .socialIcon {
+    height: 30px;
+    width: 30px;
+    padding: 7px;
+  }
+}
+
+/* input {
+  font-size: 12px;
+  display: block;
+  width: 100%;
+  height: 36px;
+  padding: 0 20px;
+  background: #fff;
+  color: #323840;
+  border: 1px solid #3d85d8;
+  border-radius: 4px;
+  box-sizing: border-box;
+} */
+
+/* label {
+  color: #1e4c82;
+  font-size: 13px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 15px;
+  top: 11px;
+  padding: 0 5px;
+  background: #fff;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+
+input:focus {
+  outline: none;
+}
+
+input:focus~label {
+  top: -8px;
+  font-size: 13px;
+}
+
+input:not(:placeholder-shown)~label {
+  top: -8px;
+  font-size: 13px;
+} */
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border: 1px solid #ddd !important;
+
+  background: #fff !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}

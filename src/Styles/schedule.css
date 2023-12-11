@@ -1,0 +1,113 @@
+.scheduleAction {
+  position: absolute;
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0px 10px 20px #ccc;
+  font-size: 16px;
+  width: 150px;
+  border: 1px solid #ccc;
+  transform: translate(-80%, 15%);
+  left: 50%;
+  top: 50%;
+  z-index: 9999;
+}
+
+.scheduleAction:before {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  transform: rotate(45deg);
+  top: -8px;
+  right: 14px;
+}
+
+.css-1fklddj-MuiModal-root-MuiPopover-root .Layout-popover,
+.css-1wwby0q .Layout-popover {
+  border-radius: 8px;
+  width: 100% !important;
+}
+
+.sketch-picker {
+  width: auto !important;
+}
+
+.asset-preview-popup {
+  transform: translate(-50%, -50%);
+  max-width: 400px;
+  height: 400px;
+}
+
+@media (max-width: 767px) {
+  .Schedule-table {
+    overflow-x: auto;
+  }
+}
+
+.rbc-toolbar button:active,
+.rbc-toolbar button.rbc-active {
+  background-color: #e4aa07 !important;
+}
+
+.rbc-time-view {
+  background: #fff;
+}
+
+.rbc-toolbar {
+  background: #fff;
+  padding: 5px;
+  margin: 0 !important;
+}
+
+.rbc-month-view,
+.rbc-agenda-view {
+  background: #fff !important;
+}
+
+.rbc-agenda-view {
+  align-items: center;
+  justify-content: center;
+}
+
+.rbc-addons-dnd.rbc-calendar {
+  min-height: calc(100vh - 200px);
+  max-height: calc(100vh - 200px);
+}
+.rbc-agenda-view {
+  display: block !important;
+  flex-direction: inherit !important;
+
+  overflow: inherit !important;
+}
+@media (max-width: 992px) {
+  .schedual-table {
+    overflow-x: auto !important ;
+  }
+}
+.schedual-btn {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  left: 0%;
+  bottom: 0;
+  padding: 10px 0;
+  transform: translate(0%, 22px);
+  border-top: 1px solid #ccc;
+  position: sticky;
+  z-index: 9;
+}
+.schedualtime-table thead {
+  position: sticky;
+  top: 0;
+  top: 0;
+  z-index: 9;
+  box-shadow: 0px 10px 20px #cccccc87;
+  z-index: 9;
+}
+table.AddMedia-table td {
+  font-size: 14px;
+}

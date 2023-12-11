@@ -1,0 +1,17 @@
+.studio-btn:hover svg {
+    color: #fff !important;
+}
+
+button.studiotab,
+button.tabshow.studiotabactive {
+    font-size: 18px;
+    padding: 20px 0;
+    border-bottom: 2px solid transparent;
+    color: #A7AFB7;
+    font-weight: 600;
+}
+
+button.tabshow.studiotabactive {
+    border-bottom-color: #41479B;
+    color: #41479B;
+}

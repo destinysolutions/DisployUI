@@ -1,0 +1,125 @@
+.compositionAction {
+  position: absolute;
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0px 10px 20px #ccc;
+  font-size: 16px;
+  width: 140px;
+  border: 1px solid #ccc;
+  transform: translate(-80%, 15%);
+  left: 50%;
+  top: 50%;
+  z-index: 999;
+}
+
+.compositionAction:before {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  transform: rotate(45deg);
+  top: -8px;
+  right: 14px;
+}
+
+.assetsdw {
+  position: absolute;
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 10px 20px #ccc;
+  font-size: 16px;
+  width: 166px;
+  border: 1px solid #ccc;
+  z-index: 99;
+  transform: translate(1%, 0px);
+  right: 6px;
+  top: 30px;
+}
+
+.assetsdw:before {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  transform: rotate(45deg);
+  top: -8px;
+  right: 14px;
+}
+
+.tagAdded {
+  position: absolute;
+  background: #fff;
+  padding: 5px;
+  border-radius: 10px;
+  box-shadow: 0px 10px 20px #ccc;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  transform: translate(-50%, 49px);
+  left: 50%;
+  top: 1%;
+  max-width: 300px;
+}
+
+.tagAdded:before {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+  transform: rotate(45deg);
+  top: -8px;
+  left: 50%;
+}
+
+@media (max-width: 800px) {
+  .roundedbtn {
+    border-radius: 0px !important;
+  }
+
+  .newplaylistbtn {
+    font-size: 14px !important;
+  }
+
+  .myplaylist-popup-details {
+    margin: 10px !important;
+  }
+}
+
+@media (max-device-width: 640px) and (max-device-height: 400px) {
+  .addmediapopup {
+    height: 100vh;
+    overflow-y: auto;
+    margin: 10px;
+  }
+}
+
+@media (max-width: 412px) {
+  .playlistbtn button {
+    margin-top: 10px;
+  }
+
+  .addmediapopup {
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .myplaylist-popup-details {
+    margin: 10px !important;
+  }
+}
+
+@media (max-width: 350px) {
+  .myplaylist-popup-details {
+    min-width: 250px;
+  }
+}

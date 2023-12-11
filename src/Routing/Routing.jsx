@@ -1,0 +1,520 @@
+import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
+// import Dashboard from "../Components/Dashboard/Dashboard";
+import Screens from "../Components/Screen/Screens";
+import NewScreenGroup from "../Components/Screen/SubScreens/NewScreenGroup";
+import Screensplayer from "../Components/Screen/SubScreens/Screensplayer";
+import { useState, useEffect, useCallback } from "react";
+import MergeScreen from "../Components/Screen/SubScreens/MergeScreen";
+import NewScreenDetail from "../Components/Screen/SubScreens/NewScreenDetail";
+import Assets from "../Components/Assests/Assets";
+import Apps from "../Components/Apps/Apps";
+import DisployStudio from "../Components/DisployStudio/DisployStudio";
+import Report from "../Components/Reports/Report";
+import EditUser from "../Pages/EditUser";
+import Mediareport from "../Components/Reports/Mediareport";
+import Uptimereport from "../Components/Reports/Uptimereport";
+import Settings from "../Components/Settings/Settings";
+import MySchedule from "../Components/Schedule/MySchedule";
+import AddSchedule from "../Components/Schedule/AddSchedule";
+import WeatherSchedule from "../Components/Schedule/WeatherSchedule";
+import SaveAssignScreenModal from "../Components/Schedule/SaveAssignScreenModal";
+import Approval from "../Components/Approval/Approval";
+import FileUpload from "../Components/Assests/FileUpload";
+import Auditlogreport from "../Components/Reports/Auditlogreport";
+import SalesReport from "../Components/Reports/SalesReport";
+import CancelReport from "../Components/Reports/CancelReport";
+import EventEditor from "../Components/Schedule/EventEditor";
+import Userrole from "../Components/Settings/Userrole";
+import Trash from "../Components/Trash";
+import NewFolderDialog from "../Components/Assests/NewFolderDialog ";
+import { UserProvider } from "../UserContext";
+import LoginContainer from "./AuthRoutes";
+import UserProfile from "../Pages/Profile/UserProfile";
+import AdminContainer from "./AdminRoutes";
+
+import { useDispatch } from "react-redux";
+import { loginUser } from "../Redux/useraction";
+import Youtube from "../Components/Apps/Youtube";
+import YoutubeDetail from "../Components/Apps/YoutubeDetail";
+import Weather from "../Components/Apps/Weather";
+import TextScroll from "../Components/Apps/TextScroll";
+import TextScrollDetail from "../Components/Apps/TextScrollDetail";
+import WeatherDetail from "../Components/Apps/WeatherDetail";
+
+import Loading from "../Components/Loading";
+import AddComposition from "../Components/Composition/AddComposition";
+import Composition from "../Components/Composition/Composition";
+import SelectedLayout from "../Components/Composition/SelectedLayout";
+import { auth } from "../FireBase/firebase";
+import EditSelectedLayout from "../Components/Composition/EditSelectedLayout";
+import YoutubeDetailByID from "../Components/Apps/YoutubeDetailByID";
+import TextScrollDetailById from "../Components/Apps/TextScrollDetailById";
+
+const Routing = () => {
+  //for screen resize sidebar open close
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isAuthicate, setisAuthicate] = useState(false);
+  const accessDetails = localStorage.getItem("role_access");
+  const handleResize = useCallback(() => {
+    if (window.innerWidth < 780) {
+      setSidebarOpen(false);
+    } else if (!sidebarOpen) {
+      setSidebarOpen(true);
+    }
+  }, [sidebarOpen]);
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [handleResize, sidebarOpen]);
+
+  useEffect(() => {
+    handleResize();
+    window.addEventListener("load", handleResize);
+
+    return () => {
+      window.removeEventListener("load", handleResize);
+    };
+  }, [handleResize]);
+
+  useEffect(() => {
+    const ubsubscribe = () => {
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          if (user.emailVerified) {
+            setisAuthicate(true);
+            localStorage.setItem("user", JSON.stringify(user));
+          } else {
+            setisAuthicate(false);
+            localStorage.setItem("user", null);
+          }
+        } else {
+          setisAuthicate(false);
+          localStorage.setItem("user", null);
+        }
+      });
+    };
+    return ubsubscribe();
+  }, []);
+
+  const dispatch = useDispatch();
+
+  if (!accessDetails)
+    return (
+      <LoginContainer
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      />
+    );
+  if (accessDetails === "ADMIN")
+    return (
+      <AdminContainer
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      />
+    );
+  if (accessDetails === "USER" && isAuthicate) {
+    const data = localStorage.getItem("userID");
+    dispatch(loginUser(JSON.parse(data)));
+
+    return (
+      <UserProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Navigate to="/screens" />} />
+            <Route path="/register" element={<Navigate to="/screens" />} />
+            {/* <Route
+              path="/dashboard"
+              element={
+                <Dashboard
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            /> */}
+
+            <Route
+              path="/screens"
+              element={
+                <Screens
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/edituser"
+              element={
+                <EditUser
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/userprofile"
+              element={
+                <UserProfile
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            {/* screen component route */}
+            <Route
+              path="/mergescreen"
+              element={
+                <MergeScreen
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/newscreengroup"
+              element={
+                <NewScreenGroup
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/screensplayer"
+              element={
+                <Screensplayer
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/newscreendetail"
+              element={
+                <NewScreenDetail
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            {/* Assests component route */}
+            <Route
+              path="/fileupload"
+              element={
+                <FileUpload
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/assets"
+              element={
+                <Assets
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            {/* Apps component route */}
+            <Route
+              path="/apps"
+              element={
+                <Apps
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/youtube"
+              element={
+                <Youtube
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/youtubedetail/:id"
+              element={
+                <YoutubeDetailByID
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/youtubedetail"
+              element={
+                <YoutubeDetail
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/textscrolldetail/:id"
+              element={
+                <TextScrollDetailById
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/textscrolldetail"
+              element={
+                <TextScrollDetail
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/weather"
+              element={
+                <Weather
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/weather-detail"
+              element={
+                <WeatherDetail
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/text-scroll"
+              element={
+                <TextScroll
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            {/* Playlist component route */}
+            <Route
+              path="/composition"
+              element={
+                <Composition
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/addcomposition"
+              element={
+                <AddComposition
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/addcomposition/:id"
+              element={
+                <SelectedLayout
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/editcomposition/:id/:layoutId"
+              element={
+                <EditSelectedLayout
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+
+            {/* <Route
+              path="/selectedlayout"
+              element={
+                <SelectLayout
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            /> */}
+            {/* DisployStudio component route */}
+            <Route
+              path="/disploystudio"
+              element={
+                <DisployStudio
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            {/* Reports component route */}
+            <Route
+              path="/reports"
+              element={
+                <Report
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/uptimereport"
+              element={
+                <Uptimereport
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/auditlogreport"
+              element={
+                <Auditlogreport
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/salesreport"
+              element={
+                <SalesReport
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/cancelreport"
+              element={
+                <CancelReport
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/mediareport"
+              element={
+                <Mediareport
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            {/* Schedule component route */}
+            <Route
+              path="/myschedule"
+              element={
+                <MySchedule
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/weatherschedule"
+              element={
+                <WeatherSchedule
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/addschedule"
+              element={
+                <AddSchedule
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/saveassignscreenmodal"
+              element={<SaveAssignScreenModal />}
+            />
+            {/* Approval component route */}
+            <Route
+              path="/approval"
+              element={
+                <Approval
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            {/* Settings component route */}
+            <Route
+              path="/settings"
+              element={
+                <Settings
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/userrole"
+              element={
+                <Userrole
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            {/*Event Editors */}
+            <Route
+              path="/eventedit"
+              element={
+                <EventEditor
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/NewFolderDialog/:folderId"
+              component={NewFolderDialog}
+              element={
+                <NewFolderDialog
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/trash"
+              element={
+                <Trash
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </UserProvider>
+    );
+  }
+
+  return (
+    <Loading />
+    // <div className="flex justify-center items-center h-screen">
+    //   <TailSpin color="red" radius={"8px"} />
+    // </div>
+  );
+};
+
+export default Routing;
