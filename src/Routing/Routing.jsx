@@ -50,9 +50,7 @@ import EditSelectedLayout from "../Components/Composition/EditSelectedLayout";
 import YoutubeDetailByID from "../Components/Apps/YoutubeDetailByID";
 import TextScrollDetailById from "../Components/Apps/TextScrollDetailById";
 import { UPDATE_fIREBASE_ACCESS_TOKEN } from "../Pages/Api";
-
-
-
+import axios from "axios";
 
 const Routing = () => {
   //for screen resize sidebar open close
@@ -86,45 +84,24 @@ const Routing = () => {
   }, [handleResize]);
 
   useEffect(() => {
-    const unsubscribe = auth.onIdTokenChanged(async (user) => {
-      if (user) {
-        if (user.emailVerified) {
-          // Set isAuthenticate to true or perform any actions you need
-          setisAuthicate(true);
-
-          try {
-            // console.log("----------",user);
-            // Example of making an API call after user authentication
-            const config = {
-              method: 'post',
-              url : `${UPDATE_fIREBASE_ACCESS_TOKEN}Email=${user.email}&Token=${user.refreshToken}`,
-              headers: { 'Content-Type': 'application/json' },
-            };
-
-            const response = await axios(config);
-            console.log('API Response:', response.data);
-          } catch (error) {
-            console.error('Error making API call:', error.message);
-            // Handle error as needed
+    const ubsubscribe = () => {
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          if (user.emailVerified) {
+            setisAuthicate(true);
+            localStorage.setItem("user", JSON.stringify(user));
+          } else {
+            setisAuthicate(false);
+            localStorage.setItem("user", null);
           }
-
-          // Save user data to local storage
-          localStorage.setItem('user', JSON.stringify(user));
         } else {
-          // Set isAuthenticate to false or perform any actions you need
           setisAuthicate(false);
-          localStorage.setItem('user', null);
+          localStorage.setItem("user", null);
         }
-      } else {
-        // Set isAuthenticate to false or perform any actions you need
-        setisAuthicate(false);
-        localStorage.setItem('user', null);
-      }
-    });
-
-    // Cleanup function to unsubscribe when component unmounts
-    return () => unsubscribe();
-  }, []); // Empty dependency array to run the effect only once on mount
+      });
+    };
+    return ubsubscribe();
+  }, []);
 
   const dispatch = useDispatch();
 

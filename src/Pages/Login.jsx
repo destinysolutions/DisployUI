@@ -12,7 +12,11 @@ import { Alert } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { LOGIN_URL, ADD_REGISTER_URL, UPDATE_fIREBASE_ACCESS_TOKEN } from "./Api";
+import {
+  LOGIN_URL,
+  ADD_REGISTER_URL,
+  UPDATE_fIREBASE_ACCESS_TOKEN,
+} from "./Api";
 import video from "../../public/DisployImg/iStock-1137481126.mp4";
 import { useUser } from "../UserContext";
 import {
@@ -66,7 +70,6 @@ const Login = () => {
     //   .required("You must accept the terms and conditions"),
   });
 
-  
   const formik = useFormik({
     initialValues: {
       password: "",
@@ -74,22 +77,21 @@ const Login = () => {
       // terms: false,
     },
     validationSchema: validationSchema,
-    onSubmit: async(values) => {
+    onSubmit: async (values) => {
       let data = JSON.stringify({
         emailID: values.emailID,
         password: values.password,
       });
-      
-      console.log("auth",auth.currentUser.za,values.emailID);
 
+      // console.log("auth", auth.currentUser.za, values.emailID);
 
-      const config2 = {
-        method: 'get',
-        url : `${UPDATE_fIREBASE_ACCESS_TOKEN}Email=${values.emailID}&Token=${auth.currentUser.za}`,
-        headers: { 'Content-Type': 'application/json' },
-      };
+      // const config2 = {
+      //   method: "get",
+      //   url: `${UPDATE_fIREBASE_ACCESS_TOKEN}Email=${values.emailID}&Token=${auth.currentUser.za}`,
+      //   headers: { "Content-Type": "application/json" },
+      // };
 
-      const response = await axios(config2);
+      // const response = await axios(config2);
 
       let config = {
         method: "post",
@@ -101,7 +103,8 @@ const Login = () => {
         data: data,
       };
       setLoading(true);
-      axios.request(config)
+      axios
+        .request(config)
         .then((response) => {
           localStorage.setItem("userID", JSON.stringify(response.data));
           const createdDate = new Date(response.data.createdDate);
@@ -125,9 +128,8 @@ const Login = () => {
               // navigate("/");
             } else if (userRole == 2) {
               // User login logic
-              auth
-                .signInWithEmailAndPassword(values.emailID, values.password)
-                // auth.signInWithCustomToken(response.data.userTokan)
+              auth.signInWithEmailAndPassword(values.emailID, values.password)
+              // auth.signInWithCustomToken(response.data.userTokan)
                 .then((userCredential) => {
                   console.log("userCredential", userCredential);
                   const user = userCredential.user;
@@ -135,7 +137,10 @@ const Login = () => {
                     alert("Please verify your email.");
                   } else {
                     const user_ID = response.data.userID;
-                    localStorage.setItem("userID",JSON.stringify(response.data));
+                    localStorage.setItem(
+                      "userID",
+                      JSON.stringify(response.data)
+                    );
                     localStorage.setItem("role_access", "USER");
                     window.location.href = "/";
                     // navigate("/");
@@ -362,9 +367,11 @@ const Login = () => {
             </div>
             <div className="w-full border-[#ffffff6e] border rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
               <div className="lg:p-6 md:p-6  sm:px-4 xs:p-2 py-6">
+                {/* <Link to="/screens"> */}
                 <div className="mb-2 font-inter not-italic font-medium text-[24px] text-white">
                   Sign in
                 </div>
+                {/* </Link> */}
                 <div className="lg:mb-8 md:mb-8 sm:mb-3 xs:mb-2 font-['Poppins'] not-italic font-normal lg:text-base md:text-base sm:text-sm xs:text-[14px] text-white">
                   Fill in the fields below to sign into your account.
                 </div>
@@ -465,6 +472,7 @@ const Login = () => {
                   {/* {formik.errors.terms && formik.touched.terms && (
                     <div className="error">{formik.errors.terms}</div>
                   )} */}
+                  {/* <Link to="/screens"> */}
                   <button
                     type="submit"
                     className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
@@ -472,6 +480,7 @@ const Login = () => {
                   >
                     {loading ? "Signing in..." : "Sign in"}
                   </button>
+                  {/* </Link> */}
                   <div className="flex lg:ml-3 lg:text-sm md:text-sm sm:text-sm xs:text-[14px] flex-wrap">
                     <p className="not-italic text-white font-medium">
                       Don’t have an account, yet?
