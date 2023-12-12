@@ -54,11 +54,11 @@ const AdminSidebar = ({ sidebarOpen }) => {
       //path: "/organization",
       icon: <SlOrganization className="text-2xl" />,
       subMenus: [
-        {
-          title: "Pending",
-          path: "/pending",
-          icon: <FaUserTimes className="  text-xl  " />,
-        },
+        // {
+        //   title: "Pending",
+        //   path: "/pending",
+        //   icon: <FaUserTimes className="  text-xl  " />,
+        // },
         {
           title: "OnBorded",
           path: "/onborded",
