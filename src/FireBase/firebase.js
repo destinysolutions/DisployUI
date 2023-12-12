@@ -7,6 +7,9 @@ import {
   OAuthProvider,
 } from "firebase/auth";
 
+import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCUW6ROiE0g71U2svkXUrVdvMriVoKKAaY",
   authDomain: "disploy.firebaseapp.com",
@@ -19,6 +22,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 var auth = getAuth(app);
+var firestore = getFirestore(app);
+var database = getDatabase(app);
 var Googleauthprovider = new GoogleAuthProvider();
 var facebookProvider = new FacebookAuthProvider();
 var appleProvider = new OAuthProvider("apple.com");
@@ -30,4 +35,6 @@ export {
   facebookProvider,
   appleProvider,
   microsoftProvider,
+  firestore,
+  database,
 };

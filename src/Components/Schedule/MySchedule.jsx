@@ -24,80 +24,66 @@ import {
 import { useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineModeEdit } from "react-icons/md";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import toast from "react-hot-toast";
 import ScreenAssignModal from "../ScreenAssignModal";
+import {
+  handleChangeSchedule,
+  handleDeleteScheduleAll,
+  handleDeleteScheduleById,
+  handleGetAllSchedule,
+} from "../../Redux/ScheduleSlice";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //for action popup
   const [showActionBox, setShowActionBox] = useState(false);
   const [addScreenModal, setAddScreenModal] = useState(false);
-  const [scheduleData, setScheduleData] = useState([]);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
-  
-  const { token, user } = useSelector((state) => state.root.auth);
-  const authToken = `Bearer ${token}`;
-
   const [selectedScreens, setSelectedScreens] = useState([]);
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
     : "";
   const [scheduleId, setScheduleId] = useState("");
   const [searchSchedule, setSearchSchedule] = useState("");
-  const [scheduleAllData, setScheduleAllData] = useState([]);
   const [connection, setConnection] = useState(null);
   const [selectAll, setSelectAll] = useState(false);
   const [filteredScheduleData, setFilteredScheduleData] = useState([]);
   const [updateTagSchedule, setUpdateTagSchedule] = useState(null);
   const [tags, setTags] = useState([]);
   const [showTagModal, setShowTagModal] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  const { token } = useSelector((state) => state.root.auth);
+  const { loading, schedules, deleteLoading } = useSelector(
+    (s) => s.root.schedule
+  );
+  const authToken = `Bearer ${token}`;
 
   const addScreenRef = useRef(null);
   const selectScreenRef = useRef(null);
   const showActionModalRef = useRef(null);
 
-  const loadScheduleData = () => {
-    setLoading(true);
-    axios
-      .get(GET_ALL_SCHEDULE, {
-        headers: {
-          Authorization: authToken,
-        },
-      })
-      .then((response) => {
-        const fetchedData = response.data.data;
-        // console.log(fetchedData, "schedule data");
-        setScheduleData(fetchedData);
-        setLoading(false);
-        setScheduleAllData(fetchedData);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
-  };
+  const dispatch = useDispatch();
 
   // Function to handle the "Select All" checkbox change
   const handleSelectAll = () => {
-    const updatedScheduleAsset = scheduleData.map((schedule) => ({
+    const updatedScheduleAsset = schedules.map((schedule) => ({
       ...schedule,
       isChecked: !selectAll,
     }));
-    setScheduleData(updatedScheduleAsset);
+    dispatch(handleChangeSchedule(updatedScheduleAsset));
     setSelectAll(!selectAll);
   };
 
   const handleCheckboxChange = (scheduleId) => {
-    const updatedScheduleAsset = scheduleData.map((schedule) =>
+    const updatedScheduleAsset = schedules.map((schedule) =>
       schedule.scheduleId === scheduleId
         ? { ...schedule, isChecked: !schedule.isChecked }
         : schedule
     );
-    setScheduleData(updatedScheduleAsset);
+    dispatch(handleChangeSchedule(updatedScheduleAsset));
 
     // Check if all checkboxes are checked or not
     const allChecked = updatedScheduleAsset.every(
@@ -119,59 +105,15 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handelDeleteSchedule = (scheduleId) => {
     if (!window.confirm("Are you sure?")) return;
-    let data = JSON.stringify({
-      scheduleId: scheduleId,
-      operation: "Delete",
-    });
-
-    let config = {
-      method: "post",
-      url: ADD_SCHEDULE,
-      headers: {
-        Authorization: authToken,
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        const updatedScheduleData = scheduleData.filter(
-          (scheduleData) => scheduleData.scheduleId !== scheduleId
-        );
-        setScheduleData(updatedScheduleData);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (deleteLoading) return;
+    dispatch(handleDeleteScheduleById({ id: scheduleId, token }));
   };
 
   const handelDeleteAllSchedule = () => {
     if (!window.confirm("Are you sure?")) return;
-    let data = JSON.stringify({
-      operation: "ALLDelete",
-    });
-
-    let config = {
-      method: "post",
-      url: ADD_SCHEDULE,
-      headers: {
-        Authorization: authToken,
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then(() => {
-        setScheduleData([]);
-        setSelectAll(false);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (deleteLoading) return;
+    dispatch(handleDeleteScheduleAll({ token }));
+    setSelectAll(false);
   };
 
   const handleUpdateScreenAssign = () => {
@@ -202,7 +144,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
           setSelectScreenModal(false);
           setAddScreenModal(false);
           setShowActionBox(false);
-          loadScheduleData();
+          dispatch(handleGetAllSchedule({ token }));
         }
       })
       .catch((error) => {
@@ -217,7 +159,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     if (searchQuery === "") {
       setFilteredScheduleData([]);
     } else {
-      const filteredSchedule = scheduleAllData.filter((entry) =>
+      const filteredSchedule = schedules.filter((entry) =>
         Object.values(entry).some((val) => {
           if (typeof val === "string") {
             const keyWords = searchQuery.split(" ");
@@ -238,34 +180,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         setFilteredScheduleData([]);
       }
     }
-  };
-
-  const handleFetchScheduleByID = (scheduleId) => {
-    axios
-      .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`, {
-        headers: {
-          Authorization: authToken,
-        },
-      })
-      .then((response) => {
-        const fetchedData = response.data.data;
-        const fetchedEvents = fetchedData.map((item) => ({
-          id: item.eventId,
-          title: item.title,
-          start: new Date(item.cStartDate),
-          end: new Date(item.cEndDate),
-          color: item.color,
-          asset: item.asset,
-          repeatDay: item.repeatDay,
-          isfutureDateExists: item.isfutureDateExists,
-          actualEndDate: item.actualEndDate,
-        }));
-        // console.log(fetchedEvents);
-        // setEvents(fetchedEvents);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   const handleUpadteScheduleTags = (tags) => {
@@ -292,7 +206,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status === 200) {
-          const updatedSchedule = scheduleData.map((i) => {
+          const updatedSchedule = schedules.map((i) => {
             if (i?.scheduleId === response?.data?.data?.model?.scheduleId) {
               return { ...i, tags: response?.data?.data?.model?.tags };
             } else {
@@ -307,7 +221,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             }
           });
           if (updatedSchedule.length > 0) {
-            setScheduleData(updatedSchedule);
+            dispatch(handleChangeSchedule(updatedSchedule));
           }
           if (updateFilteredSchedule.length > 0) {
             setFilteredScheduleData(updateFilteredSchedule);
@@ -321,7 +235,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   useEffect(() => {
-    loadScheduleData();
+    dispatch(handleGetAllSchedule({ token }));
 
     const newConnection = new HubConnectionBuilder()
       .withUrl(SIGNAL_R)
@@ -589,7 +503,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   <td colSpan={8} className="text-center font-semibold text-xl">
                     Loading...
                   </td>
-                ) : scheduleData.length === 0 ? (
+                ) : schedules.length === 0 ? (
                   <td colSpan={7} className="font-semibold text-center text-xl">
                     No Schedule here.
                   </td>
@@ -599,7 +513,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     Schedule not found
                   </td>
                 ) : filteredScheduleData.length === 0 ? (
-                  scheduleData.map((schedule) => (
+                  schedules.map((schedule) => (
                     <tr
                       className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
                       key={schedule.scheduleId}
@@ -641,7 +555,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 schedule.tags === "" || schedule?.tags === null
                                   ? setTags([])
                                   : setTags(schedule?.tags?.split(","));
-                                handleFetchScheduleByID(schedule?.scheduleId);
                                 setUpdateTagSchedule(schedule);
                               }}
                             />
@@ -665,7 +578,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                               schedule.tags === "" || schedule?.tags === null
                                 ? setTags([])
                                 : setTags(schedule?.tags?.split(","));
-                              handleFetchScheduleByID(schedule?.scheduleId);
                               setUpdateTagSchedule(schedule);
                             }}
                             className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
@@ -771,7 +683,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 schedule.tags === "" || schedule?.tags === null
                                   ? setTags([])
                                   : setTags(schedule?.tags?.split(","));
-                                handleFetchScheduleByID(schedule?.scheduleId);
                                 setUpdateTagSchedule(schedule);
                               }}
                             />
@@ -795,7 +706,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                               schedule.tags === "" || schedule?.tags === null
                                 ? setTags([])
                                 : setTags(schedule?.tags?.split(","));
-                              handleFetchScheduleByID(schedule?.scheduleId);
                               setUpdateTagSchedule(schedule);
                             }}
                             className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"

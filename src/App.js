@@ -7,11 +7,12 @@ import { useEffect } from "react";
 import { auth } from "./FireBase/firebase";
 import { useState } from "react";
 import { handleLogout } from "./Redux/Authslice";
+import { handleGetAllScheduleTimezone } from "./Redux/globalStates";
 
 const App = () => {
   const [timer, setTimer] = useState(0);
 
-  const { user } = useSelector((state) => state.root.auth);
+  const { user, token } = useSelector((state) => state.root.auth);
 
   const dispatch = useDispatch();
 
@@ -47,6 +48,8 @@ const App = () => {
       "MSPointerMove",
       "visibilitychange",
       "focus",
+      "unload",
+      "load",
     ],
   });
 
@@ -84,11 +87,12 @@ const App = () => {
   }, [user, timer]);
 
   useEffect(() => {
-    // const user = JSON.parse(window.localStorage.getItem("user"));
+    if (user !== null) {
+      dispatch(handleGetAllScheduleTimezone({ token }));
+    }
     const TIMER = JSON.parse(window.localStorage.getItem("timer"));
-    // setLoggedInUser(user);
     setTimer(TIMER);
-  }, []);
+  }, [user]);
 
   return (
     <>

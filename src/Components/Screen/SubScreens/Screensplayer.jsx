@@ -60,7 +60,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenData, setScreenData] = useState([]);
   const [assetData, setAssetData] = useState([]);
   const [getScreenOrientation, setScreenOrientation] = useState([]);
-  const [getTimezone, setTimezone] = useState([]);
   const [selectScreenOrientation, setSelectScreenOrientation] = useState();
   const [selectedTag, setSelectedTag] = useState("");
   const [tagsData, setTagsData] = useState([]);
@@ -111,6 +110,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [connection, setConnection] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
 
+  const {timezones} = useSelector(s=>s.root.globalstates)
+  
   const modalRef = useRef(null);
   const modalPreviewRef = useRef(null);
   const scheduleRef = useRef(null);
@@ -535,7 +536,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       axios.get(GET_ALL_SCREEN_ORIENTATION, {
         headers: { Authorization: authToken },
       }),
-      axios.get(GET_SCREEN_TIMEZONE, { headers: { Authorization: authToken } }),
       axios.get(GET_ALL_SCREEN_RESOLUTION, {
         headers: { Authorization: authToken },
       }),
@@ -552,7 +552,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         const [
           filesResponse,
           screenOrientationResponse,
-          timezoneResponse,
           screenResolutionResponse,
           screenTypeResponse,
           scheduleResponse,
@@ -570,7 +569,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         ];
         setAssetData(allAssets);
         setScreenOrientation(screenOrientationResponse.data.data);
-        setTimezone(timezoneResponse.data.data);
         setScreenResolution(screenResolutionResponse.data.data);
         setGetSelectedScreenTypeOption(screenTypeResponse.data.data);
         setScheduleData(scheduleResponse.data.data);
@@ -804,7 +802,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
               <div className="icons flex  items-center">
                 <div>
-                  <Link to={"../screens"}>
+                  <Link to="/screens">
                     <button className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
                       <MdArrowBackIosNew className="p-1 px-2 text-4xl text-white hover:text-white " />
                     </button>
@@ -1947,7 +1945,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       setSelectedTimezoneName(e.target.value)
                                     }
                                   >
-                                    {getTimezone.map((timezone) => (
+                                    {timezones.map((timezone) => (
                                       <option
                                         value={timezone.timeZoneID}
                                         key={timezone.timeZoneID}

@@ -11,7 +11,7 @@ const ScreenAssignModal = ({
   selectedScreens,
   setSelectedScreens,
 }) => {
-  const { token ,user} = useSelector((state) => state.root.auth);
+  const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [selectAllChecked, setSelectAllChecked] = useState(false);
@@ -19,31 +19,6 @@ const ScreenAssignModal = ({
   const [screenData, setScreenData] = useState([]);
 
   const selectScreenRef = useRef(null);
-
-  useEffect(() => {
-    if (user?.userID) {
-      axios
-        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${user?.userID}`, {
-          headers: {
-            Authorization: authToken,
-          },
-        })
-        .then((response) => {
-          const fetchedData = response.data.data;
-          setScreenData(fetchedData);
-          const initialCheckboxes = {};
-          if (Array.isArray(fetchedData)) {
-            fetchedData.forEach((screen) => {
-              initialCheckboxes[screen.screenID] = false;
-            });
-            setScreenCheckboxes(initialCheckboxes);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }, []);
 
   const handleSelectAllCheckboxChange = (e) => {
     const checked = e.target.checked;
@@ -64,6 +39,7 @@ const ScreenAssignModal = ({
       setSelectedScreens([]);
     }
   };
+
   const handleScreenCheckboxChange = (screenID) => {
     const updatedCheckboxes = { ...screenCheckboxes };
     updatedCheckboxes[screenID] = !updatedCheckboxes[screenID];
@@ -91,14 +67,58 @@ const ScreenAssignModal = ({
     setSelectAllChecked(allChecked);
   };
 
+  useEffect(() => {
+    if (user?.userID) {
+      axios
+        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${user?.userID}`, {
+          headers: {
+            Authorization: authToken,
+          },
+        })
+        .then((response) => {
+          const fetchedData = response.data.data;
+          setScreenData(fetchedData);
+          const initialCheckboxes = {};
+          if (Array.isArray(fetchedData)) {
+            fetchedData.forEach((screen) => {
+              initialCheckboxes[screen.screenID] = false;
+            });
+            setScreenCheckboxes(initialCheckboxes);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        selectScreenRef.current &&
+        !selectScreenRef.current.contains(event?.target)
+      ) {
+        setSelectScreenModal(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside]);
+
+  function handleClickOutside() {
+    setSelectScreenModal(false);
+  }
+
   return (
     <div>
-      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+      <div className="bg-black bg-opacity-50 justify-center items-center flex h-screen w-screen overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
         <div
           ref={selectScreenRef}
           className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
         >
-          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+          <div className="border-0 rounded-lg shadow-lg relative h-[80vh] flex flex-col w-full bg-white outline-none focus:outline-none">
             <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
               <div className="flex items-center">
                 <div className=" mt-1.5">
@@ -123,8 +143,11 @@ const ScreenAssignModal = ({
                 <AiOutlineCloseCircle className="text-3xl" />
               </button>
             </div>
-            <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3">
-              <table className="w-full" cellPadding={20}>
+            <div className="schedual-table h-[80%] overflow-y-scroll bg-white rounded-xl mt-8 shadow p-3">
+              <table
+                className="w-full h-full overflow-y-scroll"
+                cellPadding={20}
+              >
                 <thead>
                   <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">

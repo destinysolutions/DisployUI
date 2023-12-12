@@ -11,9 +11,8 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import "../../Styles/apps.css";
 import { Link } from "react-router-dom";
 import Footer from "../Footer";
-import { GET_ALL_APPS } from "../../Pages/Api";
-import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { handleGetAllApps } from "../../Redux/AppsSlice";
 
 const Apps = ({ sidebarOpen, setSidebarOpen }) => {
   Apps.propTypes = {
@@ -21,26 +20,18 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  const [appData, setAppData] = useState([]);
   const [appDropDown, setAppDropDown] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   const { token } = useSelector((state) => state.root.auth);
-  const authToken = `Bearer ${token}`;
+  const {
+    loading,
+    allApps: { allApps },
+  } = useSelector((state) => state.root.apps);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get(GET_ALL_APPS, { headers: { Authorization: authToken } })
-      .then((response) => {
-        const fetchedData = response.data.data;
-        setAppData(fetchedData);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
+    dispatch(handleGetAllApps({ token }));
   }, []);
 
   const handleAppDropDownClick = (id) => {
@@ -74,12 +65,12 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
                 <div className="text-center col-span-full font-semibold text-xl">
                   Loading...
                 </div>
-              ) : appData.length === 0 ? (
+              ) : allApps.length === 0 ? (
                 <div className="w-full text-center font-semibold text-xl col-span-full">
                   No Apps here.
                 </div>
               ) : (
-                appData.map(
+                allApps.map(
                   (app) =>
                     app.appType == "Apps" && (
                       <div

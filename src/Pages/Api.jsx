@@ -1,4 +1,15 @@
+import axios from "axios";
+
 export const baseUrl = "https://disployapi.thedestinysolutions.com/";
+
+export const postUrl = axios.create({
+  baseURL: "https://disployapi.thedestinysolutions.com/api/",
+  method: "post",
+});
+export const getUrl = axios.create({
+  baseURL: "https://disployapi.thedestinysolutions.com/api/",
+  method: "get",
+});
 
 export const LOGIN_URL = `${baseUrl}api/Register/Login`;
 export const ADD_REGISTER_URL = `${baseUrl}api/UserMaster/AddOrganizationSignups`;

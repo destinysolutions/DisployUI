@@ -50,7 +50,7 @@ import {
   UPDATE_NEW_SCREEN,
 } from "../../Pages/Api";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
@@ -58,6 +58,21 @@ import { IoBarChartSharp } from "react-icons/io5";
 import ShowAssetModal from "../ShowAssetModal";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import toast from "react-hot-toast";
+import {
+  handleChangeScreens,
+  handleDeleteScreenById,
+  handleGetScreen,
+  handleUpdateScreenAsset,
+  handleUpdateScreenName,
+  handleUpdateScreenSchedule,
+} from "../../Redux/Screenslice";
+import { handleGetAllAssets } from "../../Redux/Assetslice";
+import { handleGetAllSchedule } from "../../Redux/ScheduleSlice";
+import { handleGetCompositions } from "../../Redux/CompositionSlice";
+import {
+  handleGetTextScrollData,
+  handleGetYoutubeData,
+} from "../../Redux/AppsSlice";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -68,7 +83,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
-  const [scheduleData, setScheduleData] = useState([]);
   const [moreModal, setMoreModal] = useState(false);
   const [locCheckboxClick, setLocCheckboxClick] = useState(true);
   const [screenCheckboxClick, setScreenCheckboxClick] = useState(true);
@@ -90,7 +104,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [tagsContentVisible, setTagsContentVisible] = useState(true);
   const [showActionBox, setShowActionBox] = useState(false);
   const [isEditingScreen, setIsEditingScreen] = useState(false);
-  const [assetScreenID, setAssetScreenID] = useState();
+  const [assetScreenID, setAssetScreenID] = useState(null);
   const [scheduleScreenID, setScheduleScreenID] = useState();
 
   useEffect(() => {
@@ -113,8 +127,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
 
-  const [screenData, setScreenData] = useState([]);
-
   const [editedScreenName, setEditedScreenName] = useState("");
 
   const [editingScreenID, setEditingScreenID] = useState(null);
@@ -122,26 +134,19 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     scheduleName: "",
   });
   const [searchScreen, setSearchScreen] = useState("");
-  const [screenAllData, setScreenAllData] = useState([]);
 
   const { user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [groupName, setGroupName] = useState("");
-  const [assetData, setAssetData] = useState([]);
-  const [assetAllData, setAssetAllData] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
   const [assetPreview, setAssetPreview] = useState("");
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
   const [popupActiveTab, setPopupActiveTab] = useState(1);
-  const [compositionData, setCompositionData] = useState([]);
   const [selectedComposition, setSelectedComposition] = useState({
     compositionName: "",
   });
-  const [screenNameError, setScreenNameError] = useState("");
-  const [searchAsset, setSearchAsset] = useState("");
 
-  const [appsData, setAppsData] = useState([]);
   //socket signal-RRR
   const [connection, setConnection] = useState(null);
   const [screenConnected, setScreenConnected] = useState(null);
@@ -152,13 +157,15 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [showTagModal, setShowTagModal] = useState(false);
   const [filteredScreenData, setFilteredScreenData] = useState([]);
   const [tags, setTags] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
   const [selectedYoutube, setSelectedYoutube] = useState();
   const [selectedTextScroll, setSelectedTextScroll] = useState();
 
-  // console.log("sendTvStatus log", sendTvStatus);
-  // console.log("sendTvStatusScreen log", sendTvStatusScreenID);
+  const { loading, screens, deleteLoading } = useSelector((s) => s.root.screen);
+  const { schedules } = useSelector((s) => s.root.schedule);
+
+  const dispatch = useDispatch();
+
   const selectedScreenIdsString = Array.isArray(selectedCheckboxIDs)
     ? selectedCheckboxIDs.join(",")
     : "";
@@ -166,53 +173,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const moreModalRef = useRef(null);
   const showActionModalRef = useRef(null);
 
-  const loadComposition = () => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: GET_ALL_COMPOSITIONS,
-      headers: {
-        Authorization: authToken,
-      },
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        setCompositionData(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   const handleAssetAdd = (asset) => {
     setSelectedAsset(asset);
     setAssetPreview(asset);
   };
 
-  const handleCompositionsAdd = (composition) => {
-    setSelectedComposition(composition);
-  };
-
   const handleAppsAdd = (apps) => {
     setSelectedYoutube(apps);
     setSelectedTextScroll(apps);
-  };
-
-  const handleFilter = (event) => {
-    const searchQuery = event.target.value.toLowerCase();
-    setSearchAsset(searchQuery);
-
-    if (searchQuery === "") {
-      setAssetData(assetAllData);
-    } else {
-      const filteredData = assetData.filter((item) => {
-        const itemName = item.assetName ? item.assetName.toLowerCase() : "";
-        return itemName.includes(searchQuery);
-      });
-      setAssetData(filteredData);
-    }
   };
 
   const handleScreenClick = (screenId) => {
@@ -223,10 +191,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       }, {});
       return { ...updatedState, [screenId]: !prevState[screenId] };
     });
-  };
-
-  const handleScreenNameClick = (screenId) => {
-    setEditingScreenID(screenId);
   };
 
   const handleScreenCheckboxChange = (screenID) => {
@@ -256,72 +220,57 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleDeleteAllScreen = () => {
     if (!window.confirm("Are you sure?")) return;
-    let data = JSON.stringify({
-      userID: user?.userID,
-      operation: "DeleteUserIdScreenOtp",
-    });
+    if (deleteLoading) return;
+    toast.loading("Deleting...");
 
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: UPDATE_NEW_SCREEN,
-      headers: {
-        Authorization: authToken,
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
+    const response = dispatch(
+      handleDeleteAllScreen({ userID: user?.userID, token })
+    );
+    if (!response) return;
+    response
       .then(() => {
-        setScreenData([]);
+        dispatch(handleChangeScreens([]));
         setSelectAllChecked(false);
         setScreenCheckboxes({});
+        toast.remove();
+        toast.success("Deleted Successfully.");
       })
       .catch((error) => {
+        toast.remove();
         console.log(error);
       });
   };
 
   const handelDeleteScreen = (screenId) => {
     if (!window.confirm("Are you sure?")) return;
-    let data = JSON.stringify({
-      screenID: screenId,
-      operation: "DeleteScreenOtp",
-    });
+    if (deleteLoading) return;
+    toast.loading("Deleting...");
 
-    let config = {
-      method: "post",
-      url: UPDATE_NEW_SCREEN,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authToken,
-      },
-      data: data,
-    };
+    const response = dispatch(
+      handleDeleteScreenById({ screenID: screenId, token })
+    );
+    if (response) {
+      response
+        .then((res) => {
+          toast.remove();
+          toast.success("Deleted Successfully.");
 
-    axios
-      .request(config)
-      .then((response) => {
-        const updatedScreenData = screenData.filter(
-          (screenData) => screenData.screenID !== screenId
-        );
-        if (connection) {
-          connection
-            .invoke("ScreenConnected")
-            .then(() => {
-              console.log("SignalR method invoked after Asset update");
-            })
-            .catch((error) => {
-              console.error("Error invoking SignalR method:", error);
-            });
-        }
-        setScreenData(updatedScreenData);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+          if (connection) {
+            connection
+              .invoke("ScreenConnected")
+              .then(() => {
+                console.log("SignalR method invoked after Asset update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
+        })
+        .catch((error) => {
+          toast.remove();
+          console.log(error);
+        });
+    }
   };
 
   const handleScheduleAdd = (schedule) => {
@@ -329,97 +278,44 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleScreenNameUpdate = (screenId) => {
-    const screenToUpdate = screenData.find(
+    const screenToUpdate = screens.find(
       (screen) => screen.screenID === screenId
     );
     if (editedScreenName.trim() === "") {
-      setScreenNameError("Screen name is required");
+      toast.remove();
+      return toast.error("Please enter a screen name");
     } else {
-      setScreenNameError("");
       if (screenToUpdate) {
-        const {
-          otp,
-          googleLocation,
-          timeZone,
-          screenOrientation,
-          screenResolution,
-          macid,
-          ipAddress,
-          postalCode,
-          latitude,
-          longitude,
-          userID,
-          mediaType,
-          tags,
-          mediaDetailID,
-          tvTimeZone,
-          tvScreenOrientation,
-          tvScreenResolution,
-        } = screenToUpdate;
-
-        let data = JSON.stringify({
+        toast.loading("Updating Name...");
+        let data = {
+          ...screenToUpdate,
           screenID: screenId,
-          otp,
-          googleLocation,
-          timeZone,
-          screenOrientation,
-          screenResolution,
-          macid,
-          ipAddress,
-          postalCode,
-          latitude,
-          longitude,
-          userID,
-          mediaType,
-          tags,
-          mediaDetailID,
-          tvTimeZone,
-          tvScreenOrientation,
-          tvScreenResolution,
           screenName: editedScreenName,
           operation: "Update",
-        });
-
-        let config = {
-          method: "post",
-          maxBodyLength: Infinity,
-          url: UPDATE_NEW_SCREEN,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: authToken,
-          },
-          data: data,
         };
 
-        axios
-          .request(config)
-          .then((response) => {
-            const updatedScreenData = screenData.map((screen) => {
-              if (screen.screenID === screenId) {
-                return {
-                  ...screen,
-                  screenName: editedScreenName,
-                };
-              }
-              return screen;
-            });
-
-            setScreenData(updatedScreenData);
+        const response = dispatch(
+          handleUpdateScreenName({ dataToUpdate: data, token })
+        );
+        if (!response) return;
+        response.then((response) => {
+          toast.remove();
+          if (response?.payload?.status == 200) {
+            toast.success("Name Updated");
             setIsEditingScreen(false);
             setEditingScreenID(null);
             setEditedScreenName("");
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+          }
+        });
       } else {
+        toast.remove();
         console.error("Screen not found for update");
       }
     }
   };
 
   const handleAssetUpdate = () => {
-    const screenToUpdate = screenData.find(
+    const screenToUpdate = screens.find(
       (screen) => screen.screenID === assetScreenID
     );
     let moduleID =
@@ -441,64 +337,29 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       ? 3
       : 0;
 
-    console.log(mediaType, "mediaType");
+    let mediaName =
+      selectedAsset.assetName ||
+      selectedComposition.compositionID ||
+      selectedYoutube.youtubeId ||
+      selectedTextScroll.textScroll_Id;
+
     if (screenToUpdate) {
-      const {
-        otp,
-        googleLocation,
-        timeZone,
-        screenOrientation,
-        screenResolution,
-        macid,
-        ipAddress,
-        postalCode,
-        latitude,
-        longitude,
-        userID,
-        tags,
-        tvTimeZone,
-        tvScreenOrientation,
-        tvScreenResolution,
-        screenName,
-      } = screenToUpdate;
-
-      let data = JSON.stringify({
+      let data = {
+        ...screenToUpdate,
         screenID: assetScreenID,
-        otp,
-        googleLocation,
-        timeZone,
-        screenOrientation,
-        screenResolution,
-        macid,
-        ipAddress,
-        postalCode,
-        latitude,
-        longitude,
-        userID,
         mediaType: mediaType,
-        tags,
         mediaDetailID: moduleID,
-        tvTimeZone,
-        tvScreenOrientation,
-        tvScreenResolution,
-        screenName,
         operation: "Update",
-      });
-
-      let config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: UPDATE_NEW_SCREEN,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: authToken,
-        },
-        data: data,
       };
-
-      axios
-        .request(config)
+      toast.loading("Updating...");
+      const response = dispatch(
+        handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
+      );
+      if (!response) return;
+      response
         .then((response) => {
+          toast.remove();
+          toast.success("Media Updated.");
           if (connection) {
             connection
               .invoke("ScreenConnected")
@@ -509,93 +370,45 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 console.error("Error invoking SignalR method:", error);
               });
           }
-          const updatedScreenData = screenData.map((screen) => {
-            if (screen.screenID === assetScreenID) {
-              return {
-                ...screen,
-                assetName:
-                  selectedAsset.assetName ||
-                  selectedComposition.compositionName ||
-                  selectedYoutube.instanceName ||
-                  selectedTextScroll.instanceName,
-              };
-            }
-            return screen;
-          });
-
-          setScreenData(updatedScreenData);
           setIsEditingScreen(false);
         })
         .catch((error) => {
+          toast.remove();
           console.log(error);
         });
     } else {
+      toast.remove();
       console.error("Asset not found for update");
     }
   };
 
   const handleScheduleUpdate = () => {
-    const screenToUpdate = screenData.find(
+    const screenToUpdate = screens.find(
       (screen) => screen.screenID === scheduleScreenID
     );
     let moduleID = selectedSchedule.scheduleId;
     if (screenToUpdate) {
-      const {
-        otp,
-        googleLocation,
-        timeZone,
-        screenOrientation,
-        screenResolution,
-        macid,
-        ipAddress,
-        postalCode,
-        latitude,
-        longitude,
-        userID,
-        tags,
-        tvTimeZone,
-        tvScreenOrientation,
-        tvScreenResolution,
-        screenName,
-      } = screenToUpdate;
-
-      let data = JSON.stringify({
+      let data = {
+        ...screenToUpdate,
         screenID: scheduleScreenID,
-        otp,
-        googleLocation,
-        timeZone,
-        screenOrientation,
-        screenResolution,
-        macid,
-        ipAddress,
-        postalCode,
-        latitude,
-        longitude,
-        userID,
         mediaType: 2,
-        tags,
         mediaDetailID: moduleID,
-        tvTimeZone,
-        tvScreenOrientation,
-        tvScreenResolution,
-        screenName,
         operation: "Update",
-      });
-
-      let config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: UPDATE_NEW_SCREEN,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: authToken,
-        },
-        data: data,
       };
 
-      axios
-        .request(config)
+      toast.loading("Schedule assinging...");
+      const response = dispatch(
+        handleUpdateScreenSchedule({
+          schedule: selectedSchedule,
+          dataToUpdate: data,
+          token,
+        })
+      );
+      if (!response) return;
+      response
         .then((response) => {
+          toast.remove();
+          toast.success("Schedule assinged to screen.");
           if (connection) {
             connection
               .invoke("ScreenConnected")
@@ -606,23 +419,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 console.error("Error invoking SignalR method:", error);
               });
           }
-          const updatedScreenData = screenData.map((screen) => {
-            if (screen.screenID === scheduleScreenID) {
-              return {
-                ...screen,
-                scheduleName: selectedSchedule.scheduleName,
-              };
-            }
-            return screen;
-          });
-
-          setScreenData(updatedScreenData);
           setIsEditingScreen(false);
         })
         .catch((error) => {
           console.log(error);
+          toast.remove();
         });
     } else {
+      toast.remove();
       console.error("Screen not found for update");
     }
   };
@@ -684,7 +488,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        const updatedScreenData = screenData.map((screen) => {
+        const updatedScreenData = screens.map((screen) => {
           if (response?.data?.data?.model.screenID === screen?.screenID) {
             return {
               ...screen,
@@ -707,7 +511,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           setFilteredScreenData(updatedScreenDataFilter);
         }
         if (updatedScreenData.length > 0) {
-          setScreenData(updatedScreenData);
+          dispatch(handleChangeScreens(updatedScreenData));
         }
         setTagUpdateScreeen(response?.data?.data?.model);
       })
@@ -759,7 +563,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     if (searchQuery === "") {
       setFilteredScreenData([]);
     } else {
-      const filteredScreen = screenData.filter((entry) =>
+      const filteredScreen = screens.filter((entry) =>
         Object.values(entry).some((val) => {
           if (typeof val === "string") {
             const keyWords = searchQuery.split(" ");
@@ -782,8 +586,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  // console.log(newConnection.state);
-
   // for call signal R
   useEffect(() => {
     const connectSignalR = async () => {
@@ -803,7 +605,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         console.log("SendTvStatus", UserID, ScreenID, status);
         setSendTvStatus(status);
         setSendTvStatusScreenID(ScreenID);
-        debugger;
+        // debugger;
         var b = document.getElementById("changetvstatus" + ScreenID);
         b.setAttribute(
           "class",
@@ -846,8 +648,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     };
   }, []);
 
-  // console.log(sendTvStatus, sendTvStatusScreenID,connection?.state);
-
   // useEffect(() => {
   //   if (connection) {
   //     connection
@@ -875,70 +675,42 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   //   }
   // }, [connection]);
 
+  // fetch all data
   useEffect(() => {
-    // load composition
-    loadComposition();
+    if (user) {
+      // load composition
+      dispatch(handleGetCompositions({ token }));
 
-    // get all files
-    axios
-      .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
-      .then((response) => {
-        const fetchedData = response.data;
-        const allAssets = [
-          ...(fetchedData.image ? fetchedData.image : []),
-          ...(fetchedData.video ? fetchedData.video : []),
-          ...(fetchedData.doc ? fetchedData.doc : []),
-          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
-          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
-        ];
-        setAssetData(allAssets);
-        setAssetAllData(allAssets);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      // get all assets files
+      dispatch(handleGetAllAssets({ token }));
 
-    // get all schedule
-    axios
-      .get(GET_ALL_SCHEDULE, { headers: { Authorization: authToken } })
-      .then((response) => {
-        const fetchedData = response.data.data;
+      // get all schedule
+      dispatch(handleGetAllSchedule({ token }));
 
-        setScheduleData(fetchedData);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+      // get youtube data
+      dispatch(handleGetYoutubeData({ token }));
 
-  useEffect(() => {
-    if (user?.userID) {
-      setLoading(true);
-      axios
-        .get(SELECT_BY_USER_SCREENDETAIL, {
-          headers: { Authorization: authToken },
-        })
-        .then((response) => {
-          const fetchedData = response.data.data;
-          if (fetchedData !== "Data Is Not Found") {
-            setScreenData(fetchedData);
+      //get text scroll data
+      dispatch(handleGetTextScrollData({ token }));
+
+      // get screens
+      const response = dispatch(handleGetScreen({ token }));
+      if (response) {
+        response.then((res) => {
+          if (res?.payload?.status == 200) {
+            const fetchedData = res?.payload.data;
+            const initialCheckboxes = {};
+            if (Array.isArray(fetchedData)) {
+              fetchedData.forEach((screen) => {
+                initialCheckboxes[screen.screenID] = false;
+              });
+              setScreenCheckboxes(initialCheckboxes);
+            }
           }
-          setScreenAllData(fetchedData);
-          const initialCheckboxes = {};
-          if (Array.isArray(fetchedData)) {
-            fetchedData.forEach((screen) => {
-              initialCheckboxes[screen.screenID] = false;
-            });
-            setScreenCheckboxes(initialCheckboxes);
-          }
-          setLoading(false);
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.log(error);
         });
+      }
     }
-  }, [user?.userID]);
+  }, [user]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -960,15 +732,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   }
 
   useEffect(() => {
-    // if (showSearchModal) {
-    //   window.document.body.style.overflow = "hidden";
-    // }
     const handleClickOutside = (event) => {
       if (
         showActionModalRef.current &&
         !showActionModalRef.current.contains(event?.target)
       ) {
-        // window.document.body.style.overflow = "unset";
         setShowActionBox(false);
       }
     };
@@ -1078,46 +846,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   //     console.warn("Connection is not established yet.");
   //   }
   // }, [connection]);
-
-  // console.log(sendTvStatus, sendTvStatusScreenID);
-  useEffect(() => {
-    axios
-      .get(GET_ALL_YOUTUBEDATA, {
-        headers: {
-          Authorization: authToken,
-        },
-      })
-      .then((response) => {
-        const fetchedData = response.data.data;
-
-        return fetchedData;
-      })
-      .then((res) => {
-        axios
-          .get(GET_ALL_TEXT_SCROLL_INSTANCE, {
-            headers: {
-              Authorization: authToken,
-            },
-          })
-          .then((response) => {
-            setAppsData([...res, ...response?.data?.data]);
-          });
-      })
-      .catch((error) => {
-        console.error("Error fetching deleted data:", error);
-      });
-  }, []);
-  // useEffect(() => {
-  //   axios
-  //     .get(GET_ALL_TEXT_SCROLL_INSTANCE, {
-  //       headers: {
-  //         Authorization: authToken,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       setTextScrollData(response.data.data);
-  //     });
-  // }, []);
 
   return (
     <>
@@ -1484,16 +1212,16 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 <td colSpan="6" className="text-center font-semibold text-xl">
                   Loading...
                 </td>
-              ) : screenData.length === 0 && !loading ? (
+              ) : screens?.length === 0 && !loading ? (
                 <td colSpan="6" className="text-center font-semibold text-xl">
                   No Screens
                 </td>
-              ) : filteredScreenData.length === 0 && searchScreen !== "" ? (
+              ) : filteredScreenData?.length === 0 && searchScreen !== "" ? (
                 <td colSpan="6" className="text-center font-semibold text-xl">
                   screen not found
                 </td>
-              ) : filteredScreenData.length === 0 ? (
-                screenData.map((screen) => (
+              ) : filteredScreenData?.length === 0 ? (
+                screens?.map((screen) => (
                   <tbody key={screen.screenID}>
                     <tr className="border-b border-b-[#E4E6FF]">
                       {screenContentVisible && (
@@ -1524,7 +1252,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               <button
                                 onClick={() => {
                                   handleScreenNameUpdate(screen.screenID);
-                                  setEditingScreenID(null);
                                 }}
                               >
                                 <AiOutlineSave className="text-2xl ml-1 hover:text-primary" />
@@ -1545,7 +1272,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               <button
                                 onClick={() => {
                                   setIsEditingScreen(true);
-                                  handleScreenNameClick(screen.screenID);
+                                  setEditingScreenID(screen.screenID);
                                   setEditedScreenName(screen?.screenName);
                                 }}
                               >
@@ -1607,23 +1334,18 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             <ShowAssetModal
                               handleAssetAdd={handleAssetAdd}
                               handleAssetUpdate={handleAssetUpdate}
-                              handleCompositionsAdd={handleCompositionsAdd}
+                              setSelectedComposition={setSelectedComposition}
                               handleAppsAdd={handleAppsAdd}
                               popupActiveTab={popupActiveTab}
                               setAssetPreviewPopup={setAssetPreviewPopup}
                               setPopupActiveTab={setPopupActiveTab}
                               setShowAssetModal={setShowAssetModal}
                               assetPreviewPopup={assetPreviewPopup}
-                              assetData={assetData}
                               assetPreview={assetPreview}
                               selectedComposition={selectedComposition}
                               selectedTextScroll={selectedTextScroll}
                               selectedYoutube={selectedYoutube}
-                              handleFilter={handleFilter}
-                              searchAsset={searchAsset}
                               selectedAsset={selectedAsset}
-                              compositionData={compositionData}
-                              appsData={appsData}
                             />
                           )}
                         </td>
@@ -1645,150 +1367,148 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           )}
 
                           {showScheduleModal && (
-                            <>
-                              <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                                <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                                  <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                                    <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                                      <div className="flex items-center">
-                                        <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
-                                          Set Schedule
-                                        </h3>
-                                      </div>
-                                      <button
-                                        className="p-1 text-xl"
-                                        onClick={() =>
-                                          setShowScheduleModal(false)
-                                        }
-                                      >
-                                        <AiOutlineCloseCircle className="text-2xl" />
-                                      </button>
+                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                              <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                  <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                                    <div className="flex items-center">
+                                      <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                        Set Schedule
+                                      </h3>
                                     </div>
-                                    <div className="overflow-x-auto mt-8 px-5">
-                                      <table
-                                        className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
-                                        cellPadding={20}
-                                      >
-                                        <thead>
-                                          <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                                            <th className="font-medium text-[14px]">
-                                              <div className="flex items-center">
-                                                <TbCalendarTime className="mr-2 text-xl" />
-                                                Schedule Name
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className="flex items-center">
-                                                <TbCalendarTime className="mr-2 text-xl" />
-                                                Time Zones
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className=" flex  items-center justify-center mx-auto">
-                                                <VscCalendar className="mr-2 text-xl" />
-                                                Date Added
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className=" flex  items-center justify-center mx-auto">
-                                                <TbCalendarStats className="mr-2 text-xl" />
-                                                start date
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className=" flex  items-center justify-center mx-auto">
-                                                <TbCalendarStats className="mr-2 text-xl" />
-                                                End date
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className=" flex  items-center justify-center mx-auto">
-                                                <RiComputerLine className="mr-2 text-xl" />
-                                                screens Assigned
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className="flex  items-center justify-center mx-auto">
-                                                <BsTags className="mr-2 text-xl" />
-                                                Tags
-                                              </div>
-                                            </th>
-                                            <th></th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {scheduleData.map((schedule) => (
-                                            <tr
-                                              className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                                              key={schedule.scheduleId}
-                                            >
-                                              <td className="flex items-center ">
-                                                <input
-                                                  type="checkbox"
-                                                  className="mr-3"
-                                                  onChange={() =>
-                                                    handleScheduleAdd(schedule)
-                                                  }
-                                                />
+                                    <button
+                                      className="p-1 text-xl"
+                                      onClick={() =>
+                                        setShowScheduleModal(false)
+                                      }
+                                    >
+                                      <AiOutlineCloseCircle className="text-2xl" />
+                                    </button>
+                                  </div>
+                                  <div className="overflow-x-auto mt-8 px-5">
+                                    <table
+                                      className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+                                      cellPadding={20}
+                                    >
+                                      <thead>
+                                        <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                                          <th className="font-medium text-[14px]">
+                                            <div className="flex items-center">
+                                              <TbCalendarTime className="mr-2 text-xl" />
+                                              Schedule Name
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className="flex items-center">
+                                              <TbCalendarTime className="mr-2 text-xl" />
+                                              Time Zones
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <VscCalendar className="mr-2 text-xl" />
+                                              Date Added
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <TbCalendarStats className="mr-2 text-xl" />
+                                              start date
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <TbCalendarStats className="mr-2 text-xl" />
+                                              End date
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <RiComputerLine className="mr-2 text-xl" />
+                                              screens Assigned
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className="flex  items-center justify-center mx-auto">
+                                              <BsTags className="mr-2 text-xl" />
+                                              Tags
+                                            </div>
+                                          </th>
+                                          <th></th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {schedules.map((schedule) => (
+                                          <tr
+                                            className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                            key={schedule.scheduleId}
+                                          >
+                                            <td className="flex items-center ">
+                                              <input
+                                                type="checkbox"
+                                                className="mr-3"
+                                                onChange={() =>
+                                                  handleScheduleAdd(schedule)
+                                                }
+                                              />
+                                              <div>
                                                 <div>
-                                                  <div>
-                                                    {schedule.scheduleName}
-                                                  </div>
+                                                  {schedule.scheduleName}
                                                 </div>
-                                              </td>
-                                              <td className="text-center">
-                                                {schedule.timeZoneName}
-                                              </td>
-                                              <td className="text-center">
-                                                {moment(
-                                                  schedule.createdDate
-                                                ).format("YYYY-MM-DD hh:mm")}
-                                              </td>
-                                              <td className="text-center">
-                                                {moment(
-                                                  schedule.startDate
-                                                ).format("YYYY-MM-DD hh:mm")}
-                                              </td>
+                                              </div>
+                                            </td>
+                                            <td className="text-center">
+                                              {schedule.timeZoneName}
+                                            </td>
+                                            <td className="text-center">
+                                              {moment(
+                                                schedule.createdDate
+                                              ).format("YYYY-MM-DD hh:mm")}
+                                            </td>
+                                            <td className="text-center">
+                                              {moment(
+                                                schedule.startDate
+                                              ).format("YYYY-MM-DD hh:mm")}
+                                            </td>
 
-                                              <td className="text-center">
-                                                {moment(
-                                                  schedule.endDate
-                                                ).format("YYYY-MM-DD hh:mm")}
-                                              </td>
-                                              <td className="p-2 text-center">
-                                                {schedule.screenAssigned}
-                                              </td>
-                                              <td className="p-2 text-center">
-                                                {schedule.tags}
-                                              </td>
-                                              <td className="text-center">
-                                                <Link to="/myschedule">
-                                                  <button className="ml-3 relative">
-                                                    <HiDotsVertical />
-                                                  </button>
-                                                </Link>
-                                              </td>
-                                            </tr>
-                                          ))}
-                                        </tbody>
-                                      </table>
-                                    </div>
+                                            <td className="text-center">
+                                              {moment(schedule.endDate).format(
+                                                "YYYY-MM-DD hh:mm"
+                                              )}
+                                            </td>
+                                            <td className="p-2 text-center">
+                                              {schedule.screenAssigned}
+                                            </td>
+                                            <td className="p-2 text-center">
+                                              {schedule.tags}
+                                            </td>
+                                            <td className="text-center">
+                                              <Link to="/myschedule">
+                                                <button className="ml-3 relative">
+                                                  <HiDotsVertical />
+                                                </button>
+                                              </Link>
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
 
-                                    <div className="py-4 flex justify-center">
-                                      <button
-                                        onClick={() => {
-                                          setShowScheduleModal(false);
-                                          handleScheduleUpdate(screen.screenID);
-                                        }}
-                                        className=" border-primary px-5 py-2 rounded-full ml-3"
-                                      >
-                                        Save
-                                      </button>
-                                    </div>
+                                  <div className="py-4 flex justify-center">
+                                    <button
+                                      onClick={() => {
+                                        setShowScheduleModal(false);
+                                        handleScheduleUpdate(screen.screenID);
+                                      }}
+                                      className="bg-SlateBlue border-primary px-5 py-2 rounded-full ml-3"
+                                    >
+                                      Save
+                                    </button>
                                   </div>
                                 </div>
                               </div>
-                            </>
+                            </div>
                           )}
                         </td>
                       )}
@@ -1923,7 +1643,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               <button
                                 onClick={() => {
                                   handleScreenNameUpdate(screen.screenID);
-                                  setEditingScreenID(null);
                                 }}
                               >
                                 <AiOutlineSave className="text-2xl ml-1 hover:text-primary" />
@@ -1944,7 +1663,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               <button
                                 onClick={() => {
                                   setIsEditingScreen(true);
-                                  handleScreenNameClick(screen.screenID);
+                                  setEditingScreenID(screen.screenID);
                                   setEditedScreenName(screen?.screenName);
                                 }}
                               >
@@ -2006,22 +1725,18 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             <ShowAssetModal
                               handleAssetAdd={handleAssetAdd}
                               handleAssetUpdate={handleAssetUpdate}
-                              handleCompositionsAdd={handleCompositionsAdd}
+                              setSelectedComposition={setSelectedComposition}
                               handleAppsAdd={handleAppsAdd}
                               popupActiveTab={popupActiveTab}
                               setAssetPreviewPopup={setAssetPreviewPopup}
                               setPopupActiveTab={setPopupActiveTab}
                               setShowAssetModal={setShowAssetModal}
                               assetPreviewPopup={assetPreviewPopup}
-                              assetData={assetData}
                               assetPreview={assetPreview}
                               selectedComposition={selectedComposition}
                               selectedTextScroll={selectedTextScroll}
                               selectedYoutube={selectedYoutube}
-                              handleFilter={handleFilter}
-                              searchAsset={searchAsset}
                               selectedAsset={selectedAsset}
-                              compositionData={compositionData}
                             />
                           )}
                         </td>
@@ -2115,7 +1830,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                           </tr>
                                         </thead>
                                         <tbody>
-                                          {scheduleData.map((schedule) => (
+                                          {schedules.map((schedule) => (
                                             <tr
                                               className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
                                               key={schedule.scheduleId}

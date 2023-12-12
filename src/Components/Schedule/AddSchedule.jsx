@@ -37,28 +37,16 @@ import { AiOutlineClose, AiOutlineCloseCircle } from "react-icons/ai";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { MdOutlineGroups } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { handleGetAllAssets } from "../../Redux/Assetslice";
+import { handleUpdateTimezone } from "../../Redux/ScheduleSlice";
+import { handleGetScreen } from "../../Redux/Screenslice";
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
 const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectScreenModal, setSelectScreenModal] = useState(false);
-
-  const eventStyleGetter = (event) => {
-    const backgroundColor = event.color || "#4A90E2";
-    const style = {
-      backgroundColor,
-      borderRadius: "5px",
-      opacity: 0.8,
-      color: "Black",
-      border: "0px",
-      display: "block",
-    };
-    return {
-      style,
-    };
-  };
   const [scheduleMessage, setScheduleMessage] = useState("");
   const [scheduleMessageVisible, setScheduleMessageVisible] = useState(false);
   const [myEvents, setEvents] = useState([]);
@@ -74,32 +62,45 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [searchParams] = useSearchParams();
   const getScheduleId = searchParams.get("scheduleId");
-
   const isEditingSchedule = !!getScheduleId;
-
   const getScheduleName = searchParams.get("scheduleName");
-
   const [newScheduleNameInput, setNewScheduleNameInput] = useState(
     getScheduleName
       ? getScheduleName
       : moment(current_date).format("YYYY-MM-DD hh:mm")
   );
-
   const [screenData, setScreenData] = useState([]);
-
-  const { token ,user} = useSelector((state) => state.root.auth);
-  const authToken = `Bearer ${token}`;
-  
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
   const [getTimezone, setTimezone] = useState([]);
   const [selectedTimezoneName, setSelectedTimezoneName] = useState();
+  const [connection, setConnection] = useState(null);
 
   const addedTimezoneName = searchParams.get("timeZoneName");
   const selectedScreenIdsString = selectedScreens.join(",");
+
+  const { user, token } = useSelector((s) => s.root.auth);
+  const authToken = `Bearer ${token}`;
+
+  const dispatch = useDispatch();
+
+  const eventStyleGetter = (event) => {
+    const backgroundColor = event.color || "#4A90E2";
+    const style = {
+      backgroundColor,
+      borderRadius: "5px",
+      opacity: 0.8,
+      color: "Black",
+      border: "0px",
+      display: "block",
+    };
+    return {
+      style,
+    };
+  };
+
   //socket signal-RRR
-  const [connection, setConnection] = useState(null);
 
   useEffect(() => {
     const newConnection = new HubConnectionBuilder()
@@ -153,6 +154,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   useEffect(() => {
+    dispatch(handleGetAllAssets({ token }));
+
     axios
       .get(GET_SCEDULE_TIMEZONE, {
         headers: {
@@ -191,30 +194,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               console.error("Error creating a new schedule:", error);
             });
         }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get(GET_ALL_FILES, {
-        headers: {
-          Authorization: authToken,
-        },
-      })
-      .then((response) => {
-        const fetchedData = response.data;
-        const allAssets = [
-          ...(fetchedData.image ? fetchedData.image : []),
-          ...(fetchedData.video ? fetchedData.video : []),
-          ...(fetchedData.doc ? fetchedData.doc : []),
-          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
-          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
-        ];
-        setAssetData(allAssets);
-        setAllAssets(allAssets);
       })
       .catch((error) => {
         console.log(error);
@@ -271,6 +250,37 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   }, [connection]);
 
+  // Fetch events associated with the scheduleId
+  const loadEventsForSchedule = (scheduleId) => {
+    axios
+      .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
+      .then((response) => {
+        const fetchedData = response.data.data;
+        setScheduleAsset(response.data.data);
+        const fetchedEvents = fetchedData.map((item) => ({
+          id: item.eventId,
+          title: item.title,
+          start: new Date(item.cStartDate),
+          end: new Date(item.cEndDate),
+          color: item.color,
+          asset: item.asset,
+          repeatDay: item.repeatDay,
+          isfutureDateExists: item.isfutureDateExists,
+          actualEndDate: item.actualEndDate,
+        }));
+        console.log(fetchedData);
+        // setEvents(fetchedData);
+        setEvents(fetchedEvents);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     if (getScheduleId) {
       loadEventsForSchedule(getScheduleId);
@@ -279,45 +289,31 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleTimezoneSelect = (e) => {
     if (e.target.value != selectedTimezoneName && isEditingSchedule) {
-      alert("change");
+      if (!window.confirm("Are you sure?")) return;
       setSelectedTimezoneName(e.target.value);
-      handleTimezone(e.target.value);
+      const id = isEditingSchedule ? getScheduleId : createdScheduleId;
+
+      dispatch(
+        handleUpdateTimezone({
+          id,
+          timeZoneName: e.target.value,
+          userID: user?.userID,
+          token,
+        })
+      );
     } else {
       setSelectedTimezoneName(e.target.value);
-      handleTimezone(e.target.value);
+      const id = isEditingSchedule ? getScheduleId : createdScheduleId;
+
+      dispatch(
+        handleUpdateTimezone({
+          id,
+          timeZoneName: e.target.value,
+          userID: user?.userID,
+          token,
+        })
+      );
     }
-  };
-
-  const handleTimezone = (timezonename) => {
-    const scheduleIdToUse = isEditingSchedule
-      ? getScheduleId
-      : createdScheduleId;
-
-    let data = JSON.stringify({
-      scheduleId: scheduleIdToUse,
-      timeZoneName: timezonename,
-      userID: 0,
-    });
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: UPDATE_TIMEZONE,
-      headers: {
-        Authorization: authToken,
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        //console.log(JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   // Function to handle saving the new schedule
@@ -445,43 +441,12 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
- // Fetch events associated with the scheduleId
- const loadEventsForSchedule = (scheduleId) => {
-  axios
-    .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`, {
-      headers: {
-        Authorization: authToken,
-      },
-    })
-    .then((response) => {
-      const fetchedData = response.data.data;
-      setScheduleAsset(response.data.data);
-      const fetchedEvents = fetchedData.map((item) => ({
-        id: item.eventId,
-        title: item.title,
-        start: new Date(item.cStartDate),
-        end: new Date(item.cEndDate),
-        color: item.color,
-        asset: item.asset,
-        repeatDay: item.repeatDay,
-        isfutureDateExists: item.isfutureDateExists,
-        actualEndDate: item.actualEndDate,
-      }));
-      console.log(fetchedData);
-      // setEvents(fetchedData);
-      setEvents(fetchedEvents)
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
-
   const handleSaveEvent = (eventId, eventData, updateAllValue) => {
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
-    toast.loading("Saving...");
-
+    // return console.log(eventId, eventData, updateAllValue);
+    toast.loading("Creating Event...");
     const data = {
       startDate: eventData.start,
       endDate: eventData.end,
@@ -566,7 +531,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             const updatedEvent = updatedEventsMap[event.id];
             return updatedEvent ? { ...event, ...updatedEvent } : event;
           });
-// console.log(updatedMyEvents,myEvents);
+          // console.log(updatedMyEvents,myEvents);
           setEvents(updatedMyEvents);
 
           if (selectedEvent && selectedEvent.eventId === eventId) {
@@ -629,8 +594,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     handleSaveEvent(resizedEvent.id, resizedEvent);
   };
 
- 
-
   const handleCloseCreatePopup = () => {
     setSelectedSlot(null);
     setSelectedEvent(null);
@@ -656,29 +619,27 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   useEffect(() => {
-    if (user?.userID) {
-      axios
-        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${user?.userID}`, {
-          headers: {
-            Authorization: authToken,
-          },
-        })
-        .then((response) => {
-          const fetchedData = response.data.data;
-          setScreenData(fetchedData);
-          const initialCheckboxes = {};
-          if (Array.isArray(fetchedData)) {
-            fetchedData.forEach((screen) => {
-              initialCheckboxes[screen.screenID] = false;
-            });
-            setScreenCheckboxes(initialCheckboxes);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    if (user) {
+      const response = dispatch(handleGetScreen({ token }));
+
+      if (response) {
+        response
+          .then((response) => {
+            const fetchedData = response?.payload?.data;
+            const initialCheckboxes = {};
+            if (Array.isArray(fetchedData)) {
+              fetchedData.forEach((screen) => {
+                initialCheckboxes[screen.screenID] = false;
+              });
+              setScreenCheckboxes(initialCheckboxes);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     }
-  }, [user?.userID]);
+  }, [user]);
 
   const handleScreenCheckboxChange = (screenID) => {
     const updatedCheckboxes = { ...screenCheckboxes };
@@ -845,7 +806,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     <li className="border-b-2 border-lightgray p-3">
                       <h3>Start Date & Time:</h3>
                       <div className="bg-lightgray rounded-full px-3 py-2 mt-2">
-                      {overallEventTimes
+                        {overallEventTimes
                           ? overallEventTimes.earliestStartTime.toLocaleString()
                           : "No events found"}
                         {/* {myEvents.length > 0

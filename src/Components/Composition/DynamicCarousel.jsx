@@ -62,7 +62,7 @@ const Carousel = ({ items, compositonData, from }) => {
                     } rounded-sm object-fill`}
                   />
                 )}
-                {(item.assetType === "Video" ||
+                {(item?.assetType === "Video" ||
                   item?.assetType === "Youtube") && (
                   <ReactPlayer
                     url={item?.assetFolderPath}
