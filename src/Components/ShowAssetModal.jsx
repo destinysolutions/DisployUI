@@ -10,6 +10,7 @@ import {
 } from "react-icons/ai";
 import { IoBarChartSharp } from "react-icons/io5";
 import { RiPlayListFill } from "react-icons/ri";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 const ShowAssetModal = ({
@@ -18,26 +19,23 @@ const ShowAssetModal = ({
   setAssetPreviewPopup,
   setPopupActiveTab,
   popupActiveTab,
-  handleCompositionsAdd,
+  setSelectedComposition,
   handleAssetUpdate,
   assetPreviewPopup,
-  assetData,
   assetPreview,
   selectedComposition,
-  searchAsset,
-  handleFilter,
   selectedAsset,
-  compositionData,
-  appsData,
   handleAppsAdd,
   selectedTextScroll,
   selectedYoutube,
 }) => {
-  // console.log("appsData", appsData);
-
   const [filteredData, setFilteredData] = useState([]);
   const [searchAssest, setSearchAssest] = useState("");
   const [searchComposition, setSearchComposition] = useState("");
+
+  const { assets } = useSelector((s) => s.root.asset);
+  const { compositions } = useSelector((s) => s.root.composition);
+  const { allAppsData } = useSelector((s) => s.root.apps);
 
   const modalRef = useRef(null);
 
@@ -60,7 +58,7 @@ const ShowAssetModal = ({
       setFilteredData([]);
     } else {
       if (from === "asset") {
-        const filteredScreen = assetData.filter((entry) =>
+        const filteredScreen = assets.filter((entry) =>
           Object.values(entry).some((val) => {
             if (typeof val === "string") {
               const keyWords = searchQuery.split(" ");
@@ -84,7 +82,7 @@ const ShowAssetModal = ({
           setFilteredData([]);
         }
       } else {
-        const filteredScreen = compositionData.filter((entry) =>
+        const filteredScreen = compositions.filter((entry) =>
           Object.values(entry).some((val) => {
             if (typeof val === "string") {
               const keyWords = searchQuery.split(" ");
@@ -273,7 +271,7 @@ const ShowAssetModal = ({
                       </tr>
                     </thead>
                     {filteredData.length === 0
-                      ? assetData.map((asset) => (
+                      ? assets.map((asset) => (
                           <tbody key={asset.assetID}>
                             <tr
                               className={`${
@@ -437,7 +435,7 @@ const ShowAssetModal = ({
                       </tr>
                     </thead>
                     {filteredData.length === 0
-                      ? compositionData.map((composition) => (
+                      ? compositions.map((composition) => (
                           <tbody key={composition.compositionID}>
                             <tr
                               className={`${
@@ -446,7 +444,7 @@ const ShowAssetModal = ({
                                   : ""
                               } border-b border-[#eee] `}
                               onClick={() => {
-                                handleCompositionsAdd(composition);
+                                setSelectedComposition(composition);
                               }}
                             >
                               <td className="p-3 text-left">
@@ -475,7 +473,7 @@ const ShowAssetModal = ({
                                   : ""
                               } border-b border-[#eee] `}
                               onClick={() => {
-                                handleCompositionsAdd(composition);
+                                setSelectedComposition(composition);
                               }}
                             >
                               <td className="p-3 text-left">
@@ -524,7 +522,7 @@ const ShowAssetModal = ({
                       </tr>
                     </thead>
 
-                    {appsData.map((instance, index) => (
+                    {allAppsData.map((instance, index) => (
                       <tbody key={index}>
                         <tr
                           className={`${

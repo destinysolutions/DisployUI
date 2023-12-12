@@ -28,9 +28,6 @@ const EventEditor = ({
   allAssets,
   myEvents,
 }) => {
-  const { token ,user} = useSelector((state) => state.root.auth);
-  const authToken = `Bearer ${token}`;
-  
   const [title, setTitle] = useState("");
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
   const [editedStartDate, setEditedStartDate] = useState("");
@@ -66,6 +63,10 @@ const EventEditor = ({
     useState(false);
   const [repeatDayWarning, setRepeatDayWarning] = useState(false);
   const [searchAsset, setSearchAsset] = useState("");
+
+  const { user, token } = useSelector((s) => s.root.auth);
+  const { assets } = useSelector((s) => s.root.asset);
+  const authToken = `Bearer ${token}`;
 
   const modalRef = useRef(null);
 
@@ -481,7 +482,7 @@ const EventEditor = ({
     } else if (days.length > buttons.length) {
       return resolve(buttons);
     } else {
-      return reject("error");
+      // return reject("error");
     }
   });
 
@@ -495,9 +496,9 @@ const EventEditor = ({
     if (!isNaN(daysDiff)) {
       DAYS.then((res) => {
         setSelectedDays(res);
-      }).catch(err=>{
+      }).catch((err) => {
         console.log(err);
-      })
+      });
     }
   }, [daysDiff]);
 
@@ -519,6 +520,7 @@ const EventEditor = ({
             zIndex: 1000,
           },
         }}
+        appElement={document.getElementById("root")}
       >
         <div className="relative">
           <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl xs:text-xs text-[#001737] border-b border-lightgray pb-2  ">
@@ -567,7 +569,7 @@ const EventEditor = ({
                         </tr>
                       </thead>
                       <tbody>
-                        {assetData.map((item) => (
+                        {assets.map((item) => (
                           <tr
                             key={item.assetID}
                             className={`${

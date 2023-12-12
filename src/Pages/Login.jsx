@@ -122,7 +122,6 @@ const Login = () => {
                   values.emailID,
                   values.password
                 )
-                  // auth.signInWithCustomToken(response.data.userTokan)
                   .then((userCredential) => {
                     const user = userCredential.user;
                     if (!user.emailVerified) {
@@ -131,7 +130,7 @@ const Login = () => {
                       const user_ID = response.userID;
                       localStorage.setItem("userID", JSON.stringify(response));
                       localStorage.setItem("role_access", "USER");
-                      // window.location.href = "/";
+                      window.location.href = "/";
                       navigate("/");
                     }
                   });
