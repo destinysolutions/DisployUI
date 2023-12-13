@@ -52,7 +52,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const {user,token} = useSelector((state) => state.root.auth);
+  const { user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [searchParams] = useSearchParams();
@@ -110,8 +110,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [connection, setConnection] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
 
-  const {timezones} = useSelector(s=>s.root.globalstates)
-  
+  const { timezones } = useSelector((s) => s.root.globalstates);
+
   const modalRef = useRef(null);
   const modalPreviewRef = useRef(null);
   const scheduleRef = useRef(null);
@@ -715,12 +715,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   useEffect(() => {
-    // if (showSearchModal) {
-    //   window.document.body.style.overflow = "hidden";
-    // }
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event?.target)) {
-        // window.document.body.style.overflow = "unset";
         setShowAssetModal(false);
         setAssetPreviewPopup(false);
         setFilteredData([]);
@@ -741,12 +737,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   }
 
   useEffect(() => {
-    // if (showSearchModal) {
-    //   window.document.body.style.overflow = "hidden";
-    // }
     const handleClickOutside = (event) => {
       if (scheduleRef.current && !scheduleRef.current.contains(event?.target)) {
-        // window.document.body.style.overflow = "unset";
         setShowScheduleModal(false);
       }
     };
@@ -783,7 +775,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setFilteredData([]);
   }
 
-  // console.log(screenPreviewData);
+  // console.log(screenPreviewData.data);
 
   return (
     <>
@@ -873,15 +865,24 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   )
                 )}
                 {!loading &&
-                  compositionData.length === 0 &&
-                  playerData !== null &&
-                  playerData !== undefined && (
-                    <img
-                      src={playerData}
-                      alt="Media"
-                      className="w-full h-full mx-auto object-fill"
-                    />
-                  )}
+                compositionData.length === 0 &&
+                playerData !== null &&
+                playerData !== undefined &&
+                (playerData?.includes("Video") ||
+                  playerData?.includes("mp4")) ? (
+                  <ReactPlayer
+                    url={playerData}
+                    className="w-full relative z-20 videoinner"
+                    controls={true}
+                    playing={true}
+                  />
+                ) : (
+                  <img
+                    src={playerData}
+                    alt="Media"
+                    className="w-full h-full mx-auto object-fill"
+                  />
+                )}
               </div>
 
               {showUploadAssestModal && <FileUpload />}

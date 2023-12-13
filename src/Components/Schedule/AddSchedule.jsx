@@ -272,8 +272,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           isfutureDateExists: item.isfutureDateExists,
           actualEndDate: item.actualEndDate,
         }));
-        console.log(fetchedData);
-        // setEvents(fetchedData);
         setEvents(fetchedEvents);
       })
       .catch((error) => {
