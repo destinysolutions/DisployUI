@@ -1,11 +1,10 @@
 import { useState, useRef } from "react";
 import React from "react";
-import { BiLeftArrow, BiUserPlus } from "react-icons/bi";
-import { FiFilter } from "react-icons/fi";
-import { AiOutlineClose, AiOutlineCloseCircle } from "react-icons/ai";
+import { BiUserPlus } from "react-icons/bi";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 import "../../Styles/Settings.css";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { GET_ALL_COUNTRY } from "../../Pages/Api";
 import { CiMenuKebab } from "react-icons/ci";
@@ -16,63 +15,11 @@ import { MdLockOutline, MdOutlinePhotoCamera } from "react-icons/md";
 import { IoIosLink } from "react-icons/io";
 import toast from "react-hot-toast";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
+import { handleGetCountries } from "../../Redux/SettingUserSlice";
 
 const Users = () => {
-  const [users, setUsers] = useState([
-    {
-      name: "Dhara",
-      phoneEnabled: false,
-      emailEnabled: true,
-      roles: "Manager",
-      screen: "Screen Access",
-    },
-    {
-      name: "Dhara",
-      phoneEnabled: false,
-      emailEnabled: true,
-      roles: "Manager",
-      screen: "Screen Access",
-    },
-    {
-      name: "Dhara",
-      phoneEnabled: true,
-      emailEnabled: false,
-      roles: "Manager",
-      screen: "Screen Access",
-    },
-    {
-      name: "Dhara",
-      phoneEnabled: false,
-      emailEnabled: true,
-      roles: "Manager",
-      screen: "Screen Access",
-    },
-    // Add more users here...
-  ]);
-
-  const handlePhoneToggle = (index) => {
-    const updatedUsers = [...users];
-    updatedUsers[index].phoneEnabled = !updatedUsers[index].phoneEnabled;
-    setUsers(updatedUsers);
-  };
-
-  const handleEmailToggle = (index) => {
-    const updatedUsers = [...users];
-    updatedUsers[index].emailEnabled = !updatedUsers[index].emailEnabled;
-    setUsers(updatedUsers);
-  };
-  {
-    /*model */
-  }
-  const hiddenFileInput = useRef(null);
-  const [errors, setErrors] = useState({});
-
   const [passowrdErrors, setErrorsPassword] = useState("");
   const [emailErrors, setErrorsEmail] = useState("");
-
-  const { token ,user} = useSelector((state) => state.root.auth);
-  const authToken = `Bearer ${token}`;
-  
   const [showuserModal, setshowuserModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [userRoleData, setUserRoleData] = useState([]);
@@ -95,12 +42,18 @@ const Users = () => {
   const [activeTab, setActiveTab] = useState(1);
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [file, setFile] = useState();
-  const [fileEdit, setFileEdit] = useState();
-
+  const [fileEdit, setFileEdit] = useState("");
   const [labelTitle, setLabelTitle] = useState("Add New User");
 
+  const { token } = useSelector((state) => state.root.auth);
+  const { Countries } = useSelector((s) => s.root.settingUser);
+  const authToken = `Bearer ${token}`;
+  console.log(Countries);
+  const hiddenFileInput = useRef(null);
   const modalRef = useRef(null);
   const actionPopupRef = useRef(null);
+
+  const dispatch = useDispatch();
 
   const handleActionClick = (rowId) => {
     if (!showActionBox) {
@@ -112,14 +65,15 @@ const Users = () => {
   };
 
   useEffect(() => {
-    fetch(GET_ALL_COUNTRY)
-      .then((response) => response.json())
-      .then((data) => {
-        setCountries(data.data);
-      })
-      .catch((error) => {
-        console.log("Error fetching country data:", error);
-      });
+    // fetch(GET_ALL_COUNTRY)
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     setCountries(data.data);
+    //   })
+    //   .catch((error) => {
+    //     console.log("Error fetching country data:", error);
+    //   });
+    dispatch(handleGetCountries());
   }, []);
 
   useEffect(() => {
@@ -159,20 +113,6 @@ const Users = () => {
       return;
     }
 
-    // let data = JSON.stringify({
-    //   firstName: firstName,
-    //   lastName: lastName,
-    //   email: email,
-    //   phone: phone,
-    //   isActive: isActive,
-    //   orgUserID: 0,
-    //   userRole: selectRoleID,
-    //   countryID: countryID,
-    //   company: company,
-    //   file:file,
-    //   operation: "Save",
-    // });
-
     data.append("firstName", firstName);
     data.append("lastName", lastName);
     data.append("password", password);
@@ -211,20 +151,6 @@ const Users = () => {
   };
 
   const handleUpdateUser = () => {
-    // let data = JSON.stringify({
-    //   orgUserSpecificID: userID,
-    //   firstName: firstName,
-    //   lastName: lastName,
-    //   email: email,
-    //   phone: phone,
-    //   isActive: isActive,
-    //   orgUserID: 0,
-    //   userRole: selectRoleID,
-    //   countryID: countryID,
-    //   company: company,
-    //   operation: "Save",
-    // });
-
     let data = new FormData();
 
     data.append("orgUserSpecificID", userID);
@@ -377,7 +303,6 @@ const Users = () => {
   const columns = [
     {
       name: "Profile Image",
-      // selector: (row) => row.isActive,
       sortable: true,
       cell: (row) => (
         <div>
@@ -443,12 +368,6 @@ const Users = () => {
           {showActionBox && userID === row.orgUserSpecificID && (
             <>
               <div ref={actionPopupRef} className="actionpopup z-10 ">
-                {/* <button
-                  onClick={() => setShowActionBox(false)}
-                  className="bg-white absolute top-[-14px] left-[-8px] z-10  rounded-full drop-shadow-sm p-1"
-                >
-                  <AiOutlineClose />
-                </button> */}
                 <div className=" my-1">
                   <button
                     onClick={() => {
@@ -515,7 +434,6 @@ const Users = () => {
   const handleFileChange = (e) => {
     setFileEdit();
     const selectedFile = e.target.files[0];
-    // console.log("selectedFile -", selectedFile);
     setFile(selectedFile);
     setIsImageUploaded(true);
   };
@@ -525,12 +443,8 @@ const Users = () => {
   };
 
   useEffect(() => {
-    // if (showSearchModal) {
-    //   window.document.body.style.overflow = "hidden";
-    // }
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event?.target)) {
-        // window.document.body.style.overflow = "unset";
         setshowuserModal(false);
       }
     };
@@ -545,15 +459,11 @@ const Users = () => {
   }
 
   useEffect(() => {
-    // if (showSearchModal) {
-    //   window.document.body.style.overflow = "hidden";
-    // }
     const handleClickOutside = (event) => {
       if (
         actionPopupRef.current &&
         !actionPopupRef.current.contains(event?.target)
       ) {
-        // window.document.body.style.overflow = "unset";
         setShowActionBox(false);
       }
     };
@@ -693,7 +603,7 @@ const Users = () => {
                           onChange={(e) => setCountryID(e.target.value)}
                         >
                           <option label="select Country"></option>
-                          {countries.map((country) => (
+                          {Countries.map((country) => (
                             <option
                               key={country.countryID}
                               value={country.countryID}
@@ -746,7 +656,6 @@ const Users = () => {
                         <div className="layout-img me-5">
                           {file ? (
                             <img
-                              // src={file}
                               src={URL.createObjectURL(file)}
                               alt="Uploaded"
                               className="w-10 rounded-lg"
@@ -756,7 +665,6 @@ const Users = () => {
                           {fileEdit && userID ? (
                             <img
                               src={fileEdit}
-                              // src={URL.createObjectURL(file)}
                               alt="Uploaded"
                               className="w-10 rounded-lg"
                             />
@@ -807,7 +715,6 @@ const Users = () => {
                         <button
                           onClick={() => {
                             handleAddUser();
-                            // setshowuserModal(false);
                           }}
                           className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
                         >
@@ -817,7 +724,6 @@ const Users = () => {
                         <button
                           onClick={() => {
                             handleUpdateUser();
-                            // setshowuserModal(false);
                           }}
                           className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
                         >
