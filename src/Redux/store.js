@@ -8,24 +8,32 @@ import globalStates from "./globalStates";
 import Screenslice from "./Screenslice";
 import CompositionSlice from "./CompositionSlice";
 import AppsSlice from "./AppsSlice";
+import SettingUserSlice from "./SettingUserSlice";
 
-const rootPersistConfig = {
-  key: "root",
+// const rootPersistConfig = {
+//   key: "root",
+//   storage,
+//   whitelist: [""],
+// };
+
+const authPersistConfig = {
+  key: "auth",
   storage,
-  whitelist: ["auth"],
+  whitelist: ["user", "token"],
 };
 
 const rootReducer = combineReducers({
-  auth: AuthSlice,
+  auth: persistReducer(authPersistConfig, AuthSlice),
   asset: Assetslice,
   schedule: ScheduleSlice,
   globalstates: globalStates,
   screen: Screenslice,
   composition: CompositionSlice,
   apps: AppsSlice,
+  settingUser : SettingUserSlice
 });
 
-const persisteRoot = persistReducer(rootPersistConfig, rootReducer);
+const persisteRoot = rootReducer;
 
 export const store = configureStore({
   reducer: { root: persisteRoot },

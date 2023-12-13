@@ -26,7 +26,6 @@ import { HiDocumentDuplicate, HiDotsVertical } from "react-icons/hi";
 import {
   ALL_FILES_UPLOAD,
   CREATE_NEW_FOLDER,
-  FetchdataFormFolder,
   GET_ALL_FILES,
   MOVE_TO_FOLDER,
   SELECT_BY_ASSET_ID,
@@ -164,7 +163,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const updateassetsdw = (item) => {
-    // console.log("id passsdsdsdsdf", item);
     if (isMoveToOpen) {
       setIsMoveToOpen(false);
     }
@@ -267,7 +265,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   // Delete API
 
   const handelDeletedata = () => {
-    console.log(deleteAssetID, "assetId");
     const formData = new FormData();
     formData.append("AssetID", deleteAssetID);
     formData.append("Operation", "Delete");
@@ -340,10 +337,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
     checkFolderNameAndCreate();
   };
-  //Delete new folder
 
   const handleWarning = (assetId) => {
-    // console.log("wZAn id:", assetId);
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -354,8 +349,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
+        console.log(response.data);
         if (response?.data?.data == true) {
+          setassetsdw(null);
+          setassetsdw2(null);
           setDeleteMessage(true);
+        } else {
+          handelDeletedata();
         }
       })
       .catch((error) => {
@@ -364,14 +364,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const deleteFolder = (folderID) => {
-    console.log("deleteFolder ====", folderID);
     const data = JSON.stringify({
       folderID: folderID,
       operation: "Delete",
     });
     toast.loading("Deleting...");
-
-    handleWarning(folderID);
     axios
       .post(CREATE_NEW_FOLDER, data, {
         headers: {
@@ -426,10 +423,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     updateFolderNameInAPI(folderID, newName);
   };
 
-  const toggleMoveTo = () => {
-    setIsMoveToOpen(!isMoveToOpen);
-  };
-
   const moveDataToFolder = async (dataId, folderId, assetType) => {
     let data = JSON.stringify({
       folderID: folderId,
@@ -451,12 +444,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data);
+        console.log(response.data.data);
         if (response?.data?.status == 200) {
           setIsMoveToOpen(false);
           toast.remove();
           const updatedGridData = gridData.filter((item) => {
-            return item.assetID !== dataId;
+            return item.assetID != dataId;
           });
           setGridData(updatedGridData);
         }
@@ -467,33 +460,16 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
+  const toggleMoveTo = () => {
+    setIsMoveToOpen(!isMoveToOpen);
+  };
   const handleMoveTo = (folderId) => {
-    // selectedItems.forEach((item) => {
     moveDataToFolder(
       selectedItems?.assetID,
       folderId,
       selectedItems?.assetType
     );
-    // });
-    console.log("selectedItems", selectedItems);
   };
-
-  const updateFolderContent = (folderId) => {
-    try {
-      axios.get(`${FetchdataFormFolder}?ID=${folderId}`).then((response) => {
-        fetchData();
-        setassetsdw2(null);
-        setSelectedItems([]);
-      });
-    } catch (error) {
-      console.error("Error updating folder content:", error);
-    }
-  };
-
-  const navigateToFolder = (folderId, selectedData) => {
-    history(`/NewFolderDialog/${folderId}`, { selectedData });
-  };
-
   // dragdrop
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -504,11 +480,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   // Function to handle drop into folder
-  const handleDrop = (event, folderId) => {
-    event.preventDefault();
+  const handleDrop = (event, folderId, assetType) => {
     const itemId = event.dataTransfer.getData("text/plain");
+    console.log(assetType);
+    let asset_type = assetType == "Folder" ? "Folder" : "Image";
+    moveDataToFolder(itemId, folderId, asset_type);
+  };
 
-    moveDataToFolder(itemId, folderId);
+  const navigateToFolder = (folderId, selectedData) => {
+    history(`/NewFolderDialog/${folderId}`, { selectedData });
   };
 
   useEffect(() => {
@@ -551,840 +531,815 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      {
-        <div className="pt-24 px-5 page-contain">
-          <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-            <div className="lg:flex lg:justify-between sm:block items-center">
-              <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
-                Assets
-              </h1>
-              <div className=" flex-wrap flex  lg:mt-0 md:mt-0 sm:mt-3">
-                <button
-                  className=" dashboard-btn  flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                  onClick={createFolder}
-                >
-                  <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
-                  New Folder
+
+      <div className="pt-24 px-5 page-contain">
+        <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
+          <div className="lg:flex lg:justify-between sm:block items-center">
+            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
+              Assets
+            </h1>
+            <div className=" flex-wrap flex  lg:mt-0 md:mt-0 sm:mt-3">
+              <button
+                className=" dashboard-btn  flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                onClick={createFolder}
+              >
+                <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
+                New Folder
+              </button>
+              <Link to={"/FileUpload"}>
+                <button className=" dashboard-btn flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
+                  Upload
                 </button>
-                <Link to={"/FileUpload"}>
-                  <button className=" dashboard-btn flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                    <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
-                    Upload
+              </Link>
+
+              <ul className="flex items-center xs:mt-2 sm:mt-0 md:mt-0  lg:mt-0  xs:mr-1  mr-3  rounded-full  border-2 border-SlateBlue">
+                <li className="flex items-center ">
+                  <button
+                    className={
+                      asstab === 1 ? "tabshow tabassactive " : "asstab "
+                    }
+                    onClick={() => updatetoggle(1)}
+                  >
+                    <RxDashboard className="text-primary text-lg" />
                   </button>
-                </Link>
-
-                <ul className="flex items-center xs:mt-2 sm:mt-0 md:mt-0  lg:mt-0  xs:mr-1  mr-3  rounded-full  border-2 border-SlateBlue">
-                  <li className="flex items-center ">
-                    <button
-                      className={
-                        asstab === 1 ? "tabshow tabassactive " : "asstab "
-                      }
-                      onClick={() => updatetoggle(1)}
-                    >
-                      <RxDashboard className="text-primary text-lg" />
-                    </button>
-                  </li>
-                  <li className="flex items-center ">
-                    <button
-                      className={
-                        asstab === 2 ? "tabshow tabassactive right " : "asstab "
-                      }
-                      onClick={() => updatetoggle(2)}
-                    >
-                      <AiOutlineUnorderedList className="text-primary text-lg" />
-                    </button>
-                  </li>
-                </ul>
-              </div>
+                </li>
+                <li className="flex items-center ">
+                  <button
+                    className={
+                      asstab === 2 ? "tabshow tabassactive right " : "asstab "
+                    }
+                    onClick={() => updatetoggle(2)}
+                  >
+                    <AiOutlineUnorderedList className="text-primary text-lg" />
+                  </button>
+                </li>
+              </ul>
             </div>
-
-            <div className="tabs lg:mt-5 md:mt-5  sm:mt-5 xs:mt-0 ">
-              <button
-                className={activetab === 1 ? "tabactivebtn " : "tabbtn"}
-                onClick={() => handleActiveBtnClick(1)}
-              >
-                All
-              </button>
-              <button
-                className={activetab === 2 ? "tabactivebtn " : "tabbtn"}
-                onClick={() => handleActiveBtnClick(2)}
-              >
-                Images
-              </button>
-              <button
-                className={activetab === 3 ? "tabactivebtn " : "tabbtn"}
-                onClick={() => handleActiveBtnClick(3)}
-              >
-                Video
-              </button>
-              <button
-                className={activetab === 4 ? "tabactivebtn " : "tabbtn"}
-                onClick={() => handleActiveBtnClick(4)}
-              >
-                Doc
-              </button>
-              <button
-                className={activetab === 5 ? "tabactivebtn " : "tabbtn"}
-                onClick={() => handleActiveBtnClick(5)}
-              >
-                Folder
-              </button>
-            </div>
-
-            {/*start grid view */}
-
-            <div
-              className={
-                asstab === 1
-                  ? "show-togglecontent active w-full tab-details mt-10"
-                  : "togglecontent"
-              }
-            >
-              <div
-                className={
-                  "page-content grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section"
-                }
-              >
-                {loading ? (
-                  <div className="text-center font-semibold text-2xl col-span-full">
-                    Loading...
-                  </div>
-                ) : gridData.length > 0 ? (
-                  gridData.map((item, index) => (
-                    <li
-                      key={`tabitem-grid-${item.assetID}-${index}`}
-                      draggable
-                      onDragStart={(event) =>
-                        handleDragStart(event, item.assetID)
-                      }
-                      className="relative list-none assetsbox"
-                    >
-                      {item.assetType === "Folder" && (
-                        <div
-                          onDragOver={handleDragOver}
-                          onDrop={(event) => handleDrop(event, item.assetID)}
-                          className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col"
-                        >
-                          <FcOpenedFolder
-                            className="text-8xl text-center mx-auto"
-                            onClick={() => navigateToFolder(item.assetID)}
-                          />
-
-                          {editMode === item.assetID ? (
-                            <input
-                              type="text"
-                              value={folderName}
-                              className="w-full"
-                              onChange={(e) => setFolderName(e.target.value)}
-                              onBlur={() => {
-                                saveFolderName(item.assetID, folderName);
-                                setEditMode(null);
-                              }}
-                              onKeyDown={(e) =>
-                                handleKeyDown(e, item.assetID, index)
-                              }
-                              autoFocus
-                            />
-                          ) : (
-                            <>
-                              <span
-                                onClick={() => {
-                                  setEditMode(item.assetID);
-                                }}
-                                className="cursor-pointer"
-                              >
-                                {item.assetName}
-                              </span>
-                            </>
-                          )}
-                        </div>
-                      )}
-                      {item.assetType === "Image" && (
-                        <img
-                          src={item.assetFolderPath}
-                          alt={item.assetName}
-                          onClick={() => {
-                            setShowImageAssetModal(true);
-                            setImageAssetModal(item);
-                          }}
-                        />
-                      )}
-
-                      {item.assetType === "OnlineImage" && (
-                        <img
-                          src={item.assetFolderPath}
-                          alt={item.assetName}
-                          onClick={() => {
-                            setShowImageAssetModal(true);
-                            setImageAssetModal(item);
-                          }}
-                        />
-                      )}
-
-                      {item.assetType === "OnlineVideo" && (
-                        <video
-                          controls
-                          className="w-full rounded-2xl relative h-56 border border-slate-200"
-                          onClick={() => {
-                            setShowImageAssetModal(true);
-                            setImageAssetModal(item);
-                          }}
-                        >
-                          <source src={item.assetFolderPath} type="video/mp4" />
-                          Your browser does not support the video tag.
-                        </video>
-                      )}
-
-                      {item.assetType === "Video" && (
-                        <video
-                          controls
-                          className="w-full rounded-2xl relative h-56 border border-slate-200"
-                          onClick={() => {
-                            setShowImageAssetModal(true);
-                            setImageAssetModal(item);
-                          }}
-                        >
-                          <source src={item.assetFolderPath} type="video/mp4" />
-                          Your browser does not support the video tag.
-                        </video>
-                      )}
-
-                      <div
-                        className="tabicon text-center absolute left-2/4 bottom-[0px] z-10"
-                        onMouseEnter={() => setHoveredTabIcon(item)}
-                        onMouseLeave={() => setHoveredTabIcon(null)}
-                        onClick={() => handleIconClick(item)}
-                      >
-                        {item.assetType === "Image" && (
-                          <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
-                        )}
-
-                        {item.assetType === "Video" && (
-                          <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
-                        )}
-
-                        {item.assetType === "OnlineImage" && (
-                          <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
-                        )}
-
-                        {item.assetType === "OnlineVideo" && (
-                          <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
-                        )}
-                      </div>
-
-                      {/*start hover icon details */}
-                      {hoveredTabIcon === item && (
-                        <div className="vdetails">
-                          <div className="flex justify-end"></div>
-                          <div className="text-center clickdetail">
-                            <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs mb-1 break-words">
-                              {item.assetName}
-                            </h3>
-                            <p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                              Uploaded By {item.userName}
-                            </p>
-                            <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light">
-                              {moment(item.createdDate).format(
-                                "YYYY-MM-DD hh:mm"
-                              )}
-                            </h6>
-                            <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                              {item.assetType}
-                            </span>
-                            <span>,</span>
-                            <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                              {item.fileSize}
-                            </h6>
-
-                            <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
-                              {item.resolutions}
-                            </span>
-                          </div>
-                        </div>
-                      )}
-
-                      {/*End hover icon details */}
-
-                      {/*start checkbox*/}
-
-                      <div className="flex justify-end absolute top-5 px-4 w-full">
-                        <button
-                          onClick={() => updateassetsdw(item)}
-                          className="relative"
-                        >
-                          <BsThreeDots className="text-xl bg-SlateBlue rounded" />
-                        </button>
-                        {assetsdw === item && (
-                          <div ref={actionBoxRef} className="assetsdw">
-                            <ul className="space-y-2">
-                              {item.assetType !== "Folder" && (
-                                <li className="flex text-sm items-center">
-                                  <FiDownload className="mr-2 text-lg" />
-                                  <a
-                                    href={item.assetFolderPath}
-                                    target="_blank"
-                                    download
-                                  >
-                                    Download
-                                  </a>
-                                </li>
-                              )}
-
-                              {item.assetType !== "Folder" && (
-                                <li className="flex text-sm items-center relative w-full">
-                                  <div className="move-to-button relative">
-                                    <button
-                                      className="flex relative w-full"
-                                      onClick={() => {
-                                        setAddScreenModal(true);
-                                        setassetsdw(null);
-                                      }}
-                                    >
-                                      <FiUpload className="mr-2 text-lg" />
-                                      Set to Screen
-                                    </button>
-                                  </div>
-                                </li>
-                              )}
-
-                              <li className="flex text-sm items-center relative w-full">
-                                <div className="move-to-button relative">
-                                  <button
-                                    onClick={() => {
-                                      toggleMoveTo();
-                                      setSelectedItems(item);
-                                    }}
-                                    className="flex relative w-full"
-                                  >
-                                    <CgMoveRight className="mr-2 text-lg" />
-                                    Move to
-                                  </button>
-
-                                  {isMoveToOpen && (
-                                    <div className="move-to-dropdown">
-                                      <ul>
-                                        {originalData.folder?.length > 0 ? (
-                                          originalData.folder.map((folder) => (
-                                            <div key={folder.assetID}>
-                                              {selectedItems?.assetID !==
-                                                folder.assetID && (
-                                                <li className="mb-3 text-center hover:bg-black hover:text-white">
-                                                  <button
-                                                    onClick={() =>
-                                                      handleMoveTo(
-                                                        folder.assetID
-                                                      )
-                                                    }
-                                                  >
-                                                    {folder.assetName}
-                                                  </button>
-                                                </li>
-                                              )}
-                                            </div>
-                                          ))
-                                        ) : (
-                                          <div className="w-full">
-                                            No folders, Please create a new
-                                            folder.
-                                          </div>
-                                        )}
-                                      </ul>
-                                    </div>
-                                  )}
-                                </div>
-                              </li>
-
-                              {item.assetType === "Folder" ? (
-                                <li>
-                                  <button
-                                    onClick={() => {
-                                      deleteFolder(item.assetID);
-                                    }}
-                                    className="flex text-sm items-center"
-                                  >
-                                    <RiDeleteBin5Line className="mr-2 text-lg" />
-                                    Move to Trash
-                                  </button>
-                                </li>
-                              ) : (
-                                <li>
-                                  <button
-                                    onClick={() => {
-                                      handelDeletedata();
-                                    }}
-                                    className="flex text-sm items-center"
-                                  >
-                                    <RiDeleteBin5Line className="mr-2 text-lg" />
-                                    Move to Trash
-                                  </button>
-                                </li>
-                              )}
-                            </ul>
-                          </div>
-                        )}
-                        {deleteMessage && (
-                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                            <div className="relative w-full max-w-xl max-h-full">
-                              <div className="relative bg-white rounded-lg shadow">
-                                <div className="py-6 text-center">
-                                  <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
-                                  <h3 className="mb-5 text-xl text-primary  px-5">
-                                    Are you sure you want to delete this Asset?
-                                    Because this Asset is being use in another
-                                    place.If you click on yes it will get
-                                    removed from the places where the asset is
-                                    used.
-                                  </h3>
-                                  <div className="flex justify-center items-center space-x-4">
-                                    <button
-                                      className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
-                                      onClick={() => setDeleteMessage(false)}
-                                    >
-                                      No, cancel
-                                    </button>
-                                    <button
-                                      className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
-                                      onClick={() => {
-                                        handelDeletedata(item.assetID);
-                                        setDeleteMessage(false);
-                                      }}
-                                    >
-                                      Yes, I'm sure
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/*end of checkbox*/}
-                      {item.assetType === "DOC" && (
-                        <div className="bg-white px-4 py-5 rounded-lg shadow-lg h-full">
-                          {item.assetType === "DOC" && (
-                            <HiDocumentDuplicate className=" text-primary text-4xl mt-10" />
-                          )}
-                          {item.assetType === "DOC" && (
-                            <a
-                              href={item.assetFolderPath}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {item.assetName}
-                            </a>
-                          )}
-                          {item.assetType === "DOC" && <p>{item.details}</p>}
-                        </div>
-                      )}
-                    </li>
-                  ))
-                ) : (
-                  <p>Not Assets Found</p>
-                )}
-              </div>
-              <div></div>
-            </div>
-
-            {/*End of grid view */}
-
-            {/*start List View */}
-            <div
-              className={
-                asstab === 2
-                  ? "show-togglecontent active w-full tab-details mt-10"
-                  : "togglecontent"
-              }
-            >
-              <div className="schedual-table bg-white rounded-xl mt-8 shadow">
-                <table
-                  className="w-full  lg:table-auto md:table-auto sm:table-auto xs:table-auto"
-                  cellPadding={20}
-                >
-                  <thead>
-                    <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                        Preview
-                      </th>
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                        Name
-                      </th>
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                        Duration
-                      </th>
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                        Resolution
-                      </th>
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                        Type
-                      </th>
-                      <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                        Size
-                      </th>
-
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {loading ? (
-                      <tr>
-                        <td className="text-center font-semibold text-2xl col-span-full">
-                          Loading...
-                        </td>
-                      </tr>
-                    ) : gridData.length > 0 ? (
-                      gridData.map((item, index) => (
-                        <tr
-                          key={index}
-                          className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                        >
-                          <td className="text-center">
-                            {item.assetType === "Folder" && (
-                              <div
-                                onDragOver={handleDragOver}
-                                onDrop={(event) =>
-                                  handleDrop(event, item.assetID)
-                                }
-                              >
-                                <FcOpenedFolder
-                                  className="text-8xl text-center mx-auto"
-                                  onClick={() => navigateToFolder(item.assetID)}
-                                />
-
-                                {editMode === item.assetID ? (
-                                  <input
-                                    type="text"
-                                    value={folderName}
-                                    className="w-full"
-                                    onChange={(e) =>
-                                      setFolderName(e.target.value)
-                                    }
-                                    onBlur={() => {
-                                      saveFolderName(item.assetID, folderName);
-                                      setEditMode(null);
-                                    }}
-                                    onKeyDown={(e) =>
-                                      handleKeyDown(e, item.assetID, index)
-                                    }
-                                    autoFocus
-                                  />
-                                ) : (
-                                  <>
-                                    <span
-                                      onClick={() => {
-                                        setEditMode(item.assetID);
-                                      }}
-                                      className="cursor-pointer"
-                                    >
-                                      {item.assetName}
-                                    </span>
-                                  </>
-                                )}
-                              </div>
-                            )}
-
-                            {item.assetType === "Image" && (
-                              <div className="img-cover ivratio img-cover-ratio">
-                                <div>
-                                  <img
-                                    src={item.assetFolderPath}
-                                    onClick={() => {
-                                      setShowImageAssetModal(true);
-                                      setImageAssetModal(item);
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                            )}
-
-                            {item.assetType === "Video" && (
-                              <div className="img-cover ivratio img-cover-ratio">
-                                <div>
-                                  <video
-                                    controls
-                                    onClick={() => {
-                                      setShowImageAssetModal(true);
-                                      setImageAssetModal(item);
-                                    }}
-                                  >
-                                    <source
-                                      src={item.assetFolderPath}
-                                      type="video/mp4"
-                                    />
-                                    Your browser does not support the video tag.
-                                  </video>
-                                </div>
-                              </div>
-                            )}
-
-                            {item.assetType === "OnlineImage" && (
-                              <div className="img-cover ivratio img-cover-ratio">
-                                <div>
-                                  <img
-                                    src={item.assetFolderPath}
-                                    onClick={() => {
-                                      setShowImageAssetModal(true);
-                                      setImageAssetModal(item);
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                            )}
-
-                            {item.assetType === "OnlineVideo" && (
-                              <div className="img-cover ivratio img-cover-ratio">
-                                <div>
-                                  <video
-                                    controls
-                                    onClick={() => {
-                                      setShowImageAssetModal(true);
-                                      setImageAssetModal(item);
-                                    }}
-                                  >
-                                    <source
-                                      src={item.assetFolderPath}
-                                      type="video/mp4"
-                                    />
-                                    Your browser does not support the video tag.
-                                  </video>
-                                </div>
-                              </div>
-                            )}
-                            {item.assetType === "DOC" && (
-                              <div className="items-center flex justify-center">
-                                <HiDocumentDuplicate className=" text-primary text-4xl mt-10 " />
-                              </div>
-                            )}
-                          </td>
-                          <td className="text-center break-words">
-                            {item.assetType !== "Folder" && item.assetName}
-                          </td>
-                          <td className="text-center">{item.durations}</td>
-                          <td className="text-center">{item.resolutions}</td>
-                          <td className=" break-all max-w-sm">
-                            {item.assetType}
-                          </td>
-                          <td className="text-center">{item.fileSize}</td>
-
-                          <td className="text-center relative">
-                            <div className="relative">
-                              <button
-                                onClick={() => updateassetsdw2(item)}
-                                className="ml-3 relative"
-                              >
-                                <HiDotsVertical />
-                              </button>
-
-                              {assetsdw2 === item && (
-                                <div
-                                  ref={actionBoxRef}
-                                  className="scheduleAction z-10"
-                                >
-                                  <ul>
-                                    {item.assetType !== "Folder" && (
-                                      <li className="flex text-sm items-center">
-                                        <div className="move-to-button relative">
-                                          <button
-                                            className="flex relative w-full"
-                                            onClick={() => {
-                                              setAddScreenModal(true);
-                                              setassetsdw(null);
-                                            }}
-                                          >
-                                            <FiUpload className="mr-2 text-lg" />
-                                            Set to Screen
-                                          </button>
-                                        </div>
-                                      </li>
-                                    )}
-
-                                    <li className="flex text-sm items-center relative">
-                                      <div className="move-to-button relative">
-                                        <button
-                                          onClick={toggleMoveTo}
-                                          className="flex relative w-full"
-                                        >
-                                          <CgMoveRight className="mr-2 text-lg" />
-                                          Move to
-                                        </button>
-
-                                        {isMoveToOpen && (
-                                          <div className="move-to-dropdown">
-                                            <ul className="space-y-3">
-                                              {originalData.folder?.length >
-                                              0 ? (
-                                                originalData.folder.map(
-                                                  (folder) => (
-                                                    <div key={folder.assetID}>
-                                                      {selectedItems.every(
-                                                        (item) =>
-                                                          item.assetID !==
-                                                          folder.assetID
-                                                      ) && (
-                                                        <li className="hover:bg-black hover:text-white">
-                                                          <button
-                                                            onClick={() =>
-                                                              handleMoveTo(
-                                                                folder.assetID
-                                                              )
-                                                            }
-                                                          >
-                                                            {folder.assetName}
-                                                          </button>
-                                                        </li>
-                                                      )}
-                                                    </div>
-                                                  )
-                                                )
-                                              ) : (
-                                                <div className="w-full">
-                                                  No folders, Please create a
-                                                  new folder.
-                                                </div>
-                                              )}
-                                            </ul>
-                                          </div>
-                                        )}
-                                      </div>
-                                    </li>
-                                    {item.assetType === "Folder" ? (
-                                      <li>
-                                        <button
-                                          onClick={() => {
-                                            deleteFolder(item.assetID);
-                                          }}
-                                          className="flex text-sm items-center"
-                                        >
-                                          <RiDeleteBin5Line className="mr-2 text-lg" />
-                                          Move to Trash
-                                        </button>
-                                      </li>
-                                    ) : (
-                                      <li>
-                                        <button
-                                          onClick={() => {
-                                            handelDeletedata();
-                                          }}
-                                          className="flex text-sm items-center"
-                                        >
-                                          <RiDeleteBin5Line className="mr-2 text-lg" />
-                                          Move to Trash
-                                        </button>
-                                      </li>
-                                    )}
-                                  </ul>
-                                </div>
-                              )}
-                              {deleteMessage && (
-                                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                                  <div className="relative w-full max-w-xl max-h-full">
-                                    <div className="relative bg-white rounded-lg shadow">
-                                      <div className="py-6 text-center">
-                                        <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
-                                        <h3 className="mb-5 text-xl text-primary">
-                                          Are you sure you want to delete this
-                                          Asset?
-                                        </h3>
-                                        <div className="flex justify-center items-center space-x-4">
-                                          <button
-                                            className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
-                                            onClick={() =>
-                                              setDeleteMessage(false)
-                                            }
-                                          >
-                                            No, cancel
-                                          </button>
-
-                                          <button
-                                            className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
-                                            onClick={() => {
-                                              handelDeletedata(item.assetID);
-                                              setDeleteMessage(false);
-                                            }}
-                                          >
-                                            Yes, I'm sure
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td>Not Assets Found</td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            {addScreenModal && (
-              <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                <div
-                  ref={addScreenRef}
-                  className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
-                >
-                  <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                    <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                      <div className="flex items-center">
-                        <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                          Select the screen to set the Asset
-                        </h3>
-                      </div>
+          </div>
+          {deleteMessage && (
+            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+              <div className="relative w-full max-w-xl max-h-full">
+                <div className="relative bg-white rounded-lg shadow">
+                  <div className="py-6 text-center">
+                    <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
+                    <h3 className="mb-5 text-xl text-primary  px-5">
+                      Are you sure you want to delete this Asset? Because this
+                      Asset is being use in another place.If you click on yes it
+                      will get removed from the places where the asset is used.
+                    </h3>
+                    <div className="flex justify-center items-center space-x-4">
                       <button
-                        className="p-1 text-xl ml-8"
-                        onClick={() => setAddScreenModal(false)}
+                        className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
+                        onClick={() => setDeleteMessage(false)}
                       >
-                        <AiOutlineCloseCircle className="text-2xl" />
+                        No, cancel
                       </button>
-                    </div>
-                    <div className="flex justify-center p-9 ">
-                      <p className="break-words w-[280px] text-base text-black text-center">
-                        New Asset would be applied. Do you want to proceed?
-                      </p>
-                    </div>
-                    <div className="pb-6 flex justify-center">
                       <button
-                        className="bg-primary text-white px-8 py-2 rounded-full"
+                        className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
                         onClick={() => {
-                          setSelectScreenModal(true);
-                          setAddScreenModal(false);
+                          handelDeletedata();
+                          setDeleteMessage(false);
                         }}
                       >
-                        OK
-                      </button>
-
-                      <button
-                        className="bg-primary text-white px-4 py-2 rounded-full ml-3"
-                        onClick={() => setAddScreenModal(false)}
-                      >
-                        Cancel
+                        Yes, I'm sure
                       </button>
                     </div>
                   </div>
                 </div>
               </div>
-            )}
-            {selectScreenModal && (
-              <ScreenAssignModal
-                setAddScreenModal={setAddScreenModal}
-                setSelectScreenModal={setSelectScreenModal}
-                handleUpdateScreenAssign={handleUpdateScreenAssign}
-                selectedScreens={selectedScreens}
-                setSelectedScreens={setSelectedScreens}
-              />
-            )}
-            {/*End of List View */}
-
-            {/* sucess popup */}
+            </div>
+          )}
+          <div className="tabs lg:mt-5 md:mt-5  sm:mt-5 xs:mt-0 ">
+            <button
+              className={activetab === 1 ? "tabactivebtn " : "tabbtn"}
+              onClick={() => handleActiveBtnClick(1)}
+            >
+              All
+            </button>
+            <button
+              className={activetab === 2 ? "tabactivebtn " : "tabbtn"}
+              onClick={() => handleActiveBtnClick(2)}
+            >
+              Images
+            </button>
+            <button
+              className={activetab === 3 ? "tabactivebtn " : "tabbtn"}
+              onClick={() => handleActiveBtnClick(3)}
+            >
+              Video
+            </button>
+            <button
+              className={activetab === 4 ? "tabactivebtn " : "tabbtn"}
+              onClick={() => handleActiveBtnClick(4)}
+            >
+              Doc
+            </button>
+            <button
+              className={activetab === 5 ? "tabactivebtn " : "tabbtn"}
+              onClick={() => handleActiveBtnClick(5)}
+            >
+              Folder
+            </button>
           </div>
+
+          {/*start grid view */}
+
+          <div
+            className={
+              asstab === 1
+                ? "show-togglecontent active w-full tab-details mt-10"
+                : "togglecontent"
+            }
+          >
+            <div
+              className={
+                "page-content grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section"
+              }
+            >
+              {loading ? (
+                <div className="text-center font-semibold text-2xl col-span-full">
+                  Loading...
+                </div>
+              ) : gridData.length > 0 ? (
+                gridData.map((item, index) => (
+                  <li
+                    key={index}
+                    draggable
+                    onDragStart={(event) =>
+                      handleDragStart(event, item.assetID)
+                    }
+                    className="relative list-none assetsbox"
+                  >
+                    {item.assetType === "Folder" && (
+                      <div
+                        onDragOver={(event) => handleDragOver(event)}
+                        onDrop={(event) =>
+                          handleDrop(event, item.assetID, item.assetType)
+                        }
+                        className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col"
+                      >
+                        <FcOpenedFolder
+                          className="text-8xl text-center mx-auto"
+                          onClick={() => navigateToFolder(item.assetID)}
+                        />
+
+                        {editMode === item.assetID ? (
+                          <input
+                            type="text"
+                            value={folderName}
+                            className="w-full"
+                            onChange={(e) => setFolderName(e.target.value)}
+                            onBlur={() => {
+                              saveFolderName(item.assetID, folderName);
+                              setEditMode(null);
+                            }}
+                            onKeyDown={(e) =>
+                              handleKeyDown(e, item.assetID, index)
+                            }
+                            autoFocus
+                          />
+                        ) : (
+                          <>
+                            <span
+                              onClick={() => {
+                                setEditMode(item.assetID);
+                              }}
+                              className="cursor-pointer"
+                            >
+                              {item.assetName}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    )}
+                    {item.assetType === "Image" && (
+                      <img
+                        src={item.assetFolderPath}
+                        alt={item.assetName}
+                        onClick={() => {
+                          setShowImageAssetModal(true);
+                          setImageAssetModal(item);
+                        }}
+                      />
+                    )}
+
+                    {item.assetType === "OnlineImage" && (
+                      <img
+                        src={item.assetFolderPath}
+                        alt={item.assetName}
+                        onClick={() => {
+                          setShowImageAssetModal(true);
+                          setImageAssetModal(item);
+                        }}
+                      />
+                    )}
+
+                    {item.assetType === "OnlineVideo" && (
+                      <video
+                        controls
+                        className="w-full rounded-2xl relative h-56 border border-slate-200"
+                        onClick={() => {
+                          setShowImageAssetModal(true);
+                          setImageAssetModal(item);
+                        }}
+                      >
+                        <source src={item.assetFolderPath} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    )}
+
+                    {item.assetType === "Video" && (
+                      <video
+                        controls
+                        className="w-full rounded-2xl relative h-56 border border-slate-200"
+                        onClick={() => {
+                          setShowImageAssetModal(true);
+                          setImageAssetModal(item);
+                        }}
+                      >
+                        <source src={item.assetFolderPath} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    )}
+
+                    <div
+                      className="tabicon text-center absolute left-2/4 bottom-[0px] z-10"
+                      onMouseEnter={() => setHoveredTabIcon(item)}
+                      onMouseLeave={() => setHoveredTabIcon(null)}
+                      onClick={() => handleIconClick(item)}
+                    >
+                      {item.assetType === "Image" && (
+                        <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                      )}
+
+                      {item.assetType === "Video" && (
+                        <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                      )}
+
+                      {item.assetType === "OnlineImage" && (
+                        <RiGalleryFill className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                      )}
+
+                      {item.assetType === "OnlineVideo" && (
+                        <HiOutlineVideoCamera className="bg-primary text-white text-3xl p-3 rounded-full  xs:min-w-[50px]  xs:min-h-[50px] sm:min-w-[60px]  sm:min-h-[60px] md:min-w-[50px] md:min-h-[50px]  lg:min-w-[60px]  lg:min-h-[60px] border-4 border-white border-solid shadow-primary hover:bg-SlateBlue cursor-pointer " />
+                      )}
+                    </div>
+
+                    {/*start hover icon details */}
+                    {hoveredTabIcon === item && (
+                      <div className="vdetails">
+                        <div className="flex justify-end"></div>
+                        <div className="text-center clickdetail">
+                          <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs mb-1 break-words">
+                            {item.assetName}
+                          </h3>
+                          <p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                            Uploaded By {item.userName}
+                          </p>
+                          <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light">
+                            {moment(item.createdDate).format(
+                              "YYYY-MM-DD hh:mm"
+                            )}
+                          </h6>
+                          <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                            {item.assetType}
+                          </span>
+                          <span>,</span>
+                          <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                            {item.fileSize}
+                          </h6>
+
+                          <span className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                            {item.resolutions}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/*End hover icon details */}
+
+                    <div className="flex justify-end absolute top-5 px-4 w-full">
+                      <button
+                        onClick={() => updateassetsdw(item)}
+                        className="relative"
+                      >
+                        <BsThreeDots className="text-xl bg-SlateBlue rounded" />
+                      </button>
+                      {assetsdw === item && (
+                        <div ref={actionBoxRef} className="assetsdw">
+                          <ul className="space-y-2">
+                            {item.assetType !== "Folder" && (
+                              <li className="flex text-sm items-center">
+                                <FiDownload className="mr-2 text-lg" />
+                                <a
+                                  href={item.assetFolderPath}
+                                  target="_blank"
+                                  download
+                                >
+                                  Download
+                                </a>
+                              </li>
+                            )}
+
+                            {item.assetType !== "Folder" && (
+                              <li className="flex text-sm items-center relative w-full">
+                                <div className="move-to-button relative">
+                                  <button
+                                    className="flex relative w-full"
+                                    onClick={() => {
+                                      setAddScreenModal(true);
+                                      setassetsdw(null);
+                                    }}
+                                  >
+                                    <FiUpload className="mr-2 text-lg" />
+                                    Set to Screen
+                                  </button>
+                                </div>
+                              </li>
+                            )}
+
+                            <li className="flex text-sm items-center relative w-full">
+                              <div className="move-to-button relative">
+                                <button
+                                  onClick={() => {
+                                    toggleMoveTo();
+                                    setSelectedItems(item);
+                                  }}
+                                  className="flex relative w-full"
+                                >
+                                  <CgMoveRight className="mr-2 text-lg" />
+                                  Move to
+                                </button>
+
+                                {isMoveToOpen && (
+                                  <div className="move-to-dropdown">
+                                    <ul className="space-y-3">
+                                      {originalData.folder?.length > 0 ? (
+                                        originalData.folder.map((folder) => (
+                                          <div key={folder.assetID}>
+                                            {selectedItems?.assetID !==
+                                              folder.assetID && (
+                                              <li className="hover:bg-black hover:text-white">
+                                                <button
+                                                  onClick={() =>
+                                                    handleMoveTo(folder.assetID)
+                                                  }
+                                                >
+                                                  {folder.assetName}
+                                                </button>
+                                              </li>
+                                            )}
+                                          </div>
+                                        ))
+                                      ) : (
+                                        <div className="w-full">
+                                          No folders, Please create a new
+                                          folder.
+                                        </div>
+                                      )}
+                                    </ul>
+                                  </div>
+                                )}
+                              </div>
+                            </li>
+
+                            {item.assetType === "Folder" ? (
+                              <li>
+                                <button
+                                  onClick={() => {
+                                    deleteFolder(item.assetID);
+                                  }}
+                                  className="flex text-sm items-center"
+                                >
+                                  <RiDeleteBin5Line className="mr-2 text-lg" />
+                                  Move to Trash
+                                </button>
+                              </li>
+                            ) : (
+                              <li>
+                                <button
+                                  onClick={() => {
+                                    handleWarning(item.assetID);
+                                  }}
+                                  className="flex text-sm items-center"
+                                >
+                                  <RiDeleteBin5Line className="mr-2 text-lg" />
+                                  Move to Trash
+                                </button>
+                              </li>
+                            )}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+
+                    {item.assetType === "DOC" && (
+                      <div className="bg-white px-4 py-5 rounded-lg shadow-lg h-full">
+                        {item.assetType === "DOC" && (
+                          <HiDocumentDuplicate className=" text-primary text-4xl mt-10" />
+                        )}
+                        {item.assetType === "DOC" && (
+                          <a
+                            href={item.assetFolderPath}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {item.assetName}
+                          </a>
+                        )}
+                        {item.assetType === "DOC" && <p>{item.details}</p>}
+                      </div>
+                    )}
+                  </li>
+                ))
+              ) : (
+                <p>Not Assets Found</p>
+              )}
+            </div>
+            <div></div>
+          </div>
+
+          {/*End of grid view */}
+
+          {/*start List View */}
+          <div
+            className={
+              asstab === 2
+                ? "show-togglecontent active w-full tab-details mt-10"
+                : "togglecontent"
+            }
+          >
+            <div className="schedual-table bg-white rounded-xl mt-8 shadow">
+              <table
+                className="w-full  lg:table-auto md:table-auto sm:table-auto xs:table-auto"
+                cellPadding={20}
+              >
+                <thead>
+                  <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Preview
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Name
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Duration
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Resolution
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Type
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Size
+                    </th>
+
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr>
+                      <td className="text-center font-semibold text-2xl col-span-full">
+                        Loading...
+                      </td>
+                    </tr>
+                  ) : gridData.length > 0 ? (
+                    gridData.map((item, index) => (
+                      <tr
+                        key={index}
+                        className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                        draggable
+                        onDragStart={(event) =>
+                          handleDragStart(event, item.assetID)
+                        }
+                      >
+                        <td className="text-center">
+                          {item.assetType === "Folder" && (
+                            <div
+                              onDragOver={(event) => handleDragOver(event)}
+                              onDrop={(event) =>
+                                handleDrop(event, item.assetID, item.assetType)
+                              }
+                            >
+                              <FcOpenedFolder
+                                className="text-8xl text-center mx-auto"
+                                onClick={() => navigateToFolder(item.assetID)}
+                              />
+
+                              {editMode === item.assetID ? (
+                                <input
+                                  type="text"
+                                  value={folderName}
+                                  className="w-full"
+                                  onChange={(e) =>
+                                    setFolderName(e.target.value)
+                                  }
+                                  onBlur={() => {
+                                    saveFolderName(item.assetID, folderName);
+                                    setEditMode(null);
+                                  }}
+                                  onKeyDown={(e) =>
+                                    handleKeyDown(e, item.assetID, index)
+                                  }
+                                  autoFocus
+                                />
+                              ) : (
+                                <>
+                                  <span
+                                    onClick={() => {
+                                      setEditMode(item.assetID);
+                                    }}
+                                    className="cursor-pointer"
+                                  >
+                                    {item.assetName}
+                                  </span>
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                          {item.assetType === "Image" && (
+                            <div className="img-cover ivratio img-cover-ratio">
+                              <div>
+                                <img
+                                  src={item.assetFolderPath}
+                                  alt={item.assetName}
+                                  onClick={() => {
+                                    setShowImageAssetModal(true);
+                                    setImageAssetModal(item);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
+
+                          {item.assetType === "Video" && (
+                            <div className="img-cover ivratio img-cover-ratio">
+                              <div>
+                                <video
+                                  controls
+                                  onClick={() => {
+                                    setShowImageAssetModal(true);
+                                    setImageAssetModal(item);
+                                  }}
+                                >
+                                  <source
+                                    src={item.assetFolderPath}
+                                    type="video/mp4"
+                                  />
+                                  Your browser does not support the video tag.
+                                </video>
+                              </div>
+                            </div>
+                          )}
+
+                          {item.assetType === "OnlineImage" && (
+                            <div className="img-cover ivratio img-cover-ratio">
+                              <div>
+                                <img
+                                  src={item.assetFolderPath}
+                                  onClick={() => {
+                                    setShowImageAssetModal(true);
+                                    setImageAssetModal(item);
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          )}
+
+                          {item.assetType === "OnlineVideo" && (
+                            <div className="img-cover ivratio img-cover-ratio">
+                              <div>
+                                <video
+                                  controls
+                                  onClick={() => {
+                                    setShowImageAssetModal(true);
+                                    setImageAssetModal(item);
+                                  }}
+                                >
+                                  <source
+                                    src={item.assetFolderPath}
+                                    type="video/mp4"
+                                  />
+                                  Your browser does not support the video tag.
+                                </video>
+                              </div>
+                            </div>
+                          )}
+                          {item.assetType === "DOC" && (
+                            <div className="items-center flex justify-center">
+                              <HiDocumentDuplicate className=" text-primary text-4xl mt-10 " />
+                            </div>
+                          )}
+                        </td>
+                        <td className="text-center break-words">
+                          {item.assetType !== "Folder" && item.assetName}
+                        </td>
+                        <td className="text-center">{item.durations}</td>
+                        <td className="text-center">{item.resolutions}</td>
+                        <td className=" break-all max-w-sm">
+                          {item.assetType}
+                        </td>
+                        <td className="text-center">{item.fileSize}</td>
+
+                        <td className="text-center relative">
+                          <div className="relative">
+                            <button
+                              onClick={() => updateassetsdw2(item)}
+                              className="ml-3 relative"
+                            >
+                              <HiDotsVertical />
+                            </button>
+
+                            {assetsdw2 === item && (
+                              <div
+                                ref={actionBoxRef}
+                                className="scheduleAction z-10"
+                              >
+                                <ul className="space-y-2">
+                                  {item.assetType !== "Folder" && (
+                                    <li className="flex text-sm items-center">
+                                      <FiDownload className="mr-2 text-lg" />
+                                      <a
+                                        href={item.assetFolderPath}
+                                        target="_blank"
+                                        download
+                                      >
+                                        Download
+                                      </a>
+                                    </li>
+                                  )}
+                                  {item.assetType !== "Folder" && (
+                                    <li className="flex text-sm items-center">
+                                      <div className="move-to-button relative">
+                                        <button
+                                          className="flex relative w-full"
+                                          onClick={() => {
+                                            setAddScreenModal(true);
+                                            setassetsdw(null);
+                                          }}
+                                        >
+                                          <FiUpload className="mr-2 text-lg" />
+                                          Set to Screen
+                                        </button>
+                                      </div>
+                                    </li>
+                                  )}
+
+                                  <li className="flex text-sm items-center relative">
+                                    <div className="move-to-button relative">
+                                      <button
+                                        onClick={() => {
+                                          toggleMoveTo();
+                                          setSelectedItems(item);
+                                        }}
+                                        className="flex relative w-full"
+                                      >
+                                        <CgMoveRight className="mr-2 text-lg" />
+                                        Move to
+                                      </button>
+
+                                      {isMoveToOpen && (
+                                        <div className="move-to-dropdown">
+                                          <ul className="space-y-3">
+                                            {originalData.folder?.length > 0 ? (
+                                              originalData.folder.map(
+                                                (folder) => (
+                                                  <div key={folder.assetID}>
+                                                    {selectedItems?.assetID !==
+                                                      folder.assetID && (
+                                                      <li className="hover:bg-black hover:text-white">
+                                                        <button
+                                                          onClick={() =>
+                                                            handleMoveTo(
+                                                              folder.assetID
+                                                            )
+                                                          }
+                                                        >
+                                                          {folder.assetName}
+                                                        </button>
+                                                      </li>
+                                                    )}
+                                                  </div>
+                                                )
+                                              )
+                                            ) : (
+                                              <div className="w-full">
+                                                No folders, Please create a new
+                                                folder.
+                                              </div>
+                                            )}
+                                          </ul>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </li>
+                                  {item.assetType === "Folder" ? (
+                                    <li>
+                                      <button
+                                        onClick={() => {
+                                          deleteFolder(item.assetID);
+                                        }}
+                                        className="flex text-sm items-center"
+                                      >
+                                        <RiDeleteBin5Line className="mr-2 text-lg" />
+                                        Move to Trash
+                                      </button>
+                                    </li>
+                                  ) : (
+                                    <li>
+                                      <button
+                                        onClick={() => {
+                                          handleWarning(item.assetID);
+                                        }}
+                                        className="flex text-sm items-center"
+                                      >
+                                        <RiDeleteBin5Line className="mr-2 text-lg" />
+                                        Move to Trash
+                                      </button>
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td>Not Assets Found</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {addScreenModal && (
+            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+              <div
+                ref={addScreenRef}
+                className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+              >
+                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                  <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                    <div className="flex items-center">
+                      <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
+                        Select the screen to set the Asset
+                      </h3>
+                    </div>
+                    <button
+                      className="p-1 text-xl ml-8"
+                      onClick={() => setAddScreenModal(false)}
+                    >
+                      <AiOutlineCloseCircle className="text-2xl" />
+                    </button>
+                  </div>
+                  <div className="flex justify-center p-9 ">
+                    <p className="break-words w-[280px] text-base text-black text-center">
+                      New Asset would be applied. Do you want to proceed?
+                    </p>
+                  </div>
+                  <div className="pb-6 flex justify-center">
+                    <button
+                      className="bg-primary text-white px-8 py-2 rounded-full"
+                      onClick={() => {
+                        setSelectScreenModal(true);
+                        setAddScreenModal(false);
+                      }}
+                    >
+                      OK
+                    </button>
+
+                    <button
+                      className="bg-primary text-white px-4 py-2 rounded-full ml-3"
+                      onClick={() => setAddScreenModal(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          {selectScreenModal && (
+            <ScreenAssignModal
+              setAddScreenModal={setAddScreenModal}
+              setSelectScreenModal={setSelectScreenModal}
+              handleUpdateScreenAssign={handleUpdateScreenAssign}
+              selectedScreens={selectedScreens}
+              setSelectedScreens={setSelectedScreens}
+            />
+          )}
+          {/*End of List View */}
+
+          {/* sucess popup */}
         </div>
-      }
+      </div>
+
       <Footer />
     </>
   );
