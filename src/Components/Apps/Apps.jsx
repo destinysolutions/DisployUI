@@ -23,10 +23,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
   const [appDropDown, setAppDropDown] = useState(null);
 
   const { token } = useSelector((state) => state.root.auth);
-  const {
-    loading,
-    allApps: { allApps },
-  } = useSelector((state) => state.root.apps);
+  const { allApps } = useSelector((state) => state.root.apps);
 
   const dispatch = useDispatch();
 
@@ -61,16 +58,16 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <div className="mt-5 mb-5">
             <div className="grid grid-cols-10 gap-4">
-              {loading ? (
+              {allApps?.loading ? (
                 <div className="text-center col-span-full font-semibold text-xl">
                   Loading...
                 </div>
-              ) : allApps.length === 0 ? (
+              ) : allApps?.data.length === 0 && !allApps?.loading ? (
                 <div className="w-full text-center font-semibold text-xl col-span-full">
                   No Apps here.
                 </div>
               ) : (
-                allApps.map(
+                allApps?.data.map(
                   (app) =>
                     app.appType == "Apps" && (
                       <div

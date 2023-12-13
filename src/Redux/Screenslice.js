@@ -227,6 +227,8 @@ const Screenslice = createSlice({
     builder.addCase(
       handleUpdateScreenSchedule.fulfilled,
       (state, { payload, meta }) => {
+        console.log(meta, payload);
+
         state.screens = state.screens.map((screen) => {
           if (screen.screenID === meta?.arg?.dataToUpdate?.screenID) {
             return {

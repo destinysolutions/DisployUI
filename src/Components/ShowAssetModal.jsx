@@ -271,60 +271,68 @@ const ShowAssetModal = ({
                       </tr>
                     </thead>
                     {filteredData.length === 0
-                      ? assets.map((asset) => (
-                          <tbody key={asset.assetID}>
-                            <tr
-                              className={`${
-                                selectedAsset === asset ||
-                                selectedAsset === asset?.assetName
-                                  ? "bg-[#f3c953]"
-                                  : ""
-                              } border-b border-[#eee] `}
-                              onClick={() => {
-                                handleAssetAdd(asset);
-                                setAssetPreviewPopup(true);
-                              }}
-                            >
-                              <td className="p-3 text-left">
-                                {asset.assetName}
-                              </td>
-                              <td className="p-3">
-                                {moment(asset.createdDate).format(
-                                  "YYYY-MM-DD hh:mm"
-                                )}
-                              </td>
-                              <td className="p-3">{asset.fileSize}</td>
-                              <td className="p-3">{asset.assetType}</td>
-                            </tr>
-                          </tbody>
-                        ))
-                      : filteredData.map((asset) => (
-                          <tbody key={asset.assetID}>
-                            <tr
-                              className={`${
-                                selectedAsset === asset ||
-                                selectedAsset === asset?.assetName
-                                  ? "bg-[#f3c953]"
-                                  : ""
-                              } border-b border-[#eee] `}
-                              onClick={() => {
-                                handleAssetAdd(asset);
-                                setAssetPreviewPopup(true);
-                              }}
-                            >
-                              <td className="p-3 text-left">
-                                {asset.assetName}
-                              </td>
-                              <td className="p-3">
-                                {moment(asset.createdDate).format(
-                                  "YYYY-MM-DD hh:mm"
-                                )}
-                              </td>
-                              <td className="p-3">{asset.fileSize}</td>
-                              <td className="p-3">{asset.assetType}</td>
-                            </tr>
-                          </tbody>
-                        ))}
+                      ? assets
+                          .filter((asset) => {
+                            return asset.assetType !== "Folder";
+                          })
+                          .map((asset) => (
+                            <tbody key={asset.assetID}>
+                              <tr
+                                className={`${
+                                  selectedAsset === asset ||
+                                  selectedAsset === asset?.assetName
+                                    ? "bg-[#f3c953]"
+                                    : ""
+                                } border-b border-[#eee] `}
+                                onClick={() => {
+                                  handleAssetAdd(asset);
+                                  setAssetPreviewPopup(true);
+                                }}
+                              >
+                                <td className="p-3 text-left">
+                                  {asset.assetName}
+                                </td>
+                                <td className="p-3">
+                                  {moment(asset.createdDate).format(
+                                    "YYYY-MM-DD hh:mm"
+                                  )}
+                                </td>
+                                <td className="p-3">{asset.fileSize}</td>
+                                <td className="p-3">{asset.assetType}</td>
+                              </tr>
+                            </tbody>
+                          ))
+                      : filteredData
+                          .filter((asset) => {
+                            return asset.assetType !== "Folder";
+                          })
+                          .map((asset) => (
+                            <tbody key={asset.assetID}>
+                              <tr
+                                className={`${
+                                  selectedAsset === asset ||
+                                  selectedAsset === asset?.assetName
+                                    ? "bg-[#f3c953]"
+                                    : ""
+                                } border-b border-[#eee] `}
+                                onClick={() => {
+                                  handleAssetAdd(asset);
+                                  setAssetPreviewPopup(true);
+                                }}
+                              >
+                                <td className="p-3 text-left">
+                                  {asset.assetName}
+                                </td>
+                                <td className="p-3">
+                                  {moment(asset.createdDate).format(
+                                    "YYYY-MM-DD hh:mm"
+                                  )}
+                                </td>
+                                <td className="p-3">{asset.fileSize}</td>
+                                <td className="p-3">{asset.assetType}</td>
+                              </tr>
+                            </tbody>
+                          ))}
                   </table>
                   {assetPreviewPopup && (
                     <div className="fixed left-1/2 -translate-x-1/2 w-10/12 h-10/12 bg-black z-50 inset-0">

@@ -71,7 +71,7 @@ export const handleGetAllApps = createAsyncThunk(
 const initialState = {
   allApps: {
     loading: false,
-    allApps: [],
+    data: [],
     error: null,
   },
   youtube: {
@@ -148,13 +148,13 @@ const AppsSlice = createSlice({
     );
     builder.addCase(handleGetAllApps.fulfilled, (state, { payload, meta }) => {
       state.allApps.loading = false;
-      state.allApps.allApps = payload?.data;
+      state.allApps.data = payload?.data;
       state.allAppserror = null;
     });
     builder.addCase(handleGetAllApps.rejected, (state, { payload }) => {
       state.allApps.loading = false;
       state.allApps.error = payload ?? null;
-      state.allApps.allApps = [];
+      state.allApps.data = [];
     });
   },
 });

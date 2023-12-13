@@ -29,6 +29,7 @@ import Pixabay from "./Pixabay";
 import { Tooltip } from "@material-tailwind/react";
 import cameraimg from "../../images/Assets/photography.png";
 import videoimg from "../../images/Assets/camera.png";
+import Googledrive from "../../images/Assets/google-drive.png";
 import pixabayimg from "../../images/Assets/pixabay.png";
 import { useNavigate } from "react-router-dom";
 import { FcFile } from "react-icons/fc";
@@ -425,6 +426,27 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
           </div>
           <div className="flex lg:justify-between md:justify-between flex-wrap sm:justify-start xs:justify-start items-center lg:mt-7 md:mt-7 sm:mt-5 xs:mt-5 media-icon">
             {/* notepad ma che */}
+            <GoogleDrive />
+            <OneDrive />
+            {/* <Tooltip
+              content="Google Drive"
+              placement="bottom-end"
+              className=" bg-SlateBlue text-white z-10 ml-5"
+              animate={{
+                mount: { scale: 1, y: 0 },
+                unmount: { scale: 1, y: 10 },
+              }}
+            >
+              <button className="fileUploadIcon" 
+              // onClick={handleGet}
+              >
+                <img
+                  src={Googledrive}
+                  className="w-9"
+                  alt="Google Drive Icon"
+                />
+              </button>
+            </Tooltip> */}
             {/* start Camera */}
             <span className="fileUploadIcon" data-tip="Camera">
               <Tooltip
