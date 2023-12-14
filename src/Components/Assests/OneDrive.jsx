@@ -379,6 +379,7 @@ const OneDrive = ({ setFile }) => {
   //   }
   // };
 
+  const [selectedService, setSelectedService] = useState(null);
   const [token, setToken] = useState(null);
 
   const fetchData = async () => {
@@ -421,11 +422,28 @@ const OneDrive = ({ setFile }) => {
   useEffect(() => {
     // fetchData();
     // createSession();
+    // try {
+    //   const { data } = axios.get(
+    //     "https://unify.apideck.com/file-storage/files",
+    //     {
+    //       headers: {
+    //         Authorization:
+    //           "Bearer sk_live_18c615f7-b6cd-4ac0-8f3e-b7fd465c511d-z0CYU6dhwX12IO8qUg-f3e8f762-4f83-47e0-a264-5b012b253aca",
+    //         "x-apideck-consumer-id": "test-consumer",
+    //         "x-apideck-app-id": "ZKfil3RXz5ssBdjXqUgYy0KHKYm14M5cXLqUg",
+    //         "x-apideck-service-id": "google-drive",
+    //       },
+    //     }
+    //   );
+    //   console.log(data);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }, []);
 
   // const downloadFileUrl = ;
   const session_token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDI1MzYxNzksImV4cCI6MTcwMjUzOTc3OX0.s5U70XpEhi_zI7jDzcUqIT03LK4Wmtgz2zVr5b8Fiqw";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDI1NTY5OTEsImV4cCI6MTcwMjU2MDU5MX0.uwxp_MJQwTlQ6JMpbCJ4aCya2iVh8y1oQ-n1OCUsIZ8";
   const handleSelect = async (file) => {
     // setFile(file);
     console.log(file);
@@ -438,33 +456,35 @@ const OneDrive = ({ setFile }) => {
               "Bearer sk_live_18c615f7-b6cd-4ac0-8f3e-b7fd465c511d-z0CYU6dhwX12IO8qUg-f3e8f762-4f83-47e0-a264-5b012b253aca",
             "x-apideck-consumer-id": "test-consumer",
             "x-apideck-app-id": "ZKfil3RXz5ssBdjXqUgYy0KHKYm14M5cXLqUg",
-            "x-apideck-service-id": "onedrive",
+            "x-apideck-service-id": selectedService,
+            "Content-Type": "application/json",
           },
         }
       );
-console.log(data);
-      // const handleFileUpload = async (data) => {
-      //   if (data.action === "picked") {
-      //     const selectedImages = data.docs;
-      //     console.log(selectedImages, "selectedImages");
-      //     const downloadURLs = selectedImages.map((file) => file.url);
-
-      //     setSelectedFiles(downloadURLs);
+      // function DownloadFiles()
+      //   {
+      //       const IsDone = false;
+      //       try
+      //       {
+      //           oResponse.AccessToken = clsCommon.GetAccessToken(oResponse.AccountNo);
+      //           ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+      //           const Body = new StringBuilder();
+      //           var client = new RestClient("https://api.pandadoc.com/public/v1/documents/" + oResponse.DocumentID + /download);
+      //           client.Timeout = -1;
+      //           var request = new RestRequest(Method.GET);
+      //           request.AddHeader("Accept", "application/json");
+      //           request.AddHeader("Authorization", "Bearer " + oResponse.AccessToken);
+      //           byte[] data = client.DownloadData(request);
+      //           File.WriteAllBytes(ConfigurationManager.AppSettings["DownloadFilepath"].ToString() + oResponse.FileName + ".pdf", data);
+      //           IsDone = true;
+      //       }
+      //       catch (Exception ex)
+      //       {
+      //           clsCommon.WriteErrorLog_QB_2("Download File from Pandadoc. Message:" + ex.Message);
+      //       }
+      //       return IsDone;
       //   }
-      // };
-      // console.log(data);
-      const downloadImages = () => {
-        // selectedFiles.forEach((url, index) => {
-        // const link = document.createElement("a");
-        // link.href = url;
-        // link.target = "_blank";
-        // link.download = `Image${index + 1}.jpg`;
-        // link.click();
-        // // Open the downloaded image in a new tab
-        // window.open(url, "_blank");
-        // console.log(error);
-        // });
-      };
+      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -493,6 +513,10 @@ console.log(data);
           token={session_token}
           title="Choose file from options"
           showAttribution={false}
+          onConnectionSelect={(e) => {
+            // console.log(e);
+            setSelectedService(e?.service_id);
+          }}
           // fileToSave={(e) => {
           //   console.log(e);
           // }}
