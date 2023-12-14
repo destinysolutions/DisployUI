@@ -1,6 +1,5 @@
 import ReactApexChart from "react-apexcharts";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { Link } from "react-router-dom";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { useEffect, useState } from "react";
@@ -10,9 +9,10 @@ import {
   GET_SELECT_BY_CITY,
   GET_SELECT_BY_STATE,
 } from "../../../Pages/Api";
-import Screens from "./Screens";
 import RevenueTable from "../RevenueTable";
 import MarkerClusterGroup from "react-leaflet-cluster";
+import mapImg from "../../../images/DisployImg/mapImg.png";
+import flagUmg from "../../../images/DisployImg/flag.png";
 
 //for sales revenue chart options
 const SalesOptions = {
@@ -159,6 +159,10 @@ const Business = () => {
   const [states, setStates] = useState([]);
   const [selectedState, setSelectedState] = useState("");
   const [cities, setCities] = useState([]);
+  const [showCityStores, setshowCityStores] = useState(false);
+  const [selectedStateName, setSelectedStateName] = useState("");
+  const [showStore, setShowStore] = useState(false);
+  const [showCitydw, setShowCityDw] = useState(false);
 
   // Fetch country data from the API
   useEffect(() => {
@@ -200,22 +204,18 @@ const Business = () => {
     }
   }, [selectedState]);
 
-  //for show country store
-  const [showStore, setShowStore] = useState(false);
-
   //for marker click event
   const handleMarkerClick = (countryID) => {
     setSelectedCountry(countryID);
     setShowStore(true);
   };
 
-  //for city select popup
-  const [showCitydw, setShowCityDw] = useState(false);
-
-  //for city store  popup
-  const [showCityStores, setshowCityStores] = useState(false);
-
-  const [selectedStateName, setSelectedStateName] = useState("");
+  const customIcon = new L.Icon({
+    iconUrl: mapImg,
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -16],
+  });
   return (
     <>
       {/* google map start */}
@@ -234,6 +234,7 @@ const Business = () => {
                 <Marker
                   key={country.countryID}
                   position={[country.latitude, country.longitude]}
+                  icon={customIcon}
                   eventHandlers={{
                     click: () => handleMarkerClick(country.countryID),
                   }}
@@ -264,10 +265,7 @@ const Business = () => {
           <div className="bg-white shadow-md rounded-lg mt-5 ">
             <div className="p-3 lg:flex md:flex sm:flex xs:block items-center">
               <div className="flex items-center lg:mb-0 md:mb-0 sm:mb-0 xs:mb-2">
-                <img
-                  src="../../../../DisployImg/flag.png"
-                  className="h-10 w-10 rounded-full"
-                />
+                <img src={flagUmg} className="h-10 w-10 rounded-full" />
                 <div className="ml-2 mr-6 font-semibold">India</div>
               </div>
               <div>
@@ -373,7 +371,6 @@ const Business = () => {
                               </tr>
                               <tr>
                                 <td className="flex items-center">
-                                  {" "}
                                   <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#59709a]"></span>
                                   Tizen
                                 </td>
@@ -381,7 +378,6 @@ const Business = () => {
                               </tr>
                               <tr>
                                 <td className="flex items-center">
-                                  {" "}
                                   <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#8ca0b9]"></span>
                                   Webos
                                 </td>
@@ -389,7 +385,6 @@ const Business = () => {
                               </tr>
                               <tr>
                                 <td className="flex items-center">
-                                  {" "}
                                   <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#b2c7d0]"></span>
                                   Raspberry
                                 </td>

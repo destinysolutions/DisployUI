@@ -36,11 +36,7 @@ import { BsCollectionPlay, BsPencilSquare, BsTags } from "react-icons/bs";
 import Footer from "../Footer";
 import { Tooltip } from "@material-tailwind/react";
 
-import {
-  SCREEN_GROUP,
-  SIGNAL_R,
-  UPDATE_NEW_SCREEN,
-} from "../../Pages/Api";
+import { SCREEN_GROUP, SIGNAL_R, UPDATE_NEW_SCREEN } from "../../Pages/Api";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";

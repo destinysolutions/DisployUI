@@ -9,7 +9,7 @@ import { auth } from "../../FireBase/firebase"; // Import your Firebase auth ins
 import toast from "react-hot-toast";
 
 const Security = () => {
-  const { token ,user} = useSelector((state) => state.root.auth);
+  const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const validationSchema = Yup.object().shape({
@@ -115,7 +115,7 @@ const Security = () => {
                   type={currentPasswordShow ? "text" : "password"}
                   name="currentPassword"
                   id="currentPassword"
-                  className="bg-gray-200 border input-bor-color text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className=" border  text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Enter Current Password"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -148,7 +148,7 @@ const Security = () => {
                   name="newPassword"
                   id="newPassword"
                   placeholder="Enter New Password"
-                  className="bg-gray-200 border input-bor-color text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className=" border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.password}
@@ -179,7 +179,7 @@ const Security = () => {
                   name="confirmPassword"
                   id="confirmPassword"
                   placeholder="Enter Confirm New Password"
-                  className="bg-gray-200 border input-bor-color text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className=" border  text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.password}
@@ -202,7 +202,7 @@ const Security = () => {
                   {formik.errors.confirmPassword}
                 </div>
               ) : null}
-              <div className="flex items-center pb-2">
+              {/* <div className="flex items-center pb-2">
                 <div className="flex items-center h-5">
                   <input
                     id="newsletter"
@@ -224,8 +224,8 @@ const Security = () => {
                     </a>
                   </label>
                 </div>
-              </div>
-              <div className="md:w-full px-3 flex">
+              </div> */}
+              <div className="md:w-full flex pt-7">
                 <button
                   className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3"
                   disabled={loading}
@@ -311,7 +311,7 @@ const Security = () => {
           </div>
         </div>
       </div>
-      <div className="rounded-xl mt-8 shadow bg-white my-3 p-5">
+      {/* <div className="rounded-xl mt-8 shadow bg-white my-3 p-5">
         <h4 className="user-name mb-3">Two-steps verification</h4>
         <p className="font-medium lg:text-md my-3">
           Two factor authentication is not enabled yet.
@@ -324,7 +324,7 @@ const Security = () => {
           {" "}
           Enable 2FA
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

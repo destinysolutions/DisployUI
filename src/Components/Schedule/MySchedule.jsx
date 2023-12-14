@@ -500,18 +500,33 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               </thead>
               <tbody>
                 {loading ? (
-                  <td colSpan={8} className="text-center font-semibold text-xl">
-                    Loading...
-                  </td>
+                  <tr>
+                    <td
+                      colSpan={8}
+                      className="text-center font-semibold text-xl"
+                    >
+                      Loading...
+                    </td>
+                  </tr>
                 ) : schedules.length === 0 ? (
-                  <td colSpan={7} className="font-semibold text-center text-xl">
-                    No Schedule here.
-                  </td>
+                  <tr>
+                    <td
+                      colSpan={7}
+                      className="font-semibold text-center text-xl"
+                    >
+                      No Schedule here.
+                    </td>
+                  </tr>
                 ) : filteredScheduleData.length === 0 &&
                   searchSchedule !== "" ? (
-                  <td colSpan="8" className="text-center font-semibold text-xl">
-                    Schedule not found
-                  </td>
+                  <tr>
+                    <td
+                      colSpan="8"
+                      className="text-center font-semibold text-xl"
+                    >
+                      Schedule not found
+                    </td>
+                  </tr>
                 ) : filteredScheduleData.length === 0 ? (
                   schedules.map((schedule) => (
                     <tr

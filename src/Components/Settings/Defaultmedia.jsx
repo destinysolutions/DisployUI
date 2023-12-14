@@ -22,9 +22,9 @@ const Defaultmedia = () => {
   function updateMediaTab(id) {
     setMediaTabs(id);
   }
-  const { token ,user} = useSelector((state) => state.root.auth);
+  const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
-  
+
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [assetData, setAssetData] = useState([]);
   const [assetAllData, setAssetAllData] = useState([]);
@@ -771,7 +771,7 @@ const Defaultmedia = () => {
                     </button>
                   </div> */}
               </div>
-              <div className=" lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+              <div className=" lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 pr-8">
                 {filePath && isVideo ? (
                   // Render video player
                   <ReactPlayer
