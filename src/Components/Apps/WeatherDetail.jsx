@@ -8,17 +8,31 @@ import moment from "moment";
 import { GoPencil } from "react-icons/go";
 import { Link } from "react-router-dom";
 import axios from "axios";
-
+import { SketchPicker } from "react-color";
+import ReactApexChart from "react-apexcharts";
 const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   let api_key = "41b5176532e682fd8b4cb6a44e3bd1a4";
 
   const [edited, setEdited] = useState(false);
+  const [loadFirst, setLoadFirst] = useState(true);
+  const [selectedColor, setSelectedColor] = useState("#4A90E2");
+  const [selectedTemperature, setSelectedTemperature] = useState("Celsius");
+
   const currentDate = new Date();
   const [instanceName, setInstanceName] = useState(
     moment(currentDate).format("YYYY-MM-DD hh:mm")
   );
+  const currentTime = moment().format("hh:mm A");
+  const [locations, setLocations] = useState([
+    { id: 1, location: "Ahmedabad", weatherData: null, mainData: null },
+    { id: 2, location: "", weatherData: null, mainData: null },
+    { id: 3, location: "", weatherData: null, mainData: null },
+  ]);
   const [weatherData, setWeatherData] = useState(null);
-  const [language, setLanguage] = useState("");
+  const [language, setLanguage] = useState("English");
+  const [enabled, setEnabled] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+
   //  const [countryLocation,setCountryLocation]=useState("india");
   //  const [cityLocation,setCityLocation]=useState('');
   //  const [stateLocation,setStateLocation]=useState('');
@@ -35,48 +49,200 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   //       console.error("Error fetching weather data: ", error);
   //     });
   // }, [city, api_key]);
-  const [locations, setLocations] = useState([
-    { id: 1, location: "india", weatherData: null },
-    { id: 2, location: "", weatherData: null },
-    { id: 3, location: "", weatherData: null },
-  ]);
+  const handleMuteChange = () => {
+    setIsMuted(!isMuted);
+  };
+
+  const convertIntoTemperatureUnits = () => {
+    const convertTemperature = (temp, toUnit) => {
+      switch (toUnit) {
+        case "Fahrenheit":
+          return (temp * 9) / 5 + 32;
+        case "Kelvin":
+          return temp + 273.15;
+        case "Rankine":
+          return (temp * 9) / 5 + 491.67;
+        case "Reaumur":
+          return (temp * 4) / 5;
+        default:
+          return temp;
+      }
+    };
+
+    const updatedLocations = locations?.map((item) => {
+      if (item?.weatherData !== null) {
+        const ChartSeries = [];
+        const arr = item.mainData?.list?.map((items) => {
+          const convertedTemp = convertTemperature(
+            items?.main?.temp,
+            selectedTemperature
+          );
+          const convertedFeelsLike = convertTemperature(
+            items?.main?.feels_like,
+            selectedTemperature
+          );
+          if (ChartSeries?.length < 7) {
+            ChartSeries?.push(convertedTemp.toFixed(2));
+          }
+          return {
+            ...items,
+            main: {
+              ...items.main,
+              temp: convertedTemp.toFixed(2),
+              feels_like: convertedFeelsLike.toFixed(2),
+            },
+          };
+        });
+
+        const state = {
+          series: [
+            {
+              name: "High - 2013",
+              data: ChartSeries,
+            },
+          ],
+          options: {
+            chart: {
+              height: 200,
+              type: "line",
+              toolbar: {
+                show: false,
+              },
+            },
+            markers: {
+              size: 2,
+            },
+            dataLabels: {
+              enabled: true,
+            },
+            grid: {
+              show: false,
+            },
+            yaxis: {
+              show: false,
+            },
+            xaxis: {
+              categories: ["3", "7", "11", "3", "7", "11", "3"],
+            },
+          },
+        };
+        const updatedWeatherData = {
+          ...item.weatherData,
+          list: arr || [], // Assign an empty array if arr is falsy
+          Chart: state,
+        };
+
+        return {
+          ...item,
+          weatherData: updatedWeatherData,
+        };
+      }
+      return item;
+    });
+
+    if (updatedLocations) {
+      setLocations(updatedLocations);
+    }
+  };
+
   const handleLocationChange = (id, newLocation) => {
+    setLoadFirst(true);
     setLocations((prevLocations) =>
       prevLocations.map((location) =>
         location.id === id ? { ...location, location: newLocation } : location
       )
     );
+    setSelectedTemperature("Celsius");
   };
-  useEffect(() => {
-    // Fetch weather data for each location
-    locations.forEach((location) => {
-      const { id, location: loc } = location;
-      if (loc) {
-        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${loc}&appid=${api_key}`;
 
-        axios
-          .get(apiUrl)
-          .then((response) => {
-            // Update weather data for the specific location
-            setLocations((prevLocations) => {
-              const updatedLocations = prevLocations.map((prevLocation) =>
-                prevLocation.id === id
-                  ? { ...prevLocation, weatherData: response.data }
-                  : prevLocation
-              );
-              return updatedLocations;
-            });
-            console.log(response.data);
-          })
-          .catch((error) => {
-            console.error(
-              `Error fetching weather data for location ${loc}: `,
-              error
-            );
-          });
-      }
-    });
-  }, [locations, api_key]);
+  useEffect(() => {
+    if (loadFirst) {
+      const fetchData = async () => {
+        try {
+          const updatedLocations = await Promise.all(
+            locations.map(async (location) => {
+              const { id, location: loc } = location;
+              if (loc) {
+                const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${loc}&appid=${api_key}&units=metric`;
+                const response = await axios.get(apiUrl);
+                let ChartSeries = [];
+                const arr = response.data.list.map((item) => {
+                  if (ChartSeries?.length < 7) {
+                    ChartSeries?.push(`${item?.main?.temp}°`);
+                  }
+                  const milliseconds = item?.dt * 1000;
+                  const date = moment.utc(milliseconds);
+                  const day = date.format("dddd");
+                  return {
+                    ...item,
+                    Day: day,
+                  };
+                });
+
+                const state = {
+                  series: [
+                    {
+                      name: "High - 2013",
+                      data: ChartSeries,
+                    },
+                  ],
+                  options: {
+                    chart: {
+                      height: 200,
+                      type: "line",
+                      toolbar: {
+                        show: false,
+                      },
+                    },
+                    markers: {
+                      size: 2,
+                    },
+                    grid: {
+                      show: false,
+
+                    },
+                    dataLabels: {
+                      enabled: true,
+                    },
+                    yaxis: {
+                      show: false,
+                    },
+                    xaxis: {
+                      categories: ["3", "7", "11", "3", "7", "11", "3"],
+                    },
+                  },
+                };
+                const Data = {
+                  ...response.data,
+                  list: arr,
+                  Chart: state,
+                };
+
+                return {
+                  ...location,
+                  weatherData: Data,
+                  mainData: Data,
+                };
+              }
+              return location;
+            })
+          );
+
+          setLocations(updatedLocations);
+        } catch (error) {
+          console.error("Error fetching weather data:", error);
+        }
+      };
+
+      fetchData();
+      setLoadFirst(false);
+    }
+  }, [loadFirst, locations, api_key]);
+
+  useEffect(() => {
+    convertIntoTemperatureUnits();
+  }, [selectedTemperature]);
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -141,14 +307,16 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                             type="checkbox"
                             className="sr-only peer"
                             readOnly
-                            //   checked={isMuted}
-                            //   onChange={handleMuteChange}
+                            checked={isMuted}
+                            onChange={handleMuteChange}
                           />
                           <div
-                            //   onClick={() => {
-                            //     setEnabled(!enabled);
-                            //   }}
-                            className="w-11 h-6 bg-lightgray rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all "
+                            onClick={() => {
+                              setEnabled(!enabled);
+                            }}
+                            className={`w-11 h-6 ${
+                              isMuted ? "bg-SlateBlue" : "bg-lightgray"
+                            } rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all `}
                           ></div>
                         </label>
                       </div>
@@ -163,14 +331,16 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       Language*:
                     </label>
                     <select
-                      id="countries"
+                      id="languages"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      onChange={(e) => setLanguage(e.target.value)}
+                      value={language}
                     >
-                      <option selected>English</option>
-                      <option value="US">German</option>
-                      <option value="CA">Germany</option>
-                      <option value="FR">France</option>
-                      <option value="DE">Arabic</option>
+                      <option value="English">English</option>
+                      <option value="German">German</option>
+                      <option value="Germany">Germany</option>
+                      <option value="France">France</option>
+                      <option value="Arabic">Arabic</option>
                     </select>
                   </div>
                   {locations.map((location) => (
@@ -189,6 +359,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         id="first_name"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder={location.location}
+                        value={location.location}
                         onChange={(e) =>
                           handleLocationChange(location.id, e.target.value)
                         }
@@ -198,7 +369,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           <h3>City: {location.weatherData.name}</h3>
                           <p>Temperature: {location.weatherData.main.temp} K</p>
                           <p>
-                            Weather:{" "}
+                            Weather:
                             {location.weatherData.weather[0].description}
                           </p>
                         </div>
@@ -218,12 +389,14 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     <select
                       id="countries"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      onChange={(e) => setSelectedTemperature(e.target.value)}
+                      value={selectedTemperature}
                     >
-                      <option selected>Celsius</option>
-                      <option value="US">Fahrenheit</option>
-                      <option value="CA">Kelvin</option>
-                      <option value="FR">Rankie</option>
-                      <option value="DE">Reaumur</option>
+                      <option value="Celsius">Celsius</option>
+                      <option value="Fahrenheit">Fahrenheit</option>
+                      <option value="Kelvin">Kelvin</option>
+                      <option value="Rankine">Rankine</option>
+                      <option value="Reaumur">Reaumur</option>
                     </select>
                   </div>
                   <div className="mb-3 relative inline-flex items-center w-full">
@@ -241,6 +414,19 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       <option value="US">Weekly forecast Weather</option>
                     </select>
                   </div>
+                  <div className="mb-3 relative inline-flex items-center w-full">
+                    <label
+                      htmlFor="message"
+                      className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Backgound Color:
+                    </label>
+                    <SketchPicker
+                      color={selectedColor}
+                      onChange={(color) => setSelectedColor(color.hex)}
+                      className="sketch-picker"
+                    />
+                  </div>
                   <p className="text-center pt-6">
                     If you choose to display weather in a ticker tape zone
                     layout, then this setting determines the view. If using full
@@ -252,16 +438,166 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="lg:col-span-6 md:col-span-6 sm:col-span-10 ">
                 <div className="shadow-md bg-white rounded-lg p-5 h-full">
                   <div
-                    className="w-full p-12 flex items-center justify-center"
+                    className="w-full flex items-center justify-center"
                     style={{
                       borderRadius: "0.625rem",
                       border: "2px solid #FFF",
-                      background:
-                        "linear-gradient(190deg, #3844B0 36.01%, #5D55BA 53.12%, #5261C6 76.59%)",
+                      background: `${selectedColor}`,
                       boxShadow: "0px 10px 15px 0px rgba(0, 0, 0, 0.25)",
                       height: "100%",
                     }}
-                  ></div>
+                  >
+                    <div
+                      className="overflow-x-auto bg-blue border-white rounded-lg relative p-5"
+                    >
+                      <div className="lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full mx-auto bg-teal border-width-10px border-black">
+                        <div className="flex flex-row text-[#ffffff]">
+                          {locations?.map((item, index) => {
+                            if (item?.weatherData !== null) {
+                              return (
+                                <div
+                                  className="w-full flex flex-col"
+                                  key={index}
+                                >
+                                  <div className="bg-teal-lighter flex-1 flex flex-col">
+                                    <div className="p-3 title text-[#ffffff]">
+                                      <h3 className="text-2xl font-medium text-[#ffffff]">
+                                        {item?.location}
+                                      </h3>
+                                    </div>
+                                    <div className="px-3 flex items-center text-[#ffffff]">
+                                      <div className="bg-primary text-sm rounded py-2 px-3 mr-3">
+                                        Today
+                                      </div>
+                                      <div className="text-sm">
+                                        <p>
+                                          {item?.weatherData?.list[0]?.Day}{" "}
+                                          <br />
+                                          {currentTime}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="p-3 flex justify-between items-center">
+                                      <div className="icons">
+                                        <img
+                                          src={
+                                            "https://openweathermap.org/img/wn/" +
+                                            `${item?.weatherData?.list[0]?.weather[0]?.icon}` +
+                                            ".png"
+                                          }
+                                          alt="Logo"
+                                          className="w-16"
+                                        />
+                                        <div className="px-3 ">
+                                          <p>
+                                            {
+                                              item?.weatherData?.list[0]
+                                                ?.weather[0]?.main
+                                            }
+                                          </p>
+                                        </div>
+                                      </div>
+                                      <div className="text-right">
+                                        <h4 className="text-4xl flex items-start justify-end">
+                                          {
+                                            item?.weatherData?.list[0]?.main
+                                              ?.temp
+                                          }
+                                          <span className="text-lg leading-3 ml-1 mt-2">
+                                            {selectedTemperature ===
+                                            "Fahrenheit"
+                                              ? "°F"
+                                              : selectedTemperature === "Kelvin"
+                                              ? "K"
+                                              : selectedTemperature ===
+                                                "Rankine"
+                                              ? "°R"
+                                              : selectedTemperature ===
+                                                "Reaumur"
+                                              ? "°Re"
+                                              : "°C"}
+                                          </span>
+                                        </h4>
+                                        <p className="flex items-start justify-end">
+                                          Feels like{" "}
+                                          {
+                                            item?.weatherData?.list[0]?.main
+                                              ?.feels_like
+                                          }
+                                          {selectedTemperature === "Fahrenheit"
+                                            ? "°F"
+                                            : selectedTemperature === "Kelvin"
+                                            ? "K"
+                                            : selectedTemperature === "Rankine"
+                                            ? "°R"
+                                            : selectedTemperature === "Reaumur"
+                                            ? "°Re"
+                                            : "°C"}
+                                        </p>
+                                      </div>
+                                    </div>
+
+                                    <div className="p-3 flex justify-between items-center">
+                                      <div className="flex flex-wrap -m-3 text-[#ffffff]">
+                                        {item?.weatherData?.list
+                                          ?.slice(1, 5)
+                                          ?.map((items, index) => {
+                                            return (
+                                              <div
+                                                className="w-1/2 flex flex-col p-3"
+                                                key={index}
+                                              >
+                                                <div className="bg-primary rounded p-2 flex justify-between items-center">
+                                                  <div className="text">
+                                                    <h5
+                                                      style={{
+                                                        fontSize: "10px",
+                                                      }}
+                                                    >
+                                                      {items?.Day}
+                                                    </h5>
+                                                    <p className="flex items-start text-xs">
+                                                      {items?.main?.temp}° /
+                                                      {items?.main?.feels_like}°
+                                                    </p>
+                                                  </div>
+                                                  <div className="w-icon">
+                                                    <img
+                                                      src={
+                                                        "https://openweathermap.org/img/wn/" +
+                                                        `${items?.weather[0]?.icon}` +
+                                                        ".png"
+                                                      }
+                                                      alt="Logo"
+                                                      className="w-8"
+                                                    />
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            );
+                                          })}
+                                      </div>
+                                    </div>
+                                    <div id="chart" className="p-3">
+                                      <ReactApexChart
+                                        options={
+                                          item?.weatherData?.Chart?.options
+                                        }
+                                        series={
+                                          item?.weatherData?.Chart?.series
+                                        }
+                                        height={200}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            }
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

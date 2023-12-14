@@ -280,23 +280,23 @@ const Routing = () => {
               }
             />
             <Route
-              path="/weather"
-              element={
-                <Weather
-                  sidebarOpen={sidebarOpen}
-                  setSidebarOpen={setSidebarOpen}
-                />
-              }
-            />
-            <Route
-              path="/weather-detail"
-              element={
-                <WeatherDetail
-                  sidebarOpen={sidebarOpen}
-                  setSidebarOpen={setSidebarOpen}
-                />
-              }
-            />
+            path="/weather-detail"   // weather to change weather-detail
+            element={
+              <Weather
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
+          <Route
+            path="/Weather"          // weather-detail to change weather
+            element={
+              <WeatherDetail
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />
             <Route
               path="/text-scroll"
               element={
