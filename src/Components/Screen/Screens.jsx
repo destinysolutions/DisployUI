@@ -34,18 +34,10 @@ import {
 import { HiDotsVertical, HiOutlineLocationMarker } from "react-icons/hi";
 import { BsCollectionPlay, BsPencilSquare, BsTags } from "react-icons/bs";
 import Footer from "../Footer";
-import { BiAnchor, BiFilterAlt } from "react-icons/bi";
-import { RxTimer } from "react-icons/rx";
 import { Tooltip } from "@material-tailwind/react";
 
 import {
-  GET_ALL_COMPOSITIONS,
-  GET_ALL_FILES,
-  GET_ALL_SCHEDULE,
-  GET_ALL_TEXT_SCROLL_INSTANCE,
-  GET_ALL_YOUTUBEDATA,
   SCREEN_GROUP,
-  SELECT_BY_USER_SCREENDETAIL,
   SIGNAL_R,
   UPDATE_NEW_SCREEN,
 } from "../../Pages/Api";
@@ -163,6 +155,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   const { loading, screens, deleteLoading } = useSelector((s) => s.root.screen);
   const { schedules } = useSelector((s) => s.root.schedule);
+  const { compositions } = useSelector((s) => s.root.composition);
 
   const dispatch = useDispatch();
 
@@ -339,9 +332,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
     let mediaName =
       selectedAsset.assetName ||
-      selectedComposition.compositionID ||
-      selectedYoutube.youtubeId ||
-      selectedTextScroll.textScroll_Id;
+      selectedComposition.compositionName ||
+      selectedYoutube.instanceName ||
+      selectedTextScroll.instanceName;
 
     if (screenToUpdate) {
       let data = {
@@ -1216,7 +1209,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 <td colSpan="6" className="text-center font-semibold text-xl">
                   No Screens
                 </td>
-              ) : filteredScreenData?.length === 0 && searchScreen !== "" ? (
+              ) : filteredScreenData.length === 0 && searchScreen !== "" ? (
                 <td colSpan="6" className="text-center font-semibold text-xl">
                   screen not found
                 </td>
