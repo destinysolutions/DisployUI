@@ -547,7 +547,7 @@ const EventEditor = ({
                       cellPadding={10}
                     >
                       <thead>
-                        <tr className="bg-lightgray text-left">
+                        <tr className="bg-lightgray text-left mb-5">
                           <th className="min-w-[220px] py-4 px-4 font-semibold text-black md:pl-10">
                             Assets
                           </th>
@@ -569,106 +569,112 @@ const EventEditor = ({
                         </tr>
                       </thead>
                       <tbody>
-                        {assets.map((item) => (
-                          <tr
-                            key={item.assetID}
-                            className={`${
-                              selectedAsset === item ? "bg-[#f3c953]" : ""
-                            } border-b border-[#eee] `}
-                            onClick={() => {
-                              handleAssetAdd(item);
-                            }}
-                          >
-                            <td className="border-b border-[#eee]">
-                              {item.assetType === "OnlineImage" && (
-                                <div className="imagebox relative">
+                        {assets
+                          .filter((asset) => {
+                            return asset.assetType !== "Folder";
+                          })
+                          .map((item) => (
+                            <tr
+                              key={item.assetID}
+                              className={`${
+                                selectedAsset === item ? "bg-[#f3c953]" : ""
+                              } border-b border-[#eee] mt-5`}
+                              onClick={() => {
+                                handleAssetAdd(item);
+                              }}
+                            >
+                              <td className="border-b border-[#eee]">
+                                {item.assetType === "OnlineImage" && (
+                                  <div className="imagebox relative">
+                                    <img
+                                      src={item.assetFolderPath}
+                                      alt={item.assetName}
+                                      className="rounded-2xl h-24 w-28"
+                                    />
+                                  </div>
+                                )}
+
+                                {item.assetType === "OnlineVideo" && (
+                                  <div className="imagebox relative">
+                                    <video
+                                      controls
+                                      className="rounded-2xl h-24 w-28"
+                                    >
+                                      <source
+                                        src={item.assetFolderPath}
+                                        type="video/mp4"
+                                      />
+                                      Your browser does not support the video
+                                      tag.
+                                    </video>
+                                  </div>
+                                )}
+                                {item.assetType === "Image" && (
                                   <img
                                     src={item.assetFolderPath}
                                     alt={item.assetName}
-                                    className="rounded-2xl h-24 w-28"
+                                    className="imagebox relative h-24 w-28"
                                   />
-                                </div>
-                              )}
-
-                              {item.assetType === "OnlineVideo" && (
-                                <div className="imagebox relative">
-                                  <video
-                                    controls
-                                    className="rounded-2xl h-24 w-28"
+                                )}
+                                {item.assetType === "Video" && (
+                                  <div className="relative videobox">
+                                    <video
+                                      controls
+                                      className="w-full rounded-2xl relative"
+                                    >
+                                      <source
+                                        src={item.assetFolderPath}
+                                        type="video/mp4"
+                                      />
+                                      Your browser does not support the video
+                                      tag.
+                                    </video>
+                                  </div>
+                                )}
+                                {item.assetType === "DOC" && (
+                                  <a
+                                    href={item.assetFolderPath}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                   >
-                                    <source
-                                      src={item.assetFolderPath}
-                                      type="video/mp4"
-                                    />
-                                    Your browser does not support the video tag.
-                                  </video>
-                                </div>
-                              )}
-                              {item.assetType === "Image" && (
-                                <img
-                                  src={item.assetFolderPath}
-                                  alt={item.assetName}
-                                  className="imagebox relative h-24 w-28"
-                                />
-                              )}
-                              {item.assetType === "Video" && (
-                                <div className="relative videobox">
-                                  <video
-                                    controls
-                                    className="w-full rounded-2xl relative"
-                                  >
-                                    <source
-                                      src={item.assetFolderPath}
-                                      type="video/mp4"
-                                    />
-                                    Your browser does not support the video tag.
-                                  </video>
-                                </div>
-                              )}
-                              {item.assetType === "DOC" && (
-                                <a
-                                  href={item.assetFolderPath}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                                    {item.assetName}
+                                  </a>
+                                )}
+                              </td>
+                              <td className="border-b border-[#eee]">
+                                <h5
+                                  className="font-medium text-black cursor-pointer"
+                                  onClick={() => {
+                                    handleAssetAdd(item);
+                                  }}
                                 >
                                   {item.assetName}
-                                </a>
-                              )}
-                            </td>
-                            <td className="border-b border-[#eee]">
-                              <h5
-                                className="font-medium text-black cursor-pointer"
-                                onClick={() => {
-                                  handleAssetAdd(item);
-                                }}
-                              >
-                                {item.assetName}
-                              </h5>
-                            </td>
-                            <td className="border-b border-[#eee]">
-                              <p className="text-black font-medium">
-                                {moment(item.createdDate).format(
-                                  "YYYY-MM-DD HH:mm"
-                                )}
-                              </p>
-                            </td>
-                            <td className="border-b border-[#eee]">
-                              <p className="text-black font-medium">
-                                Schedule Name Till 28 June 2023
-                              </p>
-                            </td>
-                            <td className="border-b border-[#eee]">
-                              <p className="text-black font-medium">
-                                {item.resolutions}
-                              </p>
-                            </td>
-                            <td className="border-b border-[#eee]">
-                              <p className="text-black font-medium">
-                                Tags, Tags
-                              </p>
-                            </td>
-                          </tr>
-                        ))}
+                                </h5>
+                              </td>
+                              <td className="border-b border-[#eee]">
+                                <p className="text-black font-medium">
+                                  {moment(item.createdDate).format(
+                                    "YYYY-MM-DD HH:mm"
+                                  )}
+                                </p>
+                              </td>
+                              <td className="border-b border-[#eee]">
+                                <p className="text-black font-medium">
+                                  Schedule Name Till 28 June 2023
+                                </p>
+                              </td>
+                              <td className="border-b border-[#eee]">
+                                <p className="text-black font-medium">
+                                  {item.resolutions}
+                                </p>
+                              </td>
+                              <td className="border-b border-[#eee]">
+                                <p className="text-black font-medium">
+                                  Tags, Tags
+                                </p>
+                              </td>
+                            </tr>
+                          ))}
                         <tr>
                           <td>
                             {assetPreviewPopup && (

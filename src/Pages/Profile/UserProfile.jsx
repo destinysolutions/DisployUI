@@ -75,7 +75,7 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <div className="mt-5 page-contain">
             <Tabs value={activeTab}>
-              <TabsHeader className="p-0 text-[#A7AFB7]">
+              <TabsHeader className="p-0 text-primary">
                 {data.map(({ icon, label, value }) => (
                   <Tab
                     key={value}
@@ -85,10 +85,10 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
                       activeTab === value
                         ? "text-white items-center rounded-full bg-primary "
                         : ""
-                    } py-3 px-5 w-auto`}
+                    } py-3 px-4 w-auto border border-primary  rounded-full mx-2`}
                   >
                     <div className="flex items-center">
-                      <span className="mr-3 text-xl">{icon}</span>
+                      <span className="mr-2 text-xl">{icon}</span>
                       {label}
                     </div>
                   </Tab>

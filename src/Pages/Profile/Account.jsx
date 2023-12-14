@@ -9,6 +9,7 @@ import {
   GET_ALL_LANGUAGES,
   GET_SELECT_BY_STATE,
   GET_TIMEZONE,
+  SELECT_BY_ID_USERDETAIL,
 } from "../Api";
 import axios from "axios";
 import { MdOutlinePhotoCamera } from "react-icons/md";
@@ -38,7 +39,7 @@ const Account = () => {
   const [selectedState, setSelectedState] = useState("");
   const [isImageUploaded, setIsImageUploaded] = useState(false);
 
-  const { token ,user} = useSelector((state) => state.root.auth);
+  const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   console.log("selectedTimezoneName", selectedTimezoneName);
@@ -111,8 +112,8 @@ const Account = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: "",
-      phoneNumber: "",
+      // email: "",
+      // phoneNumber: "",
       zipCode: "",
       terms: false,
     },
@@ -123,23 +124,23 @@ const Account = () => {
   });
 
   useEffect(() => {
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/UserMaster/GetOrgUsers?OrgUserSpecificID=${user?.userID}`,
-      headers: {
-        Authorization: authToken,
-      },
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        // console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (user) {
+      axios
+        .get(`${SELECT_BY_ID_USERDETAIL}?ID=${user?.userID}`)
+        .then((response) => {
+          console.log(response.data);
+          const fetchData = response.data.data;
+          setFirstName(fetchData.firstName);
+          setLastName(fetchData.lastName);
+          setEmail(fetchData.emailID);
+          setPhoneNumber(fetchData.phoneNumber);
+          setAddress(fetchData.googleLocation);
+          // setRegisterData(response.data.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }, []);
 
   const updateUser = async (values, setSubmitting) => {
@@ -147,17 +148,17 @@ const Account = () => {
     data.append("orgUserSpecificID", user?.userID);
     data.append("firstName", firstName);
     data.append("lastName", lastName);
-    data.append("email", "hetal.prajapati@thedestinysolutions.com");
-    data.append("phone", values.phoneNumber);
+    data.append("email", email);
+    data.append("phone", phoneNumber);
     data.append("isActive", "1");
     data.append("orgUserID", user?.userID);
-    data.append("userRole", "1");
+    data.append("userRole", "0");
     data.append("countryID", selectedCountry);
     data.append("company", "Admin");
     data.append("operation", "Save");
     data.append("address", address);
     data.append("stateId", selectedState);
-    data.append("zipCode", values.zipCode);
+    data.append("zipCode", zipCode);
     data.append("languageId", selectedLanguageName);
     data.append("timeZoneId", selectedTimezoneName);
     data.append("currencyId", selectedCurrencyName);
@@ -204,7 +205,6 @@ const Account = () => {
     setIsImageUploaded(false);
   };
 
-  
   return (
     <>
       <div className="rounded-xl mt-8 shadow bg-white">
@@ -257,9 +257,9 @@ const Account = () => {
           <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
             <div className="-mx-3 md:flex mb-6">
               <div className="md:w-1/2 px-3 mb-6 md:mb-0">
-                <label className="label_top text-xs">First Name*</label>
+                <label className="label_top text-xs">First Name</label>
                 <input
-                  className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                  className="w-full text-black border rounded-lg py-3 px-4 mb-3"
                   type="text"
                   placeholder="Harry"
                   value={firstName}
@@ -268,9 +268,9 @@ const Account = () => {
                 <div></div>
               </div>
               <div className="md:w-1/2 px-3 mb-6 md:mb-0">
-                <label className="label_top text-xs">Last Name*</label>
+                <label className="label_top text-xs">Last Name</label>
                 <input
-                  className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                   type="text"
                   placeholder="McCall"
                   value={lastName}
@@ -279,42 +279,39 @@ const Account = () => {
                 <div></div>
               </div>
               <div className="md:w-1/2 px-3">
-                <label className="label_top text-xs">Email*</label>
+                <label className="label_top text-xs">Email</label>
                 <input
                   readOnly
-                  className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                   type="email"
                   name="email"
+                  value={email}
                   placeholder="harrymc.call@gmail.com"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.email}
                 />
-                {formik.errors.email && formik.touched.email && (
-                  <div className="error">{formik.errors.email}</div>
-                )}
               </div>
             </div>
             <div className="-mx-3 md:flex mb-6">
               <div className="md:w-1/2 px-3 mb-6 md:mb-0">
-                <label className="label_top text-xs">Phone Number*</label>
+                <label className="label_top text-xs">Phone Number</label>
                 <input
-                  className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                  className="w-full text-black border rounded-lg py-3 px-4 mb-3"
                   type="text"
-                  placeholder="(397) 294-5153"
                   name="phoneNumber"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.phoneNumber}
+                  placeholder="(397) 294-5153"
+                  // onChange={formik.handleChange}
+                  // onBlur={formik.handleBlur}
+                  // value={formik.values.phoneNumber}
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                 />
-                {formik.errors.phoneNumber && formik.touched.phoneNumber && (
+                {/* {formik.errors.phoneNumber && formik.touched.phoneNumber && (
                   <div className="error">{formik.errors.phoneNumber}</div>
-                )}
+                )} */}
               </div>
               <div className="md:w-1/2 px-3">
-                <label className="label_top text-xs">Address*</label>
+                <label className="label_top text-xs">Address</label>
                 <input
-                  className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                   type="text"
                   placeholder="132, My Street, Kingston, New York 12401."
                   value={address}
@@ -322,12 +319,12 @@ const Account = () => {
                 />
               </div>
               <div className="md:w-1/2 px-3">
-                <label className="label_top text-xs">Roles*</label>
+                <label className="label_top text-xs">Roles</label>
                 <input
                   readOnly
-                  className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                   type="text"
-                  placeholder="Manager"
+                  placeholder="Admin"
                   value={organization}
                   onChange={(e) => setOrganization(e.target.value)}
                 />
@@ -335,25 +332,27 @@ const Account = () => {
             </div>
             <div className="-mx-3 md:flex mb-2">
               <div className="md:w-1/2 px-3">
-                <label className="label_top text-xs">Zip Code*</label>
+                <label className="label_top text-xs">Zip Code</label>
                 <input
-                  className="w-full bg-gray-200 text-black border input-bor-color rounded-lg py-3 px-4 mb-3"
+                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                   type="text"
                   name="zipCode"
                   placeholder="10001"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.zipCode}
+                  value={zipCode}
+                  onChange={(e) => setZipCode(e.target.value)}
+                  // onChange={formik.handleChange}
+                  // onBlur={formik.handleBlur}
+                  // value={formik.values.zipCode}
                 />
-                {formik.errors.zipCode && formik.touched.zipCode && (
+                {/* {formik.errors.zipCode && formik.touched.zipCode && (
                   <div className="error">{formik.errors.zipCode}</div>
-                )}
+                )} */}
               </div>
               <div className="md:w-1/2 px-3">
-                <label className="label_top text-xs">Country*</label>
+                <label className="label_top text-xs">Country</label>
                 <div>
                   <select
-                    className="w-full bg-gray-200 border input-bor-color text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
+                    className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
                     onChange={(e) => setSelectedCountry(e.target.value)}
                     value={selectedCountry}
                   >
@@ -366,10 +365,10 @@ const Account = () => {
                 </div>
               </div>
               <div className="md:w-1/2 px-3">
-                <label className="label_top text-xs">State*</label>
+                <label className="label_top text-xs">State</label>
                 <div>
                   <select
-                    className="w-full bg-gray-200 border input-bor-color text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
+                    className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
                     id="location"
                     name="selectedState"
                     onChange={(e) => setSelectedState(e.target.value)}
@@ -388,10 +387,10 @@ const Account = () => {
             </div>
             <div className="-mx-3 md:flex mb-2">
               <div className="md:w-1/2 px-3">
-                <label className="label_top text-xs">Language*</label>
+                <label className="label_top text-xs">Language</label>
                 <div>
                   <select
-                    className="w-full bg-gray-200 border input-bor-color text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
+                    className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
                     value={selectedLanguageName}
                     onChange={(e) => setSelectedLanguageName(e.target.value)}
                   >
@@ -407,10 +406,10 @@ const Account = () => {
                 </div>
               </div>
               <div className="md:w-1/2 px-3">
-                <label className="label_top text-xs">Timezone*</label>
+                <label className="label_top text-xs">Timezone</label>
                 <div>
                   <select
-                    className="w-full bg-gray-200 border input-bor-color text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
+                    className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
                     value={selectedTimezoneName}
                     onChange={(e) => setSelectedTimezoneName(e.target.value)}
                   >
@@ -426,21 +425,23 @@ const Account = () => {
                 </div>
               </div>
               <div className="md:w-1/2 px-3">
-                <label className="label_top text-xs">Currency*</label>
+                <label className="label_top text-xs">Currency</label>
                 <div>
                   <select
-                    className="w-full bg-gray-200 border input-bor-color text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
+                    className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
                     value={selectedCurrencyName}
                     onChange={(e) => setSelectedCurrencyName(e.target.value)}
                   >
-                    {currency && currency.length > 0 && currency?.map((currency) => (
-                      <option
-                        value={currency.currencyId}
-                        key={currency.currencyId}
-                      >
-                        {currency.currencyName}
-                      </option>
-                    ))}
+                    {currency &&
+                      currency.length > 0 &&
+                      currency?.map((currency) => (
+                        <option
+                          value={currency.currencyId}
+                          key={currency.currencyId}
+                        >
+                          {currency.currencyName}
+                        </option>
+                      ))}
                   </select>
                 </div>
               </div>

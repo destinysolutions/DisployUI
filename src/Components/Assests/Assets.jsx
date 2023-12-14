@@ -475,15 +475,15 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     event.preventDefault();
   };
 
-  const handleDragStart = (event, itemId) => {
+  const handleDragStart = (event, itemId, item) => {
     event.dataTransfer.setData("text/plain", itemId);
+    setSelectedItems(item);
   };
 
   // Function to handle drop into folder
-  const handleDrop = (event, folderId, assetType) => {
+  const handleDrop = (event, folderId) => {
     const itemId = event.dataTransfer.getData("text/plain");
-    console.log(assetType);
-    let asset_type = assetType == "Folder" ? "Folder" : "Image";
+    let asset_type = selectedItems.assetType == "Folder" ? "Folder" : "Image";
     moveDataToFolder(itemId, folderId, asset_type);
   };
 
@@ -667,16 +667,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     key={index}
                     draggable
                     onDragStart={(event) =>
-                      handleDragStart(event, item.assetID)
+                      handleDragStart(event, item.assetID, item)
                     }
                     className="relative list-none assetsbox"
                   >
                     {item.assetType === "Folder" && (
                       <div
                         onDragOver={(event) => handleDragOver(event)}
-                        onDrop={(event) =>
-                          handleDrop(event, item.assetID, item.assetType)
-                        }
+                        onDrop={(event) => handleDrop(event, item.assetID)}
                         className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col"
                       >
                         <FcOpenedFolder
@@ -1013,7 +1011,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
                         draggable
                         onDragStart={(event) =>
-                          handleDragStart(event, item.assetID)
+                          handleDragStart(event, item.assetID, item)
                         }
                       >
                         <td className="text-center">
@@ -1021,7 +1019,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             <div
                               onDragOver={(event) => handleDragOver(event)}
                               onDrop={(event) =>
-                                handleDrop(event, item.assetID, item.assetType)
+                                handleDrop(event, item.assetID)
                               }
                             >
                               <FcOpenedFolder

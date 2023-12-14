@@ -6,7 +6,7 @@ import "../../Styles/Settings.css";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { GET_ALL_COUNTRY } from "../../Pages/Api";
+import { GET_ALL_COUNTRY, GET_SELECT_BY_STATE } from "../../Pages/Api";
 import { CiMenuKebab } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import DataTable from "react-data-table-component";
@@ -44,11 +44,14 @@ const Users = () => {
   const [file, setFile] = useState();
   const [fileEdit, setFileEdit] = useState("");
   const [labelTitle, setLabelTitle] = useState("Add New User");
+  const [zipCode, setZipCode] = useState("");
+  const [selectedState, setSelectedState] = useState("");
+  const [states, setStates] = useState([]);
 
   const { token } = useSelector((state) => state.root.auth);
   const { Countries } = useSelector((s) => s.root.settingUser);
   const authToken = `Bearer ${token}`;
-  console.log(Countries);
+
   const hiddenFileInput = useRef(null);
   const modalRef = useRef(null);
   const actionPopupRef = useRef(null);
@@ -75,6 +78,19 @@ const Users = () => {
     //   });
     dispatch(handleGetCountries());
   }, []);
+
+  useEffect(() => {
+    if (countryID) {
+      fetch(`${GET_SELECT_BY_STATE}?CountryID=${countryID}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setStates(data.data);
+        })
+        .catch((error) => {
+          console.log("Error fetching states data:", error);
+        });
+    }
+  }, [countryID]);
 
   useEffect(() => {
     let data = JSON.stringify({
@@ -122,6 +138,8 @@ const Users = () => {
     data.append("orgUserID", 0);
     data.append("userRole", selectRoleID);
     data.append("countryID", countryID);
+    data.append("StateId", selectedState);
+    data.append("ZipCode", zipCode);
     data.append("File", file);
     data.append("languageId", 0);
     data.append("timeZoneId", 0);
@@ -205,7 +223,6 @@ const Users = () => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data.data);
         setUserData(response.data.data);
       })
       .catch((error) => {
@@ -237,7 +254,6 @@ const Users = () => {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
         handleGetOrgUsers();
       })
       .catch((error) => {
@@ -596,6 +612,19 @@ const Users = () => {
                     </div>
                     <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                       <div className="relative">
+                        <label className="formLabel">Zip Code</label>
+                        <input
+                          type="text"
+                          placeholder="Enter Company Name"
+                          name="cname"
+                          className="formInput"
+                          value={zipCode}
+                          onChange={(e) => setZipCode(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                      <div className="relative">
                         <label className="formLabel">Country</label>
                         <select
                           className="formInput"
@@ -614,6 +643,26 @@ const Users = () => {
                         </select>
                       </div>
                     </div>
+                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                      <div className="relative">
+                        <label className="formLabel">State</label>
+                        <select
+                          className="formInput"
+                          onChange={(e) => setSelectedState(e.target.value)}
+                          value={selectedState}
+                        >
+                          <option label="select State"></option>
+                          {countryID &&
+                            Array.isArray(states) &&
+                            states.map((state) => (
+                              <option key={state.stateId} value={state.stateId}>
+                                {state.stateName}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                    </div>
+
                     {/* <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                       <div className="relative">
                         <label className="formLabel">Screen Access</label>
