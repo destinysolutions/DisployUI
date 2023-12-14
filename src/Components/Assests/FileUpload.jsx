@@ -62,6 +62,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   const [showPexabay, setShowPexabay] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [recordedVideos, setRecordedVideos] = useState([]);
+  const [File, setFile] = useState(null)
 
   /* google drive */
 
@@ -403,6 +404,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
       setShowUnsplash(false);
     }
   }
+  console.log(File);
 
   return (
     <>
@@ -426,8 +428,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
           </div>
           <div className="flex lg:justify-between md:justify-between flex-wrap sm:justify-start xs:justify-start items-center lg:mt-7 md:mt-7 sm:mt-5 xs:mt-5 media-icon">
             {/* notepad ma che */}
-            <GoogleDrive />
-            <OneDrive />
+            {/* <GoogleDrive /> */}
             {/* <Tooltip
               content="Google Drive"
               placement="bottom-end"
@@ -576,6 +577,9 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               )}
               {/* end pixabay */}
             </span>
+
+            <OneDrive setFile={setFile} />
+
             {/*start app*/}
             {/* <Link
               to={"/apps"}
