@@ -10,9 +10,13 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { SketchPicker } from "react-color";
 import ReactApexChart from "react-apexcharts";
+import { debounce } from "lodash";
 const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   let api_key = "41b5176532e682fd8b4cb6a44e3bd1a4";
-
+  const [GPSLocation, setGPSLocation] = useState({
+    latitude: null,
+    longitude: null,
+  });
   const [edited, setEdited] = useState(false);
   const [loadFirst, setLoadFirst] = useState(true);
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
@@ -33,6 +37,30 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [enabled, setEnabled] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
+  useEffect(() => {
+    if (isMuted && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setGPSLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+          setLocations([
+            { id: 1, location: "Ahmedabad", weatherData: null, mainData: null },
+            { id: 2, location: "", weatherData: null, mainData: null },
+            { id: 3, location: "", weatherData: null, mainData: null },
+          ]);
+          setLoadFirst(true);
+        },
+        (error) => {
+          console.error("Error getting the location:", error);
+        }
+      );
+    } else {
+      setLoadFirst(true);
+    }
+  }, [isMuted]);
+
   //  const [countryLocation,setCountryLocation]=useState("india");
   //  const [cityLocation,setCityLocation]=useState('');
   //  const [stateLocation,setStateLocation]=useState('');
@@ -51,9 +79,10 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   // }, [city, api_key]);
   const handleMuteChange = () => {
     setIsMuted(!isMuted);
+    setGPSLocation({ latitude: null, longitude: null });
   };
 
-  const convertIntoTemperatureUnits = () => {
+  const convertIntoTemperatureUnits = (locations) => {
     const convertTemperature = (temp, toUnit) => {
       switch (toUnit) {
         case "Fahrenheit":
@@ -97,7 +126,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
         const state = {
           series: [
             {
-              name: "High - 2013",
+              name: "Weather 1",
               data: ChartSeries,
             },
           ],
@@ -108,6 +137,9 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
               toolbar: {
                 show: false,
               },
+            },
+            axisPointer: {
+              show: false,
             },
             markers: {
               size: 2,
@@ -123,6 +155,12 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
             },
             xaxis: {
               categories: ["3", "7", "11", "3", "7", "11", "3"],
+              axisTicks: {
+                show: false,
+              },
+              axisBorder: {
+                show: false,
+              },
             },
           },
         };
@@ -152,7 +190,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
         location.id === id ? { ...location, location: newLocation } : location
       )
     );
-    setSelectedTemperature("Celsius");
+    // setSelectedTemperature("Celsius");
   };
 
   useEffect(() => {
@@ -163,7 +201,12 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
             locations.map(async (location) => {
               const { id, location: loc } = location;
               if (loc) {
-                const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${loc}&appid=${api_key}&units=metric`;
+                let apiUrl = "";
+                if (isMuted) {
+                  apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${GPSLocation?.latitude}&lon=${GPSLocation?.longitude}&appid=${api_key}&units=metric`;
+                } else {
+                  apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${loc}&appid=${api_key}&units=metric`;
+                }
                 const response = await axios.get(apiUrl);
                 let ChartSeries = [];
                 const arr = response.data.list.map((item) => {
@@ -178,44 +221,9 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     Day: day,
                   };
                 });
-
-                const state = {
-                  series: [
-                    {
-                      name: "High - 2013",
-                      data: ChartSeries,
-                    },
-                  ],
-                  options: {
-                    chart: {
-                      height: 200,
-                      type: "line",
-                      toolbar: {
-                        show: false,
-                      },
-                    },
-                    markers: {
-                      size: 2,
-                    },
-                    grid: {
-                      show: false,
-
-                    },
-                    dataLabels: {
-                      enabled: true,
-                    },
-                    yaxis: {
-                      show: false,
-                    },
-                    xaxis: {
-                      categories: ["3", "7", "11", "3", "7", "11", "3"],
-                    },
-                  },
-                };
                 const Data = {
                   ...response.data,
                   list: arr,
-                  Chart: state,
                 };
 
                 return {
@@ -227,8 +235,8 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
               return location;
             })
           );
-
-          setLocations(updatedLocations);
+          convertIntoTemperatureUnits(updatedLocations);
+          // setLocations(updatedLocations);
         } catch (error) {
           console.error("Error fetching weather data:", error);
         }
@@ -237,11 +245,13 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
       fetchData();
       setLoadFirst(false);
     }
-  }, [loadFirst, locations, api_key]);
+  }, [loadFirst, locations, api_key, isMuted]);
 
   useEffect(() => {
-    convertIntoTemperatureUnits();
+    convertIntoTemperatureUnits(locations);
   }, [selectedTemperature]);
+
+  const debouncedOnChange = debounce(handleLocationChange, 1000);
 
   return (
     <>
@@ -251,7 +261,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <div className="pt-16 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-          <div className="lg:flex lg:justify-between sm:block  items-center">
+          <div className="lg:flex lg:justify-between sm:block my-4 items-center">
             <div className="flex items-center">
               {edited ? (
                 <input
@@ -296,9 +306,9 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
             <div className="grid grid-cols-12 gap-6 mt-5">
               <div className="lg:col-span-6 md:col-span-6 sm:col-span-10 ">
                 <div className="shadow-md bg-white rounded-lg p-5 h-full">
-                  <div className="mb-3 w-full">
-                    <label className="relative inline-flex items-center cursor-pointer w-full">
-                      <span className="w-2/5 text-sm font-medium text-gray-900 dark:text-gray-300">
+                  <div className="mb-6 w-full">
+                    <div className="relative inline-flex items-center cursor-pointer w-full justify-between">
+                      <span className="w-2/5 text-lg font-semibold text-gray-900 dark:text-gray-300">
                         Use screen location*:
                       </span>
                       <div className="text-right  items-end">
@@ -311,19 +321,19 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                             onChange={handleMuteChange}
                           />
                           <div
-                            onClick={() => {
-                              setEnabled(!enabled);
-                            }}
+                            // onClick={() => {
+                            //   setEnabled(!enabled);
+                            // }}
                             className={`w-11 h-6 ${
                               isMuted ? "bg-SlateBlue" : "bg-lightgray"
                             } rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all `}
                           ></div>
                         </label>
                       </div>
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                    </label>
+                    </div>
                   </div>
-                  <div className="mb-3 relative inline-flex items-center w-full">
+
+                  {/* <div className="mb-3 relative inline-flex items-center w-full">
                     <label
                       htmlFor="message"
                       className="w-2/5 mb-3 text-sm font-medium text-gray-900 dark:text-white"
@@ -342,29 +352,30 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       <option value="France">France</option>
                       <option value="Arabic">Arabic</option>
                     </select>
-                  </div>
-                  {locations.map((location) => (
-                    <div
-                      className="mb-3 relative inline-flex items-center w-full"
-                      key={location.id}
-                    >
-                      <label
-                        htmlFor="countries"
-                        className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          </div> */}
+
+                  {!isMuted &&
+                    locations.map((location) => (
+                      <div
+                        className="mb-3 relative inline-flex items-center w-full"
+                        key={location.id}
                       >
-                        Location {location.id}:
-                      </label>
-                      <input
-                        type="text"
-                        id="first_name"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder={location.location}
-                        value={location.location}
-                        onChange={(e) =>
-                          handleLocationChange(location.id, e.target.value)
-                        }
-                      />
-                      {/* {location.weatherData ? (
+                        <label
+                          htmlFor="countries"
+                          className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                          Location{location.id === 1 && "*"} {location.id}:
+                        </label>
+                        <input
+                          type="text"
+                          id="first_name"
+                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          placeholder={location.location}
+                          onChange={(e) =>
+                            debouncedOnChange(location.id, e.target.value)
+                          }
+                        />
+                        {/* {location.weatherData ? (
                         <div>
                           <h3>City: {location.weatherData.name}</h3>
                           <p>Temperature: {location.weatherData.main.temp} K</p>
@@ -376,19 +387,19 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       ) : (
                         <p>No weather data available for this location.</p>
                       )} */}
-                    </div>
-                  ))}
+                      </div>
+                    ))}
 
                   <div className="mb-3 relative inline-flex items-center w-full">
                     <label
                       htmlFor="message"
                       className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Temperature Unit:
+                      Temperature Unit*
                     </label>
                     <select
                       id="countries"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       onChange={(e) => setSelectedTemperature(e.target.value)}
                       value={selectedTemperature}
                     >
@@ -404,11 +415,11 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       htmlFor="message"
                       className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Ticker Tape View:
+                      Ticker Tape View*
                     </label>
                     <select
                       id="countries"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     >
                       <option selected>Today's Weather</option>
                       <option value="US">Weekly forecast Weather</option>
@@ -419,12 +430,12 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       htmlFor="message"
                       className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Backgound Color:
+                      Background Color:
                     </label>
                     <SketchPicker
                       color={selectedColor}
                       onChange={(color) => setSelectedColor(color.hex)}
-                      className="sketch-picker"
+                      className="sketch-picker-weather"
                     />
                   </div>
                   <p className="text-center pt-6">
@@ -447,9 +458,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       height: "100%",
                     }}
                   >
-                    <div
-                      className="overflow-x-auto bg-blue border-white rounded-lg relative p-5"
-                    >
+                    <div className="overflow-x-auto bg-blue border-white rounded-lg relative p-5">
                       <div className="lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full mx-auto bg-teal border-width-10px border-black">
                         <div className="flex flex-row text-[#ffffff]">
                           {locations?.map((item, index) => {
