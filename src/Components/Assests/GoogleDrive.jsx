@@ -36,12 +36,12 @@ const GoogleDrive = () => {
       window.open(url, "_blank");
     });
   };
+  // https://unify.apideck.com/vault/callback
 
   const handleOpenPicker = async (accessToken) => {
     openPicker({
-      clientId:
-        "590831956653-vp5g9p3htik4i23u9a1tkd83dvigvrlv.apps.googleusercontent.com", // Your client ID
-      developerKey: "AIzaSyCUW6ROiE0g71U2svkXUrVdvMriVoKKAaY", // Your developer key
+      clientId: process.env.REACT_APP_GOOGLE_DRIVE_CLIENTID, // Your client ID
+      developerKey: process.env.REACT_APP_GOOGLE_DEVELOPER_KEY, // Your developer key
       viewId: "DOCS",
       token: accessToken,
       showUploadView: true,

@@ -4,8 +4,11 @@ import { Tooltip } from "@material-tailwind/react";
 import Onedrive from "../../images/Assets/one-drive.png";
 import { BrowserCacheLocation, AccountInfo } from "@azure/msal-browser";
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
+import { FilePicker } from "@apideck/file-picker";
+import "@apideck/file-picker/dist/styles.css";
+import axios from "axios";
 
-const OneDrive = () => {
+const OneDrive = ({ setFile }) => {
   // const [app, setApp] = useState(null);
   const baseUrl = "https://onedrive.live.com/picker";
   const authority = `https://login.microsoftonline.com/f8cdef31-a31e-4b4a-93e4-5f571e91255a`;
@@ -59,7 +62,7 @@ const OneDrive = () => {
     }
   };
 
-  callBackendApi();
+  // callBackendApi();
   function combine(...paths) {
     return paths
       .map((path) => path.replace(/^[\\|/]/, "").replace(/[\\|/]$/, ""))
@@ -376,6 +379,98 @@ const OneDrive = () => {
   //   }
   // };
 
+  const [token, setToken] = useState(null);
+
+  const fetchData = async () => {
+    const url = "https://unify.apideck.com/file-storage/files";
+    try {
+      const { data } = await axios.get(url, {
+        headers: {
+          Authorization:
+            "Bearer sk_live_18c615f7-b6cd-4ac0-8f3e-b7fd465c511d-z0CYU6dhwX12IO8qUg-f3e8f762-4f83-47e0-a264-5b012b253aca",
+          "x-apideck-consumer-id": " test-consumer",
+          "x-apideck-app-id": "ZKfil3RXz5ssBdjXqUgYy0KHKYm14M5cXLqUg",
+          "x-apideck-service-id": "onedrive",
+        },
+      });
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const createSession = async () => {
+    // const url= "https://upload.apideck.com/file-storage/upload-sessions/{id}"
+    const url = "https://unify.apideck.com/vault/sessions";
+
+    try {
+      const { data } = await axios.post(url, {
+        headers: {
+          Authorization:
+            "Bearer sk_live_18c615f7-b6cd-4ac0-8f3e-b7fd465c511d-z0CYU6dhwX12IO8qUg-f3e8f762-4f83-47e0-a264-5b012b253aca",
+          "x-apideck-consumer-id": "test-consumer",
+          "x-apideck-app-id": "ZKfil3RXz5ssBdjXqUgYy0KHKYm14M5cXLqUg",
+        },
+      });
+      setToken(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    // fetchData();
+    // createSession();
+  }, []);
+
+  // const downloadFileUrl = ;
+  const session_token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDI1MzYxNzksImV4cCI6MTcwMjUzOTc3OX0.s5U70XpEhi_zI7jDzcUqIT03LK4Wmtgz2zVr5b8Fiqw";
+  const handleSelect = async (file) => {
+    // setFile(file);
+    console.log(file);
+    try {
+      const { data } = await axios.get(
+        `https://unify.apideck.com/file-storage/files/${file?.id}/download`,
+        {
+          headers: {
+            Authorization:
+              "Bearer sk_live_18c615f7-b6cd-4ac0-8f3e-b7fd465c511d-z0CYU6dhwX12IO8qUg-f3e8f762-4f83-47e0-a264-5b012b253aca",
+            "x-apideck-consumer-id": "test-consumer",
+            "x-apideck-app-id": "ZKfil3RXz5ssBdjXqUgYy0KHKYm14M5cXLqUg",
+            "x-apideck-service-id": "onedrive",
+          },
+        }
+      );
+console.log(data);
+      // const handleFileUpload = async (data) => {
+      //   if (data.action === "picked") {
+      //     const selectedImages = data.docs;
+      //     console.log(selectedImages, "selectedImages");
+      //     const downloadURLs = selectedImages.map((file) => file.url);
+
+      //     setSelectedFiles(downloadURLs);
+      //   }
+      // };
+      // console.log(data);
+      const downloadImages = () => {
+        // selectedFiles.forEach((url, index) => {
+        // const link = document.createElement("a");
+        // link.href = url;
+        // link.target = "_blank";
+        // link.download = `Image${index + 1}.jpg`;
+        // link.click();
+        // // Open the downloaded image in a new tab
+        // window.open(url, "_blank");
+        // console.log(error);
+        // });
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // console.log(token);
   return (
     <span id="original-tab-id">
       <Tooltip
@@ -387,9 +482,24 @@ const OneDrive = () => {
           unmount: { scale: 1, y: 10 },
         }}
       >
-        <button onClick={(e) => launchPicker(e)}>
+        <FilePicker
+          onSelect={handleSelect}
+          trigger={
+            <button>
+              {/* <img src={Onedrive} className="w-9" /> */}
+              More options
+            </button>
+          }
+          token={session_token}
+          title="Choose file from options"
+          showAttribution={false}
+          // fileToSave={(e) => {
+          //   console.log(e);
+          // }}
+        />
+        {/* <button onClick={(e) => launchPicker(e)}>
           <img src={Onedrive} className="w-9" />
-        </button>
+        </button> */}
       </Tooltip>
     </span>
   );
