@@ -7,20 +7,24 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import { SELECT_BY_LIST } from "../../Pages/Api";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { HiArrowLongLeft } from "react-icons/hi2";
+import { handleGetCompositionLayouts } from "../../Redux/CompositionSlice";
 
 const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
   AddComposition.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+
   const { token } = useSelector((state) => state.root.auth);
+  const { compositionLayouts, loading } = useSelector(
+    (state) => state.root.composition
+  );
   const authToken = `Bearer ${token}`;
 
   const navigation = useNavigate();
-
-  const [allcompositionData, setAllcompositionData] = useState([]);
+  const dispatch = useDispatch();
 
   const SelectLayout = (data) => {
     navigation(`/addcomposition/${data?.layoutDtlID}`);
@@ -34,14 +38,13 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
       headers: {
         Authorization: authToken,
       },
-      // data: "",
     };
-
-    axios
-      .request(config)
+    const response = dispatch(handleGetCompositionLayouts({ config }));
+    if (!response) return;
+    response
       .then((response) => {
         // console.log(response.data?.data);
-        setAllcompositionData(response.data?.data);
+        // setAllcompositionData(response.data?.data);
       })
       .catch((error) => {
         console.log(error);
@@ -82,33 +85,41 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
               <HiArrowLongLeft size={30} /> Standard
             </h4>
             <div className="grid grid-cols-3 gap-8">
-              {allcompositionData.map((item, index) => (
-                <div className="relative" key={index}>
-                  <div className="layout-card block text-center max-w-xs mx-auto ">
-                    <img
-                      src={`data:image/svg+xml;utf8,${encodeURIComponent(
-                        item.svg
-                      )}`}
-                      alt="Logo"
-                      className=" mx-auto"
-                    />
-                    <div className="onhover_show">
-                      <div className="text">
-                        <h4 className="text-lg font-medium">{item?.name}</h4>
-                        <p className="text-sm font-normal ">
-                          Total Section: {item.lstLayloutModelList.length}
-                        </p>
+              {loading ? (
+                <div className="text-center font-semibold text-2xl">
+                  Loading...
+                </div>
+              ) : compositionLayouts?.length == 0 && !loading ? (
+                <div>No layouts here.</div>
+              ) : (
+                compositionLayouts?.map((item, index) => (
+                  <div className="relative" key={index}>
+                    <div className="layout-card block text-center max-w-xs mx-auto ">
+                      <img
+                        src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                          item.svg
+                        )}`}
+                        alt="Logo"
+                        className=" mx-auto"
+                      />
+                      <div className="onhover_show">
+                        <div className="text">
+                          <h4 className="text-lg font-medium">{item?.name}</h4>
+                          <p className="text-sm font-normal ">
+                            Total Section: {item.lstLayloutModelList.length}
+                          </p>
+                        </div>
+                        <button
+                          className="bg-SlateBlue mx-auto text-white rounded-full px-4 py-2 hover:bg-primary hover:text-white text-sm hover:bg-primary-500"
+                          onClick={() => SelectLayout(item)}
+                        >
+                          Use This Layout
+                        </button>
                       </div>
-                      <button
-                        className="bg-SlateBlue mx-auto text-white rounded-full px-4 py-2 hover:bg-primary hover:text-white text-sm hover:bg-primary-500"
-                        onClick={() => SelectLayout(item)}
-                      >
-                        Use This Layout
-                      </button>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
 
               {/* <div className="relative">
                 <div className="layout-card block text-center cursor-pointer max-w-xs mx-auto">

@@ -24,9 +24,17 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import ReCAPTCHA from "react-google-recaptcha";
 import toast from "react-hot-toast";
-import { handleLoginUser } from "../Redux/Authslice";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { handleLoginUser, handleLoginWithGoogle } from "../Redux/Authslice";
+import {
+  FacebookAuthProvider,
+  signInWithCredential,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signInWithRedirect,
+} from "firebase/auth";
 import logo from "../images/DisployImg/logo.svg";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
 // import.meta.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
@@ -34,7 +42,6 @@ import logo from "../images/DisployImg/logo.svg";
 
 const Login = () => {
   //using for routing
-  const history = useNavigate();
   // const { loginUser } = useUser();
   //using show or hide password field
   const dispatch = useDispatch();
@@ -113,6 +120,7 @@ const Login = () => {
               const userRole = response.role;
               if (userRole == 1) {
                 localStorage.setItem("role_access", "ADMIN");
+                toast.success("Login successfully.");
                 window.location.href = "/";
                 // navigate("/");
               } else if (userRole == 2) {
@@ -121,19 +129,18 @@ const Login = () => {
                   auth,
                   values.emailID,
                   values.password
-                )
-                  .then((userCredential) => {
-                    const user = userCredential.user;
-                    if (!user.emailVerified) {
-                      alert("Please verify your email.");
-                    } else {
-                      const user_ID = response.userID;
-                      localStorage.setItem("userID", JSON.stringify(response));
-                      localStorage.setItem("role_access", "USER");
-                      window.location.href = "/";
-                      navigate("/");
-                    }
-                  });
+                ).then((userCredential) => {
+                  const user = userCredential.user;
+                  if (!user.emailVerified) {
+                    alert("Please verify your email.");
+                  } else {
+                    const user_ID = response.userID;
+                    localStorage.setItem("userID", JSON.stringify(response));
+                    localStorage.setItem("role_access", "USER");
+                    toast.success("Login successfully.");
+                    navigate("/screens");
+                  }
+                });
                 // .catch((error) => {
                 //   var errorMessage = JSON.parse(error.message);
                 //   console.log("errorMessage", errorMessage);
@@ -192,26 +199,68 @@ const Login = () => {
     },
   });
 
-  const SignInWithGoogle = async () => {
+  const SignInWithGoogle = async (data) => {
     try {
-      const res = await auth.signInWithPopup(Googleauthprovider);
-      const user = res.user;
-      axios
-        .post(ADD_REGISTER_URL, {
-          companyName: null,
-          password: null,
-          firstName: user.displayName,
-          emailID: user.email,
-          googleLocation: null,
-          phoneNumber: user.phoneNumber,
-          operation: "Insert",
-        })
-        .then(() => {
-          // dispatch(loginUser(response.data));
+      const loginData = {
+        companyName: null,
+        password: null,
+        firstName: data.name,
+        emailID: data.email,
+        googleLocation: null,
+        phoneNumber: null,
+        operation: "Insert",
+        googleID: data?.sub,
+      };
+      const config = {
+        method: "post",
+        data: loginData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        url: ADD_REGISTER_URL,
+      };
+      const response = dispatch(handleLoginWithGoogle({ config }));
+      if (!response) return;
+      response
+        .then((res) => {
+          console.log(res);
+          if (res.status == 200) {
+            window.localStorage.setItem("timer", JSON.stringify(18_00));
+            const userRole = res.role;
+            if (userRole == 1) {
+              localStorage.setItem("role_access", "ADMIN");
+              toast.success("Login successfully.");
+              window.location.href = "/";
+            } else if (userRole == 2) {
+              // signInWithEmailAndPassword(auth, data.email, data.sub).then(
+              //   (userCredential) => {
+              //     const user = userCredential.user;
+              //     if (!user.emailVerified) {
+              //       alert("Please verify your email.");
+              //     } else {
+              //       const user_ID = res.userID;
+              //       localStorage.setItem("userID", JSON.stringify(res));
+              //       localStorage.setItem("role_access", "USER");
+              //       toast.success("Login successfully.");
+              //       navigate("/screens");
+              //     }
+              //   }
+              // );
+              toast.success("Login successfully.");
+              navigate("/screens");
+            } else {
+              console.log("Unexpected role value:", userRole);
+              alert("Invalid role: " + userRole);
+            }
+          } else {
+            toast.remove();
+            setErrorMessge(response.message);
 
-          history("/", {
-            state: { message: "Registration successfull !!" },
-          });
+            toast.error(response?.message);
+          }
+
+          toast.success("login successfully.");
+          navigate("/screens");
         })
         .catch((error) => {
           console.log(error);
@@ -224,9 +273,12 @@ const Login = () => {
 
   const SignInFaceBook = async () => {
     try {
-      const res = await auth.signInWithPopup(facebookProvider);
+      const res = await signInWithRedirect(auth, facebookProvider);
+
+      // const res = await signInWithCredential(auth, facebookProvider);
       const user = res.user;
-      // onclose();
+      return console.log(res);
+
       axios
         .post(ADD_REGISTER_URL, {
           companyName: null,
@@ -238,7 +290,7 @@ const Login = () => {
           operation: "Insert",
         })
         .then(() => {
-          history("/", {
+          navigate("/", {
             state: { message: "Registration successfull !!" },
           });
         })
@@ -253,7 +305,7 @@ const Login = () => {
 
   const SignInapple = async () => {
     try {
-      const res = await auth.signInWithPopup(appleProvider);
+      const res = await signInWithRedirect(auth, appleProvider);
       const user = res.user;
       // onclose();
       console.log("user", user);
@@ -268,7 +320,8 @@ const Login = () => {
       tenant: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
     });
     try {
-      const res = await auth.signInWithPopup(microsoftProvider);
+      // const res = await signInWithPopup(auth, microsoftProvider);
+      const res = await signInWithRedirect(auth, microsoftProvider);
       const user = res.user;
       // onclose();
       console.log("user", user);
@@ -279,7 +332,7 @@ const Login = () => {
 
   //for signup
   const handleRegister = () => {
-    history("/register");
+    navigate("/register");
     localStorage.removeItem("hasSeenMessage");
   };
 
@@ -301,8 +354,7 @@ const Login = () => {
   }, [errorMessge, messageVisible]);
 
   const handleForgotPassword = () => {
-    // history("/email-verified");
-    history("/forgotpassword");
+    navigate("/forgotpassword");
   };
 
   return (
@@ -473,6 +525,21 @@ const Login = () => {
                 </form>
               </div>
             </div>
+            {/* login with google */}
+            {/* <div className="mt-4">
+              <GoogleOAuthProvider
+                clientId={process.env.REACT_APP_GOOGLE_DRIVE_CLIENTID}
+              >
+                <GoogleLogin
+                  theme="outline"
+                  type="standard"
+                  onSuccess={(res) => {
+                    SignInWithGoogle(jwtDecode(res.credential));
+                  }}
+                  onError={(err) => console.log(err)}
+                ></GoogleLogin>
+              </GoogleOAuthProvider>
+            </div> */}
             {/* <div className="flex items-center justify-center mt-4">
               <div className="socialIcon socialIcon1">
                 <button onClick={SignInWithGoogle}>

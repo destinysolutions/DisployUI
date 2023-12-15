@@ -6,13 +6,14 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { handleGetStorageDetails } from "../../Redux/SettingSlice";
 
 const Pexels = ({ closeModal, pexelsModalRef }) => {
   const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
-  
+
   const [photos, setPhotos] = useState([]);
   const [media, setMedia] = useState([]);
   const [searchQuery, setSearchQuery] = useState("Nature");
@@ -31,6 +32,8 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
   });
   const [selectedMediaType, setSelectedMediaType] = useState("images");
   const [currentPage, setCurrentPage] = useState(1);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const API_KEY = "t8fp87NsuBPGQQ0c1LBDCTnPj02F509RretM2yQfaGBEEBzkGs022PCy";
@@ -99,7 +102,6 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
   const handleMediaUpload = () => {
     setUploadInProgress(true);
     selectedMedia.images.forEach((image) => {
-      console.log(image, "image");
       const formData = new FormData();
 
       formData.append("AssetFolderPath", image.src.original);
@@ -111,44 +113,54 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
       formData.append("AssetName", image.alt);
       formData.append("Resolutions", `${image.height}*${image.width}`);
 
-      axios
-        .post(ALL_FILES_UPLOAD, formData, {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "multipart/form-data",
-          },
-          onUploadProgress: (progressEvent) => {
-            const progress = Math.round(
-              (progressEvent.loaded / progressEvent.total) * 100
-            );
-            setImageUploadProgress((prevProgress) => ({
-              ...prevProgress,
-              [image.id]: progress,
-            }));
-          },
-        })
-        .then((response) => {
-          console.log("Upload Success:", response.data);
-          navigate(-1);
-        })
-        .catch((error) => {
-          console.error("Upload Error:", error);
-        })
-        .finally(() => {
-          const allImagesUploaded = selectedMedia.images.every(
-            (image) => imageUploadProgress[image.id] === 100
-          );
+      const response = dispatch(handleGetStorageDetails({ token }));
 
-          // Check if all images and videos have completed uploading
-          if (
-            allImagesUploaded &&
-            selectedMedia.videos.every(
-              (video) => videoUploadProgress[video.id] === 100
-            )
-          ) {
-            setUploadInProgress(false);
-          }
-        });
+      response.then((res) => {
+        if (res?.payload?.data?.usedInPercentage == 100) {
+          setUploadInProgress(false);
+          return toast.error("Storage limit reached, maximum 3GB allowed.");
+        } else {
+          axios
+            .post(ALL_FILES_UPLOAD, formData, {
+              headers: {
+                Authorization: authToken,
+                "Content-Type": "multipart/form-data",
+              },
+              onUploadProgress: (progressEvent) => {
+                const progress = Math.round(
+                  (progressEvent.loaded / progressEvent.total) * 100
+                );
+                setImageUploadProgress((prevProgress) => ({
+                  ...prevProgress,
+                  [image.id]: progress,
+                }));
+              },
+            })
+            .then((response) => {
+              console.log("Upload Success:", response.data);
+              navigate(-1);
+            })
+            .catch((error) => {
+              console.error("Upload Error:", error);
+              setUploadInProgress(false);
+            })
+            .finally(() => {
+              const allImagesUploaded = selectedMedia.images.every(
+                (image) => imageUploadProgress[image.id] === 100
+              );
+
+              // Check if all images and videos have completed uploading
+              if (
+                allImagesUploaded &&
+                selectedMedia.videos.every(
+                  (video) => videoUploadProgress[video.id] === 100
+                )
+              ) {
+                setUploadInProgress(false);
+              }
+            });
+        }
+      });
     });
 
     selectedMedia.videos.forEach((video) => {

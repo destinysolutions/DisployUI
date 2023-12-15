@@ -10,12 +10,14 @@ import { MdFlipCameraAndroid } from "react-icons/md";
 import axios from "axios";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { handleGetStorageDetails } from "../../Redux/SettingSlice";
+import toast from "react-hot-toast";
 
 const VideoRecorder = ({ closeModal, onVideoRecorded, videoModalRef }) => {
   const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
-  
+
   const webcamRef = useRef(null);
   const [recording, setRecording] = useState(false);
   const [recordedChunksList, setRecordedChunksList] = useState([]);
@@ -23,7 +25,10 @@ const VideoRecorder = ({ closeModal, onVideoRecorded, videoModalRef }) => {
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const startRecording = () => {
     try {
       if (webcamRef.current) {
@@ -83,40 +88,48 @@ const VideoRecorder = ({ closeModal, onVideoRecorded, videoModalRef }) => {
     }
   };
   const sendDataToApi = async (videoBlob) => {
-    try {
-      const uniqueFileName = `recorded_video_${Date.now()}.webm`; // Generate a unique file name with timestamp
-      const formData = new FormData();
-      formData.append("File", videoBlob, uniqueFileName); // Use the unique file name
-      formData.append("Operation", "Insert");
-      formData.append("AssetType", "Video");
-      formData.append("IsActive", "true");
-      formData.append("IsDelete", "false");
-      formData.append("FolderID", "0");
-      formData.append("AssetName", uniqueFileName);
+    const response = dispatch(handleGetStorageDetails({ token }));
 
-      const response = await axios.post(ALL_FILES_UPLOAD, formData, {
-        headers: {
-          Authorization: authToken,
-          "Content-Type": "multipart/form-data",
-        },
-        onUploadProgress: (progressEvent) => {
-          const progress = Math.round(
-            (progressEvent.loaded / progressEvent.total) * 100
-          );
-          setUploadProgress(progress);
-        },
-      });
+    response.then(async (res) => {
+      if (res?.payload?.data?.usedInPercentage == 100) {
+        return toast.error("Storage limit reached, maximum 3GB allowed.");
+      } else {
+        try {
+          const uniqueFileName = `recorded_video_${Date.now()}.webm`; // Generate a unique file name with timestamp
+          const formData = new FormData();
+          formData.append("File", videoBlob, uniqueFileName); // Use the unique file name
+          formData.append("Operation", "Insert");
+          formData.append("AssetType", "Video");
+          formData.append("IsActive", "true");
+          formData.append("IsDelete", "false");
+          formData.append("FolderID", "0");
+          formData.append("AssetName", uniqueFileName);
 
-      // Reset upload progress when done
-      setUploadProgress(0);
-      setUploading(false);
+          const response = await axios.post(ALL_FILES_UPLOAD, formData, {
+            headers: {
+              Authorization: authToken,
+              "Content-Type": "multipart/form-data",
+            },
+            onUploadProgress: (progressEvent) => {
+              const progress = Math.round(
+                (progressEvent.loaded / progressEvent.total) * 100
+              );
+              setUploadProgress(progress);
+            },
+          });
 
-      console.log("API response:", response.data);
-    } catch (error) {
-      console.error("Error sending data to API:", error);
-      setUploadProgress(0);
-      setUploading(false);
-    }
+          // Reset upload progress when done
+          setUploadProgress(0);
+          setUploading(false);
+
+          console.log("API response:", response.data);
+        } catch (error) {
+          console.error("Error sending data to API:", error);
+          setUploadProgress(0);
+          setUploading(false);
+        }
+      }
+    });
   };
 
   const handleDataAvailable = (recorderIndex) => (event) => {

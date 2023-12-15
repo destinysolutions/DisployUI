@@ -8,7 +8,9 @@ import { MdMotionPhotosOn } from "react-icons/md";
 import axios from "axios";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { handleGetStorageDetails } from "../../Redux/SettingSlice";
+import toast from "react-hot-toast";
 
 const Camera = ({ closeModal, onImageUpload, cameraModalRef }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -22,7 +24,10 @@ const Camera = ({ closeModal, onImageUpload, cameraModalRef }) => {
   const [isSaved, setIsSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const toggleCamera = () => {
     setIsFrontCamera(!isFrontCamera);
     setImageSrc(null);
@@ -68,39 +73,50 @@ const Camera = ({ closeModal, onImageUpload, cameraModalRef }) => {
       formData.append("IsActive", "true");
       formData.append("IsDelete", "false");
       formData.append("FolderID", "0");
-      axios
-        .post(ALL_FILES_UPLOAD, formData, {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "multipart/form-data",
-          },
-          onUploadProgress: (progressEvent) => {
-            const progress = Math.round(
-              (progressEvent.loaded / progressEvent.total) * 100
-            );
-            setUploadProgress(progress); // Update progress as the upload progresses
-          },
-        })
-        .then((response) => {
-          setUploading(false);
-          setUploadProgress(0); // Reset progress to 0 after successful upload
 
-          if (response.data.status === 200) {
-            const imageUrl = response.data.data[0];
-            setSavedImages([...savedImages, imageUrl]);
-            setIsSaved(true);
+      const response = dispatch(handleGetStorageDetails({ token }));
 
-            setTimeout(() => {
-              setIsSaved(false);
-              navigate(-1);
-            }, 1000);
-          }
-        })
-        .catch((error) => {
+      response.then((res) => {
+        if (res?.payload?.data?.usedInPercentage == 100) {
           setUploading(false);
-          setUploadProgress(0); // Reset progress to 0 on error
-          console.error("Error uploading image:", error);
-        });
+          setUploadProgress(0);
+          return toast.error("Storage limit reached, maximum 3GB allowed.");
+        } else {
+          axios
+            .post(ALL_FILES_UPLOAD, formData, {
+              headers: {
+                Authorization: authToken,
+                "Content-Type": "multipart/form-data",
+              },
+              onUploadProgress: (progressEvent) => {
+                const progress = Math.round(
+                  (progressEvent.loaded / progressEvent.total) * 100
+                );
+                setUploadProgress(progress); // Update progress as the upload progresses
+              },
+            })
+            .then((response) => {
+              setUploading(false);
+              setUploadProgress(0); // Reset progress to 0 after successful upload
+
+              if (response.data.status === 200) {
+                const imageUrl = response.data.data[0];
+                setSavedImages([...savedImages, imageUrl]);
+                setIsSaved(true);
+
+                setTimeout(() => {
+                  setIsSaved(false);
+                  navigate(-1);
+                }, 1000);
+              }
+            })
+            .catch((error) => {
+              setUploading(false);
+              setUploadProgress(0); // Reset progress to 0 on error
+              console.error("Error uploading image:", error);
+            });
+        }
+      });
     }
   };
 

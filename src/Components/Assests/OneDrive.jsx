@@ -11,7 +11,7 @@ import axios from "axios";
 const OneDrive = ({ setFile }) => {
   // const [app, setApp] = useState(null);
   const baseUrl = "https://onedrive.live.com/picker";
-  const authority = `https://login.microsoftonline.com/f8cdef31-a31e-4b4a-93e4-5f571e91255a`;
+  const authority = `https://login.microsoftonline.com/common`;
   // const authority = `https://login.microsoftonline.com/${process.env.REACT_APP_ONE_DRIVE_TENANTID}`;
   const redirectUri = "http://localhost:3000"; // Update with your web URL
   const clientId = "78054fb4-56f0-494c-b68c-54a4bc664efd"; // Update with your client ID
@@ -443,7 +443,7 @@ const OneDrive = ({ setFile }) => {
 
   // const downloadFileUrl = ;
   const session_token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDI2MTY2NjcsImV4cCI6MTcwMjYyMDI2N30.pIeSxUrkSZp0jhJlXZUgrn8b2wY5fKavCLnzjHVOW6s";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDI2NDYzNDksImV4cCI6MTcwMjY0OTk0OX0.zFWaV3h7SD9EYPKMO4E4vkx2Fp0QwwQ4dy8QTWs1AVw";
   const handleSelect = async (file) => {
     // setFile(file);
     console.log(file);
@@ -461,29 +461,29 @@ const OneDrive = ({ setFile }) => {
           },
         }
       );
-      // function DownloadFiles()
-      //   {
-      //       const IsDone = false;
-      //       try
-      //       {
-      //           oResponse.AccessToken = clsCommon.GetAccessToken(oResponse.AccountNo);
-      //           ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-      //           const Body = new StringBuilder();
-      //           var client = new RestClient("https://api.pandadoc.com/public/v1/documents/" + oResponse.DocumentID + /download);
-      //           client.Timeout = -1;
-      //           var request = new RestRequest(Method.GET);
-      //           request.AddHeader("Accept", "application/json");
-      //           request.AddHeader("Authorization", "Bearer " + oResponse.AccessToken);
-      //           byte[] data = client.DownloadData(request);
-      //           File.WriteAllBytes(ConfigurationManager.AppSettings["DownloadFilepath"].ToString() + oResponse.FileName + ".pdf", data);
-      //           IsDone = true;
-      //       }
-      //       catch (Exception ex)
-      //       {
-      //           clsCommon.WriteErrorLog_QB_2("Download File from Pandadoc. Message:" + ex.Message);
-      //       }
-      //       return IsDone;
+      // const fs = require("fs");
+
+      // async function downloadBinaryFile(url, outputPath) {
+      //   try {
+      //     const response = await axios.get(url, {
+      //       responseType: "arraybuffer",
+      //     });
+
+      //     // If you want to save the binary data to a file
+      //     fs.writeFileSync(outputPath, Buffer.from(response.data));
+
+      //     console.log("Binary file downloaded successfully.");
+      //   } catch (error) {
+      //     console.error("Error downloading binary file:", error.message);
       //   }
+      // }
+
+      // // Example usage:
+      // const fileUrl = "https://example.com/path/to/binary/file.zip";
+      // const outputPath = "downloaded_file.zip";
+
+      // downloadBinaryFile(fileUrl, outputPath);
+
       console.log(data);
     } catch (error) {
       console.log(error);
@@ -514,7 +514,7 @@ const OneDrive = ({ setFile }) => {
           title="Choose file from options"
           showAttribution={false}
           onConnectionSelect={(e) => {
-            console.log(e);
+            // console.log(e);
             setSelectedService(e?.service_id);
           }}
 

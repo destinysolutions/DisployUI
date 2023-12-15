@@ -20,7 +20,8 @@ import PreviewModal from "./PreviewModel";
 import { RxCrossCircled } from "react-icons/rx";
 import Carousel from "./DynamicCarousel";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-
+import Delete_icon from "../../images/Settings/delete-icon.svg";
+import edit_icon from "../../images/Settings/edit-icon.svg";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { GoPencil } from "react-icons/go";
@@ -663,14 +664,14 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
               ref={modalRef}
-              // className={`absolute left-1/2 -translate-x-1/2 `}
-              // style={{
-              //   minHeight: compositonData?.screenHeight + "px",
-              //   maxHeight: compositonData?.screenHeight + "px",
-              //   maxWidth: compositonData?.screenWidth + "px",
-              //   minWidth: compositonData?.screenWidth + "px",
-              // }}
-              className={`fixed left-1/2 -translate-x-1/2 min-h-[80vh] max-h-[80vh] min-w-[90vh] max-w-[90vh] `}
+              className={`absolute left-1/2 -translate-x-1/2 `}
+              style={{
+                minHeight: compositonData?.screenHeight + "px",
+                maxHeight: compositonData?.screenHeight + "px",
+                maxWidth: compositonData?.screenWidth + "px",
+                minWidth: compositonData?.screenWidth + "px",
+              }}
+              // className={`fixed left-1/2 -translate-x-1/2 min-h-[80vh] max-h-[80vh] min-w-[90vh] max-w-[90vh] `}
             >
               <RxCrossCircled
                 className="fixed z-50 w-[30px] h-[30px] text-white hover:bg-black/50 bg-black/20 rounded-full top-1 right-1 cursor-pointer"
@@ -763,7 +764,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
           <div className="flex flex-wrap rounded-xl mt-8 shadow bg-white">
-            <div className="w-full md:w-1/2 border-r-2 border-r-[#E4E6FF] p-5">
+            <div className="w-full xl:w-1/2 border-r-2 border-r-[#E4E6FF] p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Link to="/FileUpload">
                   <button
@@ -825,22 +826,41 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className="w-full md:w-1/2 p-5">
-              <div className="flex border-b border-b-[#E4E6FF] pb-5">
-                <div className="layout-img me-5">
-                  <img
+            <div className="w-full xl:w-1/2 p-5">
+              <div className="flex flex-wrap border-b border-b-[#E4E6FF] pb-5 w-full">
+                <div
+                  className={`layout-img me-5 w-40 h-28 bg-[#D5E3FF] relative`}
+                >
+                  {!loading &&
+                    compositonData !== null &&
+                    compositonData?.lstLayloutModelList?.map((obj, index) => (
+                      <div
+                        key={index}
+                        style={{
+                          position: "absolute",
+                          left: obj.leftside + "%",
+                          top: obj.topside + "%",
+                          width: obj?.width + "%",
+                          height: obj?.height + "%",
+                          backgroundColor:
+                            currentSection == index + 1 && "#e4aa07",
+                        }}
+                        className="border border-black "
+                      ></div>
+                    ))}
+                  {/* <img
                     src={`data:image/svg+xml;utf8,${encodeURIComponent(
                       compositonData?.svg
                     )}`}
                     alt="Logo"
                     className="w-32"
-                  />
+                  /> */}
                 </div>
                 <div className="layout-detaills">
                   <h3 className="text-lg font-medium block mb-3">
                     Duration:-&nbsp;<span>{totalDurationSeconds} Sec</span>
                   </h3>
-                  <div className="flex">
+                  <div className="flex flex-wrap gap-2">
                     {Array(compositonData?.lstLayloutModelList?.length)
                       .fill(2)
                       .map((item, index) => (
@@ -853,7 +873,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                             currentSection == index + 1
                               ? "text-white"
                               : "text-primary"
-                          }  rounded-full py-2 border border-primary me-3`}
+                          }  rounded-full py-2 border border-primary `}
                           key={index}
                           // disabled={addAsset.length !== currentSection - 1}
                           onClick={() => setcurrentSection(index + 1)}
@@ -889,8 +909,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                       {item.assetType === "OnlineImage" && (
                                         <>
                                           <img
-                                          className="imagebox relative w-full h-28 object-cover"
-                                          src={item?.assetFolderPath}
+                                            className="imagebox relative w-full h-28 object-cover"
+                                            src={item?.assetFolderPath}
                                             alt={item?.assetName}
                                           />
                                         </>
@@ -974,13 +994,13 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               <td className="text-sm flex justify-end items-center gap-4 min-w-[20%]">
                                 <a onClick={() => onEditSelectedAsset(index)}>
                                   <img
-                                    src="../../../Settings/edit-icon.svg"
+                                    src={edit_icon}
                                     className="min-w-[2vw] cursor-pointer"
                                   />
                                 </a>
                                 <a onClick={() => deleteSeletedAsset(index)}>
                                   <img
-                                    src="../../../Settings/delete-icon.svg"
+                                    src={Delete_icon}
                                     className="min-w-[2vw] cursor-pointer"
                                   />
                                 </a>

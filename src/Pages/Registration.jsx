@@ -29,8 +29,10 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import { useDispatch } from "react-redux";
-import { handleRegisterUser } from "../Redux/Authslice";
+import { handleLoginWithGoogle, handleRegisterUser } from "../Redux/Authslice";
 import logo from "../images/DisployImg/logo.svg";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
 const Registration = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -41,7 +43,7 @@ const Registration = () => {
   // console.log("errorMessgeVisible:", errorMessgeVisible); // Check if it's true
   // console.log("errorMessge:", errorMessge);
   //using for routing
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -87,12 +89,11 @@ const Registration = () => {
         .then((userCredential) => {
           const user = userCredential.user;
           const usertoken = user.za;
-          console.log({ usertoken, user });
+          // console.log({ usertoken, user });
           sendEmailVerification()
             .then(() => {
-              console.log("Verification email sent.");
+              // console.log("Verification email sent.");
               alert("Verification email sent.");
-
               const formData = new FormData();
               formData.append("OrganizationName", values.companyName);
               formData.append("Password", values.password);
@@ -119,13 +120,10 @@ const Registration = () => {
               if (response) {
                 response
                   .then(() => {
-                    history("/", {
-                      state: { message: "Registration successfull " },
-                    });
+                    window.localStorage.setItem("timer", JSON.stringify(18_00));
                     toast.success("Registration successfully.");
+                    navigate("/screens");
                     setLoading(false);
-
-                    auth.signOut();
                   })
                   .catch((error) => {
                     console.log(error);
@@ -176,27 +174,35 @@ const Registration = () => {
     },
   });
 
-  const SignInWithGoogle = async () => {
+  const SignInWithGoogle = async (data) => {
+    //  return console.log(data);
+    const formData = new FormData();
+
+    formData.append("FirstName", data.name);
+    formData.append("Email", data.email);
+    formData.append("Phone", null);
+    formData.append("Operation", "Insert");
+    formData.append("googleID", data?.sub);
+
+    const config = {
+      method: "post",
+      url: ADD_REGISTER_URL,
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    // setTimeout(async () => {
     try {
-      const res = await auth.signInWithPopup(Googleauthprovider);
-      const user = res.user;
-      const formData = new FormData();
-
-      formData.append("FirstName", user.displayName);
-      formData.append("Email", user.email);
-
-      formData.append("Phone", user.phoneNumber);
-      formData.append("Operation", "Insert");
-      axios
-        .post(ADD_REGISTER_URL, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+      const response = await dispatch(handleLoginWithGoogle({ config }));
+      if (!response) return;
+      response
         .then(() => {
-          history("/", {
-            state: { message: "Registration successfull !!" },
-          });
+          window.localStorage.setItem("timer", JSON.stringify(18_00));
+          toast.success("Sign up successfully.");
+          // navigate("/screens");
+          console.log(data);
         })
         .catch((error) => {
           console.log(error);
@@ -205,7 +211,10 @@ const Registration = () => {
         });
     } catch (err) {
       console.log(err);
+      setErrorMessgeVisible(true);
+      setErrorMessge("Registration failed.");
     }
+    // }, 1000);
   };
 
   const SignInFaceBook = async () => {
@@ -224,7 +233,7 @@ const Registration = () => {
           operation: "Insert",
         })
         .then(() => {
-          history("/", {
+          navigate("/", {
             state: { message: "Registration successfull !!" },
           });
         })
@@ -297,11 +306,7 @@ const Registration = () => {
         <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center loginbg  lg:px-6 md:px-6 sm:px-2 xs:px-2 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-2  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
             <div className="flex items-center pb-5">
-              <img
-                className="w-fit h-fit"
-                alt="logo"
-                src={logo}
-              />
+              <img className="w-fit h-fit" alt="logo" src={logo} />
             </div>
             <div className="w-full border-[#ffffff6e] border rounded-lg shadow-md md:mt-0  xl:p-0 lg:min-w-[600px] md:min-w-[600px] sm:min-w-auto xs:min-w-auto">
               <div className="p-3 sm:px-8 py-1">
@@ -493,6 +498,21 @@ const Registration = () => {
                 </form>
               </div>
             </div>
+            {/* login with google  */}
+            {/* <div className="mt-4">
+              <GoogleOAuthProvider
+                clientId={process.env.REACT_APP_GOOGLE_DRIVE_CLIENTID}
+              >
+                <GoogleLogin
+                  theme="outline"
+                  type="standard"
+                  onSuccess={(res) => {
+                    SignInWithGoogle(jwtDecode(res.credential));
+                  }}
+                  onError={(err) => console.log(err)}
+                ></GoogleLogin>
+              </GoogleOAuthProvider>
+            </div> */}
             {/* <div className="flex items-center justify-center mt-4">
               <div className="socialIcon socialIcon1">
                 <button onClick={SignInWithGoogle}>
