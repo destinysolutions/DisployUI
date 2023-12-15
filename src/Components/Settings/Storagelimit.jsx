@@ -1,32 +1,17 @@
-import axios from "axios";
 import React from "react";
 import { useEffect } from "react";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { handleGetStorageDetails } from "../../Redux/SettingSlice";
 
 const Storagelimit = () => {
-  const { token ,user} = useSelector((state) => state.root.auth);
-  const authToken = `Bearer ${token}`;
-  
-  const [storageData, setStorageData] = useState("");
-  useEffect(() => {
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/UserMaster/GetStorageDetails",
-      headers: {
-        Authorization: authToken,
-      },
-    };
+  const { token } = useSelector((state) => state.root.auth);
+  const { storageDegtails } = useSelector((state) => state.root.setting);
 
-    axios
-      .request(config)
-      .then((response) => {
-        setStorageData(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const response = dispatch(handleGetStorageDetails({ token }));
+    if (!response) return;
   }, []);
 
   return (
@@ -73,7 +58,7 @@ const Storagelimit = () => {
                       borderRadius: "5px",
                     }}
                   >
-                    {storageData.totalStorage} GB
+                    {storageDegtails?.totalStorage} GB
                   </span>
                 </td>
                 <td className="text-[#5E5E5E] text-center">
@@ -84,7 +69,7 @@ const Storagelimit = () => {
                       borderRadius: "5px",
                     }}
                   >
-                    {storageData.consumedSpace}
+                    {storageDegtails?.consumedSpace} GB
                   </span>
                 </td>
                 <td className="text-[#5E5E5E] text-center">
@@ -95,14 +80,14 @@ const Storagelimit = () => {
                       borderRadius: "5px",
                     }}
                   >
-                    {/* {storageData.availableSpace == 3
-                      ? `${storageData.availableSpace} GB`
-                      : `${storageData.availableSpace} MB`} */}
-                    {storageData.availableSpace} GB
+                    {/* {storageDegtails?.availableSpace == 3
+                      ? `${storageDegtails?.availableSpace} GB`
+                      : `${storageDegtails?.availableSpace} MB`} */}
+                    {storageDegtails?.availableSpace} GB
                   </span>
                 </td>
                 <td className="text-center">
-                  {storageData.usedInPercentage} %
+                  {storageDegtails?.usedInPercentage} %
                 </td>
               </tr>
             </tbody>

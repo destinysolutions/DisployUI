@@ -38,6 +38,26 @@ export const handleLoginUser = createAsyncThunk(
   }
 );
 
+export const handleLoginWithGoogle = createAsyncThunk(
+  "auth/handleLoginWithGoogle",
+  async ({ config }, { rejectWithValue }) => {
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status == 200) {
+        return response.data;
+      } else {
+        return rejectWithValue(response?.data);
+      }
+    } catch (error) {
+      if (error?.response) {
+        console.log(error?.response);
+        toast.error(error?.response?.data?.message);
+        return rejectWithValue(error?.response?.data);
+      }
+    }
+  }
+);
+
 const initialState = {
   loading: false,
   user: null,
@@ -80,6 +100,7 @@ const Authslice = createSlice({
       state.error = payload ?? null;
       state.token = null;
     });
+
     // login user
     builder.addCase(handleLoginUser.pending, (state, {}) => {
       state.loading = true;
@@ -92,6 +113,24 @@ const Authslice = createSlice({
       state.token = payload?.data?.token;
     });
     builder.addCase(handleLoginUser.rejected, (state, { payload }) => {
+      state.loading = false;
+      state.user = null;
+      state.error = payload ?? null;
+      state.token = null;
+    });
+
+    // login with google
+    builder.addCase(handleLoginWithGoogle.pending, (state, {}) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(handleLoginWithGoogle.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.user = payload;
+      state.error = null;
+      state.token = payload?.data?.token;
+    });
+    builder.addCase(handleLoginWithGoogle.rejected, (state, { payload }) => {
       state.loading = false;
       state.user = null;
       state.error = payload ?? null;

@@ -7,18 +7,18 @@ import { Tooltip } from "@material-tailwind/react";
 import { ALL_FILES_UPLOAD, GOOGLE_DRIVE } from "../../Pages/Api";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+
 const GoogleDrive = () => {
   const { user } = useSelector((state) => state.root.auth);
 
   const [openPicker] = useDrivePicker();
   const [selectedFiles, setSelectedFiles] = useState([]);
-  // const [accessToken, setAccessToken] = useState("");
 
   const handleFileUpload = async (data) => {
     if (data.action === "picked") {
       const selectedImages = data.docs;
-      console.log(selectedImages, "selectedImages");
       const downloadURLs = selectedImages.map((file) => file.url);
+      console.log(selectedImages, "selectedImages");
 
       setSelectedFiles(downloadURLs);
     }
@@ -36,14 +36,14 @@ const GoogleDrive = () => {
       window.open(url, "_blank");
     });
   };
-  // https://unify.apideck.com/vault/callback
 
-  const handleOpenPicker = async (accessToken) => {
+  const handleOpenPicker = async (token) => {
+    console.log(token);
     openPicker({
       clientId: process.env.REACT_APP_GOOGLE_DRIVE_CLIENTID, // Your client ID
       developerKey: process.env.REACT_APP_GOOGLE_DEVELOPER_KEY, // Your developer key
       viewId: "DOCS",
-      token: accessToken,
+      token,
       showUploadView: true,
       showUploadFolders: true,
       supportDrives: true,
@@ -73,14 +73,13 @@ const GoogleDrive = () => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data);
         const googleAuthURL = response.data.Data[0].URL;
-        if (googleAuthURL) {
-          // Redirect to the Google authentication URL
+        if (response.data?.Success == "False") {
           window.location.href = googleAuthURL;
+          // window.open(googleAuthURL)
+          // setGoogleAuthURL(googleAuthURL)
         } else {
-          //setAccessToken(response.data.Data[0].AuthToken);
-          handleOpenPicker(response.data.Data[0].AuthToken);
+          console.log("hanget-->", response.data);
         }
       })
       .catch((error) => {
@@ -91,6 +90,7 @@ const GoogleDrive = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const authorizationCode = urlParams.get("code");
+    console.log("run");
     if (authorizationCode) {
       let data = JSON.stringify({
         userId: user?.userID,
@@ -113,7 +113,8 @@ const GoogleDrive = () => {
       axios
         .request(config)
         .then((response) => {
-          console.log(response.data);
+          handleOpenPicker(response.data.Data[0].AuthToken);
+          // setAuthToken(response.data.Data[0].AuthToken);
         })
         .catch((error) => {
           console.log(error);
@@ -122,8 +123,8 @@ const GoogleDrive = () => {
       console.log("Authorization code not found in the URL.");
     }
   });
-
-  console.log(selectedFiles, "dfsdf");
+  // console.log(googleAuthURL);
+  // console.log(selectedFiles, "dfsdf");
   return (
     <>
       <Tooltip

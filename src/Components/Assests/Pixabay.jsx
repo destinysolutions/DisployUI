@@ -3,14 +3,14 @@ import axios from "axios";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { handleGetStorageDetails } from "../../Redux/SettingSlice";
 
 const Pixabay = ({ closeModal, pixabayModalRef }) => {
   const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
-  
   const [images, setImages] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedImages, setSelectedImages] = useState([]);
@@ -21,6 +21,8 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
   const [uploading, setUploading] = useState(false);
 
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const API_KEY = "38694421-d79007fafdaa5464faa5f9999";
@@ -73,11 +75,11 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
 
   //API
   const handleImageUpload = () => {
-    if(selectedImages.length===0) {
-      toast.remove()
-      return toast.error("Please select atleast one image")
+    if (selectedImages.length === 0) {
+      toast.remove();
+      return toast.error("Please select atleast one image");
     }
-    toast.remove()
+    toast.remove();
     setUploadInProgress(true);
     selectedImages.forEach((image) => {
       const formData = new FormData();
@@ -92,38 +94,50 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
         `${image.webformatHeight}*${image.webformatWidth}`
       );
       formData.append("AssetName", image.tags);
-      axios
-        .post(ALL_FILES_UPLOAD, formData, {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "multipart/form-data",
-          },
-          onUploadProgress: (progressEvent) => {
-            const progress = Math.round(
-              (progressEvent.loaded / progressEvent.total) * 100
-            );
-            setImageUploadProgress((prevProgress) => ({
-              ...prevProgress,
-              [image.id]: progress,
-            }));
-          },
-        })
-        .then((response) => {
-          // console.log("Upload Success:", response.data);
-          toast.success("Uploaded successfully.");
-          navigate(-1);
-        })
-        .catch((error) => {
-          console.error("Upload Error:", error);
-        })
-        .finally(() => {
-          if (
-            selectedImages.every((img) => imageUploadProgress[img.id] === 100)
-          ) {
-            setUploadInProgress(false);
-          }
-        });
-      setUploadInProgress(false);
+
+      const response = dispatch(handleGetStorageDetails({ token }));
+
+      response.then((res) => {
+        if (res?.payload?.data?.usedInPercentage == 100) {
+          setUploadInProgress(false);
+          return toast.error("Storage limit reached, maximum 3GB allowed.");
+        } else {
+          axios
+            .post(ALL_FILES_UPLOAD, formData, {
+              headers: {
+                Authorization: authToken,
+                "Content-Type": "multipart/form-data",
+              },
+              onUploadProgress: (progressEvent) => {
+                const progress = Math.round(
+                  (progressEvent.loaded / progressEvent.total) * 100
+                );
+                setImageUploadProgress((prevProgress) => ({
+                  ...prevProgress,
+                  [image.id]: progress,
+                }));
+              },
+            })
+            .then((response) => {
+              // console.log("Upload Success:", response.data);
+              toast.success("Uploaded successfully.");
+              navigate(-1);
+            })
+            .catch((error) => {
+              console.error("Upload Error:", error);
+              setUploadInProgress(false);
+            })
+            .finally(() => {
+              if (
+                selectedImages.every(
+                  (img) => imageUploadProgress[img.id] === 100
+                )
+              ) {
+                setUploadInProgress(false);
+              }
+            });
+        }
+      });
     });
   };
 

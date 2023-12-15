@@ -8,8 +8,9 @@ import axios from "axios";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { handleGetStorageDetails } from "../../Redux/SettingSlice";
 
 const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -21,8 +22,12 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [uploadInProgress, setUploadInProgress] = useState(false);
   const [imageUploadProgress, setImageUploadProgress] = useState({});
+  const [imageUploadStatus, setImageUploadStatus] = useState({});
+
   const API_KEY = "Sgv-wti48nSLfRjYsH7lmH_8N3wjzC18ccTYFxBzxmw";
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   const fetchRequest = async (query, page = 1) => {
     const data = await fetch(
@@ -41,9 +46,11 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
       setCurrentPage(page + 1);
     }
   };
+
   useEffect(() => {
     fetchRequest(img);
   }, [img]);
+
   useEffect(() => {
     onSelectedImages(selectedImages);
   }, [selectedImages]);
@@ -55,10 +62,11 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
         : [...prevSelected, imageId]
     );
   };
+
   const handleLoadMore = () => {
     fetchRequest(img, currentPage);
   };
-  const [imageUploadStatus, setImageUploadStatus] = useState({});
+
   const handleImageUpload = () => {
     setUploadInProgress(true);
     selectedImages.forEach((image) => {
@@ -76,48 +84,58 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
         ...prevProgress,
         [image.id]: 0,
       }));
-      axios
-        .post(ALL_FILES_UPLOAD, formData, {
-          headers: {
-            Authorization: authToken,
-            "Content-Type": "multipart/form-data",
-          },
-          onUploadProgress: (progressEvent) => {
-            const progress = Math.round(
-              (progressEvent.loaded / progressEvent.total) * 100
-            );
-            setImageUploadProgress((prevProgress) => ({
-              ...prevProgress,
-              [image.id]: progress,
-            }));
-          },
-        })
-
-        .then((response) => {
-          console.log("Upload Success:", response.data);
-          setImageUploadStatus((prevStatus) => ({
-            ...prevStatus,
-            [image.id]: "success",
-          }));
-          toast.success("Uploaded Successfully.");
-          navigate(-1);
-        })
-        .catch((error) => {
-          console.error("Upload Error:", error);
-          setImageUploadStatus((prevStatus) => ({
-            ...prevStatus,
-            [image.id]: "error",
-          }));
-        })
-        .finally(() => {
-          if (
-            selectedImages.every(
-              (img) => imageUploadStatus[img.id] === "success"
-            )
-          ) {
-            setUploadInProgress(false);
-          }
-        });
+      const response = dispatch(handleGetStorageDetails({ token }));
+    
+      response.then((res) => {
+        if (res?.payload?.data?.usedInPercentage == 100) {
+          setUploadInProgress(false);
+          return toast.error("Storage limit reached, maximum 3GB allowed.");
+        } else {
+          return axios
+            .post(ALL_FILES_UPLOAD, formData, {
+              headers: {
+                Authorization: authToken,
+                "Content-Type": "multipart/form-data",
+              },
+              onUploadProgress: (progressEvent) => {
+                const progress = Math.round(
+                  (progressEvent.loaded / progressEvent.total) * 100
+                );
+                setImageUploadProgress((prevProgress) => ({
+                  ...prevProgress,
+                  [image.id]: progress,
+                }));
+              },
+            })
+            .then((response) => {
+              console.log("Upload Success:", response.data);
+              setImageUploadStatus((prevStatus) => ({
+                ...prevStatus,
+                [image.id]: "success",
+              }));
+              toast.success("Uploaded Successfully.");
+              navigate(-1);
+              setUploadInProgress(false);
+            })
+            .catch((error) => {
+              console.error("Upload Error:", error);
+              setImageUploadStatus((prevStatus) => ({
+                ...prevStatus,
+                [image.id]: "error",
+              }));
+              setUploadInProgress(false);
+            })
+            .finally(() => {
+              if (
+                selectedImages.every(
+                  (img) => imageUploadStatus[img.id] === "success"
+                )
+              ) {
+                setUploadInProgress(false);
+              }
+            });
+        }
+      });
     });
   };
 
