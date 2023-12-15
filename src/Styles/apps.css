@@ -40,7 +40,22 @@
   top: 54px;
 }
 
-.editdw:before {
+/* Weather dropdown */
+.editdw-weather{
+  position: absolute;
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: none;
+  font-size: 16px;
+  width: 166px;
+  border: 1px solid #ccc;
+  transform: translate(1%, 0px);
+  right: 75px;
+  top: 140px;
+}
+
+.editdw:before, .editdw-weather:before {
   content: "";
   position: absolute;
   width: 15px;

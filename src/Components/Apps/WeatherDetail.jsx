@@ -1,27 +1,45 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-import { AiOutlineClose } from "react-icons/ai";
+import {
+  AiOutlineClose,
+  AiOutlineCloseCircle,
+  AiOutlineSearch,
+} from "react-icons/ai";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useState } from "react";
 import moment from "moment";
 import { GoPencil } from "react-icons/go";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { SketchPicker } from "react-color";
 import ReactApexChart from "react-apexcharts";
 import { debounce } from "lodash";
+import { RiDeleteBin5Line } from "react-icons/ri";
+import { TbBoxMultiple, TbCalendarTime } from "react-icons/tb";
+import { MdPlaylistPlay } from "react-icons/md";
+import { FiUpload } from "react-icons/fi";
+import { useSelector } from "react-redux";
 const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   let api_key = "41b5176532e682fd8b4cb6a44e3bd1a4";
+  const history = useNavigate();
+  const moreModalRef = useRef(null);
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
   const [GPSLocation, setGPSLocation] = useState({
     latitude: null,
     longitude: null,
   });
   const [edited, setEdited] = useState(false);
   const [loadFirst, setLoadFirst] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
   const [selectedTemperature, setSelectedTemperature] = useState("Celsius");
+  const [selectedLayout, setSelectedLayout] = useState("Landscape");
+  const [selectedTickerView, setSelectedTickerView] = useState("Today's Weather");
 
+  const [selectedPreview, setSelectedPreview] = useState(false);
+  const [showSetScreenModal, setShowSetScreenModal] = useState(false);
   const currentDate = new Date();
   const [instanceName, setInstanceName] = useState(
     moment(currentDate).format("YYYY-MM-DD hh:mm")
@@ -32,10 +50,11 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
     { id: 2, location: "", weatherData: null, mainData: null },
     { id: 3, location: "", weatherData: null, mainData: null },
   ]);
-  const [weatherData, setWeatherData] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [playlistDeleteModal, setPlaylistDeleteModal] = useState(false);
   const [language, setLanguage] = useState("English");
-  const [enabled, setEnabled] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
 
   useEffect(() => {
     if (isMuted && navigator.geolocation) {
@@ -50,6 +69,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
             { id: 2, location: "", weatherData: null, mainData: null },
             { id: 3, location: "", weatherData: null, mainData: null },
           ]);
+          setSelectedLayout("Landscape");
           setLoadFirst(true);
         },
         (error) => {
@@ -61,22 +81,25 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [isMuted]);
 
-  //  const [countryLocation,setCountryLocation]=useState("india");
-  //  const [cityLocation,setCityLocation]=useState('');
-  //  const [stateLocation,setStateLocation]=useState('');
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        moreModalRef.current &&
+        !moreModalRef.current.contains(event?.target)
+      ) {
+        setShowPopup(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside]);
 
-  //   useEffect(() => {
-  //   const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${countryLocation}&appid=${api_key}`;
+  function handleClickOutside() {
+    setShowPopup(false);
+  }
 
-  //   axios
-  //     .get(apiUrl)
-  //     .then((response) => {
-  //       setWeatherData(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching weather data: ", error);
-  //     });
-  // }, [city, api_key]);
   const handleMuteChange = () => {
     setIsMuted(!isMuted);
     setGPSLocation({ latitude: null, longitude: null });
@@ -101,6 +124,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
     const updatedLocations = locations?.map((item) => {
       if (item?.weatherData !== null) {
         const ChartSeries = [];
+        const Days = [];
         const arr = item.mainData?.list?.map((items) => {
           const convertedTemp = convertTemperature(
             items?.main?.temp,
@@ -110,8 +134,9 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
             items?.main?.feels_like,
             selectedTemperature
           );
-          if (ChartSeries?.length < 7) {
+          if (ChartSeries?.length < 7 && Days.length < 7) {
             ChartSeries?.push(convertedTemp.toFixed(2));
+            Days?.push(items?.Day);
           }
           return {
             ...items,
@@ -137,7 +162,11 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
               toolbar: {
                 show: false,
               },
+              zoom: {
+                enabled: false,
+              },
             },
+            colors: ['#000000'],
             axisPointer: {
               show: false,
             },
@@ -151,16 +180,29 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
               show: false,
             },
             yaxis: {
-              show: false,
+              labels: {
+                style: {
+                  colors: ["transparent"],
+                },
+              },
             },
             xaxis: {
-              categories: ["3", "7", "11", "3", "7", "11", "3"],
+              categories: Days,
               axisTicks: {
                 show: false,
               },
               axisBorder: {
                 show: false,
               },
+              labels: {
+                style: {
+                  colors: ["#ffffff"],
+                  fontWeight: 500,
+                },
+              },
+            },
+            tooltip: {
+              enabled: false, // Set to false to disable the tooltip on hover
             },
           },
         };
@@ -172,7 +214,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
         return {
           ...item,
-          weatherData: updatedWeatherData,
+          weatherData: item?.location?.length > 0 ? updatedWeatherData : null,
         };
       }
       return item;
@@ -197,6 +239,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
     if (loadFirst) {
       const fetchData = async () => {
         try {
+          setLoading(true);
           const updatedLocations = await Promise.all(
             locations.map(async (location) => {
               const { id, location: loc } = location;
@@ -237,8 +280,10 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
           );
           convertIntoTemperatureUnits(updatedLocations);
           // setLocations(updatedLocations);
+          setLoading(false);
         } catch (error) {
           console.error("Error fetching weather data:", error);
+          setLoading(false);
         }
       };
 
@@ -248,10 +293,59 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   }, [loadFirst, locations, api_key, isMuted]);
 
   useEffect(() => {
+    setLoading(true);
     convertIntoTemperatureUnits(locations);
+    setLoading(false);
   }, [selectedTemperature]);
 
   const debouncedOnChange = debounce(handleLocationChange, 1000);
+
+  const handleSave = () => {
+    let data = JSON.stringify({
+      name:instanceName,
+      Use_screen_location: isMuted,
+      Location_1:!isMuted ? locations[0]?.location : "",
+      Location_2:!isMuted ? locations[1]?.location : "",
+      Location_3:!isMuted ? locations[2]?.location : "",
+      Layout: selectedLayout,
+      Temperature :selectedTemperature,
+      Ticker_Tape:selectedTickerView,
+      BackGround_color:selectedColor,
+    });
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      // url: SCROLL_ADD_TEXT,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+      data: data,
+    };
+
+    setSaveLoading(true);
+
+    axios
+      .request(config)
+      .then((response) => {
+        if (response.data.status === 200) {
+          history("/apps");
+        }
+        setSaveLoading(false);
+      })
+      .catch((error) => {
+        setSaveLoading(false);
+        console.log(error);
+      });
+    console.log("Save");
+  };
+
+  const handleLayout = (e) => {
+    setLoading(true);
+    setSelectedLayout(e.target.value);
+    setLoading(false);
+  };
 
   return (
     <>
@@ -283,14 +377,27 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
               )}
             </div>
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
-              <button className=" flex align-middle border-primary items-center border-2 rounded-full py-1 px-4 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                Preview
+              <button
+                className="w-24 flex align-middle border-primary items-center border-2 rounded-full py-1 px-4 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50 justify-center"
+                onClick={() => {
+                  setSelectedPreview(!selectedPreview);
+                  setSelectedLayout("Landscape");
+                }}
+              >
+                {selectedPreview ? "Edit" : "Preview"}
               </button>
-              <button className="sm:ml-2 xs:ml-1 flex align-middle bg-primary text-white items-center rounded-full py-1 px-4 text-base hover:shadow-lg hover:shadow-primary-500/50">
-                Save
+              <button
+                className="sm:ml-2 xs:ml-1 flex align-middle bg-primary text-white items-center rounded-full py-1 px-4 text-base hover:shadow-lg hover:shadow-primary-500/50"
+                // onClick={handleSave}
+                disabled={saveLoading}
+              >
+                {saveLoading ? "Saving..." : "Save"}
               </button>
               <div className="relative">
-                <button className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full py-[10px] px-[11px] text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                <button
+                  className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full py-[10px] px-[11px] text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  onClick={() => setShowPopup(!selectedPreview && !showPopup)}
+                >
                   <BiDotsHorizontalRounded />
                 </button>
               </div>
@@ -304,36 +411,34 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
           <div className="mt-5 mb-5">
             <div className="grid grid-cols-12 gap-6 mt-5">
-              <div className="lg:col-span-6 md:col-span-6 sm:col-span-10 ">
-                <div className="shadow-md bg-white rounded-lg p-5 h-full">
-                  <div className="mb-6 w-full">
-                    <div className="relative inline-flex items-center cursor-pointer w-full justify-between">
-                      <span className="w-2/5 text-lg font-semibold text-gray-900 dark:text-gray-300">
-                        Use screen location*:
-                      </span>
-                      <div className="text-right  items-end">
-                        <label className="inline-flex relative items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            className="sr-only peer"
-                            readOnly
-                            checked={isMuted}
-                            onChange={handleMuteChange}
-                          />
-                          <div
-                            // onClick={() => {
-                            //   setEnabled(!enabled);
-                            // }}
-                            className={`w-11 h-6 ${
-                              isMuted ? "bg-SlateBlue" : "bg-lightgray"
-                            } rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all `}
-                          ></div>
+              {!selectedPreview && (
+                <div className="lg:col-span-6 md:col-span-6 sm:col-span-10 ">
+                  <div className="shadow-md bg-white rounded-lg p-5 h-full">
+                    <div className="mb-6 w-full">
+                      <div className="relative inline-flex items-center w-full justify-between">
+                        <label className="w-2/5 text-lg font-semibold text-gray-900 dark:text-gray-300">
+                          Use screen location*:
                         </label>
+                        <div className="text-right  items-end">
+                          <label className="inline-flex relative items-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              className="sr-only peer"
+                              readOnly
+                              checked={isMuted}
+                              onChange={handleMuteChange}
+                            />
+                            <div
+                              className={`w-11 h-6 ${
+                                isMuted ? "bg-SlateBlue" : "bg-lightgray"
+                              } rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all `}
+                            ></div>
+                          </label>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* <div className="mb-3 relative inline-flex items-center w-full">
+                    {/* <div className="mb-3 relative inline-flex items-center w-full">
                     <label
                       htmlFor="message"
                       className="w-2/5 mb-3 text-sm font-medium text-gray-900 dark:text-white"
@@ -344,7 +449,8 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       id="languages"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       onChange={(e) => setLanguage(e.target.value)}
-                      value={language}
+                      // value={language}
+                      defaultValue={language}
                     >
                       <option value="English">English</option>
                       <option value="German">German</option>
@@ -354,28 +460,28 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     </select>
                           </div> */}
 
-                  {!isMuted &&
-                    locations.map((location) => (
-                      <div
-                        className="mb-3 relative inline-flex items-center w-full"
-                        key={location.id}
-                      >
-                        <label
-                          htmlFor="countries"
-                          className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    {!isMuted &&
+                      locations.map((location) => (
+                        <div
+                          className="mb-3 relative inline-flex items-center w-full"
+                          key={location.id}
                         >
-                          Location{location.id === 1 && "*"} {location.id}:
-                        </label>
-                        <input
-                          type="text"
-                          id="first_name"
-                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          placeholder={location.location}
-                          onChange={(e) =>
-                            debouncedOnChange(location.id, e.target.value)
-                          }
-                        />
-                        {/* {location.weatherData ? (
+                          <label
+                            htmlFor="countries"
+                            className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                          >
+                            Location{location.id === 1 && "*"} {location.id}:
+                          </label>
+                          <input
+                            type="text"
+                            id="first_name"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder={location.location}
+                            onChange={(e) =>
+                              debouncedOnChange(location.id, e.target.value)
+                            }
+                          />
+                          {/* {location.weatherData ? (
                         <div>
                           <h3>City: {location.weatherData.name}</h3>
                           <p>Temperature: {location.weatherData.main.temp} K</p>
@@ -387,67 +493,114 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       ) : (
                         <p>No weather data available for this location.</p>
                       )} */}
-                      </div>
-                    ))}
+                        </div>
+                      ))}
+                    {!isMuted && (
+                      <div className="mb-3 relative inline-flex items-center w-full">
+                        <label
+                          htmlFor="message"
+                          className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                          Layout*
+                        </label>
+                        <select
+                          id="layout"
+                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          onChange={(e) => handleLayout(e)}
+                          // value={selectedLayout}
+                      defaultValue={selectedLayout}
 
-                  <div className="mb-3 relative inline-flex items-center w-full">
-                    <label
-                      htmlFor="message"
-                      className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Temperature Unit*
-                    </label>
-                    <select
-                      id="countries"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      onChange={(e) => setSelectedTemperature(e.target.value)}
-                      value={selectedTemperature}
-                    >
-                      <option value="Celsius">Celsius</option>
-                      <option value="Fahrenheit">Fahrenheit</option>
-                      <option value="Kelvin">Kelvin</option>
-                      <option value="Rankine">Rankine</option>
-                      <option value="Reaumur">Reaumur</option>
-                    </select>
+                        >
+                          <option value="Landscape">Landscape</option>
+                          <option value="Portrait">Portrait</option>
+                        </select>
+                      </div>
+                    )}
+
+                    <div className="mb-3 relative inline-flex items-center w-full">
+                      <label
+                        htmlFor="message"
+                        className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Temperature Unit*
+                      </label>
+                      <select
+                        id="countries"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        onChange={(e) => setSelectedTemperature(e.target.value)}
+                        // value={selectedTemperature}
+                        defaultValue={selectedTemperature}
+                      >
+                        <option value="Celsius">Celsius</option>
+                        <option value="Fahrenheit">Fahrenheit</option>
+                        <option value="Kelvin">Kelvin</option>
+                        <option value="Rankine">Rankine</option>
+                        <option value="Reaumur">Reaumur</option>
+                      </select>
+                    </div>
+                    <div className="mb-3 relative inline-flex items-center w-full">
+                      <label
+                        htmlFor="message"
+                        className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Ticker Tape View*
+                      </label>
+                      <select
+                        id="countries"
+                        defaultValue={selectedTickerView}
+                        // value={selectedTickerView}
+                        onChange={(e)=> setSelectedTickerView(e.target.value)}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      >
+                        <option value="Today's Weather">Today's Weather</option>
+                        <option value="Weekly forecast Weather">Weekly forecast Weather</option>
+                      </select>
+                    </div>
+                    <div className="mb-3 relative inline-flex items-center w-full">
+                      <label
+                        htmlFor="message"
+                        className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Background Color:
+                      </label>
+                      <SketchPicker
+                        color={selectedColor}
+                        onChange={(color) => setSelectedColor(color.hex)}
+                        className="sketch-picker-weather"
+                      />
+                    </div>
+                    <p className="text-center pt-6">
+                      If you choose to display weather in a ticker tape zone
+                      layout, then this setting determines the view. If using
+                      full screen as in the preview above, this setting will not
+                      alter the app.
+                    </p>
                   </div>
-                  <div className="mb-3 relative inline-flex items-center w-full">
-                    <label
-                      htmlFor="message"
-                      className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Ticker Tape View*
-                    </label>
-                    <select
-                      id="countries"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-3/5 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    >
-                      <option selected>Today's Weather</option>
-                      <option value="US">Weekly forecast Weather</option>
-                    </select>
-                  </div>
-                  <div className="mb-3 relative inline-flex items-center w-full">
-                    <label
-                      htmlFor="message"
-                      className="w-2/5 mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Background Color:
-                    </label>
-                    <SketchPicker
-                      color={selectedColor}
-                      onChange={(color) => setSelectedColor(color.hex)}
-                      className="sketch-picker-weather"
-                    />
-                  </div>
-                  <p className="text-center pt-6">
-                    If you choose to display weather in a ticker tape zone
-                    layout, then this setting determines the view. If using full
-                    screen as in the preview above, this setting will not alter
-                    the app.
-                  </p>
                 </div>
-              </div>
-              <div className="lg:col-span-6 md:col-span-6 sm:col-span-10 ">
+              )}
+
+              <div
+                className={`${
+                  selectedPreview
+                    ? "lg:col-span-12 md:col-span-12"
+                    : "lg:col-span-6 md:col-span-6"
+                } sm:col-span-10`}
+              >
                 <div className="shadow-md bg-white rounded-lg p-5 h-full">
+                  {selectedPreview && (
+                    <div className="m-2 flex justify-end">
+                      <select
+                        id="layout"
+                        className="w-64 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        onChange={(e) => setSelectedLayout(e.target.value)}
+                        // value={selectedLayout}
+                        defaultValue={selectedLayout}
+                      >
+                        <option value="Landscape">Landscape</option>
+                        <option value="Portrait">Portrait</option>
+                      </select>
+                    </div>
+                  )}
                   <div
                     className="w-full flex items-center justify-center"
                     style={{
@@ -458,61 +611,93 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       height: "100%",
                     }}
                   >
-                    <div className="overflow-x-auto bg-blue border-white rounded-lg relative p-5">
-                      <div className="lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full mx-auto bg-teal border-width-10px border-black">
-                        <div className="flex flex-row text-[#ffffff]">
-                          {locations?.map((item, index) => {
-                            if (item?.weatherData !== null) {
-                              return (
-                                <div
-                                  className="w-full flex flex-col"
-                                  key={index}
-                                >
-                                  <div className="bg-teal-lighter flex-1 flex flex-col">
-                                    <div className="p-3 title text-[#ffffff]">
-                                      <h3 className="text-2xl font-medium text-[#ffffff]">
-                                        {item?.location}
-                                      </h3>
-                                    </div>
-                                    <div className="px-3 flex items-center text-[#ffffff]">
-                                      <div className="bg-primary text-sm rounded py-2 px-3 mr-3">
-                                        Today
+                    {loading ? (
+                      <div className="self-start font-semibold text-2xl m-3">
+                        Loading...
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto bg-blue border-white rounded-lg relative p-5">
+                        <div className="lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full mx-auto bg-teal border-width-10px border-black">
+                          <div
+                            className={`flex ${
+                              selectedLayout === "Landscape"
+                                ? "flex-row"
+                                : "flex-col"
+                            } text-[#ffffff]`}
+                          >
+                            {locations?.map((item, index) => {
+                              if (item?.weatherData !== null) {
+                                return (
+                                  <div
+                                    className="w-full flex flex-col"
+                                    key={index}
+                                  >
+                                    <div className="bg-teal-lighter flex-1 flex flex-col">
+                                      <div className="p-3 title text-[#ffffff]">
+                                        <h3 className="sm:text-xl md:text-2xl lg:text-4xl font-medium text-[#ffffff] capitalize">
+                                          {item?.location}
+                                        </h3>
                                       </div>
-                                      <div className="text-sm">
-                                        <p>
-                                          {item?.weatherData?.list[0]?.Day}{" "}
-                                          <br />
-                                          {currentTime}
-                                        </p>
-                                      </div>
-                                    </div>
-                                    <div className="p-3 flex justify-between items-center">
-                                      <div className="icons">
-                                        <img
-                                          src={
-                                            "https://openweathermap.org/img/wn/" +
-                                            `${item?.weatherData?.list[0]?.weather[0]?.icon}` +
-                                            ".png"
-                                          }
-                                          alt="Logo"
-                                          className="w-16"
-                                        />
-                                        <div className="px-3 ">
+                                      <div className="px-3 flex items-center text-[#ffffff]">
+                                        <div className="bg-primary text-sm rounded py-2 px-3 mr-3">
+                                          Today
+                                        </div>
+                                        <div className="text-sm">
                                           <p>
-                                            {
-                                              item?.weatherData?.list[0]
-                                                ?.weather[0]?.main
-                                            }
+                                            {item?.weatherData?.list[0]?.Day}
+                                            <br />
+                                            {currentTime}
                                           </p>
                                         </div>
                                       </div>
-                                      <div className="text-right">
-                                        <h4 className="text-4xl flex items-start justify-end">
-                                          {
-                                            item?.weatherData?.list[0]?.main
-                                              ?.temp
-                                          }
-                                          <span className="text-lg leading-3 ml-1 mt-2">
+                                      <div className="p-3 flex justify-between items-center">
+                                        <div className="icons">
+                                          <img
+                                            src={
+                                              "https://openweathermap.org/img/wn/" +
+                                              `${item?.weatherData?.list[0]?.weather[0]?.icon}` +
+                                              ".png"
+                                            }
+                                            alt="Logo"
+                                            className="w-16"
+                                          />
+                                          <div className="px-3 ">
+                                            <p>
+                                              {
+                                                item?.weatherData?.list[0]
+                                                  ?.weather[0]?.main
+                                              }
+                                            </p>
+                                          </div>
+                                        </div>
+                                        <div className="text-right">
+                                          <h4 className="sm:text-xl md:text-2xl lg:text-4xl flex items-start justify-end">
+                                            {
+                                              item?.weatherData?.list[0]?.main
+                                                ?.temp
+                                            }
+                                            <span className="text-lg leading-3 ml-1 mt-2">
+                                              {selectedTemperature ===
+                                              "Fahrenheit"
+                                                ? "°F"
+                                                : selectedTemperature ===
+                                                  "Kelvin"
+                                                ? "K"
+                                                : selectedTemperature ===
+                                                  "Rankine"
+                                                ? "°R"
+                                                : selectedTemperature ===
+                                                  "Reaumur"
+                                                ? "°Re"
+                                                : "°C"}
+                                            </span>
+                                          </h4>
+                                          <p className="flex items-start justify-end">
+                                            Feels like{" "}
+                                            {
+                                              item?.weatherData?.list[0]?.main
+                                                ?.feels_like
+                                            }
                                             {selectedTemperature ===
                                             "Fahrenheit"
                                               ? "°F"
@@ -525,87 +710,75 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                 "Reaumur"
                                               ? "°Re"
                                               : "°C"}
-                                          </span>
-                                        </h4>
-                                        <p className="flex items-start justify-end">
-                                          Feels like{" "}
-                                          {
-                                            item?.weatherData?.list[0]?.main
-                                              ?.feels_like
-                                          }
-                                          {selectedTemperature === "Fahrenheit"
-                                            ? "°F"
-                                            : selectedTemperature === "Kelvin"
-                                            ? "K"
-                                            : selectedTemperature === "Rankine"
-                                            ? "°R"
-                                            : selectedTemperature === "Reaumur"
-                                            ? "°Re"
-                                            : "°C"}
-                                        </p>
+                                          </p>
+                                        </div>
                                       </div>
-                                    </div>
 
-                                    <div className="p-3 flex justify-between items-center">
-                                      <div className="flex flex-wrap -m-3 text-[#ffffff]">
-                                        {item?.weatherData?.list
-                                          ?.slice(1, 5)
-                                          ?.map((items, index) => {
-                                            return (
-                                              <div
-                                                className="w-1/2 flex flex-col p-3"
-                                                key={index}
-                                              >
-                                                <div className="bg-primary rounded p-2 flex justify-between items-center">
-                                                  <div className="text">
-                                                    <h5
-                                                      style={{
-                                                        fontSize: "10px",
-                                                      }}
-                                                    >
-                                                      {items?.Day}
-                                                    </h5>
-                                                    <p className="flex items-start text-xs">
-                                                      {items?.main?.temp}° /
-                                                      {items?.main?.feels_like}°
-                                                    </p>
-                                                  </div>
-                                                  <div className="w-icon">
-                                                    <img
-                                                      src={
-                                                        "https://openweathermap.org/img/wn/" +
-                                                        `${items?.weather[0]?.icon}` +
-                                                        ".png"
-                                                      }
-                                                      alt="Logo"
-                                                      className="w-8"
-                                                    />
+                                      <div className="p-3 flex justify-between items-center">
+                                        <div className="flex flex-wrap -m-3 text-[#ffffff]">
+                                          {item?.weatherData?.list
+                                            ?.slice(1, 5)
+                                            ?.map((items, index) => {
+                                              return (
+                                                <div
+                                                  className="w-1/2 flex flex-col p-3"
+                                                  key={index}
+                                                >
+                                                  <div className="bg-primary rounded p-2 flex justify-between items-center">
+                                                    <div className="text">
+                                                      <h5
+                                                        style={{
+                                                          fontSize: "10px",
+                                                        }}
+                                                      >
+                                                        {items?.Day}
+                                                      </h5>
+                                                      <p className="flex items-start text-xs">
+                                                        {items?.main?.temp}° /
+                                                        {
+                                                          items?.main
+                                                            ?.feels_like
+                                                        }
+                                                        °
+                                                      </p>
+                                                    </div>
+                                                    <div className="w-icon">
+                                                      <img
+                                                        src={
+                                                          "https://openweathermap.org/img/wn/" +
+                                                          `${items?.weather[0]?.icon}` +
+                                                          ".png"
+                                                        }
+                                                        alt="Logo"
+                                                        className="w-8"
+                                                      />
+                                                    </div>
                                                   </div>
                                                 </div>
-                                              </div>
-                                            );
-                                          })}
+                                              );
+                                            })}
+                                        </div>
+                                      </div>
+                                      <div id="chart" className="p-3">
+                                        <ReactApexChart
+                                          options={
+                                            item?.weatherData?.Chart?.options
+                                          }
+                                          series={
+                                            item?.weatherData?.Chart?.series
+                                          }
+                                          height={200}
+                                        />
                                       </div>
                                     </div>
-                                    <div id="chart" className="p-3">
-                                      <ReactApexChart
-                                        options={
-                                          item?.weatherData?.Chart?.options
-                                        }
-                                        series={
-                                          item?.weatherData?.Chart?.series
-                                        }
-                                        height={200}
-                                      />
-                                    </div>
                                   </div>
-                                </div>
-                              );
-                            }
-                          })}
+                                );
+                              }
+                            })}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -613,6 +786,209 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+      {showSetScreenModal && (
+        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+          <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                <div className="flex items-center">
+                  <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
+                    Select Screens to Playlist Name
+                  </h3>
+                </div>
+                <button
+                  className="p-1 text-xl ml-8"
+                  onClick={() => setShowSetScreenModal(false)}
+                >
+                  <AiOutlineCloseCircle className="text-2xl" />
+                </button>
+              </div>
+              <div className="flex justify-between items-center p-4">
+                <div className="text-right mr-5 flex items-end justify-end relative sm:mr-0">
+                  <AiOutlineSearch className="absolute top-[13px] right-[233px] z-10 text-gray searchicon" />
+                  <input
+                    type="text"
+                    placeholder=" Search Playlist"
+                    className="border border-primary rounded-full px-7 py-2 search-user"
+                  />
+                </div>
+                <div className="flex items-center">
+                  <button className="bg-lightgray rounded-full px-4 py-2 text-SlateBlue">
+                    Tags
+                  </button>
+                  <button className="flex items-center bg-lightgray rounded-full px-4 py-2 text-SlateBlue ml-3">
+                    <input type="checkbox" className="w-5 h-5 mr-2" />
+                    All Clear
+                  </button>
+                </div>
+              </div>
+              <div className="px-9">
+                <div className="overflow-x-auto p-4 shadow-xl bg-white rounded-lg ">
+                  <table className=" w-full ">
+                    <thead>
+                      <tr className="flex justify-between items-center">
+                        <th className="font-medium text-[14px]">
+                          <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
+                            Name
+                          </button>
+                        </th>
+                        <th className="p-3 font-medium text-[14px]">
+                          <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
+                            Group
+                          </button>
+                        </th>
+                        <th className="p-3 font-medium text-[14px]">
+                          <button className="bg-lightgray rounded-full flex  items-center justify-center px-6 py-2">
+                            Playing
+                          </button>
+                        </th>
+                        <th className="p-3 font-medium text-[14px]">
+                          <button className="bg-lightgray rounded-full px-6 py-2 flex  items-center justify-center">
+                            Status
+                          </button>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="mt-3 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
+                        <td className="flex items-center ">
+                          <input type="checkbox" className="mr-3" />
+                          <div>
+                            <div>Tv 1</div>
+                          </div>
+                        </td>
+                        <td className="p-2">Marketing</td>
+                        <td className="p-2">25 May 2023</td>
+                        <td className="p-2">
+                          <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
+                            Live
+                          </button>
+                        </td>
+                      </tr>
+                      <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
+                        <td className="flex items-center ">
+                          <input type="checkbox" className="mr-3" />
+                          <div>
+                            <div>Tv 1</div>
+                          </div>
+                        </td>
+                        <td className="p-2">Marketing</td>
+                        <td className="p-2">25 May 2023</td>
+                        <td className="p-2">
+                          <button className="rounded-full px-6 py-1 text-white bg-[#D40000]">
+                            Offline
+                          </button>
+                        </td>
+                      </tr>
+                      <tr className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border border-gray shadow-sm  flex justify-between items-center px-5 py-2">
+                        <td className="flex items-center ">
+                          <input type="checkbox" className="mr-3" />
+                          <div>
+                            <div>Tv 1</div>
+                          </div>
+                        </td>
+                        <td className="p-2">Marketing</td>
+                        <td className="p-2">25 May 2023</td>
+                        <td className="p-2">
+                          <button className="rounded-full px-6 py-1 text-white bg-[#D40000]">
+                            Offline
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div className="flex justify-between p-6">
+                <button className="border-2 border-primary px-4 py-2 rounded-full">
+                  Add new Playlist
+                </button>
+                <Link to="/composition">
+                  <button className="bg-primary text-white px-4 py-2 rounded-full">
+                    Save
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {playlistDeleteModal && (
+        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+          <div className="w-auto my-6 mx-auto lg:max-w-xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                <div className="flex items-center">
+                  <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
+                    Delete Playlist Name?
+                  </h3>
+                </div>
+                <button
+                  className="p-1 text-xl ml-8"
+                  onClick={() => setPlaylistDeleteModal(false)}
+                >
+                  <AiOutlineCloseCircle className="text-2xl" />
+                </button>
+              </div>
+              <div className="p-5">
+                <p>
+                  Playlist Name is being used elsewhere and will be removed when
+                  deleted. Please check before deleting.
+                </p>
+                <div className="flex mt-4">
+                  <label className="font-medium">Playlist : </label>
+                  <p className="ml-2">Ram Siya Ram</p>
+                </div>
+              </div>
+              <div className="flex justify-center items-center pb-5">
+                <button
+                  className="border-2 border-primary px-4 py-1.5 rounded-full"
+                  onClick={() => setPlaylistDeleteModal(false)}
+                >
+                  Cencel
+                </button>
+                <Link to="/apps">
+                  <button className="bg-primary text-white ml-3 px-4 py-2 rounded-full">
+                    Delete
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {showPopup && (
+        <div ref={moreModalRef} className="editdw-weather z-0">
+          <ul>
+            <li
+              className="flex text-sm items-center cursor-pointer"
+              // onClick={() => setShowSetScreenModal(true)}
+            >
+              <FiUpload className="mr-2 text-lg" />
+              Set to Screen
+            </li>
+            <li className="flex text-sm items-center mt-2 cursor-pointer">
+              <MdPlaylistPlay className="mr-2 text-lg" />
+              Add to Playlist
+            </li>
+            <li className="flex text-sm items-center mt-2 cursor-pointer">
+              <TbBoxMultiple className="mr-2 text-lg" />
+              Duplicate
+            </li>
+            <li className="flex text-sm items-center mt-2 cursor-pointer">
+              <TbCalendarTime className="mr-2 text-lg" />
+              Set availability
+            </li>
+            <li
+              className="flex text-sm items-center mt-2 cursor-pointer"
+              // onClick={() => setPlaylistDeleteModal(true)}
+            >
+              <RiDeleteBin5Line className="mr-2 text-lg" />
+              Delete
+            </li>
+          </ul>
+        </div>
+      )}
     </>
   );
 };
