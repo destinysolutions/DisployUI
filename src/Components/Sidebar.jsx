@@ -70,11 +70,11 @@ const Sidebar = ({ sidebarOpen }) => {
         //     <HiOutlineRectangleGroup className=" text-gray text-xl opacity-60 " />
         //   ),
         // },
-        // {
-        //   title: "Merge Screens",
-        //   path: "/mergescreen",
-        //   icon: <img src="/MenuIcons/merge_screen.svg" alt="Merge Screen" />,
-        // },
+        {
+          title: "Merge Screens",
+          path: "/mergescreen",
+          icon: <img src="/MenuIcons/merge_screen.svg" alt="" />,
+        },
       ],
     },
     {

@@ -105,6 +105,7 @@ export const SCREEN_PREVIEW = `${baseUrl}api/NewScreen/GetRegisterOtp`;
 export const FORGOTPASSWORD = `${baseUrl}api/UserMaster/ForgotPassword`;
 
 export const CHNAGE_PASSWORD = `${baseUrl}api/UserMaster/ResetPassword?`;
+export const UPDATE_PASSWORD = `${baseUrl}api/UserMaster/UpdatePassword?`;
 
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115

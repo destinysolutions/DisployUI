@@ -1,36 +1,52 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { AiOutlineCloseCircle } from "react-icons/ai";
-import { useSelector } from "react-redux";
+import { AiOutlineCloseCircle, AiOutlineCloudUpload } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
 import { SELECT_BY_USER_SCREENDETAIL } from "../Pages/Api";
+import ShowAssetModal from "./ShowAssetModal";
+import { handleGetAllAssets } from "../Redux/Assetslice";
 
 const ScreenAssignModal = ({
   setAddScreenModal,
   setSelectScreenModal,
-  handleUpdateScreenAssign,
-  selectedScreens,
-  setSelectedScreens,
+  type,
 }) => {
+  const dispatch = useDispatch();
+
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
   const [screenData, setScreenData] = useState([]);
+  const [popupActiveTab, setPopupActiveTab] = useState(1);
+  const [selectedTextScroll, setSelectedTextScroll] = useState();
+  const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
+  const [assetPreview, setAssetPreview] = useState("");
+
+  const [assetScreenID, setAssetScreenID] = useState(null);
+  const [showAssetModal, setShowAssetModal] = useState(false);
+  const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
+
+  const [screenName, setScreenName] = useState("");
+  const [validationError, setValidationError] = useState("");
+  const [selectedScreens, setSelectedScreens] = useState([]);
+
+  const selectedScreenIdsString = Array.isArray(selectedScreens)
+    ? selectedScreens.join(",")
+    : "";
 
   const selectScreenRef = useRef(null);
 
   const handleSelectAllCheckboxChange = (e) => {
     const checked = e.target.checked;
     setSelectAllChecked(checked);
-
     // Set the state of all individual screen checkboxes
     const updatedCheckboxes = {};
     for (const screenID in screenCheckboxes) {
       updatedCheckboxes[screenID] = checked;
     }
     setScreenCheckboxes(updatedCheckboxes);
-
     // Update the selected screens state based on whether "All Select" is checked
     if (checked) {
       const allScreenIds = screenData.map((screen) => screen.screenID);
@@ -66,6 +82,11 @@ const ScreenAssignModal = ({
 
     setSelectAllChecked(allChecked);
   };
+
+  // get all assets files
+  useEffect(() => {
+    dispatch(handleGetAllAssets({ token }));
+  }, []);
 
   useEffect(() => {
     if (user?.userID) {
@@ -107,9 +128,67 @@ const ScreenAssignModal = ({
     };
   }, [handleClickOutside]);
 
+  const handleAssetAdd = (asset) => {
+    setSelectedAsset(asset);
+    setAssetPreview(asset);
+  };
+
   function handleClickOutside() {
     setSelectScreenModal(false);
   }
+
+  const handleAssetUpdate = () => {
+    console.log( "--------- MergedScreens ------ handleAssetUpdate ---- ", selectedAsset);
+  };
+
+  const handleScreenNameChange = (event) => {
+    const inputValue = event.target.value;
+    // Your validation logic goes here
+    if (inputValue.trim() === "") {
+      setValidationError("Screen Name cannot be empty");
+    } else {
+      setValidationError("");
+    }
+
+    setScreenName(inputValue);
+  };
+
+  const handleUpdateScreenAssign = () => {
+    // Validation check
+    if (screenName.trim() === "") {
+      setValidationError("Screen Name cannot be empty");
+      return; // Do not proceed with the update if validation fails
+    } else {
+      setValidationError("");
+    }
+
+    // Perform your screen assignment logic here
+    setSelectScreenModal(false);
+    setAddScreenModal(false);
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      // url: `https://disployapi.thedestinysolutions.com/api/AssetMaster/AssignAssetToScreen?AssetId=${screenAssetID}&ScreenID=${selectedScreenIdsString}`,
+      // headers: {
+      //   Authorization: authToken,
+      // },
+    };
+
+    // Add your logic for updating screen assignment
+
+    const paylod = {
+      name: screenName,
+      assetID: selectedAsset?.assetID,
+      selectedScreens: selectedScreenIdsString,
+    };
+
+    console.log(" Merged Screens ---- ", { paylod });
+    // ...
+
+    // Clear screenName and validationError after updating
+    setScreenName("");
+    setValidationError("");
+  };
 
   return (
     <div>
@@ -143,6 +222,70 @@ const ScreenAssignModal = ({
                 <AiOutlineCloseCircle className="text-3xl" />
               </button>
             </div>
+
+            {type === "merged_screens" && (
+              <div className="relative p-3">
+                <div className="grid gap-4 grid-cols-2">
+                  <div className="">
+                    <input
+                      type="text"
+                      name="screen_name"
+                      id="screen_name"
+                      placeholder="Enter Screen Name"
+                      className={`bg-gray-200 border ${
+                        validationError
+                          ? "border-red-500 error"
+                          : "input-bor-color"
+                      } text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                      value={screenName}
+                      onChange={handleScreenNameChange}
+                    />
+                  </div>
+
+                  <div>
+                    <div
+                      onClick={(e) => {
+                        // setAssetScreenID(screen.screenID);
+                        setShowAssetModal(true);
+                        setSelectedAsset({
+                          ...selectedAsset,
+                          assetName: e.target.value,
+                        });
+                        setSelectedAsset(selectedAsset?.userName);
+                      }}
+                      title={selectedAsset?.userName}
+                      className="flex items-center justify-between gap-2 border-gray bg-lightgray border  py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto"
+                    >
+                      <p className="line-clamp-3">
+                        {selectedAsset?.userName || "Upload Media"}
+                      </p>
+                      <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
+                    </div>
+
+                    {showAssetModal && (
+                      <ShowAssetModal
+                        handleAssetAdd={handleAssetAdd}
+                        handleAssetUpdate={handleAssetUpdate}
+                        // setSelectedComposition={setSelectedComposition}
+                        // handleAppsAdd={handleAppsAdd}
+                        popupActiveTab={popupActiveTab}
+                        setAssetPreviewPopup={setAssetPreviewPopup}
+                        setPopupActiveTab={setPopupActiveTab}
+                        setShowAssetModal={setShowAssetModal}
+                        assetPreviewPopup={assetPreviewPopup}
+                        assetPreview={assetPreview}
+                        // selectedComposition={selectedComposition}
+                        selectedTextScroll={selectedTextScroll}
+                        // selectedYoutube={selectedYoutube}
+                        selectedAsset={selectedAsset}
+                        type={type}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="schedual-table h-[80%] overflow-y-scroll bg-white rounded-xl mt-8 shadow p-3">
               <table
                 className="w-full h-full overflow-y-scroll"

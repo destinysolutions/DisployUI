@@ -50,11 +50,7 @@ const Security = () => {
       try {
         toast.loading("Updating...");
         // Reauthenticate the user with their current password
-        await auth
-          .signInWithEmailAndPassword(
-            auth.currentUser.email,
-            values.currentPassword
-          )
+        await auth.signInWithEmailAndPassword(auth.currentUser.email,  values.currentPassword)
           .then(async () => {
             await auth.currentUser.updatePassword(values.newPassword);
           });

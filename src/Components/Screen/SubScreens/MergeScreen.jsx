@@ -13,6 +13,8 @@ import PropTypes from "prop-types";
 import Footer from "../../Footer";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { Tooltip } from "@material-tailwind/react";
+import { Link } from "react-router-dom";
+import ScreenAssignModal from "../../ScreenAssignModal";
 const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   MergeScreen.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -21,6 +23,11 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const [showdata, setShowdata] = useState(false);
 
   const [isHovering, setIsHovering] = useState(false);
+  const [selectScreenModal, setSelectScreenModal] = useState(false);
+
+
+  const [addScreenModal, setAddScreenModal] = useState(false);
+
 
   const handleMouseOver = () => {
     if (showdata === true) {
@@ -37,6 +44,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     setShowdata(!showdata);
     setIsHovering(false);
   };
+
+
+
 
   return (
     <>
@@ -81,6 +91,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                 <button
                   type="button"
                   className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                  onClick={() => {
+                    setSelectScreenModal(true);
+                  }}
                 >
                   <VscVmConnect className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
@@ -418,6 +431,15 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+
+      {selectScreenModal && (
+        <ScreenAssignModal
+          setAddScreenModal={setAddScreenModal}
+          setSelectScreenModal={setSelectScreenModal}
+          type="merged_screens"
+        />
+      )}
+
       <Footer />
     </>
   );
