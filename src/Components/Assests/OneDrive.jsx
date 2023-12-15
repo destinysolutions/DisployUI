@@ -423,16 +423,16 @@ const OneDrive = ({ setFile }) => {
     // fetchData();
     // createSession();
     // try {
-    //   const { data } = axios.get(
-    //     "https://unify.apideck.com/file-storage/files",
+    //   const data = axios.get(
+    //     `https://vault.apideck.com/session/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDI2MTY2NjcsImV4cCI6MTcwMjYyMDI2N30.pIeSxUrkSZp0jhJlXZUgrn8b2wY5fKavCLnzjHVOW6s`,
     //     {
-    //       headers: {
-    //         Authorization:
-    //           "Bearer sk_live_18c615f7-b6cd-4ac0-8f3e-b7fd465c511d-z0CYU6dhwX12IO8qUg-f3e8f762-4f83-47e0-a264-5b012b253aca",
-    //         "x-apideck-consumer-id": "test-consumer",
-    //         "x-apideck-app-id": "ZKfil3RXz5ssBdjXqUgYy0KHKYm14M5cXLqUg",
-    //         "x-apideck-service-id": "google-drive",
-    //       },
+    //       // headers: {
+    //       //   Authorization:
+    //       //     "Bearer sk_live_18c615f7-b6cd-4ac0-8f3e-b7fd465c511d-z0CYU6dhwX12IO8qUg-f3e8f762-4f83-47e0-a264-5b012b253aca",
+    //       //   "x-apideck-consumer-id": "test-consumer",
+    //       //   "x-apideck-app-id": "ZKfil3RXz5ssBdjXqUgYy0KHKYm14M5cXLqUg",
+    //       //   "x-apideck-service-id": "dropbox",
+    //       // },
     //     }
     //   );
     //   console.log(data);
@@ -443,7 +443,7 @@ const OneDrive = ({ setFile }) => {
 
   // const downloadFileUrl = ;
   const session_token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDI1NjM3MjYsImV4cCI6MTcwMjU2NzMyNn0.YQ55EHJ96KyfZJ4UQJqAaV2YOQU0k6i6GB_yoNOcH9k";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDI2MTY2NjcsImV4cCI6MTcwMjYyMDI2N30.pIeSxUrkSZp0jhJlXZUgrn8b2wY5fKavCLnzjHVOW6s";
   const handleSelect = async (file) => {
     // setFile(file);
     console.log(file);
@@ -514,9 +514,10 @@ const OneDrive = ({ setFile }) => {
           title="Choose file from options"
           showAttribution={false}
           onConnectionSelect={(e) => {
-            // console.log(e);
+            console.log(e);
             setSelectedService(e?.service_id);
           }}
+
           // fileToSave={(e) => {
           //   console.log(e);
           // }}

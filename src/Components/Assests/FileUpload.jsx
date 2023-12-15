@@ -404,7 +404,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
       setShowUnsplash(false);
     }
   }
-  console.log(File);
+  // console.log(File);
 
   return (
     <>
@@ -428,7 +428,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
           </div>
           <div className="flex lg:justify-between md:justify-between flex-wrap sm:justify-start xs:justify-start items-center lg:mt-7 md:mt-7 sm:mt-5 xs:mt-5 media-icon">
             {/* notepad ma che */}
-            {/* <GoogleDrive /> */}
+            <GoogleDrive />
             {/* <Tooltip
               content="Google Drive"
               placement="bottom-end"

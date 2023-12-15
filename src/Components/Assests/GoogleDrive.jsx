@@ -36,12 +36,12 @@ const GoogleDrive = () => {
       window.open(url, "_blank");
     });
   };
-  // https://unify.apideck.com/vault/callback
 
   const handleOpenPicker = async (accessToken) => {
     openPicker({
       clientId: process.env.REACT_APP_GOOGLE_DRIVE_CLIENTID, // Your client ID
-      developerKey: process.env.REACT_APP_GOOGLE_DEVELOPER_KEY, // Your developer key
+      // developerKey: process.env.REACT_APP_GOOGLE_DEVELOPER_KEY, // Your developer key
+      developerKey: 'AIzaSyCKSHX0ofPpzq9yr5S9gYFMebSQv93YtKo', // Your developer key
       viewId: "DOCS",
       token: accessToken,
       showUploadView: true,
@@ -77,9 +77,11 @@ const GoogleDrive = () => {
         const googleAuthURL = response.data.Data[0].URL;
         if (googleAuthURL) {
           // Redirect to the Google authentication URL
-          window.location.href = googleAuthURL;
+          // window.location.href = googleAuthURL;
+          window.open(googleAuthURL)
         } else {
           //setAccessToken(response.data.Data[0].AuthToken);
+          console.log(response.data);
           handleOpenPicker(response.data.Data[0].AuthToken);
         }
       })
@@ -123,7 +125,7 @@ const GoogleDrive = () => {
     }
   });
 
-  console.log(selectedFiles, "dfsdf");
+  // console.log(selectedFiles, "dfsdf");
   return (
     <>
       <Tooltip
