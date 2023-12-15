@@ -3,7 +3,6 @@ import "../../Styles/Acsettings.css";
 import { useState } from "react";
 import { useRef } from "react";
 import {
-  ADD_REGISTER_URL,
   GET_ALL_COUNTRY,
   GET_ALL_CURRENCIES,
   GET_ALL_LANGUAGES,
@@ -13,8 +12,6 @@ import {
 } from "../Api";
 import axios from "axios";
 import { MdOutlinePhotoCamera } from "react-icons/md";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import { useSelector } from "react-redux";
 
 const Account = () => {
@@ -38,13 +35,28 @@ const Account = () => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [isImageUploaded, setIsImageUploaded] = useState(false);
+  const [phoneNumberError, setPhoneNumberError] = useState("");
+  const [zipCodeError, setZipCodeError] = useState("");
 
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
-  console.log("selectedTimezoneName", selectedTimezoneName);
-  console.log("selectedCurrencyName", selectedCurrencyName);
-  console.log("selectedLanguageName", selectedLanguageName);
+  const validatePhoneNumber = (value) => {
+    const phoneRegex =
+      /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+    if (value.trim() === "") {
+      return true;
+    }
+    return phoneRegex.test(value);
+  };
+
+  const validateZipCode = (value) => {
+    const zipCodeRegex = /^\d{6}$/;
+    if (value.trim() === "") {
+      return true;
+    }
+    return zipCodeRegex.test(value);
+  };
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -53,8 +65,8 @@ const Account = () => {
   };
 
   const handleImageReset = () => {
-    setFile(null); // Reset the file state
-    setIsImageUploaded(false); // Set the image uploaded state to false
+    setFile(null);
+    setIsImageUploaded(false);
   };
   const handleClick = (e) => {
     hiddenFileInput.current.click();
@@ -82,12 +94,12 @@ const Account = () => {
         setLanguage(languageResponse.data.data);
         setCountries(countriesResponse.data.data);
         setTimezone(timezoneResponse.data.data);
-        console.log("timezoneResponse", timezoneResponse);
       })
       .catch((error) => {
         console.error(error);
       });
   }, []);
+
   // Fetch states based on the selected country
   useEffect(() => {
     if (selectedCountry) {
@@ -102,40 +114,17 @@ const Account = () => {
     }
   }, [selectedCountry]);
 
-  const phoneRegExp =
-    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-  const validationSchema = Yup.object().shape({
-    email: Yup.string().email("Invalid email address"),
-    phoneNumber: Yup.string().matches(phoneRegExp, "Phone number is not valid"),
-    zipCode: Yup.string().matches(/^\d{6}$/, "Invalid zip code"),
-  });
-
-  const formik = useFormik({
-    initialValues: {
-      // email: "",
-      // phoneNumber: "",
-      zipCode: "",
-      terms: false,
-    },
-    validationSchema: validationSchema,
-    onSubmit: (values, { setSubmitting }) => {
-      updateUser(values, setSubmitting);
-    },
-  });
-
   useEffect(() => {
     if (user) {
       axios
         .get(`${SELECT_BY_ID_USERDETAIL}?ID=${user?.userID}`)
         .then((response) => {
-          console.log(response.data);
           const fetchData = response.data.data;
           setFirstName(fetchData.firstName);
           setLastName(fetchData.lastName);
           setEmail(fetchData.emailID);
           setPhoneNumber(fetchData.phoneNumber);
           setAddress(fetchData.googleLocation);
-          // setRegisterData(response.data.data);
         })
         .catch((error) => {
           console.log(error);
@@ -143,7 +132,23 @@ const Account = () => {
     }
   }, []);
 
-  const updateUser = async (values, setSubmitting) => {
+  const updateUser = async () => {
+    // Validate phone number
+    if (!validatePhoneNumber(phoneNumber)) {
+      setPhoneNumberError("Invalid phone number");
+      return;
+    } else {
+      setPhoneNumberError("");
+    }
+
+    // Validate zip code
+    if (!validateZipCode(zipCode)) {
+      setZipCodeError("Invalid zip code");
+      return;
+    } else {
+      setZipCodeError("");
+    }
+
     let data = new FormData();
     data.append("orgUserSpecificID", user?.userID);
     data.append("firstName", firstName);
@@ -153,15 +158,15 @@ const Account = () => {
     data.append("isActive", "1");
     data.append("orgUserID", user?.userID);
     data.append("userRole", "0");
-    data.append("countryID", selectedCountry);
+    data.append("countryID", selectedCountry || 0);
     data.append("company", "Admin");
     data.append("operation", "Save");
     data.append("address", address);
-    data.append("stateId", selectedState);
-    data.append("zipCode", zipCode);
-    data.append("languageId", selectedLanguageName);
-    data.append("timeZoneId", selectedTimezoneName);
-    data.append("currencyId", selectedCurrencyName);
+    data.append("stateId", selectedState || 0);
+    data.append("zipCode", zipCode || 0);
+    data.append("languageId", selectedLanguageName || 0);
+    data.append("timeZoneId", selectedTimezoneName || 0);
+    data.append("currencyId", selectedCurrencyName || 0);
     data.append("File", file);
 
     let config = {
@@ -174,21 +179,15 @@ const Account = () => {
       },
       data: data,
     };
-
     try {
-      setSubmitting(true);
-
       const response = await axios.request(config);
-      setSubmitting(false);
+      console.log("response", response.data);
     } catch (error) {
       console.log(error);
-      // setErrorMessge("Registration failed.");
-      setSubmitting(false);
     }
   };
 
   const resetFormData = () => {
-    formik.resetForm();
     setFile(null);
     setFirstName("");
     setLastName("");
@@ -253,7 +252,12 @@ const Account = () => {
           </div>
         </div>
 
-        <form onSubmit={formik.handleSubmit}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            updateUser();
+          }}
+        >
           <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
             <div className="-mx-3 md:flex mb-6">
               <div className="md:w-1/2 px-3 mb-6 md:mb-0">
@@ -261,7 +265,6 @@ const Account = () => {
                 <input
                   className="w-full text-black border rounded-lg py-3 px-4 mb-3"
                   type="text"
-                  placeholder="Harry"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                 />
@@ -272,7 +275,6 @@ const Account = () => {
                 <input
                   className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                   type="text"
-                  placeholder="McCall"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                 />
@@ -286,7 +288,6 @@ const Account = () => {
                   type="email"
                   name="email"
                   value={email}
-                  placeholder="harrymc.call@gmail.com"
                 />
               </div>
             </div>
@@ -294,19 +295,20 @@ const Account = () => {
               <div className="md:w-1/2 px-3 mb-6 md:mb-0">
                 <label className="label_top text-xs">Phone Number</label>
                 <input
-                  className="w-full text-black border rounded-lg py-3 px-4 mb-3"
+                  className={`w-full text-black border rounded-lg py-3 px-4 mb-3 ${
+                    phoneNumberError ? "border-red" : ""
+                  }`}
                   type="text"
                   name="phoneNumber"
-                  placeholder="(397) 294-5153"
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
-                  // value={formik.values.phoneNumber}
                   value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  onChange={(e) => {
+                    setPhoneNumber(e.target.value);
+                    setPhoneNumberError("");
+                  }}
                 />
-                {/* {formik.errors.phoneNumber && formik.touched.phoneNumber && (
-                  <div className="error">{formik.errors.phoneNumber}</div>
-                )} */}
+                {phoneNumberError && phoneNumber.trim() !== "" && (
+                  <p className="text-red text-xs mt-1">{phoneNumberError}</p>
+                )}
               </div>
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Address</label>
@@ -334,19 +336,21 @@ const Account = () => {
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Zip Code</label>
                 <input
-                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
+                  className={`w-full text-black border rounded-lg py-3 px-4 mb-3 ${
+                    zipCodeError ? "border-red" : ""
+                  }`}
                   type="text"
                   name="zipCode"
-                  placeholder="10001"
+                  placeholder="100010"
                   value={zipCode}
-                  onChange={(e) => setZipCode(e.target.value)}
-                  // onChange={formik.handleChange}
-                  // onBlur={formik.handleBlur}
-                  // value={formik.values.zipCode}
+                  onChange={(e) => {
+                    setZipCode(e.target.value);
+                    setZipCodeError("");
+                  }}
                 />
-                {/* {formik.errors.zipCode && formik.touched.zipCode && (
-                  <div className="error">{formik.errors.zipCode}</div>
-                )} */}
+                {zipCodeError && zipCode.trim() !== "" && (
+                  <p className="text-red text-xs mt-1">{zipCodeError}</p>
+                )}
               </div>
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Country</label>
@@ -451,7 +455,7 @@ const Account = () => {
                 <button
                   type="submit"
                   className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3"
-                  onClick={() => updateUser()}
+                  // onClick={updateUser}
                 >
                   Save Changes
                 </button>

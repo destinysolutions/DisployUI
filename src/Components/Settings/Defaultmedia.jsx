@@ -771,7 +771,7 @@ const Defaultmedia = () => {
                     </button>
                   </div> */}
               </div>
-              <div className=" lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 pr-8">
+              <div className=" lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 p-8">
                 {filePath && isVideo ? (
                   // Render video player
                   <ReactPlayer

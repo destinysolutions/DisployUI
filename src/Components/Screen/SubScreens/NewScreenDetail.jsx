@@ -32,6 +32,7 @@ import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
 import { VscCalendar } from "react-icons/vsc";
 import { useSelector } from "react-redux";
 import FileUpload from "../../Assests/FileUpload";
+import ploygon from "../../../images/DisployImg/Polygon.svg";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
@@ -39,7 +40,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  const { token ,user} = useSelector((state) => state.root.auth);
+  const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [tagName, setTagName] = useState("");
@@ -612,7 +613,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                             <>
                               <div className="absolute left-[10%] bottom-[-3px]  text-[35px]  z-20">
                                 <img
-                                  src="/DisployImg/Polygon.svg"
+                                  src={ploygon}
                                   alt="notification"
                                   className="cursor-pointer assestPopup"
                                 />

@@ -23,6 +23,7 @@ import { YOUTUBE_INSTANCE_ADD_URL } from "../../Pages/Api";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import toast, { ToastIcon } from "react-hot-toast";
+import Img from "../../images/Assets/img.png";
 
 const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   YoutubeDetail.propTypes = {
@@ -548,14 +549,14 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     //     ],
                     //   },
 
-                      // youtube:{
-                      //   playerVars:
-                      // }
+                    // youtube:{
+                    //   playerVars:
+                    // }
                     // }}
                   />
                 </div>
                 <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-10">
-                  <img src="../../../public/Assets/img.png" />
+                  <img src={Img} />
                 </div>
               </div>
 

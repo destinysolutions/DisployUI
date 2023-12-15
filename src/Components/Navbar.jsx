@@ -119,7 +119,7 @@ const Navbar = () => {
 
   return (
     // navbar component start
-    <div className="w-full topbar bg-white py-3 shadow-lg top-0 fixed z-20">
+    <div className="w-full topbar bg-white py-3 shadow-lg top-0 fixed z-[21]">
       <div>
         <div className="flex-col flex">
           <div className="w-full">
