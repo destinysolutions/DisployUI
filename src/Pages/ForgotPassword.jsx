@@ -1,34 +1,37 @@
 import "../Styles/loginRegister.css";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Alert } from "@material-tailwind/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { FORGOTPASSWORD } from "./Api";
-import { useDispatch } from "react-redux";
+import { FORGOTPASSWORD, UPDATE_PASSWORD } from "./Api";
+import { handleChangePassword, clearSuccess } from "../Redux/Authslice";
+import { useDispatch, useSelector } from "react-redux";
 import { auth } from "../FireBase/firebase"; // Import your Firebase auth instance
 import toast from "react-hot-toast";
 import video from "../images/DisployImg/iStock-1137481126.mp4";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
-
+import { signInWithEmailAndPassword, updatePassword } from "firebase/auth";
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const store = useSelector((state) => state.root.auth);
 
   const [newPasswordShow, setNewPassword] = useState(false);
   const [confirmPasswordShow, setConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isShowPassword, setShowPassword] = useState(false);
-  const [userID, setUserId] = useState("");
-  const [getEmail, setEmail] = useState("")
+  const [userID, setUserId] = useState();
+  const [getEmail, setEmail] = useState("");
+  const [currentPasswordShow, setCurrentPassword] = useState(false);
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().required("Emial is required"),
   });
 
   const validationSchema2 = Yup.object().shape({
+    currentPassword: Yup.string().required("Current Password is required"),
     newPassword: Yup.string()
       .min(8, "Password must be at least 8 characters long")
       .matches(
@@ -44,7 +47,6 @@ const ForgotPassword = () => {
   const checkEmail = async (item, callback) => {
     try {
       setLoading(true);
-
       const config = {
         method: "get", // Change method to 'get' for changing the passwordp
         url: FORGOTPASSWORD, // Assuming FORGOTPASSWORD is your API endpoint
@@ -54,33 +56,14 @@ const ForgotPassword = () => {
         maxBodyLength: Infinity,
       };
       const userExists = await axios.request(config);
-      setTimeout(() => {
-        callback(userExists.data); // Invoke the callback with the data
-      }, 2000);
+      callback(userExists.data); // Invoke the callback with the data
     } catch (error) {
-      toast.error(error.message)
-      setShowPassword(false)
+      toast.error(error.message);
+      setShowPassword(false);
       console.error("Error checking email:", error.message);
       callback(false); // Invoke the callback with false in case of an error
     } finally {
       setLoading(false);
-    }
-  };
-
-  const changePassword = async (values,callback) => {
-    try {
-      const payload = { userID: userID, Email : getEmail, Password: values.newPassword };
-      const config = {
-        method: "post", // Change method to 'get' for changing the passwordp
-        url: FORGOTPASSWORD, // Assuming FORGOTPASSWORD is your API endpoint
-        params: { payload },
-        maxBodyLength: Infinity,
-      };
-      const userExists = await axios.request(config);
-      callback(userExists.data); // Invoke the callback with the data
-
-    } catch (error) {
-      console.error("Error changing password:", error.message);
     }
   };
 
@@ -89,13 +72,17 @@ const ForgotPassword = () => {
     validationSchema: validationSchema.pick(["email"]),
     onSubmit: async (values) => {
       try {
+        toast.loading("Verifying your email...");
         const payload = { email: values.email };
-        toast.loading("Your email has been verified...");
         await checkEmail(payload, async (data) => {
           if (data.Status !== false) {
-            setUserId(data.UserID)
-            setEmail(values.email)
-            setShowPassword(true); // Show the password change form
+            toast.dismiss();
+            setTimeout(() => {
+              toast.success('Temporary password sent to your email. Please check your inbox.');
+            }, 1000);
+            setEmail(values.email);
+            setUserId(data.userID);
+            setShowPassword(true);
           } else {
             setShowPassword(false);
             toast.error("Email does not exist");
@@ -103,13 +90,44 @@ const ForgotPassword = () => {
           toast.dismiss();
         });
       } catch (error) {
+        toast.error("An error occurred while verifying your email.");
         console.error("Error:", error.message);
       }
     },
   });
 
+
+  const changePassword = async (values) => {
+    try {
+    
+      const payload = {
+        UserID: userID,
+        Email: getEmail,
+        OTP: values.currentPassword,
+        Password: values.newPassword,
+      };
+     console.log("payload",payload);
+      const config = {
+        method: "post", 
+        url: UPDATE_PASSWORD, 
+        params: payload ,
+        maxBodyLength: Infinity,
+      };
+      const response = await axios.request(config);
+      if (response) {
+         await signInWithEmailAndPassword(auth, getEmail,response.data.pass)
+         .then(async () => {
+           await updatePassword(auth.currentUser,values.newPassword);
+         });
+      }
+      // callback(response.data); // Invoke the callback with the data
+    } catch (error) {
+      console.error("Error changing password:", error.message);
+    }
+  };
+
   const formikChangePassword = useFormik({
-    initialValues: { newPassword: "", confirmPassword: "" },
+    initialValues: { newPassword: "", confirmPassword: "",currentPassword:'' },
     validationSchema: validationSchema2,
     onSubmit: async (values) => {
       try {
@@ -135,6 +153,7 @@ const ForgotPassword = () => {
       }
     },
   });
+
 
   return (
     <>
@@ -203,7 +222,7 @@ const ForgotPassword = () => {
                     onSubmit={formikChangePassword.handleSubmit}
                   >
                     <div className="relative">
-                      <input
+                      {/* <input
                         type="email"
                         name="email"
                         id="email"
@@ -211,11 +230,39 @@ const ForgotPassword = () => {
                         className="bg-gray-200 border input-bor-color text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Enter Email"
                         disabled
+                      /> */}
+                    </div>
+
+                    <div className="relative">
+                      <input
+                        type={currentPasswordShow ? "text" : "password"}
+                        name="currentPassword"
+                        id="currentPassword"
+                        className="bg-gray-200 border input-bor-color text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Enter Temporary password"
+                        onChange={formikChangePassword.handleChange}
+                        onBlur={formikChangePassword.handleBlur}
+                        value={formikChangePassword.values.currentPassword}
                       />
-                      {formikChangePassword.touched.email &&
-                      formikChangePassword.errors.email ? (
+                      <div className="icon">
+                        {currentPasswordShow ? (
+                          <BsFillEyeFill
+                            onClick={() =>
+                              setCurrentPassword(!currentPasswordShow)
+                            }
+                          />
+                        ) : (
+                          <BsFillEyeSlashFill
+                            onClick={() =>
+                              setCurrentPassword(!currentPasswordShow)
+                            }
+                          />
+                        )}
+                      </div>
+                      {formikChangePassword.touched.currentPassword &&
+                      formikChangePassword.errors.currentPassword ? (
                         <div className="text-red-500 error">
-                          {formikChangePassword.errors.email}
+                          {formikChangePassword.errors.currentPassword}
                         </div>
                       ) : null}
                     </div>
@@ -255,7 +302,7 @@ const ForgotPassword = () => {
                         name="confirmPassword"
                         id="confirmPassword"
                         className="bg-gray-200 border input-bor-color text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Confirm New Password"
+                        placeholder="Enter Confirm New Password"
                         onChange={formikChangePassword.handleChange}
                         onBlur={formikChangePassword.handleBlur}
                         value={formikChangePassword.values.confirmPassword}

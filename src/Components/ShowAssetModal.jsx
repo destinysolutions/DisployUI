@@ -28,7 +28,12 @@ const ShowAssetModal = ({
   handleAppsAdd,
   selectedTextScroll,
   selectedYoutube,
+  type
 }) => {
+
+  const { user, token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+
   const [filteredData, setFilteredData] = useState([]);
   const [searchAssest, setSearchAssest] = useState("");
   const [searchComposition, setSearchComposition] = useState("");
@@ -124,7 +129,8 @@ const ShowAssetModal = ({
     return () => {
       document.removeEventListener("click", handleClickOutside, true);
     };
-  }, [handleClickOutside]);
+
+  }, [handleClickOutside,user]);
 
   function handleClickOutside() {
     setShowAssetModal(false);
@@ -145,13 +151,14 @@ const ShowAssetModal = ({
             <AiOutlineCloseCircle className="text-2xl" />
           </button>
         </div>
-
         <div
           onClick={() => assetPreviewPopup && setAssetPreviewPopup(false)}
           className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl"
         >
           <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
             <div className="flex-initial">
+{type !== "merged_screens"  && ( <>  
+            
               <nav
                 className="flex flex-col space-y-2 "
                 aria-label="Tabs"
@@ -176,6 +183,10 @@ const ShowAssetModal = ({
                   </span>
                   Assets
                 </button>
+
+
+
+
                 <button
                   type="button"
                   className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
@@ -232,7 +243,10 @@ const ShowAssetModal = ({
                   </span>
                   Apps
                 </button>
+
               </nav>
+ </> )}
+
             </div>
 
             <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1">
@@ -270,11 +284,7 @@ const ShowAssetModal = ({
                         <th className="p-3">Type</th>
                       </tr>
                     </thead>
-                    {filteredData.length === 0
-                      ? assets
-                          .filter((asset) => {
-                            return asset.assetType !== "Folder";
-                          })
+                    {filteredData.length === 0 ? assets.filter((asset) => { return asset.assetType !== "Folder"; })
                           .map((asset) => (
                             <tbody key={asset.assetID}>
                               <tr
