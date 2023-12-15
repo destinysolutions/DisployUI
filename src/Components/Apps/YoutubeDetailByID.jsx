@@ -26,6 +26,7 @@ import {
 import moment from "moment";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import Img from "../../images/Assets/img.png";
 
 const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   YoutubeDetailByID.propTypes = {
@@ -539,7 +540,9 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                                     setEnabled(!enabled);
                                   }}
                                   className={`w-11 h-6 ${
-                                    areSubtitlesOn ? "bg-SlateBlue" : "bg-lightgray"
+                                    areSubtitlesOn
+                                      ? "bg-SlateBlue"
+                                      : "bg-lightgray"
                                   } rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all `}
                                 ></div>
                               </label>
@@ -583,7 +586,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                       />
                     </div>
                     <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-10">
-                      <img src="../../../public/Assets/img.png" />
+                      <img src={Img} />
                     </div>
                   </div>
 

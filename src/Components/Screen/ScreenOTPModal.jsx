@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { GET_ALL_ORGANIZATION_MASTER } from "../../admin/AdminAPI";
 import toast from "react-hot-toast";
+import BlackLogo from "../../images/DisployImg/BlackLogo.svg";
+import disploy_tv_img from "../../images/ScreenImg/disploy-tv-img.png";
 
 const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const history = useNavigate();
@@ -18,7 +20,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const otpRefs = [useRef(), useRef(), useRef(), useRef(), useRef(), useRef()];
   const modalRef = useRef(null);
 
-  const { token ,user} = useSelector((state) => state.root.auth);
+  const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const handleOtpChange = (index, value) => {
@@ -140,75 +142,75 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
                 <AiOutlineCloseCircle className="text-3xl text-primary" />
               </button>
             </div>
-            {screen == 3 ? (
+            {/* {screen == 3 ? (
               <h3 className="justify-center text-center text-red text-xl p-10 font-semibold break-words">
                 To add more screens, please activate your trial period
               </h3>
             ) : (
-              <>
-                <div className="relative lg:p-5 md:p-5 sm:p-3 xs:p-2 flex-auto">
-                  <div className="flex items-center justify-center mb-4">
-                    <img src="/DisployImg/BlackLogo.svg" />
+              <> */}
+            <div className="relative lg:p-5 md:p-5 sm:p-3 xs:p-2 flex-auto">
+              <div className="flex items-center justify-center mb-4">
+                <img src={BlackLogo} />
+              </div>
+
+              <div className="flex w-7/12 mx-auto items-center justify-center relative mb-4">
+                <img src={disploy_tv_img} alt="" />
+              </div>
+
+              <div className="mx-auto">
+                <div className="w-full">
+                  <div className="font-normal lg:text-lg md:text-lg sm:text-base xs:text-sm text-[#000000] text-center">
+                    Enter the 6-character pairing code?
                   </div>
 
-                  <div className="flex w-7/12 mx-auto items-center justify-center relative mb-4">
-                    <img src="/ScreenImg/disploy-tv-img.png" alt="" />
-                  </div>
-
-                  <div className="mx-auto">
-                    <div className="w-full">
-                      <div className="font-normal lg:text-lg md:text-lg sm:text-base xs:text-sm text-[#000000] text-center">
-                        Enter the 6-character pairing code?
-                      </div>
-
-                      <div
-                        id="otp"
-                        className="flex flex-row justify-center text-center px-2"
-                      >
-                        {otpValues.map((value, index) => (
-                          <div key={index}>
-                            <input
-                              ref={otpRefs[index]}
-                              className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded border-gray"
-                              type="text"
-                              value={value}
-                              maxLength="1"
-                              onChange={(e) =>
-                                handleOtpChange(
-                                  index,
-                                  e.target.value.toLocaleUpperCase()
-                                )
-                              }
-                            />
-                          </div>
-                        ))}
-                      </div>
-                      <div className="flex justify-center text-center text-red text-xl my-2 font-semibold">
-                        {errorMessge}
-                      </div>
-
-                      <div className="flex justify-center text-center">
-                        <p className="text-[#515151] text-sm max-w-lg">
-                          To get pair code, please install Disploy app on your
-                          Players (Android, LG, Samsung, FireStick, Raspberry
-                          Pi, etc.)
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-center pb-4">
-                  <button
-                    className="text-white bg-SlateBlue hover:bg-primary font-semibold   lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-base md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
-                    type="button"
-                    onClick={verifyOTP}
+                  <div
+                    id="otp"
+                    className="flex flex-row justify-center text-center px-2"
                   >
-                    Continue
-                  </button>
+                    {otpValues.map((value, index) => (
+                      <div key={index}>
+                        <input
+                          ref={otpRefs[index]}
+                          className="sm:m-2 xs:m-1 border h-10 w-10 text-center form-control rounded border-gray"
+                          type="text"
+                          value={value}
+                          maxLength="1"
+                          onChange={(e) =>
+                            handleOtpChange(
+                              index,
+                              e.target.value.toLocaleUpperCase()
+                            )
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex justify-center text-center text-red text-xl my-2 font-semibold">
+                    {errorMessge}
+                  </div>
+
+                  <div className="flex justify-center text-center">
+                    <p className="text-[#515151] text-sm max-w-lg">
+                      To get pair code, please install Disploy app on your
+                      Players (Android, LG, Samsung, FireStick, Raspberry Pi,
+                      etc.)
+                    </p>
+                  </div>
                 </div>
-              </>
-            )}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center pb-4">
+              <button
+                className="text-white bg-SlateBlue hover:bg-primary font-semibold   lg:px-8 md:px-6 sm:px-6 xs:px-6 lg:py-3 md:py-2 sm:py-2 xs:py-2 lg:text-base md:text-sm sm:text-sm xs:text-sm rounded-[45px]"
+                type="button"
+                onClick={verifyOTP}
+              >
+                Continue
+              </button>
+            </div>
+            {/* </>
+            )} */}
           </div>
         </div>
       </div>

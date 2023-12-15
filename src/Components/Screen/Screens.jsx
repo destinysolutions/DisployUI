@@ -308,12 +308,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       (screen) => screen.screenID === assetScreenID
     );
     let moduleID =
-      selectedAsset.assetID ||
-      selectedComposition.compositionID ||
-      selectedYoutube.youtubeId ||
-      selectedTextScroll.textScroll_Id;
-
-    let mediaType = selectedAsset.assetID
+      selectedAsset?.assetID ||
+      selectedComposition?.compositionID ||
+      selectedYoutube?.youtubeId ||
+      selectedTextScroll?.textScroll_Id;
+    // return console.log(moduleID, selectedComposition);
+    let mediaType = selectedAsset?.assetID
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
@@ -327,10 +327,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       : 0;
 
     let mediaName =
-      selectedAsset.assetName ||
-      selectedComposition.compositionName ||
-      selectedYoutube.instanceName ||
-      selectedTextScroll.instanceName;
+      selectedAsset?.assetName ||
+      selectedComposition?.compositionName ||
+      selectedYoutube?.instanceName ||
+      selectedTextScroll?.instanceName;
 
     if (screenToUpdate) {
       let data = {
@@ -373,9 +373,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleScheduleUpdate = () => {
     const screenToUpdate = screens.find(
-      (screen) => screen.screenID === scheduleScreenID
+      (screen) => screen?.screenID === scheduleScreenID
     );
-    let moduleID = selectedSchedule.scheduleId;
+    let moduleID = selectedSchedule?.scheduleId;
     if (screenToUpdate) {
       let data = {
         ...screenToUpdate,

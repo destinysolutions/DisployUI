@@ -865,24 +865,31 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   )
                 )}
                 {!loading &&
-                compositionData.length === 0 &&
-                playerData !== null &&
-                playerData !== undefined &&
-                (playerData?.includes("Video") ||
-                  playerData?.includes("mp4")) ? (
-                  <ReactPlayer
-                    url={playerData}
-                    className="w-full relative z-20 videoinner"
-                    controls={true}
-                    playing={true}
-                  />
-                ) : (
-                  <img
-                    src={playerData}
-                    alt="Media"
-                    className="w-full h-full mx-auto object-fill"
-                  />
-                )}
+                  compositionData.length === 0 &&
+                  playerData !== null &&
+                  playerData !== undefined &&
+                  (playerData?.includes("Video") ||
+                    playerData?.includes("mp4")) && (
+                    <ReactPlayer
+                      url={playerData}
+                      className="w-full relative z-20 videoinner"
+                      controls={true}
+                      playing={true}
+                    />
+                  )}
+
+                {!loading &&
+                  compositionData.length === 0 &&
+                  playerData !== null &&
+                  playerData !== undefined &&
+                  (playerData?.includes("Image") ||
+                    playerData?.includes("OnlineImage")) && (
+                    <img
+                      src={playerData}
+                      alt="Media"
+                      className="w-full h-full mx-auto object-fill"
+                    />
+                  )}
               </div>
 
               {showUploadAssestModal && <FileUpload />}

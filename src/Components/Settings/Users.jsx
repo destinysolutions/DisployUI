@@ -16,6 +16,14 @@ import { IoIosLink } from "react-icons/io";
 import toast from "react-hot-toast";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 import { handleGetCountries } from "../../Redux/SettingUserSlice";
+import user_pic from "../../images/Settings/3user-img.png";
+import link_icon from "../../images/Settings/link-icon.svg";
+import deleteImg from "../../images/Settings/delete.svg";
+import google_logo from "../../images/Settings/Google__G__Logo.svg";
+import slack from "../../images/Settings/Slack_Technologies_Logo.svg";
+import facebook from "../../images/Settings/facebook-logo.svg";
+import twitter from "../../images/Settings/twitter-logo.svg";
+import dribble from "../../images/Settings/dribbble-logo.svg";
 
 const Users = () => {
   const [passowrdErrors, setErrorsPassword] = useState("");
@@ -68,14 +76,6 @@ const Users = () => {
   };
 
   useEffect(() => {
-    // fetch(GET_ALL_COUNTRY)
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     setCountries(data.data);
-    //   })
-    //   .catch((error) => {
-    //     console.log("Error fetching country data:", error);
-    //   });
     dispatch(handleGetCountries());
   }, []);
 
@@ -128,7 +128,6 @@ const Users = () => {
       setErrorsEmail("Email is required");
       return;
     }
-
     data.append("firstName", firstName);
     data.append("lastName", lastName);
     data.append("password", password);
@@ -170,7 +169,6 @@ const Users = () => {
 
   const handleUpdateUser = () => {
     let data = new FormData();
-
     data.append("orgUserSpecificID", userID);
     data.append("firstName", firstName);
     data.append("lastName", lastName);
@@ -616,7 +614,7 @@ const Users = () => {
                         <input
                           type="text"
                           placeholder="Enter Company Name"
-                          name="cname"
+                          name="zipcode"
                           className="formInput"
                           value={zipCode}
                           onChange={(e) => setZipCode(e.target.value)}
@@ -808,7 +806,7 @@ const Users = () => {
                           className="h-50"
                         />
                       ) : (
-                        <img src="../../../Settings/3user-img.png" />
+                        <img src={user_pic} />
                       )}
                     </span>
                     <span className="user-name">
@@ -1379,7 +1377,7 @@ const Users = () => {
                                   <div className="flex-shrink-0 w-10 h-10">
                                     <img
                                       className="w-full h-full rounded-full"
-                                      src="../../../Settings/Google__G__Logo.svg"
+                                      src={google_logo}
                                       alt=""
                                     />
                                   </div>
@@ -1403,7 +1401,7 @@ const Users = () => {
                                   <div className="flex-shrink-0 w-10 h-10">
                                     <img
                                       className="w-full h-full rounded-full"
-                                      src="../../../Settings/Slack_Technologies_Logo.svg"
+                                      src={slack}
                                       alt=""
                                     />
                                   </div>
@@ -1437,7 +1435,7 @@ const Users = () => {
                                   <div className="flex-shrink-0 w-10 h-10">
                                     <img
                                       className="w-full h-full rounded-full"
-                                      src="../../../Settings/facebook-logo.svg"
+                                      src={facebook}
                                       alt=""
                                     />
                                   </div>
@@ -1451,7 +1449,7 @@ const Users = () => {
                               </td>
                               <td className="px-5 py-2 text-sm">
                                 <a href="#" className="link-icon-bg">
-                                  <img src="../../../Settings/link-icon.svg" />
+                                  <img src={link_icon} />
                                 </a>
                               </td>
                             </tr>
@@ -1461,7 +1459,7 @@ const Users = () => {
                                   <div className="flex-shrink-0 w-10 h-10">
                                     <img
                                       className="w-full h-full rounded-full"
-                                      src="../../../Settings/twitter-logo.svg"
+                                      src={twitter}
                                       alt=""
                                     />
                                   </div>
@@ -1475,7 +1473,7 @@ const Users = () => {
                               </td>
                               <td className="px-5 py-2 text-sm">
                                 <a href="#" className="delete-icon-bg">
-                                  <img src="../../../Settings/delete.svg" />
+                                  <img src={deleteImg} />
                                 </a>
                               </td>
                             </tr>
@@ -1485,7 +1483,7 @@ const Users = () => {
                                   <div className="flex-shrink-0 w-10 h-10">
                                     <img
                                       className="w-full h-full rounded-full"
-                                      src="../../../Settings/dribbble-logo.svg"
+                                      src={dribble}
                                       alt=""
                                     />
                                   </div>
@@ -1499,7 +1497,7 @@ const Users = () => {
                               </td>
                               <td className="px-5 py-2 text-sm">
                                 <a href="#" className="delete-icon-bg">
-                                  <img src="../../../Settings/delete.svg" />
+                                  <img src={deleteImg} />
                                 </a>
                               </td>
                             </tr>
