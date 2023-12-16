@@ -349,6 +349,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleUpdateScreenAssign = () => {
+    console.log("pressssssssssssssssssssssssssss");
     let config = {
       method: "get",
       maxBodyLength: Infinity,
