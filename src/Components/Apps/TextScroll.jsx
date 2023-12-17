@@ -349,9 +349,9 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                   Text Scroll
                 </h1>
                 <div className="flex items-center">
-                  <button className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full p-1 text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  {/* <button className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full p-1 text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                     <BsInfoLg />
-                  </button>
+                  </button> */}
                   <button
                     onClick={handelDeleteAllInstance}
                     style={{ display: selectAll ? "block" : "none" }}
@@ -499,7 +499,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                   <div className="flex items-center">
                                     <div>
                                       <img
-                                        src="../../../AppsImg/text-scroll-icon.svg"
+                                        src={textScrollLogo}
                                         className="w-10"
                                       />
                                     </div>
@@ -516,7 +516,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                     <AiOutlineCloseCircle />
                                   </button>
                                 </div>
-                                <div className="bg-lightgray min-h-[10rem] align-middle leading-[10rem]">
+                                <div className="bg-lightgray min-h-[8rem] flex items-center">
                                   <marquee
                                     direction={
                                       scrollType == 1 ? "left" : "right"

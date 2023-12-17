@@ -47,6 +47,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [instanceView, setInstanceView] = useState(false);
   const [instanceID, setInstanceID] = useState();
+
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
     : "";
@@ -390,10 +391,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                             <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7] border-slate-200 rounded-t">
                               <div className="flex items-center">
                                 <div>
-                                  <img
-                                    src="../../../AppsImg/youtube.svg"
-                                    className="w-10"
-                                  />
+                                  <img src={youtube} className="w-10" />
                                 </div>
                                 <div className="ml-3">
                                   <h4 className="text-lg font-medium">
@@ -591,10 +589,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                             <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7]  rounded-t">
                               <div className="flex items-center">
                                 <div>
-                                  <img
-                                    src="../../../AppsImg/youtube.svg"
-                                    className="w-10"
-                                  />
+                                  <img src={youtube} className="w-10" />
                                 </div>
                                 <div className="ml-3">
                                   <h4 className="text-lg font-medium">

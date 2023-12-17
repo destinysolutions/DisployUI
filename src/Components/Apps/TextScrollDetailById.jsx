@@ -9,6 +9,7 @@ import {
   SCROLLDATA_BY_ID,
   SCROLL_ADD_TEXT,
   SCROLL_TYPE_OPTION,
+  SIGNAL_R,
 } from "../../Pages/Api";
 import axios from "axios";
 import { useState } from "react";
@@ -17,6 +18,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { MdSave } from "react-icons/md";
 import toast from "react-hot-toast";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -28,6 +30,7 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
   const [edited, setEdited] = useState(false);
   const [instanceName, setInstanceName] = useState();
   const [saveLoading, setSaveLoading] = useState(false);
+  const [connection, setConnection] = useState(null);
 
   const history = useNavigate();
 
@@ -45,7 +48,41 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
       });
   }, []);
 
-  const handleUpdateScrollText = () => {
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    newConnection.on("ScreenConnected", (screenConnected) => {
+      // console.log("ScreenConnected", screenConnected);
+    });
+
+    newConnection
+      .start()
+      .then(() => {
+        // console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
+    return () => {
+      if (newConnection) {
+        newConnection
+          .stop()
+          .then(() => {
+            // console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  }, []);
+
+  const handleUpdateScrollText = async () => {
     if (instanceName === "" || text === "") {
       toast.remove();
       return toast.error("Please fill all the fields.");
@@ -72,18 +109,37 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
 
     setSaveLoading(true);
 
-    axios
-      .request(config)
-      .then((response) => {
-        if (response.data.status === 200) {
-          history("/text-scroll");
+    try {
+      const response = await axios.request(config);
+
+      if (response?.data?.status === 200) {
+        if (connection) {
+          // Wrap the SignalR invocation in a Promise
+          const signalRInvocation = new Promise((resolve, reject) => {
+            connection
+              .invoke("ScreenConnected")
+              .then(() => {
+                console.log("SignalR method invoked after text scroll update");
+                resolve();
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+                reject(error);
+              });
+          });
+
+          // Wait for the SignalR invocation to complete before navigating
+          await signalRInvocation;
         }
+
+        history("/text-scroll");
+
         setSaveLoading(false);
-      })
-      .catch((error) => {
-        setSaveLoading(false);
-        console.log(error);
-      });
+      }
+    } catch (error) {
+      setSaveLoading(false);
+      console.log(error);
+    }
   };
 
   const handleFetchTextScrollById = () => {

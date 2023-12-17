@@ -1,9 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
-import { AiOutlineCloseCircle, AiOutlineCloudUpload } from "react-icons/ai";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { SELECT_BY_USER_SCREENDETAIL } from "../Pages/Api";
-import ShowAssetModal from "./ShowAssetModal";
 import { handleGetAllAssets } from "../Redux/Assetslice";
 
 const ScreenAssignModal = ({
@@ -21,22 +20,6 @@ const ScreenAssignModal = ({
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
   const [screenData, setScreenData] = useState([]);
-  const [popupActiveTab, setPopupActiveTab] = useState(1);
-  const [selectedTextScroll, setSelectedTextScroll] = useState();
-  const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
-  const [assetPreview, setAssetPreview] = useState("");
-
-  const [assetScreenID, setAssetScreenID] = useState(null);
-  const [showAssetModal, setShowAssetModal] = useState(false);
-  const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
-
-  const [screenName, setScreenName] = useState("");
-  const [validationError, setValidationError] = useState("");
-  // const [selectedScreens, setSelectedScreens] = useState([]);
-
-  const selectedScreenIdsString = Array.isArray(selectedScreens)
-    ? selectedScreens.join(",")
-    : "";
 
   const selectScreenRef = useRef(null);
 
@@ -130,35 +113,9 @@ const ScreenAssignModal = ({
     };
   }, [handleClickOutside]);
 
-  const handleAssetAdd = (asset) => {
-    setSelectedAsset(asset);
-    setAssetPreview(asset);
-  };
-
   function handleClickOutside() {
     setSelectScreenModal(false);
   }
-
-  const handleAssetUpdate = () => {
-    console.log(
-      "--------- MergedScreens ------ handleAssetUpdate ---- ",
-      selectedAsset
-    );
-  };
-
-  const handleScreenNameChange = (event) => {
-    const inputValue = event.target.value;
-    // Your validation logic goes here
-    if (inputValue.trim() === "") {
-      setValidationError("Screen Name cannot be empty");
-    } else {
-      setValidationError("");
-    }
-
-    setScreenName(inputValue);
-  };
-
-  // const handleUpdateScreenAssign = () => {
   //   // Validation check
   //   if (screenName.trim() === "") {
   //     setValidationError("Screen Name cannot be empty");

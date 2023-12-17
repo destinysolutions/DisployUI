@@ -61,7 +61,7 @@ const Userrole = () => {
   });
 
   const modalRef = useRef(null);
-  const { token ,user} = useSelector((state) => state.root.auth);
+  const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   //   const [checkboxStates, setCheckboxStates] = useState({});
@@ -655,32 +655,34 @@ const Userrole = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:px-5 md:px-5 sm:px-2 xs:px-2">
-        {userRoleData && userRoleData.length > 0 &&  userRoleData?.map((userrole) => (
-          <div
-            className="rounded-xl p-6 bg-[#E7EFFF] user-role-card"
-            key={userrole.orgUserRoleID}
-          >
-            <div className="flex justify-between">
-              <div className="role-name">
-                <p>Total {userrole.userCount} Users</p>
-                <h3 className="text-3xl text-primary my-2 break-words">
-                  {userrole.orgUserRole}
-                </h3>
-                <button
-                  onClick={() => {
-                    handleSelectByID(userrole.orgUserRoleID);
-                    setshowuserroleModal(true);
-                  }}
-                  className="bg-primary text-white items-center  rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50 border border-primary"
-                >
-                  Edit Role
-                </button>
+        {userRoleData &&
+          userRoleData.length > 0 &&
+          userRoleData?.map((userrole) => (
+            <div
+              className="rounded-xl p-6 bg-[#E7EFFF] user-role-card"
+              key={userrole.orgUserRoleID}
+            >
+              <div className="flex justify-between">
+                <div className="role-name">
+                  <p>Total {userrole.userCount} Users</p>
+                  <h3 className="text-3xl text-primary my-2 break-words">
+                    {userrole.orgUserRole}
+                  </h3>
+                  <button
+                    onClick={() => {
+                      handleSelectByID(userrole.orgUserRoleID);
+                      setshowuserroleModal(true);
+                    }}
+                    className="bg-primary text-white items-center  rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50 border border-primary"
+                  >
+                    Edit Role
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
-      
+
       {/* <div className="md:px-5 sm:px-2 xs:px-2 mt-5">
         <div className="my-2 flex sm:flex-row flex-col">
           <div className="flex flex-row mb-1 sm:mb-0">
@@ -734,7 +736,7 @@ const Userrole = () => {
         </div>
       </div> */}
 
-      <div className="mt-7">
+      <div className="p-5">
         <DataTable
           columns={columns}
           data={userData}

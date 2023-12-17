@@ -835,6 +835,29 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   //     console.warn("Connection is not established yet.");
   //   }
   // }, [connection]);
+  const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
+  const [sortColumn, setSortColumn] = useState(null); // column name or null if not sorted
+  const handleSort = (column) => {
+    // Toggle sorting order if the same column is clicked
+    const newSortOrder =
+      column === sortColumn && sortOrder === "asc" ? "desc" : "asc";
+    setSortOrder(newSortOrder);
+    setSortColumn(column);
+
+    // Sort the data based on the selected column and order
+    const sortedData = [...screens].sort((a, b) => {
+      // Implement your sorting logic here based on the column
+      // Example: Sort by screenName
+      const aValue = a[column];
+      const bValue = b[column];
+      return newSortOrder === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    });
+
+    // Update the state with the sorted data
+    dispatch(handleChangeScreens(sortedData));
+  };
 
   return (
     <>
@@ -1136,10 +1159,16 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
                   {screenContentVisible && (
-                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    <th
+                      className="text-[#5A5881] text-base font-semibold w-fit text-center"
+                      onClick={() => handleSort("screenName")}
+                    >
                       <div className="flex  items-center ">
                         {/* <SlScreenDesktop className="mr-2 text-xl" /> */}
                         Screen
+                        {sortColumn === "screenName" && (
+                          <span>{sortOrder === "asc" ? " ▲" : " ▼"}</span>
+                        )}
                       </div>
                     </th>
                   )}
@@ -1152,7 +1181,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     </th>
                   )}
                   {statusContentVisible && (
-                    <th className=" text-[#444] text-sm font-semibold p-2">
+                    <th className=" text-[#444] text-sm font-semibold p-2 ">
                       <div className="flex  items-center justify-center  mx-auto ">
                         {/* <MdLiveTv className="mr-2 text-xl" /> */}
                         status

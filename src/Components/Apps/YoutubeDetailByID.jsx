@@ -21,12 +21,14 @@ import ReactPlayer from "react-player";
 import axios from "axios";
 import {
   GET_YOUTUBEDATA_BY_ID,
+  SIGNAL_R,
   YOUTUBE_INSTANCE_ADD_URL,
 } from "../../Pages/Api";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import Img from "../../images/Assets/img.png";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   YoutubeDetailByID.propTypes = {
@@ -50,6 +52,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   const [saveLoading, setSaveLoading] = useState(false);
   const [instanceName, setInstanceName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [connection, setConnection] = useState(null);
 
   const modalRef = useRef(null);
 
@@ -87,7 +90,41 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
 
   //Insert  API
 
-  const handleUpdateYoutubeApp = () => {
+  useEffect(() => {
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    newConnection.on("ScreenConnected", (screenConnected) => {
+      // console.log("ScreenConnected", screenConnected);
+    });
+
+    newConnection
+      .start()
+      .then(() => {
+        // console.log("Connection established");
+        setConnection(newConnection);
+      })
+      .catch((error) => {
+        console.error("Error starting connection:", error);
+      });
+
+    return () => {
+      if (newConnection) {
+        newConnection
+          .stop()
+          .then(() => {
+            // console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  }, []);
+
+  const handleUpdateYoutubeApp = async () => {
     if (instanceName === "" || YoutubeVideo === "") {
       toast.remove();
       return toast.error("Please fill all the details");
@@ -114,18 +151,35 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
       data: data,
     };
     setSaveLoading(true);
-    axios
-      .request(config)
-      .then((response) => {
-        if (response.data.status === 200) {
-          history("/youtube");
-          setSaveLoading(false);
+    try {
+      const response = await axios.request(config);
+      if (response?.data?.status === 200) {
+        if (connection) {
+          // Wrap the SignalR invocation in a Promise
+          const signalRInvocation = new Promise((resolve, reject) => {
+            connection
+              .invoke("ScreenConnected")
+              .then(() => {
+                console.log("SignalR method invoked after youtube update");
+                resolve();
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+                reject(error);
+              });
+          });
+
+          // Wait for the SignalR invocation to complete before navigating
+          await signalRInvocation;
         }
-      })
-      .catch((error) => {
-        console.log(error);
+        history("/youtube");
         setSaveLoading(false);
-      });
+      }
+    } catch (error) {
+      console.log(error);
+      setSaveLoading(false);
+      return error;
+    }
   };
 
   useEffect(() => {
@@ -520,7 +574,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                               </label>
                             </td>
                           </tr>
-                          <tr className="mutebtn">
+                          {/* <tr className="mutebtn">
                             <td>
                               <span className="text-base font-normal">
                                 Toggle subtitles:
@@ -547,8 +601,8 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                                 ></div>
                               </label>
                             </td>
-                          </tr>
-                          <tr>
+                          </tr> */}
+                          {/* <tr>
                             <td>
                               <label className="text-base font-normal">
                                 Max number of videos to play
@@ -563,7 +617,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                                 onChange={(e) => setMaxVideos(e.target.value)}
                               />
                             </td>
-                          </tr>
+                          </tr> */}
 
                           <tr></tr>
                         </tbody>
