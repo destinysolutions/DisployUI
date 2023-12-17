@@ -349,7 +349,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleUpdateScreenAssign = () => {
-    console.log("pressssssssssssssssssssssssssss");
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -550,6 +549,30 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
   // console.log(tags);
 
+  const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
+  const [sortColumn, setSortColumn] = useState(null); // column name or null if not sorted
+  const handleSort = (column) => {
+    // Toggle sorting order if the same column is clicked
+    const newSortOrder =
+      column === sortColumn && sortOrder === "asc" ? "desc" : "asc";
+    setSortOrder(newSortOrder);
+    setSortColumn(column);
+
+    // Sort the data based on the selected column and order
+    const sortedData = [...compositionData].sort((a, b) => {
+      // Implement your sorting logic here based on the column
+      // Example: Sort by compositionName
+      const aValue = a[column];
+      const bValue = b[column];
+      return newSortOrder === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    });
+
+    // Update the state with the sorted data
+    setCompositionData(sortedData);
+  };
+
   return (
     <>
       <div className="flex bg-white py-3 border-b border-gray">
@@ -663,8 +686,19 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
             >
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                  <th
+                    className={`text-[#5A5881] text-base font-semibold w-fit text-center ${
+                      sortColumn === "compositionName" ? "primary" : ""
+                    }`}
+                    onClick={() => handleSort("compositionName")}
+                  >
                     Composition Name
+                    {sortColumn === "compositionName" &&
+                      sortOrder === "asc" &&
+                      "▲"}
+                    {sortColumn === "compositionName" &&
+                      sortOrder === "desc" &&
+                      "▼"}
                   </th>
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Date Added
@@ -821,7 +855,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                       )
                                     }
                                   >
-                                    Edit{" "}
+                                    Edit
                                   </button>
                                 </div>
                                 <div className=" mb-1">
@@ -847,7 +881,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                   >
                                     Set to Screens
                                   </button>
-                                </div>{" "}
+                                </div>
                                 <div className="mb-1 border border-[#F2F0F9]"></div>
                                 <div className=" mb-1 text-[#D30000]">
                                   <button
@@ -1033,7 +1067,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                       )
                                     }
                                   >
-                                    Edit{" "}
+                                    Edit
                                   </button>
                                 </div>
                                 <div className=" mb-1">
@@ -1059,7 +1093,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                   >
                                     Set to Screens
                                   </button>
-                                </div>{" "}
+                                </div>
                                 <div className="mb-1 border border-[#F2F0F9]"></div>
                                 <div className=" mb-1 text-[#D30000]">
                                   <button

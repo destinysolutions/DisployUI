@@ -198,29 +198,38 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       data,
     };
     setSavingLoader(true);
-    await axios
-      .request(config)
-      .then((response) => {
-        if (response?.data?.status == 200) {
-          if (connection) {
+    try {
+      const response = await axios.request(config);
+
+      if (response?.data?.status === 200) {
+        if (connection) {
+          // Wrap the SignalR invocation in a Promise
+          const signalRInvocation = new Promise((resolve, reject) => {
             connection
               .invoke("ScreenConnected")
               .then(() => {
-                // console.log("SignalR method invoked after screen update");
+                console.log("SignalR method invoked after composition update");
+                resolve();
               })
               .catch((error) => {
                 console.error("Error invoking SignalR method:", error);
+                reject(error);
               });
-          }
-          navigate("/composition");
-          setSavingLoader(false);
+          });
+
+          // Wait for the SignalR invocation to complete before navigating
+          await signalRInvocation;
         }
-      })
-      .catch((error) => {
-        console.log(error);
+
+        // After SignalR invocation is complete, navigate to "/composition"
+        navigate("/composition");
         setSavingLoader(false);
-        return error;
-      });
+      }
+    } catch (error) {
+      console.log(error);
+      setSavingLoader(false);
+      return error;
+    }
   };
 
   const addSeletedAsset = (data, currSection) => {

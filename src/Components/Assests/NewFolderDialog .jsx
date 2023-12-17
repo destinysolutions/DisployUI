@@ -462,14 +462,14 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="pt-24 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
-            <div>
+            <div className="w-full">
               <div className="flex justify-between items-center">
                 <button onClick={navigateBack}>
                   <MdArrowBackIosNew className="text-4xl rounded-full p-2 b order border-gray mb-2 hover:bg-SlateBlue hover:text-white" />
                 </button>
                 <button
                   onClick={createNestedFolder}
-                  className="flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  className="flex align-middle text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 >
                   <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
                   New Folder

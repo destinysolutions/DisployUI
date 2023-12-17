@@ -448,7 +448,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       </td>
                       <td>
                         <input
-                          className="bg-gray-200 appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3"
+                          className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3"
                           type="text"
                           placeholder="Screen Name"
                           onChange={(e) => {
@@ -468,7 +468,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </label>
                       </td>
                       <td>
-                        <h4 className="bg-gray-200 appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3">
+                        <h4 className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3">
                           {otpData.GoogleLocation}
                         </h4>
                       </td>

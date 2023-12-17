@@ -347,6 +347,28 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setShowActionBox(false);
   }
 
+  const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
+  const [sortColumn, setSortColumn] = useState(null); // column name or null if not sorted
+  const handleSort = (column) => {
+    // Toggle sorting order if the same column is clicked
+    const newSortOrder =
+      column === sortColumn && sortOrder === "asc" ? "desc" : "asc";
+    setSortOrder(newSortOrder);
+    setSortColumn(column);
+
+    // Sort the data based on the selected column and order
+    const sortedData = [...schedules].sort((a, b) => {
+      const aValue = a[column];
+      const bValue = b[column];
+      return newSortOrder === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    });
+
+    // Update the state with the sorted data
+    dispatch(handleChangeSchedule(sortedData));
+  };
+
   return (
     <>
       {/* navbar and sidebar start */}
@@ -474,8 +496,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             >
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                  <th
+                    onClick={() => handleSort("scheduleName")}
+                    className="text-[#5A5881] text-base font-semibold w-fit text-center"
+                  >
                     Schedule Name
+                    {sortColumn === "scheduleName" && (
+                      <span>{sortOrder === "asc" ? " ▲" : " ▼"}</span>
+                    )}
                   </th>
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Time Zones

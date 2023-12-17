@@ -28,9 +28,8 @@ const ShowAssetModal = ({
   handleAppsAdd,
   selectedTextScroll,
   selectedYoutube,
-  type
+  type,
 }) => {
-
   const { user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
@@ -129,8 +128,7 @@ const ShowAssetModal = ({
     return () => {
       document.removeEventListener("click", handleClickOutside, true);
     };
-
-  }, [handleClickOutside,user]);
+  }, [handleClickOutside, user]);
 
   function handleClickOutside() {
     setShowAssetModal(false);
@@ -157,55 +155,52 @@ const ShowAssetModal = ({
         >
           <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
             <div className="flex-initial">
-{type !== "merged_screens"  && ( <>  
-            
-              <nav
-                className="flex flex-col space-y-2 "
-                aria-label="Tabs"
-                role="tablist"
-                data-hs-tabs-vertical="true"
-              >
-                <button
-                  type="button"
-                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                    popupActiveTab === 1 ? "active" : ""
-                  }`}
-                  onClick={() => setPopupActiveTab(1)}
-                >
-                  <span
-                    className={`p-1 rounded ${
-                      popupActiveTab === 1
-                        ? "bg-primary text-white"
-                        : "bg-lightgray"
-                    } `}
+              {type !== "merged_screens" && (
+                <>
+                  <nav
+                    className="flex flex-col space-y-2 "
+                    aria-label="Tabs"
+                    role="tablist"
+                    data-hs-tabs-vertical="true"
                   >
-                    <IoBarChartSharp size={15} />
-                  </span>
-                  Assets
-                </button>
+                    <button
+                      type="button"
+                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                        popupActiveTab === 1 ? "active" : ""
+                      }`}
+                      onClick={() => setPopupActiveTab(1)}
+                    >
+                      <span
+                        className={`p-1 rounded ${
+                          popupActiveTab === 1
+                            ? "bg-primary text-white"
+                            : "bg-lightgray"
+                        } `}
+                      >
+                        <IoBarChartSharp size={15} />
+                      </span>
+                      Assets
+                    </button>
 
-
-
-
-                <button
-                  type="button"
-                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                    popupActiveTab === 2 ? "active" : ""
-                  }`}
-                  onClick={() => setPopupActiveTab(2)}
-                >
-                  <span
-                    className={`p-1 rounded ${
-                      popupActiveTab === 2
-                        ? "bg-primary text-white"
-                        : "bg-lightgray"
-                    } `}
-                  >
-                    <RiPlayListFill size={15} />
-                  </span>
-                  Compositions
-                </button>
-                {/* <button
+                    <button
+                      type="button"
+                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                        popupActiveTab === 2 ? "active" : ""
+                      }`}
+                      onClick={() => setPopupActiveTab(2)}
+                    >
+                      <span
+                        className={`p-1 rounded ${
+                          popupActiveTab === 2
+                            ? "bg-primary text-white"
+                            : "bg-lightgray"
+                        } `}
+                      >
+                        <RiPlayListFill size={15} />
+                      </span>
+                      Compositions
+                    </button>
+                    {/* <button
                         type="button"
                         className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
                           popupActiveTab === 3
@@ -225,28 +220,27 @@ const ShowAssetModal = ({
                         </span>
                         Disploy Studio
                       </button> */}
-                <button
-                  type="button"
-                  className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                    popupActiveTab === 3 ? "active" : ""
-                  }`}
-                  onClick={() => setPopupActiveTab(3)}
-                >
-                  <span
-                    className={`p-1 rounded ${
-                      popupActiveTab === 3
-                        ? "bg-primary text-white"
-                        : "bg-lightgray"
-                    } `}
-                  >
-                    <AiOutlineAppstoreAdd size={15} />
-                  </span>
-                  Apps
-                </button>
-
-              </nav>
- </> )}
-
+                    <button
+                      type="button"
+                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                        popupActiveTab === 3 ? "active" : ""
+                      }`}
+                      onClick={() => setPopupActiveTab(3)}
+                    >
+                      <span
+                        className={`p-1 rounded ${
+                          popupActiveTab === 3
+                            ? "bg-primary text-white"
+                            : "bg-lightgray"
+                        } `}
+                      >
+                        <AiOutlineAppstoreAdd size={15} />
+                      </span>
+                      Apps
+                    </button>
+                  </nav>
+                </>
+              )}
             </div>
 
             <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1">
@@ -284,7 +278,11 @@ const ShowAssetModal = ({
                         <th className="p-3">Type</th>
                       </tr>
                     </thead>
-                    {filteredData.length === 0 ? assets.filter((asset) => { return asset.assetType !== "Folder"; })
+                    {filteredData.length === 0
+                      ? assets
+                          .filter((asset) => {
+                            return asset.assetType !== "Folder";
+                          })
                           .map((asset) => (
                             <tbody key={asset.assetID}>
                               <tr
@@ -297,6 +295,8 @@ const ShowAssetModal = ({
                                 onClick={() => {
                                   handleAssetAdd(asset);
                                   setAssetPreviewPopup(true);
+                                  setSelectedComposition("");
+                                  handleAppsAdd("");
                                 }}
                               >
                                 <td className="p-3 text-left">
@@ -463,6 +463,8 @@ const ShowAssetModal = ({
                               } border-b border-[#eee] `}
                               onClick={() => {
                                 setSelectedComposition(composition);
+                                handleAssetAdd("");
+                                handleAppsAdd("");
                               }}
                             >
                               <td className="p-3 text-left">
@@ -551,6 +553,8 @@ const ShowAssetModal = ({
                           } border-b border-[#eee] `}
                           onClick={() => {
                             handleAppsAdd(instance);
+                            handleAssetAdd("");
+                            setSelectedComposition("");
                           }}
                         >
                           <td className="p-3 text-left">
