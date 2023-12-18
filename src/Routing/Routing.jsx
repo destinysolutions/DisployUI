@@ -31,7 +31,7 @@ import LoginContainer from "./AuthRoutes";
 import UserProfile from "../Pages/Profile/UserProfile";
 import AdminContainer from "./AdminRoutes";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Youtube from "../Components/Apps/Youtube";
 import YoutubeDetail from "../Components/Apps/YoutubeDetail";
 import Weather from "../Components/Apps/Weather";
@@ -52,8 +52,9 @@ import ErrorFallback from "../Components/ErrorFallback";
 
 const Routing = () => {
   //for screen resize sidebar open close
+  const { user, token } = useSelector((state) => state.root.auth);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [isAuthicate, setisAuthicate] = useState(false);
+  // const [isAuthicate, setisAuthicate] = useState(false);
   const accessDetails = localStorage.getItem("role_access");
   const handleResize = useCallback(() => {
     if (window.innerWidth < 780) {
@@ -80,25 +81,25 @@ const Routing = () => {
     };
   }, [handleResize]);
 
-  useEffect(() => {
-    const ubsubscribe = () => {
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          if (user.emailVerified) {
-            setisAuthicate(true);
-            localStorage.setItem("user", JSON.stringify(user));
-          } else {
-            setisAuthicate(false);
-            localStorage.setItem("user", null);
-          }
-        } else {
-          setisAuthicate(false);
-          localStorage.setItem("user", null);
-        }
-      });
-    };
-    return ubsubscribe();
-  }, []);
+  // useEffect(() => {
+  //   const ubsubscribe = () => {
+  //     auth.onAuthStateChanged((user) => {
+  //       if (user) {
+  //         if (user.emailVerified) {
+  //           setisAuthicate(true);
+  //           localStorage.setItem("user", JSON.stringify(user));
+  //         } else {
+  //           setisAuthicate(false);
+  //           localStorage.setItem("user", null);
+  //         }
+  //       } else {
+  //         setisAuthicate(false);
+  //         localStorage.setItem("user", null);
+  //       }
+  //     });
+  //   };
+  //   return ubsubscribe();
+  // }, []);
 
   const dispatch = useDispatch();
 
@@ -116,7 +117,7 @@ const Routing = () => {
         setSidebarOpen={setSidebarOpen}
       />
     );
-  if (accessDetails === "USER" && isAuthicate) {
+  if (accessDetails === "USER" && user) {
     const data = localStorage.getItem("userID");
     // dispatch(loginUser(JSON.parse(data)));
 
@@ -279,24 +280,34 @@ const Routing = () => {
                 />
               }
             />
+
             <Route
-            path="/weather-detail"   // weather to change weather-detail
-            element={
-              <Weather
-                sidebarOpen={sidebarOpen}
-                setSidebarOpen={setSidebarOpen}
-              />
-            }
-          />
-          <Route
-            path="/Weather"          // weather-detail to change weather
-            element={
-              <WeatherDetail
-                sidebarOpen={sidebarOpen}
-                setSidebarOpen={setSidebarOpen}
-              />
-            }
-          />
+              path="/Weather" 
+              element={
+                <Weather
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/weatherdetail" 
+              element={
+                <WeatherDetail
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/weatherdetail/:id" 
+              element={
+                <WeatherDetail
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
             <Route
               path="/text-scroll"
               element={
