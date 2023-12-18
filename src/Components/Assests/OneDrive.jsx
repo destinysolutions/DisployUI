@@ -380,7 +380,6 @@ const OneDrive = ({ setFile }) => {
   // };
 
   const [selectedService, setSelectedService] = useState(null);
-  const [token, setToken] = useState(null);
 
   const fetchData = async () => {
     const url = "https://unify.apideck.com/file-storage/files";
@@ -403,17 +402,18 @@ const OneDrive = ({ setFile }) => {
   const createSession = async () => {
     // const url= "https://upload.apideck.com/file-storage/upload-sessions/{id}"
     const url = "https://unify.apideck.com/vault/sessions";
+    //unify.apideck.com/vault/sessions
 
-    try {
+    https: try {
       const { data } = await axios.post(url, {
         headers: {
           Authorization:
             "Bearer sk_live_18c615f7-b6cd-4ac0-8f3e-b7fd465c511d-z0CYU6dhwX12IO8qUg-f3e8f762-4f83-47e0-a264-5b012b253aca",
           "x-apideck-consumer-id": "test-consumer",
           "x-apideck-app-id": "ZKfil3RXz5ssBdjXqUgYy0KHKYm14M5cXLqUg",
+          "Content-Type": "application/json",
         },
       });
-      setToken(data);
     } catch (error) {
       console.log(error);
     }
@@ -443,54 +443,31 @@ const OneDrive = ({ setFile }) => {
 
   // const downloadFileUrl = ;
   const session_token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDI4Nzc2MTksImV4cCI6MTcwMjg4MTIxOX0.VxJELx3aO-JNbduAHgDELYZpb7tPfWl3Ks_tYv42PIA"
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDI5MDc3NTEsImV4cCI6MTcwMjkxMTM1MX0.p6o4UWOTysuoOwiIsde_kTaFICa-kN_jEJ268DoSjsg";
   const handleSelect = async (file) => {
     // setFile(file);
     console.log(file);
-    try {
-      const { data } = await axios.get(
-        `https://unify.apideck.com/file-storage/files/${file?.id}/download`,
-        {
-          headers: {
-            Authorization:
-              "Bearer sk_live_18c615f7-b6cd-4ac0-8f3e-b7fd465c511d-z0CYU6dhwX12IO8qUg-f3e8f762-4f83-47e0-a264-5b012b253aca",
-            "x-apideck-consumer-id": "test-consumer",
-            "x-apideck-app-id": "ZKfil3RXz5ssBdjXqUgYy0KHKYm14M5cXLqUg",
-            "x-apideck-service-id": selectedService,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      // const fs = require("fs");
+    // try {
+    //   const { data } = await axios.get(
+    //     `https://unify.apideck.com/file-storage/files/${file?.id}/download`,
+    //     {
+    //       headers: {
+    //         Authorization:
+    //           "Bearer sk_live_18c615f7-b6cd-4ac0-8f3e-b7fd465c511d-z0CYU6dhwX12IO8qUg-f3e8f762-4f83-47e0-a264-5b012b253aca",
+    //         "x-apideck-consumer-id": "test-consumer",
+    //         "x-apideck-app-id": "ZKfil3RXz5ssBdjXqUgYy0KHKYm14M5cXLqUg",
+    //         "x-apideck-service-id": selectedService,
+    //         "Content-Type": "application/json",
+    //       },
+    //     }
+    //   );
 
-      // async function downloadBinaryFile(url, outputPath) {
-      //   try {
-      //     const response = await axios.get(url, {
-      //       responseType: "arraybuffer",
-      //     });
-
-      //     // If you want to save the binary data to a file
-      //     fs.writeFileSync(outputPath, Buffer.from(response.data));
-
-      //     console.log("Binary file downloaded successfully.");
-      //   } catch (error) {
-      //     console.error("Error downloading binary file:", error.message);
-      //   }
-      // }
-
-      // // Example usage:
-      // const fileUrl = "https://example.com/path/to/binary/file.zip";
-      // const outputPath = "downloaded_file.zip";
-
-      // downloadBinaryFile(fileUrl, outputPath);
-
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
+    //   // console.log(data);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
-  // console.log(token);
   return (
     <span id="original-tab-id">
       <Tooltip
@@ -517,10 +494,6 @@ const OneDrive = ({ setFile }) => {
             // console.log(e);
             setSelectedService(e?.service_id);
           }}
-
-          // fileToSave={(e) => {
-          //   console.log(e);
-          // }}
         />
         {/* <button onClick={(e) => launchPicker(e)}>
           <img src={Onedrive} className="w-9" />
