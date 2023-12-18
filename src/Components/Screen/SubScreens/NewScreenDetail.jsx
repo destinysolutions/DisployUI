@@ -24,15 +24,19 @@ import {
   AiOutlineCloseCircle,
   AiOutlineSearch,
 } from "react-icons/ai";
-import { RiComputerLine } from "react-icons/ri";
+import { RiAppsFill, RiComputerLine } from "react-icons/ri";
 import moment from "moment";
 import { BsFillInfoCircleFill, BsTags } from "react-icons/bs";
 import { HiDotsVertical } from "react-icons/hi";
 import { TbCalendarStats, TbCalendarTime } from "react-icons/tb";
 import { VscCalendar } from "react-icons/vsc";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import FileUpload from "../../Assests/FileUpload";
 import ploygon from "../../../images/DisployImg/Polygon.svg";
+import {
+  handleGetTextScrollData,
+  handleGetYoutubeData,
+} from "../../../Redux/AppsSlice";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
@@ -59,6 +63,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showCompositionModal, setShowCompositionModal] = useState(false);
+  const [showAppsModal, setShowAppsModal] = useState(false);
   const { otpData, message } = useLocation().state;
   const [otpMessageVisible, setOTPMessageVisible] = useState(false);
   const [assetData, setAssetData] = useState([]);
@@ -67,6 +72,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedDefaultAsset, setSelectedDefaultAsset] = useState("");
   const [selectedSchedule, setSelectedSchedule] = useState("");
   const [selectedComposition, setSelectedComposition] = useState();
+  const [selectedApps, setSelectedApps] = useState();
   const [assetPreview, setAssetPreview] = useState("");
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
   const [screenName, setScreenName] = useState("");
@@ -77,15 +83,30 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [searchAsset, setSearchAsset] = useState("");
   const [showAssestOptionsPopup, setShowAssestOptionsPopup] = useState(false);
   const [confirmForComposition, setConfirmForComposition] = useState(false);
+  const [confirmForApps, setConfirmForApps] = useState(false);
   const [saveForSchedule, setSaveForSchedule] = useState(false);
   const [showUploadAssestModal, setShowUploadAssestModal] = useState(false);
+  const [selectedYoutube, setSelectedYoutube] = useState();
+  const [selectedTextScroll, setSelectedTextScroll] = useState();
 
+  console.log(selectedYoutube, selectedTextScroll);
+  const dispatch = useDispatch();
   const history = useNavigate();
+
+  const { allAppsData } = useSelector((s) => s.root.apps);
 
   const modalRef = useRef(null);
   const modalPreviewRef = useRef(null);
   const scheduleRef = useRef(null);
   const compositionRef = useRef(null);
+
+  useEffect(() => {
+    // get youtube data
+    dispatch(handleGetYoutubeData({ token }));
+
+    //get text scroll data
+    dispatch(handleGetTextScrollData({ token }));
+  }, []);
 
   function handleScreenOrientationRadio(e, optionId) {
     setSelectScreenOrientation(optionId);
@@ -114,6 +135,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedSchedule("");
     setConfirmForComposition(false);
     setSaveForSchedule(false);
+    setConfirmForApps(false);
   };
 
   // Trigger the file input click event programmatically
@@ -131,6 +153,12 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleCompositionsAdd = (composition) => {
     setSelectedComposition(composition);
+  };
+
+  const handleAppsAdd = (apps) => {
+    console.log(apps, "apps");
+    setSelectedYoutube(apps);
+    setSelectedTextScroll(apps);
   };
 
   const handleFilter = (event) => {
@@ -154,13 +182,33 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       return;
     } else {
       setScreenNameError("");
-      let mediaType = selectedDefaultAsset ? 0 : selectedScreenTypeOption || 0;
+      // let mediaType = selectedDefaultAsset ? 0 : selectedScreenTypeOption || 0;
+      let mediaType = selectedAsset?.assetID
+        ? 1
+        : selectedTextScroll?.textScroll_Id !== null &&
+          selectedTextScroll?.textScroll_Id !== undefined
+        ? 4
+        : selectedYoutube?.youtubeId !== null &&
+          selectedYoutube?.youtubeId !== undefined
+        ? 5
+        : selectedComposition?.compositionID !== null &&
+          selectedComposition?.compositionID !== undefined
+        ? 3
+        : selectedSchedule?.scheduleId !== null &&
+          selectedSchedule?.scheduleId !== undefined
+        ? 2
+        : selectedDefaultAsset
+        ? 0
+        : 0;
+
       let getScreenID = otpData.map((item) => item.ScreenID);
       let screen_id = getScreenID[0];
       let moduleID =
         selectedAsset?.assetID ||
         selectedSchedule?.scheduleId ||
-        selectedComposition?.compositionID;
+        selectedComposition?.compositionID ||
+        selectedYoutube?.youtubeId ||
+        selectedTextScroll?.textScroll_Id;
       let data = JSON.stringify({
         screenID: screen_id,
         screenOrientation: selectScreenOrientation,
@@ -216,6 +264,12 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const handleConfirmOnComposition = () => {
     setShowCompositionModal(false);
     if (selectedComposition !== "") setConfirmForComposition(true);
+  };
+
+  const handleConfirmOnApps = () => {
+    setShowAppsModal(false);
+    if (selectedTextScroll !== "" || selectedYoutube !== "")
+      setConfirmForApps(true);
   };
 
   const handleFetchAssestFiles = async () => {
@@ -1303,6 +1357,176 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                     onClick={() => {
                                       // setShowCompositionModal(false);
                                       handleConfirmOnComposition();
+                                    }}
+                                  >
+                                    Confirm
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                    {selectedScreenTypeOption === "4" && (
+                      <>
+                        <tr>
+                          <td></td>
+                          <td>
+                            <div className="flex">
+                              <input
+                                className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                value={
+                                  selectedTextScroll !== "" ||
+                                  selectedYoutube !== ""
+                                    ? selectedTextScroll?.instanceName ||
+                                      selectedYoutube?.instanceName
+                                    : ""
+                                }
+                                placeholder="Set Apps"
+                                readOnly
+                                onChange={(e) => {
+                                  setSelectedTextScroll({
+                                    ...selectedTextScroll,
+                                    instanceName: e.target.value,
+                                  });
+                                  setSelectedYoutube({
+                                    ...selectedYoutube,
+                                    instanceName: e.target.value,
+                                  });
+                                }}
+                              />
+
+                              <div
+                                className="flex items-center ml-5"
+                                onClick={() => {
+                                  setShowAppsModal(true);
+                                }}
+                              >
+                                <RiAppsFill className="border border-[#D5E3FF] p-2 text-4xl rounded" />
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </>
+                    )}
+                    {showAppsModal && (
+                      <tr>
+                        <td>
+                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                            <div
+                              ref={compositionRef}
+                              className="relative w-auto my-6 mx-auto myplaylist-popup-details"
+                            >
+                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                                <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                                  <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                    Set Content to Add Media
+                                  </h3>
+                                  <button
+                                    className="p-1 text-xl"
+                                    onClick={() => setShowAppsModal(false)}
+                                  >
+                                    <AiOutlineCloseCircle className="text-2xl" />
+                                  </button>
+                                </div>
+
+                                <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
+                                  <div className="bg-white rounded-[30px]">
+                                    <div>
+                                      <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
+                                        <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
+                                          <div>
+                                            <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                                              <div className="mb-5 relative ">
+                                                <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
+                                                <input
+                                                  type="text"
+                                                  placeholder=" Search by Name"
+                                                  className="border border-primary rounded-full px-7 py-2 search-user"
+                                                  value={searchAsset}
+                                                  onChange={handleFilter}
+                                                />
+                                              </div>
+                                              <Link to="/apps">
+                                                <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                                                  Add New App
+                                                </button>
+                                              </Link>
+                                            </div>
+                                            <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
+                                              <table
+                                                style={{
+                                                  borderCollapse: "separate",
+                                                  borderSpacing: " 0 10px",
+                                                }}
+                                                className="w-full"
+                                              >
+                                                <thead className="sticky top-0">
+                                                  <tr className="bg-lightgray">
+                                                    <th className="p-3 w-80 text-left">
+                                                      Instance Name
+                                                    </th>
+                                                    <th>App Type</th>
+                                                    {/*<th className="p-3">Resolution</th>
+                        <th className="p-3">Duration</th> */}
+                                                  </tr>
+                                                </thead>
+
+                                                {allAppsData.map(
+                                                  (instance, index) => (
+                                                    <tbody key={index}>
+                                                      <tr
+                                                        className={`${
+                                                          selectedTextScroll ===
+                                                            instance ||
+                                                          selectedYoutube ===
+                                                            instance
+                                                            ? "bg-[#f3c953]"
+                                                            : ""
+                                                        } border-b border-[#eee] `}
+                                                        onClick={() => {
+                                                          handleAppsAdd(
+                                                            instance
+                                                          );
+                                                        }}
+                                                      >
+                                                        <td className="p-3 text-left">
+                                                          {
+                                                            instance.instanceName
+                                                          }
+                                                        </td>
+                                                        <td className="p-3">
+                                                          {instance.youTubePlaylist
+                                                            ? "Youtube Video"
+                                                            : "Text scroll"}
+                                                        </td>
+                                                        {/* <td className="p-3">{composition.resolution}</td>
+                              <td className="p-3">
+                                {moment
+                                  .utc(composition.duration * 1000)
+                                  .format("hh:mm:ss")}
+                              </td> */}
+                                                      </tr>
+                                                    </tbody>
+                                                  )
+                                                )}
+                                              </table>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex justify-between items-center p-5">
+                                  <p className="text-black">
+                                    Content will always be playing Confirm
+                                  </p>
+                                  <button
+                                    className="bg-primary text-white rounded-full px-5 py-2"
+                                    onClick={() => {
+                                      handleConfirmOnApps();
                                     }}
                                   >
                                     Confirm
