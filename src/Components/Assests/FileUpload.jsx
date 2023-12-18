@@ -577,7 +577,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               {/* end pixabay */}
             </span>
 
-            {/* <OneDrive setFile={setFile} /> */}
+            <OneDrive setFile={setFile} />
 
             {/*start app*/}
             {/* <Link

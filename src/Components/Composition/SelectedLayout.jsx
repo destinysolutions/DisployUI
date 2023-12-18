@@ -45,50 +45,12 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     moment(currentDate).format("YYYY-MM-DD hh:mm")
   );
   const [assetData, setAssetData] = useState([]);
-  const [showAssetModal, setShowAssetModal] = useState(false);
   const [addAsset, setAddAsset] = useState([]);
   const [edited, setEdited] = useState(false);
   const [loading, setLoading] = useState(false);
   const [savingLoader, setSavingLoader] = useState(false);
-  // const [jsonCanvasData, setJsonCanvasData] = useState([
-  //   {
-  //     layoutID: 1,
-  //     layoutDtlID: 1,
-  //     type: "rect",
-  //     version: "5.3.0",
-  //     originX: "left",
-  //     originY: "top",
-  //     left: 0,
-  //     top: 0,
-  //     width: 350,
-  //     height: 150,
-  //     fill: "#D9D9D9",
-  //     stroke: "null",
-  //     strokeWidth: 1,
-  //     strokeDashArray: "null",
-  //     strokeLineCap: "butt",
-  //     strokeDashOffset: 0,
-  //     strokeLineJoin: "miter",
-  //     strokeUniform: false,
-  //     strokeMiterLimit: 4,
-  //     scaleX: 1,
-  //     scaleY: 1,
-  //     angle: 0,
-  //     flipX: false,
-  //     flipY: false,
-  //     opacity: 1,
-  //     shadow: "null",
-  //     visible: true,
-  //     backgroundColor: "",
-  //     fillRule: "nonzero",
-  //     paintFirst: "fill",
-  //     globalCompositeOperation: "source-over",
-  //     skewX: 0,
-  //     skewY: 0,
-  //     rx: 0,
-  //     ry: 0,
-  //   },
-  // ]);
+  const [activeTab, setActiveTab] = useState("asset");
+  const [dragStartForDivToDiv, setDragStartForDivToDiv] = useState(false);
 
   const { state } = useLocation();
   const { token } = useSelector((state) => state.root.auth);
@@ -414,123 +376,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     openModal();
   };
 
-  const jsonCanvasData = {
-    version: "5.3.0",
-    objects: [
-      {
-        layoutID: 1,
-        layoutDtlID: 1,
-        type: "rect",
-        version: "5.3.0",
-        originX: "left",
-        originY: "top",
-        left: 0,
-        top: 0,
-        width: 80,
-        height: 70,
-        fill: "#D9D9D9",
-        stroke: "null",
-        strokeWidth: 1,
-        strokeDashArray: "null",
-        strokeLineCap: "butt",
-        strokeDashOffset: 0,
-        strokeLineJoin: "miter",
-        strokeUniform: false,
-        strokeMiterLimit: 4,
-        scaleX: 1,
-        scaleY: 1,
-        angle: 0,
-        flipX: false,
-        flipY: false,
-        opacity: 1,
-        shadow: "null",
-        visible: true,
-        backgroundColor: "",
-        fillRule: "nonzero",
-        paintFirst: "fill",
-        globalCompositeOperation: "source-over",
-        skewX: 0,
-        skewY: 0,
-        rx: 0,
-        ry: 0,
-      },
-      {
-        layoutID: 2,
-        layoutDtlID: 1,
-        type: "rect",
-        version: "5.3.0",
-        originX: "left",
-        originY: "top",
-        left: 0,
-        top: 70,
-        width: 80,
-        height: 30,
-        fill: "#7D87A9",
-        stroke: "null",
-        strokeWidth: 1,
-        strokeDashArray: "null",
-        strokeLineCap: "butt",
-        strokeDashOffset: 0,
-        strokeLineJoin: "miter",
-        strokeUniform: false,
-        strokeMiterLimit: 4,
-        scaleX: 1,
-        scaleY: 1,
-        angle: 0,
-        flipX: false,
-        flipY: false,
-        opacity: 1,
-        shadow: "null",
-        visible: true,
-        backgroundColor: "",
-        fillRule: "nonzero",
-        paintFirst: "fill",
-        globalCompositeOperation: "source-over",
-        skewX: 0,
-        skewY: 0,
-        rx: 0,
-        ry: 0,
-      },
-      {
-        layoutID: 3,
-        layoutDtlID: 1,
-        type: "rect",
-        version: "5.3.0",
-        originX: "left",
-        originY: "top",
-        left: 80,
-        top: 0,
-        width: 20,
-        height: 100,
-        fill: "#D5E3FF",
-        stroke: "null",
-        strokeWidth: 1,
-        strokeDashArray: "null",
-        strokeLineCap: "butt",
-        strokeDashOffset: 0,
-        strokeLineJoin: "miter",
-        strokeUniform: false,
-        strokeMiterLimit: 4,
-        scaleX: 1,
-        scaleY: 1,
-        angle: 0,
-        flipX: false,
-        flipY: false,
-        opacity: 1,
-        shadow: "null",
-        visible: true,
-        backgroundColor: "",
-        fillRule: "nonzero",
-        paintFirst: "fill",
-        globalCompositeOperation: "source-over",
-        skewX: 0,
-        skewY: 0,
-        rx: 0,
-        ry: 0,
-      },
-    ],
-  };
-
   const handleFetchLayoutById = () => {
     let config = {
       method: "get",
@@ -647,11 +492,72 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     closeModal();
   }
 
-  // console.log(compositonData);
+  const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+    return result;
+  };
 
-  // console.log(Object.keys(addAsset[currentSection]))
-  // console.log(addAsset.length>0&&Object?.keys(addAsset[currentSection-1])?.join("")==currentSection);
-  // console.log(Object?.keys(addAsset[currentSection-1]).join("")==currentSection);
+  const handleDragStartForDivToDiv = (event, item) => {
+    event.dataTransfer.setData("text/plain", JSON.stringify(item));
+    setDragStartForDivToDiv(true);
+  };
+
+  const handleDropForDivToDiv = (event) => {
+    const item = event.dataTransfer.getData("text/plain");
+    if (dragStartForDivToDiv) {
+      addSeletedAsset(JSON.parse(item));
+      setDragStartForDivToDiv(false);
+      toast.remove();
+      toast.success(`item added to the ${currentSection} section.`);
+    }
+  };
+
+  const handleDragOverForDivToDiv = (event) => {
+    event.preventDefault();
+  };
+
+  const handleDragStartWithinlist = (event, item, index) => {
+    const obj = { ...item };
+    Object.assign(obj, { startIndex: index });
+    event.dataTransfer.setData("text/plain", JSON.stringify(obj));
+  };
+
+  const handleDropForWithinlist = (event, index) => {
+    const item = JSON.parse(event.dataTransfer.getData("text/plain"));
+    if (!dragStartForDivToDiv) {
+      const reOrderData = reorder(
+        addAsset[currentSection - 1][currentSection],
+        item?.startIndex,
+        index
+      );
+      let newdatas = {};
+
+      if (Object.keys(newdatas).length === 0) {
+        for (const [key, value] of Object.entries(
+          compositonData.lstLayloutModelList
+        )) {
+          if (currentSection === +key + 1) {
+            newdatas[+key + 1] = reOrderData;
+          } else if (
+            currentSection != +key + 1 &&
+            Object.values(addAsset[key])[0].length > 0
+          ) {
+            newdatas[+key + 1] = Object.values(addAsset[key])[0];
+          } else {
+            newdatas[+key + 1] = [];
+          }
+        }
+      }
+      const newdd = Object.entries(newdatas).map(([k, i]) => ({ [k]: i }));
+      setAddAsset(newdd);
+    }
+  };
+
+  const handleDragOverForWithinlist = (event, index) => {
+    event.preventDefault();
+  };
 
   return (
     <>
@@ -661,20 +567,20 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <div className="pt-16 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-          <PreviewModal show={modalVisible} onClose={closeModal}>
+        <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
               ref={modalRef}
-              className={`absolute left-1/2 -translate-x-1/2 `}
-              style={{
-                minHeight: compositonData?.screenHeight + "px",
-                maxHeight: compositonData?.screenHeight + "px",
-                maxWidth: compositonData?.screenWidth + "px",
-                minWidth: compositonData?.screenWidth + "px",
-              }}
-              // className={`fixed left-1/2 -translate-x-1/2 min-h-[80vh] max-h-[80vh] min-w-[90vh] max-w-[90vh] `}
+              // className={`absolute left-1/2 -translate-x-1/2 `}
+              // style={{
+              //   minHeight: compositonData?.screenHeight + "px",
+              //   maxHeight: compositonData?.screenHeight + "px",
+              //   maxWidth: compositonData?.screenWidth + "px",
+              //   minWidth: compositonData?.screenWidth + "px",
+              // }}
+              className={`fixed border rounded-lg left-1/2 -translate-x-1/2 min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw] `}
             >
               <RxCrossCircled
-                className="fixed z-50 w-[30px] h-[30px] text-white hover:bg-black/50 bg-black/20 rounded-full top-1 right-1 cursor-pointer"
+                className="fixed z-50 w-[30px] h-[30px] text-white bg-black/20 rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
                 onClick={closeModal}
               />
 
@@ -764,31 +670,41 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
           <div className="flex flex-wrap rounded-xl mt-8 shadow bg-white">
-            <div className="w-full xl:w-1/2 border-r-2 border-r-[#E4E6FF] p-5">
-              <div className="flex items-center gap-2 mb-4">
-                <Link to="/FileUpload">
-                  <button
-                    //onClick={() => setShowAssetModal(true)}
-                    className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                  >
-                    New Assets Upload
-                  </button>
-                </Link>
-                <Link to="/apps">
-                  <button
-                    //onClick={() => setShowAssetModal(true)}
-                    className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                  >
-                    Add New Apps
-                  </button>
-                </Link>
-                {showAssetModal ? (
-                  <>
-                    <AssetModal setShowAssetModal={setShowAssetModal} />
-                  </>
-                ) : null}
+            <div className="w-full xl:w-1/2 border-r-2 space-y-5 border-r-[#E4E6FF] p-5">
+              <div className="flex items-center justify-between  rounded-lg w-full text-white bg-SlateBlue">
+                <div
+                  onClick={() => setActiveTab("asset")}
+                  className={`w-1/2 text-center p-2 ${
+                    activeTab === "asset" && "bg-black translate-x-0"
+                  }  rounded-lg cursor-pointer transition-all duration-100  ease-in`}
+                >
+                  Assets
+                </div>
+                <div
+                  onClick={() => setActiveTab("apps")}
+                  className={`w-1/2 text-center rounded-lg transition-all duration-100 ease-in-out p-2 ${
+                    activeTab === "apps" && "bg-black"
+                  } cursor-pointer`}
+                >
+                  Apps
+                </div>
               </div>
-              <div className="overflow-y-auto min-h-[50vh] max-h-[50vh] rounded-xl mt-8 shadow bg-white mb-6">
+              <div className="text-center">
+                {activeTab === "asset" ? (
+                  <Link to="/FileUpload">
+                    <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                      New Assets Upload
+                    </button>
+                  </Link>
+                ) : (
+                  <Link to="/apps">
+                    <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                      Add New Apps
+                    </button>
+                  </Link>
+                )}
+              </div>
+              <div className="overflow-y-auto min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
                 <table
                   className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
                   cellPadding={20}
@@ -798,35 +714,60 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       <th className="text-[#5A5881] py-2.5 text-base font-semibold">
                         Assets Name
                       </th>
-                      <th className="text-[#5A5881] py-2.5 text-base font-semibold">
+                      <th className="text-[#5A5881] py-2.5 text-base text-center font-semibold">
                         Type
                       </th>
-                      <th className="text-[#5A5881] py-2.5 text-base font-semibold">
+                      {/* <th className="text-[#5A5881] py-2.5 text-base font-semibold">
                         Tags
-                      </th>
+                      </th> */}
                     </tr>
                   </thead>
 
                   <tbody>
-                    {assetData.map((assetdata, index) => (
-                      <tr
-                        key={index}
-                        className="border-b border-b-[#E4E6FF] cursor-pointer"
-                        onClick={() => addSeletedAsset(assetdata, index + 1)}
-                      >
-                        <td className="break-words">
-                          {assetdata.assetName || assetdata?.instanceName}
-                        </td>
-                        <td className="p-2">{assetdata.fileExtention}</td>
-                        <td className="p-2 ">Tags, Tags </td>
-                      </tr>
-                    ))}
+                    {!loading &&
+                      assetData
+                        .filter((item) => {
+                          if (activeTab === "asset") {
+                            if (item.hasOwnProperty("assetID")) {
+                              return item;
+                            }
+                          } else {
+                            if (!item.hasOwnProperty("assetID")) {
+                              return item;
+                            }
+                          }
+                        })
+                        .map((assetdata, index) => (
+                          <tr
+                            key={index}
+                            className="border-b border-b-[#E4E6FF] cursor-pointer"
+                            onClick={() =>
+                              addSeletedAsset(assetdata, index + 1)
+                            }
+                            draggable
+                            onDragStart={(event) =>
+                              handleDragStartForDivToDiv(event, assetdata)
+                            }
+                          >
+                            <td className="break-words w-full text-left">
+                              {assetdata.assetName || assetdata?.instanceName}
+                            </td>
+                            <td className="p-2 w-full text-center">
+                              {assetdata?.fileExtention &&
+                                assetdata?.fileExtention}
+                              {assetdata?.youtubeId && "Youtube video"}
+                              {assetdata?.textScroll_Id && "TextScroll"}
+                            </td>
+                          </tr>
+                        ))}
                   </tbody>
                 </table>
               </div>
             </div>
 
+            {/* right side div */}
             <div className="w-full xl:w-1/2 p-5">
+              {/* section tabs && layout  */}
               <div className="flex flex-wrap border-b border-b-[#E4E6FF] pb-5 w-full">
                 <div
                   className={`layout-img me-5 w-40 h-28 bg-[#D5E3FF] relative`}
@@ -885,7 +826,12 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </div>
 
-              <div className="overflow-x-auto overflow-y-auto min-h-[320px] max-h-[320px] mt-3 mb-6">
+              {/* selected images */}
+              <div
+                onDrop={(event) => handleDropForDivToDiv(event, "main_div")}
+                onDragOver={(event) => handleDragOverForDivToDiv(event)}
+                className="overflow-x-auto overflow-y-auto min-h-[320px] max-h-[320px] mt-3 mb-6"
+              >
                 <table
                   className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
                   cellPadding={10}
@@ -897,63 +843,71 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                         (item, index) => {
                           return (
                             <tr
+                              onDrop={(event) =>
+                                handleDropForWithinlist(event, index)
+                              }
+                              onDragOver={(event) =>
+                                handleDragOverForWithinlist(event, index)
+                              }
+                              draggable
+                              onDragStart={(event) =>
+                                handleDragStartWithinlist(event, item, index)
+                              }
                               key={index}
-                              className="w-full flex items-center md:gap-5 gap-3"
+                              className="w-full flex cursor-grab items-center md:gap-5 gap-3"
                             >
                               <td className="min-w-[40%]">
                                 <div className="flex items-center w-full">
                                   <div
                                     className={`w-1/2 break-words hyphens-auto`}
                                   >
-                                    <>
-                                      {item.assetType === "OnlineImage" && (
-                                        <>
-                                          <img
-                                            className="imagebox relative w-full h-28 object-cover"
-                                            src={item?.assetFolderPath}
-                                            alt={item?.assetName}
-                                          />
-                                        </>
-                                      )}
-                                      {item.assetType === "Image" && (
+                                    {item.assetType === "OnlineImage" && (
+                                      <>
                                         <img
+                                          className="imagebox relative w-full h-28 object-cover"
                                           src={item?.assetFolderPath}
                                           alt={item?.assetName}
-                                          className="imagebox relative w-full h-28 object-cover"
                                         />
-                                      )}
-                                      {item.assetType === "Video" && (
-                                        <video
-                                          controls
-                                          className="imagebox relative w-full h-28 object-cover"
-                                        >
-                                          <source
-                                            src={item?.assetFolderPath}
-                                            type="video/mp4"
-                                          />
-                                          Your browser does not support the
-                                          video tag.
-                                        </video>
-                                      )}
-                                      {item.assetType === "DOC" && (
-                                        <p
-                                          href={item?.assetFolderPath}
-                                          // target="_blank"
-                                          // rel="noopener noreferrer"
-                                        >
-                                          {item.assetName}
-                                        </p>
-                                      )}
-                                      {item.instanceName && (
-                                        <p
-                                          href={item?.instanceName}
-                                          // target="_blank"
-                                          // rel="noopener noreferrer"
-                                        >
-                                          {item.instanceName}
-                                        </p>
-                                      )}
-                                    </>
+                                      </>
+                                    )}
+                                    {item.assetType === "Image" && (
+                                      <img
+                                        src={item?.assetFolderPath}
+                                        alt={item?.assetName}
+                                        className="imagebox relative w-full h-28 object-cover"
+                                      />
+                                    )}
+                                    {item.assetType === "Video" && (
+                                      <video
+                                        controls
+                                        className="imagebox relative w-full h-28 object-cover"
+                                      >
+                                        <source
+                                          src={item?.assetFolderPath}
+                                          type="video/mp4"
+                                        />
+                                        Your browser does not support the video
+                                        tag.
+                                      </video>
+                                    )}
+                                    {item.assetType === "DOC" && (
+                                      <p
+                                        href={item?.assetFolderPath}
+                                        // target="_blank"
+                                        // rel="noopener noreferrer"
+                                      >
+                                        {item.assetName}
+                                      </p>
+                                    )}
+                                    {item.instanceName && (
+                                      <p
+                                        href={item?.instanceName}
+                                        // target="_blank"
+                                        // rel="noopener noreferrer"
+                                      >
+                                        {item.instanceName}
+                                      </p>
+                                    )}
                                   </div>
                                   <div className="ml-3 w-1/2">
                                     <p className="text-gray-900 break-words hyphens-auto line-clamp-3">

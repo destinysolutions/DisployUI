@@ -145,12 +145,13 @@ const ScheduleSlice = createSlice({
     builder.addCase(handleGetAllSchedule.pending, (state, { payload }) => {
       state.loading = true;
       state.error = null;
+      state.schedules = [];
     });
     builder.addCase(
       handleGetAllSchedule.fulfilled,
       (state, { payload, meta, type }) => {
         state.loading = false;
-        state.schedules = payload?.data;
+        state.schedules = payload?.data ?? [];
         state.error = null;
       }
     );
