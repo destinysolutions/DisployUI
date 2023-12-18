@@ -16,7 +16,9 @@ const AddOrEditTagPopup = ({
   handleUpdateTagsYoutube,
   handleUpdateTagsTextScroll,
   setUpdateTextscrollTag,
-  setUpdateTagYoutube
+  setUpdateTagYoutube,
+  handleUpdateTagsWeather,
+  setUpdateTagWeather
 }) => {
   const [tagValue, setTagValue] = useState("");
 
@@ -33,6 +35,9 @@ const AddOrEditTagPopup = ({
     }
     if (from === "youtube") {
       setUpdateTagYoutube(null);
+    }
+    if(from === "weather"){
+      setUpdateTagWeather(null)
     }
     if (from === "textscroll") {
       setUpdateTextscrollTag(null);
@@ -61,6 +66,9 @@ const AddOrEditTagPopup = ({
     if (from === "youtube") {
       return handleUpdateTagsYoutube([...tags, tagValue].join(","));
     }
+    if (from === "weather") {
+      return handleUpdateTagsWeather([...tags, tagValue].join(","));
+    }
     if (from === "textscroll") {
       return handleUpdateTagsTextScroll([...tags, tagValue].join(","));
     }
@@ -80,6 +88,9 @@ const AddOrEditTagPopup = ({
     }
     if (from === "youtube") {
       return handleUpdateTagsYoutube(newTags.join(","));
+    }
+    if (from === "weather") {
+      return handleUpdateTagsWeather(newTags.join(","));
     }
     if (from === "textscroll") {
       return handleUpdateTagsTextScroll(newTags.join(","));

@@ -107,5 +107,12 @@ export const FORGOTPASSWORD = `${baseUrl}api/UserMaster/ForgotPassword`;
 export const CHNAGE_PASSWORD = `${baseUrl}api/UserMaster/ResetPassword?`;
 export const UPDATE_PASSWORD = `${baseUrl}api/UserMaster/UpdatePassword?`;
 
+// Weather App Api
+export const WEATHER_APP = `${baseUrl}api/WeatherApp/AddWeatherApp`
+export const GET_All_WEATHER = `${baseUrl}api/WeatherApp/GetWeatherApp`
+export const GET_WEATHER_BY_ID = `${baseUrl}api/WeatherApp/GetWeatherApp?`
+export const WEATHER_ASSIGN_SECREEN = `${baseUrl}api/WeatherApp/AssignWeatherToScreen?`
+export const WEATHER_ADD_TAG = `${baseUrl}api/WeatherApp/AddWeatherTags?`
+
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115
