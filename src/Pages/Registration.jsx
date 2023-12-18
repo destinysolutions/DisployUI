@@ -513,7 +513,8 @@ const Registration = () => {
 
                     <div className="relative">
                       <ReCAPTCHA
-                        sitekey={process.env.REACT_APP_CAPTCHA}
+                        // sitekey={process.env.REACT_APP_CAPTCHA}
+                        sitekey="6LeaCucoAAAAAAtAGGm4Npy_vzYNITq2SFYsGbeL"
                         onChange={(e) => {
                           setFieldValue("captcha", e);
                         }}

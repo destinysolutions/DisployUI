@@ -294,7 +294,6 @@ const Login = () => {
       if (!response) return;
       response
         .then((res) => {
-          console.log(res);
           if (res.status == 200) {
             window.localStorage.setItem("timer", JSON.stringify(18_00));
             const userRole = res.role;
@@ -556,7 +555,8 @@ const Login = () => {
                   <div className="relative">
                     <div className="relative">
                       <ReCAPTCHA
-                        sitekey={process.env.REACT_APP_CAPTCHA}
+                        // sitekey={process.env.REACT_APP_CAPTCHA}
+                        sitekey="6LeaCucoAAAAAAtAGGm4Npy_vzYNITq2SFYsGbeL"
                         onChange={(e) => {
                           setFieldValue("captcha", e);
                         }}
