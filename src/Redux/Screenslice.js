@@ -12,7 +12,7 @@ export const handleGetScreen = createAsyncThunk(
         },
         signal,
       });
-      if (data?.status == 200) return data;
+      if (data?.status === 200 ) return data;
       else {
         toast.error(data?.message);
         return rejectWithValue(data?.message);
@@ -162,7 +162,7 @@ const Screenslice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    //get by user id
+    //get screeens all
     builder.addCase(
       handleGetScreen.pending,
       (state, { payload, meta, type }) => {
@@ -185,7 +185,7 @@ const Screenslice = createSlice({
     builder.addCase(
       handleUpdateScreenName.fulfilled,
       (state, { payload, meta }) => {
-        state.screens = state.screens.map((screen) => {
+        state.screens = state.screens?.map((screen) => {
           if (screen.screenID === meta?.arg?.dataToUpdate?.screenID) {
             return {
               ...screen,
@@ -206,7 +206,7 @@ const Screenslice = createSlice({
     builder.addCase(
       handleUpdateScreenAsset.fulfilled,
       (state, { payload, meta }) => {
-        state.screens = state.screens.map((screen) => {
+        state.screens = state.screens?.map((screen) => {
           if (screen.screenID === meta?.arg?.dataToUpdate?.screenID) {
             return {
               ...screen,
@@ -229,7 +229,7 @@ const Screenslice = createSlice({
       (state, { payload, meta }) => {
         console.log(meta, payload);
 
-        state.screens = state.screens.map((screen) => {
+        state.screens = state.screens?.map((screen) => {
           if (screen.screenID === meta?.arg?.dataToUpdate?.screenID) {
             return {
               ...screen,

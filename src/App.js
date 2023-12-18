@@ -20,7 +20,7 @@ const App = () => {
 
   const onIdle = () => {
     clearInterval(interval);
-    auth.signOut();
+    // auth.signOut();
     dispatch(handleLogout());
     // window.location.href = window.location.origin;
     // window.localStorage.clear("timer");
