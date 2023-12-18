@@ -86,7 +86,7 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
             </h4>
             <div className="grid grid-cols-3 gap-8">
               {loading ? (
-                <div className="text-center font-semibold text-2xl">
+                <div className="text-center col-span-full font-semibold text-2xl">
                   Loading...
                 </div>
               ) : compositionLayouts?.length == 0 && !loading ? (

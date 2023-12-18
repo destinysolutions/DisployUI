@@ -28,6 +28,7 @@
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",
+    "react-beautiful-dnd": "^13.1.1",
     "react-big-calendar": "^1.8.5",
     "react-color": "^2.19.3",
     "react-cookie": "^6.1.1",

@@ -901,7 +901,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
                         <PreviewModal show={modalVisible} onClose={closeModal}>
                           <div
-                            className={`fixed  left-1/2 -translate-x-1/2 min-h-[80vh] max-h-[80vh] min-w-[90vh] max-w-[90vh] `}
+                            className={`fixed  left-1/2 -translate-x-1/2 min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw] `}
                             ref={modalRef}
                             //   maxWidth: `${layotuDetails?.screenWidth}px`,
                             //   minWidth: `${layotuDetails?.screenWidth}px`,
@@ -910,7 +910,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             // }}
                           >
                             <RxCrossCircled
-                              className="fixed z-50 w-[30px] h-[30px] text-white hover:bg-black/50 bg-black/20 rounded-full top-1 right-1 cursor-pointer"
+                              className="fixed z-50 w-[30px] h-[30px] text-white bg-black/20 rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
                               onClick={closeModal}
                             />
 

@@ -98,14 +98,15 @@ const AppsSlice = createSlice({
       (state, { payload, meta, type }) => {
         state.youtube.loading = true;
         state.youtube.error = null;
+        state.youtube.youtubeData = [];
       }
     );
     builder.addCase(
       handleGetYoutubeData.fulfilled,
       (state, { payload, meta }) => {
         state.youtube.loading = false;
-        state.youtube.youtubeData = payload?.data;
-        state.allAppsData = [...state.allAppsData, ...payload?.data];
+        state.youtube.youtubeData = payload?.data ?? [];
+        state.allAppsData = [...state.allAppsData, ...payload?.data] ?? [];
         state.error = null;
       }
     );
@@ -127,8 +128,8 @@ const AppsSlice = createSlice({
       handleGetTextScrollData.fulfilled,
       (state, { payload, meta }) => {
         state.textScroll.loading = false;
-        state.textScroll.textScrollData = payload?.data;
-        state.allAppsData = [...state.allAppsData, ...payload?.data];
+        state.textScroll.textScrollData = payload?.data ?? [];
+        state.allAppsData = [...state.allAppsData, ...payload?.data] ?? [];
         state.error = null;
       }
     );
@@ -148,7 +149,7 @@ const AppsSlice = createSlice({
     );
     builder.addCase(handleGetAllApps.fulfilled, (state, { payload, meta }) => {
       state.allApps.loading = false;
-      state.allApps.data = payload?.data;
+      state.allApps.data = payload?.data ?? [];
       state.allAppserror = null;
     });
     builder.addCase(handleGetAllApps.rejected, (state, { payload }) => {
