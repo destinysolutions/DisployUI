@@ -72,6 +72,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectAll, setSelectAll] = useState(false);
   const [searchAsset, setSearchAsset] = useState("");
   const [filteredAssetData, setFilteredAssetData] = useState([]);
+  const [createFolderLoading, setCreateFolderLoading] = useState(false);
 
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
@@ -307,12 +308,39 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
+  const handleDeleteAll = () => {
+    if (!window.confirm("Are you sure?")) return;
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: "https://disployapi.thedestinysolutions.com/api/AssetMaster/DeleteAllAsset?IsDeleteFromAll=true",
+      headers: {
+        Authorization: authToken,
+      },
+    };
+    toast.loading("Deleting");
+    axios
+      .request(config)
+      .then((response) => {
+        if (response.data.status == 200) {
+          fetchData();
+          setSelectAll(false);
+        }
+        toast.remove();
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.remove();
+      });
+  };
+
   const createFolder = () => {
     let baseFolderName = "New Folder";
     let folderNameToCheck = baseFolderName;
     let counter = 1;
-
+    if (createFolderLoading) return;
     toast.loading("Creating Folder...");
+    setCreateFolderLoading(true);
     const checkFolderNameAndCreate = () => {
       // Check if the folder name exists in the list of folders
       if (folderNameExists(folderNameToCheck)) {
@@ -335,10 +363,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
             console.log("Folder created:", response.data);
             toast.remove();
             fetchData();
+            setCreateFolderLoading(false);
           })
           .catch((error) => {
             console.error("Error creating folder:", error);
             toast.remove();
+            setCreateFolderLoading(false);
           });
       }
     };
@@ -553,29 +583,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectAll(allChecked);
   };
 
-  const handleDelete = () => {
-    let data = JSON.stringify({
-      operation: "ALLDelete",
-    });
-
-    let config = {
-      method: "get",
-      url: DeleteAllData,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then(() => {
-        setGridData([]);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
   const handleSearchAsset = (event) => {
     const searchQuery = event.target.value.toLowerCase();
     setSearchAsset(searchQuery);
@@ -681,7 +688,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               </ul>
               <button
                 className="p-3 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                onClick={handleDelete}
+                onClick={handleDeleteAll}
                 style={{ display: selectAll ? "block" : "none" }}
               >
                 <RiDeleteBin5Line className="text-lg" />
@@ -954,15 +961,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       {/*End hover icon details */}
 
                       <div className="checkbox flex justify-between absolute top-5 px-4 w-full">
-                        {item.assetType != "Folder" && (
-                          <input
-                            type="checkbox"
-                            className="w-[20px] h-[20px] relative"
-                            style={{ display: selectAll ? "block" : "none" }}
-                            checked={item.isChecked || false}
-                            onChange={() => handleCheckboxChange(item.assetID)}
-                          />
-                        )}
+                        <input
+                          type="checkbox"
+                          className="w-[20px] h-[20px] relative"
+                          style={{ display: selectAll ? "block" : "none" }}
+                          checked={item.isChecked || false}
+                          onChange={() => handleCheckboxChange(item.assetID)}
+                        />
+
                         <div
                           style={{
                             float: "right",
