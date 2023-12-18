@@ -60,6 +60,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const [filteredCompositionData, setFilteredCompositionData] = useState([]);
   const [tags, setTags] = useState([]);
   const [showTagModal, setShowTagModal] = useState(false);
+  const [screenType, setScreenType] = useState("");
   const [updateTagComposition, setUpdateTagComposition] = useState(null);
 
   const modalRef = useRef(null);
@@ -230,11 +231,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         .then((response) => {
           if (response?.data?.status == 200) {
             setUpdateTagComposition(response?.data?.data[0]);
-            // if (response?.data?.data[0]?.tags === null) {
-            //   setTags([]);
-            // } else {
-            //   setTags(response?.data?.data[0]?.tags.split(","));
-            // }
           }
         })
         .catch((error) => {
@@ -341,6 +337,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response?.data?.status == 200) {
           setLayotuDetails(response.data?.data[0]);
+          setScreenType(response?.data?.data[0]?.screenType);
         }
       })
       .catch((error) => {
@@ -901,7 +898,11 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
                         <PreviewModal show={modalVisible} onClose={closeModal}>
                           <div
-                            className={`fixed  left-1/2 -translate-x-1/2 min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw] `}
+                            className={`fixed  border left-1/2 -translate-x-1/2 ${
+                              screenType === "portrait"
+                                ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
+                                : "min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]"
+                            }  `}
                             ref={modalRef}
                             //   maxWidth: `${layotuDetails?.screenWidth}px`,
                             //   minWidth: `${layotuDetails?.screenWidth}px`,
@@ -913,6 +914,30 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                               className="fixed z-50 w-[30px] h-[30px] text-white bg-black/20 rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
                               onClick={closeModal}
                             />
+                            {/* screentype toggle "landspace | portrait" */}
+                            <div
+                              className={`fixed z-50 ${
+                                screenType === "Landscape"
+                                  ? "w-14 h-7"
+                                  : "h-14 w-7"
+                              }   rounded-md  bg-black p-2 top-1 right-10 cursor-pointer`}
+                            >
+                              <span
+                                className={`fixed z-50  ${
+                                  screenType === "Landscape"
+                                    ? "w-10 h-5 top-2 right-12"
+                                    : "w-5 h-10 top-3 right-11"
+                                }  rounded-md  bg-white  cursor-pointer`}
+                                title={screenType}
+                                onClick={() => {
+                                  if (screenType === "Landscape") {
+                                    setScreenType("portrait");
+                                  } else {
+                                    setScreenType("Landscape");
+                                  }
+                                }}
+                              />
+                            </div>
 
                             {!loading &&
                               layotuDetails?.lstLayloutModelList.length > 0 &&

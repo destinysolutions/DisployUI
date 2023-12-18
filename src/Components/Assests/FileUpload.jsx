@@ -35,6 +35,7 @@ import { FcFile } from "react-icons/fc";
 import { AiOutlineAppstore } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import OtherOptionsForAssets from "./OtherOptionsForAssets";
 {
   /* end of video*/
 }
@@ -61,7 +62,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   const [showPexabay, setShowPexabay] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [recordedVideos, setRecordedVideos] = useState([]);
-  const [File, setFile] = useState(null)
+  const [File, setFile] = useState(null);
 
   /* google drive */
 
@@ -403,7 +404,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
       setShowUnsplash(false);
     }
   }
-  // console.log(File);
 
   return (
     <>
@@ -577,7 +577,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               {/* end pixabay */}
             </span>
 
-            <OneDrive setFile={setFile} />
+            <OtherOptionsForAssets />
 
             {/*start app*/}
             {/* <Link

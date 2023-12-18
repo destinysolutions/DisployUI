@@ -53,6 +53,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [connection, setConnection] = useState(null);
   const [activeTab, setActiveTab] = useState("asset");
   const [dragStartForDivToDiv, setDragStartForDivToDiv] = useState(false);
+  const [screenType, setScreenType] = useState("");
 
   const { state } = useLocation();
   const { token } = useSelector((state) => state.root.auth);
@@ -430,6 +431,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       toast.error("Please select assests for every section.");
       return;
     }
+    setScreenType(compositonData?.screenType);
     openModal();
   };
 
@@ -662,423 +664,451 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      <div className="flex bg-white py-3 border-b border-gray">
-        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-        <Navbar />
-      </div>
-      <div className="pt-16 px-5 page-contain ">
-        <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-          <PreviewModal show={modalVisible} onClose={closeModal}>
+    <div className="flex bg-white py-3 border-b border-gray">
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <Navbar />
+    </div>
+    <div className="pt-16 px-5 page-contain ">
+      <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
+        <PreviewModal show={modalVisible} onClose={closeModal}>
+          <div
+            ref={modalRef}
+            // className={`absolute left-1/2 -translate-x-1/2 `}
+            // style={{
+            //   minHeight: compositonData?.screenHeight + "px",
+            //   maxHeight: compositonData?.screenHeight + "px",
+            //   maxWidth: compositonData?.screenWidth + "px",
+            //   minWidth: compositonData?.screenWidth + "px",
+            // }}
+            className={`fixed  border left-1/2 -translate-x-1/2 ${
+              screenType === "portrait"
+                ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
+                : "min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]"
+            }  `}
+          >
+            <RxCrossCircled
+              className="fixed z-50 w-[30px] h-[30px] text-white bg-black rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
+              onClick={closeModal}
+            />
+            {/* screentype toggle "landspace | portrait" */}
             <div
-              ref={modalRef}
-              // className={`absolute left-1/2 -translate-x-1/2 `}
-              // style={{
-              //   minHeight: compositonData?.screenHeight + "px",
-              //   maxHeight: compositonData?.screenHeight + "px",
-              //   maxWidth: compositonData?.screenWidth + "px",
-              //   minWidth: compositonData?.screenWidth + "px",
-              // }}
-              className={`fixed border rounded-lg left-1/2 -translate-x-1/2 min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw] `}
+              className={`fixed z-50 ${
+                screenType === "Landscape" ? "w-14 h-7" : "h-14 w-7"
+              }   rounded-md  bg-black p-2 top-1 right-10 cursor-pointer`}
             >
-              <RxCrossCircled
-                className="fixed z-50 w-[30px] h-[30px] text-white bg-black/20 rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
-                onClick={closeModal}
+              <span
+                className={`fixed z-50  ${
+                  screenType === "Landscape" ? "w-10 h-5 top-2 right-12" : "w-5 h-10 top-3 right-11"
+                }  rounded-md  bg-white  cursor-pointer`}
+                title={screenType}
+                onClick={() => {
+                  if (screenType === "Landscape") {
+                    setScreenType("portrait");
+                  } else {
+                    setScreenType("Landscape");
+                  }
+                }}
               />
-
-              {!loading &&
-                compositonData !== null &&
-                compositonData?.lstLayloutModelList?.map((obj, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      position: "fixed",
-                      left: obj.leftside + "%",
-                      top: obj.topside + "%",
-                      width: obj?.width + "%",
-                      height: obj?.height + "%",
-                      backgroundColor: obj.fill,
-                    }}
-                  >
-                    {modalVisible && (
-                      <Carousel
-                        items={addAsset[index][index + 1]}
-                        compositonData={obj}
-                      />
-                    )}
-                  </div>
-                ))}
             </div>
-          </PreviewModal>
 
-          {/* top div edit date&time + btns  */}
-          <div className="lg:flex lg:justify-between sm:block xs:block  items-center mt-5">
-            {edited ? (
-              <div className="flex items-center gap-3">
-                <input
-                  type="text"
-                  className="border border-primary rounded-full px-7 py-2.5 block"
-                  placeholder="Enter schedule name"
-                  value={compositionName}
-                  onChange={(e) => setCompositionName(e.target.value)}
-                />
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleOnSaveCompositionName();
+            {!loading &&
+              compositonData !== null &&
+              compositonData?.lstLayloutModelList?.map((obj, index) => (
+                <div
+                  key={index}
+                  style={{
+                    position: "fixed",
+                    left: obj.leftside + "%",
+                    top: obj.topside + "%",
+                    width: obj?.width + "%",
+                    height: obj?.height + "%",
+                    backgroundColor: obj.fill,
                   }}
                 >
-                  Save
-                </button>
-                {/* <button type="button" onClick={() => setEdited(false)}>
-                  Cancel
-                </button> */}
-              </div>
-            ) : (
-              <>
-                <div className="flex">
-                  <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
-                    {compositionName}
-                  </h1>
-                  <button onClick={() => setEdited(true)}>
-                    <GoPencil className="ml-4 text-lg" />
-                  </button>
+                  {modalVisible && (
+                    <Carousel
+                      items={addAsset[index][index + 1]}
+                      compositonData={obj}
+                    />
+                  )}
                 </div>
-              </>
-            )}
-            {/* cancel + preview + save btns */}
-            <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn">
+              ))}
+          </div>
+        </PreviewModal>
+
+        {/* top div edit date&time + btns  */}
+        <div className="lg:flex lg:justify-between sm:block xs:block  items-center mt-5">
+          {edited ? (
+            <div className="flex items-center gap-3">
+              <input
+                type="text"
+                className="border border-primary rounded-full px-7 py-2.5 block"
+                placeholder="Enter schedule name"
+                value={compositionName}
+                onChange={(e) => setCompositionName(e.target.value)}
+              />
               <button
-                onClick={handleClickOnCancel}
-                disabled={savingLoader}
-                className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                type="button"
+                onClick={() => {
+                  handleOnSaveCompositionName();
+                }}
               >
+                Save
+              </button>
+              {/* <button type="button" onClick={() => setEdited(false)}>
                 Cancel
-              </button>
-              <button
-                onClick={handleShowPreview}
-                className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                disabled={savingLoader}
+              </button> */}
+            </div>
+          ) : (
+            <>
+              <div className="flex">
+                <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
+                  {compositionName}
+                </h1>
+                <button onClick={() => setEdited(true)}>
+                  <GoPencil className="ml-4 text-lg" />
+                </button>
+              </div>
+            </>
+          )}
+          {/* cancel + preview + save btns */}
+          <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn">
+            <button
+              onClick={handleClickOnCancel}
+              disabled={savingLoader}
+              className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleShowPreview}
+              className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+              disabled={savingLoader}
+            >
+              Preview
+            </button>
+            <button
+              onClick={onSave}
+              disabled={savingLoader}
+              className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+            >
+              {savingLoader ? "Saving..." : "Save"}
+            </button>
+          </div>
+        </div>
+        <div className="flex flex-wrap rounded-xl mt-8 shadow bg-white">
+          <div className="w-full xl:w-1/2 border-r-2 space-y-5 border-r-[#E4E6FF] p-5">
+            <div className="flex items-center justify-between  rounded-lg w-full text-white bg-SlateBlue">
+              <div
+                onClick={() => setActiveTab("asset")}
+                className={`w-1/2 text-center p-2 ${
+                  activeTab === "asset" && "bg-black translate-x-0"
+                }  rounded-lg cursor-pointer transition-all duration-100  ease-in`}
               >
-                Preview
-              </button>
-              <button
-                onClick={onSave}
-                disabled={savingLoader}
-                className="sm:ml-2 xs:ml-1  flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                Assets
+              </div>
+              <div
+                onClick={() => setActiveTab("apps")}
+                className={`w-1/2 text-center rounded-lg transition-all duration-100 ease-in-out p-2 ${
+                  activeTab === "apps" && "bg-black"
+                } cursor-pointer`}
               >
-                {savingLoader ? "Saving..." : "Save"}
-              </button>
+                Apps
+              </div>
+            </div>
+            <div className="text-center">
+              {activeTab === "asset" ? (
+                <Link to="/FileUpload">
+                  <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                    New Assets Upload
+                  </button>
+                </Link>
+              ) : (
+                <Link to="/apps">
+                  <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                    Add New Apps
+                  </button>
+                </Link>
+              )}
+            </div>
+            <div className="overflow-y-auto min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
+              <table
+                className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
+                cellPadding={20}
+              >
+                <thead>
+                  <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                    <th className="text-[#5A5881] py-2.5 text-base font-semibold">
+                      Assets Name
+                    </th>
+                    <th className="text-[#5A5881] py-2.5 text-base text-center font-semibold">
+                      Type
+                    </th>
+                    {/* <th className="text-[#5A5881] py-2.5 text-base font-semibold">
+                      Tags
+                    </th> */}
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {!loading &&
+                    assetData
+                      .filter((item) => {
+                        if (activeTab === "asset") {
+                          if (item.hasOwnProperty("assetID")) {
+                            return item;
+                          }
+                        } else {
+                          if (!item.hasOwnProperty("assetID")) {
+                            return item;
+                          }
+                        }
+                      })
+                      .map((assetdata, index) => (
+                        <tr
+                          key={index}
+                          className="border-b border-b-[#E4E6FF] cursor-pointer"
+                          onClick={() =>
+                            addSeletedAsset(assetdata, index + 1)
+                          }
+                          draggable
+                          onDragStart={(event) =>
+                            handleDragStartForDivToDiv(event, assetdata)
+                          }
+                        >
+                          <td className="break-words w-full text-left">
+                            {assetdata.assetName || assetdata?.instanceName}
+                          </td>
+                          <td className="p-2 w-full text-center">
+                            {assetdata?.fileExtention &&
+                              assetdata?.fileExtention}
+                            {assetdata?.youtubeId && "Youtube video"}
+                            {assetdata?.textScroll_Id && "TextScroll"}
+                          </td>
+                        </tr>
+                      ))}
+                </tbody>
+              </table>
             </div>
           </div>
-          <div className="flex flex-wrap rounded-xl mt-8 shadow bg-white">
-            <div className="w-full xl:w-1/2 border-r-2 space-y-5 border-r-[#E4E6FF] p-5">
-              <div className="flex items-center justify-between  rounded-lg w-full text-white bg-SlateBlue">
-                <div
-                  onClick={() => setActiveTab("asset")}
-                  className={`w-1/2 text-center p-2 ${
-                    activeTab === "asset" && "bg-black translate-x-0"
-                  }  rounded-lg cursor-pointer transition-all duration-100  ease-in`}
-                >
-                  Assets
-                </div>
-                <div
-                  onClick={() => setActiveTab("apps")}
-                  className={`w-1/2 text-center rounded-lg transition-all duration-100 ease-in-out p-2 ${
-                    activeTab === "apps" && "bg-black"
-                  } cursor-pointer`}
-                >
-                  Apps
-                </div>
-              </div>
-              <div className="text-center">
-                {activeTab === "asset" ? (
-                  <Link to="/FileUpload">
-                    <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                      New Assets Upload
-                    </button>
-                  </Link>
-                ) : (
-                  <Link to="/apps">
-                    <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                      Add New Apps
-                    </button>
-                  </Link>
-                )}
-              </div>
-              <div className="overflow-y-auto min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
-                <table
-                  className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
-                  cellPadding={20}
-                >
-                  <thead>
-                    <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                      <th className="text-[#5A5881] py-2.5 text-base font-semibold">
-                        Assets Name
-                      </th>
-                      <th className="text-[#5A5881] py-2.5 text-base text-center font-semibold">
-                        Type
-                      </th>
-                      {/* <th className="text-[#5A5881] py-2.5 text-base font-semibold">
-                        Tags
-                      </th> */}
-                    </tr>
-                  </thead>
 
-                  <tbody>
-                    {!loading &&
-                      assetData
-                        .filter((item) => {
-                          if (activeTab === "asset") {
-                            if (item.hasOwnProperty("assetID")) {
-                              return item;
-                            }
-                          } else {
-                            if (!item.hasOwnProperty("assetID")) {
-                              return item;
-                            }
-                          }
-                        })
-                        .map((assetdata, index) => (
+          {/* right side div */}
+          <div className="w-full xl:w-1/2 p-5">
+            {/* section tabs && layout  */}
+            <div className="flex flex-wrap border-b border-b-[#E4E6FF] pb-5 w-full">
+              <div
+                className={`layout-img me-5 ${
+                  compositonData?.screenType === "portrait"
+                    ? "w-24 h-36"
+                    : "w-36 h-24"
+                } bg-[#D5E3FF] relative`}
+              >
+                {!loading &&
+                  compositonData !== null &&
+                  compositonData?.lstLayloutModelList?.map((obj, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        position: "absolute",
+                        left: obj.leftside + "%",
+                        top: obj.topside + "%",
+                        width: obj?.width + "%",
+                        height: obj?.height + "%",
+                        backgroundColor:
+                          currentSection == index + 1 && "#e4aa07",
+                      }}
+                      className="border border-black "
+                    ></div>
+                  ))}
+                {/* <img
+                  src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                    compositonData?.svg
+                  )}`}
+                  alt="Logo"
+                  className="w-32"
+                /> */}
+              </div>
+              <div className="layout-detaills">
+                <h3 className="text-lg font-medium block mb-3">
+                  Duration:-&nbsp;<span>{totalDurationSeconds} Sec</span>
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {Array(compositonData?.lstLayloutModelList?.length)
+                    .fill(2)
+                    .map((item, index) => (
+                      <button
+                        className={`px-5 ${
+                          currentSection == index + 1
+                            ? "bg-primary"
+                            : "bg-white"
+                        } ${
+                          currentSection == index + 1
+                            ? "text-white"
+                            : "text-primary"
+                        }  rounded-full py-2 border border-primary `}
+                        key={index}
+                        // disabled={addAsset.length !== currentSection - 1}
+                        onClick={() => setcurrentSection(index + 1)}
+                      >
+                        Section {index + 1}
+                      </button>
+                    ))}
+                </div>
+              </div>
+            </div>
+
+            {/* selected images */}
+            <div
+              onDrop={(event) => handleDropForDivToDiv(event, "main_div")}
+              onDragOver={(event) => handleDragOverForDivToDiv(event)}
+              className="overflow-x-auto overflow-y-auto min-h-[320px] max-h-[320px] mt-3 mb-6"
+            >
+              <table
+                className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+                cellPadding={10}
+              >
+                <tbody>
+                  {addAsset.length > 0 &&
+                    addAsset[currentSection - 1] !== undefined &&
+                    addAsset[currentSection - 1][currentSection]?.map(
+                      (item, index) => {
+                        return (
                           <tr
-                            key={index}
-                            className="border-b border-b-[#E4E6FF] cursor-pointer"
-                            onClick={() =>
-                              addSeletedAsset(assetdata, index + 1)
+                            onDrop={(event) =>
+                              handleDropForWithinlist(event, index)
+                            }
+                            onDragOver={(event) =>
+                              handleDragOverForWithinlist(event, index)
                             }
                             draggable
                             onDragStart={(event) =>
-                              handleDragStartForDivToDiv(event, assetdata)
+                              handleDragStartWithinlist(event, item, index)
                             }
+                            key={index}
+                            className="w-full flex cursor-grab items-center md:gap-5 gap-3"
                           >
-                            <td className="break-words w-full text-left">
-                              {assetdata.assetName || assetdata?.instanceName}
-                            </td>
-                            <td className="p-2 w-full text-center">
-                              {assetdata?.fileExtention &&
-                                assetdata?.fileExtention}
-                              {assetdata?.youtubeId && "Youtube video"}
-                              {assetdata?.textScroll_Id && "TextScroll"}
-                            </td>
-                          </tr>
-                        ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* right side div */}
-            <div className="w-full xl:w-1/2 p-5">
-              {/* section tabs && layout  */}
-              <div className="flex flex-wrap border-b border-b-[#E4E6FF] pb-5 w-full">
-                <div
-                  className={`layout-img me-5 w-40 h-28 bg-[#D5E3FF] relative`}
-                >
-                  {!loading &&
-                    compositonData !== null &&
-                    compositonData?.lstLayloutModelList?.map((obj, index) => (
-                      <div
-                        key={index}
-                        style={{
-                          position: "absolute",
-                          left: obj.leftside + "%",
-                          top: obj.topside + "%",
-                          width: obj?.width + "%",
-                          height: obj?.height + "%",
-                          backgroundColor:
-                            currentSection == index + 1 && "#e4aa07",
-                        }}
-                        className="border border-black "
-                      ></div>
-                    ))}
-                  {/* <img
-                    src={`data:image/svg+xml;utf8,${encodeURIComponent(
-                      compositonData?.svg
-                    )}`}
-                    alt="Logo"
-                    className="w-32"
-                  /> */}
-                </div>
-                <div className="layout-detaills">
-                  <h3 className="text-lg font-medium block mb-3">
-                    Duration:-&nbsp;<span>{totalDurationSeconds} Sec</span>
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {Array(compositonData?.lstLayloutModelList?.length)
-                      .fill(2)
-                      .map((item, index) => (
-                        <button
-                          className={`px-5 ${
-                            currentSection == index + 1
-                              ? "bg-primary"
-                              : "bg-white"
-                          } ${
-                            currentSection == index + 1
-                              ? "text-white"
-                              : "text-primary"
-                          }  rounded-full py-2 border border-primary `}
-                          key={index}
-                          // disabled={addAsset.length !== currentSection - 1}
-                          onClick={() => setcurrentSection(index + 1)}
-                        >
-                          Section {index + 1}
-                        </button>
-                      ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* selected images */}
-              <div
-                onDrop={(event) => handleDropForDivToDiv(event, "main_div")}
-                onDragOver={(event) => handleDragOverForDivToDiv(event)}
-                className="overflow-x-auto overflow-y-auto min-h-[320px] max-h-[320px] mt-3 mb-6"
-              >
-                <table
-                  className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
-                  cellPadding={10}
-                >
-                  <tbody>
-                    {addAsset.length > 0 &&
-                      addAsset[currentSection - 1] !== undefined &&
-                      addAsset[currentSection - 1][currentSection]?.map(
-                        (item, index) => {
-                          return (
-                            <tr
-                              onDrop={(event) =>
-                                handleDropForWithinlist(event, index)
-                              }
-                              onDragOver={(event) =>
-                                handleDragOverForWithinlist(event, index)
-                              }
-                              draggable
-                              onDragStart={(event) =>
-                                handleDragStartWithinlist(event, item, index)
-                              }
-                              key={index}
-                              className="w-full flex cursor-grab items-center md:gap-5 gap-3"
-                            >
-                              <td className="min-w-[40%]">
-                                <div className="flex items-center w-full">
-                                  <div
-                                    className={`w-1/2 break-words hyphens-auto`}
-                                  >
-                                    {item.assetType === "OnlineImage" && (
-                                      <>
-                                        <img
-                                          className="imagebox relative w-full h-28 object-cover"
-                                          src={item?.assetFolderPath}
-                                          alt={item?.assetName}
-                                        />
-                                      </>
-                                    )}
-                                    {item.assetType === "Image" && (
+                            <td className="min-w-[40%]">
+                              <div className="flex items-center w-full">
+                                <div
+                                  className={`w-1/2 break-words hyphens-auto`}
+                                >
+                                  {item.assetType === "OnlineImage" && (
+                                    <>
                                       <img
+                                        className="imagebox relative w-full h-28 object-cover"
                                         src={item?.assetFolderPath}
                                         alt={item?.assetName}
-                                        className="imagebox relative w-full h-28 object-cover"
                                       />
-                                    )}
-                                    {item.assetType === "Video" && (
-                                      <video
-                                        controls
-                                        className="imagebox relative w-full h-28 object-cover"
-                                      >
-                                        <source
-                                          src={item?.assetFolderPath}
-                                          type="video/mp4"
-                                        />
-                                        Your browser does not support the video
-                                        tag.
-                                      </video>
-                                    )}
-                                    {item.assetType === "DOC" && (
-                                      <p
-                                        href={item?.assetFolderPath}
-                                        // target="_blank"
-                                        // rel="noopener noreferrer"
-                                      >
-                                        {item.assetName}
-                                      </p>
-                                    )}
-                                    {item.instanceName && (
-                                      <p
-                                        href={item?.instanceName}
-                                        // target="_blank"
-                                        // rel="noopener noreferrer"
-                                      >
-                                        {item.instanceName}
-                                      </p>
-                                    )}
-                                  </div>
-                                  <div className="ml-3 w-1/2">
-                                    <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
-                                      {item?.assetName && item?.assetName}
-                                      {item?.text && item?.text}
-                                      {item?.youTubeURL && item?.youTubeURL}
-                                    </p>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="text-center min-w-[20%]">
-                                {item?.assetType ?? "-"}
-                              </td>
-                              <td className={`text-center min-w-[20%] `}>
-                                {!item?.isEdited ? (
-                                  <p className="border min-w-full whitespace-nowrap border-[#E4E6FF] rounded-full p-2">
-                                    {item.duration} Sec
-                                  </p>
-                                ) : (
-                                  <p className="flex items-center gap-2 border-[#E4E6FF] rounded-full w-full min-w-[3rem]">
-                                    <input
-                                      className="outline-none border border-[#E4E6FF] rounded-full p-2 w-full min-w-full"
-                                      value={item.duration}
-                                      type="number"
-                                      onChange={(e) =>
-                                        onChangeSelectedAsset(
-                                          e.target.value,
-                                          index
-                                        )
-                                      }
-                                      min="0"
-                                      max="999"
+                                    </>
+                                  )}
+                                  {item.assetType === "Image" && (
+                                    <img
+                                      src={item?.assetFolderPath}
+                                      alt={item?.assetName}
+                                      className="imagebox relative w-full h-28 object-cover"
                                     />
-                                    <span>sec</span>
+                                  )}
+                                  {item.assetType === "Video" && (
+                                    <video
+                                      controls
+                                      className="imagebox relative w-full h-28 object-cover"
+                                    >
+                                      <source
+                                        src={item?.assetFolderPath}
+                                        type="video/mp4"
+                                      />
+                                      Your browser does not support the video
+                                      tag.
+                                    </video>
+                                  )}
+                                  {item.assetType === "DOC" && (
+                                    <p
+                                      href={item?.assetFolderPath}
+                                      // target="_blank"
+                                      // rel="noopener noreferrer"
+                                    >
+                                      {item.assetName}
+                                    </p>
+                                  )}
+                                  {item.instanceName && (
+                                    <p
+                                      href={item?.instanceName}
+                                      // target="_blank"
+                                      // rel="noopener noreferrer"
+                                    >
+                                      {item.instanceName}
+                                    </p>
+                                  )}
+                                </div>
+                                <div className="ml-3 w-1/2">
+                                  <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
+                                    {item?.assetName && item?.assetName}
+                                    {item?.text && item?.text}
+                                    {item?.youTubeURL && item?.youTubeURL}
                                   </p>
-                                )}
-                              </td>
-                              <td className="text-sm flex justify-end items-center gap-4 min-w-[20%]">
-                                <a onClick={() => onEditSelectedAsset(index)}>
-                                  <img
-                                    src={edit_icon}
-                                    className="min-w-[2vw] cursor-pointer"
+                                </div>
+                              </div>
+                            </td>
+                            <td className="text-center min-w-[20%]">
+                              {item?.assetType ?? "-"}
+                            </td>
+                            <td className={`text-center min-w-[20%] `}>
+                              {!item?.isEdited ? (
+                                <p className="border min-w-full whitespace-nowrap border-[#E4E6FF] rounded-full p-2">
+                                  {item.duration} Sec
+                                </p>
+                              ) : (
+                                <p className="flex items-center gap-2 border-[#E4E6FF] rounded-full w-full min-w-[3rem]">
+                                  <input
+                                    className="outline-none border border-[#E4E6FF] rounded-full p-2 w-full min-w-full"
+                                    value={item.duration}
+                                    type="number"
+                                    onChange={(e) =>
+                                      onChangeSelectedAsset(
+                                        e.target.value,
+                                        index
+                                      )
+                                    }
+                                    min="0"
+                                    max="999"
                                   />
-                                </a>
-                                <a onClick={() => deleteSeletedAsset(index)}>
-                                  <img
-                                    src={Delete_icon}
-                                    className="min-w-[2vw] cursor-pointer"
-                                  />
-                                </a>
-                              </td>
-                            </tr>
-                          );
-                        }
-                      )}
-                  </tbody>
-                </table>
-              </div>
+                                  <span>sec</span>
+                                </p>
+                              )}
+                            </td>
+                            <td className="text-sm flex justify-end items-center gap-4 min-w-[20%]">
+                              <a onClick={() => onEditSelectedAsset(index)}>
+                                <img
+                                  src={edit_icon}
+                                  className="min-w-[2vw] cursor-pointer"
+                                />
+                              </a>
+                              <a onClick={() => deleteSeletedAsset(index)}>
+                                <img
+                                  src={Delete_icon}
+                                  className="min-w-[2vw] cursor-pointer"
+                                />
+                              </a>
+                            </td>
+                          </tr>
+                        );
+                      }
+                    )}
+                </tbody>
+              </table>
+            </div>
 
-              <div className="click-add">
-                <p className="text-filthy-brown">
-                  Add Assets have from Left side panel
-                </p>
-              </div>
+            <div className="click-add">
+              <p className="text-filthy-brown">
+                Add Assets have from Left side panel
+              </p>
             </div>
           </div>
         </div>
       </div>
-      <Footer />
-    </>
+    </div>
+    <Footer />
+  </>
   );
 };
 export default EditSelectedLayout;

@@ -51,6 +51,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [savingLoader, setSavingLoader] = useState(false);
   const [activeTab, setActiveTab] = useState("asset");
   const [dragStartForDivToDiv, setDragStartForDivToDiv] = useState(false);
+  const [screenType, setScreenType] = useState("");
 
   const { state } = useLocation();
   const { token } = useSelector((state) => state.root.auth);
@@ -373,6 +374,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       toast.error("Please select assests for every section.");
       return;
     }
+    setScreenType(compositonData?.screenType);
     openModal();
   };
 
@@ -567,7 +569,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <div className="pt-16 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-        <PreviewModal show={modalVisible} onClose={closeModal}>
+          <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
               ref={modalRef}
               // className={`absolute left-1/2 -translate-x-1/2 `}
@@ -577,12 +579,35 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               //   maxWidth: compositonData?.screenWidth + "px",
               //   minWidth: compositonData?.screenWidth + "px",
               // }}
-              className={`fixed border rounded-lg left-1/2 -translate-x-1/2 min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw] `}
+              className={`fixed  border left-1/2 -translate-x-1/2 ${
+                screenType === "portrait"
+                  ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
+                  : "min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]"
+              }  `}
             >
               <RxCrossCircled
-                className="fixed z-50 w-[30px] h-[30px] text-white bg-black/20 rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
+                className="fixed z-50 w-[30px] h-[30px] text-white bg-black rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
                 onClick={closeModal}
               />
+              <div
+                className={`fixed z-50 ${
+                  screenType === "Landscape" ? "w-14 h-7" : "h-14 w-7"
+                }   rounded-md  bg-black p-2 top-1 right-10 cursor-pointer`}
+              >
+                <span
+                  className={`fixed z-50  ${
+                    screenType === "Landscape" ? "w-10 h-5 top-2 right-12" : "w-5 h-10 top-3 right-11"
+                  }  rounded-md  bg-white  cursor-pointer`}
+                  title={screenType}
+                  onClick={() => {
+                    if (screenType === "Landscape") {
+                      setScreenType("portrait");
+                    } else {
+                      setScreenType("Landscape");
+                    }
+                  }}
+                />
+              </div>
 
               {!loading &&
                 compositonData !== null &&
@@ -770,7 +795,11 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               {/* section tabs && layout  */}
               <div className="flex flex-wrap border-b border-b-[#E4E6FF] pb-5 w-full">
                 <div
-                  className={`layout-img me-5 w-40 h-28 bg-[#D5E3FF] relative`}
+                  className={`layout-img me-5 ${
+                    compositonData?.screenType === "portrait"
+                      ? "w-24 h-36"
+                      : "w-36 h-24"
+                  } bg-[#D5E3FF] relative`}
                 >
                   {!loading &&
                     compositonData !== null &&
