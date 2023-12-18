@@ -8,6 +8,7 @@ import { RiDeleteBin5Line, RiDeleteBinLine } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import {
   GET_All_WEATHER,
+  GET_WEATHER_BY_ID,
   SIGNAL_R,
   WEATHER_ADD_TAG,
   WEATHER_APP,
@@ -25,8 +26,11 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { LogLevel } from "@azure/msal-browser";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
+import moment from "moment";
+import ReactApexChart from "react-apexcharts";
 
 const Weather = ({ sidebarOpen, setSidebarOpen }) => {
+  let api_key = "41b5176532e682fd8b4cb6a44e3bd1a4";
   const { token } = useSelector((state) => state.root.auth);
   const { user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
@@ -34,9 +38,11 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
   const addScreenRef = useRef(null);
   const modalRef = useRef(null);
   const navigate = useNavigate();
+  const currentTime = moment().format("hh:mm A");
 
   const [WeatherList, setWeatherList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingModel, setLoadingModel] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [instanceID, setInstanceID] = useState();
   const [appDropDown, setAppDropDown] = useState(null);
@@ -52,6 +58,40 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
   const [tags, setTags] = useState([]);
   const [appDetailModal, setAppDetailModal] = useState(false);
   const [instanceView, setInstanceView] = useState(false);
+  const [showTags, setShowTags] = useState(null);
+  const [screenAssignName, setScreenAssignName] = useState("");
+  const [instanceName, setInstanceName] = useState("");
+  const [weatherData, setWeatherData] = useState("");
+  const [loadFirst, setLoadFirst] = useState(false);
+
+  const [locations, setLocations] = useState([
+    { id: 1, location: "", weatherData: null, mainData: null },
+    { id: 2, location: "", weatherData: null, mainData: null },
+    { id: 3, location: "", weatherData: null, mainData: null },
+  ]);
+  console.log("locations", locations);
+  const [GPS, setGPS] = useState({
+    latitude: null,
+    longitude: null,
+  });
+  const [temperatureUnit, setTemperatureUnit] = useState("");
+  const [tickerTapeView, setTickerTapeView] = useState("");
+  const [BackGround, setBackGround] = useState("");
+  const [Layout, setLayout] = useState("");
+  console.log("Layout", Layout);
+  const [isMuted, setIsMuted] = useState(false);
+  const [count, setCount] = useState(0);
+  console.log("count", count);
+
+  useEffect(() => {
+    if (!isMuted) {
+      locations?.map((item) => {
+        if (item?.location) {
+          setCount(count + 1);
+        }
+      });
+    }
+  }, [loadFirst]);
 
   useEffect(() => {
     setLoading(true);
@@ -75,6 +115,63 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    if (loadFirst) {
+      const fetchData = async () => {
+        try {
+          setLoadingModel(true);
+          const updatedLocations = await Promise.all(
+            locations.map(async (location, index) => {
+              const { id, location: loc } = location;
+              if (loc) {
+                let apiUrl = "";
+                if (isMuted) {
+                  apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${GPS?.latitude}&lon=${GPS?.longitude}&appid=${api_key}&units=metric`;
+                } else {
+                  apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${loc}&appid=${api_key}&units=metric`;
+                }
+                const response = await axios.get(apiUrl);
+                let ChartSeries = [];
+                const arr = response.data.list.map((item) => {
+                  if (ChartSeries?.length < 7) {
+                    ChartSeries?.push(`${item?.main?.temp}°`);
+                  }
+                  const milliseconds = item?.dt * 1000;
+                  const date = moment.utc(milliseconds);
+                  const day = date.format("dddd");
+                  return {
+                    ...item,
+                    Day: day,
+                  };
+                });
+                const Data = {
+                  ...response.data,
+                  list: arr,
+                };
+
+                return {
+                  ...location,
+                  weatherData: Data,
+                  mainData: Data,
+                  Line: id === 1 ? false : true,
+                };
+              }
+              return location;
+            })
+          );
+          convertIntoTemperatureUnits(updatedLocations);
+          // setLocations(updatedLocations);
+          setLoadingModel(false);
+        } catch (error) {
+          console.error("Error fetching weather data:", error);
+          setLoadingModel(false);
+        }
+      };
+      fetchData();
+      setLoadFirst(false);
+    }
+  }, [loadFirst, isMuted]);
 
   useEffect(() => {
     // if (showSearchModal) {
@@ -290,7 +387,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${WEATHER_ADD_TAG}?WeatherId=${
+      url: `${WEATHER_ADD_TAG}WeatherId=${
         updateTagWeather?.weatherAppId
       }&Tags=${tags.length === 0 ? "" : tags}`,
       headers: {
@@ -317,6 +414,202 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const handleFetchWeatherById = (id) => {
+    let config = {
+      method: "get",
+      url: `${GET_WEATHER_BY_ID}ID=${id}`,
+      headers: {
+        Authorization: authToken,
+      },
+    };
+
+    toast.loading("Fetching Data....");
+    axios
+      .request(config)
+      .then((response) => {
+        const data = response?.data?.data;
+        setWeatherData(response?.data?.data);
+        setLocations([
+          {
+            id: 1,
+            location: response?.data?.data?.location1
+              ? response?.data?.data?.location1
+              : "Ahmedabad",
+            weatherData: null,
+            mainData: null,
+          },
+          {
+            id: 2,
+            location:
+              response?.data?.data?.location2 !== "null"
+                ? response?.data?.data?.location2
+                : "",
+            weatherData: null,
+            mainData: null,
+          },
+          {
+            id: 3,
+            location:
+              response?.data?.data?.location3 !== "null"
+                ? response?.data?.data?.location3
+                : "",
+            weatherData: null,
+            mainData: null,
+          },
+        ]);
+        setGPS({
+          latitude: response?.data?.data?.latitude,
+          longitude: response?.data?.data?.longitude,
+        });
+        setTemperatureUnit(response?.data?.data?.temperatureUnit);
+        setTickerTapeView(response?.data?.data?.tickerTapeView);
+        setBackGround(response?.data?.data?.bgColor);
+        setLayout(response?.data?.data?.layout);
+        setIsMuted(response?.data?.data?.usescreenlocation);
+        setInstanceName(data?.name);
+        setScreenAssignName(data?.screens);
+        setShowTags(data?.tags);
+        setLoadFirst(true);
+        toast.remove();
+        // setLoadingModel(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        // setLoadingModel(true);
+        toast.remove();
+      });
+  };
+
+  const convertIntoTemperatureUnits = (locations) => {
+    const convertTemperature = (temp, toUnit) => {
+      switch (toUnit) {
+        case "Fahrenheit":
+          return (temp * 9) / 5 + 32;
+        case "Kelvin":
+          return temp + 273.15;
+        case "Rankine":
+          return (temp * 9) / 5 + 491.67;
+        case "Reaumur":
+          return (temp * 4) / 5;
+        default:
+          return temp;
+      }
+    };
+
+    const updatedLocations = locations?.map((item) => {
+      if (item?.weatherData !== null) {
+        const ChartSeries = [];
+        const Days = [];
+        const arr = item.mainData?.list?.map((items) => {
+          const convertedTemp = convertTemperature(
+            items?.main?.temp,
+            temperatureUnit
+          );
+          const convertedFeelsLike = convertTemperature(
+            items?.main?.feels_like,
+            temperatureUnit
+          );
+          if (ChartSeries?.length < 7 && Days.length < 7) {
+            ChartSeries?.push(convertedTemp.toFixed(2));
+            Days?.push(items?.Day);
+          }
+          return {
+            ...items,
+            main: {
+              ...items.main,
+              temp: convertedTemp.toFixed(2),
+              feels_like: convertedFeelsLike.toFixed(2),
+            },
+          };
+        });
+
+        const state = {
+          series: [
+            {
+              name: "Weather 1",
+              data: ChartSeries,
+            },
+          ],
+          options: {
+            chart: {
+              height: 200,
+              type: "line",
+              toolbar: {
+                show: false,
+              },
+              zoom: {
+                enabled: false,
+              },
+            },
+            colors: ["#000000"],
+            axisPointer: {
+              show: false,
+            },
+            markers: {
+              size: 2,
+            },
+            dataLabels: {
+              enabled: true,
+            },
+            grid: {
+              show: false,
+            },
+            yaxis: {
+              labels: {
+                style: {
+                  colors: ["transparent"],
+                },
+              },
+            },
+            xaxis: {
+              categories: Days,
+              axisTicks: {
+                show: false,
+              },
+              axisBorder: {
+                show: false,
+              },
+              labels: {
+                style: {
+                  colors: ["#ffffff"],
+                  fontWeight: 500,
+                },
+              },
+            },
+            tooltip: {
+              enabled: false, // Set to false to disable the tooltip on hover
+            },
+          },
+        };
+        const updatedWeatherData = {
+          ...item.weatherData,
+          list: arr || [], // Assign an empty array if arr is falsy
+          Chart: state,
+        };
+
+        return {
+          ...item,
+          weatherData: item?.location?.length > 0 ? updatedWeatherData : null,
+        };
+      }
+      return item;
+    });
+
+    if (updatedLocations) {
+      setLocations(updatedLocations);
+    }
+  };
+
+  const HandleModel = () => {
+    setLocations([
+      { id: 1, location: "", weatherData: null, mainData: null },
+      { id: 2, location: "", weatherData: null, mainData: null },
+      { id: 3, location: "", weatherData: null, mainData: null },
+    ]);
+    setBackGround("");
+    setInstanceView(false);
   };
 
   return (
@@ -449,9 +742,13 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                               src={Weather_Img}
                               alt="Logo"
                               className="cursor-pointer mx-auto h-20 w-20"
+                              onClick={() => {
+                                handleFetchWeatherById(item?.weatherAppId);
+                                setInstanceView(true);
+                              }}
                             />
                             <h4 className="text-lg font-medium mt-3">
-                                    {/* <a href="weather-appdetail.html">{item?.name}</a>*/}
+                              {/* <a href="weather-appdetail.html">{item?.name}</a>*/}
                               {item?.name}
                             </h4>
                             <h4
@@ -605,6 +902,205 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
         </>
+      )}
+      {instanceView && (
+        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+          <div
+            ref={modalRef}
+            className="w-[600px] my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+          >
+            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7]  rounded-t">
+                <div className="flex items-center">
+                  <div>
+                    <img src={Weather_Img} className="w-10" />
+                  </div>
+                  <div className="ml-3">
+                    <h4 className="text-lg font-medium">{instanceName}</h4>
+                  </div>
+                </div>
+                <button className="p-1 text-3xl" onClick={() => HandleModel()}>
+                  <AiOutlineCloseCircle />
+                </button>
+              </div>
+              <div className="p-2">
+                {loadingModel ? (
+                  <div className="self-start font-semibold text-2xl m-3">
+                    Loading...
+                  </div>
+                ) : (
+                  <div
+                    className="overflow-x-auto bg-blue border-white rounded-lg relative p-5"
+                    style={{ backgroundColor: BackGround, height: "400px" }}
+                  >
+                    <div className="lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full mx-auto bg-teal border-width-10px border-black">
+                      <div
+                        className={`flex ${
+                          Layout === "Landscape" ? "flex-row" : "flex-col"
+                        } text-[#ffffff]`}
+                      >
+                        {locations?.map((item, index) => {
+                          if (item?.weatherData !== null) {
+                            return (
+                              <div
+                                className="w-full flex flex-col"
+                                key={index}
+                                // style={{
+                                //   borderBottom:
+                                //     Layout === "Portrait"
+                                //       ? "1px solid"
+                                //       : "none",
+                                //   borderRight:
+                                //     Layout === "Landscape"
+                                //       ? "1px solid"
+                                //       : "none",
+                                // }}
+                              >
+                                <div className="bg-teal-lighter flex-1 flex flex-col">
+                                  <div className="p-3 title text-[#ffffff]">
+                                    <h3 className="sm:text-base md:text-xl lg:text-2xl font-medium text-[#ffffff] capitalize">
+                                      {item?.weatherData?.city?.name}
+                                    </h3>
+                                  </div>
+                                  <div className="px-3 flex items-center text-[#ffffff]">
+                                    <div className="bg-primary text-sm rounded py-2 px-3 mr-3">
+                                      Today
+                                    </div>
+                                    <div className="text-sm">
+                                      <p>
+                                        {item?.weatherData?.list[0]?.Day}
+                                        <br />
+                                        {currentTime}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="p-3 flex justify-between items-center">
+                                    <div className="icons">
+                                      <img
+                                        src={
+                                          "https://openweathermap.org/img/wn/" +
+                                          `${item?.weatherData?.list[0]?.weather[0]?.icon}` +
+                                          ".png"
+                                        }
+                                        alt="Logo"
+                                        className="w-16"
+                                      />
+                                      <div className="px-3 ">
+                                        <p>
+                                          {
+                                            item?.weatherData?.list[0]
+                                              ?.weather[0]?.main
+                                          }
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="text-right">
+                                      <h4 className="sm:text-base md:text-xl lg:text-2xl flex items-start justify-end">
+                                        {item?.weatherData?.list[0]?.main?.temp}
+                                        <span className="text-lg leading-3 ml-1 mt-2">
+                                          {temperatureUnit === "Fahrenheit"
+                                            ? "°F"
+                                            : temperatureUnit === "Kelvin"
+                                            ? "K"
+                                            : temperatureUnit === "Rankine"
+                                            ? "°R"
+                                            : temperatureUnit === "Reaumur"
+                                            ? "°Re"
+                                            : "°C"}
+                                        </span>
+                                      </h4>
+                                      <p className="flex items-start justify-end">
+                                        Feels like{" "}
+                                        {
+                                          item?.weatherData?.list[0]?.main
+                                            ?.feels_like
+                                        }
+                                        {temperatureUnit === "Fahrenheit"
+                                          ? "°F"
+                                          : temperatureUnit === "Kelvin"
+                                          ? "K"
+                                          : temperatureUnit === "Rankine"
+                                          ? "°R"
+                                          : temperatureUnit === "Reaumur"
+                                          ? "°Re"
+                                          : "°C"}
+                                      </p>
+                                    </div>
+                                  </div>
+
+                                  <div className="p-3 flex justify-between items-center">
+                                    <div className="flex flex-wrap -m-3 text-[#ffffff]">
+                                      {item?.weatherData?.list
+                                        ?.slice(1, 5)
+                                        ?.map((items, index) => {
+                                          return (
+                                            <div
+                                              className="w-1/2 flex flex-col p-2"
+                                              key={index}
+                                            >
+                                              <div className="bg-primary rounded p-2 flex justify-between items-center">
+                                                <div className="text">
+                                                  <h5
+                                                    style={{
+                                                      fontSize: "10px",
+                                                    }}
+                                                  >
+                                                    {items?.Day}
+                                                  </h5>
+                                                  <p className="flex items-start text-xs">
+                                                    {items?.main?.temp}° /
+                                                    {items?.main?.feels_like}°
+                                                  </p>
+                                                </div>
+                                                <div className="w-icon">
+                                                  <img
+                                                    src={
+                                                      "https://openweathermap.org/img/wn/" +
+                                                      `${items?.weather[0]?.icon}` +
+                                                      ".png"
+                                                    }
+                                                    alt="Logo"
+                                                    className="w-8"
+                                                  />
+                                                </div>
+                                              </div>
+                                            </div>
+                                          );
+                                        })}
+                                    </div>
+                                  </div>
+                                  <div id="chart" className="p-3">
+                                    <ReactApexChart
+                                      options={
+                                        item?.weatherData?.Chart?.options
+                                      }
+                                      series={item?.weatherData?.Chart?.series}
+                                      height={200}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          }
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="py-2 px-6">
+                <div className="flex items-center gap-2 w-full">
+                  <div className="font-semibold w-fit">Tags:-</div>
+                  <div className=" w-full">{showTags}</div>
+                </div>
+                <div>
+                  <label className="font-semibold">Screen Assign :</label>
+                  {screenAssignName == "" ? " No Screen" : screenAssignName}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

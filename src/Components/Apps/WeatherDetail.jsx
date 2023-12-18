@@ -90,7 +90,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
           setLocations([
             {
               id: 1,
-              location: response?.data?.data?.location1
+              location: response?.data?.data?.location1 !== "null"
                 ? response?.data?.data?.location1
                 : "Ahmedabad",
               weatherData: null,
@@ -98,13 +98,13 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
             },
             {
               id: 2,
-              location: response?.data?.data?.location2,
+              location: response?.data?.data?.location2 !== "null" ? response?.data?.data?.location2  : "",
               weatherData: null,
               mainData: null,
             },
             {
               id: 3,
-              location: response?.data?.data?.location3,
+              location: response?.data?.data?.location3 !== "null" ? response?.data?.data?.location3  : "",
               weatherData: null,
               mainData: null,
             },
