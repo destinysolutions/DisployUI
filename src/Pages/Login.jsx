@@ -294,7 +294,6 @@ const Login = () => {
       if (!response) return;
       response
         .then((res) => {
-          console.log(res);
           if (res.status == 200) {
             window.localStorage.setItem("timer", JSON.stringify(18_00));
             const userRole = res.role;
