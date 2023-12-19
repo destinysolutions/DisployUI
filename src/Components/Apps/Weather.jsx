@@ -69,7 +69,6 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
     { id: 2, location: "", weatherData: null, mainData: null },
     { id: 3, location: "", weatherData: null, mainData: null },
   ]);
-  console.log("locations", locations);
   const [GPS, setGPS] = useState({
     latitude: null,
     longitude: null,
@@ -78,10 +77,8 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
   const [tickerTapeView, setTickerTapeView] = useState("");
   const [BackGround, setBackGround] = useState("");
   const [Layout, setLayout] = useState("");
-  console.log("Layout", Layout);
   const [isMuted, setIsMuted] = useState(false);
   const [count, setCount] = useState(0);
-  console.log("count", count);
 
   useEffect(() => {
     if (!isMuted) {
@@ -468,9 +465,9 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
         setBackGround(response?.data?.data?.bgColor);
         setLayout(response?.data?.data?.layout);
         setIsMuted(response?.data?.data?.usescreenlocation);
-        setInstanceName(data?.name);
-        setScreenAssignName(data?.screens);
-        setShowTags(data?.tags);
+        setInstanceName(response?.data?.data?.name);
+        setScreenAssignName(response?.data?.data?.screens);
+        setShowTags(response?.data?.data?.tags);
         setLoadFirst(true);
         toast.remove();
         // setLoadingModel(true);
@@ -651,14 +648,16 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                   >
                     <RiDeleteBinLine />
                   </button>
-                  <button className="sm:ml-2 xs:ml-1 mt-1">
-                    <input
-                      type="checkbox"
-                      className="h-7 w-7"
-                      checked={selectAll}
-                      onChange={handleSelectAll}
-                    />
-                  </button>
+                  {WeatherList?.length > 0 && (
+                    <button className="sm:ml-2 xs:ml-1 mt-1">
+                      <input
+                        type="checkbox"
+                        className="h-7 w-7"
+                        checked={selectAll}
+                        onChange={handleSelectAll}
+                      />
+                    </button>
+                  )}
                 </div>
               </div>
               <div>
