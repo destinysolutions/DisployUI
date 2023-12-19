@@ -494,174 +494,171 @@ const Users = () => {
   return (
     <>
       {showuserModal && (
-        <>
-          <div className="backdrop">
-            <div ref={modalRef} className="user-model">
-              <div className="hours-heading flex justify-between items-center p-5 border-b border-gray">
-                <h1 className="text-lg font-medium text-primary">
-                  {labelTitle}
-                </h1>
-                <AiOutlineCloseCircle
-                  className="text-4xl text-primary cursor-pointer"
-                  onClick={() => {
-                    handleCancelPopup();
-                  }}
-                />
-              </div>
-              <hr className="border-gray " />
-              <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2 ">
-                <div className=" lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 text-left rounded-2xl">
-                  <div className="grid grid-cols-12 gap-6">
-                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                      <div className="relative">
-                        <label className="formLabel">First Name</label>
-                        <input
-                          type="text"
-                          placeholder="Enter User Name"
-                          name="fname"
-                          className="formInput"
-                          value={firstName}
-                          onChange={(e) => setFirstName(e.target.value)}
-                        />
-                      </div>
+        <div className="backdrop">
+          <div ref={modalRef} className="user-model">
+            <div className="hours-heading flex justify-between items-center p-5 border-b border-gray">
+              <h1 className="text-lg font-medium text-primary">{labelTitle}</h1>
+              <AiOutlineCloseCircle
+                className="text-4xl text-primary cursor-pointer"
+                onClick={() => {
+                  handleCancelPopup();
+                }}
+              />
+            </div>
+            <hr className="border-gray " />
+            <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2 ">
+              <div className=" lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 text-left rounded-2xl">
+                <div className="grid grid-cols-12 gap-6">
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                    <div className="relative">
+                      <label className="formLabel">First Name</label>
+                      <input
+                        type="text"
+                        placeholder="Enter User Name"
+                        name="fname"
+                        className="formInput"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                      />
                     </div>
-                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                      <div className="relative">
-                        <label className="formLabel">Last Name</label>
-                        <input
-                          type="text"
-                          placeholder="Enter User Name"
-                          name="lname"
-                          className="formInput"
-                          value={lastName}
-                          onChange={(e) => setLastName(e.target.value)}
-                        />
-                      </div>
+                  </div>
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                    <div className="relative">
+                      <label className="formLabel">Last Name</label>
+                      <input
+                        type="text"
+                        placeholder="Enter User Name"
+                        name="lname"
+                        className="formInput"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                      />
                     </div>
+                  </div>
 
-                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                      <div className="relative">
-                        <label className="formLabel">Email</label>
-                        <input
-                          type="email"
-                          placeholder="Enter Email Address"
-                          name="email"
-                          className="formInput"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                        />
-                        {emailErrors ? (
-                          <p className="error">{emailErrors}</p>
-                        ) : null}
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                    <div className="relative">
+                      <label className="formLabel">Email</label>
+                      <input
+                        type="email"
+                        placeholder="Enter Email Address"
+                        name="email"
+                        className="formInput"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                      {emailErrors ? (
+                        <p className="error">{emailErrors}</p>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                    <div className="relative">
+                      <label className="formLabel">Password</label>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter User Password"
+                        name="fname"
+                        className="formInput"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                      {passowrdErrors ? (
+                        <p className="error">{passowrdErrors}</p>
+                      ) : null}
+                      <div className="icon">
+                        {showPassword ? (
+                          <BsFillEyeFill
+                            onClick={() => setShowPassword(!showPassword)}
+                          />
+                        ) : (
+                          <BsFillEyeSlashFill
+                            onClick={() => setShowPassword(!showPassword)}
+                          />
+                        )}
                       </div>
                     </div>
-                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                      <div className="relative">
-                        <label className="formLabel">Password</label>
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Enter User Password"
-                          name="fname"
-                          className="formInput"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                        />
-                        {passowrdErrors ? (
-                          <p className="error">{passowrdErrors}</p>
-                        ) : null}
-                        <div className="icon">
-                          {showPassword ? (
-                            <BsFillEyeFill
-                              onClick={() => setShowPassword(!showPassword)}
-                            />
-                          ) : (
-                            <BsFillEyeSlashFill
-                              onClick={() => setShowPassword(!showPassword)}
-                            />
-                          )}
-                        </div>
-                      </div>
+                  </div>
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                    <div className="relative">
+                      <label className="formLabel">Phone No</label>
+                      <input
+                        type="number"
+                        placeholder="Enter Phone No"
+                        name="phoneno"
+                        className="formInput"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                      />
                     </div>
-                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                      <div className="relative">
-                        <label className="formLabel">Phone No</label>
-                        <input
-                          type="number"
-                          placeholder="Enter Phone No"
-                          name="phoneno"
-                          className="formInput"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                        />
-                      </div>
+                  </div>
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                    <div className="relative">
+                      <label className="formLabel">Company</label>
+                      <input
+                        type="text"
+                        placeholder="Enter Company Name"
+                        name="cname"
+                        className="formInput"
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
+                      />
                     </div>
-                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                      <div className="relative">
-                        <label className="formLabel">Company</label>
-                        <input
-                          type="text"
-                          placeholder="Enter Company Name"
-                          name="cname"
-                          className="formInput"
-                          value={company}
-                          onChange={(e) => setCompany(e.target.value)}
-                        />
-                      </div>
+                  </div>
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                    <div className="relative">
+                      <label className="formLabel">Zip Code</label>
+                      <input
+                        type="text"
+                        placeholder="Enter Company Name"
+                        name="zipcode"
+                        className="formInput"
+                        value={zipCode}
+                        onChange={(e) => setZipCode(e.target.value)}
+                      />
                     </div>
-                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                      <div className="relative">
-                        <label className="formLabel">Zip Code</label>
-                        <input
-                          type="text"
-                          placeholder="Enter Company Name"
-                          name="zipcode"
-                          className="formInput"
-                          value={zipCode}
-                          onChange={(e) => setZipCode(e.target.value)}
-                        />
-                      </div>
+                  </div>
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                    <div className="relative">
+                      <label className="formLabel">Country</label>
+                      <select
+                        className="formInput"
+                        value={countryID}
+                        onChange={(e) => setCountryID(e.target.value)}
+                      >
+                        <option label="select Country"></option>
+                        {Countries.map((country) => (
+                          <option
+                            key={country.countryID}
+                            value={country.countryID}
+                          >
+                            {country.countryName}
+                          </option>
+                        ))}
+                      </select>
                     </div>
-                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                      <div className="relative">
-                        <label className="formLabel">Country</label>
-                        <select
-                          className="formInput"
-                          value={countryID}
-                          onChange={(e) => setCountryID(e.target.value)}
-                        >
-                          <option label="select Country"></option>
-                          {Countries.map((country) => (
-                            <option
-                              key={country.countryID}
-                              value={country.countryID}
-                            >
-                              {country.countryName}
+                  </div>
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                    <div className="relative">
+                      <label className="formLabel">State</label>
+                      <select
+                        className="formInput"
+                        onChange={(e) => setSelectedState(e.target.value)}
+                        value={selectedState}
+                      >
+                        <option label="select State"></option>
+                        {countryID &&
+                          Array.isArray(states) &&
+                          states.map((state) => (
+                            <option key={state.stateId} value={state.stateId}>
+                              {state.stateName}
                             </option>
                           ))}
-                        </select>
-                      </div>
+                      </select>
                     </div>
-                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                      <div className="relative">
-                        <label className="formLabel">State</label>
-                        <select
-                          className="formInput"
-                          onChange={(e) => setSelectedState(e.target.value)}
-                          value={selectedState}
-                        >
-                          <option label="select State"></option>
-                          {countryID &&
-                            Array.isArray(states) &&
-                            states.map((state) => (
-                              <option key={state.stateId} value={state.stateId}>
-                                {state.stateName}
-                              </option>
-                            ))}
-                        </select>
-                      </div>
-                    </div>
+                  </div>
 
-                    {/* <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                  {/* <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                       <div className="relative">
                         <label className="formLabel">Screen Access</label>
                         <input
@@ -672,118 +669,115 @@ const Users = () => {
                         />
                       </div>
                     </div> */}
-                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                      <div className="relative">
-                        <label className="formLabel">Roles</label>
-                        <select
-                          className="formInput"
-                          value={selectRoleID}
-                          onChange={(e) => setSelectRoleID(e.target.value)}
-                        >
-                          <option label="select User Role"></option>
-
-                          {userRoleData && userRoleData?.length > 0 ? (
-                            userRoleData.map((userrole) => (
-                              <option
-                                key={userrole?.orgUserRoleID}
-                                value={userrole?.orgUserRoleID}
-                              >
-                                {userrole.orgUserRole}
-                              </option>
-                            ))
-                          ) : (
-                            <div>Data not here.</div>
-                          )}
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                      <div className="flex items-center">
-                        <div className="layout-img me-5">
-                          {file ? (
-                            <img
-                              src={URL.createObjectURL(file)}
-                              alt="Uploaded"
-                              className="w-10 rounded-lg"
-                            />
-                          ) : null}
-
-                          {fileEdit && userID ? (
-                            <img
-                              src={fileEdit}
-                              alt="Uploaded"
-                              className="w-10 rounded-lg"
-                            />
-                          ) : null}
-                        </div>
-
-                        <div className="layout-detaills">
-                          <div className="flex">
-                            <button
-                              className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3 "
-                              onClick={handleClick}
-                            >
-                              Profile photo
-                            </button>
-                            <input
-                              type="file"
-                              id="upload-button"
-                              style={{ display: "none" }}
-                              ref={hiddenFileInput}
-                              onChange={(e) => handleFileChange(e)}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                      <div className="mt-3 flex items-center">
-                        <label>isActive :</label>
-                        <input
-                          className="border border-primary ml-8 rounded h-6 w-6"
-                          type="checkbox"
-                          checked={isActive === 1}
-                          onChange={(e) =>
-                            setIsActive(e.target.checked ? 1 : 0)
-                          }
-                        />
-                      </div>
-                    </div>
-                    <div className="col-span-12 text-center">
-                      <button
-                        className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
-                        onClick={() => setshowuserModal(false)}
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                    <div className="relative">
+                      <label className="formLabel">Roles</label>
+                      <select
+                        className="formInput"
+                        value={selectRoleID}
+                        onChange={(e) => setSelectRoleID(e.target.value)}
                       >
-                        Cancel
-                      </button>
-                      {!userID ? (
-                        <button
-                          onClick={() => {
-                            handleAddUser();
-                          }}
-                          className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
-                        >
-                          Save
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            handleUpdateUser();
-                          }}
-                          className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
-                        >
-                          Update
-                        </button>
-                      )}
+                        <option label="select User Role"></option>
+
+                        {userRoleData && userRoleData?.length > 0 ? (
+                          userRoleData.map((userrole) => (
+                            <option
+                              key={userrole?.orgUserRoleID}
+                              value={userrole?.orgUserRoleID}
+                            >
+                              {userrole.orgUserRole}
+                            </option>
+                          ))
+                        ) : (
+                          <div>Data not here.</div>
+                        )}
+                      </select>
                     </div>
+                  </div>
+
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                    <div className="flex items-center">
+                      <div className="layout-img me-5">
+                        {file ? (
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt="Uploaded"
+                            className="w-10 rounded-lg"
+                          />
+                        ) : null}
+
+                        {fileEdit && userID ? (
+                          <img
+                            src={fileEdit}
+                            alt="Uploaded"
+                            className="w-10 rounded-lg"
+                          />
+                        ) : null}
+                      </div>
+
+                      <div className="layout-detaills">
+                        <div className="flex">
+                          <button
+                            className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3 "
+                            onClick={handleClick}
+                          >
+                            Profile photo
+                          </button>
+                          <input
+                            type="file"
+                            id="upload-button"
+                            style={{ display: "none" }}
+                            ref={hiddenFileInput}
+                            onChange={(e) => handleFileChange(e)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                    <div className="mt-3 flex items-center">
+                      <label>isActive :</label>
+                      <input
+                        className="border border-primary ml-8 rounded h-6 w-6"
+                        type="checkbox"
+                        checked={isActive === 1}
+                        onChange={(e) => setIsActive(e.target.checked ? 1 : 0)}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-span-12 text-center">
+                    <button
+                      className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
+                      onClick={() => setshowuserModal(false)}
+                    >
+                      Cancel
+                    </button>
+                    {!userID ? (
+                      <button
+                        onClick={() => {
+                          handleAddUser();
+                        }}
+                        className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
+                      >
+                        Save
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          handleUpdateUser();
+                        }}
+                        className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
+                      >
+                        Update
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </>
+        </div>
       )}
       {showUserProfile ? (
         <>

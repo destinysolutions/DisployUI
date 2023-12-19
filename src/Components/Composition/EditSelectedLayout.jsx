@@ -1010,7 +1010,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="imagebox relative w-full h-28 object-cover"
                                       />
                                     )}
-                                    {item.assetType === "Video" && (
+                                    {(item.assetType === "Video" ||
+                                      item.assetType === "OnlineVideo") && (
                                       <video
                                         controls
                                         className="imagebox relative w-full h-28 object-cover"

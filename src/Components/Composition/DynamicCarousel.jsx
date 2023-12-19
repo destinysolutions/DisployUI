@@ -21,6 +21,7 @@ const Carousel = ({ items, compositonData, from }) => {
     };
   }, [items, currentIndex]);
 
+  // console.log(items);
   return (
     <>
       <div className="h-full w-full">
@@ -112,17 +113,16 @@ const Carousel = ({ items, compositonData, from }) => {
                 )}
                 {(item?.assetType === "Text" || item?.mediaType === "Text") && (
                   <marquee
-                    className="text-lg align-middle h-full flex items-center justify-center bg-lightgray"
-                    direction={
-                      item?.direction == "Left to Right" ? "left" : "right"
-                    }
+                    className="text-lg w-full h-full flex items-center text-black"
+                    direction={item?.scrollType == 1 ? "left" : "right"}
+                    scrollamount="10"
                   >
                     {item?.assetFolderPath ?? item?.fileType}
                   </marquee>
                 )}
                 {item?.text !== undefined && (
                   <marquee
-                    className="text-lg w-full h-full flex items-center"
+                    className="text-lg w-full h-full flex items-center text-black"
                     direction={item?.scrollType == 1 ? "left" : "right"}
                     scrollamount="10"
                   >
