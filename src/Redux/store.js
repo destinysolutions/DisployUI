@@ -10,6 +10,7 @@ import CompositionSlice from "./CompositionSlice";
 import AppsSlice from "./AppsSlice";
 import SettingUserSlice from "./SettingUserSlice";
 import SettingSlice from "./SettingSlice";
+import ScreenGroupSlice from "./ScreenGroupSlice";
 
 // const rootPersistConfig = {
 //   key: "root",
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
   apps: AppsSlice,
   settingUser: SettingUserSlice,
   setting: SettingSlice,
+  screenGroup:ScreenGroupSlice,
 });
 
 const persisteRoot = rootReducer;

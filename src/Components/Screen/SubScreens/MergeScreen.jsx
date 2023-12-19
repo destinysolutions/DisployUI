@@ -14,7 +14,9 @@ import Footer from "../../Footer";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { Tooltip } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
-import ScreenAssignModal from "../../ScreenAssignModal";
+import ScreenMergeAssignModal from "./ScreenMergeAssignModal";
+
+
 const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   MergeScreen.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -433,7 +435,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
 
       {selectScreenModal && (
-        <ScreenAssignModal
+        <ScreenMergeAssignModal
           setAddScreenModal={setAddScreenModal}
           setSelectScreenModal={setSelectScreenModal}
           type="merged_screens"

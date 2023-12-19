@@ -19,7 +19,10 @@ import { useEffect } from "react";
 import { SELECT_ALL_SCREENGROUP } from "../../../Pages/Api";
 import axios from "axios";
 import { Tooltip } from "@material-tailwind/react";
-const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
+import  ScreenGroupModal  from "./ScreenGroupModal"
+ 
+
+const NewScreenGroup = ({ sidebarOpen, setSidebarOpen, }) => {
   NewScreenGroup.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
@@ -28,31 +31,13 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [showdata, setShowdata] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
-  const handleMouseOver = () => {
-    if (showdata === true) {
-      setIsHovering(false);
-    } else {
-      setIsHovering(true);
-    }
-  };
-  const handleMouseOut = () => {
-    setIsHovering(false);
-  };
-  const handleDropupClick = () => {
-    setShowdata(!showdata);
-    setIsHovering(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    axios
-      .get(SELECT_ALL_SCREENGROUP)
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching deleted data:", error);
-      });
-  }, []);
+  
   return (
     <>
       <div className="flex border-b border-gray">
@@ -96,10 +81,21 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                 <button
                   type="button"
                   className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                  onClick={() => setIsModalOpen(true)}
                 >
                   <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
               </Tooltip>
+
+              {isModalOpen && ( 
+                <ScreenGroupModal     
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                />
+
+              )}
+
+
               <Tooltip
                 content="Select All ScreenGroup"
                 placement="bottom-end"
@@ -122,8 +118,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="accordions mt-5">
             <div
               className="section shadow-md  lg:p-5 md:p-5 sm:p-3 rounded-md bg-white  lg:flex md:flex  sm:block items-center justify-between"
-              onMouseOver={handleMouseOver}
-              onMouseOut={handleMouseOut}
+              // onMouseOver={handleMouseOver}
+              // onMouseOut={handleMouseOut}
             >
               <h1 className="text-lg">Group Name1</h1>
 
@@ -172,13 +168,13 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                       </button>
                     </>
                   )}
-                  <button onClick={handleDropupClick}>
+                  {/* <button onClick={handleDropupClick}>
                     {showdata ? (
                       <IoIosArrowDropup className="text-3xl" />
                     ) : (
                       <IoIosArrowDropdown className="text-3xl" />
                     )}
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>

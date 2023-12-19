@@ -20,6 +20,7 @@ import scheduleIcon from "../images/MenuIcons/schedule_icon.svg";
 import logo from "../images/DisployImg/logo.svg";
 import { useDispatch } from "react-redux";
 import { handleLogout } from "../Redux/Authslice";
+import merge_screen from "../images/MenuIcons/merge_screen.svg";
 
 const Sidebar = ({ sidebarOpen }) => {
   Sidebar.propTypes = {
@@ -63,17 +64,17 @@ const Sidebar = ({ sidebarOpen }) => {
             <MdOutlineAddToQueue className=" text-gray text-lg opacity-60 " />
           ),
         },
-        // {
-        //   title: "New Screen Group",
-        //   path: "/newscreengroup",
-        //   icon: (
-        //     <HiOutlineRectangleGroup className=" text-gray text-xl opacity-60 " />
-        //   ),
-        // },
+        {
+          title: "New Screen Group",
+          path: "/newscreengroup",
+          icon: (
+            <HiOutlineRectangleGroup className=" text-gray text-xl opacity-60 " />
+          ),
+        },
         {
           title: "Merge Screens",
           path: "/mergescreen",
-          icon: <img src="/MenuIcons/merge_screen.svg" alt="" />,
+          icon: <img src={merge_screen} alt="" />,
         },
       ],
     },

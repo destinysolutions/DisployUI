@@ -75,7 +75,7 @@ const Authslice = createSlice({
       state.token = null;
       state.error = null;
       state.loading = false;
-      auth.signOut();
+      // auth.signOut();
       window.location.href = window.location.origin;
       window.localStorage.clear("timer");
       localStorage.setItem("role_access", "");

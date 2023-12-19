@@ -7,10 +7,12 @@ import { CHNAGE_PASSWORD } from "../Api";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 import { auth } from "../../FireBase/firebase"; // Import your Firebase auth instance
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Security = () => {
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
+  const navigator = useNavigate();
 
   const validationSchema = Yup.object().shape({
     currentPassword: Yup.string().required("Current Password is required"),
@@ -48,12 +50,8 @@ const Security = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
+
         toast.loading("Updating...");
-        // Reauthenticate the user with their current password
-        await auth.signInWithEmailAndPassword(auth.currentUser.email,  values.currentPassword)
-          .then(async () => {
-            await auth.currentUser.updatePassword(values.newPassword);
-          });
 
         const payload = {
           currentPassword: values.currentPassword,
@@ -75,10 +73,13 @@ const Security = () => {
           maxBodyLength: Infinity,
         };
 
-        toast.dismiss();
-        await axios.request(config);
-        toast.success("Your password change was successful");
-        // navigator('/settings')
+        const response =  await axios.request(config);
+        if (response.status) {
+          toast.dismiss();
+          toast.success("Your password change was successful");
+          navigator('/userprofile')
+          formik.resetForm()
+        }
       } catch (error) {
         console.error("Error updating password:", error.message);
         toast.error("Error updating password. Please try again.");

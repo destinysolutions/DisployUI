@@ -97,56 +97,33 @@ const ForgotPassword = () => {
   });
 
 
-  const changePassword = async (values) => {
-    try {
-    
-      const payload = {
-        UserID: userID,
-        Email: getEmail,
-        OTP: values.currentPassword,
-        Password: values.newPassword,
-      };
-     console.log("payload",payload);
-      const config = {
-        method: "post", 
-        url: UPDATE_PASSWORD, 
-        params: payload ,
-        maxBodyLength: Infinity,
-      };
-      const response = await axios.request(config);
-      if (response) {
-         await signInWithEmailAndPassword(auth, getEmail,response.data.pass)
-         .then(async () => {
-           await updatePassword(auth.currentUser,values.newPassword);
-         });
-      }
-      // callback(response.data); // Invoke the callback with the data
-    } catch (error) {
-      console.error("Error changing password:", error.message);
-    }
-  };
-
   const formikChangePassword = useFormik({
     initialValues: { newPassword: "", confirmPassword: "",currentPassword:'' },
     validationSchema: validationSchema2,
     onSubmit: async (values) => {
       try {
         // Find the user by UserId
-        toast.loading("Updateting...");
-        await changePassword(values, async (data) => {
-          if (data.Status !== false) {
-            toast.success("Password updated successfully..");
-            navigate('/')
-          } else {
-            setShowPassword(false);
-            toast.error("Email does not exist");
-          }
-          toast.dismiss();
-        });
+        toast.loading("Updeting....")
+        const payload = {
+          UserID: userID,
+          Email: getEmail,
+          OTP: values.currentPassword,
+          Password: values.newPassword,
+        };
+       console.log("payload",payload);
+        const config = {
+          method: "post", 
+          url: UPDATE_PASSWORD, 
+          params: payload ,
+          maxBodyLength: Infinity,
+        };
+        const response = await axios.request(config);
+        if (response.data.status) {
+          toast.dismiss()
+          toast.success(response.data.message);
+          navigate('/')
+        }
 
-        // Optionally, you can perform additional logic after changing the password
-        toast.success("Password changed successfully");
-        // navigate("/");
       } catch (error) {
         console.error("Error:", error.message);
         toast.error("Error changing password. Please try again.");

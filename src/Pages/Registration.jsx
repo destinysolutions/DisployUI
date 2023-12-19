@@ -33,6 +33,7 @@ import { handleLoginWithGoogle, handleRegisterUser } from "../Redux/Authslice";
 import logo from "../images/DisployImg/logo.svg";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const Registration = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -70,7 +71,110 @@ const Registration = () => {
     // terms: Yup.boolean()
     //   .oneOf([true], "You must accept the terms and conditions")
     //   .required("You must accept the terms and conditions"),
+    captcha: Yup.string().required("captcha is required."),
   });
+
+  // const formik = useFormik({
+  //   initialValues: {
+  //     companyName: "",
+  //     password: "",
+  //     firstName: "",
+  //     emailID: "",
+  //     googleLocation: "",
+  //     phoneNumber: "",
+  //     lastName: "",
+  //     // terms: false,
+  //   },
+  //   validationSchema: validationSchema,
+  //   onSubmit: (values) => {
+  //     createUserWithEmailAndPassword(auth, values.emailID, values.password)
+  //       .then((userCredential) => {
+  //         const user = userCredential.user;
+  //         const usertoken = user.za;
+  //         // console.log({ usertoken, user });
+  //         sendEmailVerification()
+  //           .then(() => {
+  //             // console.log("Verification email sent.");
+  //             alert("Verification email sent.");
+  //             const formData = new FormData();
+  //             formData.append("OrganizationName", values.companyName);
+  //             formData.append("Password", values.password);
+  //             formData.append("FirstName", values.firstName);
+  //             formData.append("LastName", values.lastName);
+  //             formData.append("Email", values.emailID);
+  //             formData.append("GoogleLocation", values.googleLocation);
+  //             formData.append("Phone", values.phoneNumber);
+  //             formData.append("UserTokan", usertoken);
+  //             formData.append("Operation", "Insert");
+  //             setLoading(true);
+
+  //             let config = {
+  //               method: "post",
+  //               maxBodyLength: Infinity,
+  //               url: ADD_REGISTER_URL,
+  //               headers: {
+  //                 "Content-Type": "multipart/form-data",
+  //               },
+  //               data: formData,
+  //             };
+
+  //             const response = dispatch(handleRegisterUser({ config }));
+  //             if (response) {
+  //               response
+  //                 .then(() => {
+  //                   window.localStorage.setItem("timer", JSON.stringify(18_00));
+  //                   toast.success("Registration successfully.");
+  //                   navigate("/screens");
+  //                   setLoading(false);
+  //                 })
+  //                 .catch((error) => {
+  //                   console.log(error);
+  //                   setErrorMessgeVisible(true);
+  //                   setErrorMessge(error.response.data);
+  //                   setLoading(false);
+  //                 });
+  //             }
+  //           })
+  //           .catch((error) => {
+  //             console.error(error);
+  //             setLoading(false);
+  //           });
+  //       })
+  //       .catch((error) => {
+  //         console.log("error", error.message);
+  //         setErrorMessgeVisible(true);
+  //         setErrorMessge(error.message);
+  //         var errorMessage = JSON.parse(error.message);
+  //         switch (errorMessage.error.message) {
+  //           case "ERROR_INVALID_EMAIL":
+  //             alert("Your email address appears to be malformed.");
+  //             console.log("ERROR_INVALID_EMAI");
+  //             break;
+  //           case "ERROR_WRONG_PASSWORD":
+  //             alert("Your password is wrong.");
+  //             break;
+  //           case "ERROR_USER_NOT_FOUND":
+  //             alert("User with this email doesn't exist.");
+  //             break;
+  //           case "ERROR_USER_DISABLED":
+  //             alert("User with this email has been disabled.");
+  //             break;
+  //           case "ERROR_TOO_MANY_REQUESTS":
+  //             alert("Too many requests. Try again later.");
+  //             break;
+  //           case "ERROR_OPERATION_NOT_ALLOWED":
+  //             alert("Signing in with Email and Password is not enabled.");
+  //             break;
+  //           case "INVALID_LOGIN_CREDENTIALS":
+  //             alert("Invaild Email Or Password");
+  //             break;
+  //           default:
+  //             alert("An undefined Error happened.");
+  //         }
+  //         setLoading(false);
+  //       });
+  //   },
+  // });
 
   const formik = useFormik({
     initialValues: {
@@ -81,98 +185,53 @@ const Registration = () => {
       googleLocation: "",
       phoneNumber: "",
       lastName: "",
+      captcha: "",
       // terms: false,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      createUserWithEmailAndPassword(auth, values.emailID, values.password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          const usertoken = user.za;
-          // console.log({ usertoken, user });
-          sendEmailVerification()
-            .then(() => {
-              // console.log("Verification email sent.");
-              alert("Verification email sent.");
-              const formData = new FormData();
-              formData.append("OrganizationName", values.companyName);
-              formData.append("Password", values.password);
-              formData.append("FirstName", values.firstName);
-              formData.append("LastName", values.lastName);
-              formData.append("Email", values.emailID);
-              formData.append("GoogleLocation", values.googleLocation);
-              formData.append("Phone", values.phoneNumber);
-              formData.append("UserTokan", usertoken);
-              formData.append("Operation", "Insert");
-              setLoading(true);
+      const formData = new FormData();
+      formData.append("OrganizationName", values.companyName);
+      formData.append("Password", values.password);
+      formData.append("FirstName", values.firstName);
+      formData.append("LastName", values.lastName);
+      formData.append("Email", values.emailID);
+      formData.append("GoogleLocation", values.googleLocation);
+      formData.append("Phone", values.phoneNumber);
+      // formData.append("UserTokan", usertoken);   // used Firebase token
+      formData.append("Operation", "Insert");
+      setLoading(true);
 
-              let config = {
-                method: "post",
-                maxBodyLength: Infinity,
-                url: ADD_REGISTER_URL,
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-                data: formData,
-              };
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: ADD_REGISTER_URL,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        data: formData,
+      };
 
-              const response = dispatch(handleRegisterUser({ config }));
-              if (response) {
-                response
-                  .then(() => {
-                    window.localStorage.setItem("timer", JSON.stringify(18_00));
-                    toast.success("Registration successfully.");
-                    navigate("/screens");
-                    setLoading(false);
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                    setErrorMessgeVisible(true);
-                    setErrorMessge(error.response.data);
-                    setLoading(false);
-                  });
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-              setLoading(false);
-            });
-        })
-        .catch((error) => {
-          console.log("error", error.message);
-          setErrorMessgeVisible(true);
-          setErrorMessge(error.message);
-          var errorMessage = JSON.parse(error.message);
-          switch (errorMessage.error.message) {
-            case "ERROR_INVALID_EMAIL":
-              alert("Your email address appears to be malformed.");
-              console.log("ERROR_INVALID_EMAI");
-              break;
-            case "ERROR_WRONG_PASSWORD":
-              alert("Your password is wrong.");
-              break;
-            case "ERROR_USER_NOT_FOUND":
-              alert("User with this email doesn't exist.");
-              break;
-            case "ERROR_USER_DISABLED":
-              alert("User with this email has been disabled.");
-              break;
-            case "ERROR_TOO_MANY_REQUESTS":
-              alert("Too many requests. Try again later.");
-              break;
-            case "ERROR_OPERATION_NOT_ALLOWED":
-              alert("Signing in with Email and Password is not enabled.");
-              break;
-            case "INVALID_LOGIN_CREDENTIALS":
-              alert("Invaild Email Or Password");
-              break;
-            default:
-              alert("An undefined Error happened.");
-          }
-          setLoading(false);
-        });
+      const response = dispatch(handleRegisterUser({ config }));
+      if (response) {
+        response
+          .then(() => {
+            window.localStorage.setItem("timer", JSON.stringify(18_00));
+            toast.success("Registration successfully.");
+            navigate("/screens");
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.log(error);
+            setErrorMessgeVisible(true);
+            setErrorMessge(error.response.data);
+            setLoading(false);
+          });
+      }
     },
   });
+
+  const { setFieldValue, values, getFieldProps } = formik;
 
   const SignInWithGoogle = async (data) => {
     //  return console.log(data);
@@ -449,6 +508,18 @@ const Registration = () => {
                       />
                       {formik.errors.emailID && formik.touched.emailID && (
                         <div className="error">{formik.errors.emailID}</div>
+                      )}
+                    </div>
+
+                    <div className="relative">
+                      <ReCAPTCHA
+                        sitekey={process.env.REACT_APP_CAPTCHA}
+                        onChange={(e) => {
+                          setFieldValue("captcha", e);
+                        }}
+                      />
+                      {formik.errors.captcha && formik.touched.captcha && (
+                        <div className="error">{formik.errors.captcha}</div>
                       )}
                     </div>
                   </div>

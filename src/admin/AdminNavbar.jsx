@@ -9,13 +9,13 @@ const AdminNavbar = () => {
   //for signout
   const handleSignOut = () => {
     localStorage.removeItem("hasSeenMessage");
-    localStorage.removeItem("user");
+    // localStorage.removeItem("user");
     localStorage.removeItem("userID");
 
     localStorage.setItem("role_access", "");
     window.location.reload();
     history("/");
-    auth.signOut();
+    // auth.signOut();
   };
 
   return (
