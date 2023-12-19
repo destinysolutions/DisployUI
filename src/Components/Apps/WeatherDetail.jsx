@@ -90,28 +90,35 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
           setLocations([
             {
               id: 1,
-              location: response?.data?.data?.location1 !== "null"
-                ? response?.data?.data?.location1
-                : "Ahmedabad",
+              location:
+                response?.data?.data?.location1 !== "null"
+                  ? response?.data?.data?.location1
+                  : "Ahmedabad",
               weatherData: null,
               mainData: null,
             },
             {
               id: 2,
-              location: response?.data?.data?.location2 !== "null" ? response?.data?.data?.location2  : "",
+              location:
+                response?.data?.data?.location2 !== "null"
+                  ? response?.data?.data?.location2
+                  : "",
               weatherData: null,
               mainData: null,
             },
             {
               id: 3,
-              location: response?.data?.data?.location3 !== "null" ? response?.data?.data?.location3  : "",
+              location:
+                response?.data?.data?.location3 !== "null"
+                  ? response?.data?.data?.location3
+                  : "",
               weatherData: null,
               mainData: null,
             },
           ]);
           toast.remove();
           setLoadingEdit(false);
-          setLoadFirst(true)
+          setLoadFirst(true);
         })
         .catch((error) => {
           console.log(error);
@@ -362,7 +369,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
       fetchData();
       setLoadFirst(false);
     }
-  }, [loadFirst, locations, api_key, isMuted,loadingEdit]);
+  }, [loadFirst, locations, api_key, isMuted, loadingEdit]);
 
   useEffect(() => {
     setLoading(true);
@@ -405,7 +412,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status === 200) {
-          history("/apps");
+          history("/weather");
         }
         setSaveLoading(false);
       })
@@ -423,6 +430,8 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
     //   setLoading(false);
     // }, 2000);
   };
+
+  // console.log(locations);
 
   return (
     <>
@@ -468,22 +477,22 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
               <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap youtubebtnpopup">
                 <button
-                className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-2 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                onClick={() => {
-                  setSelectedPreview(!selectedPreview);
-                  setSelectedLayout("Landscape");
-                }}
-              >
-              {selectedPreview ? "Edit" : "Preview"}
-              </button>
+                  className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-2 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  onClick={() => {
+                    setSelectedPreview(!selectedPreview);
+                    setSelectedLayout("Landscape");
+                  }}
+                >
+                  {selectedPreview ? "Edit" : "Preview"}
+                </button>
                 <button
-                className="flex align-middle border-white bg-SlateBlue text-white sm:mt-2  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 .  text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                onClick={handleSave}
-                disabled={saveLoading}
-              >
-                {saveLoading ? "Saving..." : "Save"}
-              </button>
-               {/* <div className="relative">
+                  className="flex align-middle border-white bg-SlateBlue text-white sm:mt-2  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 .  text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  onClick={handleSave}
+                  disabled={saveLoading}
+                >
+                  {saveLoading ? "Saving..." : "Save"}
+                </button>
+                {/* <div className="relative">
                   <button
                     className="sm:ml-2 xs:ml-1 flex align-middle border-primary items-center border-2 rounded-full py-[10px] px-[11px] text-xl  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                     onClick={() => setShowPopup(!selectedPreview && !showPopup)}
@@ -493,19 +502,19 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>*/}
 
                 <button className="sm:ml-2 xs:ml-1 sm:mt-2 border-primary items-center border-2  rounded-full text-xl  hover:text-white hover:bg-SlateBlue hover:border-white hover:shadow-lg hover:shadow-primary-500/50 p-2 ">
-                <Link to="/weather">
-                  <AiOutlineClose />
-                </Link>
-              </button>
+                  <Link to="/weather">
+                    <AiOutlineClose />
+                  </Link>
+                </button>
               </div>
             </div>
             <div className="mt-5 mb-5">
               <div className="grid grid-cols-12 gap-6 mt-5">
                 {!selectedPreview && (
                   <div className="lg:col-span-6 md:col-span-6 sm:col-span-10 ">
-                    <div className="shadow-md bg-white rounded-lg p-5 h-full">
+                    <div className="shadow-md bg-white rounded-lg p-5 h-fit">
                       <div className="mb-6 w-full">
-                        <div className="relative inline-flex items-center w-full justify-between">
+                        <div className="relative inline-flex items-center h-full w-full justify-between">
                           <label className="w-2/5 text-lg font-semibold text-gray-900 dark:text-gray-300">
                             Use screen location*:
                           </label>
@@ -683,9 +692,9 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       : "lg:col-span-6 md:col-span-6"
                   } sm:col-span-10`}
                 >
-                  <div className="shadow-md bg-white rounded-lg p-5 h-full">
+                  <div className="shadow-md bg-white rounded-lg p-5 h-fit">
                     {selectedPreview && (
-                      <div className="m-2 flex justify-end">
+                      <div className="m-2 flex justify-end h-full w-full">
                         <select
                           id="layout"
                           className="w-64 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -726,7 +735,11 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 if (item?.weatherData !== null) {
                                   return (
                                     <div
-                                      className="w-full flex flex-col"
+                                      className={`w-full flex flex-col ${
+                                        selectedLayout === "Landscape"
+                                          ? " border-r-2 "
+                                          : " border-b-2 "
+                                      }last:border-none`}
                                       key={index}
                                     >
                                       <div className="bg-teal-lighter flex-1 flex flex-col">

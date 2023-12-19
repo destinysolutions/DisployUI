@@ -510,18 +510,17 @@ const Registration = () => {
                         <div className="error">{formik.errors.emailID}</div>
                       )}
                     </div>
-
-                    <div className="relative">
-                      <ReCAPTCHA
-                        sitekey={process.env.REACT_APP_CAPTCHA}
-                        onChange={(e) => {
-                          setFieldValue("captcha", e);
-                        }}
-                      />
-                      {formik.errors.captcha && formik.touched.captcha && (
-                        <div className="error">{formik.errors.captcha}</div>
-                      )}
-                    </div>
+                  </div>
+                  <div className="relative">
+                    <ReCAPTCHA
+                      sitekey={process.env.REACT_APP_CAPTCHA}
+                      onChange={(e) => {
+                        setFieldValue("captcha", e);
+                      }}
+                    />
+                    {formik.errors.captcha && formik.touched.captcha && (
+                      <div className="error">{formik.errors.captcha}</div>
+                    )}
                   </div>
                   {/* <div className="flex items-start">
                     <div className="flex items-center h-5">

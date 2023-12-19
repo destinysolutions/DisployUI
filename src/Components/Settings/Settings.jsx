@@ -249,9 +249,9 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-12">
+          <div className="grid w-full grid-cols-5">
             {/*Tab*/}
-            <div className="mainsettingtab  lg:col-span-2 md:col-span-3 sm:col-span-3 xs:col-span-12  p-0 ">
+            <div className="mainsettingtab col-span-1 w-full p-0 ">
               <ul className="w-full">
                 <li>
                   <button
@@ -308,7 +308,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
 
             {/*Tab details*/}
-            <div className="lg:col-span-10 md:col-span-9 sm:col-span-9 xs:col-span-12 bg-white  tabdetails rounded-md relative">
+            <div className="col-span-4 w-full bg-white  tabdetails rounded-md relative">
               <div className={STabs === 1 ? "" : "hidden"}>
                 <Users />
               </div>

@@ -858,7 +858,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     // Update the state with the sorted data
     dispatch(handleChangeScreens(sortedData));
   };
-console.log("sssss",screens ,filteredScreenData);
+  console.log("sssss", screens, filteredScreenData);
   return (
     <>
       <div className="flex border-b border-gray">
@@ -1672,7 +1672,7 @@ console.log("sssss",screens ,filteredScreenData);
                               )} */}
                             </div>
                           ) : (
-                            <div>
+                            <div className="flex items-center  gap-2">
                               <Link
                                 to={`/screensplayer?screenID=${screen.screenID}`}
                               >
@@ -1685,7 +1685,7 @@ console.log("sssss",screens ,filteredScreenData);
                                   setEditedScreenName(screen?.screenName);
                                 }}
                               >
-                                <MdOutlineModeEdit className="w-6 h-6 ml-2 hover:text-primary" />
+                                <MdOutlineModeEdit className="w-6 h-6 hover:text-primary" />
                               </button>
                             </div>
                           )}
@@ -1696,20 +1696,20 @@ console.log("sssss",screens ,filteredScreenData);
                           {screen.googleLocation}
                         </td>
                       )}
+
+                      {console.log("screen.screenStatus", screen.screenStatus)}
+
                       {statusContentVisible && (
                         <td className="p-2 text-center">
                           <button
+                            id={`changetvstatus${screen.screenID}`}
                             className={`rounded-full px-6 py-2 text-white text-center ${
-                              screen.screenID === sendTvStatusScreenID &&
-                              sendTvStatus
+                              screen.screenStatus == 1
                                 ? "bg-[#3AB700]"
                                 : "bg-[#FF0000]"
                             }`}
                           >
-                            {screen.screenID == sendTvStatusScreenID &&
-                            sendTvStatus == true
-                              ? "Live"
-                              : "offline"}
+                            {screen.screenStatus == 1 ? "Live" : "offline"}
                           </button>
                         </td>
                       )}
@@ -1776,150 +1776,148 @@ console.log("sssss",screens ,filteredScreenData);
                           )}
 
                           {showScheduleModal && (
-                            <>
-                              <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                                <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                                  <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                                    <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                                      <div className="flex items-center">
-                                        <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
-                                          Set Schedule
-                                        </h3>
-                                      </div>
-                                      <button
-                                        className="p-1 text-xl"
-                                        onClick={() =>
-                                          setShowScheduleModal(false)
-                                        }
-                                      >
-                                        <AiOutlineCloseCircle className="text-2xl" />
-                                      </button>
+                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                              <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                  <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                                    <div className="flex items-center">
+                                      <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                        Set Schedule
+                                      </h3>
                                     </div>
-                                    <div className="overflow-x-auto mt-8 px-5">
-                                      <table
-                                        className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
-                                        cellPadding={20}
-                                      >
-                                        <thead>
-                                          <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                                            <th className="font-medium text-[14px]">
-                                              <div className="flex items-center">
-                                                <TbCalendarTime className="mr-2 text-xl" />
-                                                Schedule Name
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className="flex items-center">
-                                                <TbCalendarTime className="mr-2 text-xl" />
-                                                Time Zones
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className=" flex  items-center justify-center mx-auto">
-                                                <VscCalendar className="mr-2 text-xl" />
-                                                Date Added
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className=" flex  items-center justify-center mx-auto">
-                                                <TbCalendarStats className="mr-2 text-xl" />
-                                                start date
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className=" flex  items-center justify-center mx-auto">
-                                                <TbCalendarStats className="mr-2 text-xl" />
-                                                End date
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className=" flex  items-center justify-center mx-auto">
-                                                <RiComputerLine className="mr-2 text-xl" />
-                                                screens Assigned
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className="flex  items-center justify-center mx-auto">
-                                                <BsTags className="mr-2 text-xl" />
-                                                Tags
-                                              </div>
-                                            </th>
-                                            <th></th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {schedules.map((schedule) => (
-                                            <tr
-                                              className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                                              key={schedule.scheduleId}
-                                            >
-                                              <td className="flex items-center ">
-                                                <input
-                                                  type="checkbox"
-                                                  className="mr-3"
-                                                  onChange={() =>
-                                                    handleScheduleAdd(schedule)
-                                                  }
-                                                />
+                                    <button
+                                      className="p-1 text-xl"
+                                      onClick={() =>
+                                        setShowScheduleModal(false)
+                                      }
+                                    >
+                                      <AiOutlineCloseCircle className="text-2xl" />
+                                    </button>
+                                  </div>
+                                  <div className="overflow-x-auto mt-8 px-5">
+                                    <table
+                                      className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+                                      cellPadding={20}
+                                    >
+                                      <thead>
+                                        <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                                          <th className="font-medium text-[14px]">
+                                            <div className="flex items-center">
+                                              <TbCalendarTime className="mr-2 text-xl" />
+                                              Schedule Name
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className="flex items-center">
+                                              <TbCalendarTime className="mr-2 text-xl" />
+                                              Time Zones
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <VscCalendar className="mr-2 text-xl" />
+                                              Date Added
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <TbCalendarStats className="mr-2 text-xl" />
+                                              start date
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <TbCalendarStats className="mr-2 text-xl" />
+                                              End date
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <RiComputerLine className="mr-2 text-xl" />
+                                              screens Assigned
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className="flex  items-center justify-center mx-auto">
+                                              <BsTags className="mr-2 text-xl" />
+                                              Tags
+                                            </div>
+                                          </th>
+                                          <th></th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {schedules.map((schedule) => (
+                                          <tr
+                                            className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                            key={schedule.scheduleId}
+                                          >
+                                            <td className="flex items-center ">
+                                              <input
+                                                type="checkbox"
+                                                className="mr-3"
+                                                onChange={() =>
+                                                  handleScheduleAdd(schedule)
+                                                }
+                                              />
+                                              <div>
                                                 <div>
-                                                  <div>
-                                                    {schedule.scheduleName}
-                                                  </div>
+                                                  {schedule.scheduleName}
                                                 </div>
-                                              </td>
-                                              <td className="text-center">
-                                                {schedule.timeZoneName}
-                                              </td>
-                                              <td className="text-center">
-                                                {moment(
-                                                  schedule.createdDate
-                                                ).format("YYYY-MM-DD hh:mm")}
-                                              </td>
-                                              <td className="text-center">
-                                                {moment(
-                                                  schedule.startDate
-                                                ).format("YYYY-MM-DD hh:mm")}
-                                              </td>
+                                              </div>
+                                            </td>
+                                            <td className="text-center">
+                                              {schedule.timeZoneName}
+                                            </td>
+                                            <td className="text-center">
+                                              {moment(
+                                                schedule.createdDate
+                                              ).format("YYYY-MM-DD hh:mm")}
+                                            </td>
+                                            <td className="text-center">
+                                              {moment(
+                                                schedule.startDate
+                                              ).format("YYYY-MM-DD hh:mm")}
+                                            </td>
 
-                                              <td className="text-center">
-                                                {moment(
-                                                  schedule.endDate
-                                                ).format("YYYY-MM-DD hh:mm")}
-                                              </td>
-                                              <td className="p-2 text-center">
-                                                {schedule.screenAssigned}
-                                              </td>
-                                              <td className="p-2 text-center">
-                                                {schedule.tags}
-                                              </td>
-                                              <td className="text-center">
-                                                <Link to="/myschedule">
-                                                  <button className="ml-3 relative">
-                                                    <HiDotsVertical />
-                                                  </button>
-                                                </Link>
-                                              </td>
-                                            </tr>
-                                          ))}
-                                        </tbody>
-                                      </table>
-                                    </div>
+                                            <td className="text-center">
+                                              {moment(schedule.endDate).format(
+                                                "YYYY-MM-DD hh:mm"
+                                              )}
+                                            </td>
+                                            <td className="p-2 text-center">
+                                              {schedule.screenAssigned}
+                                            </td>
+                                            <td className="p-2 text-center">
+                                              {schedule.tags}
+                                            </td>
+                                            <td className="text-center">
+                                              <Link to="/myschedule">
+                                                <button className="ml-3 relative">
+                                                  <HiDotsVertical />
+                                                </button>
+                                              </Link>
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
 
-                                    <div className="py-4 flex justify-center">
-                                      <button
-                                        onClick={() => {
-                                          setShowScheduleModal(false);
-                                          handleScheduleUpdate(screen.screenID);
-                                        }}
-                                        className=" border-primary px-5 py-2 rounded-full ml-3"
-                                      >
-                                        Save
-                                      </button>
-                                    </div>
+                                  <div className="py-4 flex justify-center">
+                                    <button
+                                      onClick={() => {
+                                        setShowScheduleModal(false);
+                                        handleScheduleUpdate(screen.screenID);
+                                      }}
+                                      className="bg-SlateBlue border-primary px-5 py-2 rounded-full ml-3"
+                                    >
+                                      Save
+                                    </button>
                                   </div>
                                 </div>
                               </div>
-                            </>
+                            </div>
                           )}
                         </td>
                       )}
@@ -1942,16 +1940,18 @@ console.log("sssss",screens ,filteredScreenData);
                             </span>
                           )}
 
-                          {screen.tags
-                            .split(",")
-                            .slice(
-                              0,
-                              screen.tags.split(",").length > 2
-                                ? 3
-                                : screen.tags.split(",").length
-                            )
-                            .join(",")}
-                          {screen?.tags !== "" && (
+                          {screen?.tags !== null
+                            ? screen.tags
+                                .split(",")
+                                .slice(
+                                  0,
+                                  screen.tags.split(",").length > 2
+                                    ? 3
+                                    : screen.tags.split(",").length
+                                )
+                                .join(",")
+                            : ""}
+                          {screen?.tags !== "" && screen?.tags !== null && (
                             <MdOutlineModeEdit
                               onClick={() => {
                                 setShowTagModal(true);

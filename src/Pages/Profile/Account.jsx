@@ -98,23 +98,7 @@ const Account = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
 
-  // Fetch states based on the selected country
-  useEffect(() => {
-    if (selectedCountry) {
-      fetch(`${GET_SELECT_BY_STATE}?CountryID=${selectedCountry}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setStates(data.data);
-        })
-        .catch((error) => {
-          console.log("Error fetching states data:", error);
-        });
-    }
-  }, [selectedCountry]);
-
-  useEffect(() => {
     if (user) {
       axios
         .get(`${SELECT_BY_ID_USERDETAIL}?ID=${user?.userID}`)
@@ -131,6 +115,20 @@ const Account = () => {
         });
     }
   }, []);
+
+  // Fetch states based on the selected country
+  useEffect(() => {
+    if (selectedCountry) {
+      fetch(`${GET_SELECT_BY_STATE}?CountryID=${selectedCountry}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setStates(data.data);
+        })
+        .catch((error) => {
+          console.log("Error fetching states data:", error);
+        });
+    }
+  }, [selectedCountry]);
 
   const updateUser = async () => {
     // Validate phone number

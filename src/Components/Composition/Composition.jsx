@@ -596,21 +596,25 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 Add Composition
               </button>
-              <button
-                onClick={handleDeleteAllCompositions}
-                className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                style={{ display: selectAll ? "block" : "none" }}
-              >
-                <RiDeleteBinLine />
-              </button>
-              <button className="sm:ml-2 xs:ml-1  flex align-middle text-white items-center  rounded-full p-2 text-base ">
-                <input
-                  type="checkbox"
-                  className="w-7 h-6"
-                  checked={selectAll}
-                  onChange={() => handleSelectAll()}
-                />
-              </button>
+              {compositionData?.length > 0 && (
+                <>
+                  <button
+                    onClick={handleDeleteAllCompositions}
+                    className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                    style={{ display: selectAll ? "block" : "none" }}
+                  >
+                    <RiDeleteBinLine />
+                  </button>
+                  <button className="sm:ml-2 xs:ml-1  flex align-middle text-white items-center  rounded-full p-2 text-base ">
+                    <input
+                      type="checkbox"
+                      className="w-7 h-6"
+                      checked={selectAll}
+                      onChange={() => handleSelectAll()}
+                    />
+                  </button>
+                </>
+              )}
             </div>
           </div>
           {addScreenModal && (
@@ -1131,9 +1135,12 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
                         <PreviewModal show={modalVisible} onClose={closeModal}>
                           <div
-                            className={`absolute  left-1/2 -translate-x-1/2 min-h-[80vh] max-h-[80vh] min-w-[90vh] max-w-[90vh] `}
+                            className={`fixed  border left-1/2 -translate-x-1/2 ${
+                              screenType === "portrait"
+                                ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
+                                : "min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]"
+                            }  `}
                             ref={modalRef}
-
                             //   maxWidth: `${layotuDetails?.screenWidth}px`,
                             //   minWidth: `${layotuDetails?.screenWidth}px`,
                             //   maxHeight: `${layotuDetails?.screenHeight}px`,
@@ -1141,23 +1148,46 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             // }}
                           >
                             <RxCrossCircled
-                              className="absolute z-50 w-[30px] h-[30px] text-white hover:bg-black/50 bg-black/20 rounded-full top-1 right-1 cursor-pointer"
+                              className="fixed z-50 w-[30px] h-[30px] text-white bg-black/20 rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
                               onClick={closeModal}
                             />
+                            {/* screentype toggle "landspace | portrait" */}
+                            <div
+                              className={`fixed z-50 ${
+                                screenType === "Landscape"
+                                  ? "w-14 h-7"
+                                  : "h-14 w-7"
+                              }   rounded-md  bg-black p-2 top-1 right-10 cursor-pointer`}
+                            >
+                              <span
+                                className={`fixed z-50  ${
+                                  screenType === "Landscape"
+                                    ? "w-10 h-5 top-2 right-12"
+                                    : "w-5 h-10 top-3 right-11"
+                                }  rounded-md  bg-white  cursor-pointer`}
+                                title={screenType}
+                                onClick={() => {
+                                  if (screenType === "Landscape") {
+                                    setScreenType("portrait");
+                                  } else {
+                                    setScreenType("Landscape");
+                                  }
+                                }}
+                              />
+                            </div>
 
                             {!loading &&
+                              layotuDetails?.lstLayloutModelList.length > 0 &&
                               layotuDetails?.lstLayloutModelList?.map(
                                 (obj, index) => (
                                   <div
                                     key={index}
                                     style={{
-                                      position: "absolute",
+                                      position: "fixed",
                                       left: obj.leftside + "%",
                                       top: obj.topside + "%",
                                       width: obj?.width + "%",
                                       height: obj?.height + "%",
-                                      // width: obj?.width + "px",
-                                      // height: obj?.height + "px",
                                       backgroundColor: obj.fill,
                                     }}
                                   >
