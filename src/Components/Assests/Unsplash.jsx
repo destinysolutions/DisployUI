@@ -69,7 +69,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
 
   const handleImageUpload = () => {
     setUploadInProgress(true);
-    selectedImages.forEach((image) => {
+    selectedImages.forEach((image,index) => {
       const formData = new FormData();
       formData.append("AssetFolderPath", image.urls.full);
       formData.append("Operation", "Insert");
@@ -113,8 +113,10 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
                 ...prevStatus,
                 [image.id]: "success",
               }));
-              toast.success("Uploaded Successfully.");
-              navigate(-1);
+              if(selectedImages?.length - 1 === index){
+                toast.success("Uploaded Successfully.");
+                navigate(-1);
+              }
               setUploadInProgress(false);
             })
             .catch((error) => {

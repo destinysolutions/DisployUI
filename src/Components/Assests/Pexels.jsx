@@ -101,7 +101,7 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
 
   const handleMediaUpload = () => {
     setUploadInProgress(true);
-    selectedMedia.images.forEach((image) => {
+    selectedMedia.images.forEach((image, index) => {
       const formData = new FormData();
 
       formData.append("AssetFolderPath", image.src.original);
@@ -137,8 +137,11 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
               },
             })
             .then((response) => {
-              console.log("Upload Success:", response.data);
-              navigate(-1);
+              // console.log("Upload Success:", response.data);
+              if (selectedMedia.images?.length - 1 === index) {
+                toast.success("Uploaded successfully.");
+                navigate(-1);
+              }
             })
             .catch((error) => {
               console.error("Upload Error:", error);
@@ -163,7 +166,7 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
       });
     });
 
-    selectedMedia.videos.forEach((video) => {
+    selectedMedia.videos.forEach((video, index) => {
       console.log(video, "video");
       // Split the URL by '/'
       const urlParts = video.image.split("/");
@@ -208,9 +211,12 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
         })
         .then((response) => {
           // console.log("Upload Success:", response.data);
-          toast.success("Uploaded successfully.");
-
-          navigate(-1);
+          if (selectedMedia?.videos?.length - 1 === index) {
+            toast.success("Uploaded successfully.");
+            navigate(-1);
+          }
+          // toast.success("Uploaded successfully.");
+          // navigate(-1);
         })
         .catch((error) => {
           console.error("Upload Error:", error);
@@ -331,15 +337,13 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
               </div>
 
               <div className="text-center mt-5">
-                <Link to={-1}>
-                  <button
-                    onClick={handleMediaUpload}
-                    className="text-white py-3 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
-                    disabled={uploadInProgress}
-                  >
-                    {uploadInProgress ? "Uploading..." : "Upload Media"}
-                  </button>
-                </Link>
+                <button
+                  onClick={handleMediaUpload}
+                  className="text-white py-3 px-3 rounded-md fs-3  flex items-center border border-SlateBlue justify-center mx-auto bg-SlateBlue hover:bg-black"
+                  disabled={uploadInProgress}
+                >
+                  {uploadInProgress ? "Uploading..." : "Upload Media"}
+                </button>
               </div>
 
               <div className="  bg-white shadow-2xl max-w-xs">

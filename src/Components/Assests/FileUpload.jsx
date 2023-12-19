@@ -201,9 +201,16 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
             },
           });
 
-          if (response.status === 200) {
-            toast.success(`File ${image.name} uploaded successfully.`);
-          } else {
+          // if (response.status === 200) {
+          //   toast.success(`File ${image.name} uploaded successfully.`);
+          // } else {
+          //   toast.error(`Upload failed for file ${image.name}`);
+          // }
+
+          if(selectedImages?.length - 1 === index && response.status === 200){
+            toast.success(`File uploaded successfully.`);
+          }
+          if(response.status !== 200){
             toast.error(`Upload failed for file ${image.name}`);
           }
         } catch (error) {
