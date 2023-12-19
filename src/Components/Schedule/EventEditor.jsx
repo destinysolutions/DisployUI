@@ -70,11 +70,27 @@ const EventEditor = ({
 
   const handleStartDateChange = (e) => {
     const newStartDate = e.target.value;
-    setEditedStartDate(newStartDate);
+    // Calculate and update the end date based on the new start date
+    if (!showRepeatSettings) {
+      setEditedStartDate(newStartDate);
+      const newEndDate = calculateEndDate(newStartDate, editedStartTime);
+      setEditedEndDate(newEndDate);
+    }
+
+    if (showRepeatSettings && newStartDate < editedEndDate) {
+      setEditedStartDate(newStartDate);
+    }
+  };
+
+  const handleEndDateChange = (e) => {
+    const newStartDate = e.target.value;
+    if (newStartDate > editedStartDate) {
+      setEditedEndDate(newStartDate);
+    }
 
     // Calculate and update the end date based on the new start date
-    const newEndDate = calculateEndDate(newStartDate, editedStartTime);
-    setEditedEndDate(newEndDate);
+    // const newEndDate = calculateEndDate(newStartDate, editedStartTime);
+    // setEditedEndDate(newEndDate);
   };
 
   // Function to calculate the end date based on start date and time
@@ -734,7 +750,7 @@ const EventEditor = ({
                               <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-50 outline-none focus:outline-none">
                                 <div
                                   ref={modalRef}
-                                  className="fixed top-1/3 left-1/2 -translate-y-1/2 -translate-x-1/2 asset-preview-popup"
+                                  className="fixed top-1/3 left-1/2 -translate-y-1/2 -translate-x-1/2 asset-preview-popup w-full h-full flex items-end"
                                 >
                                   <div className="border-0 rounded-lg shadow-lg relative min-w-[50vw] left-1/2 -translate-x-1/2 min-h-[70vh] max-h-[70vh] max-w-[80vw] bg-black outline-none focus:outline-none">
                                     <div className="p-1 z-50 rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
@@ -750,7 +766,8 @@ const EventEditor = ({
                                     <div className="absolute inset-0 min-h-full min-w-full max-h-full max-w-full">
                                       {assetPreview && (
                                         <>
-                                          {assetPreview?.assetType === "OnlineImage" && (
+                                          {assetPreview?.assetType ===
+                                            "OnlineImage" && (
                                             <div className="imagebox relative z-0">
                                               <img
                                                 src={
@@ -761,8 +778,9 @@ const EventEditor = ({
                                               />
                                             </div>
                                           )}
-                                          {assetPreview?.assetType === "OnlineVideo" && (
-                                            <div className="imagebox z-0 relative">
+                                          {assetPreview?.assetType ===
+                                            "OnlineVideo" && (
+                                            <div className="imagebox z-0 relative h-full">
                                               <video
                                                 controls
                                                 autoPlay={true}
@@ -779,14 +797,16 @@ const EventEditor = ({
                                               </video>
                                             </div>
                                           )}
-                                          {assetPreview?.assetType === "Image" && (
+                                          {assetPreview?.assetType ===
+                                            "Image" && (
                                             <img
                                               src={assetPreview.assetFolderPath}
                                               alt={assetPreview.assetName}
                                               className="imagebox relative h-full w-full"
                                             />
                                           )}
-                                          {assetPreview?.assetType === "Video" && (
+                                          {assetPreview?.assetType ===
+                                            "Video" && (
                                             <div className="relative videobox w-full z-0">
                                               <ReactPlayer
                                                 url={
@@ -823,7 +843,8 @@ const EventEditor = ({
                                               </marquee>
                                             </div>
                                           )}
-                                          {assetPreview === "DOC" && (
+                                          {assetPreview?.assetType === "DOC" && (
+                                            <div className="h-full flex text-white items-center justify-evenly">
                                             <a
                                               href={
                                                 assetPreview.assetFolderPath
@@ -833,6 +854,7 @@ const EventEditor = ({
                                             >
                                               {assetPreview.assetName}
                                             </a>
+                                            </div>
                                           )}
                                         </>
                                       )}
@@ -958,7 +980,7 @@ const EventEditor = ({
                             <input
                               type="date"
                               value={editedEndDate}
-                              onChange={(e) => setEditedEndDate(e.target.value)}
+                              onChange={handleEndDateChange}
                               className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
                           </div>

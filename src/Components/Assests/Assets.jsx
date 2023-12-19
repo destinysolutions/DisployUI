@@ -70,6 +70,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [connection, setConnection] = useState(null);
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [FolderDisable, setFolderDisable] = useState(false);
   const [searchAsset, setSearchAsset] = useState("");
   const [filteredAssetData, setFilteredAssetData] = useState([]);
 
@@ -218,6 +219,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         setGridData(sortedAssets);
 
         setLoading(false);
+        setFolderDisable(false);
       })
       .catch((error) => {
         console.log(error);
@@ -323,8 +325,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
-          fetchData();
+          handleActiveBtnClick(1);
           setSelectAll(false);
+          fetchData();
         }
         toast.remove();
       })
@@ -335,6 +338,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const createFolder = () => {
+    setFolderDisable(true);
     let baseFolderName = "New Folder";
     let folderNameToCheck = baseFolderName;
     let counter = 1;
@@ -362,6 +366,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           .then((response) => {
             console.log("Folder created:", response.data);
             toast.remove();
+            handleActiveBtnClick(1);
             fetchData();
           })
           .catch((error) => {
@@ -370,13 +375,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           });
       }
     };
-
-    // Function to check if the folder name already exists in the data
-    const folderNameExists = (name) => {
-      return originalData.folder.some((folder) => folder.assetName === name);
-    };
-
     checkFolderNameAndCreate();
+  };
+
+  // Function to check if the folder name already exists in the data
+  const folderNameExists = (name) => {
+    return originalData.folder.some((folder) => folder.assetName === name);
   };
 
   const handleWarning = (assetId) => {
@@ -420,6 +424,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then(() => {
         fetchData();
+        handleActiveBtnClick(1);
         toast.remove();
       })
       .catch((error) => {
@@ -453,6 +458,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           "Content-Type": "application/json",
         },
       });
+      handleActiveBtnClick(1);
       fetchData();
       setEditMode(null);
     } catch (error) {
@@ -649,6 +655,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               <button
                 className=" dashboard-btn lg:mt-0 md:mt-0 sm:mt-3 flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 onClick={createFolder}
+                disabled={FolderDisable}
               >
                 <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
                 New Folder
@@ -738,6 +745,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               onClick={() => {
                 handleActiveBtnClick(1);
                 setSearchAsset("");
+                setSelectAll(false);
               }}
             >
               All
@@ -747,6 +755,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               onClick={() => {
                 handleActiveBtnClick(2);
                 setSearchAsset("");
+                setSelectAll(false);
               }}
             >
               Images
@@ -756,6 +765,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               onClick={() => {
                 handleActiveBtnClick(3);
                 setSearchAsset("");
+                setSelectAll(false);
               }}
             >
               Video
@@ -765,6 +775,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               onClick={() => {
                 handleActiveBtnClick(4);
                 setSearchAsset("");
+                setSelectAll(false);
               }}
             >
               Doc
@@ -774,6 +785,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               onClick={() => {
                 handleActiveBtnClick(5);
                 setSearchAsset("");
+                setSelectAll(false);
               }}
             >
               Folder
@@ -828,7 +840,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               className="w-full"
                               onChange={(e) => setFolderName(e.target.value)}
                               onBlur={() => {
-                                saveFolderName(item.assetID, folderName);
+                                // saveFolderName(item.assetID, folderName);
                                 setEditMode(null);
                               }}
                               onKeyDown={(e) =>
@@ -840,7 +852,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             <>
                               <span
                                 onClick={() => {
-                                  setEditMode(item.assetID);
+                                  setEditMode(item?.assetID);
+                                  setFolderName(item?.assetName);
                                 }}
                                 className="cursor-pointer w-full flex-wrap break-all inline-flex justify-center"
                               >
