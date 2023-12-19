@@ -19,7 +19,6 @@ const ScreenAssignModal = ({
 
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
-  console.log('screenCheckboxes', screenCheckboxes)
   const [screenData, setScreenData] = useState([]);
 
   const selectScreenRef = useRef(null);
@@ -72,9 +71,6 @@ const ScreenAssignModal = ({
   // get all assets files
   useEffect(() => {
     dispatch(handleGetAllAssets({ token }));
-  }, []);
-
-  useEffect(() => {
     if (user?.userID) {
       axios
         .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${user?.userID}`, {
@@ -117,6 +113,22 @@ const ScreenAssignModal = ({
   function handleClickOutside() {
     setSelectScreenModal(false);
   }
+
+  useEffect(() => {
+    window.addEventListener("keydown", function (event, characterCode) {
+      if (typeof characterCode == "undefined") {
+        characterCode = -1;
+      }
+      if (event?.keyCode == 27) {
+        setSelectScreenModal(false);
+        setAddScreenModal(false);
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", () => null);
+    };
+  }, []);
+
   //   // Validation check
   //   if (screenName.trim() === "") {
   //     setValidationError("Screen Name cannot be empty");

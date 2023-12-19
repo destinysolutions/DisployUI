@@ -75,19 +75,20 @@ const EventEditor = ({
       return hour % 12;
     }
   }
-  
+
   const handleEndTimeChange = (e) => {
     const currentDate = new Date();
     const newEndTime = e.target.value;
     if (editedStartTime <= newEndTime) {
       // Convert the 24-hour time to 12-hour format
-      const editedEndTime12Hour = convertTo12HourFormat(new Date(`${currentDate.toDateString()} ${newEndTime}`).getHours());
+      const editedEndTime12Hour = convertTo12HourFormat(
+        new Date(`${currentDate.toDateString()} ${newEndTime}`).getHours()
+      );
       setEditedEndTime(e.target.value);
     } else {
       toast.error("Select End time must be after start time");
     }
   };
-  
 
   const handleStartDateChange = (e) => {
     const newStartDate = e.target.value;
@@ -552,7 +553,6 @@ const EventEditor = ({
     };
   }, []);
 
-
   return (
     <>
       <ReactModal
@@ -864,17 +864,18 @@ const EventEditor = ({
                                               </marquee>
                                             </div>
                                           )}
-                                          {assetPreview?.assetType === "DOC" && (
+                                          {assetPreview?.assetType ===
+                                            "DOC" && (
                                             <div className="h-full flex text-white items-center justify-evenly">
-                                            <a
-                                              href={
-                                                assetPreview.assetFolderPath
-                                              }
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                            >
-                                              {assetPreview.assetName}
-                                            </a>
+                                              <a
+                                                href={
+                                                  assetPreview.assetFolderPath
+                                                }
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                              >
+                                                {assetPreview.assetName}
+                                              </a>
                                             </div>
                                           )}
                                         </>

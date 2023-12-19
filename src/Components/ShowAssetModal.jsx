@@ -114,12 +114,8 @@ const ShowAssetModal = ({
   };
 
   useEffect(() => {
-    // if (showSearchModal) {
-    //   window.document.body.style.overflow = "hidden";
-    // }
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event?.target)) {
-        // window.document.body.style.overflow = "unset";
         setShowAssetModal(false);
         setAssetPreviewPopup(false);
       }
@@ -134,6 +130,21 @@ const ShowAssetModal = ({
     setShowAssetModal(false);
     setAssetPreviewPopup(false);
   }
+
+  useEffect(() => {
+    window.addEventListener("keydown", function (event, characterCode) {
+      if (typeof characterCode == "undefined") {
+        characterCode = -1;
+      }
+      if (event?.keyCode == 27) {
+        setShowAssetModal(false);
+        setAssetPreviewPopup(false);
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", () => null);
+    };
+  }, []);
 
   return (
     <>

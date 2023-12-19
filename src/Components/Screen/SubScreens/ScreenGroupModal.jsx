@@ -98,7 +98,6 @@ const ScreenGroupModal = ({ onClose }) => {
   };
 
   const handleSave = () => {
-
     // Validate screenGroupName before saving
     if (!screenGroupName.trim()) {
       setScreenGroupNameError("Screen Group Name is required");
@@ -117,6 +116,20 @@ const ScreenGroupModal = ({ onClose }) => {
     // Close the modal
     onClose();
   };
+
+  useEffect(() => {
+    window.addEventListener("keydown", function (event, characterCode) {
+      if (typeof characterCode == "undefined") {
+        characterCode = -1;
+      }
+      if (event?.keyCode == 27) {
+        onClose();
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", () => null);
+    };
+  }, []);
 
   return (
     <div>
