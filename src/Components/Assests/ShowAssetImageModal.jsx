@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
 const ShowAssetImageModal = ({
@@ -6,6 +6,21 @@ const ShowAssetImageModal = ({
   setShowImageAssetModal,
   imageAssetModal,
 }) => {
+  useEffect(() => {
+    window.addEventListener("keydown", function (event, characterCode) {
+      if (typeof characterCode == "undefined") {
+        characterCode = -1;
+      }
+      if (event?.keyCode == 27) {
+        setShowImageAssetModal(false);
+        setImageAssetModal(false);
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", () => null);
+    };
+  }, []);
+
   return (
     <>
       <div

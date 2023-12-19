@@ -116,12 +116,20 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
     // window.document.body.style.overflow = "unset";
     // setSearchTerm("");
   }
-
-  // useEffect(() => {
-  //   return () => {
-  //     window.document.body.style.overflow = "unset";
-  //   };
-  // }, []);
+  
+  useEffect(() => {
+    window.addEventListener("keydown", function (event, characterCode) {
+      if (typeof characterCode == "undefined") {
+        characterCode = -1;
+      }
+      if (event?.keyCode == 27) {
+        setShowOTPModal(false);
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", () => null);
+    };
+  }, []);
 
   return (
     <>

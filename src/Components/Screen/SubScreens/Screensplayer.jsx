@@ -782,6 +782,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setFilteredData([]);
   }
 
+  // console.log(compositionData);
   // console.log(screenPreviewData.data);
 
   return (

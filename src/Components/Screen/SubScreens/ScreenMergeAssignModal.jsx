@@ -68,12 +68,8 @@ const ScreenAssignModal = ({
     setSelectAllChecked(allChecked);
   };
 
-  // get all assets files
   useEffect(() => {
     dispatch(handleGetAllAssets({ token }));
-  }, []);
-
-  useEffect(() => {
     if (user?.userID) {
       axios
         .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${user?.userID}`, {
@@ -151,6 +147,21 @@ const ScreenAssignModal = ({
   //   setScreenName("");
   //   setValidationError("");
   // };
+
+  useEffect(() => {
+    window.addEventListener("keydown", function (event, characterCode) {
+      if (typeof characterCode == "undefined") {
+        characterCode = -1;
+      }
+      if (event?.keyCode == 27) {
+        setSelectScreenModal(false);
+        setAddScreenModal(false);
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", () => null);
+    };
+  }, []);
 
   return (
     <div>

@@ -29,7 +29,7 @@ const ShowAssetModal = ({
   selectedTextScroll,
   selectedYoutube,
   type,
-  handleSave
+  handleSave,
 }) => {
   const { user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
@@ -45,7 +45,7 @@ const ShowAssetModal = ({
   const modalRef = useRef(null);
 
   const handleOnConfirm = async () => {
-    await handleSave()
+    await handleSave();
     setShowAssetModal(false);
     handleAssetUpdate();
     setAssetPreviewPopup(false);
@@ -132,6 +132,20 @@ const ShowAssetModal = ({
     setShowAssetModal(false);
     setAssetPreviewPopup(false);
   }
+
+  useEffect(() => {
+    window.addEventListener("keydown", function (event, characterCode) {
+      if (typeof characterCode == "undefined") {
+        characterCode = -1;
+      }
+      if (event?.keyCode == 27) {
+        setShowAssetModal(false);
+      }
+    });
+    return () => {
+      window.removeEventListener("keydown", () => null);
+    };
+  }, []);
 
   return (
     <>
