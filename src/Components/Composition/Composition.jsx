@@ -539,13 +539,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     setShowActionBox(false);
   }
 
-  // console.log(layotuDetails);
-  // console.log(compositionData);
-  // console.log(updateTagComposition);
-  // console.log(previewModalData);
-
-  // console.log(tags);
-
   const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
   const [sortColumn, setSortColumn] = useState(null); // column name or null if not sorted
   const handleSort = (column) => {
