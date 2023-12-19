@@ -72,11 +72,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectAll, setSelectAll] = useState(false);
   const [searchAsset, setSearchAsset] = useState("");
   const [filteredAssetData, setFilteredAssetData] = useState([]);
-  const [createFolderLoading, setCreateFolderLoading] = useState(false);
 
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
     : "";
+
   const [clickedTabIcon, setClickedTabIcon] = useState(null);
 
   const actionBoxRef = useRef(null);
@@ -338,9 +338,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     let baseFolderName = "New Folder";
     let folderNameToCheck = baseFolderName;
     let counter = 1;
-    if (createFolderLoading) return;
+
     toast.loading("Creating Folder...");
-    setCreateFolderLoading(true);
+
     const checkFolderNameAndCreate = () => {
       // Check if the folder name exists in the list of folders
       if (folderNameExists(folderNameToCheck)) {
@@ -363,12 +363,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
             console.log("Folder created:", response.data);
             toast.remove();
             fetchData();
-            setCreateFolderLoading(false);
           })
           .catch((error) => {
             console.error("Error creating folder:", error);
             toast.remove();
-            setCreateFolderLoading(false);
           });
       }
     };
@@ -392,7 +390,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data);
         if (response?.data?.data == false) {
           setassetsdw(null);
           setassetsdw2(null);
@@ -489,7 +486,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data.data);
         if (response?.data?.status == 200) {
           setIsMoveToOpen(false);
           toast.remove();

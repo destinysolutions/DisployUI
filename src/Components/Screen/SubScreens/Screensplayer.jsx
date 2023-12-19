@@ -47,6 +47,8 @@ import { BsTags } from "react-icons/bs";
 import { HiDotsVertical } from "react-icons/hi";
 import AddOrEditTagPopup from "../../AddOrEditTagPopup";
 import FileUpload from "../../Assests/FileUpload";
+import ploygon from "../../../images/DisployImg/Polygon.svg";
+
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -2135,7 +2137,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       <>
                                         <div className="absolute left-[10%] bottom-[-3px]  text-[35px]  z-20">
                                           <img
-                                            src="/DisployImg/Polygon.svg"
+                                            src={ploygon}
                                             alt="notification"
                                             className="cursor-pointer assestPopup"
                                           />
