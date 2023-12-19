@@ -393,7 +393,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
     axios
       .request(config)
-      .then((response) => {
+      .then(async(response) => {
         if (response?.data?.data == false) {
           setassetsdw(null);
           setassetsdw2(null);
@@ -403,6 +403,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           setassetsdw2(null);
           setDeleteMessage(true);
         }
+       await fetchData()
       })
       .catch((error) => {
         console.log(error);

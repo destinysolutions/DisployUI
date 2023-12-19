@@ -68,6 +68,27 @@ const EventEditor = ({
     setEditedStartTime(e.target.value);
   };
 
+  function convertTo12HourFormat(hour) {
+    if (hour === 0 || hour === 24) {
+      return 12; // or return 0 if you prefer
+    } else {
+      return hour % 12;
+    }
+  }
+  
+  const handleEndTimeChange = (e) => {
+    const currentDate = new Date();
+    const newEndTime = e.target.value;
+    if (editedStartTime <= newEndTime) {
+      // Convert the 24-hour time to 12-hour format
+      const editedEndTime12Hour = convertTo12HourFormat(new Date(`${currentDate.toDateString()} ${newEndTime}`).getHours());
+      setEditedEndTime(e.target.value);
+    } else {
+      toast.error("Select End time must be after start time");
+    }
+  };
+  
+
   const handleStartDateChange = (e) => {
     const newStartDate = e.target.value;
     // Calculate and update the end date based on the new start date
@@ -1009,7 +1030,8 @@ const EventEditor = ({
                             <input
                               type="time"
                               value={editedEndTime}
-                              onChange={(e) => setEditedEndTime(e.target.value)}
+                              onChange={handleEndTimeChange}
+                              // onChange={(e) => setEditedEndTime(e.target.value)}
                               className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
                           </div>
@@ -1093,9 +1115,8 @@ const EventEditor = ({
                               <input
                                 type="time"
                                 value={editedEndTime}
-                                onChange={(e) =>
-                                  setEditedEndTime(e.target.value)
-                                }
+                                onChange={handleEndTimeChange}
+                                // onChange={(e) =>setEditedEndTime(e.target.value)}
                                 className="bg-lightgray rounded-full px-3 py-2 w-full"
                               />
                             </div>
