@@ -942,7 +942,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                           if (item?.weatherData !== null) {
                             return (
                               <div
-                                className="w-full flex flex-col"
+                                className="min-w-[30vw] flex flex-col border-r-2 last:border-none"
                                 key={index}
                                 // style={{
                                 //   borderBottom:
