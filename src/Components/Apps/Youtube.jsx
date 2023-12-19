@@ -48,6 +48,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [instanceView, setInstanceView] = useState(false);
   const [instanceID, setInstanceID] = useState();
+  const [isMuted, setIsMuted] = useState(false);
 
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
@@ -214,6 +215,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
         setInstanceName(data?.instanceName);
         setScreenAssignName(data?.screens);
         setShowTags(data?.tags);
+        setIsMuted(data?.muteVideos)
         toast.remove();
         setLoading(false);
       })
@@ -362,18 +364,18 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
               Apps
             </h1>
             <div className="lg:flex">
-            <Link to="/youtubedetail">
-              <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                <TbAppsFilled className="text-2xl mr-2 text-white" />
-                New Instance
-              </button>
-            </Link>
-            <Link to="/apps">
-              <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 text-white sm:px-5 bg-primary py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white  hover:bg-primary-500 hover:shadow-lg dark:bg-blue-600 ">
-                <HiBackward className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
-                Back
-              </button>
-            </Link>
+              <Link to="/youtubedetail">
+                <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  <TbAppsFilled className="text-2xl mr-2 text-white" />
+                  New Instance
+                </button>
+              </Link>
+              <Link to="/apps">
+                <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 text-white sm:px-5 bg-primary py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white  hover:bg-primary-500 hover:shadow-lg dark:bg-blue-600 ">
+                  <HiBackward className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
+                  Back
+                </button>
+              </Link>
             </div>
           </div>
           <div className="mt-5 mb-5">
@@ -422,6 +424,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                               <ReactPlayer
                                 url="https://www.youtube.com/watch?v=WKOYp_7P71Y"
                                 className="app-instance-preview"
+                                controls={true}
                               />
                             </div>
                             <p className="max-w-xl px-6">
@@ -618,6 +621,8 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                               <ReactPlayer
                                 url={YoutubeVideo}
                                 className="app-instance-preview"
+                                muted={isMuted}
+                                controls={true}
                               />
                             </div>
                             <div className="py-2 px-6">
