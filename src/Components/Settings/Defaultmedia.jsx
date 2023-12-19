@@ -115,7 +115,7 @@ const Defaultmedia = () => {
       .then((response) => {
         if (response.data.data !== null) {
           setAssetName(response.data.data.assetName);
-          setFilePath(response.data.data.assetFolderPath);
+          setFilePath(response.data.data);
         }
       })
       .catch((error) => {
@@ -160,7 +160,6 @@ const Defaultmedia = () => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data.data);
         handleGetAsset();
       })
       .catch((error) => {
@@ -271,11 +270,10 @@ const Defaultmedia = () => {
   };
 
   return (
-    <>
-      <div>
-        <div className="Tabbutton">
-          <ul className="flex items-center w-full">
-            {/* <li
+    <div>
+      <div className="Tabbutton">
+        <ul className="flex items-center w-full">
+          {/* <li
               className="lg:text-lg md:text-lg sm:text-sm xs:text-sm font-medium  w-1/2 text-center"
               onClick={() => updateMediaTab(1)}
             >
@@ -289,7 +287,7 @@ const Defaultmedia = () => {
                 Default Media
               </button>
             </li> */}
-            {/* <li
+          {/* <li
               className="lg:text-lg md:text-lg sm:text-sm xs:text-sm font-medium   w-1/2 text-center"
               onClick={() => updateMediaTab(2)}
             >
@@ -303,77 +301,76 @@ const Defaultmedia = () => {
                 Emergency Media
               </button>
             </li> */}
-          </ul>
-        </div>
-        {mediaTabs === 1 && (
-          <>
-            <div className="grid grid-cols-12 items-center">
-              <div className=" lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 p-3">
-                <div className="flex items-center justify-center mb-5 flex-wrap">
-                  <label className="mr-3 text-primary lg:text-lg md:text-lg sm:text-base xs:text-base font-medium py-2">
-                    Asset / Playing:
-                  </label>
-                  <button
-                    onClick={(e) => {
-                      setShowAssetModal(true);
-                      setSelectedAsset({
-                        ...selectedAsset,
-                        assetName: e.target.value,
-                      });
-                    }}
-                    className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm   hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+        </ul>
+      </div>
+      {mediaTabs === 1 && (
+        <div className="flex items-center w-full h-auto gap-2 overflow-x-scroll">
+          <div className="w-4/12 p-3">
+            <div className="flex items-center justify-center mb-5 flex-wrap">
+              <label className="mr-3 text-primary lg:text-lg md:text-lg sm:text-base xs:text-base font-medium py-2">
+                Asset / Playing:
+              </label>
+              <button
+                onClick={(e) => {
+                  setShowAssetModal(true);
+                  setSelectedAsset({
+                    ...selectedAsset,
+                    assetName: e.target.value,
+                  });
+                }}
+                className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm   hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+              >
+                {assetName === "" ? "No image" : assetName}
+                <AiOutlineCloudUpload className="ml-2 min-w-[1.5rem] min-h-[1.5rem]" />
+              </button>
+              {showAssetModal && (
+                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                  <div
+                    ref={modalRef}
+                    onClick={() =>
+                      assetPreviewPopup && setAssetPreviewPopup(false)
+                    }
+                    className="relative w-[70vw] h-auto lg:p-6 md:p-6 sm:p-2 xs:p-1 flex items-start gap-2 bg-white rounded-2xl"
                   >
-                    {assetName === "" ? "No image" : assetName}
-                    <AiOutlineCloudUpload className="ml-2 text-lg" />
-                  </button>
-                  {showAssetModal && (
-                    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
-                      <div
-                        ref={modalRef}
-                        onClick={() =>
-                          assetPreviewPopup && setAssetPreviewPopup(false)
-                        }
-                        className="relative w-[70vw] h-auto lg:p-6 md:p-6 sm:p-2 xs:p-1 flex items-start gap-2 bg-white rounded-2xl"
+                    <div className="flex absolute top-0 left-0 h-fit w-full z-10 items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black">
+                      <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                        Set Content to Add Media
+                      </h3>
+                      <button
+                        className="p-1 text-xl"
+                        onClick={() => setShowAssetModal(false)}
                       >
-                        <div className="flex absolute top-0 left-0 h-fit w-full z-10 items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black">
-                          <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
-                            Set Content to Add Media
-                          </h3>
+                        <AiOutlineCloseCircle className="text-2xl" />
+                      </button>
+                    </div>
+                    <div className="lg:flex mt-8 lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
+                      {/* left side tabs */}
+                      <div className="flex-initial">
+                        <nav
+                          className="flex flex-col space-y-2 "
+                          aria-label="Tabs"
+                          role="tablist"
+                          data-hs-tabs-vertical="true"
+                        >
                           <button
-                            className="p-1 text-xl"
-                            onClick={() => setShowAssetModal(false)}
+                            type="button"
+                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                              popupActiveTab === 1 ? "active" : ""
+                            }`}
+                            onClick={() => setPopupActiveTab(1)}
                           >
-                            <AiOutlineCloseCircle className="text-2xl" />
-                          </button>
-                        </div>
-                        <div className="lg:flex mt-8 lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
-                          {/* left side tabs */}
-                          <div className="flex-initial">
-                            <nav
-                              className="flex flex-col space-y-2 "
-                              aria-label="Tabs"
-                              role="tablist"
-                              data-hs-tabs-vertical="true"
+                            <span
+                              className={`p-1 rounded ${
+                                popupActiveTab === 1
+                                  ? "bg-primary text-white"
+                                  : "bg-lightgray"
+                              } `}
                             >
-                              <button
-                                type="button"
-                                className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                                  popupActiveTab === 1 ? "active" : ""
-                                }`}
-                                onClick={() => setPopupActiveTab(1)}
-                              >
-                                <span
-                                  className={`p-1 rounded ${
-                                    popupActiveTab === 1
-                                      ? "bg-primary text-white"
-                                      : "bg-lightgray"
-                                  } `}
-                                >
-                                  <IoBarChartSharp size={15} />
-                                </span>
-                                Assets
-                              </button>
-                              {/* <button
+                              <IoBarChartSharp size={15} />
+                            </span>
+                            Assets
+                          </button>
+                          {/* <button
                                 type="button"
                                 className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
                                   popupActiveTab === 2 ? "active" : ""
@@ -391,7 +388,7 @@ const Defaultmedia = () => {
                                 </span>
                                 Compositions
                               </button> */}
-                              {/* <button
+                          {/* <button
                         type="button"
                         className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
                           popupActiveTab === 3
@@ -433,336 +430,312 @@ const Defaultmedia = () => {
                         </span>
                         Apps
                       </button> */}
-                            </nav>
-                          </div>
+                        </nav>
+                      </div>
 
-                          <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1">
-                            <div className={popupActiveTab !== 1 && "hidden"}>
-                              <div className="flex flex-wrap w-full items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                                <div className="mb-5 relative ">
-                                  <AiOutlineSearch className="absolute top-2.5 left-2 w-5 h-5 z-10 text-gray" />
-                                  <input
-                                    type="text"
-                                    placeholder="Search assest"
-                                    className="border border-primary rounded-full pl-8 py-2 search-user"
-                                    value={searchAssest}
-                                    onChange={(e) =>
-                                      handleSearchAssest(e, "asset")
-                                    }
-                                  />
-                                </div>
-                                <Link to="/fileupload">
-                                  <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
-                                    Upload
-                                  </button>
-                                </Link>
-                              </div>
-                              <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover w-full addmedia-table">
-                                <table
-                                  style={{
-                                    borderCollapse: "separate",
-                                    borderSpacing: " 0 10px",
-                                  }}
-                                  className="w-full"
-                                >
-                                  <thead className="sticky top-0">
-                                    <tr className="bg-lightgray">
-                                      <th className="p-3 w-80 text-left">
-                                        Media Name
-                                      </th>
-                                      <th>Date Added</th>
-                                      <th className="p-3">Size</th>
-                                      <th className="p-3">Type</th>
-                                    </tr>
-                                  </thead>
-                                  {filteredData.length === 0
-                                    ? assetData.map((asset) => (
-                                        <tbody key={asset.assetID}>
-                                          <tr
-                                            className={`${
-                                              selectedAsset === asset ||
-                                              selectedAsset === asset?.assetName
-                                                ? "bg-[#f3c953]"
-                                                : ""
-                                            } border-b border-[#eee] `}
-                                            onClick={() => {
-                                              handleAssetAdd(asset);
-                                              setAssetPreviewPopup(true);
-                                            }}
-                                          >
-                                            <td className="p-3 text-left">
-                                              {asset.assetName}
-                                            </td>
-                                            <td className="p-3">
-                                              {moment(asset.createdDate).format(
-                                                "YYYY-MM-DD hh:mm"
-                                              )}
-                                            </td>
-                                            <td className="p-3">
-                                              {asset.fileSize}
-                                            </td>
-                                            <td className="p-3">
-                                              {asset.assetType}
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                      ))
-                                    : filteredData.map((asset) => (
-                                        <tbody key={asset.assetID}>
-                                          <tr
-                                            className={`${
-                                              selectedAsset === asset ||
-                                              selectedAsset === asset?.assetName
-                                                ? "bg-[#f3c953]"
-                                                : ""
-                                            } border-b border-[#eee] `}
-                                            onClick={() => {
-                                              handleAssetAdd(asset);
-                                              setAssetPreviewPopup(true);
-                                            }}
-                                          >
-                                            <td className="p-3 text-left">
-                                              {asset.assetName}
-                                            </td>
-                                            <td className="p-3">
-                                              {moment(asset.createdDate).format(
-                                                "YYYY-MM-DD hh:mm"
-                                              )}
-                                            </td>
-                                            <td className="p-3">
-                                              {asset.fileSize}
-                                            </td>
-                                            <td className="p-3">
-                                              {asset.assetType}
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                      ))}
-                                </table>
-                                {assetPreviewPopup && (
-                                  <div className="fixed left-1/2 -translate-x-1/2 w-10/12 h-10/12 top-10 bg-black z-50 inset-0">
-                                    {/* btn */}
-                                    <div className="p-1 rounded-full text-white bg-primary absolute -top-3 -right-3">
-                                      <button
-                                        className="text-xl"
-                                        onClick={() =>
-                                          setAssetPreviewPopup(false)
-                                        }
-                                      >
-                                        <AiOutlineCloseCircle className="text-2xl" />
-                                      </button>
-                                    </div>
-                                    <div className="fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 h-[90%] w-[90%]">
-                                      {assetPreview && (
-                                        <>
-                                          {assetPreview.assetType ===
-                                            "OnlineImage" && (
-                                            <div className="imagebox p-3">
-                                              <img
-                                                src={
-                                                  assetPreview.assetFolderPath
-                                                }
-                                                alt={assetPreview.assetName}
-                                                className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                              />
-                                            </div>
-                                          )}
-
-                                          {assetPreview.assetType ===
-                                            "OnlineVideo" && (
-                                            <div className="relative videobox">
-                                              <video
-                                                controls
-                                                className="w-full rounded-2xl h-full"
-                                              >
-                                                <source
-                                                  src={
-                                                    assetPreview.assetFolderPath
-                                                  }
-                                                  type="video/mp4"
-                                                />
-                                                Your browser does not support
-                                                the video tag.
-                                              </video>
-                                            </div>
-                                          )}
-                                          {assetPreview.assetType ===
-                                            "Image" && (
-                                            <img
-                                              src={assetPreview.assetFolderPath}
-                                              alt={assetPreview.assetName}
-                                              className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                            />
-                                          )}
-                                          {assetPreview.assetType ===
-                                            "Video" && (
-                                            <video
-                                              controls
-                                              className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                            >
-                                              <source
-                                                src={
-                                                  assetPreview.assetFolderPath
-                                                }
-                                                type="video/mp4"
-                                              />
-                                              Your browser does not support the
-                                              video tag.
-                                            </video>
-                                          )}
-                                          {assetPreview.assetType === "DOC" && (
-                                            <a
-                                              href={
-                                                assetPreview.assetFolderPath
-                                              }
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                            >
-                                              {assetPreview.assetName}
-                                            </a>
-                                          )}
-                                        </>
-                                      )}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
+                      <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1">
+                        <div className={popupActiveTab !== 1 && "hidden"}>
+                          <div className="flex flex-wrap w-full items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                            <div className="mb-5 relative ">
+                              <AiOutlineSearch className="absolute top-2.5 left-2 w-5 h-5 z-10 text-gray" />
+                              <input
+                                type="text"
+                                placeholder="Search assest"
+                                className="border border-primary rounded-full pl-8 py-2 search-user"
+                                value={searchAssest}
+                                onChange={(e) => handleSearchAssest(e, "asset")}
+                              />
                             </div>
-                            <div className={popupActiveTab !== 2 && "hidden"}>
-                              <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                                <div className="mb-5 relative w-fit">
-                                  <AiOutlineSearch className="absolute top-2.5 left-2 w-6 h-5 z-10 text-gray" />
-                                  <input
-                                    type="text"
-                                    placeholder="Search Composition"
-                                    className="border border-primary rounded-full pl-8 py-2 search-user w-full"
-                                    value={searchComposition}
-                                    onChange={(e) =>
-                                      handleSearchAssest(e, "composition")
-                                    }
-                                  />
-                                </div>
-                                <Link to="/addcomposition">
-                                  <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
-                                    Add New Composition
-                                  </button>
-                                </Link>
-                              </div>
-                              <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
-                                <table
-                                  style={{
-                                    borderCollapse: "separate",
-                                    borderSpacing: " 0 10px",
-                                  }}
-                                  className="w-full"
-                                >
-                                  <thead className="sticky top-0">
-                                    <tr className="bg-lightgray">
-                                      <th className="p-3 w-80 text-left">
-                                        Composition Name
-                                      </th>
-                                      <th>Date Added</th>
-                                      <th className="p-3">Resolution</th>
-                                      <th className="p-3">Duration</th>
-                                    </tr>
-                                  </thead>
-                                  {filteredData.length === 0
-                                    ? compositionData.map((composition) => (
-                                        <tbody key={composition.compositionID}>
-                                          <tr
-                                            className={`${
-                                              selectedComposition ===
-                                              composition
-                                                ? "bg-[#f3c953]"
-                                                : ""
-                                            } border-b border-[#eee] `}
-                                            onClick={() => {
-                                              handleCompositionsAdd(
-                                                composition
-                                              );
-                                            }}
-                                          >
-                                            <td className="p-3 text-left">
-                                              {composition.compositionName}
-                                            </td>
-                                            <td className="p-3">
-                                              {moment(
-                                                composition.dateAdded
-                                              ).format("YYYY-MM-DD hh:mm")}
-                                            </td>
-                                            <td className="p-3">
-                                              {composition.resolution}
-                                            </td>
-                                            <td className="p-3">
-                                              {moment
-                                                .utc(
-                                                  composition.duration * 1000
-                                                )
-                                                .format("hh:mm:ss")}
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                      ))
-                                    : filteredData.map((composition) => (
-                                        <tbody key={composition.compositionID}>
-                                          <tr
-                                            className={`${
-                                              selectedComposition ===
-                                              composition
-                                                ? "bg-[#f3c953]"
-                                                : ""
-                                            } border-b border-[#eee] `}
-                                            onClick={() => {
-                                              handleCompositionsAdd(
-                                                composition
-                                              );
-                                            }}
-                                          >
-                                            <td className="p-3 text-left">
-                                              {composition.compositionName}
-                                            </td>
-                                            <td className="p-3">
-                                              {moment(
-                                                composition.dateAdded
-                                              ).format("YYYY-MM-DD hh:mm")}
-                                            </td>
-                                            <td className="p-3">
-                                              {composition.resolution}
-                                            </td>
-                                            <td className="p-3">
-                                              {moment
-                                                .utc(
-                                                  composition.duration * 1000
-                                                )
-                                                .format("hh:mm:ss")}
-                                            </td>
-                                          </tr>
-                                        </tbody>
-                                      ))}
-                                </table>
-                              </div>
-                            </div>
+                            <Link to="/fileupload">
+                              <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                                Upload
+                              </button>
+                            </Link>
                           </div>
-                          <div className="flex justify-between items-center p-5 w-full">
-                            <p className="text-black">
-                              Content will always be playing Confirm
-                            </p>
-                            <button
-                              className="bg-primary text-white rounded-full px-5 py-2"
-                              onClick={() => {
-                                handleOnConfirm();
+                          <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover w-full addmedia-table">
+                            <table
+                              style={{
+                                borderCollapse: "separate",
+                                borderSpacing: " 0 10px",
                               }}
+                              className="w-full"
                             >
-                              Confirm
-                            </button>
+                              <thead className="sticky top-0">
+                                <tr className="bg-lightgray">
+                                  <th className="p-3 w-80 text-left">
+                                    Media Name
+                                  </th>
+                                  <th>Date Added</th>
+                                  <th className="p-3">Size</th>
+                                  <th className="p-3">Type</th>
+                                </tr>
+                              </thead>
+                              {filteredData.length === 0
+                                ? assetData.map((asset) => (
+                                    <tbody key={asset.assetID}>
+                                      <tr
+                                        className={`${
+                                          selectedAsset === asset ||
+                                          selectedAsset === asset?.assetName
+                                            ? "bg-[#f3c953]"
+                                            : ""
+                                        } border-b border-[#eee] `}
+                                        onClick={() => {
+                                          handleAssetAdd(asset);
+                                          setAssetPreviewPopup(true);
+                                        }}
+                                      >
+                                        <td className="p-3 text-left">
+                                          {asset.assetName}
+                                        </td>
+                                        <td className="p-3">
+                                          {moment(asset.createdDate).format(
+                                            "YYYY-MM-DD hh:mm"
+                                          )}
+                                        </td>
+                                        <td className="p-3">
+                                          {asset.fileSize}
+                                        </td>
+                                        <td className="p-3">
+                                          {asset.assetType}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  ))
+                                : filteredData.map((asset) => (
+                                    <tbody key={asset.assetID}>
+                                      <tr
+                                        className={`${
+                                          selectedAsset === asset ||
+                                          selectedAsset === asset?.assetName
+                                            ? "bg-[#f3c953]"
+                                            : ""
+                                        } border-b border-[#eee] `}
+                                        onClick={() => {
+                                          handleAssetAdd(asset);
+                                          setAssetPreviewPopup(true);
+                                        }}
+                                      >
+                                        <td className="p-3 text-left">
+                                          {asset.assetName}
+                                        </td>
+                                        <td className="p-3">
+                                          {moment(asset.createdDate).format(
+                                            "YYYY-MM-DD hh:mm"
+                                          )}
+                                        </td>
+                                        <td className="p-3">
+                                          {asset.fileSize}
+                                        </td>
+                                        <td className="p-3">
+                                          {asset.assetType}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  ))}
+                            </table>
+                            {assetPreviewPopup && (
+                              <div className="fixed left-1/2 -translate-x-1/2 w-10/12 h-10/12 top-10 bg-black z-50 inset-0">
+                                {/* btn */}
+                                <div className="p-1 rounded-full text-white bg-primary absolute -top-3 -right-3">
+                                  <button
+                                    className="text-xl"
+                                    onClick={() => setAssetPreviewPopup(false)}
+                                  >
+                                    <AiOutlineCloseCircle className="text-2xl" />
+                                  </button>
+                                </div>
+                                <div className="fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 h-[90%] w-[90%]">
+                                  {assetPreview && (
+                                    <>
+                                      {assetPreview.assetType ===
+                                        "OnlineImage" && (
+                                        <div className="imagebox p-3">
+                                          <img
+                                            src={assetPreview.assetFolderPath}
+                                            alt={assetPreview.assetName}
+                                            className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                                          />
+                                        </div>
+                                      )}
+
+                                      {assetPreview.assetType ===
+                                        "OnlineVideo" && (
+                                        <div className="relative videobox">
+                                          <video
+                                            controls
+                                            className="w-full rounded-2xl h-full"
+                                          >
+                                            <source
+                                              src={assetPreview.assetFolderPath}
+                                              type="video/mp4"
+                                            />
+                                            Your browser does not support the
+                                            video tag.
+                                          </video>
+                                        </div>
+                                      )}
+                                      {assetPreview.assetType === "Image" && (
+                                        <img
+                                          src={assetPreview.assetFolderPath}
+                                          alt={assetPreview.assetName}
+                                          className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                                        />
+                                      )}
+                                      {assetPreview.assetType === "Video" && (
+                                        <video
+                                          controls
+                                          className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                                        >
+                                          <source
+                                            src={assetPreview.assetFolderPath}
+                                            type="video/mp4"
+                                          />
+                                          Your browser does not support the
+                                          video tag.
+                                        </video>
+                                      )}
+                                      {assetPreview.assetType === "DOC" && (
+                                        <a
+                                          href={assetPreview.assetFolderPath}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                                        >
+                                          {assetPreview.assetName}
+                                        </a>
+                                      )}
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className={popupActiveTab !== 2 && "hidden"}>
+                          <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                            <div className="mb-5 relative w-fit">
+                              <AiOutlineSearch className="absolute top-2.5 left-2 w-6 h-5 z-10 text-gray" />
+                              <input
+                                type="text"
+                                placeholder="Search Composition"
+                                className="border border-primary rounded-full pl-8 py-2 search-user w-full"
+                                value={searchComposition}
+                                onChange={(e) =>
+                                  handleSearchAssest(e, "composition")
+                                }
+                              />
+                            </div>
+                            <Link to="/addcomposition">
+                              <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                                Add New Composition
+                              </button>
+                            </Link>
+                          </div>
+                          <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
+                            <table
+                              style={{
+                                borderCollapse: "separate",
+                                borderSpacing: " 0 10px",
+                              }}
+                              className="w-full"
+                            >
+                              <thead className="sticky top-0">
+                                <tr className="bg-lightgray">
+                                  <th className="p-3 w-80 text-left">
+                                    Composition Name
+                                  </th>
+                                  <th>Date Added</th>
+                                  <th className="p-3">Resolution</th>
+                                  <th className="p-3">Duration</th>
+                                </tr>
+                              </thead>
+                              {filteredData.length === 0
+                                ? compositionData.map((composition) => (
+                                    <tbody key={composition.compositionID}>
+                                      <tr
+                                        className={`${
+                                          selectedComposition === composition
+                                            ? "bg-[#f3c953]"
+                                            : ""
+                                        } border-b border-[#eee] `}
+                                        onClick={() => {
+                                          handleCompositionsAdd(composition);
+                                        }}
+                                      >
+                                        <td className="p-3 text-left">
+                                          {composition.compositionName}
+                                        </td>
+                                        <td className="p-3">
+                                          {moment(composition.dateAdded).format(
+                                            "YYYY-MM-DD hh:mm"
+                                          )}
+                                        </td>
+                                        <td className="p-3">
+                                          {composition.resolution}
+                                        </td>
+                                        <td className="p-3">
+                                          {moment
+                                            .utc(composition.duration * 1000)
+                                            .format("hh:mm:ss")}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  ))
+                                : filteredData.map((composition) => (
+                                    <tbody key={composition.compositionID}>
+                                      <tr
+                                        className={`${
+                                          selectedComposition === composition
+                                            ? "bg-[#f3c953]"
+                                            : ""
+                                        } border-b border-[#eee] `}
+                                        onClick={() => {
+                                          handleCompositionsAdd(composition);
+                                        }}
+                                      >
+                                        <td className="p-3 text-left">
+                                          {composition.compositionName}
+                                        </td>
+                                        <td className="p-3">
+                                          {moment(composition.dateAdded).format(
+                                            "YYYY-MM-DD hh:mm"
+                                          )}
+                                        </td>
+                                        <td className="p-3">
+                                          {composition.resolution}
+                                        </td>
+                                        <td className="p-3">
+                                          {moment
+                                            .utc(composition.duration * 1000)
+                                            .format("hh:mm:ss")}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  ))}
+                            </table>
                           </div>
                         </div>
                       </div>
+                      <div className="flex justify-between items-center p-5 w-full">
+                        <p className="text-black">
+                          Content will always be playing Confirm
+                        </p>
+                        <button
+                          className="bg-primary text-white rounded-full px-5 py-2"
+                          onClick={() => {
+                            handleOnConfirm();
+                          }}
+                        >
+                          Confirm
+                        </button>
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
-                {/* <div className="text-center">
+              )}
+            </div>
+            {/* <div className="text-center">
                     <button className="bg-white text-primary lg:text-base md:text-base sm:text-sm xs:text-sm lg:px-6 md:px-6 sm:px-4 xs:px-4 lg:py-3 md:py-3 sm:py-2 xs:py-2 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2">
                       Cancel
                     </button>
@@ -770,31 +743,33 @@ const Defaultmedia = () => {
                       Save
                     </button>
                   </div> */}
-              </div>
-              <div className=" lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 p-8">
-                {filePath && isVideo ? (
-                  // Render video player
-                  <ReactPlayer
-                    url={filePath}
-                    className="max-w-full max-h-full reactplayer min-w-full"
-                    controls={true} // Add controls for video
-                    width="100%"
-                    height="100%"
-                  />
-                ) : (
-                  // Render image
-                  <img
-                    src={filePath}
-                    alt="Media"
-                    className="max-w-full max-h-full"
-                  />
-                )}
-              </div>
-            </div>
-          </>
-        )}
+          </div>
+          <div className="w-8/12 p-8">
+            {filePath &&
+              (Object.values(filePath).includes("Video") ||
+                Object.values(filePath).includes("OnlineVideo")) && (
+                <ReactPlayer
+                  url={filePath?.assetFolderPath}
+                  className="w-full relative z-20 videoinner"
+                  controls={true}
+                  playing={true}
+                />
+              )}
 
-        {/* {mediaTabs === 2 && (
+            {filePath &&
+              (Object.values(filePath).includes("OnlineImage") ||
+                Object.values(filePath).includes("Image")) && (
+                <img
+                  src={filePath?.assetFolderPath}
+                  alt="Media"
+                  className="w-full h-full mx-auto object-fill"
+                />
+              )}
+          </div>
+        </div>
+      )}
+
+      {/* {mediaTabs === 2 && (
           <>
             <div>
               <div className="grid grid-cols-12 items-center">
@@ -850,8 +825,7 @@ const Defaultmedia = () => {
             </div>
           </>
         )} */}
-      </div>
-    </>
+    </div>
   );
 };
 

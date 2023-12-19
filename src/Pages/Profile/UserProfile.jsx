@@ -60,6 +60,7 @@ const UserProfile = ({ sidebarOpen, setSidebarOpen }) => {
     //   icon: <AiOutlineLink />,
     // },
   ];
+
   return (
     <>
       <div className="flex bg-white py-3 border-b border-gray">

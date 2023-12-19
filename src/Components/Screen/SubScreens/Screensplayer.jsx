@@ -347,8 +347,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
   function handleChangePreviewScreen() {
     const { data, myComposition } = screenPreviewData;
-
     const findCurrentSchedule = data.find((item) => {
+      // for schedule
       if (
         moment(moment().format("LLL")).isBetween(
           moment(item?.cStartDate).format("LLL"),
@@ -365,13 +365,17 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       }
     });
     if (findCurrentSchedule !== undefined && findCurrentSchedule !== null) {
-      setPlayerData(findCurrentSchedule?.fileType);
+
+      setPlayerData(findCurrentSchedule);
       setCompositionData([]);
       return true;
     } else if (
-      (findCurrentSchedule == null || findCurrentSchedule === undefined) &&
+      // for set composition
+      
+      (findCurrentSchedule === null || findCurrentSchedule === undefined) &&
       myComposition[0]?.compositionPossition.length > 0
     ) {
+
       let obj = {};
       for (const [
         key,
@@ -396,10 +400,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       }
       return true;
     } else {
+      // for defafult media
       const findDefaultAsset = data.find(
         (item) => item?.isdefaultAsset == "true"
       );
-      setPlayerData(findDefaultAsset?.fileType);
+      setPlayerData(findDefaultAsset);
       setCompositionData([]);
       return true;
     }
@@ -870,10 +875,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   compositionData.length === 0 &&
                   playerData !== null &&
                   playerData !== undefined &&
-                  (playerData?.includes("Video") ||
-                    playerData?.includes("mp4")) && (
+                  (Object.values(playerData).includes("Video") ||
+                    Object.values(playerData).includes("OnlineVideo")) && (
                     <ReactPlayer
-                      url={playerData}
+                      url={playerData?.fileType}
                       className="w-full relative z-20 videoinner"
                       controls={true}
                       playing={true}
@@ -884,10 +889,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   compositionData.length === 0 &&
                   playerData !== null &&
                   playerData !== undefined &&
-                  (playerData?.includes("Image") ||
-                    playerData?.includes("OnlineImage")) && (
+                  (Object.values(playerData).includes("OnlineImage") ||
+                    Object.values(playerData).includes("Image")) && (
                     <img
-                      src={playerData}
+                      src={playerData?.fileType}
                       alt="Media"
                       className="w-full h-full mx-auto object-fill"
                     />

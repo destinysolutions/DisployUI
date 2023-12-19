@@ -596,7 +596,9 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <span
                   className={`fixed z-50  ${
-                    screenType === "Landscape" ? "w-10 h-5 top-2 right-12" : "w-5 h-10 top-3 right-11"
+                    screenType === "Landscape"
+                      ? "w-10 h-5 top-2 right-12"
+                      : "w-5 h-10 top-3 right-11"
                   }  rounded-md  bg-white  cursor-pointer`}
                   title={screenType}
                   onClick={() => {
@@ -906,7 +908,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="imagebox relative w-full h-28 object-cover"
                                       />
                                     )}
-                                    {item.assetType === "Video" && (
+                                    {(item.assetType === "Video" ||
+                                      item.assetType === "OnlineVideo") && (
                                       <video
                                         controls
                                         className="imagebox relative w-full h-28 object-cover"
