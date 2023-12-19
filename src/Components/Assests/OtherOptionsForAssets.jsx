@@ -5,7 +5,7 @@ const OtherOptionsForAssets = () => {
   const [selectedService, setSelectedService] = useState(null);
 
   const session_token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDI5MDc3NTEsImV4cCI6MTcwMjkxMTM1MX0.p6o4UWOTysuoOwiIsde_kTaFICa-kN_jEJ268DoSjsg";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDI5NjIwNTIsImV4cCI6MTcwMjk2NTY1Mn0.F7JYhGywIoFCF0so2odsI4TcP0Rjb9b3idf7FH3wmX4";
   const handleSelect = async (file) => {
     // setFile(file);
     console.log(file);

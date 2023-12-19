@@ -21,8 +21,6 @@ const Carousel = ({ items, compositonData, from }) => {
     };
   }, [items, currentIndex]);
 
-  // console.log(items);
-
   return (
     <>
       <div className="h-full w-full">
@@ -63,28 +61,14 @@ const Carousel = ({ items, compositonData, from }) => {
                   />
                 )}
                 {(item?.assetType === "Video" ||
-                  item?.assetType === "Youtube") && (
+                  item?.assetType === "Youtube" ||
+                  item?.assetType === "OnlineVideo") && (
                   <ReactPlayer
                     url={item?.assetFolderPath}
                     className="w-full relative z-20 videoinner object-fill"
                     controls={true}
                     playing={true}
                   />
-                  // <video
-                  //   loop
-                  //   autoPlay
-                  //   controls
-                  //   className={`w-full h-full ${
-                  //     item.assetType !== "Video" && "hidden"
-                  //   } rounded-sm `}
-                  // >
-                  //   <source
-                  //     itemType="video/youtube"
-                  //     src={item.assetFolderPath}
-                  //     type="video/mp4"
-                  //   />
-                  //   Your browser does not support the video tag.
-                  // </video>
                 )}
                 {(item.mediaType === "Video" ||
                   item.mediaType === "Youtube") && (
@@ -138,8 +122,9 @@ const Carousel = ({ items, compositonData, from }) => {
                 )}
                 {item?.text !== undefined && (
                   <marquee
-                    className="text-lg align-middle h-full flex items-center justify-center"
+                    className="text-lg w-full h-full flex items-center"
                     direction={item?.scrollType == 1 ? "left" : "right"}
+                    scrollamount="10"
                   >
                     {item?.text}
                   </marquee>

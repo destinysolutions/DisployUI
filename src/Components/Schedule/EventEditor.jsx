@@ -16,6 +16,9 @@ import { BsFillInfoCircleFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import toast from "react-hot-toast";
+import ReactPlayer from "react-player";
+import { Link } from "react-router-dom";
+import { debounce } from "lodash";
 const EventEditor = ({
   isOpen,
   onClose,
@@ -23,10 +26,9 @@ const EventEditor = ({
   selectedEvent,
   selectedSlot,
   onDelete,
-  assetData,
-  setAssetData,
   allAssets,
   myEvents,
+  setAllAssets,
 }) => {
   const [title, setTitle] = useState("");
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
@@ -51,77 +53,19 @@ const EventEditor = ({
     new Array(buttons.length).fill(false)
   );
   const [selectedRepeatDay, setSelectedRepeatDay] = useState("");
-  // const [previousSetedRepeatDay, setPreviousSetedRepeatDay] = useState("");
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
-  const [repeatDayMessage, setRepeatDayMessage] = useState("");
-  const [repeatDayMessageVisible, setRepeatDayMessageVisible] = useState(false);
-  const [emptyTitleMessage, setEmptyTitleMessage] = useState("");
-  const [emptyTitleMessageVisible, setEmptyTitleMessageVisible] =
-    useState(false);
-  const [editEndDateChangeMessage, setEditEndDateChangeMessage] = useState("");
-  const [editEndDateChangeMessageVisible, setEditEndDateChangeMessageVisible] =
-    useState(false);
   const [repeatDayWarning, setRepeatDayWarning] = useState(false);
   const [searchAsset, setSearchAsset] = useState("");
 
-  const { user, token } = useSelector((s) => s.root.auth);
-  const { assets } = useSelector((s) => s.root.asset);
+  const { token } = useSelector((s) => s.root.auth);
+  const { assets, loading } = useSelector((s) => s.root.asset);
+  const { allAppsData, youtube, textScroll } = useSelector((s) => s.root.apps);
   const authToken = `Bearer ${token}`;
 
   const modalRef = useRef(null);
 
-  // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
-  useEffect(() => {
-    if (isOpen) {
-      if (selectedEvent) {
-        let assetId;
-
-        if (selectedEvent?.asset?.assetID != undefined) {
-          assetId = selectedEvent?.asset?.assetID;
-        } else {
-          assetId = selectedEvent.asset;
-        }
-        const previousSelectedAsset = allAssets.find(
-          (asset) => asset.assetID === assetId
-        );
-        if (previousSelectedAsset) {
-          setSelectedAsset(previousSelectedAsset);
-          setAssetPreview(previousSelectedAsset);
-        }
-        // if (selectedEvent.repeatDay !== "") {
-        //   setShowRepeatSettings(true);
-        //   // setPreviousSetedRepeatDay(selectedEvent.repeatDay);
-        // }
-        setTitle(selectedEvent.title);
-        setSelectedColor(selectedEvent.color);
-        setEditedStartDate(moment(selectedEvent.start).format("YYYY-MM-DD"));
-        setEditedStartTime(moment(selectedEvent.start).format("HH:mm"));
-        setEditedEndDate(moment(selectedEvent.end).format("YYYY-MM-DD"));
-        setEditedEndTime(moment(selectedEvent.end).format("HH:mm"));
-      } else if (selectedSlot) {
-        setSelectedRepeatDay("");
-        setSelectedAsset(null);
-        setAssetPreview(null);
-        setTitle("");
-        setSelectedColor("");
-        setEditedStartDate(moment(selectedSlot.start).format("YYYY-MM-DD"));
-        setEditedStartTime(moment(selectedSlot.start).format("HH:mm"));
-        setEditedEndDate(moment(selectedSlot.end).format("YYYY-MM-DD"));
-        setEditedEndTime(moment(selectedSlot.end).format("HH:mm"));
-      }
-    }
-  }, [isOpen, selectedEvent, selectedSlot, allAssets]);
-  const handleTitleChange = (e) => {
-    setTitle(e.target.value);
-  };
-
   const handleStartTimeChange = (e) => {
     setEditedStartTime(e.target.value);
-  };
-
-  const handleEndTimeChange = (e) => {
-    setEditedEndTime(e.target.value);
-    handleCheckboxChange();
   };
 
   const handleStartDateChange = (e) => {
@@ -130,11 +74,6 @@ const EventEditor = ({
 
     // Calculate and update the end date based on the new start date
     const newEndDate = calculateEndDate(newStartDate, editedStartTime);
-    setEditedEndDate(newEndDate);
-  };
-
-  const handleEndDateChange = (e) => {
-    const newEndDate = e.target.value;
     setEditedEndDate(newEndDate);
   };
 
@@ -194,16 +133,22 @@ const EventEditor = ({
     const newSelectAllDays = !selectAllDays;
     if (
       moment(selectedSlot?.end).format("YYYY-MM-DD") === editedEndDate &&
-      newSelectAllDays
+      newSelectAllDays &&
+      !isEditMode
     ) {
-      setEditEndDateChangeMessage("Please change End Date");
-      setEditEndDateChangeMessageVisible(true);
-      // Reset the state to prevent checking the checkbox
+      toast.remove();
+      toast.error("Please change End Date");
       setSelectAllDays(false);
       return;
     }
-
     const daysDiff = moment(endDate).diff(startDate, "days");
+    if (daysDiff >= 6 && !selectAllDays) {
+      setSelectAllDays(true);
+    } else if (daysDiff < 6 && selectAllDays) {
+      setSelectAllDays(false);
+    }
+
+    // if(isEditMode)
     let days = [];
     for (let i = 0; i < daysDiff; i++) {
       days[i] = moment(moment(startDate).add(i, "day")).format("dddd");
@@ -214,7 +159,6 @@ const EventEditor = ({
     for (let i = 0; i < days.length; i++) {
       changeDayTrueOrFalse = buttons.map((i) => days.includes(i));
     }
-    // console.log(changeDayTrueOrFalse);
     setSelectedDays(changeDayTrueOrFalse);
   }
 
@@ -231,8 +175,8 @@ const EventEditor = ({
         moment(selectedSlot?.end).format("YYYY-MM-DD") === editedEndDate &&
         newSelectedDays[index]
       ) {
-        setEditEndDateChangeMessage("Please change End Date");
-        setEditEndDateChangeMessageVisible(true);
+        toast.remove();
+        toast.error("Please change End Date");
         // Reset the state to prevent the button from being clicked
         return;
       }
@@ -262,16 +206,14 @@ const EventEditor = ({
   };
 
   const handleSave = (updateAllValue) => {
-    // return
-    // Check if the title is empty
     if (!title) {
-      setEmptyTitleMessage("Please enter a title for the event.");
-      setEmptyTitleMessageVisible(true);
+      toast.remove();
+      toast.error("Please enter a title for the event.");
       return;
     }
     if (!selectedAsset) {
-      setEmptyTitleMessage("Please select Asset");
-      setEmptyTitleMessageVisible(true);
+      toast.remove();
+      toast.error("Please select Asset");
       return;
     }
     if (
@@ -312,10 +254,8 @@ const EventEditor = ({
       !selectAllDays && // Check if no checkbox is selected
       !areSpecificDaysSelected // Check if no individual day is selected
     ) {
-      setEditEndDateChangeMessage(
-        "Please select repeat for all days otherwise anyone day"
-      );
-      setEditEndDateChangeMessageVisible(true);
+      toast.remove();
+      toast.error("Please select repeat for all days otherwise anyone day");
       return;
     }
     // Check if the end date is modified
@@ -386,29 +326,35 @@ const EventEditor = ({
       !JSON.stringify(selectedEvent?.repeatDay) ===
       JSON.stringify(selectedRepeatDay)
     ) {
-      let message = "Repeat Day has changed!";
-      setRepeatDayMessage(message);
-      setRepeatDayMessageVisible(true);
+      toast.remove();
+      toast.error("Repeat Day has changed!");
     }
     // Clear the selected repeat days after saving the event
     setSelectAllDays(false);
     setSelectedDays(new Array(buttons.length).fill(false));
   };
 
-  const handleFilter = (event) => {
-    const searchQuery = event.target.value.toLowerCase();
-    setSearchAsset(searchQuery);
-
-    if (searchQuery === "") {
-      setAssetData(allAssets);
+  const handleFilter = (value) => {
+    if (value === "") {
+      setSearchAsset("");
+      setAllAssets([...assets, ...allAppsData]);
     } else {
+      setSearchAsset(value);
       const filteredData = allAssets.filter((item) => {
-        const itemName = item.assetName ? item.assetName.toLowerCase() : "";
-        return itemName.includes(searchQuery);
+        const itemAssetName = item.assetName
+          ? item.assetName.toLowerCase()
+          : "";
+        const itemInstanceName = item.instanceName
+          ? item.instanceName.toLowerCase()
+          : "";
+        return (
+          itemAssetName.includes(value) || itemInstanceName.includes(value)
+        );
       });
-      setAssetData(filteredData);
+      setAllAssets(filteredData);
     }
   };
+  const debounceForSearchAsset = debounce(handleFilter, 500);
 
   const handelDeletedata = () => {
     toast.loading("Deleting...");
@@ -503,10 +449,72 @@ const EventEditor = ({
   }, [daysDiff]);
 
   useEffect(() => {
+    if (showRepeatSettings) {
+      handleCheckboxChange();
+    }
+  }, [editedEndDate]);
+
+  // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
+  useEffect(() => {
+    if (isOpen) {
+      if (selectedEvent) {
+        let assetId;
+
+        if (selectedEvent?.asset?.assetID != undefined) {
+          assetId = selectedEvent?.asset?.assetID;
+        } else {
+          assetId = selectedEvent.asset;
+        }
+        const previousSelectedAsset = allAssets.find(
+          (asset) => asset.assetID === assetId
+        );
+        if (previousSelectedAsset) {
+          setSelectedAsset(previousSelectedAsset);
+          setAssetPreview(previousSelectedAsset);
+        }
+
+        setTitle(selectedEvent.title);
+        setSelectedColor(selectedEvent.color);
+        setEditedStartDate(moment(selectedEvent.start).format("YYYY-MM-DD"));
+        setEditedStartTime(moment(selectedEvent.start).format("HH:mm"));
+        setEditedEndDate(
+          moment(selectedEvent.actualEndDate).format("YYYY-MM-DD")
+        );
+        setEditedEndTime(moment(selectedEvent.end).format("HH:mm"));
+        const selectedAsset = allAssets.find(
+          (asset) => selectedEvent?.asset === asset?.assetID
+        );
+        setSelectedAsset(selectedAsset);
+      } else if (selectedSlot) {
+        setSelectedRepeatDay("");
+        setSelectedAsset(null);
+        setAssetPreview(null);
+        setTitle("");
+        setSelectedColor("");
+        setEditedStartDate(moment(selectedSlot.start).format("YYYY-MM-DD"));
+        setEditedStartTime(moment(selectedSlot.start).format("HH:mm"));
+        setEditedEndDate(moment(selectedSlot.end).format("YYYY-MM-DD"));
+        setEditedEndTime(moment(selectedSlot.end).format("HH:mm"));
+      }
+    }
+  }, [isOpen, selectedEvent, selectedSlot, allAssets]);
+
+  // for clear selectedDays
+  useEffect(() => {
+    setAllAssets([...assets]);
+    // setAllAssets([
+    //   ...youtube?.youtubeData,
+    //   ...textScroll?.textScrollData,
+    //   ...assets,
+    // ]);
+  }, [textScroll.loading, youtube.loading, loading]);
+
+  useEffect(() => {
     return () => {
-      setSelectedDays([]);
+      setSelectedDays(Array(buttons.length).fill(false));
     };
   }, []);
+
 
   return (
     <>
@@ -535,8 +543,9 @@ const EventEditor = ({
                   type="text"
                   placeholder=" Search by Name"
                   className="border border-primary rounded-full px-7 py-2 search-user"
-                  value={searchAsset}
-                  onChange={handleFilter}
+                  onChange={(e) =>
+                    debounceForSearchAsset(e.target.value.toLocaleLowerCase())
+                  }
                 />
               </div>
               <div className="overflow-auto">
@@ -569,13 +578,10 @@ const EventEditor = ({
                         </tr>
                       </thead>
                       <tbody>
-                        {assets
-                          .filter((asset) => {
-                            return asset.assetType !== "Folder";
-                          })
-                          .map((item) => (
+                        {allAssets.length > 0 ? (
+                          allAssets.map((item, index) => (
                             <tr
-                              key={item.assetID}
+                              key={index}
                               className={`${
                                 selectedAsset === item ? "bg-[#f3c953]" : ""
                               } border-b border-[#eee] mt-5`}
@@ -585,20 +591,20 @@ const EventEditor = ({
                             >
                               <td className="border-b border-[#eee]">
                                 {item.assetType === "OnlineImage" && (
-                                  <div className="imagebox relative">
+                                  <div className="imagebox relative z-0">
                                     <img
                                       src={item.assetFolderPath}
                                       alt={item.assetName}
-                                      className="rounded-2xl h-24 w-28"
+                                      className="rounded-2xl h-20 w-full"
                                     />
                                   </div>
                                 )}
-
                                 {item.assetType === "OnlineVideo" && (
-                                  <div className="imagebox relative">
+                                  <div className="imagebox rounded-2xl z-0 relative">
                                     <video
                                       controls
-                                      className="rounded-2xl h-24 w-28"
+                                      autoPlay={true}
+                                      className="rounded-2xl h-20 w-full"
                                     >
                                       <source
                                         src={item.assetFolderPath}
@@ -613,22 +619,42 @@ const EventEditor = ({
                                   <img
                                     src={item.assetFolderPath}
                                     alt={item.assetName}
-                                    className="imagebox relative h-24 w-28"
+                                    className="rounded-2xl h-20 w-full"
                                   />
                                 )}
                                 {item.assetType === "Video" && (
-                                  <div className="relative videobox">
-                                    <video
-                                      controls
-                                      className="w-full rounded-2xl relative"
+                                  <div className="relative videobox z-0 w-full h-20 ">
+                                    <ReactPlayer
+                                      url={item?.assetFolderPath}
+                                      className="w-full rounded-2xl relative z-20 h-full videoinner object-fill"
+                                      controls={false}
+                                      playing={true}
+                                    />
+                                  </div>
+                                )}
+                                {item.youTubeURL && (
+                                  <div className="relative rounded-2xl videobox z-0 w-full h-20">
+                                    <ReactPlayer
+                                      url={item?.youTubeURL}
+                                      className="w-full relative rounded-2xl z-20 h-full videoinner object-fill"
+                                      controls={false}
+                                      playing={true}
+                                    />
+                                  </div>
+                                )}
+                                {item.text && (
+                                  <div className="w-full h-full ">
+                                    <marquee
+                                      className="text-lg h-full w-full text-black"
+                                      scrollamount="10"
+                                      direction={
+                                        assetPreview?.scrollType == 1
+                                          ? "left"
+                                          : "right"
+                                      }
                                     >
-                                      <source
-                                        src={item.assetFolderPath}
-                                        type="video/mp4"
-                                      />
-                                      Your browser does not support the video
-                                      tag.
-                                    </video>
+                                      {assetPreview?.text}
+                                    </marquee>
                                   </div>
                                 )}
                                 {item.assetType === "DOC" && (
@@ -648,7 +674,8 @@ const EventEditor = ({
                                     handleAssetAdd(item);
                                   }}
                                 >
-                                  {item.assetName}
+                                  {item.assetName && item?.assetName}
+                                  {item.instanceName && item?.instanceName}
                                 </h5>
                               </td>
                               <td className="border-b border-[#eee]">
@@ -674,76 +701,72 @@ const EventEditor = ({
                                 </p>
                               </td>
                             </tr>
-                          ))}
+                          ))
+                        ) : searchAsset !== "" ? (
+                          <tr>
+                            <td
+                              colSpan={7}
+                              className="text-center text-xl font-semibold h-60"
+                            >
+                              <p>No assets found related "{searchAsset}"</p>
+                            </td>
+                          </tr>
+                        ) : (
+                          <tr>
+                            <td
+                              colSpan={7}
+                              className="text-center font-semibold h-60"
+                            >
+                              <p>No assets here, please upload some assets.</p>
+                              <br />
+                              <Link
+                                to="/fileupload"
+                                className="border-2 mt-4 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
+                              >
+                                Upload asset
+                              </Link>
+                            </td>
+                          </tr>
+                        )}
                         <tr>
                           <td>
                             {assetPreviewPopup && (
-                              <>
-                                <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-50 outline-none focus:outline-none">
-                                  <div
-                                    ref={modalRef}
-                                    className="fixed top-1/3 left-1/2 -translate-y-1/2 -translate-x-1/2 asset-preview-popup"
-                                  >
-                                    <div className="border-0 rounded-lg shadow-lg relative min-w-[50vw] left-1/2 -translate-x-1/2 min-h-[70vh] max-h-[70vh] max-w-[80vw] bg-black outline-none focus:outline-none">
-                                      <div className="p-1 rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
-                                        <button
-                                          className="text-xl"
-                                          onClick={() =>
-                                            setAssetPreviewPopup(false)
-                                          }
-                                        >
-                                          <AiOutlineCloseCircle className="text-2xl" />
-                                        </button>
-                                      </div>
-                                      <div className="absolute inset-0 min-h-full min-w-full max-h-full max-w-full">
-                                        {assetPreview && (
-                                          <>
-                                            {assetPreview.assetType ===
-                                              "OnlineImage" && (
-                                              <div className="imagebox p-3 w-full h-full">
-                                                <img
-                                                  src={
-                                                    assetPreview.assetFolderPath
-                                                  }
-                                                  alt={assetPreview.assetName}
-                                                  className="rounded-2xl w-full h-full object-fill"
-                                                />
-                                              </div>
-                                            )}
-
-                                            {assetPreview.assetType ===
-                                              "OnlineVideo" && (
-                                              <div className="relative videobox w-full h-full">
-                                                <video
-                                                  controls
-                                                  className="w-full rounded-2xl h-full"
-                                                >
-                                                  <source
-                                                    src={
-                                                      assetPreview.assetFolderPath
-                                                    }
-                                                    type="video/mp4"
-                                                  />
-                                                  Your browser does not support
-                                                  the video tag.
-                                                </video>
-                                              </div>
-                                            )}
-                                            {assetPreview.assetType ===
-                                              "Image" && (
+                              <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-50 outline-none focus:outline-none">
+                                <div
+                                  ref={modalRef}
+                                  className="fixed top-1/3 left-1/2 -translate-y-1/2 -translate-x-1/2 asset-preview-popup"
+                                >
+                                  <div className="border-0 rounded-lg shadow-lg relative min-w-[50vw] left-1/2 -translate-x-1/2 min-h-[70vh] max-h-[70vh] max-w-[80vw] bg-black outline-none focus:outline-none">
+                                    <div className="p-1 z-50 rounded-full text-white bg-primary absolute top-[-15px] right-[-16px]">
+                                      <button
+                                        className="text-xl"
+                                        onClick={() =>
+                                          setAssetPreviewPopup(false)
+                                        }
+                                      >
+                                        <AiOutlineCloseCircle className="text-2xl" />
+                                      </button>
+                                    </div>
+                                    <div className="absolute inset-0 min-h-full min-w-full max-h-full max-w-full">
+                                      {assetPreview && (
+                                        <>
+                                          {assetPreview?.assetType === "OnlineImage" && (
+                                            <div className="imagebox relative z-0">
                                               <img
                                                 src={
                                                   assetPreview.assetFolderPath
                                                 }
                                                 alt={assetPreview.assetName}
-                                                className="imagebox w-full h-full p-2 object-contain"
+                                                className="rounded-2xl h-24 w-28"
                                               />
-                                            )}
-                                            {assetPreview.assetType ===
-                                              "Video" && (
+                                            </div>
+                                          )}
+                                          {assetPreview?.assetType === "OnlineVideo" && (
+                                            <div className="imagebox z-0 relative">
                                               <video
                                                 controls
-                                                className="w-full rounded-2xl relative h-56"
+                                                autoPlay={true}
+                                                className="h-full w-full"
                                               >
                                                 <source
                                                   src={
@@ -754,26 +777,69 @@ const EventEditor = ({
                                                 Your browser does not support
                                                 the video tag.
                                               </video>
-                                            )}
-                                            {assetPreview.assetType ===
-                                              "DOC" && (
-                                              <a
-                                                href={
-                                                  assetPreview.assetFolderPath
+                                            </div>
+                                          )}
+                                          {assetPreview?.assetType === "Image" && (
+                                            <img
+                                              src={assetPreview.assetFolderPath}
+                                              alt={assetPreview.assetName}
+                                              className="imagebox relative h-full w-full"
+                                            />
+                                          )}
+                                          {assetPreview?.assetType === "Video" && (
+                                            <div className="relative videobox w-full z-0">
+                                              <ReactPlayer
+                                                url={
+                                                  assetPreview?.assetFolderPath
                                                 }
-                                                target="_blank"
-                                                rel="noopener noreferrer"
+                                                className="w-[90%] relative z-20 h-[90%] videoinner object-fill"
+                                                controls={true}
+                                                playing={true}
+                                              />
+                                            </div>
+                                          )}
+                                          {assetPreview?.youTubeURL && (
+                                            <div className="relative videobox w-full">
+                                              <ReactPlayer
+                                                url={assetPreview?.youTubeURL}
+                                                className="w-[90%] relative z-20 h-[90%] videoinner object-fill"
+                                                controls={true}
+                                                playing={true}
+                                              />
+                                            </div>
+                                          )}
+                                          {assetPreview?.text && (
+                                            <div className="w-full h-full ">
+                                              <marquee
+                                                className="text-lg  h-full min-w-full max-w-full flex items-center text-white"
+                                                scrollamount="10"
+                                                direction={
+                                                  assetPreview?.scrollType == 1
+                                                    ? "left"
+                                                    : "right"
+                                                }
                                               >
-                                                {assetPreview.assetName}
-                                              </a>
-                                            )}
-                                          </>
-                                        )}
-                                      </div>
+                                                {assetPreview?.text}
+                                              </marquee>
+                                            </div>
+                                          )}
+                                          {assetPreview === "DOC" && (
+                                            <a
+                                              href={
+                                                assetPreview.assetFolderPath
+                                              }
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                            >
+                                              {assetPreview.assetName}
+                                            </a>
+                                          )}
+                                        </>
+                                      )}
                                     </div>
                                   </div>
                                 </div>
-                              </>
+                              </div>
                             )}
                           </td>
                         </tr>
@@ -783,72 +849,6 @@ const EventEditor = ({
                 </div>
               </div>
             </div>
-            {editEndDateChangeMessageVisible && (
-              <div
-                className="bg-[#fff2cd] px-5 py-3 border-b-2 border-SlateBlue shadow-md"
-                style={{
-                  position: "fixed",
-                  top: "16px",
-                  right: "20px",
-                  zIndex: "999999",
-                }}
-              >
-                <div className="flex text-SlateBlue  text-base font-normal items-center relative">
-                  <BsFillInfoCircleFill className="mr-1" />
-                  {editEndDateChangeMessage}
-                  <button
-                    className="absolute top-[-26px] right-[-26px] bg-white rounded-full p-1 "
-                    onClick={() => setEditEndDateChangeMessageVisible(false)}
-                  >
-                    <AiOutlineClose className="text-xl  text-SlateBlue " />
-                  </button>
-                </div>
-              </div>
-            )}
-            {emptyTitleMessageVisible && (
-              <div
-                className="bg-[#fff2cd] px-5 py-3 border-b-2 border-SlateBlue shadow-md"
-                style={{
-                  position: "fixed",
-                  top: "16px",
-                  right: "20px",
-                  zIndex: "999999",
-                }}
-              >
-                <div className="flex text-SlateBlue  text-base font-normal items-center relative">
-                  <BsFillInfoCircleFill className="mr-1" />
-                  {emptyTitleMessage}
-                  <button
-                    className="absolute top-[-26px] right-[-26px] bg-white rounded-full p-1 "
-                    onClick={() => setEmptyTitleMessageVisible(false)}
-                  >
-                    <AiOutlineClose className="text-xl  text-SlateBlue " />
-                  </button>
-                </div>
-              </div>
-            )}
-            {repeatDayMessageVisible && (
-              <div
-                className="bg-[#fff2cd] px-5 py-3 border-b-2 border-SlateBlue shadow-md"
-                style={{
-                  position: "fixed",
-                  top: "16px",
-                  right: "20px",
-                  zIndex: "999999",
-                }}
-              >
-                <div className="flex text-SlateBlue  text-base font-normal items-center relative">
-                  <BsFillInfoCircleFill className="mr-1" />
-                  {repeatDayMessage}
-                  <button
-                    className="absolute top-[-26px] right-[-26px] bg-white rounded-full p-1 "
-                    onClick={() => setRepeatDayMessageVisible(false)}
-                  >
-                    <AiOutlineClose className="text-xl  text-SlateBlue " />
-                  </button>
-                </div>
-              </div>
-            )}
 
             <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0">
               <div className="bg-white shadow-2xl">
@@ -861,7 +861,7 @@ const EventEditor = ({
                           <input
                             type="text"
                             value={title}
-                            onChange={handleTitleChange}
+                            onChange={(e) => setTitle(e.target.value)}
                             placeholder="Enter Title"
                             className="bg-lightgray rounded-full px-3 py-2 w-full"
                           />
@@ -872,9 +872,13 @@ const EventEditor = ({
                         <h3>Asset :</h3>
                         <div className="mt-2 ">
                           <div className="bg-lightgray rounded-full px-4 py-2 w-full overflow-hidden whitespace-nowrap text-ellipsis">
-                            {selectedAsset
-                              ? selectedAsset.assetName
-                              : "Set Media"}
+                            {selectedAsset === "" && "Set Media"}
+                            {selectedAsset &&
+                              selectedAsset?.assetName &&
+                              selectedAsset?.assetName}
+                            {selectedAsset &&
+                              selectedAsset?.assetName &&
+                              selectedAsset?.instanceName}
                           </div>
                           <div className="flex items-center justify-center mt-4">
                             <button
@@ -902,7 +906,6 @@ const EventEditor = ({
                           <div className="flex justify-center items-center space-x-4">
                             <button
                               className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
-                              //onClick={() => setdeletePopup(false)}
                               onClick={() => {
                                 handleSave(0);
                                 setRepeatDayWarning(false);
@@ -929,51 +932,42 @@ const EventEditor = ({
                 {showRepeatSettings ? (
                   <>
                     <div className="relative md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0  p-4">
-                      {/* {selectedEvent?.isfutureDateExists === 1 ||
-                      selectedEvent?.isfutureDateExists === 0 ? (
-                        ""
-                      ) : ( */}
-                      <>
-                        <div className="backbtn absolute top-[5px] left-[-10px] ">
-                          <button
-                            className="border border-SlateBlue rounded-full p-1 bg-SlateBlue"
-                            onClick={() => setShowRepeatSettings(false)}
-                          >
-                            <MdOutlineArrowBackIosNew className="text-white" />
-                          </button>
-                        </div>
-                        <div className="mt-3">
-                          <div>
-                            <label>Start Date:</label>
-                            <div className="mt-1">
-                              <input
-                                type="date"
-                                value={editedStartDate}
-                                onChange={handleStartDateChange}
-                                className="bg-lightgray rounded-full px-3 py-2 w-full"
-                              />
-                            </div>
-                          </div>
-                          <div className=" mt-5">
-                            <label>End Date:</label>
-                            <div className="mt-1">
-                              <input
-                                type="date"
-                                value={editedEndDate}
-                                onChange={handleEndDateChange}
-                                className="bg-lightgray rounded-full px-3 py-2 w-full"
-                              />
-                            </div>
+                      <div className="backbtn absolute top-[5px] left-[-10px] ">
+                        <button
+                          className="border border-SlateBlue rounded-full p-1 bg-SlateBlue"
+                          onClick={() => setShowRepeatSettings(false)}
+                        >
+                          <MdOutlineArrowBackIosNew className="text-white" />
+                        </button>
+                      </div>
+                      <div className="mt-3">
+                        <div>
+                          <label>Start Date:</label>
+                          <div className="mt-1">
+                            <input
+                              type="date"
+                              value={editedStartDate}
+                              onChange={handleStartDateChange}
+                              className="bg-lightgray rounded-full px-3 py-2 w-full"
+                            />
                           </div>
                         </div>
+                        <div className=" mt-5">
+                          <label>End Date:</label>
+                          <div className="mt-1">
+                            <input
+                              type="date"
+                              value={editedEndDate}
+                              onChange={(e) => setEditedEndDate(e.target.value)}
+                              className="bg-lightgray rounded-full px-3 py-2 w-full"
+                            />
+                          </div>
+                        </div>
+                      </div>
 
-                        <div className="mt-5 text-black font-medium text-lg">
-                          <label>
-                            Repeating {countAllDaysInRange()} Day(s)
-                          </label>
-                        </div>
-                      </>
-                      {/* )} */}
+                      <div className="mt-5 text-black font-medium text-lg">
+                        <label>Repeating {countAllDaysInRange()} Day(s)</label>
+                      </div>
                       <div className="lg:flex md:block sm:block xs:block items-center mt-5 lg:flex-nowrap md:flex-wrap sm:flex-wrap">
                         <div className="mr-2 w-full">
                           <label className="ml-2">Start Time</label>
@@ -993,16 +987,13 @@ const EventEditor = ({
                             <input
                               type="time"
                               value={editedEndTime}
-                              onChange={handleEndTimeChange}
+                              onChange={(e) => setEditedEndTime(e.target.value)}
                               className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
                           </div>
                         </div>
                       </div>
-                      {/* {selectedEvent?.isfutureDateExists === 1 ||
-                      selectedEvent?.isfutureDateExists === 0 ? (
-                        ""
-                      ) : ( */}
+
                       <>
                         <div className="mt-5 text-black font-medium text-lg mr-2">
                           <input
@@ -1018,18 +1009,7 @@ const EventEditor = ({
                             Repeat for All Day
                           </label>
                         </div>
-                        {/* {console.log(
-                            "selectedEvent?.end == editedEndDate",
-                            //selectedSlot?.end
-                            // ==
-                            moment(selectedEvent?.end).format("YYYY-MM-DD") ==
-                              editedEndDate
-                          )}
-                          {console.log("editedEndDate", editedEndDate)}
-                          {console.log(
-                            "moment(selectedEvent?.end :",
-                            moment(selectedEvent?.end).format("YYYY-MM-DD")
-                          )} */}
+
                         <div>
                           {buttons.map((label, index) => (
                             <button
@@ -1047,7 +1027,6 @@ const EventEditor = ({
                           ))}
                         </div>
                       </>
-                      {/* )} */}
                     </div>
                     <div className="border-b-2 border-lightgray mt-2"></div>
                   </>
@@ -1092,20 +1071,18 @@ const EventEditor = ({
                               <input
                                 type="time"
                                 value={editedEndTime}
-                                onChange={handleEndTimeChange}
+                                onChange={(e) =>
+                                  setEditedEndTime(e.target.value)
+                                }
                                 className="bg-lightgray rounded-full px-3 py-2 w-full"
                               />
                             </div>
                           </li>
                         </ul>
                       </div>
-                      {/* {isEditMode ? (
-                        ""
-                      ) : (
-                        <> */}
+
                       <div className="p-3 flex justify-between items-center">
                         <div>Repeat Multiple Day</div>
-
                         <div>
                           <button
                             onClick={() => setShowRepeatSettings(true)}
@@ -1115,8 +1092,6 @@ const EventEditor = ({
                           </button>
                         </div>
                       </div>
-                      {/* </>
-                      )} */}
                     </div>
                   </>
                 )}
@@ -1144,6 +1119,7 @@ const EventEditor = ({
                   className="border-2 border-lightgray hover:bg-primary hover:text-white   px-5 py-2 rounded-full"
                   onClick={() => {
                     onClose();
+                    setSelectedDays([]);
                     setShowRepeatSettings(false);
                   }}
                 >
