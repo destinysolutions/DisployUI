@@ -653,7 +653,8 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                           url={YoutubeVideo}
                           className="w-full relative z-20 previewinner"
                           muted={isMuted}
-                          controls={areSubtitlesOn}
+                          // controls={areSubtitlesOn}
+                          controls={true}
                         />
                         <span className="absolute -top-4 -right-3 z-40 text-black">
                           <AiOutlineCloseCircle

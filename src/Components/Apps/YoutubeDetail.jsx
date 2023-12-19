@@ -564,12 +564,13 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
               {/* Place your video player here */}
               {showPreviewPopup && (
                 <>
-                  <div ref={modalRef} className="video-preview">
+                  <div ref={modalRef} className="video-preview">   
                     <ReactPlayer
                       url={YoutubeVideo}
                       className="w-full relative z-20 previewinner"
                       muted={isMuted}
-                      controls={areSubtitlesOn}
+                      // controls={areSubtitlesOn}
+                      controls={true}
                     />
                     <span className="absolute -top-4 -right-3 z-40 text-black">
                       <AiOutlineCloseCircle
