@@ -125,6 +125,8 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [STabs, setSTabs] = useState(1);
   const [records, setRecords] = useState(data);
+  const [searchValue, setSearchValue] = useState("");
+
 
   function updateTab(id) {
     setSTabs(id);
@@ -239,6 +241,8 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                 <input
                   type="text"
                   placeholder=" Search User Role"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value) }
                   className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
                 />
               </div>
@@ -310,7 +314,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
               {/*End of userrole details*/}
               <div className={STabs === 2 ? "" : "hidden"}>
-                <Userrole />
+                <Userrole searchValue={searchValue} />
               </div>
               {/*End of users details*/}
               <div className={STabs === 3 ? "" : "hidden"}>

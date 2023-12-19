@@ -451,15 +451,16 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                   >
                     <RiDeleteBinLine />
                   </button>
-
-                  <button className="sm:ml-2 xs:ml-1 mt-1">
-                    <input
-                      type="checkbox"
-                      className="h-7 w-7"
-                      checked={selectAll}
-                      onChange={handleSelectAll}
-                    />
-                  </button>
+                  {Array.isArray(youtubeData) && youtubeData.length > 0 && (
+                    <button className="sm:ml-2 xs:ml-1 mt-1">
+                      <input
+                        type="checkbox"
+                        className="h-7 w-7"
+                        checked={selectAll}
+                        onChange={handleSelectAll}
+                      />
+                    </button>
+                  )}
                 </div>
               </div>
               <div>

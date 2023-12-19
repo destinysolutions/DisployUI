@@ -19,6 +19,7 @@ const ScreenAssignModal = ({
 
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
+  console.log('screenCheckboxes', screenCheckboxes)
   const [screenData, setScreenData] = useState([]);
 
   const selectScreenRef = useRef(null);
@@ -179,6 +180,7 @@ const ScreenAssignModal = ({
                 onClick={() => {
                   setSelectScreenModal(false);
                   setAddScreenModal(false);
+                  setSelectedScreens([]);
                 }}
               >
                 <AiOutlineCloseCircle className="text-3xl" />
@@ -206,39 +208,47 @@ const ScreenAssignModal = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {screenData.map((screen) => (
-                    <tr
-                      key={screen.screenID}
-                      className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                    >
-                      <td className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="mr-3"
-                          onChange={() =>
-                            handleScreenCheckboxChange(screen.screenID)
-                          }
-                          checked={screenCheckboxes[screen.screenID]}
-                        />
+                  {screenData?.length > 0 ? (
+                    screenData.map((screen) => (
+                      <tr
+                        key={screen.screenID}
+                        className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                      >
+                        <td className="flex items-center">
+                          <input
+                            type="checkbox"
+                            className="mr-3"
+                            onChange={() =>
+                              handleScreenCheckboxChange(screen.screenID)
+                            }
+                            checked={screenCheckboxes[screen.screenID]}
+                          />
 
-                        {screen.screenName}
-                      </td>
+                          {screen.screenName}
+                        </td>
 
-                      <td className="text-center">
-                        <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
-                          Live
-                        </button>
-                      </td>
-                      <td className="text-center break-words">
-                        {screen.googleLocation}
-                      </td>
+                        <td className="text-center">
+                          <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
+                            Live
+                          </button>
+                        </td>
+                        <td className="text-center break-words">
+                          {screen.googleLocation}
+                        </td>
 
-                      <td className="text-center break-words">
-                        Schedule Name Till 28 June 2023
-                      </td>
-                      <td className="text-center break-words">{screen.tags}</td>
-                    </tr>
-                  ))}
+                        <td className="text-center break-words">
+                          Schedule Name Till 28 June 2023
+                        </td>
+                        <td className="text-center break-words">
+                          {screen.tags}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <p className="font-semibold text-center text-2xl">
+                      No Screen available.
+                    </p>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -247,6 +257,7 @@ const ScreenAssignModal = ({
                 className="border-2 border-primary px-5 py-2 rounded-full ml-3"
                 onClick={() => {
                   handleUpdateScreenAssign();
+                  setSelectedScreens([]);
                 }}
               >
                 Save

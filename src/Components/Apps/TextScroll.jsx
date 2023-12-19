@@ -359,14 +359,16 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                   >
                     <RiDeleteBinLine />
                   </button>
-                  <button className="sm:ml-2 xs:ml-1 mt-2 ">
-                    <input
-                      type="checkbox"
-                      className="h-7 w-7"
-                      checked={selectAll}
-                      onChange={handleSelectAll}
-                    />
-                  </button>
+                  {instanceData.length > 0 && (
+                    <button className="sm:ml-2 xs:ml-1 mt-2 ">
+                      <input
+                        type="checkbox"
+                        className="h-7 w-7"
+                        checked={selectAll}
+                        onChange={handleSelectAll}
+                      />
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="grid grid-cols-10 gap-4 mt-5">

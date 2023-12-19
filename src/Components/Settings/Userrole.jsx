@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { CiMenuKebab } from "react-icons/ci";
 
-const Userrole = () => {
+const Userrole = ({ searchValue }) => {
   const [showdata, setShowdata] = useState(false);
   const handleDropupClick = () => {
     setShowdata(!showdata);
@@ -31,6 +31,7 @@ const Userrole = () => {
     dropdownStates: {},
   });
   const [userRoleData, setUserRoleData] = useState([]);
+  const [filteruserRoleData, setFilterUserRoleData] = useState([]);
   const [screenIsApprovarID, setScreenIsApprovarID] = useState("");
   const [screenIsReviwerID, setScreenIsReviwerID] = useState("");
   const [myScheduleIsApprovarID, setMyScheduleIsApprovarID] = useState("");
@@ -83,6 +84,22 @@ const Userrole = () => {
   //     },
   //   }));
   // };
+
+  useEffect(() => {
+    const searchQuery = searchValue?.toLowerCase();
+    if (searchQuery) {
+      const filteredUser = userRoleData?.filter((item) =>
+        item?.orgUserRole?.toLocaleLowerCase()?.includes(searchQuery)
+      );
+      if (filteredUser.length > 0) {
+        setFilterUserRoleData(filteredUser);
+      } else {
+        setFilterUserRoleData([]);
+      }
+    }else{
+      setFilterUserRoleData([]);
+    }
+  }, [searchValue]);
 
   const handleActionClick = (rowId) => {
     setShowActionBox(rowId);
@@ -184,6 +201,7 @@ const Userrole = () => {
     axios
       .request(config)
       .then((response) => {
+        setRoleName("");
         handleFetchUserRoleData();
       })
       .catch((error) => {
@@ -655,7 +673,7 @@ const Userrole = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:px-5 md:px-5 sm:px-2 xs:px-2">
-        {userRoleData &&
+        {userRoleData && filteruserRoleData?.length === 0 && 
           userRoleData.length > 0 &&
           userRoleData?.map((userrole) => (
             <div
@@ -681,6 +699,31 @@ const Userrole = () => {
               </div>
             </div>
           ))}
+          {filteruserRoleData && filteruserRoleData?.length > 0 && filteruserRoleData?.map((userrole)=>(
+            <div
+              className="rounded-xl p-6 bg-[#E7EFFF] user-role-card"
+              key={userrole.orgUserRoleID}
+            >
+              <div className="flex justify-between">
+                <div className="role-name">
+                  <p>Total {userrole.userCount} Users</p>
+                  <h3 className="text-3xl text-primary my-2 break-words">
+                    {userrole.orgUserRole}
+                  </h3>
+                  <button
+                    onClick={() => {
+                      handleSelectByID(userrole.orgUserRoleID);
+                      setshowuserroleModal(true);
+                    }}
+                    className="bg-primary text-white items-center  rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50 border border-primary"
+                  >
+                    Edit Role
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+          
       </div>
 
       {/* <div className="md:px-5 sm:px-2 xs:px-2 mt-5">
@@ -758,6 +801,7 @@ const Userrole = () => {
                   onClick={() => {
                     setshowuserroleModal(false);
                     setUserRoleID("");
+                    setRoleName("");
                   }}
                 />
               </div>
@@ -1135,8 +1179,9 @@ const Userrole = () => {
                       <button
                         className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
                         onClick={() => {
-                          setshowuserroleModal(false);
                           setUserRoleID("");
+                          setRoleName("");
+                          setshowuserroleModal(false);
                         }}
                       >
                         Cancel
@@ -1145,6 +1190,7 @@ const Userrole = () => {
                         <button
                           onClick={() => {
                             handleSaveUserRole();
+                            setRoleName("");
                             setshowuserroleModal(false);
                           }}
                           className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
@@ -1155,6 +1201,7 @@ const Userrole = () => {
                         <button
                           onClick={() => {
                             handleUpdateUserRole();
+                            setRoleName("");
                             setshowuserroleModal(false);
                           }}
                           className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
