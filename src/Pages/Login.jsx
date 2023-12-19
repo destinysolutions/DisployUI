@@ -566,14 +566,12 @@ const Login = () => {
                     )}
                   </div>
 
-                  <div>
-                    <p
-                      className="ml-1 mt-2 not-italic text-white font-medium  text-right hover:text-SlateBlue"
-                      onClick={handleForgotPassword}
-                    >
-                      Forgot Password?
-                    </p>
-                  </div>
+                  <p
+                    className="ml-1 mt-2 not-italic text-white font-medium  text-right hover:text-SlateBlue"
+                    onClick={handleForgotPassword}
+                  >
+                    Forgot Password ?
+                  </p>
 
                   {/* {formik.errors.terms && formik.touched.terms && (
                     <div className="error">{formik.errors.terms}</div>
