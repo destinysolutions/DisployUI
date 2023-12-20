@@ -563,7 +563,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     setCompositionData(sortedData);
   };
 
-  console.log(compositionData);
+  console.log(layotuDetails);
 
   return (
     <>
