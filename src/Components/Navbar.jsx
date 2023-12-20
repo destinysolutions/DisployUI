@@ -7,6 +7,8 @@ import { SELECT_BY_ID_USERDETAIL } from "../Pages/Api";
 import { useSelector } from "react-redux";
 import { auth } from "../FireBase/firebase";
 import { MdOutlineNavigateNext } from "react-icons/md";
+import { handleLogout } from "../Redux/Authslice";
+import { useDispatch } from "react-redux";
 
 const getInitials = (name) => {
   let initials;
@@ -49,7 +51,9 @@ const Navbar = () => {
   const [showNotificationBox, setShowNotificationBox] = useState(false);
   const [regsiterData, setRegisterData] = useState([]);
 
-  const { user } = useSelector((state) => state.root.auth);
+  const { user, userDetails } = useSelector((state) => state.root.auth);
+
+  const dispatch = useDispatch();
 
   const handleProfileClick = (e) => {
     e.stopPropagation();
@@ -76,33 +80,8 @@ const Navbar = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      axios
-        .get(`${SELECT_BY_ID_USERDETAIL}?ID=${user?.userID}`)
-        .then((response) => {
-          setRegisterData(response.data.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }, []);
-
   //used for apply navigation
   const history = useNavigate();
-
-  //for signout
-  const handleSignOut = () => {
-    localStorage.removeItem("hasSeenMessage");
-    localStorage.removeItem("user");
-    localStorage.removeItem("userID");
-
-    localStorage.setItem("role_access", "");
-    window.location.reload();
-    history("/");
-    auth.signOut();
-  };
 
   // Parse the createdDate and calculate the trial end date
   const createdDate = new Date(regsiterData.createdDate);
@@ -191,11 +170,11 @@ const Navbar = () => {
               {/* profile box start */}
               <div className="relative">
                 <div>
-                  {regsiterData?.image == null ? (
+                  {userDetails?.image == null ? (
                     <img
                       src={createImageFromInitials(
                         500,
-                        regsiterData?.firstName,
+                        userDetails?.firstName,
                         color
                       )}
                       alt="profile"
@@ -204,7 +183,7 @@ const Navbar = () => {
                     />
                   ) : (
                     <img
-                      src={regsiterData?.image}
+                      src={userDetails?.image}
                       alt="profile"
                       className="profile cursor-pointer"
                       onClick={handleProfileClick}
@@ -215,7 +194,7 @@ const Navbar = () => {
                     <>
                       <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
                         <div className="flex items-center space-x-3  p-2">
-                          {regsiterData?.image == null ? (
+                          {userDetails?.image == null ? (
                             <img
                               src={createImageFromInitials(
                                 500,
@@ -228,7 +207,7 @@ const Navbar = () => {
                             />
                           ) : (
                             <img
-                              src={regsiterData?.image}
+                              src={userDetails?.image}
                               alt="profile"
                               className=" profile"
                               onClick={handleProfileClick}
@@ -236,7 +215,7 @@ const Navbar = () => {
                           )}
                           <div>
                             <div className="text-[#7C82A7] font-semibold text-lg">
-                              {regsiterData?.firstName} {regsiterData?.lastName}
+                              {userDetails?.firstName} {userDetails?.lastName}
                             </div>
                             {/* <div className="text-[#ACB0C7] font-medium text-base">
                                 Lead Developer
@@ -263,7 +242,7 @@ const Navbar = () => {
                           </div>
                           <button
                             className="text-[#001737] font-bold text-base "
-                            onClick={handleSignOut}
+                            onClick={() => dispatch(handleLogout())}
                           >
                             Sign out
                           </button>
@@ -272,8 +251,8 @@ const Navbar = () => {
                     </>
                   )}
                 </div>
-                {Array.isArray(regsiterData) &&
-                  regsiterData.map((data) => {
+                {Array.isArray(userDetails) &&
+                  userDetails.map((data) => {
                     // console.log(data);
                     const imgSrc = "";
                     if (data?.email) return null;

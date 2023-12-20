@@ -302,22 +302,9 @@ const Login = () => {
               toast.success("Login successfully.");
               window.location.href = "/";
             } else if (userRole == 2) {
-              // signInWithEmailAndPassword(auth, data.email, data.sub).then(
-              //   (userCredential) => {
-              //     const user = userCredential.user;
-              //     if (!user.emailVerified) {
-              //       alert("Please verify your email.");
-              //     } else {
-              //       const user_ID = res.userID;
-              //       localStorage.setItem("userID", JSON.stringify(res));
-              //       localStorage.setItem("role_access", "USER");
-              //       toast.success("Login successfully.");
-              //       navigate("/screens");
-              //     }
-              //   }
-              // );
               toast.success("Login successfully.");
               navigate("/screens");
+              window.location.href = "/";
             } else {
               console.log("Unexpected role value:", userRole);
               alert("Invalid role: " + userRole);
