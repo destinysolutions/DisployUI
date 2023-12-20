@@ -102,7 +102,6 @@ const Routing = () => {
   // }, []);
 
   const dispatch = useDispatch();
-
   if (!accessDetails)
     return (
       <LoginContainer
@@ -118,9 +117,6 @@ const Routing = () => {
       />
     );
   if (accessDetails === "USER" && user) {
-    const data = localStorage.getItem("userID");
-    // dispatch(loginUser(JSON.parse(data)));
-
     return (
       <BrowserRouter>
         <ErrorBoundary
@@ -282,7 +278,7 @@ const Routing = () => {
             />
 
             <Route
-              path="/Weather" 
+              path="/Weather"
               element={
                 <Weather
                   sidebarOpen={sidebarOpen}
@@ -291,7 +287,7 @@ const Routing = () => {
               }
             />
             <Route
-              path="/weatherdetail" 
+              path="/weatherdetail"
               element={
                 <WeatherDetail
                   sidebarOpen={sidebarOpen}
@@ -300,7 +296,7 @@ const Routing = () => {
               }
             />
             <Route
-              path="/weatherdetail/:id" 
+              path="/weatherdetail/:id"
               element={
                 <WeatherDetail
                   sidebarOpen={sidebarOpen}

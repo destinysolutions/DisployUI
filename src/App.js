@@ -6,13 +6,13 @@ import { useIdleTimer } from "react-idle-timer";
 import { useEffect } from "react";
 import { auth } from "./FireBase/firebase";
 import { useState } from "react";
-import { handleLogout } from "./Redux/Authslice";
+import { handleGetUserDetails, handleLogout } from "./Redux/Authslice";
 import { handleGetAllScheduleTimezone } from "./Redux/globalStates";
 
 const App = () => {
   const [timer, setTimer] = useState(0);
 
-  const { user, token } = useSelector((state) => state.root.auth);
+  const { user, token, loading } = useSelector((state) => state.root.auth);
 
   const dispatch = useDispatch();
 
@@ -92,6 +92,12 @@ const App = () => {
     }
     const TIMER = JSON.parse(window.localStorage.getItem("timer"));
     setTimer(TIMER);
+  }, [user]);
+
+  useEffect(() => {
+    if (user !== null) {
+      dispatch(handleGetUserDetails({ id: user?.userID }));
+    }
   }, [user]);
 
   return (

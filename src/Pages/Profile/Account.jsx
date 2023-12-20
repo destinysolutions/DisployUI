@@ -1,7 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import "../../Styles/Acsettings.css";
-import { useState } from "react";
-import { useRef } from "react";
 import {
   GET_ALL_COUNTRY,
   GET_ALL_CURRENCIES,
@@ -13,33 +11,75 @@ import {
 import axios from "axios";
 import { MdOutlinePhotoCamera } from "react-icons/md";
 import { useSelector } from "react-redux";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { isValidPhoneNumber } from "react-phone-number-input";
+import * as yup from "yup";
+import PhoneInput from "react-phone-input-2";
+import { isPossiblePhoneNumber } from "react-phone-number-input";
+import toast from "react-hot-toast";
+import "react-phone-input-2/lib/style.css";
+import { UpdateUserDetails, handleGetUserDetails } from "../../Redux/Authslice";
+import { useDispatch } from "react-redux";
 
 const Account = () => {
   const [file, setFile] = useState();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [address, setAddress] = useState("");
-  const [organization, setOrganization] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [language, setLanguage] = useState([]);
-  const [timezone, setTimezone] = useState([]);
-  const [selectedTimezoneName, setSelectedTimezoneName] = useState("");
-  const [selectedCurrencyName, setSelectedCurrencyName] = useState("");
-  const [selectedLanguageName, setSelectedLanguageName] = useState("");
-  const [currency, setCurrency] = useState([]);
-  const hiddenFileInput = useRef(null);
+  const [languages, setLanguages] = useState([]);
+  const [timezones, setTimezones] = useState([]);
+  const [currencies, setCurrencies] = useState([]);
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedState, setSelectedState] = useState("");
   const [isImageUploaded, setIsImageUploaded] = useState(false);
-  const [phoneNumberError, setPhoneNumberError] = useState("");
-  const [zipCodeError, setZipCodeError] = useState("");
 
-  const { token, user } = useSelector((state) => state.root.auth);
+  const { token, user, userDetails, loading } = useSelector(
+    (state) => state.root.auth
+  );
   const authToken = `Bearer ${token}`;
+
+  const dispatch = useDispatch();
+  const hiddenFileInput = useRef(null);
+
+  const profileSchema = yup.object({
+    firstName: yup
+      .string()
+      .required("firstName is required")
+      .trim()
+      .max(60, "max character limit reached")
+      .min(2, "minimum two character required")
+      .typeError("only characters allowed")
+      .matches(
+        /^([A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/gi,
+        "only contain latin letters"
+      ),
+    lastName: yup
+      .string()
+      .required("lastName is required")
+      .trim()
+      .max(60, "max character limit reached")
+      .min(2, "minimum two character required")
+      .typeError("only characters allowed")
+      .matches(
+        /^([A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/gi,
+        "only contain latin letters"
+      ),
+    googleLocation: yup.string().required("address is required"),
+    timeZone: yup.string().required("timezone is required"),
+    state: yup
+      .string()
+      .required("state is required")
+      .max(60, "max character limit reached")
+      .min(2, "minimum two character required")
+      .typeError("only characters allowed"),
+    zipCode: yup
+      .string()
+      .matches(/^(?:[A-Z0-9]+([- ]?[A-Z0-9]+)*)?$/, "enter valid code")
+      .required("zipcode is required"),
+    country: yup.string().required("country is required"),
+    language: yup.string().required("language is required"),
+    currency: yup.string().required("currency is required"),
+    phoneNumber: yup.string().required("phone is required"),
+    emailID: yup.string().email().required("Email is required"),
+  });
 
   const validatePhoneNumber = (value) => {
     const phoneRegex =
@@ -59,15 +99,18 @@ const Account = () => {
   };
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-    setIsImageUploaded(true);
+    if (e.target.files[0] !== undefined && e.target.files[0] !== null) {
+      const selectedFile = e.target.files[0];
+      setFile(selectedFile);
+      setIsImageUploaded(true);
+    }
   };
 
   const handleImageReset = () => {
     setFile(null);
     setIsImageUploaded(false);
   };
+
   const handleClick = (e) => {
     hiddenFileInput.current.click();
   };
@@ -90,81 +133,73 @@ const Account = () => {
           timezoneResponse,
         ] = responses;
 
-        setCurrency(currenciesResponse.data.data);
-        setLanguage(languageResponse.data.data);
+        setCurrencies(currenciesResponse.data.data);
+        setLanguages(languageResponse.data.data);
         setCountries(countriesResponse.data.data);
-        setTimezone(timezoneResponse.data.data);
+        setTimezones(timezoneResponse.data.data);
       })
       .catch((error) => {
         console.error(error);
       });
 
-    if (user) {
-      axios
-        .get(`${SELECT_BY_ID_USERDETAIL}?ID=${user?.userID}`)
-        .then((response) => {
-          const fetchData = response.data.data;
-          setFirstName(fetchData.firstName);
-          setLastName(fetchData.lastName);
-          setEmail(fetchData.emailID);
-          setPhoneNumber(fetchData.phoneNumber);
-          setAddress(fetchData.googleLocation);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+    // if (user) {
+    //   axios
+    //     .get(`${SELECT_BY_ID_USERDETAIL}?ID=${user?.userID}`)
+    //     .then((response) => {
+    //       const fetchData = response.data.data;
+    //       setFirstName(fetchData.firstName);
+    //       setLastName(fetchData.lastName);
+    //       setEmail(fetchData.emailID);
+    //       setPhoneNumber(fetchData.phoneNumber);
+    //       setAddress(fetchData.googleLocation);
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // }
   }, []);
 
-  // Fetch states based on the selected country
-  useEffect(() => {
-    if (selectedCountry) {
-      fetch(`${GET_SELECT_BY_STATE}?CountryID=${selectedCountry}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setStates(data.data);
-        })
-        .catch((error) => {
-          console.log("Error fetching states data:", error);
-        });
-    }
-  }, [selectedCountry]);
+  // useEffect(() => {
+  //   if (user !== null) {
+  //     dispatch(handleGetUserDetails({ id: user?.userID }));
+  //   }
+  // }, [user]);
 
-  const updateUser = async () => {
+  const updateUser = async (details) => {
     // Validate phone number
-    if (!validatePhoneNumber(phoneNumber)) {
-      setPhoneNumberError("Invalid phone number");
-      return;
-    } else {
-      setPhoneNumberError("");
-    }
+    // if (!validatePhoneNumber(details?.phoneNumber)) {
+    //   setPhoneNumberError("Invalid phone number");
+    //   return;
+    // } else {
+    //   setPhoneNumberError("");
+    // }
 
-    // Validate zip code
-    if (!validateZipCode(zipCode)) {
-      setZipCodeError("Invalid zip code");
-      return;
-    } else {
-      setZipCodeError("");
-    }
+    // // Validate zip code
+    // if (!validateZipCode(details?.zipCode)) {
+    //   setZipCodeError("Invalid zip code");
+    //   return;
+    // } else {
+    //   setZipCodeError("");
+    // }
 
     let data = new FormData();
     data.append("orgUserSpecificID", user?.userID);
-    data.append("firstName", firstName);
-    data.append("lastName", lastName);
-    data.append("email", email);
-    data.append("phone", phoneNumber);
+    data.append("firstName", details?.firstName);
+    data.append("lastName", details?.lastName);
+    data.append("email", details?.emailID);
+    data.append("phone", details?.phoneNumber);
     data.append("isActive", "1");
     data.append("orgUserID", user?.userID);
     data.append("userRole", "0");
-    data.append("countryID", selectedCountry || 0);
+    data.append("countryID", details?.selectedCountry || 0);
     data.append("company", "Admin");
     data.append("operation", "Save");
-    data.append("address", address);
-    data.append("stateId", selectedState || 0);
-    data.append("zipCode", zipCode || 0);
-    data.append("languageId", selectedLanguageName || 0);
-    data.append("timeZoneId", selectedTimezoneName || 0);
-    data.append("currencyId", selectedCurrencyName || 0);
+    data.append("address", details?.googleLocation);
+    data.append("stateId", details?.selectedState || 0);
+    data.append("zipCode", details?.zipCode || 0);
+    data.append("languageId", details?.language || 0);
+    data.append("timeZoneId", details?.timeZone || 0);
+    data.append("currencyId", details?.currency || 0);
     data.append("File", file);
 
     let config = {
@@ -172,7 +207,7 @@ const Account = () => {
       maxBodyLength: Infinity,
       url: "https://disployapi.thedestinysolutions.com/api/UserMaster/AddOrgUserMaster",
       headers: {
-        "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
+        "Content-Type": `multipart/form-data`,
         Authorization: authToken,
       },
       data: data,
@@ -185,22 +220,145 @@ const Account = () => {
     }
   };
 
-  const resetFormData = () => {
-    setFile(null);
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPhoneNumber("");
-    setAddress("");
-    setOrganization("");
-    setZipCode("");
-    setSelectedLanguageName("");
-    setSelectedTimezoneName("");
-    setCurrency("");
-    setSelectedCountry("");
-    setSelectedState("");
-    setIsImageUploaded(false);
+  // const resetFormData = () => {
+  //   setFile(null);
+  //   setFirstName("");
+  //   setLastName("");
+  //   setEmail("");
+  //   setPhoneNumber("");
+  //   setAddress("");
+  //   setOrganization("");
+  //   setZipCode("");
+  //   setSelectedLanguageName("");
+  //   setSelectedTimezoneName("");
+  //   setCurrency("");
+  //   setSelectedCountry("");
+  //   setSelectedState("");
+  //   setIsImageUploaded(false);
+  // };
+
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    control,
+    resetField,
+    watch,
+    formState: { errors, isDirty },
+  } = useForm({
+    shouldFocusError: true,
+    resolver: yupResolver(profileSchema),
+    defaultValues: useMemo(() => {
+      const user = {
+        firstName: userDetails?.firstName,
+        lastName: userDetails?.lastName,
+        phoneNumber: userDetails?.phoneNumber,
+        address: userDetails?.googleLocation,
+        emailID: userDetails?.emailID,
+        organization: userDetails?.organization,
+        country: userDetails?.shippingAddress?.country,
+        city: userDetails?.shippingAddress?.city,
+        zipCode: userDetails?.shippingAddress?.zipCode,
+        timeZone: userDetails?.shippingAddress?.timeZone,
+        country: userDetails?.shippingAddress?.country,
+        state: userDetails?.shippingAddress?.state,
+        language: userDetails?.shippingAddress?.language,
+        currency: userDetails?.shippingAddress?.currency,
+      };
+      return user;
+    }, [userDetails]),
+  });
+
+  const onSubmit = (data) => {
+    const { phoneNumber } = data;
+
+    // if (!isDirty) return;
+    if (
+      !isPossiblePhoneNumber(phoneNumber) ||
+      !isValidPhoneNumber(phoneNumber)
+    ) {
+      toast.remove();
+      toast.error("phoneNumber is invalid");
+      return true;
+    } else if (
+      (getValues("phoneNumber") !== "" &&
+        !isPossiblePhoneNumber(phoneNumber)) ||
+      !isValidPhoneNumber(phoneNumber)
+    ) {
+      toast.remove();
+      toast.error("phoneNumber is invalid");
+      return true;
+    }
+    // updateUser(data);
+
+    // let formdata = new FormData();
+    // formdata.append("orgUserSpecificID", userDetails?.userID);
+    // formdata.append("firstName", firstName);
+    // formdata.append("lastName", lastName);
+    // formdata.append("emailID", emailID);
+    // formdata.append("phoneNumber", phoneNumber);
+    // formdata.append("isActive", "1");
+    // formdata.append("orgUserID", user?.userID);
+    // formdata.append("userRole", "0");
+    // formdata.append("countryID", country || 0);
+    // formdata.append("company", "Admin");
+    // formdata.append("operation", "Save");
+    // formdata.append("address", googleLocation);
+    // formdata.append("stateId", state || 0);
+    // formdata.append("zipCode", zipCode || 0);
+    // formdata.append("languageId", language || 0);
+    // formdata.append("timeZoneId", timeZone || 0);
+    // formdata.append("currencyId", currency || 0);
+    // // formdata.append("File", file);
+
+    const response = dispatch(
+      UpdateUserDetails({
+        data,
+        file,
+        user,
+        token,
+      })
+    );
+    if (response) {
+      response.then((res) => {
+        console.log(res);
+        // if (res?.payload?.status === "success") {
+        //   toast.success("profile edited successfully.", { duration: 2000 });
+        // }
+      });
+    }
   };
+
+  // Fetch states based on the selected country
+  useEffect(() => {
+    if (watch("country")) {
+      fetch(`${GET_SELECT_BY_STATE}?CountryID=${getValues("country")}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setStates(data.data);
+        })
+        .catch((error) => {
+          console.log("Error fetching states data:", error);
+        });
+    }
+  }, [watch("country")]);
+
+  useEffect(() => {
+    if (userDetails !== null) {
+      for (const key in userDetails) {
+        // console.log(key);
+        // console.log(userDetails[key]);
+        // if (userDetails[key] !== null) {
+        setValue(key, userDetails[key]);
+        // }
+      }
+      // setValue("")
+    }
+  }, [userDetails]);
+
+  console.log(file);
+  // console.log(getValues());
 
   return (
     <>
@@ -208,7 +366,7 @@ const Account = () => {
         <h4 className="text-xl font-bold p-5">Profile Details</h4>
         <div className="flex items-center border-b border-b-[#E4E6FF] p-5">
           <div className="layout-img me-5">
-            {isImageUploaded ? (
+            {file !== undefined && file !== null ? (
               <img
                 src={URL.createObjectURL(file)}
                 alt="Uploaded"
@@ -233,15 +391,13 @@ const Account = () => {
                 ref={hiddenFileInput}
                 onChange={(e) => handleFileChange(e)}
               />
-              {isImageUploaded ? (
+              {file !== undefined && file !== null && (
                 <button
                   className=" px-5 py-2 border border-primary rounded-full text-primary"
                   onClick={handleImageReset}
                 >
                   Remove
                 </button>
-              ) : (
-                ""
               )}
             </div>
             <p className="text-lg block mt-3 ml-2">
@@ -251,10 +407,11 @@ const Account = () => {
         </div>
 
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            updateUser();
-          }}
+          onSubmit={handleSubmit(onSubmit)}
+          // onSubmit={(e) => {
+          //   e.preventDefault();
+          //   updateUser();
+          // }}
         >
           <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
             <div className="-mx-3 md:flex mb-6">
@@ -263,50 +420,73 @@ const Account = () => {
                 <input
                   className="w-full text-black border rounded-lg py-3 px-4 mb-3"
                   type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  {...register("firstName")}
                 />
                 <div></div>
+                <span className="error">{errors?.firstName?.message}</span>
               </div>
               <div className="md:w-1/2 px-3 mb-6 md:mb-0">
                 <label className="label_top text-xs">Last Name</label>
                 <input
                   className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                   type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  {...register("lastName")}
                 />
+
                 <div></div>
+                <span className="error">{errors?.lastName?.message}</span>
               </div>
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Email</label>
                 <input
                   readOnly
                   className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
-                  type="email"
                   name="email"
-                  value={email}
+                  disabled
+                  type="email"
+                  {...register("emailID")}
                 />
+                <span className="error">{errors?.emailID?.message}</span>
               </div>
             </div>
             <div className="-mx-3 md:flex mb-6">
               <div className="md:w-1/2 px-3 mb-6 md:mb-0">
-                <label className="label_top text-xs">Phone Number</label>
-                <input
-                  className={`w-full text-black border rounded-lg py-3 px-4 mb-3 ${
-                    phoneNumberError ? "border-red" : ""
-                  }`}
-                  type="text"
+                <label className="label_top text-xs z-10">Phone Number</label>
+                <Controller
                   name="phoneNumber"
-                  value={phoneNumber}
-                  onChange={(e) => {
-                    setPhoneNumber(e.target.value);
-                    setPhoneNumberError("");
+                  control={control}
+                  rules={{
+                    validate: (value) => isValidPhoneNumber(value),
                   }}
+                  render={({ field: { onChange, value } }) => (
+                    <PhoneInput
+                      country={"in"}
+                      onChange={(value) => {
+                        onChange((e) => {
+                          setValue("phoneNumber", "+".concat(value));
+                        });
+                      }}
+                      value={value}
+                      autocompleteSearch={true}
+                      countryCodeEditable={false}
+                      enableSearch={true}
+                      inputStyle={{
+                        width: "100%",
+                        background: "white",
+                        padding: "25px 0 25px 3rem",
+                        borderRadius: "10px",
+                        fontSize: "1rem",
+                        border: "1px solid #000",
+                      }}
+                      dropdownStyle={{
+                        color: "#000",
+                        fontWeight: "600",
+                        padding: "0px 0px 0px 10px",
+                      }}
+                    />
+                  )}
                 />
-                {phoneNumberError && phoneNumber.trim() !== "" && (
-                  <p className="text-red text-xs mt-1">{phoneNumberError}</p>
-                )}
+                <span className="error">{errors?.phoneNumber?.message}</span>
               </div>
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Address</label>
@@ -314,9 +494,9 @@ const Account = () => {
                   className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                   type="text"
                   placeholder="132, My Street, Kingston, New York 12401."
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  {...register("googleLocation")}
                 />
+                <span className="error">{errors?.googleLocation?.message}</span>
               </div>
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Roles</label>
@@ -325,38 +505,29 @@ const Account = () => {
                   className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                   type="text"
                   placeholder="Admin"
-                  value={organization}
-                  onChange={(e) => setOrganization(e.target.value)}
+                  {...register("role")}
                 />
+                <span className="error">{errors?.role?.message}</span>
               </div>
             </div>
             <div className="-mx-3 md:flex mb-2">
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Zip Code</label>
                 <input
-                  className={`w-full text-black border rounded-lg py-3 px-4 mb-3 ${
-                    zipCodeError ? "border-red" : ""
-                  }`}
+                  className={`w-full text-black border border-black rounded-lg py-3 px-4 mb-3 `}
                   type="text"
                   name="zipCode"
                   placeholder="100010"
-                  value={zipCode}
-                  onChange={(e) => {
-                    setZipCode(e.target.value);
-                    setZipCodeError("");
-                  }}
+                  {...register("zipCode")}
                 />
-                {zipCodeError && zipCode.trim() !== "" && (
-                  <p className="text-red text-xs mt-1">{zipCodeError}</p>
-                )}
+                <span className="error">{errors?.zipCode?.message}</span>
               </div>
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Country</label>
                 <div>
                   <select
                     className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-                    onChange={(e) => setSelectedCountry(e.target.value)}
-                    value={selectedCountry}
+                    {...register("country")}
                   >
                     {countries.map((country) => (
                       <option key={country.countryID} value={country.countryID}>
@@ -364,6 +535,7 @@ const Account = () => {
                       </option>
                     ))}
                   </select>
+                  <span className="error">{errors?.country?.message}</span>
                 </div>
               </div>
               <div className="md:w-1/2 px-3">
@@ -371,19 +543,17 @@ const Account = () => {
                 <div>
                   <select
                     className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-                    id="location"
-                    name="selectedState"
-                    onChange={(e) => setSelectedState(e.target.value)}
-                    value={selectedState}
+                    name="state"
+                    {...register("state")}
                   >
-                    {selectedCountry &&
-                      Array.isArray(states) &&
+                    {Array.isArray(states) &&
                       states.map((state) => (
                         <option key={state.stateId} value={state.stateId}>
                           {state.stateName}
                         </option>
                       ))}
                   </select>
+                  <span className="error">{errors?.state?.message}</span>
                 </div>
               </div>
             </div>
@@ -393,10 +563,9 @@ const Account = () => {
                 <div>
                   <select
                     className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-                    value={selectedLanguageName}
-                    onChange={(e) => setSelectedLanguageName(e.target.value)}
+                    {...register("language")}
                   >
-                    {language.map((language) => (
+                    {languages.map((language) => (
                       <option
                         value={language.languageId}
                         key={language.languageId}
@@ -405,6 +574,7 @@ const Account = () => {
                       </option>
                     ))}
                   </select>
+                  <span className="error">{errors?.language?.message}</span>
                 </div>
               </div>
               <div className="md:w-1/2 px-3">
@@ -412,10 +582,9 @@ const Account = () => {
                 <div>
                   <select
                     className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-                    value={selectedTimezoneName}
-                    onChange={(e) => setSelectedTimezoneName(e.target.value)}
+                    {...register("timeZone")}
                   >
-                    {timezone.map((timezone) => (
+                    {timezones.map((timezone) => (
                       <option
                         value={timezone.timeZoneID}
                         key={timezone.timeZoneID}
@@ -424,6 +593,7 @@ const Account = () => {
                       </option>
                     ))}
                   </select>
+                  <span className="error">{errors?.timeZone?.message}</span>
                 </div>
               </div>
               <div className="md:w-1/2 px-3">
@@ -431,12 +601,11 @@ const Account = () => {
                 <div>
                   <select
                     className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-                    value={selectedCurrencyName}
-                    onChange={(e) => setSelectedCurrencyName(e.target.value)}
+                    {...register("currency")}
                   >
-                    {currency &&
-                      currency.length > 0 &&
-                      currency?.map((currency) => (
+                    {currencies &&
+                      currencies.length > 0 &&
+                      currencies?.map((currency) => (
                         <option
                           value={currency.currencyId}
                           key={currency.currencyId}
@@ -445,6 +614,7 @@ const Account = () => {
                         </option>
                       ))}
                   </select>
+                  <span className="error">{errors?.currency?.message}</span>
                 </div>
               </div>
             </div>
@@ -453,13 +623,14 @@ const Account = () => {
                 <button
                   type="submit"
                   className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3"
-                  // onClick={updateUser}
+                  disabled={loading}
                 >
-                  Save Changes
+                  {loading ? "Saving..." : "Save Changes"}
                 </button>
                 <button
                   className=" px-5 py-2 border border-primary rounded-full text-primary"
-                  onClick={resetFormData}
+                  type="reset"
+                  disabled={loading}
                 >
                   Reset
                 </button>

@@ -259,7 +259,7 @@ textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
-  border: 1px solid #ddd !important;
+  /* border: 1px solid #ddd ; */
 
   background: #fff !important;
   transition: background-color 5000s ease-in-out 0s !important;
@@ -441,7 +441,6 @@ div#tooltip-bottom:before {
     height: 25px;
   }
 }
-
 
 /* ---------------------------screens css-------------------------------- */
 /* comman css */
@@ -949,10 +948,10 @@ button.daysbtn {
 .assetstable table tr:nth-child(even),
 .schedual-table table tr:nth-child(even),
 .AddMedia-table tbody:nth-child(even),
-.set-schedule-table   tr:nth-child(even),
+.set-schedule-table tr:nth-child(even),
 .composition-table tr:nth-child(even),
 .selectedlayout-table tr:nth-child(even),
-.addmedia-table tr:nth-child(even){
+.addmedia-table tr:nth-child(even) {
   background: #ebebeb;
 }
 .screen-table tr,
@@ -961,17 +960,17 @@ button.daysbtn {
 .assetstable table tr,
 .schedual-table table tr,
 .AddMedia-table tbody,
-.set-schedule-table  tr,
+.set-schedule-table tr,
 .composition-table tr,
 .selectedlayout-table tr,
-.addmedia-table tr{
+.addmedia-table tr {
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 .composition-table tr td,
 .selectedlayout-table tr td,
 .screen-table tr td,
-.addmedia-table tr td{
-  font-size:13px;
+.addmedia-table tr td {
+  font-size: 13px;
 }
 .imagebox.relative.p-3 img {
   /* min-height: 250px;
@@ -980,20 +979,29 @@ button.daysbtn {
 .relative.searchbox input {
   border: 1px solid #ccc;
 }
-.relative.searchbox input::placeholder{
-  color:#444 !important;
+.relative.searchbox input::placeholder {
+  color: #444 !important;
   font-size: 14px !important;
 }
-@media(max-width:1366px){
-  .Set-Schedule-popup{
-    min-height:350px;
-    max-height:350px;
+@media (max-width: 1366px) {
+  .Set-Schedule-popup {
+    min-height: 350px;
+    max-height: 350px;
     overflow-y: scroll;
   }
 }
-@media(max-width:1244px){
-  .screen-section{
+@media (max-width: 1244px) {
+  .screen-section {
     overflow-x: auto;
   }
-  
+}
+
+.error {
+  @apply text-red font-medium text-sm capitalize;
+}
+
+/* react input phone style changes */
+.react-tel-input .flag-dropdown {
+  border: 1px solid black;
+  background-color: white;
 }

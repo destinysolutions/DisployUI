@@ -563,6 +563,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     setCompositionData(sortedData);
   };
 
+  console.log(layotuDetails);
   return (
     <>
       <div className="flex bg-white py-3 border-b border-gray">
