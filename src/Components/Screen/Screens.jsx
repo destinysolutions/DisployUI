@@ -1532,7 +1532,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       )}
 
                       {tagsContentVisible && (
-                        <td className="p-2 text-center flex flex-wrap items-center justify-center gap-2 mt-6">
+                        <td className="p-2 text-center flex flex-wrap items-center justify-center gap-2 mt-6 break-all">
                           {(screen?.tags === "" || screen?.tags === null) && (
                             <span>
                               <AiOutlinePlusCircle
@@ -1923,7 +1923,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       )}
 
                       {tagsContentVisible && (
-                        <td className="p-2 text-center flex flex-wrap items-center justify-center gap-2 mt-6">
+                        <td className="p-2 text-center flex flex-wrap items-center justify-center gap-2 mt-6 break-all">
                           {(screen?.tags === "" || screen?.tags === null) && (
                             <span>
                               <AiOutlinePlusCircle

@@ -18,7 +18,8 @@ const AddOrEditTagPopup = ({
   setUpdateTextscrollTag,
   setUpdateTagYoutube,
   handleUpdateTagsWeather,
-  setUpdateTagWeather
+  setUpdateTagWeather,
+  action,
 }) => {
   const [tagValue, setTagValue] = useState("");
 
@@ -26,7 +27,9 @@ const AddOrEditTagPopup = ({
 
   function handleClickOutside() {
     setShowTagModal(false);
-    setTags([]);
+    if (action !== "create") {
+      setTags([]);
+    }
     if (from === "screen") {
       setTagUpdateScreeen(null);
     }
@@ -36,8 +39,8 @@ const AddOrEditTagPopup = ({
     if (from === "youtube") {
       setUpdateTagYoutube(null);
     }
-    if(from === "weather"){
-      setUpdateTagWeather(null)
+    if (from === "weather") {
+      setUpdateTagWeather(null);
     }
     if (from === "textscroll") {
       setUpdateTextscrollTag(null);

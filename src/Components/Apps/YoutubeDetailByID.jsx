@@ -651,7 +651,8 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                       <div ref={modalRef} className="video-preview">
                         <ReactPlayer
                           url={YoutubeVideo}
-                          className="w-full relative z-20 previewinner"
+                          className="youtube-preview"
+                          // className="w-full relative z-20 previewinner"
                           muted={isMuted}
                           // controls={areSubtitlesOn}
                           controls={true}

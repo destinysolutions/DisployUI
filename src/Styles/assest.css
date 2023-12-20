@@ -520,6 +520,8 @@ td .tabicon svg {
   padding: 15px 10px;
   border-radius: 5px;
   box-shadow: 0px 10px 20px #ccc;
+  max-height: 200px;
+  overflow-y: auto;
 }
 .drag-over {
   background-color: #a0c4ff; /* Change the background color when hovered over */

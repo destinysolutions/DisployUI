@@ -304,7 +304,7 @@ const Defaultmedia = () => {
         </ul>
       </div>
       {mediaTabs === 1 && (
-        <div className="flex items-center w-full h-auto gap-2 overflow-x-scroll">
+        <div className="flex items-center w-full h-auto gap-2">
           <div className="w-4/12 p-3">
             <div className="flex items-center justify-center mb-5 flex-wrap">
               <label className="mr-3 text-primary lg:text-lg md:text-lg sm:text-base xs:text-base font-medium py-2">
@@ -465,7 +465,7 @@ const Defaultmedia = () => {
                                   <th className="p-3 w-80 text-left">
                                     Media Name
                                   </th>
-                                  <th>Date Added</th>
+                                  <th className="p-3">Date Added</th>
                                   <th className="p-3">Size</th>
                                   <th className="p-3">Type</th>
                                 </tr>
@@ -488,15 +488,15 @@ const Defaultmedia = () => {
                                         <td className="p-3 text-left">
                                           {asset.assetName}
                                         </td>
-                                        <td className="p-3">
+                                        <td className="p-3 text-center">
                                           {moment(asset.createdDate).format(
                                             "YYYY-MM-DD hh:mm"
                                           )}
                                         </td>
-                                        <td className="p-3">
+                                        <td className="p-3 text-center">
                                           {asset.fileSize}
                                         </td>
-                                        <td className="p-3">
+                                        <td className="p-3 text-center">
                                           {asset.assetType}
                                         </td>
                                       </tr>

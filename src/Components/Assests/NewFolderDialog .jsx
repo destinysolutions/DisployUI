@@ -61,6 +61,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [isMoveToOpen, setIsMoveToOpen] = useState(false);
   const [editMode, setEditMode] = useState(null);
+  const [FolderDisable, setFolderDisable] = useState(false);
 
   const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
@@ -178,12 +179,31 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
         ];
         setFolderData(allAssets);
         setLoading(false);
+        setFolderDisable(false);
       })
       .catch((error) => {
         console.log(error);
         setLoading(false);
       });
   };
+
+  useEffect(() => {
+    const filterData = folderData?.filter(
+      (item) => item?.assetID !== selectedItems?.assetID
+    );
+    const obj = {
+      status: 200,
+      folder: filterData,
+      image: NestedNewFolder?.image,
+      doc: NestedNewFolder?.doc,
+      video: NestedNewFolder?.video,
+      onlineimages: NestedNewFolder?.onlineimages,
+      onlinevideo: NestedNewFolder?.onlinevideo,
+      onlinedoc: NestedNewFolder?.onlinedoc,
+      perentIDData: NestedNewFolder?.perentIDData,
+    };
+    setNestedNewFolder(obj);
+  }, [selectedItems]);
 
   useEffect(() => {
     if (folderId) {
@@ -214,6 +234,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const createNestedFolder = () => {
+    setFolderDisable(true);
     let baseFolderName = "New Folder";
     let folderNameToCheck = baseFolderName;
     let counter = 1;
@@ -469,6 +490,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                 </button>
                 <button
                   onClick={createNestedFolder}
+                  disabled={FolderDisable}
                   className="flex align-middle text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 >
                   <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
@@ -513,7 +535,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                               className="w-full"
                               onChange={(e) => setFolderName(e.target.value)}
                               onBlur={() => {
-                                saveFolderName(item.assetID, folderName);
+                                // saveFolderName(item.assetID, folderName);
                                 setEditMode(null);
                               }}
                               onKeyDown={(e) =>
@@ -526,6 +548,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                               <span
                                 onClick={() => {
                                   setEditMode(item.assetID);
+                                  setFolderName(item?.assetName);
                                 }}
                                 className="cursor-pointer"
                               >

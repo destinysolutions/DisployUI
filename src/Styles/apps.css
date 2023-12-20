@@ -41,7 +41,7 @@
 }
 
 /* Weather dropdown */
-.editdw-weather{
+.editdw-weather {
   position: absolute;
   background: #fff;
   padding: 15px;
@@ -55,7 +55,8 @@
   top: 140px;
 }
 
-.editdw:before, .editdw-weather:before {
+.editdw:before,
+.editdw-weather:before {
   content: "";
   position: absolute;
   width: 15px;
@@ -115,14 +116,19 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 85%;
-  max-height: 80%;
-  min-height: 80%;
+  /* width: 85%; */
+  /* max-height: 80%;
+  min-height: 80%; */
   background-color: #fff;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   border: 1px solid #ccc;
   z-index: 1000;
   /* overflow: hidden; */
+}
+
+.youtube-preview {
+  width: 900px !important;
+  height: 500px !important;
 }
 .previewinner {
   width: 100% !important;
@@ -131,4 +137,9 @@
 .app-instance-preview {
   width: 100% !important;
   height: 50vh !important;
+}
+
+.newScreenDetails {
+  max-width: 700px !important;
+  min-width: 400px !important;
 }
