@@ -207,10 +207,10 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
           //   toast.error(`Upload failed for file ${image.name}`);
           // }
 
-          if(selectedImages?.length - 1 === index && response.status === 200){
+          if (selectedImages?.length - 1 === index && response.status === 200) {
             toast.success(`File uploaded successfully.`);
           }
-          if(response.status !== 200){
+          if (response.status !== 200) {
             toast.error(`Upload failed for file ${image.name}`);
           }
         } catch (error) {
@@ -584,7 +584,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               {/* end pixabay */}
             </span>
 
-            <OtherOptionsForAssets />
+            {/* <OtherOptionsForAssets /> */}
 
             {/*start app*/}
             {/* <Link
