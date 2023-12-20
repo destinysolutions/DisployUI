@@ -254,7 +254,7 @@ const ShowAssetModal = ({
               )}
             </div>
 
-            <div className="lg:p-0 md:p-0 sm:p-0 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1">
+            <div className="lg:p-10 md:p-10 sm:p-10 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1">
               <div className={popupActiveTab !== 1 && "hidden"}>
                 <div className="flex flex-wrap w-full items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                   <div className="mb-5 relative ">
@@ -273,7 +273,7 @@ const ShowAssetModal = ({
                     </button>
                   </Link>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover w-full addmedia-table">
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[210px] max-h-[210px] object-cover w-full addmedia-table">
                   <table
                     style={{
                       borderCollapse: "separate",
