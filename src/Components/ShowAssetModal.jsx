@@ -273,7 +273,7 @@ const ShowAssetModal = ({
                     </button>
                   </Link>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[210px] max-h-[210px] object-cover w-full addmedia-table">
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[50vh] max-h-[50vh] object-cover w-full addmedia-table">
                   <table
                     style={{
                       borderCollapse: "separate",
