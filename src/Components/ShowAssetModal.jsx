@@ -254,7 +254,7 @@ const ShowAssetModal = ({
               )}
             </div>
 
-            <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1">
+            <div className="lg:p-0 md:p-0 sm:p-0 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1">
               <div className={popupActiveTab !== 1 && "hidden"}>
                 <div className="flex flex-wrap w-full items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                   <div className="mb-5 relative ">
@@ -262,7 +262,7 @@ const ShowAssetModal = ({
                     <input
                       type="text"
                       placeholder="Search assest"
-                      className="border border-primary rounded-full pl-7 py-2 search-user"
+                      className="border border-primary rounded-full pl-7 py-2 search-user w-56"
                       value={searchAssest}
                       onChange={(e) => handleSearchAssest(e, "asset")}
                     />
@@ -431,12 +431,12 @@ const ShowAssetModal = ({
               </div>
               <div className={popupActiveTab !== 2 && "hidden"}>
                 <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                  <div className="mb-5 relative w-fit">
+                  <div className="mb-5 relative">
                     <AiOutlineSearch className="absolute top-2 left-2 w-6 h-5 z-10 text-gray" />
                     <input
                       type="text"
                       placeholder="Search Composition"
-                      className="border border-primary rounded-full px-7 py-2 search-user w-full"
+                      className="border border-primary rounded-full px-7 py-2 search-user w-56"
                       value={searchComposition}
                       onChange={(e) => handleSearchAssest(e, "composition")}
                     />
@@ -592,7 +592,7 @@ const ShowAssetModal = ({
           </div>
         </div>
 
-        <div className="flex justify-between items-center p-5">
+        <div className="flex justify-between items-center pl-5 pr-5 pb-4">
           <p className="text-black">Content will always be playing Confirm</p>
           <button
             className="bg-primary text-white rounded-full px-5 py-2"

@@ -22,6 +22,7 @@ import {
 import {
   AiOutlineClose,
   AiOutlineCloseCircle,
+  AiOutlinePlusCircle,
   AiOutlineSearch,
 } from "react-icons/ai";
 import { RiAppsFill, RiComputerLine } from "react-icons/ri";
@@ -37,6 +38,8 @@ import {
   handleGetTextScrollData,
   handleGetYoutubeData,
 } from "../../../Redux/AppsSlice";
+import AddOrEditTagPopup from "../../AddOrEditTagPopup";
+import toast from "react-hot-toast";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
@@ -46,7 +49,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
+  const { allAppsData } = useSelector((s) => s.root.apps);
 
+  const [appDatas, setAppDatas] = useState();
   const [tagName, setTagName] = useState("");
   const [showTagBox, setShowTagBox] = useState(false);
   const [selectedTag, setSelectedTag] = useState("");
@@ -79,6 +84,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [scheduleData, setScheduleData] = useState([]);
   const [tagsData, setTagsData] = useState([]);
   const [compositionData, setCompositionData] = useState([]);
+  const [allcompositionData, setAllCompositionData] = useState([]);
   const [screenNameError, setScreenNameError] = useState("");
   const [searchAsset, setSearchAsset] = useState("");
   const [showAssestOptionsPopup, setShowAssestOptionsPopup] = useState(false);
@@ -88,12 +94,14 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [showUploadAssestModal, setShowUploadAssestModal] = useState(false);
   const [selectedYoutube, setSelectedYoutube] = useState();
   const [selectedTextScroll, setSelectedTextScroll] = useState();
+  const [showTagModal, setShowTagModal] = useState(false);
+  const [tags, setTags] = useState([]);
+  const ScreenTags = tags.join(", ");
+  const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
 
-  console.log(selectedYoutube, selectedTextScroll);
+ 
   const dispatch = useDispatch();
   const history = useNavigate();
-
-  const { allAppsData } = useSelector((s) => s.root.apps);
 
   const modalRef = useRef(null);
   const modalPreviewRef = useRef(null);
@@ -107,6 +115,10 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     //get text scroll data
     dispatch(handleGetTextScrollData({ token }));
   }, []);
+
+  useEffect(() => {
+    setAppDatas(allAppsData);
+  }, [allAppsData]);
 
   function handleScreenOrientationRadio(e, optionId) {
     setSelectScreenOrientation(optionId);
@@ -122,8 +134,13 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTag("");
   };
 
+  const handleTagsUpdate = () => {};
+
   const handleSuggestionClick = (suggestedTag) => {
+    const allTags = tags;
+    allTags?.push(suggestedTag);
     setTagName(suggestedTag);
+    setTags(allTags);
     setSelectedTag(suggestedTag); // Track the selected tag separately
   };
 
@@ -133,6 +150,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedAsset("");
     setAssetPreview("");
     setSelectedSchedule("");
+    setSelectedDefaultAsset("");
+    setSelectedYoutube();
+    setSelectedTextScroll();
     setConfirmForComposition(false);
     setSaveForSchedule(false);
     setConfirmForApps(false);
@@ -156,7 +176,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleAppsAdd = (apps) => {
-    console.log(apps, "apps");
     setSelectedYoutube(apps);
     setSelectedTextScroll(apps);
   };
@@ -168,10 +187,13 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     if (searchQuery === "") {
       setAssetData(assetAllData);
     } else {
-      const filteredData = assetData.filter((item) => {
-        const itemName = item.assetName ? item.assetName.toLowerCase() : "";
-        return itemName.includes(searchQuery);
-      });
+      // const filteredData = assetData.filter((item) => {
+      //   const itemName = item.assetName ? item.assetName.toLowerCase() : "";
+      //   return itemName.includes(searchQuery);
+      // });
+      const filteredData = assetAllData.filter((item) =>
+        item?.assetName.toLocaleLowerCase().includes(searchQuery)
+      );
       setAssetData(filteredData);
     }
   };
@@ -215,11 +237,12 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         screenResolution: selectScreenResolution,
         timeZone: selectedTimezoneName,
         mediaType: mediaType,
-        tags: tagName,
+        tags: ScreenTags,
         screenName: screenName,
         mediaDetailID: moduleID || 0,
         operation: "Update",
       });
+      toast.loading("Saving...");
       let config = {
         method: "post",
         maxBodyLength: Infinity,
@@ -235,21 +258,20 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         .request(config)
         .then((response) => {
           if (response.data.status === 200) {
-            history("/screens", {
-              state: {
-                screenData: response.data.data.model,
-              },
-            });
+            history("/screens");
           }
+          toast.remove();
         })
         .catch((error) => {
           console.log(error);
+          toast.remove();
         });
     }
   };
 
   const handleOnConfirm = () => {
     setShowAssetModal(false);
+    setSearchAsset("");
     setSelectedAsset(assetPreview);
     setShowAssestOptionsPopup(false);
   };
@@ -287,6 +309,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
         ];
         setAssetData(data);
+        setAssetAllData(data);
       });
   };
 
@@ -345,6 +368,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         setScheduleData(scheduleResponse.data.data);
         setTagsData(tagsResponse.data.data);
         setCompositionData(compositionResponse.data.data);
+        setAllCompositionData(compositionResponse.data.data);
         // console.log(tagsResponse);
       })
       .catch((error) => {
@@ -361,6 +385,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event?.target)) {
         setShowAssetModal(false);
+        setSearchAsset("");
         setAssetPreviewPopup(false);
       }
     };
@@ -372,6 +397,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   function handleClickOutside() {
     setShowAssetModal(false);
+    setSearchAsset("");
     setAssetPreviewPopup(false);
   }
 
@@ -448,6 +474,34 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }
 
+  const handleCompositionFilter = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchAsset(searchQuery);
+
+    if (searchQuery === "") {
+      setCompositionData(allcompositionData);
+    } else {
+      const filteredData = allcompositionData.filter((item) =>
+        item?.compositionName.toLocaleLowerCase().includes(searchQuery)
+      );
+      setCompositionData(filteredData);
+    }
+  };
+
+  const handleAppFilter = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchAsset(searchQuery);
+
+    if (searchQuery === "") {
+      setAppDatas(allAppsData);
+    } else {
+      const filteredData = allAppsData.filter((item) =>
+        item?.instanceName.toLocaleLowerCase().includes(searchQuery)
+      );
+      setAppDatas(filteredData);
+    }
+  };
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -497,7 +551,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     <tr>
                       <td className="lg:w-[200px] md:w-[200px] sm:w-[200px] xs:w-auto">
                         <label className="text-[#001737] lg:text-lg md:text-lg font-medium sm:font-base xs:font-base mb-1 md:mb-0">
-                          Screen Name:
+                          Screen Name*:
                         </label>
                       </td>
                       <td>
@@ -708,14 +762,17 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               ref={modalRef}
                               className="relative w-auto my-6 mx-auto myplaylist-popup-details"
                             >
-                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup newScreenDetails">
                                 <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                                   <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
                                     Set Content to Add Media
                                   </h3>
                                   <button
                                     className="p-1 text-xl"
-                                    onClick={() => setShowAssetModal(false)}
+                                    onClick={() => {
+                                      setShowAssetModal(false);
+                                      setSearchAsset("");
+                                    }}
                                   >
                                     <AiOutlineCloseCircle className="text-2xl" />
                                   </button>
@@ -725,7 +782,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   <div className="bg-white rounded-[30px]">
                                     <div>
                                       <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                        <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
+                                        <div className="lg:p-0 md:p-0 sm:p-0 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl w-full">
                                           <div>
                                             <div className="flex border-b border-lightgray flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                                               <div className="mb-5 relative searchbox">
@@ -757,6 +814,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                     )
                                                   );
                                                   setShowAssetModal(false);
+                                                  setSearchAsset("");
                                                 }}
                                                 // onClick={() => {
                                                 //   setShowUploadAssestModal(
@@ -775,6 +833,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                 style={{
                                                   borderCollapse: "separate",
                                                   borderSpacing: " 0 10px",
+                                                  width: "100%",
                                                 }}
                                               >
                                                 <thead className="sticky top-0">
@@ -791,40 +850,47 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                     </th>
                                                   </tr>
                                                 </thead>
-                                                {assetData.map((asset) => (
-                                                  <tbody key={asset.assetID}>
-                                                    <tr
-                                                      className={`${
-                                                        selectedAsset === asset
-                                                          ? "bg-[#f3c953]"
-                                                          : ""
-                                                      } border-b border-[#eee] `}
-                                                      onClick={() => {
-                                                        handleAssetAdd(asset);
-                                                        setAssetPreviewPopup(
-                                                          true
-                                                        );
-                                                      }}
-                                                    >
-                                                      <td className="p-3">
-                                                        {asset.assetName}
-                                                      </td>
-                                                      <td className="p-3">
-                                                        {moment(
-                                                          asset.createdDate
-                                                        ).format(
-                                                          "YYYY-MM-DD hh:mm"
-                                                        )}
-                                                      </td>
-                                                      <td className="p-3">
-                                                        {asset.fileSize}
-                                                      </td>
-                                                      <td className="p-3">
-                                                        {asset.assetType}
-                                                      </td>
-                                                    </tr>
-                                                  </tbody>
-                                                ))}
+                                                {assetData?.length > 0 ? (
+                                                  assetData.map((asset) => (
+                                                    <tbody key={asset.assetID}>
+                                                      <tr
+                                                        className={`${
+                                                          assetPreview?.assetID ===
+                                                          asset?.assetID
+                                                            ? "bg-[#f3c953]"
+                                                            : ""
+                                                        } border-b border-[#eee] `}
+                                                        onClick={() => {
+                                                          handleAssetAdd(asset);
+                                                          setAssetPreviewPopup(
+                                                            true
+                                                          );
+                                                        }}
+                                                      >
+                                                        <td className="p-3">
+                                                          {asset.assetName}
+                                                        </td>
+                                                        <td className="p-3">
+                                                          {moment(
+                                                            asset.createdDate
+                                                          ).format(
+                                                            "YYYY-MM-DD hh:mm"
+                                                          )}
+                                                        </td>
+                                                        <td className="p-3">
+                                                          {asset.fileSize}
+                                                        </td>
+                                                        <td className="p-3">
+                                                          {asset.assetType}
+                                                        </td>
+                                                      </tr>
+                                                    </tbody>
+                                                  ))
+                                                ) : (
+                                                  <div className="p-3">
+                                                    <p>No Assets Found</p>
+                                                  </div>
+                                                )}
                                               </table>
                                               {assetPreviewPopup && (
                                                 <div
@@ -937,7 +1003,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="flex justify-between items-center p-5">
+                                <div className="flex justify-between items-center pl-5 pr-5 pb-4">
                                   <p className="text-black">
                                     Content will always be playing Confirm
                                   </p>
@@ -1232,7 +1298,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               ref={compositionRef}
                               className="relative w-auto my-6 mx-auto myplaylist-popup-details"
                             >
-                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup newScreenDetails">
                                 <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                                   <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
                                     Set Content to Add Media
@@ -1251,7 +1317,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   <div className="bg-white rounded-[30px]">
                                     <div>
                                       <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                        <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
+                                        <div className="lg:p-0 md:p-0 sm:p-0 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl w-full">
                                           <div>
                                             <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                                               <div className="mb-5 relative ">
@@ -1261,7 +1327,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                   placeholder=" Search by Name"
                                                   className="border border-primary rounded-full px-7 py-2 search-user"
                                                   value={searchAsset}
-                                                  onChange={handleFilter}
+                                                  onChange={
+                                                    handleCompositionFilter
+                                                  }
                                                 />
                                               </div>
                                               <Link to="/addcomposition">
@@ -1275,6 +1343,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                 style={{
                                                   borderCollapse: "separate",
                                                   borderSpacing: " 0 10px",
+                                                  width: "100%",
                                                 }}
                                               >
                                                 <thead className="sticky top-0">
@@ -1291,54 +1360,62 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                     </th>
                                                   </tr>
                                                 </thead>
-                                                {compositionData.map(
-                                                  (composition) => (
-                                                    <tbody
-                                                      key={
-                                                        composition.compositionID
-                                                      }
-                                                    >
-                                                      <tr
-                                                        className={`${
-                                                          selectedComposition?.compositionName ===
-                                                          composition?.compositionName
-                                                            ? "bg-[#f3c953]"
-                                                            : ""
-                                                        } border-b border-[#eee] `}
-                                                        onClick={() => {
-                                                          handleCompositionsAdd(
-                                                            composition
-                                                          );
-                                                        }}
+                                                {compositionData?.length > 0 ? (
+                                                  compositionData.map(
+                                                    (composition) => (
+                                                      <tbody
+                                                        key={
+                                                          composition.compositionID
+                                                        }
                                                       >
-                                                        <td className="p-3 text-left">
-                                                          {
-                                                            composition.compositionName
-                                                          }
-                                                        </td>
-                                                        <td className="p-3">
-                                                          {moment(
-                                                            composition.dateAdded
-                                                          ).format(
-                                                            "YYYY-MM-DD hh:mm"
-                                                          )}
-                                                        </td>
-                                                        <td className="p-3">
-                                                          {
-                                                            composition.resolution
-                                                          }
-                                                        </td>
-                                                        <td className="p-3">
-                                                          {moment
-                                                            .utc(
-                                                              composition.duration *
-                                                                1000
-                                                            )
-                                                            .format("hh:mm:ss")}
-                                                        </td>
-                                                      </tr>
-                                                    </tbody>
+                                                        <tr
+                                                          className={`${
+                                                            selectedComposition?.compositionName ===
+                                                            composition?.compositionName
+                                                              ? "bg-[#f3c953]"
+                                                              : ""
+                                                          } border-b border-[#eee] `}
+                                                          onClick={() => {
+                                                            handleCompositionsAdd(
+                                                              composition
+                                                            );
+                                                          }}
+                                                        >
+                                                          <td className="p-3 text-left">
+                                                            {
+                                                              composition.compositionName
+                                                            }
+                                                          </td>
+                                                          <td className="p-3">
+                                                            {moment(
+                                                              composition.dateAdded
+                                                            ).format(
+                                                              "YYYY-MM-DD hh:mm"
+                                                            )}
+                                                          </td>
+                                                          <td className="p-3">
+                                                            {
+                                                              composition.resolution
+                                                            }
+                                                          </td>
+                                                          <td className="p-3">
+                                                            {moment
+                                                              .utc(
+                                                                composition.duration *
+                                                                  1000
+                                                              )
+                                                              .format(
+                                                                "hh:mm:ss"
+                                                              )}
+                                                          </td>
+                                                        </tr>
+                                                      </tbody>
+                                                    )
                                                   )
+                                                ) : (
+                                                  <div className="p-3">
+                                                    <p>No Composition Found</p>
+                                                  </div>
                                                 )}
                                               </table>
                                             </div>
@@ -1348,7 +1425,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="flex justify-between items-center p-5">
+                                <div className="flex justify-between items-center pl-5 pr-5 pb-4">
                                   <p className="text-black">
                                     Content will always be playing Confirm
                                   </p>
@@ -1418,7 +1495,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               ref={compositionRef}
                               className="relative w-auto my-6 mx-auto myplaylist-popup-details"
                             >
-                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
+                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup newScreenDetails">
                                 <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                                   <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
                                     Set Content to Add Media
@@ -1435,7 +1512,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   <div className="bg-white rounded-[30px]">
                                     <div>
                                       <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                        <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
+                                        <div className="lg:p-0 md:p-0 sm:p-0 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl w-full">
                                           <div>
                                             <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                                               <div className="mb-5 relative ">
@@ -1445,7 +1522,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                   placeholder=" Search by Name"
                                                   className="border border-primary rounded-full px-7 py-2 search-user"
                                                   value={searchAsset}
-                                                  onChange={handleFilter}
+                                                  onChange={handleAppFilter}
                                                 />
                                               </div>
                                               <Link to="/apps">
@@ -1459,6 +1536,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                 style={{
                                                   borderCollapse: "separate",
                                                   borderSpacing: " 0 10px",
+                                                  width: "100%",
                                                 }}
                                                 className="w-full"
                                               >
@@ -1467,13 +1545,13 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                     <th className="p-3 w-80 text-left">
                                                       Instance Name
                                                     </th>
-                                                    <th>App Type</th>
+                                                    <th className="p-3">App Type</th>
                                                     {/*<th className="p-3">Resolution</th>
                         <th className="p-3">Duration</th> */}
                                                   </tr>
                                                 </thead>
 
-                                                {allAppsData.map(
+                                                {appDatas?.length > 0 ? (appDatas.map(
                                                   (instance, index) => (
                                                     <tbody key={index}>
                                                       <tr
@@ -1496,7 +1574,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                             instance.instanceName
                                                           }
                                                         </td>
-                                                        <td className="p-3">
+                                                        <td className="p-3 text-center">
                                                           {instance.youTubePlaylist
                                                             ? "Youtube Video"
                                                             : "Text scroll"}
@@ -1510,6 +1588,10 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                       </tr>
                                                     </tbody>
                                                   )
+                                                )) : (
+                                                  <div className="p-3">
+                                                    <p>No Data Found</p>
+                                                  </div>
                                                 )}
                                               </table>
                                             </div>
@@ -1519,7 +1601,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="flex justify-between items-center p-5">
+                                <div className="flex justify-between items-center pl-5 pr-5 pb-4">
                                   <p className="text-black">
                                     Content will always be playing Confirm
                                   </p>
@@ -1545,8 +1627,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </label>
                       </td>
                       <td>
-                        <div className="md:w-full">
-                          <div className="relative flex justify-end">
+                        <div className="md:w-full flex">
+                          {/* <div className="relative flex justify-end">
                             <input
                               type="text"
                               className="border border-[#D5E3FF] rounded w-full px-2 py-2"
@@ -1574,34 +1656,42 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 />
                               </svg>
                             </button>
-
-                            {showTagBox && (
-                              <>
-                                <div className=" tagname absolute top-[45px] right-[-8px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10 max-w-[250px]">
-                                  <div className="lg:flex md:flex sm:block">
-                                    <div className="p-2">
-                                      <h6 className="text-center text-sm mb-1">
-                                        Give a Tag Name Such
-                                      </h6>
-                                      <div className="flex flex-wrap">
-                                        {tagsData.map((tag) => (
-                                          <div
-                                            key={tag.tagID}
-                                            className="p-1 rounded bg-[#EFF5FF] m-1 text-sm font-light cursor-pointer"
-                                            onClick={() =>
-                                              handleSuggestionClick(tag.tagName)
-                                            }
-                                          >
-                                            {tag.tagName}
-                                          </div>
-                                        ))}
-                                      </div>
+                            </div>*/}
+                          <span className="ml-2">
+                            <AiOutlinePlusCircle
+                              size={30}
+                              className="mx-auto cursor-pointer"
+                              onClick={() => {
+                                setShowTagModal(true);
+                              }}
+                            />
+                          </span>
+                          {showTagBox && (
+                            <>
+                              <div className=" tagname absolute top-[45px] right-[-8px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10 max-w-[250px]">
+                                <div className="lg:flex md:flex sm:block">
+                                  <div className="p-2">
+                                    <h6 className="text-center text-sm mb-1">
+                                      Give a Tag Name Such
+                                    </h6>
+                                    <div className="flex flex-wrap">
+                                      {tagsData.map((tag) => (
+                                        <div
+                                          key={tag.tagID}
+                                          className="p-1 rounded bg-[#EFF5FF] m-1 text-sm font-light cursor-pointer"
+                                          onClick={() =>
+                                            handleSuggestionClick(tag.tagName)
+                                          }
+                                        >
+                                          {tag.tagName}
+                                        </div>
+                                      ))}
                                     </div>
                                   </div>
                                 </div>
-                              </>
-                            )}
-                          </div>
+                              </div>
+                            </>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -1625,6 +1715,17 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
       <Footer />
+      {showTagModal && (
+        <AddOrEditTagPopup
+          setShowTagModal={setShowTagModal}
+          tags={tags}
+          setTags={setTags}
+          handleTagsUpdate={handleTagsUpdate}
+          from="screen"
+          action="create"
+          setTagUpdateScreeen={setTagUpdateScreeen}
+        />
+      )}
     </>
   );
 };
