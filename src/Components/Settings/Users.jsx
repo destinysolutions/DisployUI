@@ -610,7 +610,7 @@ const Users = () => {
                       <label className="formLabel">Zip Code</label>
                       <input
                         type="text"
-                        placeholder="Enter Company Name"
+                        placeholder="Enter zip code"
                         name="zipcode"
                         className="formInput"
                         value={zipCode}

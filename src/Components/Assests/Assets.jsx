@@ -366,7 +366,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           .then((response) => {
             console.log("Folder created:", response.data);
             toast.remove();
-            handleActiveBtnClick(1);
             fetchData();
           })
           .catch((error) => {
@@ -403,7 +402,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           setassetsdw2(null);
           setDeleteMessage(true);
         }
-       await fetchData()
+        await fetchData()
+        handleActiveBtnClick(3)
       })
       .catch((error) => {
         console.log(error);
