@@ -59,9 +59,11 @@ export const handleLoginWithGoogle = createAsyncThunk(
 
 export const handleGetUserDetails = createAsyncThunk(
   "auth/handleGetUserDetails",
-  async ({ id }, { rejectWithValue }) => {
+  async ({ id, token }, { rejectWithValue }) => {
     try {
-      const response = await getUrl(`Register/SelectByID/?ID=${id}`);
+      const response = await getUrl(`Register/SelectByID/?ID=${id}`, {
+        headers: { Authorization: token },
+      });
       if (Object.values(response?.data?.data).length > 0) {
         return response.data?.data;
       } else {
@@ -88,11 +90,11 @@ export const UpdateUserDetails = createAsyncThunk(
     formdata.append("isActive", "1");
     formdata.append("orgUserID", user?.userID);
     formdata.append("userRole", "0");
-    formdata.append("countryID", data?.selectedCountry || 0);
+    formdata.append("countryID", data?.country || 0);
     formdata.append("company", "Admin");
     formdata.append("operation", "Save");
     formdata.append("address", data?.googleLocation);
-    formdata.append("stateId", data?.selectedState || 0);
+    formdata.append("stateId", data?.state || 0);
     formdata.append("zipCode", data?.zipCode || 0);
     formdata.append("languageId", data?.language || 0);
     formdata.append("timeZoneId", data?.timeZone || 0);
@@ -222,7 +224,7 @@ const Authslice = createSlice({
     });
     builder.addCase(UpdateUserDetails.fulfilled, (state, { payload }) => {
       state.loading = false;
-      state.userDetails = payload;
+      state.userDetails = payload?.model;
       state.error = null;
     });
     builder.addCase(UpdateUserDetails.rejected, (state, { payload }) => {

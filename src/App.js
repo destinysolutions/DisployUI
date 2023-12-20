@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import Routing from "./Routing/Routing";
 // import Toaster from 'reho'
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useIdleTimer } from "react-idle-timer";
 import { useEffect } from "react";
 import { auth } from "./FireBase/firebase";
@@ -96,7 +96,7 @@ const App = () => {
 
   useEffect(() => {
     if (user !== null) {
-      dispatch(handleGetUserDetails({ id: user?.userID }));
+      dispatch(handleGetUserDetails({ id: user?.userID, token }));
     }
   }, [user]);
 

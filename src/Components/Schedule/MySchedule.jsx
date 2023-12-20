@@ -740,6 +740,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                   ? 3
                                   : schedule.tags.split(",").length
                               )
+
                               .join(",")
                           : ""}
                         {schedule?.tags !== "" && schedule?.tags !== null && (
