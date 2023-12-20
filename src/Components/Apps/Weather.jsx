@@ -28,6 +28,7 @@ import { LogLevel } from "@azure/msal-browser";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import moment from "moment";
 import ReactApexChart from "react-apexcharts";
+import { HiBackward } from "react-icons/hi2";
 
 const Weather = ({ sidebarOpen, setSidebarOpen }) => {
   let api_key = "41b5176532e682fd8b4cb6a44e3bd1a4";
@@ -621,12 +622,20 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
               Apps
             </h1>
-            <Link to="/weatherdetail">
-              <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                <TbAppsFilled className="text-2xl mr-2 text-white" />
-                New Instance
-              </button>
-            </Link>
+            <div className="lg:flex">
+              <Link to="/weatherdetail">
+                <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  <TbAppsFilled className="text-2xl mr-2 text-white" />
+                  New Instance
+                </button>
+              </Link>
+              <Link to="/apps">
+                <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 text-white sm:px-5 bg-primary py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white  hover:bg-primary-500 hover:shadow-lg dark:bg-blue-600 ">
+                  <HiBackward className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
+                  Back
+                </button>
+              </Link>
+            </div>
           </div>
           <div className="mt-5 mb-5">
             <div className="shadow-md bg-white rounded-lg p-5">
@@ -942,7 +951,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                           if (item?.weatherData !== null) {
                             return (
                               <div
-                                className="w-full flex flex-col"
+                              className="min-w-[30vw] flex flex-col border-r-2 last:border-none"
                                 key={index}
                                 // style={{
                                 //   borderBottom:

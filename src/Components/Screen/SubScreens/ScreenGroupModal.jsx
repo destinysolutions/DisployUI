@@ -8,7 +8,7 @@ import { SELECT_BY_USER_SCREENDETAIL } from "../../../Pages/Api";
 
 const ScreenGroupModal = ({ onClose }) => {
   const dispatch = useDispatch();
-  const  store  = useSelector((state) => state.root.screenGroup);
+  const store = useSelector((state) => state.root.screenGroup);
 
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
@@ -17,15 +17,12 @@ const ScreenGroupModal = ({ onClose }) => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortColumn, setSortColumn] = useState("");
 
-  const [selectedItems, setSelectedItems] = useState([]);
   const [selectAllChecked, setSelectAllChecked] = useState(false);
-  const [screenCheckboxes, setScreenCheckboxes] = useState({});
-  const [screenData, setScreenData] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
+  // const [screenData, setScreenData] = useState([ ]);
 
   const [screenGroupName, setScreenGroupName] = useState("");
   const [screenGroupNameError, setScreenGroupNameError] = useState(""); // Name validationError check
-  
-  console.log("store", store);
 
   useEffect(() => {
     // const query = { ID : user.userID, sort: sortOrder, col: sortColumn };
@@ -40,7 +37,7 @@ const ScreenGroupModal = ({ onClose }) => {
     };
 
     if (loadFirst) {
-      dispatch(SelectByUserScreen({config}));
+      dispatch(SelectByUserScreen({ config }));
       setLoadFirst(false);
     }
 
@@ -55,9 +52,7 @@ const ScreenGroupModal = ({ onClose }) => {
     // } else {
     //   toast.dismiss();
     // }
-
   }, [dispatch, loadFirst, sortOrder, store]);
-
 
   const sorting = (val) => {
     // Toggle sorting direction when clicking on the same column
@@ -67,57 +62,61 @@ const ScreenGroupModal = ({ onClose }) => {
     setLoadFirst(true); // Trigger API call on sorting change
   };
 
-  const handleSelectAllCheckboxChange = () => {
-    const updatedCheckboxes = {};
-    const allSelected = !selectAllChecked;
-
-    screenData.forEach((screen) => {
-      updatedCheckboxes[screen.screenID] = allSelected;
-    });
-
-    setScreenCheckboxes(updatedCheckboxes);
-    setSelectAllChecked(allSelected);
-
-    const updatedSelectedItems = allSelected
-      ? screenData.map((screen) => screen.screenID)
-      : [];
-    setSelectedItems(updatedSelectedItems);
+  const handleScreenGroupNameChange = (e) => {
+    const value = e.target.value;
+    setScreenGroupName(value);
+    // Validate screenGroupName on change
+    if (!value.trim()) {
+      setScreenGroupNameError("Screen Group Name is required");
+    } else {
+      setScreenGroupNameError("");
+    }
   };
 
-  const handleScreenCheckboxChange = (screenID) => {
-    const updatedCheckboxes = {
-      ...screenCheckboxes,
-      [screenID]: !screenCheckboxes[screenID],
-    };
-    setScreenCheckboxes(updatedCheckboxes);
+  const handleCheckboxChange = (screenID) => {
+    const updatedSelection = [...selectedItems];
+    const index = updatedSelection.indexOf(screenID);
 
-    const updatedSelectedItems = Object.keys(updatedCheckboxes).filter(
-      (key) => updatedCheckboxes[key]
-    );
-    setSelectedItems(updatedSelectedItems);
+    if (index === -1) {
+      updatedSelection.push(screenID);
+    } else {
+      updatedSelection.splice(index, 1);
+    }
+
+    setSelectedItems(updatedSelection);
+  };
+
+  const handleSelectAllChange = () => {
+    setSelectAllChecked(!selectAllChecked);
+
+    if (!selectAllChecked) {
+      const allScreenIDs = store.data.map((screen) => screen.screenID);
+      setSelectedItems(allScreenIDs);
+    } else {
+      setSelectedItems([]);
+    }
   };
 
   const handleSave = () => {
-    // Validate Screen Group Name
-    // if (!screenGroupName.trim()) {
-    //   setScreenGroupNameError("Screen Group Name is required");
-    //   return;
-    // }
+
+    // Validate screenGroupName before saving
+    if (!screenGroupName.trim()) {
+      setScreenGroupNameError("Screen Group Name is required");
+      return; // Do not proceed with saving if validation fails
+    }
 
     const payLoad = {
       screenGroupName: screenGroupName,
       selectedItems: selectedItems,
       ScreenGroupID: 0,
-      tags: "",
     };
 
     // Handle the logic to process the selected items
-    console.log("payLoad Items:", payLoad,screenData);
+    console.log("payLoad Items:", payLoad);
 
     // Close the modal
-    // onClose();
+    onClose();
   };
-
 
   return (
     <div>
@@ -130,8 +129,8 @@ const ScreenGroupModal = ({ onClose }) => {
                   <input
                     type="checkbox"
                     className="w-5 h-5"
-                    onChange={handleSelectAllCheckboxChange}
                     checked={selectAllChecked}
+                    onChange={handleSelectAllChange}
                   />
                 </div>
                 <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium ml-3">
@@ -154,8 +153,9 @@ const ScreenGroupModal = ({ onClose }) => {
                 type="name"
                 name="name"
                 id="name"
+                onChange={handleScreenGroupNameChange}
+                value={screenGroupName}
                 className={`bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white`}
-                // className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                 placeholder="Enter Screen Group Name"
               />
               {screenGroupNameError && (
@@ -268,10 +268,10 @@ const ScreenGroupModal = ({ onClose }) => {
                             <input
                               type="checkbox"
                               className="mr-3"
+                              checked={selectedItems.includes(screen.screenID)}
                               onChange={() =>
-                                handleScreenCheckboxChange(screen.screenID)
+                                handleCheckboxChange(screen.screenID)
                               }
-                              checked={screenCheckboxes[screen.screenID]}
                             />
 
                             {screen.screenName}
