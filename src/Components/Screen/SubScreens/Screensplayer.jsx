@@ -11,6 +11,7 @@ import ReactPlayer from "react-player";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { GrScheduleNew } from "react-icons/gr";
 import {
+  COMPOSITION_BY_ID,
   GET_ALL_COMPOSITIONS,
   GET_ALL_FILES,
   GET_ALL_SCHEDULE,
@@ -20,6 +21,7 @@ import {
   GET_CURRENT_ASSET,
   GET_SCREEN_TYPE,
   SCREEN_PREVIEW,
+  SELECT_BY_LIST,
   SELECT_BY_SCREENID_SCREENDETAIL,
   UPDATE_NEW_SCREEN,
 } from "../../../Pages/Api";
@@ -98,6 +100,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedTextScroll, setSelectedTextScroll] = useState();
   const [showAppsModal, setShowAppsModal] = useState(false);
   const [confirmForApps, setConfirmForApps] = useState(false);
+  const [previewModalData, setPreviewModalData] = useState([]);
+  const [screenType, setScreenType] = useState("");
+  const [layotuDetails, setLayotuDetails] = useState(null);
+  const [fetchLayoutLoading, setFetchLayoutLoading] = useState(false)
 
   const dispatch = useDispatch();
 
@@ -245,6 +251,29 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setToggle(id);
   }
 
+  const handleFetchLayoutById = (id) => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${SELECT_BY_LIST}?LayoutID=${id}`,
+      headers: { Authorization: authToken },
+      data: "",
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        if (response?.data?.status == 200) {
+          setLayotuDetails(response.data?.data[0]);
+          setScreenType(response?.data?.data[0]?.screenType);
+          setFetchLayoutLoading(false)
+        }
+      })
+      .catch((error) => {
+        setFetchLayoutLoading(false)
+        console.log(error);
+      });
+  };
+
   const handleFetchPreviewScreen = async (macId) => {
     let data = JSON.stringify({
       macid: macId,
@@ -267,6 +296,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         if (response?.data?.status == 200) {
           const { data, myComposition } = response?.data;
           setScreenPreviewData({ data, myComposition });
+          if (myComposition.length > 0) {
+            setFetchLayoutLoading(true)
+            handleFetchLayoutById(myComposition[0]?.layoutID);
+          }
           handleChangePreviewScreen();
           setLoading(false);
         }
@@ -305,6 +338,9 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       myComposition[0]?.compositionPossition.length > 0
     ) {
       let obj = {};
+      // if (previewModalData.length === 0) {
+      //   handleFetchCompositionById(myComposition?.layoutID);
+      // }
       for (const [
         key,
         value,
@@ -654,6 +690,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setFilteredData([]);
   }
 
+
+  console.log(layotuDetails);
   return (
     <>
       <div className="flex border-b border-gray">
@@ -680,7 +718,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className="relative screenplayer-section w-[60vw] h-[70vh] mx-auto">
+            <div className="relative screenplayer-section w-[60vw] h-[90vh] mx-auto">
               <div className="w-full h-full pb-5 mx-auto">
                 {loading ? (
                   <div className="text-center font-semibold text-2xl">
@@ -689,25 +727,34 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                 ) : (
                   compositionData.length > 0 &&
                   !loading && (
-                    <div className="relative z-0 mx-auto rounded-lg p-4 h-full w-full overflow-scroll ">
-                      {compositionData.map((data, index) => {
+                    <div className="relative z-0 mx-auto rounded-lg p-4 h-full w-full ">
+                      {!fetchLayoutLoading&&!loading&& layotuDetails!==null&& layotuDetails?.lstLayloutModelList.length > 0 &&
+                              layotuDetails?.lstLayloutModelList?.map((data, index) => {
                         return (
                           <div
                             key={index}
                             className="absolute"
+                            // style={{
+                            //   width:
+                            //     compositionData[index][index + 1][0]?.width +
+                            //     "px",
+                            //   height:
+                            //     compositionData[index][index + 1][0]?.height +
+                            //     "px",
+                            //   top:
+                            //     compositionData[index][index + 1][0]?.top +
+                            //     "px",
+                            //   left:
+                            //     compositionData[index][index + 1][0]?.left +
+                            //     "px",
+                            // }}
                             style={{
-                              width:
-                                compositionData[index][index + 1][0]?.width +
-                                "px",
-                              height:
-                                compositionData[index][index + 1][0]?.height +
-                                "px",
-                              top:
-                                compositionData[index][index + 1][0]?.top +
-                                "px",
-                              left:
-                                compositionData[index][index + 1][0]?.left +
-                                "px",
+                              // position: "fixed",
+                              left: data.leftside + "%",
+                              top: data.topside + "%",
+                              width: data?.width + "%",
+                              height: data?.height + "%",
+                              backgroundColor: data.fill,
                             }}
                           >
                             <Carousel
@@ -718,6 +765,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         );
                       })}
                     </div>
+                    // null
                   )
                 )}
                 {!loading &&
