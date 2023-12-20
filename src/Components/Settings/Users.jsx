@@ -233,10 +233,29 @@ const Users = () => {
   }, []);
 
   const handleDeleteUser = (orgUserSpecificID) => {
-    let data = JSON.stringify({
-      orgUserSpecificID: orgUserSpecificID,
-      operation: "DeleteByID",
-    });
+    let data = new FormData();
+    data.append("File", null);
+    data.append("orgUserSpecificID",orgUserSpecificID)
+    data.append("firstName", null);
+    data.append("lastName", null);
+    data.append("password", null);
+    data.append("email", null);
+    data.append("phone", null);
+    data.append("isActive", null);
+    data.append("orgUserID", null);
+    data.append("userRole", null);
+    data.append("countryID", null);
+    data.append("company", null);
+    data.append("File", null);
+    data.append("languageId", null);
+    data.append("timeZoneId", null);
+    data.append("currencyId", null);
+    data.append("operation",'DeleteByID')
+    
+    // let data = JSON.stringify({
+    //   orgUserSpecificID: orgUserSpecificID,
+    //   operation: "DeleteByID",
+    // });
 
     let config = {
       method: "post",
