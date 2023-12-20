@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import "react-phone-input-2/lib/style.css";
 import { UpdateUserDetails, handleGetUserDetails } from "../../Redux/Authslice";
 import { useDispatch } from "react-redux";
+import { number } from "prop-types";
 
 const Account = () => {
   const [file, setFile] = useState();
@@ -30,6 +31,8 @@ const Account = () => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [isImageUploaded, setIsImageUploaded] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedState, setSelectedState] = useState("");
 
   const { token, user, userDetails, loading } = useSelector(
     (state) => state.root.auth
@@ -249,25 +252,25 @@ const Account = () => {
   } = useForm({
     shouldFocusError: true,
     resolver: yupResolver(profileSchema),
-    defaultValues: useMemo(() => {
-      const user = {
-        firstName: userDetails?.firstName,
-        lastName: userDetails?.lastName,
-        phoneNumber: userDetails?.phoneNumber,
-        address: userDetails?.googleLocation,
-        emailID: userDetails?.emailID,
-        organization: userDetails?.organization,
-        country: userDetails?.shippingAddress?.country,
-        city: userDetails?.shippingAddress?.city,
-        zipCode: userDetails?.shippingAddress?.zipCode,
-        timeZone: userDetails?.shippingAddress?.timeZone,
-        country: userDetails?.shippingAddress?.country,
-        state: userDetails?.shippingAddress?.state,
-        language: userDetails?.shippingAddress?.language,
-        currency: userDetails?.shippingAddress?.currency,
-      };
-      return user;
-    }, [userDetails]),
+    // defaultValues: useMemo(() => {
+    //   const user = {
+    //     firstName: userDetails?.firstName,
+    //     lastName: userDetails?.lastName,
+    //     phoneNumber: userDetails?.phoneNumber,
+    //     address: userDetails?.googleLocation,
+    //     emailID: userDetails?.emailID,
+    //     organization: userDetails?.organization,
+    //     country: userDetails?.shippingAddress?.country,
+    //     city: userDetails?.shippingAddress?.city,
+    //     zipCode: userDetails?.shippingAddress?.zipCode,
+    //     timeZone: userDetails?.shippingAddress?.timeZone,
+    //     country: userDetails?.shippingAddress?.country,
+    //     state: userDetails?.shippingAddress?.state,
+    //     language: userDetails?.shippingAddress?.language,
+    //     currency: userDetails?.shippingAddress?.currency,
+    //   };
+    //   return user;
+    // }, [userDetails]),
   });
 
   const onSubmit = (data) => {
@@ -322,46 +325,55 @@ const Account = () => {
     );
     if (response) {
       response.then((res) => {
-        console.log(res);
-        // if (res?.payload?.status === "success") {
-        //   toast.success("profile edited successfully.", { duration: 2000 });
-        // }
+        if (res?.type.includes("fulfilled")) {
+          toast.success("profile edited successfully.", { duration: 2000 });
+        }
       });
     }
   };
 
   // Fetch states based on the selected country
   useEffect(() => {
-    if (watch("country")) {
-      fetch(`${GET_SELECT_BY_STATE}?CountryID=${getValues("country")}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setStates(data.data);
-        })
-        .catch((error) => {
-          console.log("Error fetching states data:", error);
-        });
-    }
-  }, [watch("country")]);
+    fetch(`${GET_SELECT_BY_STATE}?CountryID=${parseInt(selectedCountry)}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setStates(data.data);
+        console.log(data);
+        setSelectedState(getValues("state"));
+      })
+      .catch((error) => {
+        console.log("Error fetching states data:", error);
+      });
+  }, [watch("country"), selectedCountry]);
 
   useEffect(() => {
     if (userDetails !== null) {
       for (const key in userDetails) {
-        // console.log(key);
-        // console.log(userDetails[key]);
-        // if (userDetails[key] !== null) {
         setValue(key, userDetails[key]);
-        // }
       }
-      // setValue("")
+      if (userDetails?.countryID) {
+        setSelectedCountry(userDetails?.countryID);
+      } else {
+        setSelectedCountry(userDetails?.country);
+      }
+
+      // if (userDetails?.stateId) {
+      //   console.log("get id s");
+      //   setSelectedCountry(userDetails?.stateId);
+      // } else {
+      //   console.log("not s ");
+      //   setSelectedCountry(userDetails?.country);
+      // }
     }
   }, [userDetails]);
 
-  console.log(file);
+  // console.log( getValues("country"));
+  // console.log(selectedCountry, selectedState, states);
   // console.log(getValues());
 
   return (
     <>
+      {loading ? toast.loading("Fetching details....") : toast.remove()}
       <div className="rounded-xl mt-8 shadow bg-white">
         <h4 className="text-xl font-bold p-5">Profile Details</h4>
         <div className="flex items-center border-b border-b-[#E4E6FF] p-5">
@@ -527,10 +539,19 @@ const Account = () => {
                 <div>
                   <select
                     className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-                    {...register("country")}
+                    {...register("country", {
+                      onChange: (e) => {
+                        setSelectedCountry(e.target.value);
+                      },
+                    })}
                   >
                     {countries.map((country) => (
-                      <option key={country.countryID} value={country.countryID}>
+                      <option
+                        key={country.countryID}
+                        selected={country?.countryName == selectedCountry}
+                        value={country.countryID}
+                        onChange={(e) => {}}
+                      >
                         {country.countryName}
                       </option>
                     ))}
@@ -548,7 +569,11 @@ const Account = () => {
                   >
                     {Array.isArray(states) &&
                       states.map((state) => (
-                        <option key={state.stateId} value={state.stateId}>
+                        <option
+                          selected={state?.countryName == getValues("state")}
+                          key={state.stateId}
+                          value={state.stateId}
+                        >
                           {state.stateName}
                         </option>
                       ))}
