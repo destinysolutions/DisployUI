@@ -99,7 +99,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const ScreenTags = tags.join(", ");
   const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
 
- 
+  
   const dispatch = useDispatch();
   const history = useNavigate();
 
@@ -107,6 +107,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const modalPreviewRef = useRef(null);
   const scheduleRef = useRef(null);
   const compositionRef = useRef(null);
+  const appRef = useRef(null);
 
   useEffect(() => {
     // get youtube data
@@ -147,6 +148,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const handleOptionChange = (e) => {
     setSelectedScreenTypeOption(e.target.value);
     setSelectedComposition("");
+    setSelectedApps("");
     setSelectedAsset("");
     setAssetPreview("");
     setSelectedSchedule("");
@@ -285,11 +287,13 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleConfirmOnComposition = () => {
     setShowCompositionModal(false);
+    setSearchAsset("");
     if (selectedComposition !== "") setConfirmForComposition(true);
   };
 
   const handleConfirmOnApps = () => {
     setShowAppsModal(false);
+    setShowAppsModal("");
     if (selectedTextScroll !== "" || selectedYoutube !== "")
       setConfirmForApps(true);
   };
@@ -452,6 +456,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         !compositionRef.current.contains(event?.target)
       ) {
         setShowCompositionModal(false);
+        setSearchAsset("");
         if (!confirmForComposition) {
           setSelectedComposition("");
         }
@@ -469,8 +474,33 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   function handleClickOutsideComposition() {
     setShowCompositionModal(false);
+    setSearchAsset("");
     if (!confirmForComposition) {
       setSelectedComposition("");
+    }
+  }
+
+  useEffect(() => {
+    const handleClickOutsideApp = (event) => {
+      if (appRef.current && !appRef.current.contains(event?.target)) {
+        setShowAppsModal(false);
+        setSearchAsset("");
+        if (!confirmForApps) {
+          setSelectedApps("");
+        }
+      }
+    };
+    document.addEventListener("click", handleClickOutsideApp, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutsideApp, true);
+    };
+  }, [handleClickOutsideApp]);
+
+  function handleClickOutsideApp() {
+    setShowAppsModal(false);
+    setSearchAsset("");
+    if (!confirmForApps) {
+      setSelectedApps("");
     }
   }
 
@@ -782,7 +812,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   <div className="bg-white rounded-[30px]">
                                     <div>
                                       <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                        <div className="lg:p-0 md:p-0 sm:p-0 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl w-full">
+                                        <div className="lg:p-10 md:p-10 sm:p-10 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl w-full">
                                           <div>
                                             <div className="flex border-b border-lightgray flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                                               <div className="mb-5 relative searchbox">
@@ -1183,11 +1213,19 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                             {schedule.tags}
                                           </td>
                                           <td className="text-center">
-                                            <Link to="/myschedule">
-                                              <button className="ml-3 relative">
+                                              <button
+                                                className="ml-3 relative"
+                                                onClick={() => {
+                                                  window.open(
+                                                    window.location.origin.concat(
+                                                      "/myschedule"
+                                                    )
+                                                  );
+                                                  setShowScheduleModal(false);
+                                                }}
+                                              >
                                                 <HiDotsVertical />
                                               </button>
-                                            </Link>
                                           </td>
                                         </tr>
                                       ))}
@@ -1238,6 +1276,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 className="flex items-center ml-5"
                                 onClick={() => {
                                   setShowCompositionModal(true);
+                                  setCompositionData(allcompositionData);
                                   // setConfirmForComposition(false);
                                 }}
                               >
@@ -1305,9 +1344,10 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   </h3>
                                   <button
                                     className="p-1 text-xl"
-                                    onClick={() =>
-                                      setShowCompositionModal(false)
-                                    }
+                                    onClick={() => {
+                                      setShowCompositionModal(false);
+                                      setSearchAsset("");
+                                    }}
                                   >
                                     <AiOutlineCloseCircle className="text-2xl" />
                                   </button>
@@ -1317,7 +1357,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   <div className="bg-white rounded-[30px]">
                                     <div>
                                       <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                        <div className="lg:p-0 md:p-0 sm:p-0 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl w-full">
+                                        <div className="lg:p-10 md:p-10 sm:p-10 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl w-full">
                                           <div>
                                             <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                                               <div className="mb-5 relative ">
@@ -1332,11 +1372,22 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                   }
                                                 />
                                               </div>
-                                              <Link to="/addcomposition">
-                                                <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
-                                                  Add New Composition
-                                                </button>
-                                              </Link>
+                                              <button
+                                                className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                                                onClick={() => {
+                                                  window.open(
+                                                    window.location.origin.concat(
+                                                      "/addcomposition"
+                                                    )
+                                                  );
+                                                  setShowCompositionModal(
+                                                    false
+                                                  );
+                                                  setSearchAsset("");
+                                                }}
+                                              >
+                                                Add New Composition
+                                              </button>
                                             </div>
                                             <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
                                               <table
@@ -1477,6 +1528,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               <div
                                 className="flex items-center ml-5"
                                 onClick={() => {
+                                  setAppDatas(allAppsData);
                                   setShowAppsModal(true);
                                 }}
                               >
@@ -1492,7 +1544,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         <td>
                           <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
                             <div
-                              ref={compositionRef}
+                              ref={appRef}
                               className="relative w-auto my-6 mx-auto myplaylist-popup-details"
                             >
                               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup newScreenDetails">
@@ -1502,7 +1554,10 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   </h3>
                                   <button
                                     className="p-1 text-xl"
-                                    onClick={() => setShowAppsModal(false)}
+                                    onClick={() => {
+                                      setShowAppsModal(false);
+                                      setSearchAsset("");
+                                    }}
                                   >
                                     <AiOutlineCloseCircle className="text-2xl" />
                                   </button>
@@ -1512,7 +1567,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   <div className="bg-white rounded-[30px]">
                                     <div>
                                       <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                        <div className="lg:p-0 md:p-0 sm:p-0 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl w-full">
+                                        <div className="lg:p-10 md:p-10 sm:p-10 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl w-full">
                                           <div>
                                             <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                                               <div className="mb-5 relative ">
@@ -1525,11 +1580,20 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                   onChange={handleAppFilter}
                                                 />
                                               </div>
-                                              <Link to="/apps">
-                                                <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
-                                                  Add New App
-                                                </button>
-                                              </Link>
+                                              <button
+                                                className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                                                onClick={() => {
+                                                  window.open(
+                                                    window.location.origin.concat(
+                                                      "/apps"
+                                                    )
+                                                  );
+                                                  setShowAppsModal(false);
+                                                  setSearchAsset("");
+                                                }}
+                                              >
+                                                Add New App
+                                              </button>
                                             </div>
                                             <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
                                               <table
@@ -1545,50 +1609,54 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                     <th className="p-3 w-80 text-left">
                                                       Instance Name
                                                     </th>
-                                                    <th className="p-3">App Type</th>
+                                                    <th className="p-3">
+                                                      App Type
+                                                    </th>
                                                     {/*<th className="p-3">Resolution</th>
                         <th className="p-3">Duration</th> */}
                                                   </tr>
                                                 </thead>
 
-                                                {appDatas?.length > 0 ? (appDatas.map(
-                                                  (instance, index) => (
-                                                    <tbody key={index}>
-                                                      <tr
-                                                        className={`${
-                                                          selectedTextScroll ===
-                                                            instance ||
-                                                          selectedYoutube ===
-                                                            instance
-                                                            ? "bg-[#f3c953]"
-                                                            : ""
-                                                        } border-b border-[#eee] `}
-                                                        onClick={() => {
-                                                          handleAppsAdd(
-                                                            instance
-                                                          );
-                                                        }}
-                                                      >
-                                                        <td className="p-3 text-left">
-                                                          {
-                                                            instance.instanceName
-                                                          }
-                                                        </td>
-                                                        <td className="p-3 text-center">
-                                                          {instance.youTubePlaylist
-                                                            ? "Youtube Video"
-                                                            : "Text scroll"}
-                                                        </td>
-                                                        {/* <td className="p-3">{composition.resolution}</td>
+                                                {appDatas?.length > 0 ? (
+                                                  appDatas.map(
+                                                    (instance, index) => (
+                                                      <tbody key={index}>
+                                                        <tr
+                                                          className={`${
+                                                            selectedTextScroll ===
+                                                              instance ||
+                                                            selectedYoutube ===
+                                                              instance
+                                                              ? "bg-[#f3c953]"
+                                                              : ""
+                                                          } border-b border-[#eee] `}
+                                                          onClick={() => {
+                                                            handleAppsAdd(
+                                                              instance
+                                                            );
+                                                          }}
+                                                        >
+                                                          <td className="p-3 text-left">
+                                                            {
+                                                              instance.instanceName
+                                                            }
+                                                          </td>
+                                                          <td className="p-3 text-center">
+                                                            {instance.youTubePlaylist
+                                                              ? "Youtube Video"
+                                                              : "Text scroll"}
+                                                          </td>
+                                                          {/* <td className="p-3">{composition.resolution}</td>
                               <td className="p-3">
                                 {moment
                                   .utc(composition.duration * 1000)
                                   .format("hh:mm:ss")}
                               </td> */}
-                                                      </tr>
-                                                    </tbody>
+                                                        </tr>
+                                                      </tbody>
+                                                    )
                                                   )
-                                                )) : (
+                                                ) : (
                                                   <div className="p-3">
                                                     <p>No Data Found</p>
                                                   </div>
