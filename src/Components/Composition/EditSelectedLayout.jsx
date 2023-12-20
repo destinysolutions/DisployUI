@@ -29,6 +29,7 @@ import moment from "moment";
 import { GoPencil } from "react-icons/go";
 import toast from "react-hot-toast";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import ReactPlayer from "react-player";
 
 const DEFAULT_IMAGE = "";
 const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
@@ -54,6 +55,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [activeTab, setActiveTab] = useState("asset");
   const [dragStartForDivToDiv, setDragStartForDivToDiv] = useState(false);
   const [screenType, setScreenType] = useState("");
+  const [Tags, setTags] = useState("");
 
   const { state } = useLocation();
   const { token } = useSelector((state) => state.root.auth);
@@ -141,7 +143,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       compositionID: Number(id),
       compositionName: compositionName,
       resolution: "1920 * 1080",
-      tags: "tags",
+      tags: Tags,
       layoutID: layoutId,
       userID: 0,
       duration: totalDurationSeconds,
@@ -195,9 +197,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const addSeletedAsset = (data, currSection) => {
-    if (!isDataChanges) {
-      setIsDataChanges(true);
-    }
     const findLayoutDetailID = compositonData?.lstLayloutModelList.find(
       (item) => item?.sectionID == currentSection
     );
@@ -213,6 +212,15 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
     }
 
     let newdatas = { ...Testasset };
+    if (Object.keys(newdatas).length === 0) {
+      for (const [key, value] of Object.entries(
+        compositonData.lstLayloutModelList
+      )) {
+        if (currentSection !== +key + 1) {
+          newdatas[+key + 1] = [];
+        }
+      }
+    }
     if (newdatas?.[currentSection]) {
       newdatas[currentSection].push({
         duration: 10,
@@ -241,6 +249,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
         assetType:
           data?.assetType === undefined && data?.youTubeURL !== undefined
             ? "Video"
+            : data?.text && data?.assetType === undefined
+            ? "Text"
             : data?.assetType,
         type: data?.type,
         perentID: data?.perentID,
@@ -279,6 +289,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
           assetType:
             data?.assetType === undefined && data?.youTubeURL !== undefined
               ? "Video"
+              : data?.text && data?.assetType === undefined
+              ? "Text"
               : data?.assetType,
           type: data?.type,
           perentID: data?.perentID,
@@ -451,11 +463,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response?.data?.status == 200) {
           const data = response.data?.data[0]?.sections;
-          // const filterData = assetData.filter((item1) => {
-          //   return data.some((item2) => item2.mediaID === item1?.assetID);
-          // });
-          // console.log(data);
           setCompositionName(response.data?.data[0]?.compositionName);
+          setTags(response?.data?.data[0]?.tags);
           let obj = {};
           for (const [key, value] of data.entries()) {
             if (obj[value?.sectionID]) {
@@ -866,26 +875,25 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                             }
                           }
                         })
-                        .map((assetdata, index) => (
+                        .map((data, index) => (
                           <tr
                             key={index}
                             className="border-b border-b-[#E4E6FF] cursor-pointer"
-                            onClick={() =>
-                              addSeletedAsset(assetdata, index + 1)
-                            }
+                            onClick={() => addSeletedAsset(data, index + 1)}
                             draggable
                             onDragStart={(event) =>
-                              handleDragStartForDivToDiv(event, assetdata)
+                              handleDragStartForDivToDiv(event, data)
                             }
                           >
                             <td className="break-words w-full text-left">
-                              {assetdata.assetName || assetdata?.instanceName}
+                              {data.assetName || data?.instanceName}
                             </td>
                             <td className="p-2 w-full text-center">
-                              {assetdata?.fileExtention &&
-                                assetdata?.fileExtention}
-                              {assetdata?.youtubeId && "Youtube video"}
-                              {assetdata?.textScroll_Id && "TextScroll"}
+                              {data?.fileExtention
+                                ? data?.fileExtention
+                                : data?.assetType}
+                              {data?.youtubeId && "Youtube video"}
+                              {data?.textScroll_Id && "TextScroll"}
                             </td>
                           </tr>
                         ))}
@@ -990,18 +998,16 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               className="w-full flex cursor-grab items-center md:gap-5 gap-3"
                             >
                               <td className="min-w-[40%]">
-                                <div className="flex items-center w-full">
+                                <div className="flex items-center w-full h-full">
                                   <div
-                                    className={`w-1/2 break-words hyphens-auto`}
+                                    className={`w-1/2 break-words hyphens-auto h-28`}
                                   >
                                     {item.assetType === "OnlineImage" && (
-                                      <>
-                                        <img
-                                          className="imagebox relative w-full h-28 object-cover"
-                                          src={item?.assetFolderPath}
-                                          alt={item?.assetName}
-                                        />
-                                      </>
+                                      <img
+                                        className="imagebox relative w-full h-28 object-cover"
+                                        src={item?.assetFolderPath}
+                                        alt={item?.assetName}
+                                      />
                                     )}
                                     {item.assetType === "Image" && (
                                       <img
@@ -1010,35 +1016,37 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="imagebox relative w-full h-28 object-cover"
                                       />
                                     )}
-                                    {(item.assetType === "Video" ||
-                                      item.assetType === "OnlineVideo") && (
-                                      <video
-                                        controls
-                                        className="imagebox relative w-full h-28 object-cover"
+                                    {item.assetType === "Text" && (
+                                      <marquee
+                                        className="text-lg w-full h-full flex items-center text-black"
+                                        direction={
+                                          item?.direction == "Left to Right"
+                                            ? "left"
+                                            : "right"
+                                        }
+                                        scrollamount="10"
                                       >
-                                        <source
-                                          src={item?.assetFolderPath}
-                                          type="video/mp4"
-                                        />
-                                        Your browser does not support the video
-                                        tag.
-                                      </video>
+                                        {item?.assetFolderPath}
+                                      </marquee>
                                     )}
+                                    {(item.assetType === "Video" ||
+                                      item.assetType === "OnlineVideo" ||
+                                      item.assetType === "Youtube") && (
+                                      <ReactPlayer
+                                        url={item?.assetFolderPath}
+                                        className="w-full relative z-20 videoinner max-h-10"
+                                        controls={false}
+                                        playing={false}
+                                      />
+                                    )}
+
                                     {item.assetType === "DOC" && (
-                                      <p
-                                        href={item?.assetFolderPath}
-                                        // target="_blank"
-                                        // rel="noopener noreferrer"
-                                      >
+                                      <p href={item?.assetFolderPath}>
                                         {item.assetName}
                                       </p>
                                     )}
                                     {item.instanceName && (
-                                      <p
-                                        href={item?.instanceName}
-                                        // target="_blank"
-                                        // rel="noopener noreferrer"
-                                      >
+                                      <p href={item?.instanceName}>
                                         {item.instanceName}
                                       </p>
                                     )}

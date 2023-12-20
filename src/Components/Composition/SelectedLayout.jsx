@@ -27,6 +27,7 @@ import moment from "moment";
 import { GoPencil } from "react-icons/go";
 import toast from "react-hot-toast";
 import { useRef } from "react";
+import ReactPlayer from "react-player";
 
 const DEFAULT_IMAGE = "";
 const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
@@ -35,14 +36,12 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     setSidebarOpen: PropTypes.func.isRequired,
   };
 
-  const currentDate = new Date();
-
   const [modalVisible, setModalVisible] = useState(false);
   const [compositonData, setcompositonData] = useState(null);
   const [currentSection, setcurrentSection] = useState(1);
   const [Testasset, setTestasset] = useState({});
   const [compositionName, setCompositionName] = useState(
-    moment(currentDate).format("YYYY-MM-DD hh:mm")
+    moment().format("YYYY-MM-DD hh:mm")
   );
   const [assetData, setAssetData] = useState([]);
   const [addAsset, setAddAsset] = useState([]);
@@ -109,7 +108,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       layoutID: id,
       userID: 0,
       duration: totalDurationSeconds,
-      dateAdded: new Date(),
+      dateAdded: moment().format("YYYY-MM-DD hh:mm"),
       sections: newdata,
     });
 
@@ -164,7 +163,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         }
       }
     }
-
     if (newdatas?.[currentSection]) {
       newdatas[currentSection].push({
         duration: 10,
@@ -193,6 +191,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
         assetType:
           data?.assetType === undefined && data?.youTubeURL !== undefined
             ? "Video"
+            : data?.text && data?.assetType === undefined
+            ? "Text"
             : data?.assetType,
         type: data?.type,
         perentID: data?.perentID,
@@ -231,6 +231,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           assetType:
             data?.assetType === undefined && data?.youTubeURL !== undefined
               ? "Video"
+              : data?.text && data?.assetType === undefined
+              ? "Text"
               : data?.assetType,
           type: data?.type,
           perentID: data?.perentID,
@@ -589,6 +591,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 className="fixed z-50 w-[30px] h-[30px] text-white bg-black rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
                 onClick={closeModal}
               />
+              {/* screentype toggle "landspace | portrait" */}
               <div
                 className={`fixed z-50 ${
                   screenType === "Landscape" ? "w-14 h-7" : "h-14 w-7"
@@ -656,8 +659,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                   Save
                 </button>
                 {/* <button type="button" onClick={() => setEdited(false)}>
-                  Cancel
-                </button> */}
+              Cancel
+            </button> */}
               </div>
             ) : (
               <>
@@ -745,8 +748,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                         Type
                       </th>
                       {/* <th className="text-[#5A5881] py-2.5 text-base font-semibold">
-                        Tags
-                      </th> */}
+                    Tags
+                  </th> */}
                     </tr>
                   </thead>
 
@@ -764,26 +767,25 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                             }
                           }
                         })
-                        .map((assetdata, index) => (
+                        .map((data, index) => (
                           <tr
                             key={index}
                             className="border-b border-b-[#E4E6FF] cursor-pointer"
-                            onClick={() =>
-                              addSeletedAsset(assetdata, index + 1)
-                            }
+                            onClick={() => addSeletedAsset(data, index + 1)}
                             draggable
                             onDragStart={(event) =>
-                              handleDragStartForDivToDiv(event, assetdata)
+                              handleDragStartForDivToDiv(event, data)
                             }
                           >
                             <td className="break-words w-full text-left">
-                              {assetdata.assetName || assetdata?.instanceName}
+                              {data.assetName || data?.instanceName}
                             </td>
                             <td className="p-2 w-full text-center">
-                              {assetdata?.fileExtention &&
-                                assetdata?.fileExtention}
-                              {assetdata?.youtubeId && "Youtube video"}
-                              {assetdata?.textScroll_Id && "TextScroll"}
+                              {data?.fileExtention
+                                ? data?.fileExtention
+                                : data?.assetType}
+                              {data?.youtubeId && "Youtube video"}
+                              {data?.textScroll_Id && "TextScroll"}
                             </td>
                           </tr>
                         ))}
@@ -821,12 +823,12 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       ></div>
                     ))}
                   {/* <img
-                    src={`data:image/svg+xml;utf8,${encodeURIComponent(
-                      compositonData?.svg
-                    )}`}
-                    alt="Logo"
-                    className="w-32"
-                  /> */}
+                src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                  compositonData?.svg
+                )}`}
+                alt="Logo"
+                className="w-32"
+              /> */}
                 </div>
                 <div className="layout-detaills">
                   <h3 className="text-lg font-medium block mb-3">
@@ -888,18 +890,16 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               className="w-full flex cursor-grab items-center md:gap-5 gap-3"
                             >
                               <td className="min-w-[40%]">
-                                <div className="flex items-center w-full">
+                                <div className="flex items-center w-full h-full">
                                   <div
-                                    className={`w-1/2 break-words hyphens-auto`}
+                                    className={`w-1/2 break-words hyphens-auto h-28`}
                                   >
                                     {item.assetType === "OnlineImage" && (
-                                      <>
-                                        <img
-                                          className="imagebox relative w-full h-28 object-cover"
-                                          src={item?.assetFolderPath}
-                                          alt={item?.assetName}
-                                        />
-                                      </>
+                                      <img
+                                        className="imagebox relative w-full h-28 object-cover"
+                                        src={item?.assetFolderPath}
+                                        alt={item?.assetName}
+                                      />
                                     )}
                                     {item.assetType === "Image" && (
                                       <img
@@ -908,44 +908,49 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="imagebox relative w-full h-28 object-cover"
                                       />
                                     )}
-                                    {(item.assetType === "Video" ||
-                                      item.assetType === "OnlineVideo") && (
-                                      <video
-                                        controls
-                                        className="imagebox relative w-full h-28 object-cover"
+                                    {item.instanceName && item?.scrollType && (
+                                      <marquee
+                                        className="text-lg w-full h-full flex items-center text-black"
+                                        direction={
+                                          item?.scrollType == 1
+                                            ? "left"
+                                            : "right"
+                                        }
+                                        scrollamount="10"
                                       >
-                                        <source
-                                          src={item?.assetFolderPath}
-                                          type="video/mp4"
-                                        />
-                                        Your browser does not support the video
-                                        tag.
-                                      </video>
+                                        {item?.text}
+                                      </marquee>
                                     )}
+                                    {(item.assetType === "Video" ||
+                                      item.assetType === "OnlineVideo" ||
+                                      item.assetType === "Youtube") && (
+                                      <ReactPlayer
+                                        url={item?.assetFolderPath}
+                                        className="w-full relative z-20 videoinner max-h-10"
+                                        controls={false}
+                                        playing={false}
+                                      />
+                                    )}
+
                                     {item.assetType === "DOC" && (
-                                      <p
-                                        href={item?.assetFolderPath}
-                                        // target="_blank"
-                                        // rel="noopener noreferrer"
-                                      >
+                                      <p href={item?.assetFolderPath}>
                                         {item.assetName}
                                       </p>
                                     )}
-                                    {item.instanceName && (
-                                      <p
-                                        href={item?.instanceName}
-                                        // target="_blank"
-                                        // rel="noopener noreferrer"
-                                      >
-                                        {item.instanceName}
-                                      </p>
-                                    )}
+                                    {/* {item.instanceName && (
+                                    <p
+                                      href={item?.instanceName}
+                                    >
+                                      {item.instanceName}
+                                    </p>
+                                  )} */}
                                   </div>
                                   <div className="ml-3 w-1/2">
                                     <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
                                       {item?.assetName && item?.assetName}
                                       {item?.text && item?.text}
-                                      {item?.youTubeURL && item?.youTubeURL}
+                                      {item?.instanceName && item?.instanceName}
+                                      {/* {item?.youTubeURL && item?.youTubeURL} */}
                                     </p>
                                   </div>
                                 </div>

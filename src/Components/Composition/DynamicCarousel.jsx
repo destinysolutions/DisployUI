@@ -114,7 +114,12 @@ const Carousel = ({ items, compositonData, from }) => {
                 {(item?.assetType === "Text" || item?.mediaType === "Text") && (
                   <marquee
                     className="text-lg w-full h-full flex items-center text-black"
-                    direction={item?.scrollType == 1 ? "left" : "right"}
+                    direction={
+                      item?.scrollType == 1 ||
+                      item?.direction == "Left to Right"
+                        ? "left"
+                        : "right"
+                    }
                     scrollamount="10"
                   >
                     {item?.assetFolderPath ?? item?.fileType}
@@ -123,7 +128,12 @@ const Carousel = ({ items, compositonData, from }) => {
                 {item?.text !== undefined && (
                   <marquee
                     className="text-lg w-full h-full flex items-center text-black"
-                    direction={item?.scrollType == 1 ? "left" : "right"}
+                    direction={
+                      item?.scrollType == 1 ||
+                      item?.direction == "Left to Right"
+                        ? "left"
+                        : "right"
+                    }
                     scrollamount="10"
                   >
                     {item?.text}

@@ -73,8 +73,7 @@ const EventEditor = ({
       console.log("Select start time must be after or equal to current date");
     }
   };
-  
-  
+
   // console.log("newEndTime",editedEndTime);
   const handleEndTimeChange = (e) => {
     const newEndTime = e.target.value;
@@ -83,20 +82,24 @@ const EventEditor = ({
     } else {
       console.log("Select End time must be after or equal to start time");
     }
-  
   };
+
+  const currentDate = moment();
 
   const handleStartDateChange = (e) => {
     const newStartDate = e.target.value;
-    // Calculate and update the end date based on the new start date
-    if (!showRepeatSettings) {
-      setEditedStartDate(newStartDate);
-      const newEndDate = calculateEndDate(newStartDate, editedStartTime);
-      setEditedEndDate(newEndDate);
-    }
+    const givenDate = moment(newStartDate);
+    if (givenDate.isSameOrAfter(currentDate, "day")) {
+      // Calculate and update the end date based on the new start date
+      if (!showRepeatSettings) {
+        setEditedStartDate(newStartDate);
+        const newEndDate = calculateEndDate(newStartDate, editedStartTime);
+        setEditedEndDate(newEndDate);
+      }
 
-    if (showRepeatSettings && newStartDate < editedEndDate) {
-      setEditedStartDate(newStartDate);
+      if (showRepeatSettings && newStartDate < editedEndDate) {
+        setEditedStartDate(newStartDate);
+      }
     }
   };
 
@@ -612,129 +615,131 @@ const EventEditor = ({
                       </thead>
                       <tbody>
                         {allAssets.length > 0 ? (
-                          allAssets.map((item, index) => (
-                            <tr
-                              key={index}
-                              className={`${
-                                selectedAsset === item ? "bg-[#f3c953]" : ""
-                              } border-b border-[#eee] mt-5`}
-                              onClick={() => {
-                                handleAssetAdd(item);
-                              }}
-                            >
-                              <td className="border-b border-[#eee]">
-                                {item.assetType === "OnlineImage" && (
-                                  <div className="imagebox relative z-0">
+                          allAssets
+                            .filter((item) => item?.assetType !== "Folder")
+                            .map((item, index) => (
+                              <tr
+                                key={index}
+                                className={`${
+                                  selectedAsset === item ? "bg-[#f3c953]" : ""
+                                } border-b border-[#eee] mt-5`}
+                                onClick={() => {
+                                  handleAssetAdd(item);
+                                }}
+                              >
+                                <td className="border-b border-[#eee]">
+                                  {item.assetType === "OnlineImage" && (
+                                    <div className="imagebox relative z-0">
+                                      <img
+                                        src={item.assetFolderPath}
+                                        alt={item.assetName}
+                                        className="rounded-2xl h-20 w-full"
+                                      />
+                                    </div>
+                                  )}
+                                  {item.assetType === "OnlineVideo" && (
+                                    <div className="imagebox rounded-2xl z-0 relative">
+                                      <video
+                                        controls
+                                        autoPlay={true}
+                                        className="rounded-2xl h-20 w-full"
+                                      >
+                                        <source
+                                          src={item.assetFolderPath}
+                                          type="video/mp4"
+                                        />
+                                        Your browser does not support the video
+                                        tag.
+                                      </video>
+                                    </div>
+                                  )}
+                                  {item.assetType === "Image" && (
                                     <img
                                       src={item.assetFolderPath}
                                       alt={item.assetName}
                                       className="rounded-2xl h-20 w-full"
                                     />
-                                  </div>
-                                )}
-                                {item.assetType === "OnlineVideo" && (
-                                  <div className="imagebox rounded-2xl z-0 relative">
-                                    <video
-                                      controls
-                                      autoPlay={true}
-                                      className="rounded-2xl h-20 w-full"
-                                    >
-                                      <source
-                                        src={item.assetFolderPath}
-                                        type="video/mp4"
-                                      />
-                                      Your browser does not support the video
-                                      tag.
-                                    </video>
-                                  </div>
-                                )}
-                                {item.assetType === "Image" && (
-                                  <img
-                                    src={item.assetFolderPath}
-                                    alt={item.assetName}
-                                    className="rounded-2xl h-20 w-full"
-                                  />
-                                )}
-                                {item.assetType === "Video" && (
-                                  <div className="relative videobox z-0 w-full h-20 ">
-                                    <ReactPlayer
-                                      url={item?.assetFolderPath}
-                                      className="w-full rounded-2xl relative z-20 h-full videoinner object-fill"
-                                      controls={false}
-                                      playing={true}
-                                    />
-                                  </div>
-                                )}
-                                {item.youTubeURL && (
-                                  <div className="relative rounded-2xl videobox z-0 w-full h-20">
-                                    <ReactPlayer
-                                      url={item?.youTubeURL}
-                                      className="w-full relative rounded-2xl z-20 h-full videoinner object-fill"
-                                      controls={false}
-                                      playing={true}
-                                    />
-                                  </div>
-                                )}
-                                {item.text && (
-                                  <div className="w-full h-full ">
-                                    <marquee
-                                      className="text-lg h-full w-full text-black"
-                                      scrollamount="10"
-                                      direction={
-                                        assetPreview?.scrollType == 1
-                                          ? "left"
-                                          : "right"
-                                      }
-                                    >
-                                      {assetPreview?.text}
-                                    </marquee>
-                                  </div>
-                                )}
-                                {item.assetType === "DOC" && (
-                                  <a
-                                    href={item.assetFolderPath}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                  >
-                                    {item.assetName}
-                                  </a>
-                                )}
-                              </td>
-                              <td className="border-b border-[#eee]">
-                                <h5
-                                  className="font-medium text-black cursor-pointer"
-                                  onClick={() => {
-                                    handleAssetAdd(item);
-                                  }}
-                                >
-                                  {item.assetName && item?.assetName}
-                                  {item.instanceName && item?.instanceName}
-                                </h5>
-                              </td>
-                              <td className="border-b border-[#eee]">
-                                <p className="text-black font-medium">
-                                  {moment(item.createdDate).format(
-                                    "YYYY-MM-DD HH:mm"
                                   )}
-                                </p>
-                              </td>
-                              <td className="border-b border-[#eee]">
-                                <p className="text-black font-medium">
-                                  Schedule Name Till 28 June 2023
-                                </p>
-                              </td>
-                              <td className="border-b border-[#eee]">
-                                <p className="text-black font-medium">
-                                  {item.resolutions}
-                                </p>
-                              </td>
-                              <td className="border-b border-[#eee]">
-                                <p className="text-black font-medium">
-                                  Tags, Tags
-                                </p>
-                              </td>
-                            </tr>
-                          ))
+                                  {item.assetType === "Video" && (
+                                    <div className="relative videobox z-0 w-full h-20 ">
+                                      <ReactPlayer
+                                        url={item?.assetFolderPath}
+                                        className="w-full rounded-2xl relative z-20 h-full videoinner object-fill"
+                                        controls={false}
+                                        playing={true}
+                                      />
+                                    </div>
+                                  )}
+                                  {item.youTubeURL && (
+                                    <div className="relative rounded-2xl videobox z-0 w-full h-20">
+                                      <ReactPlayer
+                                        url={item?.youTubeURL}
+                                        className="w-full relative rounded-2xl z-20 h-full videoinner object-fill"
+                                        controls={false}
+                                        playing={true}
+                                      />
+                                    </div>
+                                  )}
+                                  {item.text && (
+                                    <div className="w-full h-full ">
+                                      <marquee
+                                        className="text-lg h-full w-full text-black"
+                                        scrollamount="10"
+                                        direction={
+                                          assetPreview?.scrollType == 1
+                                            ? "left"
+                                            : "right"
+                                        }
+                                      >
+                                        {assetPreview?.text}
+                                      </marquee>
+                                    </div>
+                                  )}
+                                  {item.assetType === "DOC" && (
+                                    <a
+                                      href={item.assetFolderPath}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      {item.assetName}
+                                    </a>
+                                  )}
+                                </td>
+                                <td className="border-b border-[#eee]">
+                                  <h5
+                                    className="font-medium text-black cursor-pointer"
+                                    onClick={() => {
+                                      handleAssetAdd(item);
+                                    }}
+                                  >
+                                    {item.assetName && item?.assetName}
+                                    {item.instanceName && item?.instanceName}
+                                  </h5>
+                                </td>
+                                <td className="border-b border-[#eee]">
+                                  <p className="text-black font-medium">
+                                    {moment(item.createdDate).format(
+                                      "YYYY-MM-DD HH:mm"
+                                    )}
+                                  </p>
+                                </td>
+                                <td className="border-b border-[#eee]">
+                                  <p className="text-black font-medium">
+                                    Schedule Name Till 28 June 2023
+                                  </p>
+                                </td>
+                                <td className="border-b border-[#eee]">
+                                  <p className="text-black font-medium">
+                                    {item.resolutions}
+                                  </p>
+                                </td>
+                                <td className="border-b border-[#eee]">
+                                  <p className="text-black font-medium">
+                                    Tags, Tags
+                                  </p>
+                                </td>
+                              </tr>
+                            ))
                         ) : searchAsset !== "" ? (
                           <tr>
                             <td
@@ -785,13 +790,13 @@ const EventEditor = ({
                                         <>
                                           {assetPreview?.assetType ===
                                             "OnlineImage" && (
-                                            <div className="imagebox relative z-0">
+                                            <div className="imagebox relative z-0 w-full h-full">
                                               <img
                                                 src={
                                                   assetPreview.assetFolderPath
                                                 }
                                                 alt={assetPreview.assetName}
-                                                className="rounded-2xl h-24 w-28"
+                                                className="imagebox relative h-full w-full"
                                               />
                                             </div>
                                           )}
@@ -1092,7 +1097,7 @@ const EventEditor = ({
                           <li className="border-b-2 border-lightgray p-3">
                             <h3>End Date:</h3>
                             <div className="mt-2 bg-lightgray rounded-full px-3 py-2 w-full">
-                              {moment(editedStartDate).format("DD-MM-YYYY")}
+                              {moment(editedStartDate).format("YYYY-MM-DD")}
                             </div>
                           </li>
                           <li className="border-b-2 border-lightgray p-3">

@@ -563,7 +563,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     setCompositionData(sortedData);
   };
 
-  console.log(layotuDetails);
+  console.log(compositionData);
+
   return (
     <>
       <div className="flex bg-white py-3 border-b border-gray">
@@ -748,9 +749,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                           {composition?.compositionName}
                         </td>
                         <td className="text-center">
-                          {moment(composition?.dateAdded).format(
-                            "YYYY-MM-DD hh:mm"
-                          )}
+                          {moment(composition?.dateAdded).format("LLL")}
                         </td>
                         <td className="text-center ">
                           {composition?.resolution}
@@ -791,6 +790,16 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     ? 3
                                     : composition?.tags.split(",").length
                                 )
+                                .map((text) => {
+                                  if (text.toString().length > 10) {
+                                    return text
+                                      .split("")
+                                      .slice(0, 10)
+                                      .concat("...")
+                                      .join("");
+                                  }
+                                  return text;
+                                })
                                 .join(",")
                             : ""}
                           {composition?.tags !== "" &&
@@ -988,9 +997,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                           {composition?.compositionName}
                         </td>
                         <td className="text-center">
-                          {moment(composition?.dateAdded).format(
-                            "YYYY-MM-DD hh:mm"
-                          )}
+                          {moment(composition?.dateAdded).format("LLL")}
                         </td>
                         <td className="text-center ">
                           {composition?.resolution}
@@ -1031,6 +1038,16 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     ? 3
                                     : composition?.tags.split(",").length
                                 )
+                                .map((text) => {
+                                  if (text.toString().length > 10) {
+                                    return text
+                                      .split("")
+                                      .slice(0, 10)
+                                      .concat("...")
+                                      .join("");
+                                  }
+                                  return text;
+                                })
                                 .join(",")
                             : ""}
                           {composition?.tags !== "" &&
