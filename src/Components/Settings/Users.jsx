@@ -369,7 +369,7 @@ const Users = () => {
     },
 
     {
-      name: "",
+      name: "Actions",
       cell: (row) => (
         <div className="relative">
           <button

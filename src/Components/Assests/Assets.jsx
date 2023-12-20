@@ -74,6 +74,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [searchAsset, setSearchAsset] = useState("");
   const [filteredAssetData, setFilteredAssetData] = useState([]);
 
+  const [mediaType ,setMediaType ] = useState('')
+
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
     : "";
@@ -197,8 +199,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const fetchData = () => {
     setLoading(true);
-    axios
-      .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
+    axios.get(GET_ALL_FILES, { headers: { Authorization: authToken } })
       .then((response) => {
         const fetchedData = response.data;
         setOriginalData(fetchedData);
@@ -216,8 +217,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           return new Date(b.createdDate) - new Date(a.createdDate);
         });
 
-        setGridData(sortedAssets);
 
+        setGridData(sortedAssets);
         setLoading(false);
         setFolderDisable(false);
       })
@@ -225,8 +226,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
         setLoading(false);
       });
-  };
-
+    };
+    
+    
   const handleActiveBtnClick = (btnNumber) => {
     setActivetab(btnNumber);
     const gridData = [];
@@ -242,7 +244,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       ];
       setGridData(allAssets);
 
-      fetchData();
+      // fetchData();
     } else if (btnNumber === 2) {
       if (originalData.image) {
         gridData.push(...originalData.image);
@@ -268,11 +270,16 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     } else if (btnNumber === 4) {
       setGridData(originalData.doc ? originalData.doc : []);
     } else if (btnNumber === 5) {
-      setGridData(originalData?.folder ? originalData?.folder : []);
+      if (originalData?.folder) {
+        gridData.push(...originalData.folder);
+        setGridData(gridData);
+      }
     }
+    
   };
-  // Delete API
 
+
+  // Delete API
   const handelDeletedata = (IsDeleteFromALL) => {
     const formData = new FormData();
     formData.append("AssetID", deleteAssetID);
@@ -390,10 +397,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       headers: { Authorization: authToken },
     };
 
-    axios
-      .request(config)
-      .then(async(response) => {
-        if (response?.data?.data == false) {
+    axios.request(config).then(async(response) => {
+        if (response?.data?.data === false) {
           setassetsdw(null);
           setassetsdw2(null);
           handelDeletedata(false);
@@ -402,8 +407,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           setassetsdw2(null);
           setDeleteMessage(true);
         }
-        await fetchData()
-        handleActiveBtnClick(3)
+        setassetsdw(null);
+        setassetsdw2(null);
+        // handleActiveBtnClick(activetab)
       })
       .catch((error) => {
         console.log(error);
@@ -416,17 +422,25 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       operation: "Delete",
     });
     toast.loading("Deleting...");
-    axios
-      .post(CREATE_NEW_FOLDER, data, {
+     axios.post(CREATE_NEW_FOLDER, data, {
         headers: {
           Authorization: authToken,
           "Content-Type": "application/json",
         },
       })
-      .then(() => {
-        fetchData();
-        handleActiveBtnClick(1);
-        toast.remove();
+      .then(async(res) => {
+        if (res.data.data === false) {
+          setassetsdw(null);
+          setassetsdw2(null);
+          setDeleteMessage(false);
+        }else{
+          setassetsdw(null);
+          setassetsdw2(null);
+          setDeleteMessage(true);
+          toast.success("Delete successFully...")
+          toast.remove();
+        }
+        handleActiveBtnClick(activetab)
       })
       .catch((error) => {
         console.log(error);
@@ -511,6 +525,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const toggleMoveTo = () => {
     setIsMoveToOpen(!isMoveToOpen);
   };
+
   const handleMoveTo = (folderId) => {
     moveDataToFolder(
       selectedItems?.assetID,
@@ -564,6 +579,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     setassetsdw2(null);
     setassetsdw(null);
   }
+  
   const handleSelectAll = () => {
     const updatedAsset = gridData.map((asset) => ({
       ...asset,
@@ -619,6 +635,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       }
     }
   };
+  
   return (
     <>
       {showImageAssetModal && (

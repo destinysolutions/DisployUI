@@ -64,30 +64,26 @@ const EventEditor = ({
 
   const modalRef = useRef(null);
 
+  // console.log("editedStartTime",editedStartTime);
   const handleStartTimeChange = (e) => {
-    setEditedStartTime(e.target.value);
+    const newStartTime = e.target.value;
+    if (newStartTime < editedEndTime) {
+      setEditedStartTime(newStartTime);
+    } else {
+      console.log("Select start time must be after or equal to current date");
+    }
   };
-
-  function convertTo12HourFormat(hour) {
-    if (hour === 0 || hour === 24) {
-      return 12; // or return 0 if you prefer
-    } else {
-      return hour % 12;
-    }
-  }
-
+  
+  
+  // console.log("newEndTime",editedEndTime);
   const handleEndTimeChange = (e) => {
-    const currentDate = new Date();
     const newEndTime = e.target.value;
-    if (editedStartTime <= newEndTime) {
-      // Convert the 24-hour time to 12-hour format
-      const editedEndTime12Hour = convertTo12HourFormat(
-        new Date(`${currentDate.toDateString()} ${newEndTime}`).getHours()
-      );
-      setEditedEndTime(e.target.value);
+    if (newEndTime > editedStartTime) {
+      setEditedEndTime(newEndTime);
     } else {
-      toast.error("Select End time must be after start time");
+      console.log("Select End time must be after or equal to start time");
     }
+  
   };
 
   const handleStartDateChange = (e) => {
