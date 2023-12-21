@@ -40,6 +40,7 @@ import toast from "react-hot-toast";
 import ShowAssetImageModal from "./ShowAssetImageModal";
 import ScreenAssignModal from "../ScreenAssignModal";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import Swal from "sweetalert2";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -74,11 +75,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [searchAsset, setSearchAsset] = useState("");
   const [filteredAssetData, setFilteredAssetData] = useState([]);
 
-  const [mediaType ,setMediaType ] = useState('')
+  const [selectdata, setSelectData] = useState({});
 
-  const selectedScreenIdsString = Array.isArray(selectedScreens)
-    ? selectedScreens.join(",")
-    : "";
+  const selectedScreenIdsString = Array.isArray(selectedScreens) ? selectedScreens.join(",") : "";
+
+
 
   const [clickedTabIcon, setClickedTabIcon] = useState(null);
 
@@ -134,11 +135,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       },
     };
 
-    axios
-      .request(config)
+    axios.request(config)
       .then((response) => {
         if (response.data.status == 200) {
           toast.success("Asset added to Screen Successfully");
+          fetchData()
           if (connection) {
             connection
               .invoke("ScreenConnected")
@@ -199,7 +200,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const fetchData = () => {
     setLoading(true);
-    axios.get(GET_ALL_FILES, { headers: { Authorization: authToken } })
+    axios
+      .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
       .then((response) => {
         const fetchedData = response.data;
         setOriginalData(fetchedData);
@@ -212,13 +214,29 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
           ...(fetchedData.folder ? fetchedData.folder : []),
         ];
+        console.log(allAssets);
+        const sortedAssets = allAssets
+          // .filter((asset) => {
+          //   if (asset.assetType != "Folder") {
+          //     return asset;
+          //   }
+          // })
+          .sort((a, b) => {
+            return new Date(b.createdDate) - new Date(a.createdDate);
+          });
+        // console.log(sortedAssets);
+        const data = [];
 
-        const sortedAssets = allAssets.sort((a, b) => {
-          return new Date(b.createdDate) - new Date(a.createdDate);
+        sortedAssets.map((arr, i) => {
+          if (arr?.assetType === "Folder") {
+            return data.unshift(arr);
+          } else {
+            return data.push(arr);
+          }
         });
 
-
-        setGridData(sortedAssets);
+        console.log(data);
+        setGridData(data);
         setLoading(false);
         setFolderDisable(false);
       })
@@ -226,13 +244,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
         setLoading(false);
       });
-    };
-    
-    
+  };
   const handleActiveBtnClick = (btnNumber) => {
     setActivetab(btnNumber);
     const gridData = [];
-    const tableData = [];
+   
 
     if (btnNumber === 1) {
       const allAssets = [
@@ -248,23 +264,23 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     } else if (btnNumber === 2) {
       if (originalData.image) {
         gridData.push(...originalData.image);
-        tableData.push(...originalData.image);
+     
       }
 
       if (originalData.onlineimages) {
         gridData.push(...originalData.onlineimages);
-        tableData.push(...originalData.onlineimages);
+      
       }
       setGridData(gridData);
     } else if (btnNumber === 3) {
       if (originalData.video) {
         gridData.push(...originalData.video);
-        tableData.push(...originalData.video);
+       
       }
 
       if (originalData.onlinevideo) {
         gridData.push(...originalData.onlinevideo);
-        tableData.push(...originalData.onlinevideo);
+       
       }
       setGridData(gridData);
     } else if (btnNumber === 4) {
@@ -275,9 +291,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         setGridData(gridData);
       }
     }
-    
   };
-
 
   // Delete API
   const handelDeletedata = (IsDeleteFromALL) => {
@@ -393,11 +407,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${SELECT_BY_ASSET_ID}?Id=${assetId}`,
+      url: `${SELECT_BY_ASSET_ID}?Id=${assetId}&AssetType=Image`,
       headers: { Authorization: authToken },
     };
 
-    axios.request(config).then(async(response) => {
+    axios
+      .request(config)
+      .then(async (response) => {
         if (response?.data?.data === false) {
           setassetsdw(null);
           setassetsdw2(null);
@@ -416,36 +432,97 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const deleteFolder = (folderID) => {
-    const data = JSON.stringify({
-      folderID: folderID,
-      operation: "Delete",
-    });
-    toast.loading("Deleting...");
-     axios.post(CREATE_NEW_FOLDER, data, {
-        headers: {
-          Authorization: authToken,
-          "Content-Type": "application/json",
+  const checkFolderImage = async (assetId) => {
+    try {
+      const config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: `${SELECT_BY_ASSET_ID}?Id=${assetId}&AssetType=Folder`,
+        headers: { Authorization: authToken },
+      };
+
+      const response = await axios.request(config);
+      return response.data;
+    } catch (error) {
+      // Handle errors if needed
+      console.error("Error in checkFolderImage:", error);
+      throw error; // Rethrow the error to handle it outside this function
+    }
+  };
+
+  const deleteFolder = async (folderID) => {
+    const data = JSON.stringify({folderID: folderID,operation: "Delete"});
+
+    const checkImage = await checkFolderImage(folderID);
+    if (checkImage.data) {
+      Swal.fire({
+        // title: "Delete Confirmation",
+        text: "Are you sure you want to delete this Asset? Because this Asset is being use in another place.If you click on yes it will get removed from the places where the asset is used.",
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonText: "No, cancel",
+        confirmButtonText: "Yes, Im sure", 
+        customClass: {
+          text: 'swal-text-bold', 
+          content: 'swal-text-color', 
+          confirmButton: 'swal-confirm-button-color', // Apply custom color and style
         },
-      })
-      .then(async(res) => {
-        if (res.data.data === false) {
+        confirmButtonColor: '#ff0000',
+      }).then(async(result) => {
+        if (result.isConfirmed) {
+          const config2 = {
+            method: "post",
+            maxBodyLength: Infinity,
+            url: CREATE_NEW_FOLDER,
+            headers: { Authorization: authToken, "Content-Type": "application/json", },
+            data : data
+          };
+          const response = await axios.request(config2);
           setassetsdw(null);
           setassetsdw2(null);
-          setDeleteMessage(false);
-        }else{
-          setassetsdw(null);
-          setassetsdw2(null);
-          setDeleteMessage(true);
+          fetchData()
           toast.success("Delete successFully...")
-          toast.remove();
         }
-        handleActiveBtnClick(activetab)
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.remove();
       });
+    } else {
+      const config2 = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: CREATE_NEW_FOLDER,
+        headers: { Authorization: authToken, "Content-Type": "application/json", },
+        data : data
+      };
+      const response = await axios.request(config2);
+      setassetsdw(null);
+      setassetsdw2(null);
+      fetchData()
+      toast.success("Delete successFully...")
+    }
+
+    //  axios.post(CREATE_NEW_FOLDER, data, {
+    //     headers: {
+    //       Authorization: authToken,
+    //       "Content-Type": "application/json",
+    //     },
+    //   })
+    //   .then(async(res) => {
+    //     if (res.data.data === false) {
+    //       setassetsdw(null);
+    //       setassetsdw2(null);
+    //       setDeleteMessage(false);
+    //     }else{
+    //       setassetsdw(null);
+    //       setassetsdw2(null);
+    //       setDeleteMessage(true);
+    //       toast.success("Delete successFully...")
+    //       toast.remove();
+    //     }
+    //     handleActiveBtnClick(activetab)
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     toast.remove();
+    //   });
   };
 
   const handleKeyDown = (e, folderID) => {
@@ -579,7 +656,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     setassetsdw2(null);
     setassetsdw(null);
   }
-  
+
   const handleSelectAll = () => {
     const updatedAsset = gridData.map((asset) => ({
       ...asset,
@@ -635,7 +712,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       }
     }
   };
-  
+
   return (
     <>
       {showImageAssetModal && (
@@ -844,7 +921,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                         <div
                           onDragOver={(event) => handleDragOver(event)}
                           onDrop={(event) => handleDrop(event, item.assetID)}
-                          className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col"
+                          className="text-center relative list-none bg-lightgray rounded-md px-3 py-7 flex justify-center items-center flex-col h-full"
                         >
                           <FcOpenedFolder
                             className="text-8xl text-center mx-auto"
@@ -1034,6 +1111,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                         onClick={() => {
                                           setAddScreenModal(true);
                                           setassetsdw(null);
+                                          setSelectData(item)
                                         }}
                                       >
                                         <FiUpload className="mr-2 text-lg" />
@@ -1502,6 +1580,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     <button
                       className="bg-primary text-white px-8 py-2 rounded-full"
                       onClick={() => {
+                        if(selectdata?.screenIDs){
+                          let arr = [selectdata?.screenIDs];
+                          let newArr = arr[0].split(',').map(item => parseInt(item.trim()));
+                          setSelectedScreens(newArr)
+                        }
                         setSelectScreenModal(true);
                         setAddScreenModal(false);
                       }}

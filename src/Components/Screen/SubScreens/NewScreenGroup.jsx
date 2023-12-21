@@ -428,10 +428,7 @@ const dispatch = useDispatch();
                         </tr>
                       </thead>
                       <tbody>
-                        {isAccordionOpen &&
-                          item &&
-                          item.arrayGroup.length &&
-                          item.arrayGroup.map((groupItem, index) => {
+                        {isAccordionOpen && item && item.arrayGroup.length && item.arrayGroup.map((groupItem, index) => {
                             return (
                               <tr
                                 key={index}
