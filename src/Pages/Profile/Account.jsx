@@ -29,9 +29,7 @@ const Account = () => {
   const [currencies, setCurrencies] = useState([]);
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
-  const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedState, setSelectedState] = useState("");
 
   const { token, user, userDetails, loading } = useSelector(
     (state) => state.root.auth
@@ -55,13 +53,11 @@ const Account = () => {
     if (e.target.files[0] !== undefined && e.target.files[0] !== null) {
       const selectedFile = e.target.files[0];
       setFile(selectedFile);
-      setIsImageUploaded(true);
     }
   };
 
   const handleImageReset = () => {
     setFile(null);
-    setIsImageUploaded(false);
   };
 
   const handleClick = (e) => {
@@ -80,25 +76,6 @@ const Account = () => {
   } = useForm({
     shouldFocusError: true,
     resolver: yupResolver(profileSchema),
-    // defaultValues: useMemo(() => {
-    //   const user = {
-    //     firstName: userDetails?.firstName,
-    //     lastName: userDetails?.lastName,
-    //     phoneNumber: userDetails?.phoneNumber,
-    //     address: userDetails?.googleLocation,
-    //     emailID: userDetails?.emailID,
-    //     organization: userDetails?.organization,
-    //     country: userDetails?.shippingAddress?.country,
-    //     city: userDetails?.shippingAddress?.city,
-    //     zipCode: userDetails?.shippingAddress?.zipCode,
-    //     timeZone: userDetails?.shippingAddress?.timeZone,
-    //     country: userDetails?.shippingAddress?.country,
-    //     state: userDetails?.shippingAddress?.state,
-    //     language: userDetails?.shippingAddress?.language,
-    //     currency: userDetails?.shippingAddress?.currency,
-    //   };
-    //   return user;
-    // }, [userDetails]),
   });
 
   const onSubmit = (data) => {
@@ -118,7 +95,7 @@ const Account = () => {
       toast.error("phone is invalid");
       return true;
     }
-
+    // return console.log(data,file);
     const response = dispatch(
       UpdateUserDetails({
         data,
@@ -177,19 +154,14 @@ const Account = () => {
   }, [watch("country"), selectedCountry]);
 
   useEffect(() => {
-    if (userDetails !== null) {
+    if (userDetails !== null && !loading) {
       for (const key in userDetails) {
         setValue(key, userDetails[key]);
       }
-      if (userDetails?.countryID) {
-        setSelectedCountry(userDetails?.countryID);
-      } else {
-        setSelectedCountry(userDetails?.country);
-      }
-      // setValue("state", userDetails?.state);
-      // setValue("country", userDetails?.country);
+      setSelectedCountry(userDetails?.countryID);
     }
-  }, [userDetails]);
+  }, [loading]);
+  // console.log(userDetails);
 
   return (
     <>
@@ -366,19 +338,17 @@ const Account = () => {
                 <div>
                   <select
                     className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-                    {...register("country", {
+                    {...register("countryID", {
                       onChange: (e) => {
                         setSelectedCountry(e.target.value);
                       },
                     })}
                   >
+                    <option label="Select country"></option>
                     {countries.map((country) => (
                       <option
                         key={country.countryID}
-                        selected={country?.countryName == getValues("country")}
-                        defaultValue={
-                          country?.countryName == getValues("country")
-                        }
+                        selected={country?.countryID == getValues("countryID")}
                         value={country.countryID}
                         // onChange={(e) => {}}
                       >
@@ -386,7 +356,7 @@ const Account = () => {
                       </option>
                     ))}
                   </select>
-                  <span className="error">{errors?.country?.message}</span>
+                  <span className="error">{errors?.countryID?.message}</span>
                 </div>
               </div>
               <div className="md:w-1/2 px-3">
@@ -395,12 +365,13 @@ const Account = () => {
                   <select
                     className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
                     name="state"
-                    {...register("state")}
+                    {...register("stateId")}
                   >
+                    <option label="Select state"></option>
                     {Array.isArray(states) &&
                       states.map((state) => (
                         <option
-                          selected={state?.countryName == getValues("state")}
+                          selected={state?.stateId == getValues("stateId")}
                           key={state.stateId}
                           value={state.stateId}
                         >
@@ -408,7 +379,7 @@ const Account = () => {
                         </option>
                       ))}
                   </select>
-                  <span className="error">{errors?.state?.message}</span>
+                  <span className="error">{errors?.stateId?.message}</span>
                 </div>
               </div>
             </div>
@@ -418,18 +389,23 @@ const Account = () => {
                 <div>
                   <select
                     className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-                    {...register("language")}
+                    {...register("languageId")}
                   >
+                    <option label="Select language"></option>
+
                     {languages.map((language) => (
                       <option
                         value={language.languageId}
                         key={language.languageId}
+                        selected={
+                          language?.languageId == getValues("languageId")
+                        }
                       >
                         {language.languageName}
                       </option>
                     ))}
                   </select>
-                  <span className="error">{errors?.language?.message}</span>
+                  <span className="error">{errors?.languageId?.message}</span>
                 </div>
               </div>
               <div className="md:w-1/2 px-3">
@@ -437,18 +413,22 @@ const Account = () => {
                 <div>
                   <select
                     className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-                    {...register("timeZone")}
+                    {...register("timeZoneId")}
                   >
+                    <option label="Select timezone"></option>
                     {timezones.map((timezone) => (
                       <option
                         value={timezone.timeZoneID}
                         key={timezone.timeZoneID}
+                        selected={
+                          timezone?.timeZoneID == getValues("timeZoneId")
+                        }
                       >
                         {timezone.timeZoneName}
                       </option>
                     ))}
                   </select>
-                  <span className="error">{errors?.timeZone?.message}</span>
+                  <span className="error">{errors?.timeZoneId?.message}</span>
                 </div>
               </div>
               <div className="md:w-1/2 px-3">
@@ -456,20 +436,24 @@ const Account = () => {
                 <div>
                   <select
                     className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
-                    {...register("currency")}
+                    {...register("currencyId")}
                   >
+                    <option label="Select currency"></option>
                     {currencies &&
                       currencies.length > 0 &&
                       currencies?.map((currency) => (
                         <option
                           value={currency.currencyId}
                           key={currency.currencyId}
+                          selected={
+                            currency?.currencyId == getValues("currencyId")
+                          }
                         >
                           {currency.currencyName}
                         </option>
                       ))}
                   </select>
-                  <span className="error">{errors?.currency?.message}</span>
+                  <span className="error">{errors?.currencyId?.message}</span>
                 </div>
               </div>
             </div>
