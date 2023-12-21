@@ -172,6 +172,7 @@ const Defaultmedia = () => {
     // handleAssetUpdate();
     handleChangeMedia();
     setAssetPreviewPopup(false);
+    setSearchAssest("");
   };
 
   useEffect(() => {
@@ -191,6 +192,8 @@ const Defaultmedia = () => {
         setShowAssetModal(false);
         setFilteredData([]);
         setSearchAsset("");
+        setAssetPreviewPopup(false)
+        setSearchAssest("")
       }
     };
     document.addEventListener("click", handleClickOutside, true);
@@ -201,7 +204,9 @@ const Defaultmedia = () => {
 
   function handleClickOutside() {
     setShowAssetModal(false);
+    setAssetPreviewPopup(false)
     setSearchAsset("");
+    setSearchAssest("")
     setFilteredData([]);
   }
 
@@ -304,8 +309,8 @@ const Defaultmedia = () => {
         </ul>
       </div>
       {mediaTabs === 1 && (
-        <div className="flex items-center w-full h-auto gap-2">
-          <div className="w-4/12 p-3">
+        <div className="grid lg:grid-cols-2 w-full h-auto place-items-center items-center p-6">
+        <div className="lg:w-1/2 w-full">
             <div className="flex items-center justify-center mb-5 flex-wrap">
               <label className="mr-3 text-primary lg:text-lg md:text-lg sm:text-base xs:text-base font-medium py-2">
                 Asset / Playing:
@@ -338,7 +343,10 @@ const Defaultmedia = () => {
                       </h3>
                       <button
                         className="p-1 text-xl"
-                        onClick={() => setShowAssetModal(false)}
+                        onClick={() => {
+                          setShowAssetModal(false);
+                          setSearchAssest("");
+                        }}
                       >
                         <AiOutlineCloseCircle className="text-2xl" />
                       </button>
@@ -446,11 +454,18 @@ const Defaultmedia = () => {
                                 onChange={(e) => handleSearchAssest(e, "asset")}
                               />
                             </div>
-                            <Link to="/fileupload">
-                              <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
-                                Upload
-                              </button>
-                            </Link>
+                            <button
+                              className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                              onClick={() => {
+                                window.open(
+                                  window.location.origin.concat("/fileupload")
+                                );
+                                setShowAssetModal(false);
+                                setSearchAssest("");
+                              }}
+                            >
+                              Upload
+                            </button>
                           </div>
                           <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover w-full addmedia-table">
                             <table
@@ -744,7 +759,7 @@ const Defaultmedia = () => {
                     </button>
                   </div> */}
           </div>
-          <div className="w-8/12 p-8">
+          <div className="lg:w-1/2 w-full">
             {filePath &&
               (Object.values(filePath).includes("Video") ||
                 Object.values(filePath).includes("OnlineVideo")) && (
@@ -762,7 +777,7 @@ const Defaultmedia = () => {
                 <img
                   src={filePath?.assetFolderPath}
                   alt="Media"
-                  className="w-full h-full mx-auto object-fill"
+                  className="w-full h-60 mx-auto object-cover"
                 />
               )}
           </div>

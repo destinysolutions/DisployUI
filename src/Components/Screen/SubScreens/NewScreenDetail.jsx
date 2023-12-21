@@ -40,6 +40,7 @@ import {
 } from "../../../Redux/AppsSlice";
 import AddOrEditTagPopup from "../../AddOrEditTagPopup";
 import toast from "react-hot-toast";
+import { MdOutlineModeEdit } from "react-icons/md";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
@@ -294,6 +295,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const handleConfirmOnApps = () => {
     setShowAppsModal(false);
     setShowAppsModal("");
+    setSearchAsset("");
     if (selectedTextScroll !== "" || selectedYoutube !== "")
       setConfirmForApps(true);
   };
@@ -761,6 +763,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   className="text-sm mb-1 mt-2 ml-3 cursor-pointer"
                                   onClick={() => {
                                     setShowAssetModal(true);
+                                    setAssetData(assetAllData)
                                     setShowAssestOptionsPopup(false);
                                   }}
                                 >
@@ -1104,7 +1107,10 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div>
                                   <button
                                     className="p-1 text-xl"
-                                    onClick={() => setShowScheduleModal(false)}
+                                    onClick={() => {
+                                      setShowScheduleModal(false);
+                                      setSelectedSchedule("");
+                                    }}
                                   >
                                     <AiOutlineCloseCircle className="text-2xl" />
                                   </button>
@@ -1172,8 +1178,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                               type="checkbox"
                                               className="mr-3"
                                               checked={
-                                                selectedSchedule?.scheduleName ===
-                                                schedule?.scheduleName
+                                                selectedSchedule?.scheduleId ===
+                                                schedule?.scheduleId
                                               }
                                               onChange={() =>
                                                 handleScheduleAdd(schedule)
@@ -1222,6 +1228,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                     )
                                                   );
                                                   setShowScheduleModal(false);
+                                                  setSelectedSchedule("")
                                                 }}
                                               >
                                                 <HiDotsVertical />
@@ -1725,15 +1732,53 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               </svg>
                             </button>
                             </div>*/}
-                          <span className="ml-2">
-                            <AiOutlinePlusCircle
-                              size={30}
-                              className="mx-auto cursor-pointer"
-                              onClick={() => {
-                                setShowTagModal(true);
-                              }}
-                            />
-                          </span>
+                            {tags?.length === 0 && (
+                              <span className="ml-2">
+                                <AiOutlinePlusCircle
+                                  size={30}
+                                  className="mx-auto cursor-pointer"
+                                  onClick={() => {
+                                    setShowTagModal(true);
+                                  }}
+                                />
+                              </span>
+                            )}
+                            <p>
+                            {ScreenTags !== null
+                              ? ScreenTags
+                                  .split(",")
+                                  .slice(
+                                    0,
+                                    ScreenTags.split(",").length > 2
+                                      ? 3
+                                      : ScreenTags.split(",").length
+                                  ).map((text) => {
+                                    if (text.toString().length > 10) {
+                                      return text
+                                        .split("")
+                                        .slice(0, 10)
+                                        .concat("...")
+                                        .join("");
+                                    }
+                                    return text;
+                                  })
+                                  .join(",")
+                              : ""}
+                            </p>
+                           
+                              {ScreenTags !== "" && ScreenTags !== null && (
+                                <MdOutlineModeEdit
+                                  onClick={() => {
+                                    setShowTagModal(true);
+                                    // screen.tags === "" || screen?.tags === null
+                                    //   ? setTags([])
+                                    //   : setTags(screen?.tags?.split(","));
+                                    // setTagUpdateScreeen(screen);
+                                  }}
+                                  className="w-5 h-5 cursor-pointer"
+                                />
+                              )}
+                        
                           {showTagBox && (
                             <>
                               <div className=" tagname absolute top-[45px] right-[-8px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10 max-w-[250px]">

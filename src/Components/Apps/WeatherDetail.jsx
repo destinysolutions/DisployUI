@@ -180,7 +180,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const handleOnSaveInstanceName = (e) => {
     if (!instanceName.replace(/\s/g, "").length) {
       toast.remove();
-      return toast.error("please enter a character.");
+      return toast.error("Please enter at least minimum 1 character.");
     }
     setEdited(false);
   };
