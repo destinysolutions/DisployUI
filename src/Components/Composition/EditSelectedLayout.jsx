@@ -1021,8 +1021,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="text-lg w-full h-full flex items-center text-black"
                                         direction={
                                           item?.direction == "Left to Right"
-                                            ? "left"
-                                            : "right"
+                                            ? "right"
+                                            : "left"
                                         }
                                         scrollamount="10"
                                       >

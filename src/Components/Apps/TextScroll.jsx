@@ -336,18 +336,18 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
               Apps
             </h1>
             <div className="lg:flex">
-            <Link to="/textscrolldetail">
-              <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-5 py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                <TbAppsFilled className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
-                New Instance
-              </button>
-            </Link>
-            <Link to="/apps">
-              <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 text-white sm:px-5 bg-primary py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white  hover:bg-primary-500 hover:shadow-lg dark:bg-blue-600 ">
-                <MdArrowBackIosNew className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
-                Back
-              </button>
-            </Link>
+              <Link to="/textscrolldetail">
+                <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-5 py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  <TbAppsFilled className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
+                  New Instance
+                </button>
+              </Link>
+              <Link to="/apps">
+                <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 text-white sm:px-5 bg-primary py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white  hover:bg-primary-500 hover:shadow-lg dark:bg-blue-600 ">
+                  <MdArrowBackIosNew className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
+                  Back
+                </button>
+              </Link>
             </div>
           </div>
 
@@ -530,7 +530,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="bg-lightgray min-h-[8rem] flex items-center">
                                   <marquee
                                     direction={
-                                      scrollType == 1 ? "left" : "right"
+                                      scrollType == 1 ? "right" : "left"
                                     }
                                   >
                                     {textScrollData}

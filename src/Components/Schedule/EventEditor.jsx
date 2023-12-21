@@ -687,8 +687,8 @@ const EventEditor = ({
                                         scrollamount="10"
                                         direction={
                                           assetPreview?.scrollType == 1
-                                            ? "left"
-                                            : "right"
+                                            ? "right"
+                                            : "left"
                                         }
                                       >
                                         {assetPreview?.text}
@@ -857,8 +857,8 @@ const EventEditor = ({
                                                 scrollamount="10"
                                                 direction={
                                                   assetPreview?.scrollType == 1
-                                                    ? "left"
-                                                    : "right"
+                                                    ? "right"
+                                                    : "left"
                                                 }
                                               >
                                                 {assetPreview?.text}

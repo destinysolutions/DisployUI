@@ -285,11 +285,11 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
                     }}
                   >
                     {selectedScrollType == 1 && (
-                      <marquee direction="left">{text}</marquee>
+                      <marquee direction="right">{text}</marquee>
                     )}
 
                     {selectedScrollType == 2 && (
-                      <marquee direction="right">{text}</marquee>
+                      <marquee direction="left">{text}</marquee>
                     )}
                   </div>
                 </div>
