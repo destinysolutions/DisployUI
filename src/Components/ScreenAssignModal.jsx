@@ -4,6 +4,7 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { SELECT_BY_USER_SCREENDETAIL } from "../Pages/Api";
 import { handleGetAllAssets } from "../Redux/Assetslice";
+import { handleGetScreen } from "../Redux/Screenslice";
 
 const ScreenAssignModal = ({
   setAddScreenModal,
@@ -11,6 +12,7 @@ const ScreenAssignModal = ({
   handleUpdateScreenAssign,
   selectedScreens,
   setSelectedScreens,
+  screenSelected,
 }) => {
   const dispatch = useDispatch();
 
@@ -20,7 +22,9 @@ const ScreenAssignModal = ({
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
   const [screenData, setScreenData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
+  // console.log(screenCheckboxes);
   const selectScreenRef = useRef(null);
 
   const handleSelectAllCheckboxChange = (e) => {
@@ -70,8 +74,8 @@ const ScreenAssignModal = ({
 
   // get all assets files
   useEffect(() => {
-    dispatch(handleGetAllAssets({ token }));
     if (user?.userID) {
+      setLoading(true);
       axios
         .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${user?.userID}`, {
           headers: {
@@ -81,15 +85,25 @@ const ScreenAssignModal = ({
         .then((response) => {
           const fetchedData = response.data.data;
           setScreenData(fetchedData);
+          setLoading(false);
           const initialCheckboxes = {};
           if (Array.isArray(fetchedData)) {
             fetchedData.forEach((screen) => {
-              initialCheckboxes[screen.screenID] = false;
+              if (
+                screenSelected
+                  .map((i) => i.trim(""))
+                  .includes(screen?.screenName)
+              ) {
+                initialCheckboxes[screen.screenID] = true;
+              } else {
+                initialCheckboxes[screen.screenID] = false;
+              }
             });
             setScreenCheckboxes(initialCheckboxes);
           }
         })
         .catch((error) => {
+          setLoading(false);
           console.log(error);
         });
     }
@@ -115,6 +129,7 @@ const ScreenAssignModal = ({
   }
 
   useEffect(() => {
+    dispatch(handleGetScreen({ token }));
     window.addEventListener("keydown", function (event, characterCode) {
       if (typeof characterCode == "undefined") {
         characterCode = -1;
@@ -166,115 +181,147 @@ const ScreenAssignModal = ({
   // };
 
   return (
-    <div>
-      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-        <div
-          ref={selectScreenRef}
-          className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
-        >
-          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-            <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-              <div className="flex items-center">
-                <div className=" mt-1.5">
-                  <input
-                    type="checkbox"
-                    className="w-5 h-5"
-                    onChange={handleSelectAllCheckboxChange}
-                    checked={selectAllChecked}
-                  />
-                </div>
-                <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium ml-3">
-                  All Select
-                </h3>
+    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+      <div
+        ref={selectScreenRef}
+        className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+      >
+        <div className="border-0 rounded-lg w-[60vw] h-[90vh] overflow-y-auto shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
+          <div className="flex sticky top-0 bg-white z-10 items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+            <div className="flex items-center">
+              <div className=" mt-1.5">
+                <input
+                  type="checkbox"
+                  className="w-5 h-5"
+                  onChange={handleSelectAllCheckboxChange}
+                  checked={
+                    selectAllChecked ||
+                    Object.values(screenCheckboxes).every((e) => {
+                      return e == true;
+                    })
+                  }
+                />
               </div>
-              <button
-                className="p-1 text-xl"
-                onClick={() => {
-                  setSelectScreenModal(false);
-                  setAddScreenModal(false);
-                  setSelectedScreens([]);
-                }}
-              >
-                <AiOutlineCloseCircle className="text-3xl" />
-              </button>
+              <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium ml-3">
+                All Select
+              </h3>
             </div>
-            <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3">
-              <table className="w-full" cellPadding={20}>
-                <thead>
-                  <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                      Screen
-                    </th>
-                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                      Status
-                    </th>
-                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                      Google Location
-                    </th>
-                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                      Associated Schedule
-                    </th>
-                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                      Tags
-                    </th>
+            <button
+              className="p-1 text-xl"
+              onClick={() => {
+                setSelectScreenModal(false);
+                setAddScreenModal(false);
+                setSelectedScreens([]);
+              }}
+            >
+              <AiOutlineCloseCircle className="text-3xl" />
+            </button>
+          </div>
+          <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3 w-full overflow-x-auto">
+            <table className="w-full" cellPadding={20}>
+              <thead>
+                <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    Screen
+                  </th>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    Status
+                  </th>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    Google Location
+                  </th>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    Associated Schedule
+                  </th>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    Tags
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr>
+                    <td
+                      colSpan={6}
+                      className="text-center font-semibold text-lg"
+                    >
+                      Loading...
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {screenData?.length > 0 ? (
-                    screenData.map((screen) => (
-                      <tr
-                        key={screen.screenID}
-                        className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                      >
-                        <td className="flex items-center">
-                          <input
-                            type="checkbox"
-                            className="mr-3"
-                            onChange={() =>
-                              handleScreenCheckboxChange(screen.screenID)
-                            }
-                            checked={screenCheckboxes[screen.screenID]}
-                          />
+                ) : !loading && screenData?.length > 0 ? (
+                  screenData.map((screen) => (
+                    <tr
+                      key={screen.screenID}
+                      className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                    >
+                      <td className="flex items-center">
+                        <input
+                          type="checkbox"
+                          className="mr-3"
+                          onChange={() =>
+                            handleScreenCheckboxChange(screen.screenID)
+                          }
+                          checked={screenCheckboxes[screen.screenID]}
+                        />
 
-                          {screen.screenName}
-                        </td>
+                        {screen.screenName}
+                      </td>
 
-                        <td className="text-center">
-                          <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
-                            Live
-                          </button>
-                        </td>
-                        <td className="text-center break-words">
-                          {screen.googleLocation}
-                        </td>
+                      <td className="text-center">
+                        <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
+                          Live
+                        </button>
+                      </td>
+                      <td className="text-center break-words">
+                        {screen.googleLocation}
+                      </td>
 
-                        <td className="text-center break-words">
-                          Schedule Name Till 28 June 2023
-                        </td>
-                        <td className="text-center break-words">
-                          {screen.tags}
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <p className="font-semibold text-center text-2xl">
-                      No Screen available.
-                    </p>
-                  )}
-                </tbody>
-              </table>
-            </div>
-            <div className="py-4 flex justify-center">
-              <button
-                className="border-2 border-primary px-5 py-2 rounded-full ml-3"
-                onClick={() => {
-                  handleUpdateScreenAssign();
-                  setSelectedScreens([]);
-                }}
-              >
-                Save
-              </button>
-            </div>
+                      <td className="text-center break-words">
+                        Schedule Name Till 28 June 2023
+                      </td>
+                      <td className="text-center break-words">
+                        {screen?.tags !== null
+                          ? screen?.tags
+                              .split(",")
+                              .slice(
+                                0,
+                                screen?.tags.split(",").length > 2
+                                  ? 3
+                                  : screen?.tags.split(",").length
+                              )
+                              .map((text) => {
+                                if (text.toString().length > 10) {
+                                  return text
+                                    .split("")
+                                    .slice(0, 10)
+                                    .concat("...")
+                                    .join("");
+                                }
+                                return text;
+                              })
+                              .join(",")
+                          : ""}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <p className="font-semibold text-center text-2xl">
+                    No Screen available.
+                  </p>
+                )}
+              </tbody>
+            </table>
+          </div>
+          <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
+            <button
+              className="border-2 border-primary px-5 py-2 rounded-full ml-3"
+              onClick={() => {
+                handleUpdateScreenAssign(screenCheckboxes);
+                setSelectedScreens([]);
+              }}
+            >
+              Save
+            </button>
           </div>
         </div>
       </div>

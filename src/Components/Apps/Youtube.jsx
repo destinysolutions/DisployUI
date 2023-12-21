@@ -61,6 +61,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   const [tags, setTags] = useState([]);
   const [updateTagYoutube, setUpdateTagYoutube] = useState(null);
   const [showTags, setShowTags] = useState(null);
+  const [screenSelected, setScreenSelected] = useState([]);
 
   const navigate = useNavigate();
   const addScreenRef = useRef(null);
@@ -215,7 +216,8 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
         setInstanceName(data?.instanceName);
         setScreenAssignName(data?.screens);
         setShowTags(data?.tags);
-        setIsMuted(data?.muteVideos)
+        setScreenSelected(data?.screens?.split(","));
+        setIsMuted(data?.muteVideos);
         toast.remove();
         setLoading(false);
       })
@@ -527,7 +529,10 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                     </li>
                                     <li
                                       className="flex text-sm items-center cursor-pointer"
-                                      onClick={() => setAddScreenModal(true)}
+                                      onClick={() => {
+                                        setAddScreenModal(true);
+                                        handleFetchYoutubeById(item?.youtubeId);
+                                      }}
                                     >
                                       <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
                                       Set to Screen
@@ -710,6 +715,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
           handleUpdateScreenAssign={handleUpdateScreenAssign}
           selectedScreens={selectedScreens}
           setSelectedScreens={setSelectedScreens}
+          screenSelected={screenSelected}
         />
       )}
       <Footer />

@@ -54,6 +54,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [updateTagSchedule, setUpdateTagSchedule] = useState(null);
   const [tags, setTags] = useState([]);
   const [showTagModal, setShowTagModal] = useState(false);
+  const [screenSelected, setScreenSelected] = useState([]);
 
   const { token } = useSelector((state) => state.root.auth);
   const { loading, schedules, deleteLoading } = useSelector(
@@ -116,17 +117,24 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectAll(false);
   };
 
-  const handleUpdateScreenAssign = () => {
+  const handleUpdateScreenAssign = (screenIds) => {
+    let idS = "";
+    for (const key in screenIds) {
+      if (screenIds[key] === true) {
+        idS += `${key},`;
+      }
+    }
+
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${UPDATE_SCREEN_ASSIGN}?ScheduleID=${scheduleId}&ScreenID=${selectedScreenIdsString}`,
+      url: `${UPDATE_SCREEN_ASSIGN}?ScheduleID=${scheduleId}&ScreenID=${idS}`,
       headers: {
         Authorization: authToken,
         "Content-Type": "application/json",
       },
     };
-
+    toast.loading("Saving...");
     axios
       .request(config)
       .then((response) => {
@@ -145,9 +153,11 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
           setAddScreenModal(false);
           setShowActionBox(false);
           dispatch(handleGetAllSchedule({ token }));
+          toast.remove();
         }
       })
       .catch((error) => {
+        toast.remove();
         console.log(error);
       });
   };
@@ -487,6 +497,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               handleUpdateScreenAssign={handleUpdateScreenAssign}
               selectedScreens={selectedScreens}
               setSelectedScreens={setSelectedScreens}
+              screenSelected={screenSelected}
             />
           )}
           <div className="schedual-table bg-white rounded-xl mt-8 shadow">
@@ -587,7 +598,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         {moment(schedule.endDate).format("YYYY-MM-DD hh:mm")}
                       </td>
                       <td className="text-center">{schedule.screenAssigned}</td>
-                      <td className="text-center flex items-center justify-center gap-2 w-full flex-wrap">
+                      <td
+                        title={schedule?.tags && schedule?.tags}
+                        className="text-center flex items-center justify-center gap-2 w-full flex-wrap"
+                      >
                         {(schedule?.tags === "" || schedule?.tags === null) && (
                           <span>
                             <AiOutlinePlusCircle
@@ -662,7 +676,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 </Link>
                               </div>
                               <div className=" mb-1">
-                                <button onClick={() => setAddScreenModal(true)}>
+                                <button
+                                  onClick={() => {
+                                    setAddScreenModal(true);
+                                    setScreenSelected(
+                                      schedule?.screenAssigned?.split(",")
+                                    );
+                                  }}
+                                >
                                   Add Screens
                                 </button>
                               </div>
@@ -715,7 +736,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                         {moment(schedule.endDate).format("YYYY-MM-DD hh:mm")}
                       </td>
                       <td className="text-center">{schedule.screenAssigned}</td>
-                      <td className="text-center flex items-center justify-center gap-2 w-full flex-wrap">
+                      <td
+                        title={schedule?.tags && schedule?.tags}
+                        className="text-center flex items-center justify-center gap-2 w-full flex-wrap"
+                      >
                         {(schedule?.tags === "" || schedule?.tags === null) && (
                           <span>
                             <AiOutlinePlusCircle
@@ -740,7 +764,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                   ? 3
                                   : schedule.tags.split(",").length
                               )
-
                               .join(",")
                           : ""}
                         {schedule?.tags !== "" && schedule?.tags !== null && (
@@ -791,7 +814,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 </Link>
                               </div>
                               <div className=" mb-1">
-                                <button onClick={() => setAddScreenModal(true)}>
+                                <button
+                                  onClick={() => {
+                                    setAddScreenModal(true);
+                                    setScreenSelected(
+                                      schedule?.screenAssigned?.split(",")
+                                    );
+                                  }}
+                                >
                                   Add Screens
                                 </button>
                               </div>

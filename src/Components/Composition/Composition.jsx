@@ -62,6 +62,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const [showTagModal, setShowTagModal] = useState(false);
   const [screenType, setScreenType] = useState("");
   const [updateTagComposition, setUpdateTagComposition] = useState(null);
+  const [screenSelected, setScreenSelected] = useState([]);
 
   const modalRef = useRef(null);
   const addScreenRef = useRef(null);
@@ -345,17 +346,23 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const handleUpdateScreenAssign = () => {
+  const handleUpdateScreenAssign = (screenIds) => {
+    let idS = "";
+    for (const key in screenIds) {
+      if (screenIds[key] === true) {
+        idS += `${key},`;
+      }
+    }
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/CompositionMaster/AssignCompoitiontoScreen?CompositionID=${compositionId}&ScreenID=${selectedScreenIdsString}`,
+      url: `https://disployapi.thedestinysolutions.com/api/CompositionMaster/AssignCompoitiontoScreen?CompositionID=${compositionId}&ScreenID=${idS}`,
       headers: {
         Authorization: authToken,
         "Content-Type": "application/json",
       },
     };
-
+    toast.loading("Saving...");
     axios
       .request(config)
       .then((response) => {
@@ -375,9 +382,11 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
           setAddScreenModal(false);
           setShowActionBox(false);
           loadComposition();
+          toast.remove();
         }
       })
       .catch((error) => {
+        toast.remove();
         console.log(error);
       });
   };
@@ -563,7 +572,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     setCompositionData(sortedData);
   };
 
-  console.log(layotuDetails);
+  // console.log(layotuDetails);
 
   return (
     <>
@@ -673,6 +682,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               handleUpdateScreenAssign={handleUpdateScreenAssign}
               selectedScreens={selectedScreens}
               setSelectedScreens={setSelectedScreens}
+              screenSelected={screenSelected}
             />
           )}
           <div className="rounded-xl mt-8 shadow bg-white mb-6">
@@ -734,7 +744,11 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                         className="border-b border-b-[#E4E6FF] "
                         key={composition?.compositionID}
                       >
-                        <td className="flex items-center justify-center">
+                        <td
+                          className={`flex items-center ${
+                            selectAll ? "" : "justify-center"
+                          }`}
+                        >
                           <input
                             type="checkbox"
                             className="w-6 h-5 mr-2"
@@ -760,7 +774,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             .format("HH:mm:ss")}
                         </td>
                         <td className="text-center">{composition.screenIDs}</td>
-                        <td className="text-center flex items-center justify-center w-full flex-wrap gap-2">
+                        <td
+                          title={composition?.tags && composition?.tags}
+                          className="text-center flex items-center justify-center w-full flex-wrap gap-2"
+                        >
                           {(composition?.tags === "" ||
                             composition?.tags === null) && (
                             <span>
@@ -881,7 +898,12 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                               </div> */}
                                 <div className=" mb-1">
                                   <button
-                                    onClick={() => setAddScreenModal(true)}
+                                    onClick={() => {
+                                      setAddScreenModal(true);
+                                      setScreenSelected(
+                                        composition?.screenIDs?.split(",")
+                                      );
+                                    }}
                                   >
                                     Set to Screens
                                   </button>
@@ -982,7 +1004,11 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                         className="border-b border-b-[#E4E6FF] "
                         key={composition?.compositionID}
                       >
-                        <td className="flex items-center justify-center">
+                        <td
+                          className={`flex items-center ${
+                            selectAll ? "" : "justify-center"
+                          }`}
+                        >
                           <input
                             type="checkbox"
                             className="w-6 h-5 mr-2"
@@ -1008,7 +1034,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             .format("HH:mm:ss")}
                         </td>
                         <td className="text-center">{composition.screenIDs}</td>
-                        <td className="text-center flex items-center justify-center w-full flex-wrap gap-2">
+                        <td
+                          title={composition?.tags && composition?.tags}
+                          className="text-center flex items-center justify-center w-full flex-wrap gap-2"
+                        >
                           {(composition?.tags === "" ||
                             composition?.tags === null) && (
                             <span>
@@ -1129,7 +1158,12 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             </div> */}
                                 <div className=" mb-1">
                                   <button
-                                    onClick={() => setAddScreenModal(true)}
+                                    onClick={() => {
+                                      setAddScreenModal(true);
+                                      setScreenSelected(
+                                        composition?.screenIDs?.split(",")
+                                      );
+                                    }}
                                   >
                                     Set to Screens
                                   </button>

@@ -85,22 +85,23 @@ export const UpdateUserDetails = createAsyncThunk(
     formdata.append("orgUserSpecificID", user?.userID);
     formdata.append("firstName", data?.firstName);
     formdata.append("lastName", data?.lastName);
-    formdata.append("email", data?.emailID);
-    formdata.append("phone", data?.phoneNumber);
+    formdata.append("email", data?.email);
+    formdata.append("phone", data?.phone);
     formdata.append("isActive", "1");
     formdata.append("orgUserID", user?.userID);
     formdata.append("userRole", "0");
     formdata.append("countryID", data?.country || 0);
     formdata.append("company", "Admin");
     formdata.append("operation", "Save");
-    formdata.append("address", data?.googleLocation);
+    formdata.append("address", data?.address);
     formdata.append("stateId", data?.state || 0);
     formdata.append("zipCode", data?.zipCode || 0);
     formdata.append("languageId", data?.language || 0);
     formdata.append("timeZoneId", data?.timeZone || 0);
     formdata.append("currencyId", data?.currency || 0);
+    formdata.append("profilePhoto", data?.profilePhoto);
     if (file !== null && file !== undefined) {
-      formdata.append("File", file);
+      formdata.append("file", file);
     }
     try {
       const response = await postUrl("UserMaster/AddOrgUserMaster", {

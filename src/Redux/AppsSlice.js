@@ -106,7 +106,10 @@ const AppsSlice = createSlice({
       (state, { payload, meta }) => {
         state.youtube.loading = false;
         state.youtube.youtubeData = payload?.data ?? [];
-        state.allAppsData = [...state.allAppsData, ...payload?.data] ?? [];
+        state.allAppsData =
+          state.allAppsData.length > 0
+            ? [...state.allAppsData, ...payload?.data]
+            : [];
         state.error = null;
       }
     );
@@ -129,7 +132,10 @@ const AppsSlice = createSlice({
       (state, { payload, meta }) => {
         state.textScroll.loading = false;
         state.textScroll.textScrollData = payload?.data ?? [];
-        state.allAppsData = [...state.allAppsData, ...payload?.data] ?? [];
+        state.allAppsData =
+          state.allAppsData.length > 0
+            ? [...state.allAppsData, ...payload?.data]
+            : [];
         state.error = null;
       }
     );

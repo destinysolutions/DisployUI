@@ -96,6 +96,8 @@ const Navbar = () => {
     (trialEndDate - currentDate) / (1000 * 60 * 60 * 24)
   );
 
+// console.log(userDetails);
+
   return (
     // navbar component start
     <div className="w-full topbar bg-white py-3 shadow-lg top-0 fixed z-[21]">
@@ -170,7 +172,7 @@ const Navbar = () => {
               {/* profile box start */}
               <div className="relative">
                 <div>
-                  {userDetails?.image == null ? (
+                  {userDetails?.profilePhoto == "" ? (
                     <img
                       src={createImageFromInitials(
                         500,
@@ -183,7 +185,7 @@ const Navbar = () => {
                     />
                   ) : (
                     <img
-                      src={userDetails?.image}
+                      src={userDetails?.profilePhoto}
                       alt="profile"
                       className="profile cursor-pointer"
                       onClick={handleProfileClick}

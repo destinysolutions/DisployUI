@@ -21,7 +21,6 @@ import toast from "react-hot-toast";
 import "react-phone-input-2/lib/style.css";
 import { UpdateUserDetails, handleGetUserDetails } from "../../Redux/Authslice";
 import { useDispatch } from "react-redux";
-import { number } from "prop-types";
 
 const Account = () => {
   const [file, setFile] = useState();
@@ -43,63 +42,14 @@ const Account = () => {
   const hiddenFileInput = useRef(null);
 
   const profileSchema = yup.object({
-    firstName: yup
-      .string()
-      .required("firstName is required")
-      .trim()
-      .max(60, "max character limit reached")
-      .min(2, "minimum two character required")
-      .typeError("only characters allowed")
-      .matches(
-        /^([A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/gi,
-        "only contain latin letters"
-      ),
-    lastName: yup
-      .string()
-      .required("lastName is required")
-      .trim()
-      .max(60, "max character limit reached")
-      .min(2, "minimum two character required")
-      .typeError("only characters allowed")
-      .matches(
-        /^([A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff\s]*)$/gi,
-        "only contain latin letters"
-      ),
-    googleLocation: yup.string().required("address is required"),
-    timeZone: yup.string().required("timezone is required"),
-    state: yup
-      .string()
-      .required("state is required")
-      .max(60, "max character limit reached")
-      .min(2, "minimum two character required")
-      .typeError("only characters allowed"),
+    firstName: yup.string().required("firstName is required").trim(),
+    lastName: yup.string().required("lastName is required").trim(),
     zipCode: yup
       .string()
       .matches(/^(?:[A-Z0-9]+([- ]?[A-Z0-9]+)*)?$/, "enter valid code")
       .required("zipcode is required"),
-    country: yup.string().required("country is required"),
-    language: yup.string().required("language is required"),
-    currency: yup.string().required("currency is required"),
-    phoneNumber: yup.string().required("phone is required"),
-    emailID: yup.string().email().required("Email is required"),
+    email: yup.string().email(),
   });
-
-  const validatePhoneNumber = (value) => {
-    const phoneRegex =
-      /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-    if (value.trim() === "") {
-      return true;
-    }
-    return phoneRegex.test(value);
-  };
-
-  const validateZipCode = (value) => {
-    const zipCodeRegex = /^\d{6}$/;
-    if (value.trim() === "") {
-      return true;
-    }
-    return zipCodeRegex.test(value);
-  };
 
   const handleFileChange = (e) => {
     if (e.target.files[0] !== undefined && e.target.files[0] !== null) {
@@ -117,128 +67,6 @@ const Account = () => {
   const handleClick = (e) => {
     hiddenFileInput.current.click();
   };
-
-  useEffect(() => {
-    const axiosRequests = [
-      axios.get(GET_ALL_CURRENCIES),
-      axios.get(GET_ALL_LANGUAGES),
-      axios.get(GET_ALL_COUNTRY),
-      axios.get(GET_TIMEZONE),
-    ];
-
-    // Use Promise.all to send all requests concurrently
-    Promise.all(axiosRequests)
-      .then((responses) => {
-        const [
-          currenciesResponse,
-          languageResponse,
-          countriesResponse,
-          timezoneResponse,
-        ] = responses;
-
-        setCurrencies(currenciesResponse.data.data);
-        setLanguages(languageResponse.data.data);
-        setCountries(countriesResponse.data.data);
-        setTimezones(timezoneResponse.data.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    // if (user) {
-    //   axios
-    //     .get(`${SELECT_BY_ID_USERDETAIL}?ID=${user?.userID}`)
-    //     .then((response) => {
-    //       const fetchData = response.data.data;
-    //       setFirstName(fetchData.firstName);
-    //       setLastName(fetchData.lastName);
-    //       setEmail(fetchData.emailID);
-    //       setPhoneNumber(fetchData.phoneNumber);
-    //       setAddress(fetchData.googleLocation);
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // }
-  }, []);
-
-  // useEffect(() => {
-  //   if (user !== null) {
-  //     dispatch(handleGetUserDetails({ id: user?.userID }));
-  //   }
-  // }, [user]);
-
-  const updateUser = async (details) => {
-    // Validate phone number
-    // if (!validatePhoneNumber(details?.phoneNumber)) {
-    //   setPhoneNumberError("Invalid phone number");
-    //   return;
-    // } else {
-    //   setPhoneNumberError("");
-    // }
-
-    // // Validate zip code
-    // if (!validateZipCode(details?.zipCode)) {
-    //   setZipCodeError("Invalid zip code");
-    //   return;
-    // } else {
-    //   setZipCodeError("");
-    // }
-
-    let data = new FormData();
-    data.append("orgUserSpecificID", user?.userID);
-    data.append("firstName", details?.firstName);
-    data.append("lastName", details?.lastName);
-    data.append("email", details?.emailID);
-    data.append("phone", details?.phoneNumber);
-    data.append("isActive", "1");
-    data.append("orgUserID", user?.userID);
-    data.append("userRole", "0");
-    data.append("countryID", details?.selectedCountry || 0);
-    data.append("company", "Admin");
-    data.append("operation", "Save");
-    data.append("address", details?.googleLocation);
-    data.append("stateId", details?.selectedState || 0);
-    data.append("zipCode", details?.zipCode || 0);
-    data.append("languageId", details?.language || 0);
-    data.append("timeZoneId", details?.timeZone || 0);
-    data.append("currencyId", details?.currency || 0);
-    data.append("File", file);
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/UserMaster/AddOrgUserMaster",
-      headers: {
-        "Content-Type": `multipart/form-data`,
-        Authorization: authToken,
-      },
-      data: data,
-    };
-    try {
-      const response = await axios.request(config);
-      console.log("response", response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // const resetFormData = () => {
-  //   setFile(null);
-  //   setFirstName("");
-  //   setLastName("");
-  //   setEmail("");
-  //   setPhoneNumber("");
-  //   setAddress("");
-  //   setOrganization("");
-  //   setZipCode("");
-  //   setSelectedLanguageName("");
-  //   setSelectedTimezoneName("");
-  //   setCurrency("");
-  //   setSelectedCountry("");
-  //   setSelectedState("");
-  //   setIsImageUploaded(false);
-  // };
 
   const {
     register,
@@ -274,46 +102,22 @@ const Account = () => {
   });
 
   const onSubmit = (data) => {
-    const { phoneNumber } = data;
+    const { phone } = data;
 
+    // return console.log(!isPossiblePhoneNumber(phone) || !isValidPhoneNumber(phone));
     // if (!isDirty) return;
-    if (
-      !isPossiblePhoneNumber(phoneNumber) ||
-      !isValidPhoneNumber(phoneNumber)
-    ) {
+    if (!isPossiblePhoneNumber(phone) || !isValidPhoneNumber(phone)) {
       toast.remove();
-      toast.error("phoneNumber is invalid");
+      toast.error("phone is invalid");
       return true;
     } else if (
-      (getValues("phoneNumber") !== "" &&
-        !isPossiblePhoneNumber(phoneNumber)) ||
-      !isValidPhoneNumber(phoneNumber)
+      (getValues("phone") !== "" && !isPossiblePhoneNumber(phone)) ||
+      !isValidPhoneNumber(phone)
     ) {
       toast.remove();
-      toast.error("phoneNumber is invalid");
+      toast.error("phone is invalid");
       return true;
     }
-    // updateUser(data);
-
-    // let formdata = new FormData();
-    // formdata.append("orgUserSpecificID", userDetails?.userID);
-    // formdata.append("firstName", firstName);
-    // formdata.append("lastName", lastName);
-    // formdata.append("emailID", emailID);
-    // formdata.append("phoneNumber", phoneNumber);
-    // formdata.append("isActive", "1");
-    // formdata.append("orgUserID", user?.userID);
-    // formdata.append("userRole", "0");
-    // formdata.append("countryID", country || 0);
-    // formdata.append("company", "Admin");
-    // formdata.append("operation", "Save");
-    // formdata.append("address", googleLocation);
-    // formdata.append("stateId", state || 0);
-    // formdata.append("zipCode", zipCode || 0);
-    // formdata.append("languageId", language || 0);
-    // formdata.append("timeZoneId", timeZone || 0);
-    // formdata.append("currencyId", currency || 0);
-    // // formdata.append("File", file);
 
     const response = dispatch(
       UpdateUserDetails({
@@ -332,14 +136,40 @@ const Account = () => {
     }
   };
 
+  useEffect(() => {
+    const axiosRequests = [
+      axios.get(GET_ALL_CURRENCIES),
+      axios.get(GET_ALL_LANGUAGES),
+      axios.get(GET_ALL_COUNTRY),
+      axios.get(GET_TIMEZONE),
+    ];
+
+    // Use Promise.all to send all requests concurrently
+    Promise.all(axiosRequests)
+      .then((responses) => {
+        const [
+          currenciesResponse,
+          languageResponse,
+          countriesResponse,
+          timezoneResponse,
+        ] = responses;
+
+        setCurrencies(currenciesResponse.data.data);
+        setLanguages(languageResponse.data.data);
+        setCountries(countriesResponse.data.data);
+        setTimezones(timezoneResponse.data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   // Fetch states based on the selected country
   useEffect(() => {
     fetch(`${GET_SELECT_BY_STATE}?CountryID=${parseInt(selectedCountry)}`)
       .then((response) => response.json())
       .then((data) => {
         setStates(data.data);
-        console.log(data);
-        setSelectedState(getValues("state"));
       })
       .catch((error) => {
         console.log("Error fetching states data:", error);
@@ -356,24 +186,14 @@ const Account = () => {
       } else {
         setSelectedCountry(userDetails?.country);
       }
-
-      // if (userDetails?.stateId) {
-      //   console.log("get id s");
-      //   setSelectedCountry(userDetails?.stateId);
-      // } else {
-      //   console.log("not s ");
-      //   setSelectedCountry(userDetails?.country);
-      // }
+      // setValue("state", userDetails?.state);
+      // setValue("country", userDetails?.country);
     }
   }, [userDetails]);
 
-  // console.log( getValues("country"));
-  // console.log(selectedCountry, selectedState, states);
-  // console.log(getValues());
-
   return (
     <>
-      {loading ? toast.loading("Fetching details....") : toast.remove()}
+      {/* {loading ? toast.loading("Fetching details....") : toast.remove()} */}
       <div className="rounded-xl mt-8 shadow bg-white">
         <h4 className="text-xl font-bold p-5">Profile Details</h4>
         <div className="flex items-center border-b border-b-[#E4E6FF] p-5">
@@ -381,6 +201,13 @@ const Account = () => {
             {file !== undefined && file !== null ? (
               <img
                 src={URL.createObjectURL(file)}
+                alt="Uploaded"
+                className="w-32 rounded-lg"
+              />
+            ) : getValues("profilePhoto") !== "" ? (
+              <img
+                src={getValues("profilePhoto")}
+                // {...register("profil")}
                 alt="Uploaded"
                 className="w-32 rounded-lg"
               />
@@ -456,16 +283,16 @@ const Account = () => {
                   name="email"
                   disabled
                   type="email"
-                  {...register("emailID")}
+                  {...register("email")}
                 />
-                <span className="error">{errors?.emailID?.message}</span>
+                <span className="error">{errors?.email?.message}</span>
               </div>
             </div>
             <div className="-mx-3 md:flex mb-6">
               <div className="md:w-1/2 px-3 mb-6 md:mb-0">
                 <label className="label_top text-xs z-10">Phone Number</label>
                 <Controller
-                  name="phoneNumber"
+                  name="phone"
                   control={control}
                   rules={{
                     validate: (value) => isValidPhoneNumber(value),
@@ -475,7 +302,7 @@ const Account = () => {
                       country={"in"}
                       onChange={(value) => {
                         onChange((e) => {
-                          setValue("phoneNumber", "+".concat(value));
+                          setValue("phone", "+".concat(value));
                         });
                       }}
                       value={value}
@@ -498,7 +325,7 @@ const Account = () => {
                     />
                   )}
                 />
-                <span className="error">{errors?.phoneNumber?.message}</span>
+                <span className="error">{errors?.phone?.message}</span>
               </div>
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Address</label>
@@ -506,9 +333,9 @@ const Account = () => {
                   className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                   type="text"
                   placeholder="132, My Street, Kingston, New York 12401."
-                  {...register("googleLocation")}
+                  {...register("address")}
                 />
-                <span className="error">{errors?.googleLocation?.message}</span>
+                <span className="error">{errors?.address?.message}</span>
               </div>
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Roles</label>
@@ -548,9 +375,12 @@ const Account = () => {
                     {countries.map((country) => (
                       <option
                         key={country.countryID}
-                        selected={country?.countryName == selectedCountry}
+                        selected={country?.countryName == getValues("country")}
+                        defaultValue={
+                          country?.countryName == getValues("country")
+                        }
                         value={country.countryID}
-                        onChange={(e) => {}}
+                        // onChange={(e) => {}}
                       >
                         {country.countryName}
                       </option>

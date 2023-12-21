@@ -248,6 +248,7 @@ const Login = () => {
                 localStorage.setItem("userID", JSON.stringify(response));
                 localStorage.setItem("role_access", "USER");
                 toast.success("Login successfully.");
+                // console.log(response);
                 // navigate("/screens");
                 window.location.href = "/screens";
               } else {

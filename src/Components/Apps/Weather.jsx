@@ -64,6 +64,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
   const [instanceName, setInstanceName] = useState("");
   const [weatherData, setWeatherData] = useState("");
   const [loadFirst, setLoadFirst] = useState(false);
+  const [screenSelected, setScreenSelected] = useState([]);
 
   const [locations, setLocations] = useState([
     { id: 1, location: "", weatherData: null, mainData: null },
@@ -172,12 +173,8 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
   }, [loadFirst, isMuted]);
 
   useEffect(() => {
-    // if (showSearchModal) {
-    //   window.document.body.style.overflow = "hidden";
-    // }
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event?.target)) {
-        // window.document.body.style.overflow = "unset";
         setAppDetailModal(false);
         setInstanceView(false);
       }
@@ -189,15 +186,11 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
   }, [handleClickOutside]);
 
   useEffect(() => {
-    // if (showSearchModal) {
-    //   window.document.body.style.overflow = "hidden";
-    // }
     const handleClickOutside = (event) => {
       if (
         appDropdownRef.current &&
         !appDropdownRef.current.contains(event?.target)
       ) {
-        // window.document.body.style.overflow = "unset";
         setAppDropDown(false);
       }
     };
@@ -469,13 +462,12 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
         setInstanceName(response?.data?.data?.name);
         setScreenAssignName(response?.data?.data?.screens);
         setShowTags(response?.data?.data?.tags);
+        setScreenSelected(response?.data?.data?.screens?.split(","));
         setLoadFirst(true);
         toast.remove();
-        // setLoadingModel(true);
       })
       .catch((error) => {
         console.log(error);
-        // setLoadingModel(true);
         toast.remove();
       });
   };
@@ -721,7 +713,12 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                                     </li>
                                     <li
                                       className="flex text-sm items-center cursor-pointer"
-                                      onClick={() => setAddScreenModal(true)}
+                                      onClick={() => {
+                                        setAddScreenModal(true);
+                                        handleFetchWeatherById(
+                                          item?.weatherAppId
+                                        );
+                                      }}
                                     >
                                       <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
                                       Set to Screen
@@ -841,6 +838,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
           handleUpdateScreenAssign={handleUpdateScreenAssign}
           selectedScreens={selectedScreens}
           setSelectedScreens={setSelectedScreens}
+          screenSelected={screenSelected}
         />
       )}
       {showTagModal && (
@@ -951,7 +949,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                           if (item?.weatherData !== null) {
                             return (
                               <div
-                              className="min-w-[30vw] flex flex-col border-r-2 last:border-none"
+                                className="min-w-[30vw] flex flex-col border-r-2 last:border-none"
                                 key={index}
                                 // style={{
                                 //   borderBottom:
