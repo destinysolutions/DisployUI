@@ -77,9 +77,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [selectdata, setSelectData] = useState({});
 
-  const selectedScreenIdsString = Array.isArray(selectedScreens) ? selectedScreens.join(",") : "";
-
-
+  const selectedScreenIdsString = Array.isArray(selectedScreens)
+    ? selectedScreens.join(",")
+    : "";
 
   const [clickedTabIcon, setClickedTabIcon] = useState(null);
 
@@ -135,11 +135,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       },
     };
 
-    axios.request(config)
+    axios
+      .request(config)
       .then((response) => {
         if (response.data.status == 200) {
           toast.success("Asset added to Screen Successfully");
-          fetchData()
+          fetchData();
           if (connection) {
             connection
               .invoke("ScreenConnected")
@@ -248,7 +249,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const handleActiveBtnClick = (btnNumber) => {
     setActivetab(btnNumber);
     const gridData = [];
-   
 
     if (btnNumber === 1) {
       const allAssets = [
@@ -264,23 +264,19 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     } else if (btnNumber === 2) {
       if (originalData.image) {
         gridData.push(...originalData.image);
-     
       }
 
       if (originalData.onlineimages) {
         gridData.push(...originalData.onlineimages);
-      
       }
       setGridData(gridData);
     } else if (btnNumber === 3) {
       if (originalData.video) {
         gridData.push(...originalData.video);
-       
       }
 
       if (originalData.onlinevideo) {
         gridData.push(...originalData.onlinevideo);
-       
       }
       setGridData(gridData);
     } else if (btnNumber === 4) {
@@ -451,7 +447,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const deleteFolder = async (folderID) => {
-    const data = JSON.stringify({folderID: folderID,operation: "Delete"});
+    const data = JSON.stringify({ folderID: folderID, operation: "Delete" });
 
     const checkImage = await checkFolderImage(folderID);
     if (checkImage.data) {
@@ -461,27 +457,30 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         icon: "warning",
         showCancelButton: true,
         cancelButtonText: "No, cancel",
-        confirmButtonText: "Yes, Im sure", 
+        confirmButtonText: "Yes, Im sure",
         customClass: {
-          text: 'swal-text-bold', 
-          content: 'swal-text-color', 
-          confirmButton: 'swal-confirm-button-color', // Apply custom color and style
+          text: "swal-text-bold",
+          content: "swal-text-color",
+          confirmButton: "swal-confirm-button-color", // Apply custom color and style
         },
-        confirmButtonColor: '#ff0000',
-      }).then(async(result) => {
+        confirmButtonColor: "#ff0000",
+      }).then(async (result) => {
         if (result.isConfirmed) {
           const config2 = {
             method: "post",
             maxBodyLength: Infinity,
             url: CREATE_NEW_FOLDER,
-            headers: { Authorization: authToken, "Content-Type": "application/json", },
-            data : data
+            headers: {
+              Authorization: authToken,
+              "Content-Type": "application/json",
+            },
+            data: data,
           };
           const response = await axios.request(config2);
           setassetsdw(null);
           setassetsdw2(null);
-          fetchData()
-          toast.success("Delete successFully...")
+          fetchData();
+          toast.success("Delete successFully...");
         }
       });
     } else {
@@ -489,14 +488,17 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         method: "post",
         maxBodyLength: Infinity,
         url: CREATE_NEW_FOLDER,
-        headers: { Authorization: authToken, "Content-Type": "application/json", },
-        data : data
+        headers: {
+          Authorization: authToken,
+          "Content-Type": "application/json",
+        },
+        data: data,
       };
       const response = await axios.request(config2);
       setassetsdw(null);
       setassetsdw2(null);
-      fetchData()
-      toast.success("Delete successFully...")
+      fetchData();
+      toast.success("Delete successFully...");
     }
 
     //  axios.post(CREATE_NEW_FOLDER, data, {
@@ -1111,7 +1113,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                         onClick={() => {
                                           setAddScreenModal(true);
                                           setassetsdw(null);
-                                          setSelectData(item)
+                                          setSelectData(item);
                                         }}
                                       >
                                         <FiUpload className="mr-2 text-lg" />
@@ -1580,10 +1582,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     <button
                       className="bg-primary text-white px-8 py-2 rounded-full"
                       onClick={() => {
-                        if(selectdata?.screenIDs){
+                        if (selectdata?.screenIDs) {
                           let arr = [selectdata?.screenIDs];
-                          let newArr = arr[0].split(',').map(item => parseInt(item.trim()));
-                          setSelectedScreens(newArr)
+                          let newArr = arr[0]
+                            .split(",")
+                            .map((item) => parseInt(item.trim()));
+                          setSelectedScreens(newArr);
                         }
                         setSelectScreenModal(true);
                         setAddScreenModal(false);
