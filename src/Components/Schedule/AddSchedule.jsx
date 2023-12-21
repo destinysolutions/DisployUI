@@ -85,6 +85,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const selectedScreenIdsString = selectedScreens.join(",");
 
   const { user, token } = useSelector((s) => s.root.auth);
+  const { assets } = useSelector((s) => s.root.asset);
 
   const authToken = `Bearer ${token}`;
 
