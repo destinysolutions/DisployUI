@@ -72,7 +72,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   const handleOnSaveInstanceName = (e) => {
     if (!instanceName.replace(/\s/g, "").length) {
       toast.remove();
-      return toast.error("please enter a character.");
+      return toast.error("Please enter at least minimum 1 character.");
     }
     setEdited(false);
   };
@@ -630,6 +630,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                         url={YoutubeVideo}
                         className="w-full relative z-20 videoinner"
                         muted={isMuted}
+                        playing={!showPreviewPopup}
                         controls={true} // Enable video controls
                         captions={{
                           active: areSubtitlesOn, // Enable subtitles based on the areSubtitlesOn state

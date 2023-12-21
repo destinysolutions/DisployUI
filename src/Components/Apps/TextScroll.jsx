@@ -51,6 +51,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenAssignName, setScreenAssignName] = useState("");
   const [instanceView, setInstanceView] = useState(false);
   const [scrollType, setScrollType] = useState(1);
+  const [screenSelected, setScreenSelected] = useState([]);
 
   const navigate = useNavigate();
   const addScreenRef = useRef(null);
@@ -66,7 +67,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
         "Content-Type": "application/json",
       },
     };
-
+    toast.loading("Saving...");
     axios
       .request(config)
       .then((response) => {
@@ -85,9 +86,11 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
           setAddScreenModal(false);
           // setShowActionBox(false);
           // loadScheduleData();
+          toast.remove();
         }
       })
       .catch((error) => {
+        toast.remove();
         console.log(error);
       });
   };
@@ -218,7 +221,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const handleFetchTextscrollById = (id) => {
+  const handleFetchTextscrollById = (id, showpopup) => {
     let config = {
       method: "get",
       url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/SelectByTextScrollId?ID=${id}`,
@@ -233,12 +236,15 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response?.data?.status == 200) {
           const data = response?.data?.data[0];
-          setInstanceView(true);
+          if (showpopup) {
+            setInstanceView(true);
+          }
           setTextScrollData(data?.text);
           setInstanceName(data?.instanceName);
           setScreenAssignName(data?.screens);
           setScrollType(data?.scrollType);
           setShowTags(data?.tags);
+          setScreenSelected(data?.screens?.split(","));
           setLoading(false);
         }
         toast.remove();
@@ -429,7 +435,13 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                   </li>
                                   <li
                                     className="flex text-sm items-center cursor-pointer"
-                                    onClick={() => setAddScreenModal(true)}
+                                    onClick={() => {
+                                      handleFetchTextscrollById(
+                                        instance?.textScroll_Id,
+                                        false
+                                      );
+                                      setAddScreenModal(true);
+                                    }}
                                   >
                                     <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
                                     Set to Screen
@@ -459,7 +471,10 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                           <div
                             className="cursor-pointer"
                             onClick={() =>
-                              handleFetchTextscrollById(instance?.textScroll_Id)
+                              handleFetchTextscrollById(
+                                instance?.textScroll_Id,
+                                true
+                              )
                             }
                           >
                             <img
@@ -626,6 +641,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
           handleUpdateScreenAssign={handleUpdateScreenAssign}
           selectedScreens={selectedScreens}
           setSelectedScreens={setSelectedScreens}
+          screenSelected={screenSelected}
         />
       )}
     </>

@@ -36,7 +36,7 @@ import SaveAssignScreenModal from "./SaveAssignScreenModal";
 import { AiOutlineClose, AiOutlineCloseCircle } from "react-icons/ai";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { HiOutlineLocationMarker } from "react-icons/hi";
-import { MdOutlineGroups } from "react-icons/md";
+import { MdOutlineGroups, MdSave } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { handleGetAllAssets } from "../../Redux/Assetslice";
@@ -283,8 +283,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
-    // return console.log(eventId, eventData, updateAllValue);
-    toast.loading("Creating Event...");
+    if (isEditingSchedule) {
+      toast.loading("Updating Events...");
+    } else {
+      toast.loading("Creating Events...");
+    }
     const data = {
       startDate: eventData.start,
       endDate: eventData.end,
@@ -327,7 +330,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           }));
           toast.remove();
 
-          loadEventsForSchedule(getScheduleId);
+          loadEventsForSchedule(scheduleIdToUse);
           // console.log(fetchedData);
 
           // console.log(updateEvent);
@@ -442,6 +445,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedSlot(null);
     setSelectedEvent(null);
     setCreatePopupOpen(false);
+    setAllAssets([...assets]);
   };
 
   // Function to handle the deletion of an event
@@ -676,11 +680,27 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="pt-16 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="grid grid-cols-12 mt-5">
-            <div className="lg:col-span-9 md:col-span-7 sm:col-span-6 xs:col-span-12 flex items-center">
-              <h1 className="text-xl font-semibold ">Create Schedule</h1>
-              <button className="ml-3 text-sm">
-                <BsPencilFill />
-              </button>
+            <div className="lg:col-span-9 md:col-span-7 sm:col-span-6 xs:col-span-12 flex flex-col gap-2 items-start">
+              <p className="text-xl font-semibold ">Schedule Name</p>
+              <div className="flex justify-center items-center">
+                <input
+                  type="text"
+                  className="w-full border border-primary rounded-md px-2 py-1"
+                  placeholder="Enter schedule name"
+                  value={newScheduleNameInput}
+                  onChange={(e) => setNewScheduleNameInput(e.target.value)}
+                />
+                {/* <button
+                  onClick={() => setShowScreenNameEdit(!showScreenNameEdit)}
+                  className="ml-3 h-6 w-6"
+                >
+                  {showScreenNameEdit ? (
+                    <MdSave className="w-full h-full" />
+                  ) : (
+                    <BsPencilFill className="w-full h-full" />
+                  )}
+                </button> */}
+              </div>
             </div>
 
             <div className="lg:col-span-3 md:col-span-5 sm:col-span-6 xs:col-span-12 ml-5">
@@ -738,11 +758,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               />
             </div>
             <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-5 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
-              <div className="flex justify-center my-3 text-black font-semibold text-xl">
+              {/* <div className="flex justify-center my-3 text-black font-semibold text-xl">
                 Schedule Name
-              </div>
+              </div> */}
 
-              <div className="flex justify-center items-center px-5">
+              {/* <div className="flex justify-center items-center px-5">
                 <input
                   type="text"
                   className="w-full border border-primary rounded-md px-2 py-1"
@@ -750,7 +770,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   value={newScheduleNameInput}
                   onChange={(e) => setNewScheduleNameInput(e.target.value)}
                 />
-              </div>
+              </div> */}
 
               <div className="border-b-2 border-lightgray mt-3"></div>
               <div className="p-3">

@@ -36,8 +36,6 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const history = useNavigate();
   const [enabled, setEnabled] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const [showSetScreenModal, setShowSetScreenModal] = useState(false);
-  const [playlistDeleteModal, setPlaylistDeleteModal] = useState(false);
   const [YoutubeVideo, setYoutubeVideo] = useState("");
   const [maxVideos, setMaxVideos] = useState(10);
   const [edited, setEdited] = useState(false);
@@ -78,7 +76,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const handleOnSaveInstanceName = (e) => {
     if (!instanceName.replace(/\s/g, "").length) {
       toast.remove();
-      return toast.error("please enter a character.");
+      return toast.error("Please enter at least minimum 1 character.");
     }
     setEdited(false);
   };
@@ -580,7 +578,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       />
                     </span>
                   </div>
-                  // <div className="fixed z-30 bg-black/40 inset-0"></div>
+                  {/* // <div className="fixed z-30 bg-black/40 inset-0"></div> */}
                 </>
               )}
             </div>

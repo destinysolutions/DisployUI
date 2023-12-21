@@ -13,11 +13,13 @@ export const handleGetAllScheduleTimezone = createAsyncThunk(
       });
       if (data?.status == 200) return data;
       else {
-        toast.error(data?.message);
+        toast.remove();
+        toast.error(data?.message || "Something went wrong!!!");
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
+      toast.remove();
+      toast.error(error?.response?.data?.message || "Something went wrong!!!");
       rejectWithValue(error?.response?.data?.message);
     }
   }
