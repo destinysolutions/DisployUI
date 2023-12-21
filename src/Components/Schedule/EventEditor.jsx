@@ -56,6 +56,7 @@ const EventEditor = ({
   const [showRepeatSettings, setShowRepeatSettings] = useState(false);
   const [repeatDayWarning, setRepeatDayWarning] = useState(false);
   const [searchAsset, setSearchAsset] = useState("");
+  const [repeatDays, setRepeatDays] = useState([]);
 
   const { token } = useSelector((s) => s.root.auth);
   const { assets, loading } = useSelector((s) => s.root.asset);
@@ -70,6 +71,7 @@ const EventEditor = ({
     if (newStartTime < editedEndTime) {
       setEditedStartTime(newStartTime);
     } else {
+      toast.error("Please change End Time.");
       console.log("Select start time must be after or equal to current date");
     }
   };
@@ -81,11 +83,12 @@ const EventEditor = ({
       setEditedEndTime(newEndTime);
     } else {
       console.log("Select End time must be after or equal to start time");
+      toast.error("Please change Start Time.");
     }
   };
 
   const currentDate = moment();
-
+  const today = moment().format("YYYY-MM-DD");
   const handleStartDateChange = (e) => {
     const newStartDate = e.target.value;
     const givenDate = moment(newStartDate);
@@ -97,9 +100,13 @@ const EventEditor = ({
         setEditedEndDate(newEndDate);
       }
 
-      if (showRepeatSettings && newStartDate < editedEndDate) {
+      if (showRepeatSettings && newStartDate <= editedEndDate) {
         setEditedStartDate(newStartDate);
+      } else if(showRepeatSettings) {
+        toast.error("Please change End Date.");
       }
+    } else {
+      toast.error("Please select a date in the present or future.");
     }
   };
 
@@ -167,10 +174,9 @@ const EventEditor = ({
 
   // for select all days to repeat day
   function handleCheckboxChange() {
-    const newSelectAllDays = !selectAllDays;
     if (
       moment(selectedSlot?.end).format("YYYY-MM-DD") === editedEndDate &&
-      newSelectAllDays &&
+      selectAllDays &&
       !isEditMode
     ) {
       toast.remove();
@@ -196,39 +202,36 @@ const EventEditor = ({
     for (let i = 0; i < days.length; i++) {
       changeDayTrueOrFalse = buttons.map((i) => days.includes(i));
     }
+    setRepeatDays(changeDayTrueOrFalse);
     setSelectedDays(changeDayTrueOrFalse);
   }
 
   // for select repeat day
-  const handleDayButtonClick = (index) => {
-    if (isDayInRange(index)) {
-      const newSelectedDays = [...selectedDays];
-      newSelectedDays[index] = !selectedDays[index];
-
-      // Check if all individual days are selected, then check the "Repeat for All Day" checkbox.
-      const newSelectAllDays = newSelectedDays.every((day) => day === true);
-
-      if (
-        moment(selectedSlot?.end).format("YYYY-MM-DD") === editedEndDate &&
-        newSelectedDays[index]
-      ) {
-        toast.remove();
-        toast.error("Please change End Date");
-        // Reset the state to prevent the button from being clicked
-        return;
-      }
-      setSelectedDays(newSelectedDays);
-      setSelectAllDays(newSelectAllDays);
-
-      // Update previousSetedRepeatDay based on the selected days
-      // let newPreviousSetedRepeatDay = [];
-      // for (let i = 0; i < newSelectedDays.length; i++) {
-      //   if (newSelectedDays[i]) {
-      //     newPreviousSetedRepeatDay.push(buttons[i]);
-      //   }
-      // }
-      // setPreviousSetedRepeatDay(newPreviousSetedRepeatDay);
+  const handleDayButtonClick = (index, label) => {
+    if (!repeatDays[index]) {
+      toast.remove();
+      return toast.error("Please change end date");
     }
+    // if (isDayInRange(index)) {
+    const newSelectedDays = [...selectedDays];
+    newSelectedDays[index] = !selectedDays[index];
+    // Check if all individual days are selected, then check the "Repeat for All Day" checkbox.
+    const newSelectAllDays = newSelectedDays.every((day) => day === true);
+
+    if (
+      moment(selectedSlot?.end).format("YYYY-MM-DD") === editedEndDate &&
+      newSelectedDays[index]
+    ) {
+      toast.remove();
+      toast.error("Please change End Date");
+      return;
+    }
+
+    // console.log(newSelectedDays,newSelectAllDays);
+    setSelectedDays(newSelectedDays);
+    setSelectAllDays(newSelectAllDays);
+
+    // }
   };
 
   const handleAssetAdd = (asset) => {
@@ -374,7 +377,7 @@ const EventEditor = ({
   const handleFilter = (value) => {
     if (value === "") {
       setSearchAsset("");
-      setAllAssets([...assets, ...allAppsData]);
+      setAllAssets([...assets]);
     } else {
       setSearchAsset(value);
       const filteredData = allAssets.filter((item) => {
@@ -428,6 +431,8 @@ const EventEditor = ({
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event?.target)) {
         setAssetPreviewPopup(false);
+        setSearchAsset("");
+        setAllAssets([...assets]);
       }
     };
     document.addEventListener("click", handleClickOutside, true);
@@ -438,6 +443,8 @@ const EventEditor = ({
 
   function handleClickOutside() {
     setAssetPreviewPopup(false);
+    setSearchAsset("");
+    setAllAssets([...assets]);
   }
 
   const daysDiff = moment(selectedEvent?.actualEndDate).diff(
@@ -468,6 +475,14 @@ const EventEditor = ({
       // return reject("error");
     }
   });
+
+  useEffect(() => {
+    if (myEvents.length > 0) {
+      // handleCheckboxChange();
+      // console.log(myEvents[myEvents.length - 1]?.end);
+      setEditedEndDate(myEvents[myEvents.length - 1]?.end);
+    }
+  }, [myEvents]);
 
   useEffect(() => {
     if (selectedEvent?.isfutureDateExists == 1) {
@@ -992,6 +1007,7 @@ const EventEditor = ({
                             <input
                               type="date"
                               value={editedStartDate}
+                              min={today}
                               onChange={handleStartDateChange}
                               className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
@@ -1002,6 +1018,7 @@ const EventEditor = ({
                           <div className="mt-1">
                             <input
                               type="date"
+                              min={editedStartDate}
                               value={editedEndDate}
                               onChange={handleEndDateChange}
                               className="bg-lightgray rounded-full px-3 py-2 w-full"
@@ -1065,8 +1082,7 @@ const EventEditor = ({
                               } 
                                 `}
                               key={index}
-                              disabled={!isDayInRange(index)}
-                              onClick={() => handleDayButtonClick(index)}
+                              onClick={() => handleDayButtonClick(index, label)}
                             >
                               {label}
                             </button>
@@ -1088,6 +1104,7 @@ const EventEditor = ({
                             <div className="mt-2">
                               <input
                                 type="date"
+                                min={today}
                                 value={editedStartDate}
                                 onChange={handleStartDateChange}
                                 className="bg-lightgray rounded-full px-3 py-2 w-full"
@@ -1097,7 +1114,7 @@ const EventEditor = ({
                           <li className="border-b-2 border-lightgray p-3">
                             <h3>End Date:</h3>
                             <div className="mt-2 bg-lightgray rounded-full px-3 py-2 w-full">
-                              {moment(editedStartDate).format("YYYY-MM-DD")}
+                              {moment(editedStartDate).format("DD-MM-YYYY")}
                             </div>
                           </li>
                           <li className="border-b-2 border-lightgray p-3">
@@ -1165,6 +1182,8 @@ const EventEditor = ({
                   onClick={() => {
                     onClose();
                     setSelectedDays([]);
+                    setSearchAsset("");
+                    setAllAssets([...assets]);
                     setShowRepeatSettings(false);
                   }}
                 >

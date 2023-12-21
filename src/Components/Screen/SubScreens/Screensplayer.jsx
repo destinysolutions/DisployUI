@@ -54,6 +54,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const getScreenID = searchParams.get("screenID");
   const [screenData, setScreenData] = useState([]);
   const [assetData, setAssetData] = useState([]);
+  const [assetAllData, setAssetAllData] = useState([]);
   const [getScreenOrientation, setScreenOrientation] = useState([]);
   const [selectScreenOrientation, setSelectScreenOrientation] = useState();
   const [selectedTag, setSelectedTag] = useState("");
@@ -72,6 +73,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectScreenResolution, setSelectScreenResolution] = useState();
   const [getScreenResolution, setScreenResolution] = useState([]);
   const [compositionData, setCompositionData] = useState([]);
+  const [allcompositionData, setAllCompositionData] = useState([]);
   const [compositionAPIData, setCompositionAPIData] = useState([]);
   const [selectedComposition, setSelectedComposition] = useState();
   const [selectedScreenTypeOption, setSelectedScreenTypeOption] = useState("");
@@ -103,7 +105,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [previewModalData, setPreviewModalData] = useState([]);
   const [screenType, setScreenType] = useState("");
   const [layotuDetails, setLayotuDetails] = useState(null);
-  const [fetchLayoutLoading, setFetchLayoutLoading] = useState(false)
+  const [fetchLayoutLoading, setFetchLayoutLoading] = useState(false);
+  const [selectedApps, setSelectedApps] = useState();
+  const [appDatas, setAppDatas] = useState();
+
 
   const dispatch = useDispatch();
 
@@ -114,6 +119,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const modalPreviewRef = useRef(null);
   const scheduleRef = useRef(null);
   const compositionRef = useRef(null);
+  const appRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -125,62 +131,84 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     dispatch(handleGetTextScrollData({ token }));
   }, []);
 
+  useEffect(() => {
+    setAppDatas(allAppsData);
+  }, [allAppsData]);
+
   const handleFilter = (event, from) => {
     const searchQuery = event.target.value.toLowerCase();
     setSearchAsset(searchQuery);
 
     if (searchQuery === "") {
-      setFilteredData([]);
+      setFilteredData(compositionAPIData);
     } else {
-      if (from !== "composition") {
-        const filteredScreen = assetData.filter((entry) =>
-          Object.values(entry).some((val) => {
-            if (typeof val === "string") {
-              const keyWords = searchQuery.split(" ");
-              for (let i = 0; i < keyWords.length; i++) {
-                return (
-                  val.toLocaleLowerCase().startsWith(keyWords[i]) ||
-                  val.toLocaleLowerCase().endsWith(keyWords[i]) ||
-                  val.toLocaleLowerCase().includes(keyWords[i]) ||
-                  val.toLocaleLowerCase().includes(searchQuery)
-                );
-              }
+      // if (from !== "composition") {
+      //   const filteredScreen = assetData.filter((entry) =>
+      //     Object.values(entry).some((val) => {
+      //       if (typeof val === "string") {
+      //         const keyWords = searchQuery.split(" ");
+      //         for (let i = 0; i < keyWords.length; i++) {
+      //           return (
+      //             val.toLocaleLowerCase().startsWith(keyWords[i]) ||
+      //             val.toLocaleLowerCase().endsWith(keyWords[i]) ||
+      //             val.toLocaleLowerCase().includes(keyWords[i]) ||
+      //             val.toLocaleLowerCase().includes(searchQuery)
+      //           );
+      //         }
+      //       }
+      //     })
+      //   );
+      //   if (filteredScreen.length > 0) {
+      //     toast.remove();
+      //     setFilteredData(filteredScreen);
+      //   } else {
+      //     toast.remove();
+      //     toast.error("asset not found!!");
+      //     setFilteredData([]);
+      //   }
+      // } else {
+      const filteredScreen = compositionAPIData.filter((entry) =>
+        Object.values(entry).some((val) => {
+          if (typeof val === "string") {
+            const keyWords = searchQuery.split(" ");
+            for (let i = 0; i < keyWords.length; i++) {
+              return (
+                val.toLocaleLowerCase().startsWith(keyWords[i]) ||
+                val.toLocaleLowerCase().endsWith(keyWords[i]) ||
+                val.toLocaleLowerCase().includes(keyWords[i]) ||
+                val.toLocaleLowerCase().includes(searchQuery)
+              );
             }
-          })
-        );
-        if (filteredScreen.length > 0) {
-          toast.remove();
-          setFilteredData(filteredScreen);
-        } else {
-          toast.remove();
-          toast.error("asset not found!!");
-          setFilteredData([]);
-        }
+          }
+        })
+      );
+      if (filteredScreen.length > 0) {
+        toast.remove();
+        setFilteredData(filteredScreen);
       } else {
-        const filteredScreen = compositionAPIData.filter((entry) =>
-          Object.values(entry).some((val) => {
-            if (typeof val === "string") {
-              const keyWords = searchQuery.split(" ");
-              for (let i = 0; i < keyWords.length; i++) {
-                return (
-                  val.toLocaleLowerCase().startsWith(keyWords[i]) ||
-                  val.toLocaleLowerCase().endsWith(keyWords[i]) ||
-                  val.toLocaleLowerCase().includes(keyWords[i]) ||
-                  val.toLocaleLowerCase().includes(searchQuery)
-                );
-              }
-            }
-          })
-        );
-        if (filteredScreen.length > 0) {
-          toast.remove();
-          setFilteredData(filteredScreen);
-        } else {
-          toast.remove();
-          toast.error("composition not found!!");
-          setFilteredData([]);
-        }
+        // toast.remove();
+        // toast.error("composition not found!!");
+        setFilteredData([]);
       }
+      // }
+    }
+  };
+
+  const handleAssetFilter = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchAsset(searchQuery);
+
+    if (searchQuery === "") {
+      setAssetData(assetAllData);
+    } else {
+      // const filteredData = assetData.filter((item) => {
+      //   const itemName = item.assetName ? item.assetName.toLowerCase() : "";
+      //   return itemName.includes(searchQuery);
+      // });
+      const filteredData = assetAllData.filter((item) =>
+        item?.assetName.toLocaleLowerCase().includes(searchQuery)
+      );
+      setAssetData(filteredData);
     }
   };
 
@@ -194,6 +222,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleOnConfirm = () => {
     setShowAssetModal(false);
+    setSearchAsset("");
     setSelectedAsset(assetPreview);
     setShowAssestOptionsPopup(false);
   };
@@ -217,21 +246,27 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const handleOptionChange = (e) => {
     setSelectedScreenTypeOption(e.target.value);
     setSelectedComposition("");
+    setSelectedApps("");
     setSelectedAsset("");
     setAssetPreview("");
     setSelectedSchedule("");
+    setSelectedDefaultAsset("");
+    setSelectedYoutube();
+    setSelectedTextScroll();
     setConfirmForComposition(false);
     setSaveForSchedule(false);
   };
 
   const handleConfirmOnComposition = () => {
     setShowCompositionModal(false);
+    setSearchAsset("");
     setSelectedDefaultAsset("");
     if (selectedComposition !== "") setConfirmForComposition(true);
   };
 
   const handleConfirmOnApps = () => {
     setShowAppsModal(false);
+    setSearchAsset("");
     if (selectedTextScroll !== "" || selectedYoutube !== "")
       setConfirmForApps(true);
   };
@@ -265,11 +300,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         if (response?.data?.status == 200) {
           setLayotuDetails(response.data?.data[0]);
           setScreenType(response?.data?.data[0]?.screenType);
-          setFetchLayoutLoading(false)
+          setFetchLayoutLoading(false);
         }
       })
       .catch((error) => {
-        setFetchLayoutLoading(false)
+        setFetchLayoutLoading(false);
         console.log(error);
       });
   };
@@ -297,7 +332,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           const { data, myComposition } = response?.data;
           setScreenPreviewData({ data, myComposition });
           if (myComposition.length > 0) {
-            setFetchLayoutLoading(true)
+            setFetchLayoutLoading(true);
             handleFetchLayoutById(myComposition[0]?.layoutID);
           }
           handleChangePreviewScreen();
@@ -359,6 +394,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
       if (compositionData.length === 0) {
         setCompositionData(newdd);
+        setAllCompositionData(newdd);
         setPlayerData(null);
       }
       return true;
@@ -503,11 +539,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
         ];
         setAssetData(allAssets);
+        setAssetAllData(allAssets);
         setScreenOrientation(screenOrientationResponse.data.data);
         setScreenResolution(screenResolutionResponse.data.data);
         setGetSelectedScreenTypeOption(screenTypeResponse.data.data);
         setScheduleData(scheduleResponse.data.data);
         setCompositionAPIData(compositionResponse.data.data);
+        setFilteredData(compositionResponse.data.data);
       })
       .catch((error) => {
         console.error(error);
@@ -655,6 +693,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     const handleClickOutside = (event) => {
       if (scheduleRef.current && !scheduleRef.current.contains(event?.target)) {
         setShowScheduleModal(false);
+        setSelectedSchedule("");
       }
     };
     document.addEventListener("click", handleClickOutside, true);
@@ -665,6 +704,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
   function handleClickOutside() {
     setShowScheduleModal(false);
+    setSelectedSchedule("");
   }
 
   useEffect(() => {
@@ -690,8 +730,44 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setFilteredData([]);
   }
 
+  useEffect(() => {
+    const handleClickOutsideApp = (event) => {
+      if (appRef.current && !appRef.current.contains(event?.target)) {
+        setShowAppsModal(false);
+        setSearchAsset("");
+        if (!confirmForApps) {
+          setSelectedApps("");
+        }
+      }
+    };
+    document.addEventListener("click", handleClickOutsideApp, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutsideApp, true);
+    };
+  }, [handleClickOutsideApp]);
 
-  console.log(layotuDetails);
+  function handleClickOutsideApp() {
+    setShowAppsModal(false);
+    setSearchAsset("");
+    if (!confirmForApps) {
+      setSelectedApps("");
+    }
+  }
+
+  const handleAppFilter = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearchAsset(searchQuery);
+
+    if (searchQuery === "") {
+      setAppDatas(allAppsData);
+    } else {
+      const filteredData = allAppsData.filter((item) =>
+        item?.instanceName.toLocaleLowerCase().includes(searchQuery)
+      );
+      setAppDatas(filteredData);
+    }
+  };
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -728,42 +804,47 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                   compositionData.length > 0 &&
                   !loading && (
                     <div className="relative z-0 mx-auto rounded-lg p-4 h-full w-full ">
-                      {!fetchLayoutLoading&&!loading&& layotuDetails!==null&& layotuDetails?.lstLayloutModelList.length > 0 &&
-                              layotuDetails?.lstLayloutModelList?.map((data, index) => {
-                        return (
-                          <div
-                            key={index}
-                            className="absolute"
-                            // style={{
-                            //   width:
-                            //     compositionData[index][index + 1][0]?.width +
-                            //     "px",
-                            //   height:
-                            //     compositionData[index][index + 1][0]?.height +
-                            //     "px",
-                            //   top:
-                            //     compositionData[index][index + 1][0]?.top +
-                            //     "px",
-                            //   left:
-                            //     compositionData[index][index + 1][0]?.left +
-                            //     "px",
-                            // }}
-                            style={{
-                              // position: "fixed",
-                              left: data.leftside + "%",
-                              top: data.topside + "%",
-                              width: data?.width + "%",
-                              height: data?.height + "%",
-                              backgroundColor: data.fill,
-                            }}
-                          >
-                            <Carousel
-                              from="screen"
-                              items={compositionData[index][index + 1]}
-                            />
-                          </div>
-                        );
-                      })}
+                      {!fetchLayoutLoading &&
+                        !loading &&
+                        layotuDetails !== null &&
+                        layotuDetails?.lstLayloutModelList.length > 0 &&
+                        layotuDetails?.lstLayloutModelList?.map(
+                          (data, index) => {
+                            return (
+                              <div
+                                key={index}
+                                className="absolute"
+                                // style={{
+                                //   width:
+                                //     compositionData[index][index + 1][0]?.width +
+                                //     "px",
+                                //   height:
+                                //     compositionData[index][index + 1][0]?.height +
+                                //     "px",
+                                //   top:
+                                //     compositionData[index][index + 1][0]?.top +
+                                //     "px",
+                                //   left:
+                                //     compositionData[index][index + 1][0]?.left +
+                                //     "px",
+                                // }}
+                                style={{
+                                  // position: "fixed",
+                                  left: data.leftside + "%",
+                                  top: data.topside + "%",
+                                  width: data?.width + "%",
+                                  height: data?.height + "%",
+                                  backgroundColor: data.fill,
+                                }}
+                              >
+                                <Carousel
+                                  from="screen"
+                                  items={compositionData[index][index + 1]}
+                                />
+                              </div>
+                            );
+                          }
+                        )}
                     </div>
                     // null
                   )
@@ -812,7 +893,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             </h3>
                             <button
                               className="p-1 text-xl"
-                              onClick={() => setShowAssetModal(false)}
+                              onClick={() => {
+                                setShowAssetModal(false);
+                                setSearchAsset("");
+                              }}
                             >
                               <AiOutlineCloseCircle className="text-2xl" />
                             </button>
@@ -834,7 +918,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                             paddingLeft: "2rem",
                                           }}
                                           value={searchAsset}
-                                          onChange={handleFilter}
+                                          onChange={handleAssetFilter}
                                         />
                                       </div>
                                       <button
@@ -846,6 +930,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                             )
                                           );
                                           setShowAssetModal(false);
+                                          setSearchAsset("");
                                         }}
                                         className="flex align-middle border-SlateBlue bg-SlateBlue text-white items-center border rounded-full px-4 py-2 text-sm  hover:text-white hover:bg-primary hover:shadow-lg hover:shadow-primary-500/50 hover:border-white"
                                       >
@@ -858,6 +943,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                         style={{
                                           borderCollapse: "separate",
                                           borderSpacing: " 0 10px",
+                                          width: "100%",
                                         }}
                                       >
                                         <thead className="sticky top-0">
@@ -870,12 +956,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                             <th className="p-3">Type</th>
                                           </tr>
                                         </thead>
-                                        {filteredData.length === 0
+                                        {/*{filteredData.length === 0
                                           ? assetData.map((asset) => (
                                               <tbody key={asset.assetID}>
                                                 <tr
                                                   className={`${
-                                                    selectedAsset === asset
+                                                    assetPreview?.assetID ===
+                                                          asset?.assetID
                                                       ? "bg-[#f3c953]"
                                                       : ""
                                                   } border-b border-[#eee] `}
@@ -934,7 +1021,45 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                   </td>
                                                 </tr>
                                               </tbody>
-                                            ))}
+                                                    ))}*/}
+
+                                        {assetData?.length > 0 ? (
+                                          assetData.map((asset) => (
+                                            <tbody key={asset.assetID}>
+                                              <tr
+                                                className={`${
+                                                  assetPreview?.assetID ===
+                                                  asset?.assetID
+                                                    ? "bg-[#f3c953]"
+                                                    : ""
+                                                } border-b border-[#eee] `}
+                                                onClick={() => {
+                                                  handleAssetAdd(asset);
+                                                  setAssetPreviewPopup(true);
+                                                }}
+                                              >
+                                                <td className="p-3">
+                                                  {asset.assetName}
+                                                </td>
+                                                <td className="p-3 text-center">
+                                                  {moment(
+                                                    asset.createdDate
+                                                  ).format("YYYY-MM-DD hh:mm")}
+                                                </td>
+                                                <td className="p-3 text-center">
+                                                  {asset.fileSize}
+                                                </td>
+                                                <td className="p-3 text-center">
+                                                  {asset.assetType}
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          ))
+                                        ) : (
+                                          <div className="p-3">
+                                            <p>No Assets Found</p>
+                                          </div>
+                                        )}
                                       </table>
                                       {assetPreviewPopup && (
                                         <div
@@ -1063,7 +1188,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                     <div className="bg-black bg-opacity-50 justify-center items-center flex w-screen h-screen overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                       <div
                         ref={scheduleRef}
-                        className="my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs w-[70vw] h-[80vh] relative"
+                        className="my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
                       >
                         <div className="border-0 rounded-lg shadow-lg w-full h-full relative flex flex-col bg-white outline-none focus:outline-none">
                           <div className="flex items-start justify-between p-4 px-6 w-full border-b border-[#A7AFB7] rounded-t text-black">
@@ -1074,7 +1199,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             </div>
                             <button
                               className="p-1 text-xl"
-                              onClick={() => setShowScheduleModal(false)}
+                              onClick={() => {
+                                setShowScheduleModal(false);
+                                setSelectedSchedule("");
+                              }}
                             >
                               <AiOutlineCloseCircle className="text-2xl" />
                             </button>
@@ -1142,20 +1270,14 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                         type="checkbox"
                                         className="mr-3"
                                         checked={
-                                          selectedSchedule?.scheduleName ===
-                                          schedule?.scheduleName
+                                          selectedSchedule?.scheduleId ===
+                                          schedule?.scheduleId
                                         }
                                         onChange={() =>
                                           handleScheduleAdd(schedule)
                                         }
                                       />
-                                      <div>
-                                        <div>
-                                          <Link to="/screensplayer">
-                                            {schedule.scheduleName}
-                                          </Link>
-                                        </div>
-                                      </div>
+                                      <div>{schedule.scheduleName}</div>
                                     </td>
                                     <td className="text-center">
                                       {schedule.timeZoneName}
@@ -1183,11 +1305,20 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                       {schedule.tags}
                                     </td>
                                     <td className="text-center">
-                                      <Link to="/myschedule">
-                                        <button className="ml-3 relative">
-                                          <HiDotsVertical />
-                                        </button>
-                                      </Link>
+                                      <button
+                                        className="ml-3 relative"
+                                        onClick={() => {
+                                          window.open(
+                                            window.location.origin.concat(
+                                              "/myschedule"
+                                            )
+                                          );
+                                          setShowScheduleModal(false);
+                                          setSelectedSchedule("");
+                                        }}
+                                      >
+                                        <HiDotsVertical />
+                                      </button>
                                     </td>
                                   </tr>
                                 ))}
@@ -1227,7 +1358,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             </h3>
                             <button
                               className="p-1 text-xl"
-                              onClick={() => setShowCompositionModal(false)}
+                              onClick={() => {
+                                setShowCompositionModal(false);
+                                setSearchAsset("");
+                              }}
                             >
                               <AiOutlineCloseCircle className="text-2xl" />
                             </button>
@@ -1252,17 +1386,27 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                             }}
                                           />
                                         </div>
-                                        <Link to="/addcomposition">
-                                          <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
-                                            Add New Composition
-                                          </button>
-                                        </Link>
+                                        <button
+                                          className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                                          onClick={() => {
+                                            window.open(
+                                              window.location.origin.concat(
+                                                "/addcomposition"
+                                              )
+                                            );
+                                            setShowCompositionModal(false);
+                                            setSearchAsset("");
+                                          }}
+                                        >
+                                          Add New Composition
+                                        </button>
                                       </div>
                                       <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
                                         <table
                                           style={{
                                             borderCollapse: "separate",
                                             borderSpacing: " 0 10px",
+                                            width: "100%",
                                           }}
                                         >
                                           <thead className="sticky top-0">
@@ -1277,101 +1421,55 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                               <th className="p-3">Duration</th>
                                             </tr>
                                           </thead>
-                                          {filteredData.length === 0
-                                            ? compositionAPIData.map(
-                                                (composition) => (
-                                                  <tbody
-                                                    key={
-                                                      composition.compositionID
+                                          {filteredData.length > 0 ? (
+                                            filteredData.map((composition) => (
+                                              <tbody
+                                                key={composition.compositionID}
+                                              >
+                                                <tr
+                                                  className={`${
+                                                    selectedComposition?.compositionName ===
+                                                    composition?.compositionName
+                                                      ? "bg-[#f3c953]"
+                                                      : ""
+                                                  } border-b border-[#eee] `}
+                                                  onClick={() => {
+                                                    handleCompositionsAdd(
+                                                      composition
+                                                    );
+                                                  }}
+                                                >
+                                                  <td className="p-3 text-left">
+                                                    {
+                                                      composition.compositionName
                                                     }
-                                                  >
-                                                    <tr
-                                                      className={`${
-                                                        selectedComposition?.compositionName ===
-                                                        composition?.compositionName
-                                                          ? "bg-[#f3c953]"
-                                                          : ""
-                                                      } border-b border-[#eee] `}
-                                                      onClick={() => {
-                                                        handleCompositionsAdd(
-                                                          composition
-                                                        );
-                                                      }}
-                                                    >
-                                                      <td className="p-3 text-left">
-                                                        {
-                                                          composition.compositionName
-                                                        }
-                                                      </td>
-                                                      <td className="p-3">
-                                                        {moment(
-                                                          composition.dateAdded
-                                                        ).format(
-                                                          "YYYY-MM-DD hh:mm"
-                                                        )}
-                                                      </td>
-                                                      <td className="p-3">
-                                                        {composition.resolution}
-                                                      </td>
-                                                      <td className="p-3">
-                                                        {moment
-                                                          .utc(
-                                                            composition.duration *
-                                                              1000
-                                                          )
-                                                          .format("hh:mm:ss")}
-                                                      </td>
-                                                    </tr>
-                                                  </tbody>
-                                                )
-                                              )
-                                            : filteredData.map(
-                                                (composition) => (
-                                                  <tbody
-                                                    key={
-                                                      composition.compositionID
-                                                    }
-                                                  >
-                                                    <tr
-                                                      className={`${
-                                                        selectedComposition?.compositionName ===
-                                                        composition?.compositionName
-                                                          ? "bg-[#f3c953]"
-                                                          : ""
-                                                      } border-b border-[#eee] `}
-                                                      onClick={() => {
-                                                        handleCompositionsAdd(
-                                                          composition
-                                                        );
-                                                      }}
-                                                    >
-                                                      <td className="p-3 text-left">
-                                                        {
-                                                          composition.compositionName
-                                                        }
-                                                      </td>
-                                                      <td className="p-3">
-                                                        {moment(
-                                                          composition.dateAdded
-                                                        ).format(
-                                                          "YYYY-MM-DD hh:mm"
-                                                        )}
-                                                      </td>
-                                                      <td className="p-3">
-                                                        {composition.resolution}
-                                                      </td>
-                                                      <td className="p-3">
-                                                        {moment
-                                                          .utc(
-                                                            composition.duration *
-                                                              1000
-                                                          )
-                                                          .format("hh:mm:ss")}
-                                                      </td>
-                                                    </tr>
-                                                  </tbody>
-                                                )
-                                              )}
+                                                  </td>
+                                                  <td className="p-3 text-center">
+                                                    {moment(
+                                                      composition.dateAdded
+                                                    ).format(
+                                                      "YYYY-MM-DD hh:mm"
+                                                    )}
+                                                  </td>
+                                                  <td className="p-3 text-center">
+                                                    {composition.resolution}
+                                                  </td>
+                                                  <td className="p-3 text-center">
+                                                    {moment
+                                                      .utc(
+                                                        composition.duration *
+                                                          1000
+                                                      )
+                                                      .format("hh:mm:ss")}
+                                                  </td>
+                                                </tr>
+                                              </tbody>
+                                            ))
+                                          ) : (
+                                            <div className="pl-2">
+                                              No Composition Found
+                                            </div>
+                                          )}
                                         </table>
                                       </div>
                                     </div>
@@ -1546,6 +1644,16 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                           : screen &&
                                               screen?.tags.split(",").length
                                       )
+                                      .map((text) => {
+                                        if (text.toString().length > 10) {
+                                          return text
+                                            .split("")
+                                            .slice(0, 10)
+                                            .concat("...")
+                                            .join("");
+                                        }
+                                        return text;
+                                      })
                                       .join(",")
                                   : ""}
                               </p>
@@ -1730,6 +1838,16 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     : screenData.length > 0 &&
                                         screenData[0]?.tags.split(",").length
                                 )
+                                .map((text) => {
+                                  if (text.toString().length > 10) {
+                                    return text
+                                      .split("")
+                                      .slice(0, 10)
+                                      .concat("...")
+                                      .join("");
+                                  }
+                                  return text;
+                                })
                                 .join(",")
                             : ""}
                           {screenData.length > 0 &&
@@ -1846,6 +1964,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     className="text-sm mb-1 mt-2 ml-3 cursor-pointer"
                                     onClick={() => {
                                       setShowAssetModal(true);
+                                      setAssetData(assetAllData);
                                       setShowAssestOptionsPopup(false);
                                     }}
                                   >
@@ -1930,6 +2049,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   className="flex items-center ml-5"
                                   onClick={() => {
                                     setShowCompositionModal(true);
+                                    setCompositionData(allcompositionData);
+                                    setFilteredData(compositionAPIData);
                                     // setConfirmForComposition(false);
                                   }}
                                 >
@@ -2013,6 +2134,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div
                                   className="flex items-center ml-5"
                                   onClick={() => {
+                                    setAppDatas(allAppsData);
                                     setShowAppsModal(true);
                                   }}
                                 >
@@ -2028,7 +2150,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           <td>
                             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
                               <div
-                                ref={compositionRef}
+                                ref={appRef}
                                 className="relative w-auto my-6 mx-auto myplaylist-popup-details"
                               >
                                 <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
@@ -2038,7 +2160,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                     </h3>
                                     <button
                                       className="p-1 text-xl"
-                                      onClick={() => setShowAppsModal(false)}
+                                      onClick={() => {
+                                        setShowAppsModal(false);
+                                        setSearchAsset("");
+                                      }}
                                     >
                                       <AiOutlineCloseCircle className="text-2xl" />
                                     </button>
@@ -2058,20 +2183,30 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                     placeholder=" Search by Name"
                                                     className="border border-primary rounded-full px-7 py-2 search-user"
                                                     value={searchAsset}
-                                                    onChange={handleFilter}
+                                                    onChange={handleAppFilter}
                                                   />
                                                 </div>
-                                                <Link to="/apps">
-                                                  <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
-                                                    Add New App
-                                                  </button>
-                                                </Link>
+                                                <button
+                                                  className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                                                  onClick={() => {
+                                                    window.open(
+                                                      window.location.origin.concat(
+                                                        "/apps"
+                                                      )
+                                                    );
+                                                    setShowAppsModal(false);
+                                                    setSearchAsset("");
+                                                  }}
+                                                >
+                                                  Add New App
+                                                </button>
                                               </div>
                                               <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
                                                 <table
                                                   style={{
                                                     borderCollapse: "separate",
                                                     borderSpacing: " 0 10px",
+                                                    width: "100%",
                                                   }}
                                                   className="w-full"
                                                 >
@@ -2086,43 +2221,49 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                     </tr>
                                                   </thead>
 
-                                                  {allAppsData.map(
-                                                    (instance, index) => (
-                                                      <tbody key={index}>
-                                                        <tr
-                                                          className={`${
-                                                            selectedTextScroll ===
-                                                              instance ||
-                                                            selectedYoutube ===
-                                                              instance
-                                                              ? "bg-[#f3c953]"
-                                                              : ""
-                                                          } border-b border-[#eee] `}
-                                                          onClick={() => {
-                                                            handleAppsAdd(
-                                                              instance
-                                                            );
-                                                          }}
-                                                        >
-                                                          <td className="p-3 text-left">
-                                                            {
-                                                              instance.instanceName
-                                                            }
-                                                          </td>
-                                                          <td className="p-3">
-                                                            {instance.youTubePlaylist
-                                                              ? "Youtube Video"
-                                                              : "Text scroll"}
-                                                          </td>
-                                                          {/* <td className="p-3">{composition.resolution}</td>
+                                                  {appDatas?.length > 0 ? (
+                                                    appDatas.map(
+                                                      (instance, index) => (
+                                                        <tbody key={index}>
+                                                          <tr
+                                                            className={`${
+                                                              selectedTextScroll ===
+                                                                instance ||
+                                                              selectedYoutube ===
+                                                                instance
+                                                                ? "bg-[#f3c953]"
+                                                                : ""
+                                                            } border-b border-[#eee] `}
+                                                            onClick={() => {
+                                                              handleAppsAdd(
+                                                                instance
+                                                              );
+                                                            }}
+                                                          >
+                                                            <td className="p-3 text-left">
+                                                              {
+                                                                instance.instanceName
+                                                              }
+                                                            </td>
+                                                            <td className="p-3 text-center">
+                                                              {instance.youTubePlaylist
+                                                                ? "Youtube Video"
+                                                                : "Text scroll"}
+                                                            </td>
+                                                            {/* <td className="p-3">{composition.resolution}</td>
                               <td className="p-3">
                                 {moment
                                   .utc(composition.duration * 1000)
                                   .format("hh:mm:ss")}
                               </td> */}
-                                                        </tr>
-                                                      </tbody>
+                                                          </tr>
+                                                        </tbody>
+                                                      )
                                                     )
+                                                  ) : (
+                                                    <div className="p-3 text-left">
+                                                      <p>No Data Found</p>
+                                                    </div>
                                                   )}
                                                 </table>
                                               </div>

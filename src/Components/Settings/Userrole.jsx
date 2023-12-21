@@ -96,7 +96,7 @@ const Userrole = ({ searchValue }) => {
       } else {
         setFilterUserRoleData([]);
       }
-    }else{
+    } else {
       setFilterUserRoleData([]);
     }
   }, [searchValue]);
@@ -642,6 +642,24 @@ const Userrole = ({ searchValue }) => {
       if (modalRef.current && !modalRef.current.contains(event?.target)) {
         // window.document.body.style.overflow = "unset";
         setshowuserroleModal(false);
+        setRoleName("");
+        setCheckboxValues({
+          screenView: false,
+          screenCreateEdit: false,
+          screenDelete: false,
+          screenApprovar: false,
+          screenReviewer: false,
+          myScheduleView: false,
+          myScheduleCreateEdit: false,
+          myScheduleDelete: false,
+          myScheduleApprovar: false,
+          myScheduleReviewer: false,
+          appsView: false,
+          appsCreateEdit: false,
+          appsDelete: false,
+          appsApprovar: false,
+          appsReviewer: false,
+        });
       }
     };
     document.addEventListener("click", handleClickOutside, true);
@@ -652,6 +670,24 @@ const Userrole = ({ searchValue }) => {
 
   function handleClickOutside() {
     setshowuserroleModal(false);
+    setRoleName("");
+    setCheckboxValues({
+      screenView: false,
+      screenCreateEdit: false,
+      screenDelete: false,
+      screenApprovar: false,
+      screenReviewer: false,
+      myScheduleView: false,
+      myScheduleCreateEdit: false,
+      myScheduleDelete: false,
+      myScheduleApprovar: false,
+      myScheduleReviewer: false,
+      appsView: false,
+      appsCreateEdit: false,
+      appsDelete: false,
+      appsApprovar: false,
+      appsReviewer: false,
+    });
   }
 
   return (
@@ -673,7 +709,8 @@ const Userrole = ({ searchValue }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:px-5 md:px-5 sm:px-2 xs:px-2">
-        {userRoleData && filteruserRoleData?.length === 0 && 
+        {userRoleData &&
+          filteruserRoleData?.length === 0 &&
           userRoleData.length > 0 &&
           userRoleData?.map((userrole) => (
             <div
@@ -699,7 +736,9 @@ const Userrole = ({ searchValue }) => {
               </div>
             </div>
           ))}
-          {filteruserRoleData && filteruserRoleData?.length > 0 && filteruserRoleData?.map((userrole)=>(
+        {filteruserRoleData &&
+          filteruserRoleData?.length > 0 &&
+          filteruserRoleData?.map((userrole) => (
             <div
               className="rounded-xl p-6 bg-[#E7EFFF] user-role-card"
               key={userrole.orgUserRoleID}
@@ -723,7 +762,6 @@ const Userrole = ({ searchValue }) => {
               </div>
             </div>
           ))}
-          
       </div>
 
       {/* <div className="md:px-5 sm:px-2 xs:px-2 mt-5">
@@ -802,6 +840,23 @@ const Userrole = ({ searchValue }) => {
                     setshowuserroleModal(false);
                     setUserRoleID("");
                     setRoleName("");
+                    setCheckboxValues({
+                      screenView: false,
+                      screenCreateEdit: false,
+                      screenDelete: false,
+                      screenApprovar: false,
+                      screenReviewer: false,
+                      myScheduleView: false,
+                      myScheduleCreateEdit: false,
+                      myScheduleDelete: false,
+                      myScheduleApprovar: false,
+                      myScheduleReviewer: false,
+                      appsView: false,
+                      appsCreateEdit: false,
+                      appsDelete: false,
+                      appsApprovar: false,
+                      appsReviewer: false,
+                    });
                   }}
                 />
               </div>
@@ -1181,6 +1236,23 @@ const Userrole = ({ searchValue }) => {
                         onClick={() => {
                           setUserRoleID("");
                           setRoleName("");
+                          setCheckboxValues({
+                            screenView: false,
+                            screenCreateEdit: false,
+                            screenDelete: false,
+                            screenApprovar: false,
+                            screenReviewer: false,
+                            myScheduleView: false,
+                            myScheduleCreateEdit: false,
+                            myScheduleDelete: false,
+                            myScheduleApprovar: false,
+                            myScheduleReviewer: false,
+                            appsView: false,
+                            appsCreateEdit: false,
+                            appsDelete: false,
+                            appsApprovar: false,
+                            appsReviewer: false,
+                          });
                           setshowuserroleModal(false);
                         }}
                       >
@@ -1191,6 +1263,23 @@ const Userrole = ({ searchValue }) => {
                           onClick={() => {
                             handleSaveUserRole();
                             setRoleName("");
+                            setCheckboxValues({
+                              screenView: false,
+                              screenCreateEdit: false,
+                              screenDelete: false,
+                              screenApprovar: false,
+                              screenReviewer: false,
+                              myScheduleView: false,
+                              myScheduleCreateEdit: false,
+                              myScheduleDelete: false,
+                              myScheduleApprovar: false,
+                              myScheduleReviewer: false,
+                              appsView: false,
+                              appsCreateEdit: false,
+                              appsDelete: false,
+                              appsApprovar: false,
+                              appsReviewer: false,
+                            });
                             setshowuserroleModal(false);
                           }}
                           className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
@@ -1202,6 +1291,23 @@ const Userrole = ({ searchValue }) => {
                           onClick={() => {
                             handleUpdateUserRole();
                             setRoleName("");
+                            setCheckboxValues({
+                              screenView: false,
+                              screenCreateEdit: false,
+                              screenDelete: false,
+                              screenApprovar: false,
+                              screenReviewer: false,
+                              myScheduleView: false,
+                              myScheduleCreateEdit: false,
+                              myScheduleDelete: false,
+                              myScheduleApprovar: false,
+                              myScheduleReviewer: false,
+                              appsView: false,
+                              appsCreateEdit: false,
+                              appsDelete: false,
+                              appsApprovar: false,
+                              appsReviewer: false,
+                            });
                             setshowuserroleModal(false);
                           }}
                           className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
