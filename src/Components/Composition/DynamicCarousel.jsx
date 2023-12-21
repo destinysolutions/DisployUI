@@ -117,8 +117,8 @@ const Carousel = ({ items, compositonData, from }) => {
                     direction={
                       item?.scrollType == 1 ||
                       item?.direction == "Left to Right"
-                        ? "left"
-                        : "right"
+                        ? "right"
+                        : "left"
                     }
                     scrollamount="10"
                   >
@@ -131,8 +131,8 @@ const Carousel = ({ items, compositonData, from }) => {
                     direction={
                       item?.scrollType == 1 ||
                       item?.direction == "Left to Right"
-                        ? "left"
-                        : "right"
+                        ? "right"
+                        : "left"
                     }
                     scrollamount="10"
                   >

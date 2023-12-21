@@ -913,8 +913,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="text-lg w-full h-full flex items-center text-black"
                                         direction={
                                           item?.scrollType == 1
-                                            ? "left"
-                                            : "right"
+                                            ? "right"
+                                            : "left"
                                         }
                                         scrollamount="10"
                                       >
