@@ -167,7 +167,7 @@ const ScreenAssignModal = ({
 
   return (
     <div>
-      <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-50 outline-none focus:outline-none">
+      <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
         <div
           ref={selectScreenRef}
           className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
@@ -198,8 +198,8 @@ const ScreenAssignModal = ({
                 <AiOutlineCloseCircle className="text-3xl" />
               </button>
             </div>
-            <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3 overflow-y-auto h-96">
-              <table className="w-full " cellPadding={20}>
+            <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3">
+              <table className="w-full" cellPadding={20}>
                 <thead>
                   <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
@@ -219,10 +219,9 @@ const ScreenAssignModal = ({
                     </th>
                   </tr>
                 </thead>
-
-                {screenData?.length > 0 ? (
-                  <tbody>
-                    {screenData.map((screen) => (
+                <tbody>
+                  {screenData?.length > 0 ? (
+                    screenData.map((screen) => (
                       <tr
                         key={screen.screenID}
                         className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
@@ -253,34 +252,16 @@ const ScreenAssignModal = ({
                           Schedule Name Till 28 June 2023
                         </td>
                         <td className="text-center break-words">
-                          {screen && screen?.tags !== null
-                            ? screen &&
-                              screen?.tags
-                                .split(",")
-                                .slice(
-                                  0,
-                                  screen && screen?.tags.split(",").length > 2
-                                    ? 3
-                                    : screen && screen?.tags.split(",").length
-                                )
-                                .join(",")
-                            : ""}
+                          {screen.tags}
                         </td>
                       </tr>
-                    ))}
-                  </tbody>
-                ) : (
-                  <tbody>
-                    <tr>
-                      <td
-                        colSpan="5"
-                        className="font-semibold text-center text-2xl"
-                      >
-                        No Screen available.
-                      </td>
-                    </tr>
-                  </tbody>
-                )}
+                    ))
+                  ) : (
+                    <p className="font-semibold text-center text-2xl">
+                      No Screen available.
+                    </p>
+                  )}
+                </tbody>
               </table>
             </div>
             <div className="py-4 flex justify-center">
