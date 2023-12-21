@@ -13,7 +13,7 @@ import {
   SIGNAL_R,
 } from "../../Pages/Api";
 import { useState } from "react";
-import { MdOutlineEdit } from "react-icons/md";
+import { MdArrowBackIosNew, MdOutlineEdit } from "react-icons/md";
 import { FiUpload } from "react-icons/fi";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useSelector } from "react-redux";
@@ -344,7 +344,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
             </Link>
             <Link to="/apps">
               <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 text-white sm:px-5 bg-primary py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white  hover:bg-primary-500 hover:shadow-lg dark:bg-blue-600 ">
-                <HiBackward className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
+                <MdArrowBackIosNew className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
                 Back
               </button>
             </Link>
