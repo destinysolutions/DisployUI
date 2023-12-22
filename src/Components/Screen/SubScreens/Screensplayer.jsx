@@ -75,7 +75,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [compositionData, setCompositionData] = useState([]);
   const [allcompositionData, setAllCompositionData] = useState([]);
   const [compositionAPIData, setCompositionAPIData] = useState([]);
-  const [selectedComposition, setSelectedComposition] = useState();
+  const [selectedComposition, setSelectedComposition] = useState("");
   const [selectedScreenTypeOption, setSelectedScreenTypeOption] = useState("");
   const [selectedAsset, setSelectedAsset] = useState("");
   const [assetPreview, setAssetPreview] = useState("");
@@ -98,8 +98,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [loading, setLoading] = useState(false);
   const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
-  const [selectedYoutube, setSelectedYoutube] = useState();
-  const [selectedTextScroll, setSelectedTextScroll] = useState();
+  const [selectedYoutube, setSelectedYoutube] = useState("");
+  console.log('selectedYoutube', selectedYoutube)
+  const [selectedTextScroll, setSelectedTextScroll] = useState("");
+  console.log('selectedTextScroll', selectedTextScroll)
   const [showAppsModal, setShowAppsModal] = useState(false);
   const [confirmForApps, setConfirmForApps] = useState(false);
   const [previewModalData, setPreviewModalData] = useState([]);
@@ -108,7 +110,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [fetchLayoutLoading, setFetchLayoutLoading] = useState(false);
   const [selectedApps, setSelectedApps] = useState();
   const [appDatas, setAppDatas] = useState();
-
+  const [selectedmediaDetailID, setSelectedMediaDetailID] = useState();
+  const [selectedmediaTypeID, setSelectedMediaTypeID] = useState();
 
   const dispatch = useDispatch();
 
@@ -132,8 +135,174 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   useEffect(() => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${GET_CURRENT_ASSET}?ScreenID=${getScreenID}&CurrentDateTime=${formatedate}`,
+      headers: {
+        Authorization: authToken,
+      },
+    };
+    axios
+      .request(config)
+      .then(() => {})
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // Define an array of axios requests
+    const axiosRequests = [
+      axios.get(GET_ALL_FILES, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_SCREEN_ORIENTATION, {
+        headers: { Authorization: authToken },
+      }),
+      axios.get(GET_ALL_SCREEN_RESOLUTION, {
+        headers: { Authorization: authToken },
+      }),
+      axios.get(GET_SCREEN_TYPE, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_SCHEDULE, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_COMPOSITIONS, {
+        headers: { Authorization: authToken },
+      }),
+    ];
+
+    // Use Promise.all to send all requests concurrently
+    Promise.all(axiosRequests)
+      .then((responses) => {
+        const [
+          filesResponse,
+          screenOrientationResponse,
+          screenResolutionResponse,
+          screenTypeResponse,
+          scheduleResponse,
+          compositionResponse,
+        ] = responses;
+
+        // Process each response and set state accordingly
+        const fetchedData = filesResponse.data;
+        const allAssets = [
+          ...(fetchedData.image ? fetchedData.image : []),
+          ...(fetchedData.video ? fetchedData.video : []),
+          ...(fetchedData.doc ? fetchedData.doc : []),
+          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
+          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
+        ];
+        setAssetData(allAssets);
+        setAssetAllData(allAssets);
+        setScreenOrientation(screenOrientationResponse.data.data);
+        setScreenResolution(screenResolutionResponse.data.data);
+        setGetSelectedScreenTypeOption(screenTypeResponse.data.data);
+        setScheduleData(scheduleResponse.data.data);
+        setCompositionAPIData(compositionResponse.data.data);
+        setFilteredData(compositionResponse.data.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    // get screen by id
+    axios
+      .get(`${SELECT_BY_SCREENID_SCREENDETAIL}?ScreenID=${getScreenID}`, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
+      .then((response) => {
+        const fetchedData = response.data.data;
+        if (response.data?.data !== "Data Is Not Found") {
+          handleFetchPreviewScreen(fetchedData[0]?.macid);
+          setScreenData(fetchedData);
+          setSelectScreenOrientation(fetchedData[0].screenOrientation);
+          setSelectScreenResolution(fetchedData[0].screenResolution);
+          setSelectedTimezoneName(fetchedData[0].timeZone);
+          setSelectedTag(fetchedData[0].tags);
+          setGoogleLoc(fetchedData[0].googleLocation);
+          setScreenName(fetchedData[0].screenName);
+          setSelectedMediaDetailID(fetchedData[0].mediaDetailID);
+          setSelectedMediaTypeID(fetchedData[0].mediaType);
+          if (fetchedData[0].mediaType === 5) {
+            setSelectedScreenTypeOption(String(fetchedData[0].mediaType - 1));
+          } else {
+            setSelectedScreenTypeOption(String(fetchedData[0].mediaType));
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // get all tags
+    axios
+      .get(GET_ALL_TAGS, {
+        headers: {
+          Authorization: authToken,
+        },
+      })
+      .then((response) => {
+        const fetchedData = response.data.data;
+        setTagsData(fetchedData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
     setAppDatas(allAppsData);
   }, [allAppsData]);
+
+  const handleSelectedMedia = () => {
+    let filteredData = [];
+  
+    switch (selectedmediaTypeID) {
+      case 1:
+        filteredData = assetData?.filter(item => item?.assetID === selectedmediaDetailID);
+        setSelectedAsset(prevAsset => ({
+          ...prevAsset,
+          assetName: filteredData[0]?.assetName,
+        }));
+        setAssetPreview(filteredData[0]);
+        break;
+  
+      case 2:
+        filteredData = scheduleData?.filter(item => item?.scheduleId === selectedmediaDetailID);
+        setSelectedSchedule(prevSchedule => ({
+          ...prevSchedule,
+          scheduleName: filteredData[0]?.scheduleName,
+          scheduleId: filteredData[0]?.scheduleId,
+        }));
+        break;
+  
+      case 3:
+        filteredData = filteredData?.filter(item => item?.compositionID === selectedmediaDetailID);
+        setSelectedComposition(prevComposition => ({
+          ...prevComposition,
+          compositionName: filteredData[0]?.compositionName,
+        }));
+        break;
+  
+      case 4:
+        filteredData = appDatas?.length > 0 && appDatas?.filter(item => item?.textScroll_Id === selectedmediaDetailID);
+        setSelectedTextScroll(prevTextScroll => ({
+          ...prevTextScroll,
+          instanceName: filteredData[0]?.instanceName,
+          scrollType: filteredData[0]?.scrollType,
+        }));
+        break;
+  
+      default:
+        filteredData = appDatas?.length > 0 && appDatas?.filter(item => item?.youtubeId === selectedmediaDetailID);
+        setSelectedYoutube(prevYoutube => ({
+          ...prevYoutube,
+          instanceName: filteredData[0]?.instanceName,
+          youTubePlaylist: filteredData[0]?.youTubePlaylist,
+        }));
+        break;
+    }
+  };
+  
+  useEffect(()=>{
+    handleSelectedMedia()
+  },[selectedmediaDetailID])
 
   const handleFilter = (event, from) => {
     const searchQuery = event.target.value.toLowerCase();
@@ -485,111 +654,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  useEffect(() => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `${GET_CURRENT_ASSET}?ScreenID=${getScreenID}&CurrentDateTime=${formatedate}`,
-      headers: {
-        Authorization: authToken,
-      },
-    };
-    axios
-      .request(config)
-      .then(() => {})
-      .catch((error) => {
-        console.log(error);
-      });
-
-    // Define an array of axios requests
-    const axiosRequests = [
-      axios.get(GET_ALL_FILES, { headers: { Authorization: authToken } }),
-      axios.get(GET_ALL_SCREEN_ORIENTATION, {
-        headers: { Authorization: authToken },
-      }),
-      axios.get(GET_ALL_SCREEN_RESOLUTION, {
-        headers: { Authorization: authToken },
-      }),
-      axios.get(GET_SCREEN_TYPE, { headers: { Authorization: authToken } }),
-      axios.get(GET_ALL_SCHEDULE, { headers: { Authorization: authToken } }),
-      axios.get(GET_ALL_COMPOSITIONS, {
-        headers: { Authorization: authToken },
-      }),
-    ];
-
-    // Use Promise.all to send all requests concurrently
-    Promise.all(axiosRequests)
-      .then((responses) => {
-        const [
-          filesResponse,
-          screenOrientationResponse,
-          screenResolutionResponse,
-          screenTypeResponse,
-          scheduleResponse,
-          compositionResponse,
-        ] = responses;
-
-        // Process each response and set state accordingly
-        const fetchedData = filesResponse.data;
-        const allAssets = [
-          ...(fetchedData.image ? fetchedData.image : []),
-          ...(fetchedData.video ? fetchedData.video : []),
-          ...(fetchedData.doc ? fetchedData.doc : []),
-          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
-          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
-        ];
-        setAssetData(allAssets);
-        setAssetAllData(allAssets);
-        setScreenOrientation(screenOrientationResponse.data.data);
-        setScreenResolution(screenResolutionResponse.data.data);
-        setGetSelectedScreenTypeOption(screenTypeResponse.data.data);
-        setScheduleData(scheduleResponse.data.data);
-        setCompositionAPIData(compositionResponse.data.data);
-        setFilteredData(compositionResponse.data.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    // get screen by id
-    axios
-      .get(`${SELECT_BY_SCREENID_SCREENDETAIL}?ScreenID=${getScreenID}`, {
-        headers: {
-          Authorization: authToken,
-        },
-      })
-      .then((response) => {
-        const fetchedData = response.data.data;
-        if (response.data?.data !== "Data Is Not Found") {
-          handleFetchPreviewScreen(fetchedData[0]?.macid);
-          setScreenData(fetchedData);
-          setSelectScreenOrientation(fetchedData[0].screenOrientation);
-          setSelectScreenResolution(fetchedData[0].screenResolution);
-          setSelectedTimezoneName(fetchedData[0].timeZone);
-          setSelectedTag(fetchedData[0].tags);
-          setGoogleLoc(fetchedData[0].googleLocation);
-          setScreenName(fetchedData[0].screenName);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    // get all tags
-    axios
-      .get(GET_ALL_TAGS, {
-        headers: {
-          Authorization: authToken,
-        },
-      })
-      .then((response) => {
-        const fetchedData = response.data.data;
-        setTagsData(fetchedData);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
   const handleTagsUpdate = (tags) => {
     const {
       otp,
@@ -859,7 +923,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       url={playerData?.fileType}
                       className="w-full relative z-20 videoinner"
                       controls={true}
-                      playing={true}
+                      playing={true} loop={true}
                     />
                   )}
 
@@ -2227,10 +2291,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                         <tbody key={index}>
                                                           <tr
                                                             className={`${
-                                                              selectedTextScroll ===
-                                                                instance ||
-                                                              selectedYoutube ===
-                                                                instance
+                                                             (selectedTextScroll && selectedTextScroll?.textScroll_Id ===
+                                                                instance?.textScroll_Id && selectedTextScroll?.scrollType === instance?.scrollType) ||
+                                                              (selectedYoutube && selectedYoutube?.youtubeId ===
+                                                                instance?.youtubeId && selectedYoutube?.youTubePlaylist === instance?.youTubePlaylist)
                                                                 ? "bg-[#f3c953]"
                                                                 : ""
                                                             } border-b border-[#eee] `}

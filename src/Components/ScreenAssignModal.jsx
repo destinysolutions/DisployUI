@@ -2,9 +2,10 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import { SELECT_BY_USER_SCREENDETAIL } from "../Pages/Api";
+import { SELECT_BY_USER_SCREENDETAIL, SIGNAL_R } from "../Pages/Api";
 import { handleGetAllAssets } from "../Redux/Assetslice";
 import { handleGetScreen } from "../Redux/Screenslice";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 const ScreenAssignModal = ({
   setAddScreenModal,
@@ -23,10 +24,66 @@ const ScreenAssignModal = ({
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
   const [screenData, setScreenData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [screenMacID, setScreenMacID] = useState("");
+  const [connection, setConnection] = useState(null);
 
+  const selectedScreenMacIdsString = Array.isArray(screenMacID)
+    ? screenMacID.join(",")
+    : "";
+
+  useEffect(() => {
+    const screenAssigned = screenData.filter((item) =>
+      selectedScreens.includes(item?.screenID)
+    );
+    const foundMacID = screenAssigned.map((i) => i.macid);
+    setScreenMacID(foundMacID);
+  });
   // console.log(screenCheckboxes);
   const selectScreenRef = useRef(null);
+  const signalROnSave = () => {
+    const connectSignalR = async () => {
+      console.log("run signal r");
+      const newConnection = new HubConnectionBuilder()
+        .withUrl(SIGNAL_R)
+        .configureLogging(LogLevel.Information)
+        .withAutomaticReconnect()
+        .build();
 
+      newConnection.on("ScreenConnected", (MacID) => {
+        console.log("ScreenConnected", MacID);
+      });
+
+      try {
+        await newConnection.start();
+        console.log("Connection established");
+        setConnection(newConnection);
+
+        // Invoke ScreenConnected method
+        await newConnection.invoke(
+          "ScreenConnected",
+          selectedScreenMacIdsString
+        );
+        console.log("Message sent:");
+      } catch (error) {
+        console.error("Error during connection:", error);
+      }
+    };
+
+    connectSignalR(); // Call the combined function
+
+    return () => {
+      if (connection) {
+        connection
+          .stop()
+          .then(() => {
+            console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  };
   const handleSelectAllCheckboxChange = (e) => {
     const checked = e.target.checked;
     setSelectAllChecked(checked);
@@ -89,15 +146,16 @@ const ScreenAssignModal = ({
           const initialCheckboxes = {};
           if (Array.isArray(fetchedData)) {
             fetchedData.forEach((screen) => {
-              if (
-                screenSelected
-                  .map((i) => i.trim(""))
-                  .includes(screen?.screenName)
-              ) {
-                initialCheckboxes[screen.screenID] = true;
-              } else {
-                initialCheckboxes[screen.screenID] = false;
-              }
+              // if (
+              //   screenSelected
+              //     .map((i) => i.trim(""))
+              //     .includes(screen?.screenName)
+              // ) {
+              //   initialCheckboxes[screen.screenID] = true;
+              // } else {
+              //   initialCheckboxes[screen.screenID] = false;
+              // }
+              initialCheckboxes[screen.screenID] = selectedScreens?.includes(screen.screenID) ? true : false;
             });
             setScreenCheckboxes(initialCheckboxes);
           }
@@ -186,7 +244,7 @@ const ScreenAssignModal = ({
         ref={selectScreenRef}
         className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
       >
-        <div className="border-0 rounded-lg w-[60vw] h-[90vh] overflow-y-auto shadow-lg relative flex flex-col bg-white outline-none focus:outline-none">
+        <div className="border-0 rounded-lg w-[60vw] overflow-y-auto shadow-lg relative flex flex-col bg-white outline-none focus:outline-none min-h-[350px] max-h-[550px]">
           <div className="flex sticky top-0 bg-white z-10 items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
             <div className="flex items-center">
               <div className=" mt-1.5">
@@ -217,7 +275,7 @@ const ScreenAssignModal = ({
               <AiOutlineCloseCircle className="text-3xl" />
             </button>
           </div>
-          <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3 w-full overflow-x-auto">
+          <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
             <table className="w-full" cellPadding={20}>
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
@@ -305,7 +363,7 @@ const ScreenAssignModal = ({
                     </tr>
                   ))
                 ) : (
-                  <p className="font-semibold text-center text-2xl">
+                  <p className="text-center p-2">
                     No Screen available.
                   </p>
                 )}
@@ -316,9 +374,11 @@ const ScreenAssignModal = ({
             <button
               className="border-2 border-primary px-5 py-2 rounded-full ml-3"
               onClick={() => {
+                signalROnSave();
                 handleUpdateScreenAssign(screenCheckboxes);
                 setSelectedScreens([]);
               }}
+              disabled={selectedScreens?.length === 0}
             >
               Save
             </button>

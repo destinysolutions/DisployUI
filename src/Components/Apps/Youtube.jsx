@@ -19,7 +19,11 @@ import {
 } from "../../Pages/Api";
 import ReactPlayer from "react-player";
 import { FiUpload } from "react-icons/fi";
-import { MdArrowBackIosNew, MdOutlineEdit } from "react-icons/md";
+import {
+  MdArrowBackIosNew,
+  MdOutlineEdit,
+  MdOutlineModeEdit,
+} from "react-icons/md";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
@@ -49,7 +53,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   const [instanceView, setInstanceView] = useState(false);
   const [instanceID, setInstanceID] = useState();
   const [isMuted, setIsMuted] = useState(false);
-
+  const [selectdata, setSelectData] = useState({});
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
     : "";
@@ -94,6 +98,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
           }
           setSelectScreenModal(false);
           setAddScreenModal(false);
+          FetchData();
         }
       })
       .catch((error) => {
@@ -296,7 +301,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
     };
   }, []);
 
-  useEffect(() => {
+  const FetchData = () => {
     setLoading(true);
     axios
       .get(GET_ALL_YOUTUBEDATA, {
@@ -313,6 +318,10 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
         setLoading(false);
         console.error("Error fetching deleted data:", error);
       });
+  };
+
+  useEffect(() => {
+    FetchData();
   }, []);
 
   useEffect(() => {
@@ -426,6 +435,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                               <ReactPlayer
                                 url="https://www.youtube.com/watch?v=WKOYp_7P71Y"
                                 className="app-instance-preview"
+                                loop={true}
                                 controls={true}
                               />
                             </div>
@@ -531,7 +541,8 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                       className="flex text-sm items-center cursor-pointer"
                                       onClick={() => {
                                         setAddScreenModal(true);
-                                        handleFetchYoutubeById(item?.youtubeId);
+                                        // handleFetchYoutubeById(item?.youtubeId);
+                                        setSelectData(item);
                                       }}
                                     >
                                       <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
@@ -583,6 +594,60 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               Add tags +
                             </h4>
+                            {/*   {item?.tags ? (
+                              <div className="flex items-center justify-center gap-2">
+                                <h4 className="text-sm font-normal cursor-pointer break-all">
+                                  {item?.tags !== null
+                                    ? item.tags
+                                        .split(",")
+                                        .slice(
+                                          0,
+                                          item.tags.split(",").length > 2
+                                            ? 3
+                                            : item.tags.split(",").length
+                                        )
+                                        .map((text) => {
+                                          if (text.toString().length > 10) {
+                                            return text
+                                              .split("")
+                                              .slice(0, 10)
+                                              .concat("...")
+                                              .join("");
+                                          }
+                                          return text;
+                                        })
+                                        .join(",")
+                                    : ""}
+                                </h4>
+                                <MdOutlineModeEdit
+                                  className="w-5 h-5 cursor-pointer"
+                                  onClick={() => {
+                                    item?.tags !== null &&
+                                    item?.tags !== undefined &&
+                                    item?.tags !== ""
+                                      ? setTags(item?.tags?.split(","))
+                                      : setTags([]);
+                                    setShowTagModal(true);
+                                    setUpdateTagYoutube(item);
+                                  }}
+                                />
+                              </div>
+                            ) : (
+                              <h4
+                                onClick={() => {
+                                  item?.tags !== null &&
+                                  item?.tags !== undefined &&
+                                  item?.tags !== ""
+                                    ? setTags(item?.tags?.split(","))
+                                    : setTags([]);
+                                  setShowTagModal(true);
+                                  setUpdateTagYoutube(item);
+                                }}
+                                className="text-sm font-normal cursor-pointer"
+                              >
+                                Add tags +
+                              </h4>
+                              )}*/}
                           </div>
                         </div>
                       </div>
@@ -628,6 +693,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                 className="app-instance-preview"
                                 muted={isMuted}
                                 controls={true}
+                                loop={true}
                               />
                             </div>
                             <div className="py-2 px-6">
@@ -689,6 +755,13 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                 <button
                   className="bg-primary text-white px-8 py-2 rounded-full"
                   onClick={() => {
+                    if (selectdata?.screenIDs) {
+                      let arr = [selectdata?.screenIDs];
+                      let newArr = arr[0]
+                        .split(",")
+                        .map((item) => parseInt(item.trim()));
+                      setSelectedScreens(newArr);
+                    }
                     setSelectScreenModal(true);
                     setAddScreenModal(false);
                   }}

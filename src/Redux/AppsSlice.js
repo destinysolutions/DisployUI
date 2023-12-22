@@ -107,7 +107,7 @@ const AppsSlice = createSlice({
         state.youtube.loading = false;
         state.youtube.youtubeData = payload?.data ?? [];
         state.allAppsData =
-          state.allAppsData.length > 0
+        payload?.data.length > 0
             ? [...state.allAppsData, ...payload?.data]
             : [];
         state.error = null;
@@ -133,7 +133,7 @@ const AppsSlice = createSlice({
         state.textScroll.loading = false;
         state.textScroll.textScrollData = payload?.data ?? [];
         state.allAppsData =
-          state.allAppsData.length > 0
+        payload?.data.length > 0
             ? [...state.allAppsData, ...payload?.data]
             : [];
         state.error = null;

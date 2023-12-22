@@ -13,7 +13,11 @@ import {
   SIGNAL_R,
 } from "../../Pages/Api";
 import { useState } from "react";
-import { MdArrowBackIosNew, MdOutlineEdit } from "react-icons/md";
+import {
+  MdArrowBackIosNew,
+  MdOutlineEdit,
+  MdOutlineModeEdit,
+} from "react-icons/md";
 import { FiUpload } from "react-icons/fi";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useSelector } from "react-redux";
@@ -41,6 +45,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
     : "";
+    const [selectdata, setSelectData] = useState({});
   const [connection, setConnection] = useState(null);
   const [showTagModal, setShowTagModal] = useState(false);
   const [tags, setTags] = useState([]);
@@ -84,6 +89,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
           }
           setSelectScreenModal(false);
           setAddScreenModal(false);
+          FetchData();
           // setShowActionBox(false);
           // loadScheduleData();
           toast.remove();
@@ -256,7 +262,8 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  useEffect(() => {
+  const FetchData = () =>{
+
     setLoading(true);
     axios
       .get(GET_ALL_TEXT_SCROLL_INSTANCE, {
@@ -268,7 +275,12 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
         setInstanceData(response.data.data);
         setLoading(false);
       });
+  }
+
+  useEffect(() => {
+    FetchData()
   }, []);
+
 
   useEffect(() => {
     const newConnection = new HubConnectionBuilder()
@@ -343,10 +355,10 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
             </h1>
             <div className="lg:flex">
               <Link to="/textscrolldetail">
-                <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 sm:px-5 py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                  <TbAppsFilled className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
-                  New Instance
-                </button>
+              <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <TbAppsFilled className="text-2xl mr-2 text-white" />
+              New Instance
+            </button>
               </Link>
               <Link to="/apps">
                 <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 text-white sm:px-5 bg-primary py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white  hover:bg-primary-500 hover:shadow-lg dark:bg-blue-600 ">
@@ -370,7 +382,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                   <button
                     onClick={handelDeleteAllInstance}
                     style={{ display: selectAll ? "block" : "none" }}
-                    className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full p-1 text-xl hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                    className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full px-1 text-2xl  hover:text-white hover:border-SlateBlue hover:bg-SlateBlue hover:shadow-lg hover:shadow-primary-500/50"
                   >
                     <RiDeleteBinLine />
                   </button>
@@ -436,11 +448,12 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                   <li
                                     className="flex text-sm items-center cursor-pointer"
                                     onClick={() => {
-                                      handleFetchTextscrollById(
-                                        instance?.textScroll_Id,
-                                        false
-                                      );
+                                      // handleFetchTextscrollById(
+                                      //   instance?.textScroll_Id,
+                                      //   false
+                                      // );
                                       setAddScreenModal(true);
+                                      setSelectData(instance);
                                     }}
                                   >
                                     <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
@@ -501,6 +514,60 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                           >
                             Add tags +
                           </h4>{" "}
+                          {/* {instance?.tags ? (
+                            <div className="flex items-center justify-center gap-2">
+                              <h4 className="text-sm font-normal cursor-pointer break-all">
+                                {instance?.tags !== null
+                                  ? instance.tags
+                                      .split(",")
+                                      .slice(
+                                        0,
+                                        instance.tags.split(",").length > 2
+                                          ? 3
+                                          : instance.tags.split(",").length
+                                      )
+                                      .map((text) => {
+                                        if (text.toString().length > 10) {
+                                          return text
+                                            .split("")
+                                            .slice(0, 10)
+                                            .concat("...")
+                                            .join("");
+                                        }
+                                        return text;
+                                      })
+                                      .join(",")
+                                  : ""}
+                              </h4>
+                              <MdOutlineModeEdit
+                                className="w-5 h-5 cursor-pointer"
+                                onClick={() => {
+                                  instance?.tags !== null &&
+                                  instance?.tags !== undefined &&
+                                  instance?.tags !== ""
+                                    ? setTags(instance?.tags?.split(","))
+                                    : setTags([]);
+                                  setShowTagModal(true);
+                                  setUpdateTextscrollTag(instance);
+                                }}
+                              />
+                            </div>
+                          ) : (
+                            <h4
+                              onClick={() => {
+                                instance?.tags !== null &&
+                                instance?.tags !== undefined &&
+                                instance?.tags !== ""
+                                  ? setTags(instance?.tags?.split(","))
+                                  : setTags([]);
+                                setShowTagModal(true);
+                                setUpdateTextscrollTag(instance);
+                              }}
+                              className="text-sm font-normal cursor-pointer"
+                            >
+                              Add tags +
+                            </h4>
+                            )}*/}
                           {showTagModal && (
                             <AddOrEditTagPopup
                               setShowTagModal={setShowTagModal}
@@ -615,6 +682,13 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                 <button
                   className="bg-primary text-white px-8 py-2 rounded-full"
                   onClick={() => {
+                    if (selectdata?.screenIDs) {
+                      let arr = [selectdata?.screenIDs];
+                      let newArr = arr[0]
+                        .split(",")
+                        .map((item) => parseInt(item.trim()));
+                      setSelectedScreens(newArr);
+                    }
                     setSelectScreenModal(true);
                     setAddScreenModal(false);
                   }}

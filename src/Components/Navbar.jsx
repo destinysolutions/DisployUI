@@ -196,11 +196,11 @@ const Navbar = () => {
                     <>
                       <div className="absolute top-[50px]  right-0 bg-white rounded-lg border border-[#8E94A9] shadow-lg z-[999] loginpopup">
                         <div className="flex items-center space-x-3  p-2">
-                          {userDetails?.image == null ? (
+                          {userDetails?.profilePhoto === "" ? (
                             <img
                               src={createImageFromInitials(
                                 500,
-                                regsiterData?.firstName,
+                                userDetails?.firstName,
                                 color
                               )}
                               alt="profile"
@@ -209,7 +209,7 @@ const Navbar = () => {
                             />
                           ) : (
                             <img
-                              src={userDetails?.image}
+                              src={userDetails?.profilePhoto}
                               alt="profile"
                               className=" profile"
                               onClick={handleProfileClick}

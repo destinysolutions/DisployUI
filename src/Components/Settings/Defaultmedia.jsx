@@ -58,6 +58,7 @@ const Defaultmedia = () => {
         ];
         setAssetData(allAssets);
         setAssetAllData(allAssets);
+        setFilteredData(allAssets)
       })
       .catch((error) => {
         console.log(error);
@@ -220,7 +221,7 @@ const Defaultmedia = () => {
     }
 
     if (searchQuery === "") {
-      setFilteredData([]);
+      setFilteredData(assetData);
     } else {
       if (from === "asset") {
         const filteredScreen = assetData.filter((entry) =>
@@ -243,7 +244,7 @@ const Defaultmedia = () => {
           setFilteredData(filteredScreen);
         } else {
           toast.remove();
-          toast.error("asset not found!!");
+          // toast.error("asset not found!!");
           setFilteredData([]);
         }
       } else {
@@ -318,6 +319,7 @@ const Defaultmedia = () => {
               <button
                 onClick={(e) => {
                   setShowAssetModal(true);
+                  setFilteredData(assetData)
                   setSelectedAsset({
                     ...selectedAsset,
                     assetName: e.target.value,
@@ -485,13 +487,13 @@ const Defaultmedia = () => {
                                   <th className="p-3">Type</th>
                                 </tr>
                               </thead>
-                              {filteredData.length === 0
-                                ? assetData.map((asset) => (
+                              {filteredData.length > 0
+                                ? filteredData.map((asset) => (
                                     <tbody key={asset.assetID}>
                                       <tr
                                         className={`${
                                           selectedAsset === asset ||
-                                          selectedAsset === asset?.assetName
+                                          selectedAsset?.assetName === asset?.assetName || assetName === asset?.assetName
                                             ? "bg-[#f3c953]"
                                             : ""
                                         } border-b border-[#eee] `}
@@ -517,37 +519,11 @@ const Defaultmedia = () => {
                                       </tr>
                                     </tbody>
                                   ))
-                                : filteredData.map((asset) => (
-                                    <tbody key={asset.assetID}>
-                                      <tr
-                                        className={`${
-                                          selectedAsset === asset ||
-                                          selectedAsset === asset?.assetName
-                                            ? "bg-[#f3c953]"
-                                            : ""
-                                        } border-b border-[#eee] `}
-                                        onClick={() => {
-                                          handleAssetAdd(asset);
-                                          setAssetPreviewPopup(true);
-                                        }}
-                                      >
-                                        <td className="p-3 text-left">
-                                          {asset.assetName}
-                                        </td>
-                                        <td className="p-3">
-                                          {moment(asset.createdDate).format(
-                                            "YYYY-MM-DD hh:mm"
-                                          )}
-                                        </td>
-                                        <td className="p-3">
-                                          {asset.fileSize}
-                                        </td>
-                                        <td className="p-3">
-                                          {asset.assetType}
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  ))}
+                                : (
+                                  <div>
+                                  No data Found
+                                  </div>
+                                )}
                             </table>
                             {assetPreviewPopup && (
                               <div className="fixed left-1/2 -translate-x-1/2 w-10/12 h-10/12 top-10 bg-black z-50 inset-0">
@@ -759,7 +735,7 @@ const Defaultmedia = () => {
                     </button>
                   </div> */}
           </div>
-          <div className="lg:w-1/2 w-full">
+          <div className="w-full">
             {filePath &&
               (Object.values(filePath).includes("Video") ||
                 Object.values(filePath).includes("OnlineVideo")) && (
