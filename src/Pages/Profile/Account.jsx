@@ -23,7 +23,7 @@ import { UpdateUserDetails, handleGetUserDetails } from "../../Redux/Authslice";
 import { useDispatch } from "react-redux";
 
 const Account = () => {
-  const [file, setFile] = useState();
+  const [file, setFile] = useState(null);
   const [languages, setLanguages] = useState([]);
   const [timezones, setTimezones] = useState([]);
   const [currencies, setCurrencies] = useState([]);
@@ -95,7 +95,6 @@ const Account = () => {
       toast.error("phone is invalid");
       return true;
     }
-    // return console.log(data,file);
     const response = dispatch(
       UpdateUserDetails({
         data,
@@ -108,6 +107,7 @@ const Account = () => {
       response.then((res) => {
         if (res?.type.includes("fulfilled")) {
           toast.success("profile edited successfully.", { duration: 2000 });
+          setFile(null)
         }
       });
     }

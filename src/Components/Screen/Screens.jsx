@@ -48,6 +48,7 @@ import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import toast from "react-hot-toast";
 import {
   handleChangeScreens,
+  handleDeleteAllScreen,
   handleDeleteScreenById,
   handleGetScreen,
   handleUpdateScreenAsset,
@@ -112,6 +113,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     currScheduleCheckboxClick,
     tagsCheckboxClick,
   ]);
+
+  const connection = new HubConnectionBuilder()
+    .withUrl(SIGNAL_R)
+    .configureLogging(LogLevel.Information)
+    .withAutomaticReconnect()
+    .build();
+
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
 
@@ -136,7 +144,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   });
 
   //socket signal-RRR
-  const [connection, setConnection] = useState(null);
+  // const [connection, setConnection] = useState(null);
   const [screenConnected, setScreenConnected] = useState(null);
   const [sendTvStatus, setSendTvStatus] = useState(false);
   const [sendTvStatusScreenID, setSendTvStatusScreenID] = useState(null);
@@ -152,8 +160,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const { loading, screens, deleteLoading } = useSelector((s) => s.root.screen);
   const { schedules } = useSelector((s) => s.root.schedule);
   const { compositions } = useSelector((s) => s.root.composition);
-
-  console.log("screens", screens);
 
   const dispatch = useDispatch();
 
@@ -209,22 +215,43 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     setScreenCheckboxes(updatedCheckboxes);
   };
 
-  const handleDeleteAllScreen = () => {
-    if (!window.confirm("Are you sure?")) return;
+  const handleDeleteAllscreen = () => {
+    if (window.confirm("Are you sure?") == false) return;
     if (deleteLoading) return;
     toast.loading("Deleting...");
 
     const response = dispatch(
       handleDeleteAllScreen({ userID: user?.userID, token })
     );
+
+    const connection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .withAutomaticReconnect()
+      .build();
     if (!response) return;
     response
       .then(() => {
-        dispatch(handleChangeScreens([]));
-        setSelectAllChecked(false);
-        setScreenCheckboxes({});
-        toast.remove();
-        toast.success("Deleted Successfully.");
+        console.log("signal r");
+        if (connection) {
+          const allScreenMacids = screens.map((i) => i?.macid).join(",");
+          console.log(allScreenMacids);
+          connection
+            .invoke("ScreenConnected", allScreenMacids)
+            .then(() => {
+              console.log("SignalR method invoked after Asset update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
+        }
+        setTimeout(() => {
+          dispatch(handleChangeScreens([]));
+          setSelectAllChecked(false);
+          setScreenCheckboxes({});
+          toast.remove();
+          toast.success("Deleted Successfully.");
+        }, 1000);
       })
       .catch((error) => {
         toast.remove();
@@ -232,34 +259,48 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const handelDeleteScreen = (screenId) => {
+  const handelDeleteScreen = (screenId, MACID) => {
     if (!window.confirm("Are you sure?")) return;
     if (deleteLoading) return;
     toast.loading("Deleting...");
+    console.log("signal r");
 
-    const response = dispatch(
-      handleDeleteScreenById({ screenID: screenId, token })
-    );
-    if (response) {
-      response
-        .then((res) => {
-          toast.remove();
-          toast.success("Deleted Successfully.");
-
-          if (connection) {
-            connection
-              .invoke("ScreenConnected")
-              .then(() => {
-                console.log("SignalR method invoked after Asset update");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          }
+    const connection = new HubConnectionBuilder()
+      .withUrl(SIGNAL_R)
+      .configureLogging(LogLevel.Information)
+      .withAutomaticReconnect()
+      .build();
+    console.log(connection.state);
+    if (connection) {
+      connection
+        .start()
+        .then(() => {
+          console.log("signal connected");
         })
-        .catch((error) => {
-          toast.remove();
-          console.log(error);
+        .then(() => {
+          connection
+            .invoke("ScreenConnected", MACID)
+            .then(() => {
+              const response = dispatch(
+                handleDeleteScreenById({ screenID: screenId, token })
+              );
+              if (response) {
+                response
+                  .then((res) => {
+                    toast.remove();
+                    toast.success("Deleted Successfully.");
+                    console.log(MACID);
+                  })
+                  .catch((error) => {
+                    toast.remove();
+                    console.log(error);
+                  });
+              }
+              console.log("SignalR method invoked after Asset update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
         });
     }
   };
@@ -346,12 +387,24 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       const response = dispatch(
         handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
       );
+
+      const connection = new HubConnectionBuilder()
+        .withUrl(SIGNAL_R)
+        .configureLogging(LogLevel.Information)
+        .withAutomaticReconnect()
+        .build();
+
+      console.log(connection.state);
+
+      connection.start();
+      console.log(connection.state);
       if (!response) return;
       response
         .then((response) => {
           toast.remove();
           toast.success("Media Updated.");
           if (connection) {
+            console.log(connection.state);
             connection
               .invoke("ScreenConnected")
               .then(() => {
@@ -576,6 +629,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       }
     }
   };
+
+  useEffect(() => {
+    if (connection.state == "Disconnected") {
+      connection.start().then((res) => {
+        console.log("signal connected");
+      });
+    }
+  }, [connection]);
 
   // // for call signal R
   // useEffect(() => {
@@ -1010,7 +1071,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 <button
                   type="button"
                   className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                  onClick={handleDeleteAllScreen}
+                  onClick={handleDeleteAllscreen}
                   style={{ display: selectAllChecked ? "block" : "none" }}
                 >
                   <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
@@ -1632,7 +1693,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className=" mb-1 text-[#D30000]">
                                 <button
                                   onClick={() =>
-                                    handelDeleteScreen(screen.screenID)
+                                    handelDeleteScreen(
+                                      screen.screenID,
+                                      screen?.macid
+                                    )
                                   }
                                   className="text-sm text-left"
                                 >
@@ -2036,7 +2100,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className=" mb-1 text-[#D30000]">
                                 <button
                                   onClick={() =>
-                                    handelDeleteScreen(screen.screenID)
+                                    handelDeleteScreen(
+                                      screen.screenID,
+                                      screen?.macid
+                                    )
                                   }
                                   className="text-sm text-left"
                                 >

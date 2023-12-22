@@ -69,6 +69,7 @@ const Carousel = ({ items, compositonData, from }) => {
                     className="w-full relative z-20 videoinner object-fill"
                     controls={true}
                     playing={true}
+                    loop={true}
                   />
                 )}
                 {(item.mediaType === "Video" ||
@@ -81,6 +82,7 @@ const Carousel = ({ items, compositonData, from }) => {
                     }
                     className="w-full relative z-20 videoinner"
                     controls={true}
+                    loop={true}
                     playing={true}
                   />
                   // <video

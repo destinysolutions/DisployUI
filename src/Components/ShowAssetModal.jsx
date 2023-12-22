@@ -32,6 +32,7 @@ const ShowAssetModal = ({
   selectedYoutube,
   setscreenMacID,
   type,
+  from,
 }) => {
   const { user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
@@ -46,6 +47,7 @@ const ShowAssetModal = ({
   const [connection, setConnection] = useState(null);
   const modalRef = useRef(null);
   console.log("setscreenMacID", setscreenMacID);
+
   const signalROnConfirm = () => {
     const connectSignalR = async () => {
       console.log("run signal r");
@@ -60,13 +62,17 @@ const ShowAssetModal = ({
       });
 
       try {
-        await newConnection.start();
-        console.log("Connection established");
-        setConnection(newConnection);
-
-        // Invoke ScreenConnected method
-        await newConnection.invoke("ScreenConnected", setscreenMacID);
-        console.log("Message sent:");
+        await newConnection
+          .start()
+          .then(() => {
+            console.log("Connection established");
+          })
+          .then(() => {
+            setConnection(newConnection);
+            // Invoke ScreenConnected method
+            newConnection.invoke("ScreenConnected", setscreenMacID);
+            console.log("Message sent:");
+          });
       } catch (error) {
         console.error("Error during connection:", error);
       }
@@ -302,16 +308,16 @@ const ShowAssetModal = ({
               <div className={popupActiveTab !== 1 && "hidden"}>
                 <div className="flex flex-wrap w-full items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                   <div className="mb-5 relative ">
-                    <AiOutlineSearch className="absolute top-2 left-2 w-5 h-5 z-10 text-gray" />
+                    <AiOutlineSearch className="absolute top-3 left-3 w-5 h-5 z-10 text-gray" />
                     <input
                       type="text"
-                      placeholder="Search assest"
-                      className="border border-primary rounded-full pl-7 py-2 search-user w-56"
+                      placeholder="Search asset"
+                      className="border border-primary rounded-full pl-9 py-2 search-user w-56"
                       value={searchAssest}
                       onChange={(e) => handleSearchAssest(e, "asset")}
                     />
                   </div>
-                  <Link to="/fileupload">
+                  <Link to="/fileupload" target="_blank">
                     <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                       Upload
                     </button>
@@ -333,71 +339,82 @@ const ShowAssetModal = ({
                         <th className="p-3">Type</th>
                       </tr>
                     </thead>
-                    {filteredData.length === 0
-                      ? assets
-                          .filter((asset) => {
-                            return asset.assetType !== "Folder";
-                          })
-                          .map((asset) => (
-                            <tbody key={asset.assetID}>
-                              <tr
-                                className={`${
-                                  selectedAsset === asset ||
-                                  selectedAsset === asset?.assetName
-                                    ? "bg-[#f3c953]"
-                                    : ""
-                                } border-b border-[#eee] `}
-                                onClick={() => {
-                                  handleAssetAdd(asset);
-                                  setAssetPreviewPopup(true);
-                                  setSelectedComposition("");
-                                  handleAppsAdd("");
-                                }}
-                              >
-                                <td className="p-3 text-left">
-                                  {asset.assetName}
-                                </td>
-                                <td className="p-3">
-                                  {moment(asset.createdDate).format(
-                                    "YYYY-MM-DD hh:mm"
-                                  )}
-                                </td>
-                                <td className="p-3">{asset.fileSize}</td>
-                                <td className="p-3">{asset.assetType}</td>
-                              </tr>
-                            </tbody>
-                          ))
-                      : filteredData
-                          .filter((asset) => {
-                            return asset.assetType !== "Folder";
-                          })
-                          .map((asset) => (
-                            <tbody key={asset.assetID}>
-                              <tr
-                                className={`${
-                                  selectedAsset === asset ||
-                                  selectedAsset === asset?.assetName
-                                    ? "bg-[#f3c953]"
-                                    : ""
-                                } border-b border-[#eee] `}
-                                onClick={() => {
-                                  handleAssetAdd(asset);
-                                  setAssetPreviewPopup(true);
-                                }}
-                              >
-                                <td className="p-3 text-left">
-                                  {asset.assetName}
-                                </td>
-                                <td className="p-3">
-                                  {moment(asset.createdDate).format(
-                                    "YYYY-MM-DD hh:mm"
-                                  )}
-                                </td>
-                                <td className="p-3">{asset.fileSize}</td>
-                                <td className="p-3">{asset.assetType}</td>
-                              </tr>
-                            </tbody>
-                          ))}
+                    {assets && assets.length === 0 ? (
+                      <tr>
+                        <td
+                          className="font-semibold text-center bg-white text-lg"
+                          colSpan={4}
+                        >
+                          No assets here.
+                        </td>
+                      </tr>
+                    ) : filteredData.length === 0 ? (
+                      assets
+                        .filter((asset) => {
+                          return asset.assetType !== "Folder";
+                        })
+                        .map((asset) => (
+                          <tbody key={asset.assetID}>
+                            <tr
+                              className={`${
+                                selectedAsset === asset ||
+                                selectedAsset === asset?.assetName
+                                  ? "bg-[#f3c953]"
+                                  : ""
+                              } border-b border-[#eee] cursor-pointer `}
+                              onClick={() => {
+                                handleAssetAdd(asset);
+                                setAssetPreviewPopup(true);
+                                setSelectedComposition("");
+                                handleAppsAdd("");
+                              }}
+                            >
+                              <td className="p-3 text-left">
+                                {asset.assetName}
+                              </td>
+                              <td className="p-3">
+                                {moment(asset.createdDate).format(
+                                  "YYYY-MM-DD hh:mm"
+                                )}
+                              </td>
+                              <td className="p-3">{asset.fileSize}</td>
+                              <td className="p-3">{asset.assetType}</td>
+                            </tr>
+                          </tbody>
+                        ))
+                    ) : (
+                      filteredData
+                        .filter((asset) => {
+                          return asset.assetType !== "Folder";
+                        })
+                        .map((asset) => (
+                          <tbody key={asset.assetID}>
+                            <tr
+                              className={`${
+                                selectedAsset === asset ||
+                                selectedAsset === asset?.assetName
+                                  ? "bg-[#f3c953]"
+                                  : ""
+                              } border-b border-[#eee] `}
+                              onClick={() => {
+                                handleAssetAdd(asset);
+                                setAssetPreviewPopup(true);
+                              }}
+                            >
+                              <td className="p-3 text-left">
+                                {asset.assetName}
+                              </td>
+                              <td className="p-3">
+                                {moment(asset.createdDate).format(
+                                  "YYYY-MM-DD hh:mm"
+                                )}
+                              </td>
+                              <td className="p-3">{asset.fileSize}</td>
+                              <td className="p-3">{asset.assetType}</td>
+                            </tr>
+                          </tbody>
+                        ))
+                    )}
                   </table>
                   {assetPreviewPopup && (
                     <div className="fixed left-1/2 -translate-x-1/2 w-10/12 h-10/12 bg-black z-50 inset-0">
@@ -476,16 +493,16 @@ const ShowAssetModal = ({
               <div className={popupActiveTab !== 2 && "hidden"}>
                 <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                   <div className="mb-5 relative">
-                    <AiOutlineSearch className="absolute top-2 left-2 w-6 h-5 z-10 text-gray" />
+                    <AiOutlineSearch className="absolute top-3 left-3 w-6 h-5 z-10 text-gray" />
                     <input
                       type="text"
                       placeholder="Search Composition"
-                      className="border border-primary rounded-full px-7 py-2 search-user w-56"
+                      className="border border-primary rounded-full pl-9 py-2 search-user w-56"
                       value={searchComposition}
                       onChange={(e) => handleSearchAssest(e, "composition")}
                     />
                   </div>
-                  <Link to="/addcomposition">
+                  <Link to="/addcomposition" target="_blank">
                     <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                       Add New Composition
                     </button>
@@ -507,67 +524,78 @@ const ShowAssetModal = ({
                         <th className="p-3">Duration</th>
                       </tr>
                     </thead>
-                    {filteredData.length === 0
-                      ? compositions.map((composition) => (
-                          <tbody key={composition.compositionID}>
-                            <tr
-                              className={`${
-                                selectedComposition === composition
-                                  ? "bg-[#f3c953]"
-                                  : ""
-                              } border-b border-[#eee] `}
-                              onClick={() => {
-                                setSelectedComposition(composition);
-                                handleAssetAdd("");
-                                handleAppsAdd("");
-                              }}
-                            >
-                              <td className="p-3 text-left">
-                                {composition.compositionName}
-                              </td>
-                              <td className="p-3">
-                                {moment(composition.dateAdded).format(
-                                  "YYYY-MM-DD hh:mm"
-                                )}
-                              </td>
-                              <td className="p-3">{composition.resolution}</td>
-                              <td className="p-3">
-                                {moment
-                                  .utc(composition.duration * 1000)
-                                  .format("hh:mm:ss")}
-                              </td>
-                            </tr>
-                          </tbody>
-                        ))
-                      : filteredData.map((composition) => (
-                          <tbody key={composition.compositionID}>
-                            <tr
-                              className={`${
-                                selectedComposition === composition
-                                  ? "bg-[#f3c953]"
-                                  : ""
-                              } border-b border-[#eee] `}
-                              onClick={() => {
-                                setSelectedComposition(composition);
-                              }}
-                            >
-                              <td className="p-3 text-left">
-                                {composition.compositionName}
-                              </td>
-                              <td className="p-3">
-                                {moment(composition.dateAdded).format(
-                                  "YYYY-MM-DD hh:mm"
-                                )}
-                              </td>
-                              <td className="p-3">{composition.resolution}</td>
-                              <td className="p-3">
-                                {moment
-                                  .utc(composition.duration * 1000)
-                                  .format("hh:mm:ss")}
-                              </td>
-                            </tr>
-                          </tbody>
-                        ))}
+                    {compositions && compositions.length === 0 ? (
+                      <tr>
+                        <td
+                          className="font-semibold text-center bg-white text-lg"
+                          colSpan={4}
+                        >
+                          No Composition here.
+                        </td>
+                      </tr>
+                    ) : filteredData.length === 0 ? (
+                      compositions.map((composition) => (
+                        <tbody key={composition.compositionID}>
+                          <tr
+                            className={`${
+                              selectedComposition === composition
+                                ? "bg-[#f3c953]"
+                                : ""
+                            } border-b border-[#eee] `}
+                            onClick={() => {
+                              setSelectedComposition(composition);
+                              handleAssetAdd("");
+                              handleAppsAdd("");
+                            }}
+                          >
+                            <td className="p-3 text-left">
+                              {composition.compositionName}
+                            </td>
+                            <td className="p-3">
+                              {moment(composition.dateAdded).format(
+                                "YYYY-MM-DD hh:mm"
+                              )}
+                            </td>
+                            <td className="p-3">{composition.resolution}</td>
+                            <td className="p-3">
+                              {moment
+                                .utc(composition.duration * 1000)
+                                .format("hh:mm:ss")}
+                            </td>
+                          </tr>
+                        </tbody>
+                      ))
+                    ) : (
+                      filteredData.map((composition) => (
+                        <tbody key={composition.compositionID}>
+                          <tr
+                            className={`${
+                              selectedComposition === composition
+                                ? "bg-[#f3c953]"
+                                : ""
+                            } border-b border-[#eee] `}
+                            onClick={() => {
+                              setSelectedComposition(composition);
+                            }}
+                          >
+                            <td className="p-3 text-left">
+                              {composition.compositionName}
+                            </td>
+                            <td className="p-3">
+                              {moment(composition.dateAdded).format(
+                                "YYYY-MM-DD hh:mm"
+                              )}
+                            </td>
+                            <td className="p-3">{composition.resolution}</td>
+                            <td className="p-3">
+                              {moment
+                                .utc(composition.duration * 1000)
+                                .format("hh:mm:ss")}
+                            </td>
+                          </tr>
+                        </tbody>
+                      ))
+                    )}
                   </table>
                 </div>
               </div>
@@ -597,38 +625,49 @@ const ShowAssetModal = ({
                       </tr>
                     </thead>
 
-                    {allAppsData.map((instance, index) => (
-                      <tbody key={index}>
-                        <tr
-                          className={`${
-                            selectedTextScroll === instance ||
-                            selectedYoutube === instance
-                              ? "bg-[#f3c953]"
-                              : ""
-                          } border-b border-[#eee] `}
-                          onClick={() => {
-                            handleAppsAdd(instance);
-                            handleAssetAdd("");
-                            setSelectedComposition("");
-                          }}
+                    {allAppsData && allAppsData.length === 0 ? (
+                      <tr>
+                        <td
+                          className="font-semibold text-center bg-white text-lg"
+                          colSpan={4}
                         >
-                          <td className="p-3 text-left">
-                            {instance.instanceName}
-                          </td>
-                          <td className="p-3">
-                            {instance.youTubePlaylist
-                              ? "Youtube Video"
-                              : "Text scroll"}
-                          </td>
-                          {/* <td className="p-3">{composition.resolution}</td>
+                          No Apps Data here.
+                        </td>
+                      </tr>
+                    ) : (
+                      allAppsData.map((instance, index) => (
+                        <tbody key={index}>
+                          <tr
+                            className={`${
+                              selectedTextScroll === instance ||
+                              selectedYoutube === instance
+                                ? "bg-[#f3c953]"
+                                : ""
+                            } border-b border-[#eee] `}
+                            onClick={() => {
+                              handleAppsAdd(instance);
+                              handleAssetAdd("");
+                              setSelectedComposition("");
+                            }}
+                          >
+                            <td className="p-3 text-left">
+                              {instance.instanceName}
+                            </td>
+                            <td className="p-3">
+                              {instance.youTubePlaylist
+                                ? "Youtube Video"
+                                : "Text scroll"}
+                            </td>
+                            {/* <td className="p-3">{composition.resolution}</td>
                               <td className="p-3">
                                 {moment
                                   .utc(composition.duration * 1000)
                                   .format("hh:mm:ss")}
                               </td> */}
-                        </tr>
-                      </tbody>
-                    ))}
+                          </tr>
+                        </tbody>
+                      ))
+                    )}
                   </table>
                 </div>
               </div>
@@ -642,7 +681,9 @@ const ShowAssetModal = ({
             className="bg-primary text-white rounded-full px-5 py-2"
             onClick={() => {
               handleOnConfirm(setscreenMacID);
-              signalROnConfirm();
+              from !== "new_screen" && signalROnConfirm();
+              from === "new_screen" && console.log("screen");
+              from !== "new_screen" && console.log("screen not");
             }}
           >
             Confirm
@@ -651,7 +692,7 @@ const ShowAssetModal = ({
       </div>
       <div
         onClick={() => handleClickOutside()}
-        className="fixed inset-0 z-30 bg-black/20"
+        className="fixed inset-0 z-40 bg-black/40"
       ></div>
     </>
   );
