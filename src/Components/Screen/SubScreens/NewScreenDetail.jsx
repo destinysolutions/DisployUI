@@ -17,6 +17,7 @@ import {
   GET_ALL_TAGS,
   GET_SCREEN_TIMEZONE,
   GET_SCREEN_TYPE,
+  SIGNAL_R,
   UPDATE_NEW_SCREEN,
 } from "../../../Pages/Api";
 import {
@@ -41,6 +42,12 @@ import {
 import AddOrEditTagPopup from "../../AddOrEditTagPopup";
 import toast from "react-hot-toast";
 import { MdOutlineModeEdit } from "react-icons/md";
+import ShowAssetModal from "../../ShowAssetModal";
+import { handleUpdateScreenAsset } from "../../../Redux/Screenslice";
+import { handleGetCompositions } from "../../../Redux/CompositionSlice";
+import { handleGetAllAssets } from "../../../Redux/Assetslice";
+import { handleGetAllSchedule } from "../../../Redux/ScheduleSlice";
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
@@ -98,9 +105,14 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [showTagModal, setShowTagModal] = useState(false);
   const [tags, setTags] = useState([]);
   const ScreenTags = tags.join(", ");
+  const [connection, setConnection] = useState(null);
+  const [popupActiveTab, setPopupActiveTab] = useState(1);
+  const [setscreenMacID, setSetscreenMacID] = useState("");
+  const [assetScreenID, setAssetScreenID] = useState(null);
   const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
 
-  
+  const { screens } = useSelector((s) => s.root.screen);
+
   const dispatch = useDispatch();
   const history = useNavigate();
 
@@ -109,6 +121,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const scheduleRef = useRef(null);
   const compositionRef = useRef(null);
   const appRef = useRef(null);
+
+  // console.log(otpData);
 
   useEffect(() => {
     // get youtube data
@@ -147,6 +161,21 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleOptionChange = (e) => {
+    if (e.target.value == "Select Asset") {
+      setShowAssetModal(true);
+      setSelectedDefaultAsset("");
+      return;
+    } else if (e.target.value == "Default Media") {
+      setSelectedDefaultAsset("Default Asset");
+      setSelectedApps("");
+      setSelectedComposition("");
+      setSelectedAsset("");
+      setSelectedSchedule("");
+      setSelectedTextScroll("");
+      setSelectedYoutube("");
+      return;
+    }
+    return console.log(e.target.value);
     setSelectedScreenTypeOption(e.target.value);
     setSelectedComposition("");
     setSelectedApps("");
@@ -167,7 +196,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleAssetAdd = (asset) => {
-    setAssetPreview(asset);
+    setSelectedAsset(asset);
   };
 
   const handleScheduleAdd = (schedule) => {
@@ -199,6 +228,39 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       );
       setAssetData(filteredData);
     }
+  };
+
+  const signalROnConfirm = () => {
+    const connectSignalR = async () => {
+      console.log("run signal r");
+      const newConnection = new HubConnectionBuilder()
+        .withUrl(SIGNAL_R)
+        .configureLogging(LogLevel.Information)
+        .withAutomaticReconnect()
+        .build();
+
+      // newConnection.on("ScreenConnected", (MacID) => {
+      //   console.log("ScreenConnected", MacID);
+      // });
+
+      try {
+        await newConnection
+          .start()
+          .then(() => {
+            console.log("Connection established");
+          })
+          .then(() => {
+            setConnection(newConnection);
+            // Invoke ScreenConnected method
+            newConnection.invoke("ScreenConnected", otpData[0]?.MACID);
+            console.log("Message sent:",otpData[0]?.MACID);
+          });
+      } catch (error) {
+        console.error("Error during connection:", error);
+      }
+    };
+
+    connectSignalR(); // Call the combined function
   };
 
   const handleScreenDetail = () => {
@@ -245,6 +307,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         mediaDetailID: moduleID || 0,
         operation: "Update",
       });
+      // return console.log(data);
       toast.loading("Saving...");
       let config = {
         method: "post",
@@ -261,9 +324,12 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         .request(config)
         .then((response) => {
           if (response.data.status === 200) {
-            history("/screens");
+            signalROnConfirm();
+            setTimeout(() => {
+              history("/screens");
+              toast.remove();
+            }, 1000);
           }
-          toast.remove();
         })
         .catch((error) => {
           console.log(error);
@@ -321,6 +387,21 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     // Define an array of axios requests
+    // load composition
+    dispatch(handleGetCompositions({ token }));
+
+    // get all assets files
+    dispatch(handleGetAllAssets({ token }));
+
+    // get all schedule
+    dispatch(handleGetAllSchedule({ token }));
+
+    // get youtube data
+    dispatch(handleGetYoutubeData({ token }));
+
+    //get text scroll data
+    dispatch(handleGetTextScrollData({ token }));
+
     const axiosRequests = [
       // axios.get(GET_ALL_FILES, {
       //   headers: { Authorization: authToken },
@@ -534,8 +615,88 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+  const handleAssetUpdate = () => {
+    let moduleID =
+      selectedAsset?.assetID ||
+      selectedComposition?.compositionID ||
+      selectedYoutube?.youtubeId ||
+      selectedTextScroll?.textScroll_Id;
+    // return console.log(moduleID, selectedComposition);
+    let mediaType = selectedAsset?.assetID
+      ? 1
+      : selectedTextScroll?.textScroll_Id !== null &&
+        selectedTextScroll?.textScroll_Id !== undefined
+      ? 4
+      : selectedYoutube?.youtubeId !== null &&
+        selectedYoutube?.youtubeId !== undefined
+      ? 5
+      : selectedComposition?.compositionID !== null &&
+        selectedComposition?.compositionID !== undefined
+      ? 3
+      : 0;
+
+    let mediaName =
+      selectedAsset?.assetName ||
+      selectedComposition?.compositionName ||
+      selectedYoutube?.instanceName ||
+      selectedTextScroll?.instanceName;
+    console.log(mediaName, mediaType, moduleID);
+    // let data = {
+    //   ...screenToUpdate,
+    //   screenID: assetScreenID,
+    //   mediaType: mediaType,
+    //   mediaDetailID: moduleID,
+    //   operation: "Update",
+    // };
+    // toast.loading("Updating...");
+    // const response = dispatch(
+    //   handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
+    // );
+    // if (!response) return;
+    // response
+    //   .then((response) => {
+    //     toast.remove();
+    //     toast.success("Media Updated.");
+    //     if (connection) {
+    //       connection
+    //         .invoke("ScreenConnected")
+    //         .then(() => {
+    //           console.log("SignalR method invoked after Asset update");
+    //         })
+    //         .catch((error) => {
+    //           console.error("Error invoking SignalR method:", error);
+    //         });
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     toast.remove();
+    //     console.log(error);
+    //   });
+  };
+
   return (
     <>
+      {showAssetModal && (
+        <ShowAssetModal
+          handleAssetAdd={handleAssetAdd}
+          handleAssetUpdate={handleAssetUpdate}
+          setSelectedComposition={setSelectedComposition}
+          handleAppsAdd={handleAppsAdd}
+          popupActiveTab={popupActiveTab}
+          setAssetPreviewPopup={setAssetPreviewPopup}
+          setPopupActiveTab={setPopupActiveTab}
+          setShowAssetModal={setShowAssetModal}
+          assetPreviewPopup={assetPreviewPopup}
+          assetPreview={assetPreview}
+          selectedComposition={selectedComposition}
+          selectedTextScroll={selectedTextScroll}
+          selectedYoutube={selectedYoutube}
+          selectedAsset={selectedAsset}
+          setscreenMacID={setscreenMacID}
+          setAssetScreenID={setAssetScreenID}
+          from="new_screen"
+        />
+      )}
       <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
@@ -583,7 +744,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     <tr>
                       <td className="lg:w-[200px] md:w-[200px] sm:w-[200px] xs:w-auto">
                         <label className="text-[#001737] lg:text-lg md:text-lg font-medium sm:font-base xs:font-base mb-1 md:mb-0">
-                          Screen Name*:
+                          Screen Name:
                         </label>
                       </td>
                       <td>
@@ -708,24 +869,101 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           Type:
                         </label>
                       </td>
-                      <td>
-                        <select
+                      <td
+                        className="flex items-center gap-3"
+                        // onClick={() => setShowAssetModal(true)}
+                      >
+                        <label
+                          onClick={() => {
+                            setShowAssetModal(true);
+                            setSelectedDefaultAsset("");
+                          }}
+                          htmlFor="select_asset"
+                          className="flex items-center gap-1"
+                        >
+                          <input type="radio" name="type" id="select_asset" />
+                          Select type
+                        </label>
+                        <label
+                          htmlFor="default_asset"
+                          onClick={() => {
+                            setSelectedDefaultAsset("Default Asset");
+                            setSelectedApps("");
+                            setSelectedComposition("");
+                            setSelectedAsset("");
+                            setSelectedSchedule("");
+                            setSelectedTextScroll("");
+                            setSelectedYoutube("");
+                          }}
+                          className="flex items-center gap-1"
+                        >
+                          <input
+                            type="radio"
+                            defaultChecked
+                            name="type"
+                            id="default_asset"
+                          />
+                          Default Asset
+                        </label>
+                        {/* Select Asset */}
+                        {/* <select
                           className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                          value={selectedScreenTypeOption}
+                          // value={selectedScreenTypeOption}
                           onChange={handleOptionChange}
                         >
-                          <option value="">Select Type</option>
-                          {getSelectedScreenTypeOption.map((option) => (
+                          {(selectedAsset ||
+                            selectedComposition ||
+                           
+                            selectedTextScroll ||
+                            selectedYoutube) && (
+                            <option
+                              label={
+                                selectedAsset?.assetName ||
+                                selectedComposition?.compositionName ||
+                               
+                                selectedTextScroll?.text ||
+                                selectedYoutube?.youtubeId
+                              }
+                            >
+                              {selectedAsset?.assetName ||
+                                selectedComposition?.composition ||
+                               
+                                selectedTextScroll?.text ||
+                                selectedYoutube?.youtubeId}
+                            </option>
+                          )}
+                          <option label={` Select Type`}></option>
+                          <option value="Select Asset">Select Asset</option>
+                          <option value="Default Media">Default Media</option>
+                          {/* {getSelectedScreenTypeOption.map((option) => (
                             <option
                               key={option.mediaTypeId}
                               value={option.mediaTypeId}
                             >
                               {option.mediaTypeName}
                             </option>
-                          ))}
-                        </select>
+                          ))} */}
+                        {/* </select> */}
                       </td>
                     </tr>
+                    {(selectedAsset ||
+                      selectedComposition ||
+                      selectedTextScroll ||
+                      selectedYoutube) && (
+                      <tr>
+                        <td>
+                          <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
+                            select type:
+                          </label>
+                        </td>
+                        <td className="border border-[#D5E3FF] rounded-lg">
+                          {selectedAsset?.assetName ||
+                            selectedComposition?.compositionName ||
+                            selectedTextScroll?.text ||
+                            selectedYoutube?.youtubeId}
+                        </td>
+                      </tr>
+                    )}
 
                     {selectedScreenTypeOption === "1" && (
                       <tr className={`display-none`}>
@@ -763,7 +1001,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   className="text-sm mb-1 mt-2 ml-3 cursor-pointer"
                                   onClick={() => {
                                     setShowAssetModal(true);
-                                    setAssetData(assetAllData)
+                                    setAssetData(assetAllData);
                                     setShowAssestOptionsPopup(false);
                                   }}
                                 >
@@ -787,309 +1025,41 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     )}
 
                     {showUploadAssestModal && <FileUpload />}
-                    {showAssetModal && (
+
+                    {selectedScreenTypeOption === "2" && (
                       <tr>
+                        <td></td>
                         <td>
-                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
-                            <div
-                              ref={modalRef}
-                              className="relative w-auto my-6 mx-auto myplaylist-popup-details"
-                            >
-                              <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup newScreenDetails">
-                                <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                                  <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
-                                    Set Content to Add Media
-                                  </h3>
-                                  <button
-                                    className="p-1 text-xl"
-                                    onClick={() => {
-                                      setShowAssetModal(false);
-                                      setSearchAsset("");
-                                    }}
-                                  >
-                                    <AiOutlineCloseCircle className="text-2xl" />
-                                  </button>
-                                </div>
-
-                                <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
-                                  <div className="bg-white rounded-[30px]">
-                                    <div>
-                                      <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                        <div className="lg:p-10 md:p-10 sm:p-10 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl w-full">
-                                          <div>
-                                            <div className="flex border-b border-lightgray flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                                              <div className="mb-5 relative searchbox">
-                                                <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
-                                                <input
-                                                  type="text"
-                                                  placeholder=" Search by Name"
-                                                  className="border border-primary rounded-full px-7 py-2 search-user"
-                                                  value={searchAsset}
-                                                  onChange={handleFilter}
-                                                />
-                                              </div>
-                                              {/* <Link
-                                                // to="/fileupload"
-                                                onClick={() =>
-                                                  window.open(
-                                                    window.location.origin.concat(
-                                                      "/fileupload"
-                                                    )
-                                                  )
-                                                }
-                                              > */}
-                                              <button
-                                                type="button"
-                                                onClick={() => {
-                                                  window.open(
-                                                    window.location.origin.concat(
-                                                      "/fileupload"
-                                                    )
-                                                  );
-                                                  setShowAssetModal(false);
-                                                  setSearchAsset("");
-                                                }}
-                                                // onClick={() => {
-                                                //   setShowUploadAssestModal(
-                                                //     true
-                                                //   );
-                                                // }}
-                                                className="flex align-middle border-SlateBlue bg-SlateBlue text-white items-center border rounded-full px-4 py-2 text-sm  hover:text-white hover:bg-primary hover:shadow-lg hover:shadow-primary-500/50 hover:border-white"
-                                              >
-                                                Upload
-                                              </button>
-                                              {/* </Link> */}
-                                            </div>
-                                            <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover">
-                                              <table
-                                                className="AddMedia-table"
-                                                style={{
-                                                  borderCollapse: "separate",
-                                                  borderSpacing: " 0 10px",
-                                                  width: "100%",
-                                                }}
-                                              >
-                                                <thead className="sticky top-0">
-                                                  <tr className="bg-lightgray">
-                                                    <th className="p-3 w-80 text-left">
-                                                      Media Name
-                                                    </th>
-                                                    <th>Date Added</th>
-                                                    <th className="p-3">
-                                                      Size
-                                                    </th>
-                                                    <th className="p-3">
-                                                      Type
-                                                    </th>
-                                                  </tr>
-                                                </thead>
-                                                {assetData?.length > 0 ? (
-                                                  assetData.map((asset) => (
-                                                    <tbody key={asset.assetID}>
-                                                      <tr
-                                                        className={`${
-                                                          assetPreview?.assetID ===
-                                                          asset?.assetID
-                                                            ? "bg-[#f3c953]"
-                                                            : ""
-                                                        } border-b border-[#eee] `}
-                                                        onClick={() => {
-                                                          handleAssetAdd(asset);
-                                                          setAssetPreviewPopup(
-                                                            true
-                                                          );
-                                                        }}
-                                                      >
-                                                        <td className="p-3">
-                                                          {asset.assetName}
-                                                        </td>
-                                                        <td className="p-3">
-                                                          {moment(
-                                                            asset.createdDate
-                                                          ).format(
-                                                            "YYYY-MM-DD hh:mm"
-                                                          )}
-                                                        </td>
-                                                        <td className="p-3">
-                                                          {asset.fileSize}
-                                                        </td>
-                                                        <td className="p-3">
-                                                          {asset.assetType}
-                                                        </td>
-                                                      </tr>
-                                                    </tbody>
-                                                  ))
-                                                ) : (
-                                                  <div className="p-3">
-                                                    <p>No Assets Found</p>
-                                                  </div>
-                                                )}
-                                              </table>
-                                              {assetPreviewPopup && (
-                                                <div
-                                                  ref={modalPreviewRef}
-                                                  className="fixed left-1/2 -translate-x-1/2 w-10/12 h-10/12 bg-black z-50 inset-0"
-                                                >
-                                                  {/* btn */}
-                                                  <div className="p-1 rounded-full text-white bg-primary absolute -top-3 -right-3">
-                                                    <button
-                                                      className="text-xl"
-                                                      onClick={() =>
-                                                        setAssetPreviewPopup(
-                                                          false
-                                                        )
-                                                      }
-                                                    >
-                                                      <AiOutlineCloseCircle className="text-2xl" />
-                                                    </button>
-                                                  </div>
-                                                  <div className="fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 h-[90%] w-[90%]">
-                                                    {assetPreview && (
-                                                      <>
-                                                        {assetPreview.assetType ===
-                                                          "OnlineImage" && (
-                                                          <div className="imagebox p-3">
-                                                            <img
-                                                              src={
-                                                                assetPreview.assetFolderPath
-                                                              }
-                                                              alt={
-                                                                assetPreview.assetName
-                                                              }
-                                                              className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                                            />
-                                                          </div>
-                                                        )}
-
-                                                        {assetPreview.assetType ===
-                                                          "OnlineVideo" && (
-                                                          <div className="relative videobox">
-                                                            <video
-                                                              controls
-                                                              className="w-full rounded-2xl h-full"
-                                                            >
-                                                              <source
-                                                                src={
-                                                                  assetPreview.assetFolderPath
-                                                                }
-                                                                type="video/mp4"
-                                                              />
-                                                              Your browser does
-                                                              not support the
-                                                              video tag.
-                                                            </video>
-                                                          </div>
-                                                        )}
-                                                        {assetPreview.assetType ===
-                                                          "Image" && (
-                                                          <img
-                                                            src={
-                                                              assetPreview.assetFolderPath
-                                                            }
-                                                            alt={
-                                                              assetPreview.assetName
-                                                            }
-                                                            className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                                          />
-                                                        )}
-                                                        {assetPreview.assetType ===
-                                                          "Video" && (
-                                                          <video
-                                                            controls
-                                                            className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                                          >
-                                                            <source
-                                                              src={
-                                                                assetPreview.assetFolderPath
-                                                              }
-                                                              type="video/mp4"
-                                                            />
-                                                            Your browser does
-                                                            not support the
-                                                            video tag.
-                                                          </video>
-                                                        )}
-                                                        {assetPreview.assetType ===
-                                                          "DOC" && (
-                                                          <a
-                                                            href={
-                                                              assetPreview.assetFolderPath
-                                                            }
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                                          >
-                                                            {
-                                                              assetPreview.assetName
-                                                            }
-                                                          </a>
-                                                        )}
-                                                      </>
-                                                    )}
-                                                  </div>
-                                                </div>
-                                              )}
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="flex justify-between items-center pl-5 pr-5 pb-4">
-                                  <p className="text-black">
-                                    Content will always be playing Confirm
-                                  </p>
-                                  <button
-                                    className="bg-SlateBlue text-white rounded-full px-5 py-2 hover:bg-primary text-sm"
-                                    onClick={() => {
-                                      handleOnConfirm();
-                                    }}
-                                  >
-                                    Confirm
-                                  </button>
-                                </div>
-                              </div>
+                          <div className="flex">
+                            <input
+                              className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none"
+                              value={
+                                selectedSchedule !== ""
+                                  ? selectedSchedule.scheduleName
+                                  : ""
+                              }
+                              placeholder="Set Schedule"
+                              readOnly
+                              onChange={(e) =>
+                                setSelectedSchedule({
+                                  ...selectedSchedule,
+                                  scheduleName: e.target.value,
+                                })
+                              }
+                            />
+                            <div className="flex items-center ml-5">
+                              <span className="bg-lightgray p-2 rounded cursor-pointer">
+                                <GrScheduleNew
+                                  size={20}
+                                  onClick={() => setShowScheduleModal(true)}
+                                />
+                              </span>
                             </div>
                           </div>
                         </td>
                       </tr>
                     )}
-                    {selectedScreenTypeOption === "2" && (
-                      <>
-                        <tr>
-                          <td></td>
-                          <td>
-                            <div className="flex">
-                              <input
-                                className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none"
-                                value={
-                                  selectedSchedule !== ""
-                                    ? selectedSchedule.scheduleName
-                                    : ""
-                                }
-                                placeholder="Set Schedule"
-                                readOnly
-                                onChange={(e) =>
-                                  setSelectedSchedule({
-                                    ...selectedSchedule,
-                                    scheduleName: e.target.value,
-                                  })
-                                }
-                              />
-                              <div className="flex items-center ml-5">
-                                <span className="bg-lightgray p-2 rounded cursor-pointer">
-                                  <GrScheduleNew
-                                    size={20}
-                                    onClick={() => setShowScheduleModal(true)}
-                                  />
-                                </span>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      </>
-                    )}
+
                     {showScheduleModal && (
                       <tr>
                         <td>
@@ -1219,20 +1189,20 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                             {schedule.tags}
                                           </td>
                                           <td className="text-center">
-                                              <button
-                                                className="ml-3 relative"
-                                                onClick={() => {
-                                                  window.open(
-                                                    window.location.origin.concat(
-                                                      "/myschedule"
-                                                    )
-                                                  );
-                                                  setShowScheduleModal(false);
-                                                  setSelectedSchedule("")
-                                                }}
-                                              >
-                                                <HiDotsVertical />
-                                              </button>
+                                            <button
+                                              className="ml-3 relative"
+                                              onClick={() => {
+                                                window.open(
+                                                  window.location.origin.concat(
+                                                    "/myschedule"
+                                                  )
+                                                );
+                                                setShowScheduleModal(false);
+                                                setSelectedSchedule("");
+                                              }}
+                                            >
+                                              <HiDotsVertical />
+                                            </button>
                                           </td>
                                         </tr>
                                       ))}
@@ -1339,10 +1309,10 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                     {showCompositionModal && (
                       <tr>
                         <td>
-                          <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
+                          <div className="bg-black bg-opacity-50 w-screen justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
                             <div
                               ref={compositionRef}
-                              className="relative w-auto my-6 mx-auto myplaylist-popup-details"
+                              className="relative w-[90vw] left-1/2 -translate-x-1/3 my-2 myplaylist-popup-details"
                             >
                               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup newScreenDetails">
                                 <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
@@ -1732,27 +1702,27 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                               </svg>
                             </button>
                             </div>*/}
-                            {tags?.length === 0 && (
-                              <span className="ml-2">
-                                <AiOutlinePlusCircle
-                                  size={30}
-                                  className="mx-auto cursor-pointer"
-                                  onClick={() => {
-                                    setShowTagModal(true);
-                                  }}
-                                />
-                              </span>
-                            )}
-                            <p>
+                          {tags?.length === 0 && (
+                            <span className="ml-2">
+                              <AiOutlinePlusCircle
+                                size={30}
+                                className="mx-auto cursor-pointer"
+                                onClick={() => {
+                                  setShowTagModal(true);
+                                }}
+                              />
+                            </span>
+                          )}
+                          <p>
                             {ScreenTags !== null
-                              ? ScreenTags
-                                  .split(",")
+                              ? ScreenTags.split(",")
                                   .slice(
                                     0,
                                     ScreenTags.split(",").length > 2
                                       ? 3
                                       : ScreenTags.split(",").length
-                                  ).map((text) => {
+                                  )
+                                  .map((text) => {
                                     if (text.toString().length > 10) {
                                       return text
                                         .split("")
@@ -1764,21 +1734,21 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                   })
                                   .join(",")
                               : ""}
-                            </p>
-                           
-                              {ScreenTags !== "" && ScreenTags !== null && (
-                                <MdOutlineModeEdit
-                                  onClick={() => {
-                                    setShowTagModal(true);
-                                    // screen.tags === "" || screen?.tags === null
-                                    //   ? setTags([])
-                                    //   : setTags(screen?.tags?.split(","));
-                                    // setTagUpdateScreeen(screen);
-                                  }}
-                                  className="w-5 h-5 cursor-pointer"
-                                />
-                              )}
-                        
+                          </p>
+
+                          {ScreenTags !== "" && ScreenTags !== null && (
+                            <MdOutlineModeEdit
+                              onClick={() => {
+                                setShowTagModal(true);
+                                // screen.tags === "" || screen?.tags === null
+                                //   ? setTags([])
+                                //   : setTags(screen?.tags?.split(","));
+                                // setTagUpdateScreeen(screen);
+                              }}
+                              className="w-5 h-5 cursor-pointer"
+                            />
+                          )}
+
                           {showTagBox && (
                             <>
                               <div className=" tagname absolute top-[45px] right-[-8px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10 max-w-[250px]">

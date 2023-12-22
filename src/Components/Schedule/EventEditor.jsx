@@ -102,7 +102,7 @@ const EventEditor = ({
 
       if (showRepeatSettings && newStartDate <= editedEndDate) {
         setEditedStartDate(newStartDate);
-      } else if(showRepeatSettings) {
+      } else if (showRepeatSettings) {
         toast.error("Please change End Date.");
       }
     } else {
@@ -504,7 +504,7 @@ const EventEditor = ({
     if (showRepeatSettings) {
       handleCheckboxChange();
     }
-  }, [editedEndDate]);
+  }, [editedEndDate, editedStartDate]);
 
   // Listen for changes in selectedEvent and selectedSlot to update the title and date/time fields
   useEffect(() => {
@@ -648,7 +648,7 @@ const EventEditor = ({
                                       <img
                                         src={item.assetFolderPath}
                                         alt={item.assetName}
-                                        className="rounded-2xl h-20 w-full"
+                                        className="rounded-2xl min-h-[20vh] max-h-[20vh] w-full object-cover"
                                       />
                                     </div>
                                   )}
@@ -657,7 +657,7 @@ const EventEditor = ({
                                       <video
                                         controls
                                         autoPlay={true}
-                                        className="rounded-2xl h-20 w-full"
+                                        className="rounded-2xl min-h-[20vh] max-h-[20vh] w-full object-cover"
                                       >
                                         <source
                                           src={item.assetFolderPath}
@@ -672,11 +672,11 @@ const EventEditor = ({
                                     <img
                                       src={item.assetFolderPath}
                                       alt={item.assetName}
-                                      className="rounded-2xl h-20 w-full"
+                                      className="rounded-2xl min-h-[20vh] object-cover max-h-[20vh] w-full"
                                     />
                                   )}
                                   {item.assetType === "Video" && (
-                                    <div className="relative videobox z-0 w-full h-20 ">
+                                    <div className="relative videobox z-0 w-full min-h-[20vh] max-h-[20vh]">
                                       <ReactPlayer
                                         url={item?.assetFolderPath}
                                         className="w-full rounded-2xl relative z-20 h-full videoinner object-fill"
@@ -686,7 +686,7 @@ const EventEditor = ({
                                     </div>
                                   )}
                                   {item.youTubeURL && (
-                                    <div className="relative rounded-2xl videobox z-0 w-full h-20">
+                                    <div className="relative rounded-2xl videobox z-0 w-full min-h-[20vh] max-h-[20vh]">
                                       <ReactPlayer
                                         url={item?.youTubeURL}
                                         className="w-full relative rounded-2xl z-20 h-full videoinner object-fill"
@@ -774,6 +774,7 @@ const EventEditor = ({
                               <br />
                               <Link
                                 to="/fileupload"
+                                target="_blank"
                                 className="border-2 mt-4 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
                               >
                                 Upload asset

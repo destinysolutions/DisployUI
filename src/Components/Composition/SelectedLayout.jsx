@@ -721,28 +721,31 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
               <div className="text-center">
                 {activeTab === "asset" ? (
-                  <Link to="/FileUpload">
+                  <Link to="/FileUpload" target="_blank">
                     <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                       New Assets Upload
                     </button>
                   </Link>
                 ) : (
-                  <Link to="/apps">
+                  <Link to="/apps" target="_blank">
                     <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                       Add New Apps
                     </button>
                   </Link>
                 )}
               </div>
-              <div className="overflow-y-auto min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
+              <div className="overflow-auto min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
                 <table
-                  className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
+                  className="w-full bg-white overflow-x-auto lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
                   cellPadding={20}
                 >
-                  <thead>
+                  <thead className="sticky -top-1 z-20">
                     <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
                       <th className="text-[#5A5881] py-2.5 text-base font-semibold">
-                        Assets Name
+                        Asset
+                      </th>
+                      <th className="text-[#5A5881] py-2.5 text-base font-semibold">
+                        Asset Name
                       </th>
                       <th className="text-[#5A5881] py-2.5 text-base text-center font-semibold">
                         Type
@@ -777,8 +780,63 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               handleDragStartForDivToDiv(event, data)
                             }
                           >
-                            <td className="break-words w-full text-left">
+                            <td className="break-words w-full text-left ">
+                              {data.assetType === "OnlineImage" && (
+                                <img
+                                  className="imagebox relative w-full h-20 object-cover"
+                                  src={data?.assetFolderPath}
+                                  alt={data?.assetName}
+                                />
+                              )}
+                              {data.assetType === "Image" && (
+                                <img
+                                  src={data?.assetFolderPath}
+                                  alt={data?.assetName}
+                                  className="imagebox relative w-full h-20 object-cover"
+                                />
+                              )}
+                              {data.instanceName && data?.scrollType && (
+                                <marquee
+                                  className="text-lg w-full h-full flex items-center text-black"
+                                  direction={
+                                    data?.scrollType == 1 ? "right" : "left"
+                                  }
+                                  scrollamount="10"
+                                >
+                                  {data?.text}
+                                </marquee>
+                              )}
+                              {(data.assetType === "Video" ||
+                                data.assetType === "OnlineVideo" ||
+                                data.assetType === "Youtube" ||
+                                data?.youTubeURL) && (
+                                <ReactPlayer
+                                  url={
+                                    data?.assetFolderPath || data?.youTubeURL
+                                  }
+                                  className="max-w-[100%] min-w-[100%]  relative z-10  max-h-32"
+                                  controls={false}
+                                  playing={true}
+                                  loop={false}
+                                />
+                              )}
+
+                              {data.assetType === "DOC" && (
+                                <p href={data?.assetFolderPath}>
+                                  {data.assetName}
+                                </p>
+                              )}
+                              {/* {data.instanceName && (
+                                    <p
+                                      href={data?.instanceName}
+                                    >
+                                      {data.instanceName}
+                                    </p>
+                                  )} */}
+                            </td>
+                            <td className="p-2 w-full text-center hyphens-auto break-words">
                               {data.assetName || data?.instanceName}
+
                             </td>
                             <td className="p-2 w-full text-center">
                               {data?.fileExtention
@@ -929,6 +987,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="w-full relative z-20 videoinner max-h-10"
                                         controls={false}
                                         playing={false}
+                                        loop={true}
                                       />
                                     )}
 

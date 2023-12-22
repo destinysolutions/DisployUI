@@ -85,6 +85,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
       .request(config)
       .then((response) => {
         setScreen(response.data.data[0].screen);
+        otpRefs[0].current.focus();
       })
       .catch((error) => {
         console.log(error);
@@ -116,7 +117,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
     // window.document.body.style.overflow = "unset";
     // setSearchTerm("");
   }
-  
+
   useEffect(() => {
     window.addEventListener("keydown", function (event, characterCode) {
       if (typeof characterCode == "undefined") {
