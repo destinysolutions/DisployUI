@@ -1,3 +1,4 @@
+import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import moment from "moment";
 import React, { useState } from "react";
 import { useRef } from "react";
@@ -12,6 +13,7 @@ import { IoBarChartSharp } from "react-icons/io5";
 import { RiPlayListFill } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { SIGNAL_R } from "../Pages/Api";
 
 const ShowAssetModal = ({
   setShowAssetModal,
@@ -28,6 +30,7 @@ const ShowAssetModal = ({
   handleAppsAdd,
   selectedTextScroll,
   selectedYoutube,
+  setscreenMacID,
   type,
 }) => {
   const { user, token } = useSelector((state) => state.root.auth);
@@ -40,10 +43,51 @@ const ShowAssetModal = ({
   const { assets } = useSelector((s) => s.root.asset);
   const { compositions } = useSelector((s) => s.root.composition);
   const { allAppsData } = useSelector((s) => s.root.apps);
-
+  const [connection, setConnection] = useState(null);
   const modalRef = useRef(null);
+  console.log("setscreenMacID", setscreenMacID);
+  const signalROnConfirm = () => {
+    const connectSignalR = async () => {
+      console.log("run signal r");
+      const newConnection = new HubConnectionBuilder()
+        .withUrl(SIGNAL_R)
+        .configureLogging(LogLevel.Information)
+        .withAutomaticReconnect()
+        .build();
 
-  const handleOnConfirm = () => {
+      newConnection.on("ScreenConnected", (MacID) => {
+        console.log("ScreenConnected", MacID);
+      });
+
+      try {
+        await newConnection.start();
+        console.log("Connection established");
+        setConnection(newConnection);
+
+        // Invoke ScreenConnected method
+        await newConnection.invoke("ScreenConnected", setscreenMacID);
+        console.log("Message sent:");
+      } catch (error) {
+        console.error("Error during connection:", error);
+      }
+    };
+
+    connectSignalR(); // Call the combined function
+
+    return () => {
+      if (connection) {
+        connection
+          .stop()
+          .then(() => {
+            console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
+  };
+  const handleOnConfirm = (setscreenMacID) => {
     setShowAssetModal(false);
     handleAssetUpdate();
     setAssetPreviewPopup(false);
@@ -597,7 +641,8 @@ const ShowAssetModal = ({
           <button
             className="bg-primary text-white rounded-full px-5 py-2"
             onClick={() => {
-              handleOnConfirm();
+              handleOnConfirm(setscreenMacID);
+              signalROnConfirm();
             }}
           >
             Confirm
