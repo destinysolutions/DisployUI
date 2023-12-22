@@ -190,11 +190,13 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
     for (const event of events) {
       if (event.start < earliestStartTime) {
-        earliestStartTime = event.start;
+        const originalDate = moment(event.start);
+        earliestStartTime = originalDate.format('DD/MM/YYYY, h:mm:ss A');
       }
 
       if (event.end > latestEndTime) {
-        latestEndTime = event.end;
+        const originalDate = moment(event.end);
+        latestEndTime = originalDate.format('DD/MM/YYYY, h:mm:ss A');
       }
     }
 
@@ -204,6 +206,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     };
   };
   const overallEventTimes = getOverallEventTimes(myEvents);
+  console.log('overallEventTimes', overallEventTimes)
 
   const saveEditedSchedule = () => {
     const scheduleIdToUse = isEditingSchedule
@@ -919,6 +922,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 //   : handleSaveNewSchedule()
                 saveEditedSchedule()
               }
+              disabled={overallEventTimes === null}
             >
               Save
             </button>

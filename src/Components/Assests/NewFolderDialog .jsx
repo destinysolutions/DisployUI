@@ -188,12 +188,19 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   useEffect(() => {
-    const filterData = folderData?.filter(
-      (item) => item?.assetID !== selectedItems?.assetID
-    );
+    let FilteredFolder = [];
+    let FilteredAllAssests = [];
+    folderData?.map((item) => {
+      if (item?.assetType === "Folder") {
+        if (item?.assetID !== selectedItems?.assetID) {
+          FilteredFolder.push(item);
+        }
+        FilteredAllAssests.push(item);
+      }
+    });
     const obj = {
       status: 200,
-      folder: filterData,
+      folder: selectedItems?.assetType === "Folder" ? FilteredFolder : FilteredAllAssests,
       image: NestedNewFolder?.image,
       doc: NestedNewFolder?.doc,
       video: NestedNewFolder?.video,
@@ -724,8 +731,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                                           NestedNewFolder.folder.map(
                                             (folder) => (
                                               <div key={folder.assetID}>
-                                                {selectedItems?.assetID !==
-                                                  folder.assetID && (
+                                                {folder.assetID && (
                                                   <li className="hover:bg-black hover:text-white">
                                                     <button
                                                       onClick={() =>
@@ -742,7 +748,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                                             )
                                           )
                                         ) : (
-                                          <div className="w-full">
+                                          <div className="w-full text-left">
                                             No folders, Please create a new
                                             folder.
                                           </div>

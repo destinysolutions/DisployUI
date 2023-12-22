@@ -829,13 +829,13 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
               <div className="text-center">
                 {activeTab === "asset" ? (
-                  <Link to="/FileUpload">
+                  <Link to="/FileUpload" target="_blank">
                     <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                       New Assets Upload
                     </button>
                   </Link>
                 ) : (
-                  <Link to="/apps">
+                  <Link to="/apps" target="_blank">
                     <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                       Add New Apps
                     </button>
@@ -1037,6 +1037,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="w-full relative z-20 videoinner max-h-10"
                                         controls={false}
                                         playing={false}
+                                        loop={false}
                                       />
                                     )}
 

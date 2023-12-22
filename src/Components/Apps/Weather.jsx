@@ -17,7 +17,11 @@ import {
 import axios from "axios";
 import { useState } from "react";
 import Weather_Img from "../../images/AppsImg/weather-icon.svg";
-import { MdArrowBackIosNew, MdOutlineEdit } from "react-icons/md";
+import {
+  MdArrowBackIosNew,
+  MdOutlineEdit,
+  MdOutlineModeEdit,
+} from "react-icons/md";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { FiUpload } from "react-icons/fi";
 import toast from "react-hot-toast";
@@ -52,6 +56,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
     : "";
+  const [selectdata, setSelectData] = useState({});
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [connection, setConnection] = useState(null);
   const [showTagModal, setShowTagModal] = useState(false);
@@ -92,7 +97,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [loadFirst]);
 
-  useEffect(() => {
+  const FetchData = () => {
     setLoading(true);
     let config = {
       method: "get",
@@ -113,6 +118,10 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    FetchData();
   }, []);
 
   useEffect(() => {
@@ -367,6 +376,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
           }
           setSelectScreenModal(false);
           setAddScreenModal(false);
+          FetchData();
         }
       })
       .catch((error) => {
@@ -636,12 +646,12 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                   Weather Instance
                 </h1>
                 <div className="flex items-center">
-                  <button
-                    // onClick={() => setAppDetailModal(true)}
-                    className="w-8 h-8 ml-2 border-primary hover:bg-SlateBlue hover:border-SlateBlue items-center border-2 rounded-full p-1 text-xl   hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                  >
-                    <BsInfoLg />
-                  </button>
+                {/* <button
+                onClick={() => setAppDetailModal(true)}
+                className="w-8 h-8 ml-2 border-primary hover:bg-SlateBlue hover:border-SlateBlue items-center border-2 rounded-full p-1 text-xl   hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+              >
+                <BsInfoLg />
+                </button>*/}
                   <button
                     onClick={handelDeleteAllInstance}
                     className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full px-1 text-2xl  hover:text-white hover:border-SlateBlue hover:bg-SlateBlue hover:shadow-lg hover:shadow-primary-500/50"
@@ -715,9 +725,10 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                                       className="flex text-sm items-center cursor-pointer"
                                       onClick={() => {
                                         setAddScreenModal(true);
-                                        handleFetchWeatherById(
-                                          item?.weatherAppId
-                                        );
+                                        // handleFetchWeatherById(
+                                        //   item?.weatherAppId
+                                        // );
+                                        setSelectData(item);
                                       }}
                                     >
                                       <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
@@ -770,6 +781,60 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               Add tags +
                             </h4>
+                            { /*  {item?.tags ? (
+                              <div className="flex items-center justify-center gap-2">
+                                <h4 className="text-sm font-normal cursor-pointer break-all">
+                                  {item?.tags !== null
+                                    ? item.tags
+                                        .split(",")
+                                        .slice(
+                                          0,
+                                          item.tags.split(",").length > 2
+                                            ? 3
+                                            : item.tags.split(",").length
+                                        )
+                                        .map((text) => {
+                                          if (text.toString().length > 10) {
+                                            return text
+                                              .split("")
+                                              .slice(0, 10)
+                                              .concat("...")
+                                              .join("");
+                                          }
+                                          return text;
+                                        })
+                                        .join(",")
+                                    : ""}
+                                </h4>
+                                <MdOutlineModeEdit
+                                  className="w-5 h-5 cursor-pointer"
+                                  onClick={() => {
+                                    item?.tags !== null &&
+                                    item?.tags !== undefined &&
+                                    item?.tags !== ""
+                                      ? setTags(item?.tags?.split(","))
+                                      : setTags([]);
+                                    setShowTagModal(true);
+                                    setUpdateTagWeather(item);
+                                  }}
+                                />
+                              </div>
+                            ) : (
+                              <h4
+                                onClick={() => {
+                                  item?.tags !== null &&
+                                  item?.tags !== undefined &&
+                                  item?.tags !== ""
+                                    ? setTags(item?.tags?.split(","))
+                                    : setTags([]);
+                                  setShowTagModal(true);
+                                  setUpdateTagWeather(item);
+                                }}
+                                className="text-sm font-normal cursor-pointer"
+                              >
+                                Add tags +
+                              </h4>
+                              )}*/}
                           </div>
                         </div>
                       </div>
@@ -813,6 +878,13 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                 <button
                   className="bg-primary text-white px-8 py-2 rounded-full"
                   onClick={() => {
+                    if (selectdata?.screenIDs) {
+                      let arr = [selectdata?.screenIDs];
+                      let newArr = arr[0]
+                        .split(",")
+                        .map((item) => parseInt(item.trim()));
+                      setSelectedScreens(newArr);
+                    }
                     setSelectScreenModal(true);
                     setAddScreenModal(false);
                   }}
