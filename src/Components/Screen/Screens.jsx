@@ -220,22 +220,40 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     if (deleteLoading) return;
     toast.loading("Deleting...");
 
-    const response = dispatch(
-      handleDeleteAllScreen({ userID: user?.userID, token })
-    );
-
     const connection = new HubConnectionBuilder()
       .withUrl(SIGNAL_R)
       .configureLogging(LogLevel.Information)
       .withAutomaticReconnect()
       .build();
-    if (!response) return;
-    response
-      .then(() => {
-        console.log("signal r");
-        if (connection) {
-          const allScreenMacids = screens.map((i) => i?.macid).join(",");
-          console.log(allScreenMacids);
+
+    if (connection) {
+      const allScreenMacids = screens.map((i) => i?.macid).join(",");
+      console.log(allScreenMacids);
+      connection
+        .start()
+        .then(() => {
+          console.log("connected");
+        })
+        .then(() => {
+          const response = dispatch(
+            handleDeleteAllScreen({ userID: user?.userID, token })
+          );
+          if (!response) return;
+          response
+            .then(() => {
+              console.log("signal r");
+              setTimeout(() => {
+                dispatch(handleChangeScreens([]));
+                setSelectAllChecked(false);
+                setScreenCheckboxes({});
+                toast.remove();
+                toast.success("Deleted Successfully.");
+              }, 1000);
+            })
+            .catch((error) => {
+              toast.remove();
+              console.log(error);
+            });
           connection
             .invoke("ScreenConnected", allScreenMacids)
             .then(() => {
@@ -244,19 +262,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
             .catch((error) => {
               console.error("Error invoking SignalR method:", error);
             });
-        }
-        setTimeout(() => {
-          dispatch(handleChangeScreens([]));
-          setSelectAllChecked(false);
-          setScreenCheckboxes({});
-          toast.remove();
-          toast.success("Deleted Successfully.");
-        }, 1000);
-      })
-      .catch((error) => {
-        toast.remove();
-        console.log(error);
-      });
+        });
+    }
   };
 
   const handelDeleteScreen = (screenId, MACID) => {
