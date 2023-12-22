@@ -230,6 +230,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+  useEffect(() => {
+    signalROnConfirm();
+  }, []);
   const signalROnConfirm = () => {
     const connectSignalR = async () => {
       console.log("run signal r");
@@ -239,9 +242,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         .withAutomaticReconnect()
         .build();
 
-      // newConnection.on("ScreenConnected", (MacID) => {
-      //   console.log("ScreenConnected", MacID);
-      // });
+      newConnection.on("ScreenConnected", (MacID) => {
+        console.log("ScreenConnected", MacID);
+      });
 
       try {
         await newConnection
@@ -252,8 +255,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           .then(() => {
             setConnection(newConnection);
             // Invoke ScreenConnected method
+            console.log(otpData[0]?.MACID, "otpData[0]?.MACID");
             newConnection.invoke("ScreenConnected", otpData[0]?.MACID);
-            console.log("Message sent:",otpData[0]?.MACID);
+            console.log("Message sent:", otpData[0]?.MACID);
           });
       } catch (error) {
         console.error("Error during connection:", error);
