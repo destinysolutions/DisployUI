@@ -15,7 +15,12 @@ import { MdLockOutline, MdOutlinePhotoCamera } from "react-icons/md";
 import { IoIosLink } from "react-icons/io";
 import toast from "react-hot-toast";
 import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
-import { handleGetCountries } from "../../Redux/SettingUserSlice";
+import {
+  handleGetCountries,
+  handleUserDelete,
+  resetStatus,
+  handleAddNewUser
+} from "../../Redux/SettingUserSlice";
 import user_pic from "../../images/Settings/3user-img.png";
 import link_icon from "../../images/Settings/link-icon.svg";
 import deleteImg from "../../images/Settings/delete.svg";
@@ -26,6 +31,8 @@ import twitter from "../../images/Settings/twitter-logo.svg";
 import dribble from "../../images/Settings/dribbble-logo.svg";
 
 const Users = () => {
+  const [loadFist, setLoadFist] = useState(true);
+
   const [passowrdErrors, setErrorsPassword] = useState("");
   const [emailErrors, setErrorsEmail] = useState("");
   const [showuserModal, setshowuserModal] = useState(false);
@@ -58,6 +65,7 @@ const Users = () => {
 
   const { token } = useSelector((state) => state.root.auth);
   const { Countries } = useSelector((s) => s.root.settingUser);
+  const store = useSelector((state) => state.root.settingUser);
   const authToken = `Bearer ${token}`;
 
   const hiddenFileInput = useRef(null);
@@ -156,15 +164,22 @@ const Users = () => {
       data: data,
     };
 
-    axios
-      .request(config)
-      .then((response) => {
-        setshowuserModal(false);
-        handleGetOrgUsers();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    try {
+      dispatch(handleAddNewUser({config}))
+      setshowuserModal(false);
+    } catch (error) {
+      console.log("error",error);
+    }
+
+    // axios
+    //   .request(config)
+    //   .then((response) => {
+    //     setshowuserModal(false);
+    //     handleGetOrgUsers();
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   };
 
   const handleUpdateUser = () => {
@@ -229,53 +244,38 @@ const Users = () => {
   };
 
   useEffect(() => {
-    handleGetOrgUsers();
-  }, []);
+    if (loadFist) {
+      handleGetOrgUsers();
+      setLoadFist(false);
+    }
+
+    if (store && store.status) {
+      setLoadFist(true)
+      dispatch(resetStatus())
+    }
+
+    if (store && store.status === "succeeded") {
+      toast.success(store.message);
+    }
+
+    if (store && store.status === "failed") {
+      toast.error(store.message);
+    }
+
+  }, [loadFist, store,dispatch]);
+
 
   const handleDeleteUser = (orgUserSpecificID) => {
-    let data = new FormData();
-    data.append("File", null);
-    data.append("orgUserSpecificID",orgUserSpecificID)
-    data.append("firstName", null);
-    data.append("lastName", null);
-    data.append("password", null);
-    data.append("email", null);
-    data.append("phone", null);
-    data.append("isActive", null);
-    data.append("orgUserID", null);
-    data.append("userRole", null);
-    data.append("countryID", null);
-    data.append("company", null);
-    data.append("File", null);
-    data.append("languageId", null);
-    data.append("timeZoneId", null);
-    data.append("currencyId", null);
-    data.append("operation",'DeleteByID')
-    
-    // let data = JSON.stringify({
-    //   orgUserSpecificID: orgUserSpecificID,
-    //   operation: "DeleteByID",
-    // });
-
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/UserMaster/AddOrgUserMaster",
+      url: `https://disployapi.thedestinysolutions.com/api/UserMaster/DeleteOrgUser?OrgUserSpecificID=${orgUserSpecificID}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken,
       },
-      data: data,
     };
-
-    axios
-      .request(config)
-      .then((response) => {
-        handleGetOrgUsers();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    dispatch(handleUserDelete({ config }));
   };
 
   const selectUserById = (OrgUserSpecificID) => {
@@ -328,6 +328,7 @@ const Users = () => {
     setPhone("");
     setEmail("");
     setCompany("");
+    setZipCode("")
     setCountryID("");
     setSelectRoleID("");
     setIsActive(0);
@@ -343,10 +344,10 @@ const Users = () => {
             <img
               src={row?.profilePhoto}
               alt="Profile Image"
-              className="w-10 rounded-lg"
-            />
-          ) : (
-            <MdOutlinePhotoCamera className="w-32 h-32 text-gray" />
+              className="w-16 h-16 object-fill rounded-lg py-1"
+              />
+            ) : (
+              <MdOutlinePhotoCamera className="w-16 h-16 object-fill text-gray" />
           )}
         </div>
       ),
@@ -479,6 +480,7 @@ const Users = () => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event?.target)) {
         setshowuserModal(false);
+        handleCancelPopup();
       }
     };
     document.addEventListener("click", handleClickOutside, true);
@@ -489,6 +491,7 @@ const Users = () => {
 
   function handleClickOutside() {
     setshowuserModal(false);
+    handleCancelPopup();
   }
 
   useEffect(() => {
@@ -768,7 +771,10 @@ const Users = () => {
                   <div className="col-span-12 text-center">
                     <button
                       className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
-                      onClick={() => setshowuserModal(false)}
+                      onClick={() => {
+                        setshowuserModal(false);
+                        handleCancelPopup();
+                      }}
                     >
                       Cancel
                     </button>
