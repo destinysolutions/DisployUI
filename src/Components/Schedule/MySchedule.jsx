@@ -572,7 +572,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
                       key={schedule.scheduleId}
                     >
-                      <td className="flex items-center justify-center">
+                      <td className="flex items-center">
                         <input
                           type="checkbox"
                           className="mr-3"
@@ -710,7 +710,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
                       key={schedule.scheduleId}
                     >
-                      <td className="flex items-center justify-center">
+                      <td className="flex items-center">
                         <input
                           type="checkbox"
                           className="mr-3"

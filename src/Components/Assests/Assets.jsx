@@ -74,9 +74,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [FolderDisable, setFolderDisable] = useState(false);
   const [searchAsset, setSearchAsset] = useState("");
   const [filteredAssetData, setFilteredAssetData] = useState([]);
+  const [allData, setAllData] = useState([]);
 
   const [selectdata, setSelectData] = useState({});
-
+  
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
     : "";
@@ -164,6 +165,31 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     setTogglebtn(id);
   };
 
+  useEffect(() => {
+    let FilteredFolder = [];
+    let FilteredAllAssests = [];
+    allData?.map((item) => {
+      if (item?.assetType === "Folder") {
+        if (item?.assetID !== selectedItems?.assetID) {
+          FilteredFolder.push(item);
+        }
+        FilteredAllAssests.push(item);
+      }
+    });
+    const obj = {
+      status: 200,
+      folder: selectedItems?.assetType === "Folder" ? FilteredFolder : FilteredAllAssests,
+      image: originalData?.image,
+      doc: originalData?.doc,
+      video: originalData?.video,
+      onlineimages: originalData?.onlineimages,
+      onlinevideo: originalData?.onlinevideo,
+      onlinedoc: originalData?.onlinedoc,
+      perentIDData: originalData?.perentIDData,
+    };
+    setOriginalData(obj);
+  }, [selectedItems]);
+
   const handleIconClick = (item) => {
     // Toggle the visibility of the details for the clicked item
     if (clickedTabIcon === item) {
@@ -215,7 +241,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
           ...(fetchedData.folder ? fetchedData.folder : []),
         ];
-        console.log(allAssets);
+        console.log(allAssets,"allAssets");
+        setAllData(allAssets)
         const sortedAssets = allAssets
           // .filter((asset) => {
           //   if (asset.assetType != "Folder") {
@@ -1162,7 +1189,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                               )
                                             )
                                           ) : (
-                                            <div className="w-full">
+                                            <div className="w-full text-left">
                                               No folders, Please create a new
                                               folder.
                                             </div>
@@ -1501,7 +1528,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                                   )
                                                 )
                                               ) : (
-                                                <div className="w-full">
+                                                <div className="w-full text-left">
                                                   No folders, Please create a
                                                   new folder.
                                                 </div>
