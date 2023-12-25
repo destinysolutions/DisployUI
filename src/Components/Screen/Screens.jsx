@@ -62,6 +62,7 @@ import {
   handleGetTextScrollData,
   handleGetYoutubeData,
 } from "../../Redux/AppsSlice";
+import { connection } from "../../SignalR";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -114,12 +115,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     tagsCheckboxClick,
   ]);
 
-  const connection = new HubConnectionBuilder()
-    .withUrl(SIGNAL_R)
-    .configureLogging(LogLevel.Information)
-    .withAutomaticReconnect()
-    .build();
-
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
 
@@ -143,8 +138,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     compositionName: "",
   });
 
-  //socket signal-RRR
-  // const [connection, setConnection] = useState(null);
   const [screenConnected, setScreenConnected] = useState(null);
   const [sendTvStatus, setSendTvStatus] = useState(false);
   const [sendTvStatusScreenID, setSendTvStatusScreenID] = useState(null);
@@ -220,17 +213,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     if (deleteLoading) return;
     toast.loading("Deleting...");
 
-    const connection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .withAutomaticReconnect()
-      .build();
-
     if (connection) {
       const allScreenMacids = screens.map((i) => i?.macid).join(",");
-      console.log(allScreenMacids);
+      // console.log(allScreenMacids);
       connection
-        .start()
         .then(() => {
           console.log("connected");
         })
@@ -271,43 +257,29 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     if (deleteLoading) return;
     toast.loading("Deleting...");
     console.log("signal r");
-
-    const connection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .withAutomaticReconnect()
-      .build();
-    console.log(connection.state);
     if (connection) {
       connection
-        .start()
+        .invoke("ScreenConnected", MACID)
         .then(() => {
-          console.log("signal connected");
+          const response = dispatch(
+            handleDeleteScreenById({ screenID: screenId, token })
+          );
+          if (response) {
+            response
+              .then((res) => {
+                toast.remove();
+                toast.success("Deleted Successfully.");
+                console.log(MACID);
+              })
+              .catch((error) => {
+                toast.remove();
+                console.log(error);
+              });
+          }
+          console.log("SignalR method invoked after Asset update");
         })
-        .then(() => {
-          connection
-            .invoke("ScreenConnected", MACID)
-            .then(() => {
-              const response = dispatch(
-                handleDeleteScreenById({ screenID: screenId, token })
-              );
-              if (response) {
-                response
-                  .then((res) => {
-                    toast.remove();
-                    toast.success("Deleted Successfully.");
-                    console.log(MACID);
-                  })
-                  .catch((error) => {
-                    toast.remove();
-                    console.log(error);
-                  });
-              }
-              console.log("SignalR method invoked after Asset update");
-            })
-            .catch((error) => {
-              console.error("Error invoking SignalR method:", error);
-            });
+        .catch((error) => {
+          console.error("Error invoking SignalR method:", error);
         });
     }
   };
@@ -395,23 +367,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
       );
 
-      const connection = new HubConnectionBuilder()
-        .withUrl(SIGNAL_R)
-        .configureLogging(LogLevel.Information)
-        .withAutomaticReconnect()
-        .build();
-
-      console.log(connection.state);
-
-      connection.start();
-      console.log(connection.state);
       if (!response) return;
       response
         .then((response) => {
           toast.remove();
           toast.success("Media Updated.");
           if (connection) {
-            console.log(connection.state);
             connection
               .invoke("ScreenConnected")
               .then(() => {
@@ -636,14 +597,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       }
     }
   };
-
-  useEffect(() => {
-    if (connection.state == "Disconnected") {
-      connection.start().then((res) => {
-        console.log("signal connected");
-      });
-    }
-  }, [connection]);
 
   // // for call signal R
   // useEffect(() => {

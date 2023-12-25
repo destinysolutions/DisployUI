@@ -230,9 +230,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  useEffect(() => {
-    signalROnConfirm();
-  }, []);
+  // useEffect(() => {
+  //   signalROnConfirm();
+  // }, []);
   const signalROnConfirm = () => {
     const connectSignalR = async () => {
       console.log("run signal r");
@@ -625,7 +625,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       selectedComposition?.compositionID ||
       selectedYoutube?.youtubeId ||
       selectedTextScroll?.textScroll_Id;
-    // return console.log(moduleID, selectedComposition);
     let mediaType = selectedAsset?.assetID
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
@@ -644,38 +643,37 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       selectedComposition?.compositionName ||
       selectedYoutube?.instanceName ||
       selectedTextScroll?.instanceName;
-    console.log(mediaName, mediaType, moduleID);
-    // let data = {
-    //   ...screenToUpdate,
-    //   screenID: assetScreenID,
-    //   mediaType: mediaType,
-    //   mediaDetailID: moduleID,
-    //   operation: "Update",
-    // };
-    // toast.loading("Updating...");
-    // const response = dispatch(
-    //   handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
-    // );
-    // if (!response) return;
-    // response
-    //   .then((response) => {
-    //     toast.remove();
-    //     toast.success("Media Updated.");
-    //     if (connection) {
-    //       connection
-    //         .invoke("ScreenConnected")
-    //         .then(() => {
-    //           console.log("SignalR method invoked after Asset update");
-    //         })
-    //         .catch((error) => {
-    //           console.error("Error invoking SignalR method:", error);
-    //         });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     toast.remove();
-    //     console.log(error);
-    //   });
+    let data = {
+      ...otpData[0],
+      screenID: assetScreenID,
+      mediaType: mediaType,
+      mediaDetailID: moduleID,
+      operation: "Update",
+    };
+    toast.loading("Updating...");
+    if (connection) {
+      connection
+        .invoke("ScreenConnected")
+        .then(() => {
+          console.log("SignalR method invoked after Asset update");
+          const response = dispatch(
+            handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
+          );
+          if (!response) return;
+          response
+            .then((response) => {
+              toast.remove();
+              toast.success("Media Updated.");
+            })
+            .catch((error) => {
+              toast.remove();
+              console.log(error);
+            });
+        })
+        .catch((error) => {
+          console.error("Error invoking SignalR method:", error);
+        });
+    }
   };
 
   return (

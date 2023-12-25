@@ -41,6 +41,9 @@ import {
   handleGetTextScrollData,
   handleGetYoutubeData,
 } from "../../../Redux/AppsSlice";
+import ShowAssetModal from "../../ShowAssetModal";
+import { handleUpdateScreenAsset } from "../../../Redux/Screenslice";
+import { connection } from "../../../SignalR";
 
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
@@ -99,9 +102,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
   const [selectedYoutube, setSelectedYoutube] = useState("");
-  console.log('selectedYoutube', selectedYoutube)
   const [selectedTextScroll, setSelectedTextScroll] = useState("");
-  console.log('selectedTextScroll', selectedTextScroll)
   const [showAppsModal, setShowAppsModal] = useState(false);
   const [confirmForApps, setConfirmForApps] = useState(false);
   const [previewModalData, setPreviewModalData] = useState([]);
@@ -112,6 +113,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const [appDatas, setAppDatas] = useState();
   const [selectedmediaDetailID, setSelectedMediaDetailID] = useState();
   const [selectedmediaTypeID, setSelectedMediaTypeID] = useState();
+  const [popupActiveTab, setPopupActiveTab] = useState(1);
+  const [setscreenMacID, setSetscreenMacID] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -252,46 +255,58 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleSelectedMedia = () => {
     let filteredData = [];
-  
+
     switch (selectedmediaTypeID) {
       case 1:
-        filteredData = assetData?.filter(item => item?.assetID === selectedmediaDetailID);
-        setSelectedAsset(prevAsset => ({
+        filteredData = assetData?.filter(
+          (item) => item?.assetID === selectedmediaDetailID
+        );
+        setSelectedAsset((prevAsset) => ({
           ...prevAsset,
           assetName: filteredData[0]?.assetName,
         }));
         setAssetPreview(filteredData[0]);
         break;
-  
+
       case 2:
-        filteredData = scheduleData?.filter(item => item?.scheduleId === selectedmediaDetailID);
-        setSelectedSchedule(prevSchedule => ({
+        filteredData = scheduleData?.filter(
+          (item) => item?.scheduleId === selectedmediaDetailID
+        );
+        setSelectedSchedule((prevSchedule) => ({
           ...prevSchedule,
           scheduleName: filteredData[0]?.scheduleName,
           scheduleId: filteredData[0]?.scheduleId,
         }));
         break;
-  
+
       case 3:
-        filteredData = filteredData?.filter(item => item?.compositionID === selectedmediaDetailID);
-        setSelectedComposition(prevComposition => ({
+        filteredData = filteredData?.filter(
+          (item) => item?.compositionID === selectedmediaDetailID
+        );
+        setSelectedComposition((prevComposition) => ({
           ...prevComposition,
           compositionName: filteredData[0]?.compositionName,
         }));
         break;
-  
+
       case 4:
-        filteredData = appDatas?.length > 0 && appDatas?.filter(item => item?.textScroll_Id === selectedmediaDetailID);
-        setSelectedTextScroll(prevTextScroll => ({
+        filteredData =
+          appDatas?.length > 0 &&
+          appDatas?.filter(
+            (item) => item?.textScroll_Id === selectedmediaDetailID
+          );
+        setSelectedTextScroll((prevTextScroll) => ({
           ...prevTextScroll,
           instanceName: filteredData[0]?.instanceName,
           scrollType: filteredData[0]?.scrollType,
         }));
         break;
-  
+
       default:
-        filteredData = appDatas?.length > 0 && appDatas?.filter(item => item?.youtubeId === selectedmediaDetailID);
-        setSelectedYoutube(prevYoutube => ({
+        filteredData =
+          appDatas?.length > 0 &&
+          appDatas?.filter((item) => item?.youtubeId === selectedmediaDetailID);
+        setSelectedYoutube((prevYoutube) => ({
           ...prevYoutube,
           instanceName: filteredData[0]?.instanceName,
           youTubePlaylist: filteredData[0]?.youTubePlaylist,
@@ -299,10 +314,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         break;
     }
   };
-  
-  useEffect(()=>{
-    handleSelectedMedia()
-  },[selectedmediaDetailID])
+
+  useEffect(() => {
+    handleSelectedMedia();
+  }, [selectedmediaDetailID]);
 
   const handleFilter = (event, from) => {
     const searchQuery = event.target.value.toLowerCase();
@@ -382,7 +397,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleAssetAdd = (asset) => {
-    setAssetPreview(asset);
+    setSelectedAsset(asset);
+    setAssetPreview(asset)
   };
 
   const handleCompositionsAdd = (composition) => {
@@ -832,8 +848,89 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+  // console.log(screenData);
+
+  const handleAssetUpdate = () => {
+    let moduleID =
+      selectedAsset?.assetID ||
+      selectedComposition?.compositionID ||
+      selectedYoutube?.youtubeId ||
+      selectedTextScroll?.textScroll_Id;
+    let mediaType = selectedAsset?.assetID
+      ? 1
+      : selectedTextScroll?.textScroll_Id !== null &&
+        selectedTextScroll?.textScroll_Id !== undefined
+      ? 4
+      : selectedYoutube?.youtubeId !== null &&
+        selectedYoutube?.youtubeId !== undefined
+      ? 5
+      : selectedComposition?.compositionID !== null &&
+        selectedComposition?.compositionID !== undefined
+      ? 3
+      : 0;
+
+    let mediaName =
+      selectedAsset?.assetName ||
+      selectedComposition?.compositionName ||
+      selectedYoutube?.instanceName ||
+      selectedTextScroll?.instanceName;
+    let data = {
+      ...screenData[0],
+      screenID: screenData[0]?.screenID,
+      mediaType: mediaType,
+      mediaDetailID: moduleID,
+      operation: "Update",
+    };
+    toast.loading("Updating...");
+    // if(connection)
+    // connection.start().then(()=>{
+    //   console.log("connected");
+    // }).then(()=>{
+
+    connection.invoke("ScreenConnected", screenData[0]?.macid).then(() => {
+      console.log("SignalR method invoked after Asset update");
+      const response = dispatch(
+        handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
+      );
+      if (!response) return;
+      response
+        .then((response) => {
+          toast.remove();
+          toast.success("Media Updated.");
+        })
+        .catch((error) => {
+          toast.remove();
+          console.log(error);
+        });
+    });
+    // }) .catch((error) => {
+    //   console.error("Error invoking SignalR method:", error);
+    // });
+  };
+
   return (
     <>
+      {showAssetModal && (
+        <ShowAssetModal
+          handleAssetAdd={handleAssetAdd}
+          handleAssetUpdate={handleAssetUpdate}
+          setSelectedComposition={setSelectedComposition}
+          handleAppsAdd={handleAppsAdd}
+          popupActiveTab={popupActiveTab}
+          setAssetPreviewPopup={setAssetPreviewPopup}
+          setPopupActiveTab={setPopupActiveTab}
+          setShowAssetModal={setShowAssetModal}
+          assetPreviewPopup={assetPreviewPopup}
+          assetPreview={assetPreview}
+          selectedComposition={selectedComposition}
+          selectedTextScroll={selectedTextScroll}
+          selectedYoutube={selectedYoutube}
+          selectedAsset={selectedAsset}
+          setscreenMacID={setscreenMacID}
+          // setAssetScreenID={setAssetScreenID}
+          from="new_screen"
+        />
+      )}
       <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
@@ -923,7 +1020,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                       url={playerData?.fileType}
                       className="w-full relative z-20 videoinner"
                       controls={true}
-                      playing={true} loop={true}
+                      playing={true}
+                      loop={true}
                     />
                   )}
 
@@ -942,309 +1040,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
 
               {showUploadAssestModal && <FileUpload />}
-              {showAssetModal && (
-                <tr>
-                  <td>
-                    <div className="bg-black bg-opacity-50 justify-center items-center w-screen h-screen flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
-                      <div
-                        ref={modalRef}
-                        className="relative my-6 mx-auto myplaylist-popup-details w-[70vw] h-[60vh]-top-28 "
-                      >
-                        <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
-                          <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                            <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
-                              Set Content to Add Media
-                            </h3>
-                            <button
-                              className="p-1 text-xl"
-                              onClick={() => {
-                                setShowAssetModal(false);
-                                setSearchAsset("");
-                              }}
-                            >
-                              <AiOutlineCloseCircle className="text-2xl" />
-                            </button>
-                          </div>
-
-                          <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto w-full">
-                            <div className="bg-white rounded-[30px] w-full">
-                              <div className="lg:flex lg:flex-wrap lg:items-center w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl w-full">
-                                  <div className="w-full">
-                                    <div className="flex border-b border-lightgray w-full flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                                      <div className="mb-5 relative">
-                                        <AiOutlineSearch className="absolute top-3 left-2 w-5 h-5 z-10 text-gray" />
-                                        <input
-                                          type="text"
-                                          placeholder="Search"
-                                          className="border border-primary rounded-full py-2 search-user"
-                                          style={{
-                                            paddingLeft: "2rem",
-                                          }}
-                                          value={searchAsset}
-                                          onChange={handleAssetFilter}
-                                        />
-                                      </div>
-                                      <button
-                                        type="button"
-                                        onClick={() => {
-                                          window.open(
-                                            window.location.origin.concat(
-                                              "/fileupload"
-                                            )
-                                          );
-                                          setShowAssetModal(false);
-                                          setSearchAsset("");
-                                        }}
-                                        className="flex align-middle border-SlateBlue bg-SlateBlue text-white items-center border rounded-full px-4 py-2 text-sm  hover:text-white hover:bg-primary hover:shadow-lg hover:shadow-primary-500/50 hover:border-white"
-                                      >
-                                        Upload
-                                      </button>
-                                    </div>
-                                    <div className="md:overflow-x-auto w-full sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover">
-                                      <table
-                                        className="AddMedia-table w-full"
-                                        style={{
-                                          borderCollapse: "separate",
-                                          borderSpacing: " 0 10px",
-                                          width: "100%",
-                                        }}
-                                      >
-                                        <thead className="sticky top-0">
-                                          <tr className="bg-lightgray">
-                                            <th className="p-3 w-80 text-left">
-                                              Media Name
-                                            </th>
-                                            <th>Date Added</th>
-                                            <th className="p-3">Size</th>
-                                            <th className="p-3">Type</th>
-                                          </tr>
-                                        </thead>
-                                        {/*{filteredData.length === 0
-                                          ? assetData.map((asset) => (
-                                              <tbody key={asset.assetID}>
-                                                <tr
-                                                  className={`${
-                                                    assetPreview?.assetID ===
-                                                          asset?.assetID
-                                                      ? "bg-[#f3c953]"
-                                                      : ""
-                                                  } border-b border-[#eee] `}
-                                                  onClick={() => {
-                                                    handleAssetAdd(asset);
-                                                    setAssetPreviewPopup(true);
-                                                  }}
-                                                >
-                                                  <td className="p-3">
-                                                    {asset.assetName}
-                                                  </td>
-                                                  <td className="p-3">
-                                                    {moment(
-                                                      asset.createdDate
-                                                    ).format(
-                                                      "YYYY-MM-DD hh:mm"
-                                                    )}
-                                                  </td>
-                                                  <td className="p-3">
-                                                    {asset.fileSize}
-                                                  </td>
-                                                  <td className="p-3">
-                                                    {asset.assetType}
-                                                  </td>
-                                                </tr>
-                                              </tbody>
-                                            ))
-                                          : filteredData.map((asset) => (
-                                              <tbody key={asset.assetID}>
-                                                <tr
-                                                  className={`${
-                                                    selectedAsset === asset
-                                                      ? "bg-[#f3c953]"
-                                                      : ""
-                                                  } border-b border-[#eee] `}
-                                                  onClick={() => {
-                                                    handleAssetAdd(asset);
-                                                    setAssetPreviewPopup(true);
-                                                  }}
-                                                >
-                                                  <td className="p-3">
-                                                    {asset.assetName}
-                                                  </td>
-                                                  <td className="p-3">
-                                                    {moment(
-                                                      asset.createdDate
-                                                    ).format(
-                                                      "YYYY-MM-DD hh:mm"
-                                                    )}
-                                                  </td>
-                                                  <td className="p-3">
-                                                    {asset.fileSize}
-                                                  </td>
-                                                  <td className="p-3">
-                                                    {asset.assetType}
-                                                  </td>
-                                                </tr>
-                                              </tbody>
-                                                    ))}*/}
-
-                                        {assetData?.length > 0 ? (
-                                          assetData.map((asset) => (
-                                            <tbody key={asset.assetID}>
-                                              <tr
-                                                className={`${
-                                                  assetPreview?.assetID ===
-                                                  asset?.assetID
-                                                    ? "bg-[#f3c953]"
-                                                    : ""
-                                                } border-b border-[#eee] `}
-                                                onClick={() => {
-                                                  handleAssetAdd(asset);
-                                                  setAssetPreviewPopup(true);
-                                                }}
-                                              >
-                                                <td className="p-3">
-                                                  {asset.assetName}
-                                                </td>
-                                                <td className="p-3 text-center">
-                                                  {moment(
-                                                    asset.createdDate
-                                                  ).format("YYYY-MM-DD hh:mm")}
-                                                </td>
-                                                <td className="p-3 text-center">
-                                                  {asset.fileSize}
-                                                </td>
-                                                <td className="p-3 text-center">
-                                                  {asset.assetType}
-                                                </td>
-                                              </tr>
-                                            </tbody>
-                                          ))
-                                        ) : (
-                                          <div className="p-3">
-                                            <p>No Assets Found</p>
-                                          </div>
-                                        )}
-                                      </table>
-                                      {assetPreviewPopup && (
-                                        <div
-                                          ref={modalPreviewRef}
-                                          className="fixed left-1/2 -translate-x-1/2 w-10/12 h-10/12 bg-black z-50 inset-0"
-                                        >
-                                          <div className="p-1 rounded-full text-white bg-primary absolute -top-3 -right-3">
-                                            <button
-                                              className="text-xl"
-                                              onClick={() =>
-                                                setAssetPreviewPopup(false)
-                                              }
-                                            >
-                                              <AiOutlineCloseCircle className="text-2xl" />
-                                            </button>
-                                          </div>
-                                          <div className="fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 h-[90%] w-[90%]">
-                                            {assetPreview && (
-                                              <>
-                                                {assetPreview.assetType ===
-                                                  "OnlineImage" && (
-                                                  <div className="imagebox p-3">
-                                                    <img
-                                                      src={
-                                                        assetPreview.assetFolderPath
-                                                      }
-                                                      alt={
-                                                        assetPreview.assetName
-                                                      }
-                                                      className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                                    />
-                                                  </div>
-                                                )}
-
-                                                {assetPreview.assetType ===
-                                                  "OnlineVideo" && (
-                                                  <div className="relative videobox">
-                                                    <video
-                                                      controls
-                                                      className="w-full rounded-2xl h-full"
-                                                    >
-                                                      <source
-                                                        src={
-                                                          assetPreview.assetFolderPath
-                                                        }
-                                                        type="video/mp4"
-                                                      />
-                                                      Your browser does not
-                                                      support the video tag.
-                                                    </video>
-                                                  </div>
-                                                )}
-                                                {assetPreview.assetType ===
-                                                  "Image" && (
-                                                  <img
-                                                    src={
-                                                      assetPreview.assetFolderPath
-                                                    }
-                                                    alt={assetPreview.assetName}
-                                                    className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                                  />
-                                                )}
-                                                {assetPreview.assetType ===
-                                                  "Video" && (
-                                                  <video
-                                                    controls
-                                                    className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                                  >
-                                                    <source
-                                                      src={
-                                                        assetPreview.assetFolderPath
-                                                      }
-                                                      type="video/mp4"
-                                                    />
-                                                    Your browser does not
-                                                    support the video tag.
-                                                  </video>
-                                                )}
-                                                {assetPreview.assetType ===
-                                                  "DOC" && (
-                                                  <a
-                                                    href={
-                                                      assetPreview.assetFolderPath
-                                                    }
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                                  >
-                                                    {assetPreview.assetName}
-                                                  </a>
-                                                )}
-                                              </>
-                                            )}
-                                          </div>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex justify-between items-center p-5">
-                            <p className="text-black">
-                              Content will always be playing Confirm
-                            </p>
-                            <button
-                              className="bg-SlateBlue text-white rounded-full px-5 py-2 hover:bg-primary text-sm"
-                              onClick={() => {
-                                handleOnConfirm();
-                              }}
-                            >
-                              Confirm
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              )}
 
               {showScheduleModal && (
                 <tr>
@@ -1970,22 +1765,82 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             Type
                           </p>
                         </td>
-                        <td>
-                          <select
-                            className="px-2 py-2 border border-[#D5E3FF] w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-full"
-                            value={selectedScreenTypeOption}
-                            onChange={handleOptionChange}
+                        <td
+                          className="flex items-center gap-3"
+                          // onClick={() => setShowAssetModal(true)}
+                        >
+                          <label
+                            onClick={() => {
+                              setShowAssetModal(true);
+                              setSelectedDefaultAsset("");
+                              setSetscreenMacID(screenData[0]?.macid);
+                            }}
+                            htmlFor="select_asset"
+                            className="flex items-center gap-1"
                           >
-                            <option label="Select Type"></option>
-                            {getSelectedScreenTypeOption.map((option) => (
-                              <option
-                                key={option.mediaTypeId}
-                                value={option.mediaTypeId}
-                              >
-                                {option.mediaTypeName}
-                              </option>
-                            ))}
-                          </select>
+                            <input type="radio" name="type" id="select_asset" />
+                            Select type
+                          </label>
+                          <label
+                            htmlFor="default_asset"
+                            onClick={() => {
+                              setSelectedDefaultAsset("Default Asset");
+                              setSelectedApps("");
+                              setSelectedComposition("");
+                              setSelectedAsset("");
+                              setSelectedSchedule("");
+                              setSelectedTextScroll("");
+                              setSelectedYoutube("");
+                            }}
+                            className="flex items-center gap-1"
+                          >
+                            <input
+                              type="radio"
+                              defaultChecked
+                              name="type"
+                              id="default_asset"
+                            />
+                            Default Asset
+                          </label>
+                          {/* Select Asset */}
+                          {/* <select
+                          className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                          // value={selectedScreenTypeOption}
+                          onChange={handleOptionChange}
+                        >
+                          {(selectedAsset ||
+                            selectedComposition ||
+                           
+                            selectedTextScroll ||
+                            selectedYoutube) && (
+                            <option
+                              label={
+                                selectedAsset?.assetName ||
+                                selectedComposition?.compositionName ||
+                               
+                                selectedTextScroll?.text ||
+                                selectedYoutube?.youtubeId
+                              }
+                            >
+                              {selectedAsset?.assetName ||
+                                selectedComposition?.composition ||
+                               
+                                selectedTextScroll?.text ||
+                                selectedYoutube?.youtubeId}
+                            </option>
+                          )}
+                          <option label={` Select Type`}></option>
+                          <option value="Select Asset">Select Asset</option>
+                          <option value="Default Media">Default Media</option>
+                          {/* {getSelectedScreenTypeOption.map((option) => (
+                            <option
+                              key={option.mediaTypeId}
+                              value={option.mediaTypeId}
+                            >
+                              {option.mediaTypeName}
+                            </option>
+                          ))} */}
+                          {/* </select> */}
                         </td>
                       </tr>
                       {selectedScreenTypeOption === "1" && (
@@ -2291,10 +2146,16 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                         <tbody key={index}>
                                                           <tr
                                                             className={`${
-                                                             (selectedTextScroll && selectedTextScroll?.textScroll_Id ===
-                                                                instance?.textScroll_Id && selectedTextScroll?.scrollType === instance?.scrollType) ||
-                                                              (selectedYoutube && selectedYoutube?.youtubeId ===
-                                                                instance?.youtubeId && selectedYoutube?.youTubePlaylist === instance?.youTubePlaylist)
+                                                              (selectedTextScroll &&
+                                                                selectedTextScroll?.textScroll_Id ===
+                                                                  instance?.textScroll_Id &&
+                                                                selectedTextScroll?.scrollType ===
+                                                                  instance?.scrollType) ||
+                                                              (selectedYoutube &&
+                                                                selectedYoutube?.youtubeId ===
+                                                                  instance?.youtubeId &&
+                                                                selectedYoutube?.youTubePlaylist ===
+                                                                  instance?.youTubePlaylist)
                                                                 ? "bg-[#f3c953]"
                                                                 : ""
                                                             } border-b border-[#eee] `}
