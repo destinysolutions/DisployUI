@@ -64,18 +64,18 @@ const Sidebar = ({ sidebarOpen }) => {
             <MdOutlineAddToQueue className=" text-gray text-lg opacity-60 " />
           ),
         },
-        {
-          title: "New Screen Group",
-          path: "/newscreengroup",
-          icon: (
-            <HiOutlineRectangleGroup className=" text-gray text-xl opacity-60 " />
-          ),
-        },
-        {
-          title: "Merge Screens",
-          path: "/mergescreen",
-          icon: <img src={merge_screen} alt="" />,
-        },
+        // {
+        //   title: "New Screen Group",
+        //   path: "/newscreengroup",
+        //   icon: (
+        //     <HiOutlineRectangleGroup className=" text-gray text-xl opacity-60 " />
+        //   ),
+        // },
+        // {
+        //   title: "Merge Screens",
+        //   path: "/mergescreen",
+        //   icon: <img src={merge_screen} alt="" />,
+        // },
       ],
     },
     {
@@ -248,8 +248,9 @@ const Sidebar = ({ sidebarOpen }) => {
               <ul className="space-y-1 font-medium">
                 {Menus.map((item, index) => {
                   const submenuIsOpen = submenuStates[item.title] || false;
+                  const isActive = window.location.pathname === item.path; // Check if the item is active
                   return (
-                    <li key={index} className={item.cName}>
+                    <li key={index} className={`${item.cName} ${isActive ? 'active' : ''}`}>
                       <div className="flex items-center">
                         <Link to={item.path}>
                           <div>{item.icon}</div>
@@ -288,8 +289,9 @@ const Sidebar = ({ sidebarOpen }) => {
                   <div className="dotline my-4"></div>
                 </li>
                 {MenuIcons.map((item, MIindex) => {
+                  const isActive = window.location.pathname === item.path; // Check if the item is active
                   return (
-                    <li key={MIindex} className={item.cName}>
+                    <li key={MIindex} className={`${item.cName} ${isActive ? 'active' : ''}`}>
                       <div
                         className="flex"
                         onClick={() => {

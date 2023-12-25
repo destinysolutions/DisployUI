@@ -44,7 +44,12 @@
   border-radius: 50px;
 }
 
-.link-items:hover::before {
+/* .link-items:hover::before {
+  background: #fff;
+  transition: 2s all;
+} */
+
+.link-items:focus::before, .link-items.active::before {
   background: #fff;
   transition: 2s all;
 }

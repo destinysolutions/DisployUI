@@ -312,7 +312,7 @@ select:-webkit-autofill:focus {
   border-radius: 50px;
 }
 
-.link-items:hover::before {
+.link-items:focus::before, .link-items.active::before {
   background: #fff;
   transition: 2s all;
 }
