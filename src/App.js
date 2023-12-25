@@ -8,6 +8,7 @@ import { auth } from "./FireBase/firebase";
 import { useState } from "react";
 import { handleGetUserDetails, handleLogout } from "./Redux/Authslice";
 import { handleGetAllScheduleTimezone } from "./Redux/globalStates";
+import { connection } from "./SignalR";
 
 const App = () => {
   const [timer, setTimer] = useState(0);
@@ -99,6 +100,14 @@ const App = () => {
       dispatch(handleGetUserDetails({ id: user?.userID, token }));
     }
   }, [user]);
+
+  useEffect(() => {
+    if (connection.state == "Disconnected") {
+      connection.start().then((res) => {
+        console.log("signal connected");
+      });
+    }
+  }, [connection]);
 
   return (
     <>

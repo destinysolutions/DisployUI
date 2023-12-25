@@ -682,8 +682,6 @@ const ShowAssetModal = ({
             onClick={() => {
               handleOnConfirm(setscreenMacID);
               from !== "new_screen" && signalROnConfirm();
-              from === "new_screen" && console.log("screen");
-              from !== "new_screen" && console.log("screen not");
             }}
           >
             Confirm
