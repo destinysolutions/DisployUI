@@ -848,8 +848,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  // console.log(screenData);
-
   const handleAssetUpdate = () => {
     let moduleID =
       selectedAsset?.assetID ||
@@ -882,10 +880,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       operation: "Update",
     };
     toast.loading("Updating...");
-    // if(connection)
-    // connection.start().then(()=>{
-    //   console.log("connected");
-    // }).then(()=>{
+   
 
     connection.invoke("ScreenConnected", screenData[0]?.macid).then(() => {
       console.log("SignalR method invoked after Asset update");

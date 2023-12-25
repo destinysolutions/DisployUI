@@ -28,8 +28,8 @@ import { useSelector } from "react-redux";
 import moment from "moment";
 import { GoPencil } from "react-icons/go";
 import toast from "react-hot-toast";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import ReactPlayer from "react-player";
+import { connection } from "../../SignalR";
 
 const DEFAULT_IMAGE = "";
 const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
@@ -51,11 +51,11 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [loading, setLoading] = useState(false);
   const [savingLoader, setSavingLoader] = useState(false);
   const [isDataChanges, setIsDataChanges] = useState(false);
-  const [connection, setConnection] = useState(null);
   const [activeTab, setActiveTab] = useState("asset");
   const [dragStartForDivToDiv, setDragStartForDivToDiv] = useState(false);
   const [screenType, setScreenType] = useState("");
   const [Tags, setTags] = useState("");
+  const [compositoinDetails, setCompositoinDetails] = useState(null);
 
   const { state } = useLocation();
   const { token } = useSelector((state) => state.root.auth);
@@ -87,40 +87,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
     .reduce((acc, curr) => {
       return acc + Number(curr?.duration);
     }, 0);
-
-  useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
-
-    newConnection.on("ScreenConnected", (screenConnected) => {
-      // console.log("ScreenConnected", screenConnected);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        // console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            // console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
-  }, []);
 
   const onSave = async () => {
     toast.remove();
@@ -164,35 +130,27 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
     setSavingLoader(true);
     try {
       const response = await axios.request(config);
-
       if (response?.data?.status === 200) {
-        if (connection) {
-          // Wrap the SignalR invocation in a Promise
-          const signalRInvocation = new Promise((resolve, reject) => {
-            connection
-              .invoke("ScreenConnected")
-              .then(() => {
-                console.log("SignalR method invoked after composition update");
-                resolve();
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-                reject(error);
-              });
+        connection
+          // .invoke("ScreenConnected", "hi")
+          .invoke("ScreenConnected", compositoinDetails?.maciDs)
+          .then(() => {
+            console.log("invoked");
+            // console.log(compositoinDetails?.maciDs);
+            navigate("/composition");
+            connection.on("ScreenConnected", (screenConnected) => {
+              console.log("on--------------->", screenConnected);
+            });
+          })
+          .catch((error) => {
+            console.error("Error invoking SignalR method:", error);
           });
 
-          // Wait for the SignalR invocation to complete before navigating
-          await signalRInvocation;
-        }
-
-        // After SignalR invocation is complete, navigate to "/composition"
-        navigate("/composition");
         setSavingLoader(false);
       }
     } catch (error) {
       console.log(error);
       setSavingLoader(false);
-      return error;
     }
   };
 
@@ -464,6 +422,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
         if (response?.data?.status == 200) {
           const data = response.data?.data[0]?.sections;
           setCompositionName(response.data?.data[0]?.compositionName);
+          setCompositoinDetails(response?.data?.data[0]);
           setTags(response?.data?.data[0]?.tags);
           let obj = {};
           for (const [key, value] of data.entries()) {

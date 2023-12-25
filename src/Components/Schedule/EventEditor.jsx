@@ -377,13 +377,15 @@ const EventEditor = ({
       setSelectedRepeatDay("");
     } else {
       if (selectedEvent) {
+        console.log("selected");
         onSave(
           selectedEvent?.id || selectedEvent?.eventId,
           eventData,
           updateAllValueFlag,
           setShowRepeatSettings(false)
-        );
-      } else {
+          );
+        } else {
+        console.log("selected not");
         onSave(
           null,
           eventData,

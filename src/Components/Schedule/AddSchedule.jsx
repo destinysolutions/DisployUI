@@ -47,6 +47,8 @@ import {
   handleGetTextScrollData,
   handleGetYoutubeData,
 } from "../../Redux/AppsSlice";
+import { connection } from "../../SignalR";
+
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
 
@@ -79,7 +81,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
   const [getTimezone, setTimezone] = useState([]);
   const [selectedTimezoneName, setSelectedTimezoneName] = useState();
-  const [connection, setConnection] = useState(null);
 
   const addedTimezoneName = searchParams.get("timeZoneName");
   const selectedScreenIdsString = selectedScreens.join(",");
@@ -128,6 +129,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data.data;
+        console.log(fetchedData);
         setScheduleAsset(response.data.data);
         const fetchedEvents = fetchedData.map((item) => ({
           id: item.eventId,
@@ -139,6 +141,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           repeatDay: item.repeatDay,
           isfutureDateExists: item.isfutureDateExists,
           actualEndDate: item.actualEndDate,
+          macids: item?.maciDs,
         }));
         setEvents(fetchedEvents);
       })
@@ -191,12 +194,12 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     for (const event of events) {
       if (event.start < earliestStartTime) {
         const originalDate = moment(event.start);
-        earliestStartTime = originalDate.format('DD/MM/YYYY, h:mm:ss A');
+        earliestStartTime = originalDate.format("DD/MM/YYYY, h:mm:ss A");
       }
 
       if (event.end > latestEndTime) {
         const originalDate = moment(event.end);
-        latestEndTime = originalDate.format('DD/MM/YYYY, h:mm:ss A');
+        latestEndTime = originalDate.format("MM/DD/YYYY, h:mm:ss A");
       }
     }
 
@@ -206,7 +209,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     };
   };
   const overallEventTimes = getOverallEventTimes(myEvents);
-  console.log('overallEventTimes', overallEventTimes)
 
   const saveEditedSchedule = () => {
     const scheduleIdToUse = isEditingSchedule
@@ -247,7 +249,13 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const handleUpdateScreenAssign = () => {
+  const handleUpdateScreenAssign = (screenIds, macids) => {
+    let idS = "";
+    for (const key in screenIds) {
+      if (screenIds[key] === true) {
+        idS += `${key},`;
+      }
+    }
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
@@ -255,7 +263,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `${UPDATE_SCREEN_ASSIGN}?ScheduleID=${scheduleIdToUse}&ScreenID=${selectedScreenIdsString}`,
+      url: `${UPDATE_SCREEN_ASSIGN}?ScheduleID=${scheduleIdToUse}&ScreenID=${idS}`,
       headers: {
         Authorization: authToken,
         "Content-Type": "application/json",
@@ -265,18 +273,15 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        //console.log(JSON.stringify(response.data));
         setSelectScreenModal(false);
-        if (connection) {
-          connection
-            .invoke("ScreenConnected")
-            .then(() => {
-              console.log("SignalR method invoked after screen update");
-            })
-            .catch((error) => {
-              console.error("Error invoking SignalR method:", error);
-            });
-        }
+        connection
+          .invoke("ScreenConnected", macids)
+          .then(() => {
+            console.log("SignalR method invoked after screen update");
+          })
+          .catch((error) => {
+            console.error("Error invoking SignalR method:", error);
+          });
       })
       .catch((error) => {
         console.log(error);
@@ -335,42 +340,19 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           toast.remove();
 
           loadEventsForSchedule(scheduleIdToUse);
-          // console.log(fetchedData);
 
-          // console.log(updateEvent);
-          // setEvents(updateEvent)
-          // // Sending a SignalR message for the updated event
           if (eventId) {
             const updatedEvent = fetchedData.find(
               (event) => event.eventId === eventId
             );
-
-            // console.log(updatedEvent, "updateEvent");
-            // if (updatedEvent && connection) {
-            //   connection
-            //     .invoke(
-            //       "SendMessage",
-            //       updatedEvent.cEndDate,
-            //       updatedEvent.cStartDate,
-            //       fileType
-            //     )
-            //     .then(() => {
-            //       console.log("SignalR message sent for updated event");
-            //     })
-            //     .catch((error) => {
-            //       console.error("Error sending SignalR message:", error);
-            //     });
-            // }
-            if (connection) {
-              connection
-                .invoke("ScreenConnected")
-                .then(() => {
-                  console.log("SignalR method invoked after screen update");
-                })
-                .catch((error) => {
-                  console.error("Error invoking SignalR method:", error);
-                });
-            }
+            connection
+              .invoke("ScreenConnected", myEvents[0]?.macids)
+              .then(() => {
+                console.log("SignalR invoked");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
           }
 
           if (eventId) {
@@ -493,8 +475,32 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [user]);
 
-  //socket signal-RRR && fetch data
   useEffect(() => {
+    dispatch(handleGetAllAssets({ token }));
+    dispatch(handleGetYoutubeData({ token }));
+    dispatch(handleGetTextScrollData({ token }));
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: UPDATED_SCHEDULE_DATA,
+      headers: { Authorization: authToken },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        if (
+          Array.isArray(response.data.data) &&
+          response.data.data.length > 0
+        ) {
+        } else {
+          console.warn("No data in the response");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     axios
       .get(GET_SCEDULE_TIMEZONE, {
         headers: {
@@ -537,95 +543,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .catch((error) => {
         console.log(error);
       });
-
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
-
-    newConnection.on("ScreenConnected", (screenConnected) => {
-      console.log("ScreenConnected", screenConnected);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
   }, []);
-
-  useEffect(() => {
-    dispatch(handleGetAllAssets({ token }));
-    dispatch(handleGetYoutubeData({ token }));
-    dispatch(handleGetTextScrollData({ token }));
-  }, []);
-
-  useEffect(() => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: UPDATED_SCHEDULE_DATA,
-      headers: { Authorization: authToken },
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        // console.log(response.data, "response.data[0]");
-        if (
-          Array.isArray(response.data.data) &&
-          response.data.data.length > 0
-        ) {
-          // const { cEndDate, cStartDate, fileType } = response.data.data[0];
-          // setFileType(fileType);
-          // if (connection) {
-          //   // Send the API response to SignalR when the connection is established
-          //   connection
-          //     .invoke("SendMessage", cEndDate, cStartDate, fileType)
-          //     .then(() => {
-          //       console.log("Message sent:", cEndDate, cStartDate, fileType);
-          //     })
-          //     .catch((error) => {
-          //       console.error("Error sending message:", error);
-          //     });
-          // } else {
-          //   console.warn("Connection is not established yet.");
-          // }
-          if (connection) {
-            connection
-              .invoke("ScreenConnected")
-              .then(() => {
-                console.log("SignalR method invoked after screen update");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          }
-        } else {
-          console.warn("No data in the response");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [connection]);
 
   const handleScreenCheckboxChange = (screenID) => {
     const updatedCheckboxes = { ...screenCheckboxes };

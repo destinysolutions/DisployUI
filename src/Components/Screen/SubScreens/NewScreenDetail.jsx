@@ -48,6 +48,7 @@ import { handleGetCompositions } from "../../../Redux/CompositionSlice";
 import { handleGetAllAssets } from "../../../Redux/Assetslice";
 import { handleGetAllSchedule } from "../../../Redux/ScheduleSlice";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { connection } from "../../../SignalR";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
@@ -105,7 +106,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [showTagModal, setShowTagModal] = useState(false);
   const [tags, setTags] = useState([]);
   const ScreenTags = tags.join(", ");
-  const [connection, setConnection] = useState(null);
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   const [setscreenMacID, setSetscreenMacID] = useState("");
   const [assetScreenID, setAssetScreenID] = useState(null);
@@ -230,41 +230,22 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  // useEffect(() => {
-  //   signalROnConfirm();
-  // }, []);
   const signalROnConfirm = () => {
-    const connectSignalR = async () => {
-      console.log("run signal r");
-      const newConnection = new HubConnectionBuilder()
-        .withUrl(SIGNAL_R)
-        .configureLogging(LogLevel.Information)
-        .withAutomaticReconnect()
-        .build();
+    console.log("run signal r");
 
-      newConnection.on("ScreenConnected", (MacID) => {
-        console.log("ScreenConnected", MacID);
+    // connection.on("ScreenConnected", (MacID) => {
+    //   console.log("ScreenConnected", MacID);
+    // });
+
+    try {
+      connection.invoke("ScreenConnected", otpData[0]?.MACID).then(() => {
+        console.log("invoked");
+        console.log("Message sent:", otpData[0]?.MACID);
+        console.log(otpData[0]?.MACID, "otpData[0]?.MACID");
       });
-
-      try {
-        await newConnection
-          .start()
-          .then(() => {
-            console.log("Connection established");
-          })
-          .then(() => {
-            setConnection(newConnection);
-            // Invoke ScreenConnected method
-            console.log(otpData[0]?.MACID, "otpData[0]?.MACID");
-            newConnection.invoke("ScreenConnected", otpData[0]?.MACID);
-            console.log("Message sent:", otpData[0]?.MACID);
-          });
-      } catch (error) {
-        console.error("Error during connection:", error);
-      }
-    };
-
-    connectSignalR(); // Call the combined function
+    } catch (error) {
+      console.error("Error during connection:", error);
+    }
   };
 
   const handleScreenDetail = () => {

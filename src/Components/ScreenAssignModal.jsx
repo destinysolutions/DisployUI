@@ -6,6 +6,8 @@ import { SELECT_BY_USER_SCREENDETAIL, SIGNAL_R } from "../Pages/Api";
 import { handleGetAllAssets } from "../Redux/Assetslice";
 import { handleGetScreen } from "../Redux/Screenslice";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { connection } from "../SignalR";
+import toast from "react-hot-toast";
 
 const ScreenAssignModal = ({
   setAddScreenModal,
@@ -25,65 +27,39 @@ const ScreenAssignModal = ({
   const [screenData, setScreenData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [screenMacID, setScreenMacID] = useState("");
-  const [connection, setConnection] = useState(null);
+
+  const selectScreenRef = useRef(null);
 
   const selectedScreenMacIdsString = Array.isArray(screenMacID)
     ? screenMacID.join(",")
     : "";
 
-  useEffect(() => {
-    const screenAssigned = screenData.filter((item) =>
-      selectedScreens.includes(item?.screenID)
-    );
-    const foundMacID = screenAssigned.map((i) => i.macid);
-    setScreenMacID(foundMacID);
-  });
-  // console.log(screenCheckboxes);
-  const selectScreenRef = useRef(null);
+  console.log(selectedScreenMacIdsString);
+
   const signalROnSave = () => {
-    const connectSignalR = async () => {
-      console.log("run signal r");
-      const newConnection = new HubConnectionBuilder()
-        .withUrl(SIGNAL_R)
-        .configureLogging(LogLevel.Information)
-        .withAutomaticReconnect()
-        .build();
-
-      newConnection.on("ScreenConnected", (MacID) => {
-        console.log("ScreenConnected", MacID);
-      });
-
-      try {
-        await newConnection.start();
-        console.log("Connection established");
-        setConnection(newConnection);
-
-        // Invoke ScreenConnected method
-        await newConnection.invoke(
-          "ScreenConnected",
-          selectedScreenMacIdsString
-        );
-        console.log("Message sent:");
-      } catch (error) {
-        console.error("Error during connection:", error);
-      }
-    };
-
-    connectSignalR(); // Call the combined function
-
-    return () => {
-      if (connection) {
-        connection
-          .stop()
-          .then(() => {
-            console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
+    toast.loading("Saving...");
+    try {
+      // Invoke ScreenConnected method
+      connection
+        .invoke("ScreenConnected", selectedScreenMacIdsString)
+        .then(() => {
+          console.log("func. invoked");
+          toast.remove();
+          handleUpdateScreenAssign(screenCheckboxes);
+          setSelectedScreens([]);
+        })
+        .catch((err) => {
+          toast.remove();
+          console.log("error from invoke", err);
+          toast.error("Something went wrong, try again");
+        });
+    } catch (error) {
+      console.error("Error during connection:", error);
+      toast.error("Something went wrong, try again");
+      toast.remove();
+    }
   };
+
   const handleSelectAllCheckboxChange = (e) => {
     const checked = e.target.checked;
     setSelectAllChecked(checked);
@@ -96,7 +72,9 @@ const ScreenAssignModal = ({
     // Update the selected screens state based on whether "All Select" is checked
     if (checked) {
       const allScreenIds = screenData.map((screen) => screen.screenID);
+      const allScreenmacIds = screenData.map((screen) => screen.macid);
       setSelectedScreens(allScreenIds);
+      setScreenMacID(allScreenmacIds);
     } else {
       setSelectedScreens([]);
     }
@@ -117,6 +95,10 @@ const ScreenAssignModal = ({
     } else {
       updatedSelectedScreens.push(screenID);
     }
+    const screenAssigned = screenData.filter((item) =>
+      updatedSelectedScreens.includes(item?.screenID)
+    );
+    setScreenMacID(screenAssigned.map((i) => i.macid));
 
     // Update the selected screens state
     setSelectedScreens(updatedSelectedScreens);
@@ -131,6 +113,12 @@ const ScreenAssignModal = ({
 
   // get all assets files
   useEffect(() => {
+    const screenAssigned = screenData.filter((item) =>
+      selectedScreens.includes(item?.screenID)
+    );
+    const foundMacID = screenAssigned.map((i) => i.macid);
+    setScreenMacID(foundMacID);
+
     if (user?.userID) {
       setLoading(true);
       axios
@@ -146,16 +134,11 @@ const ScreenAssignModal = ({
           const initialCheckboxes = {};
           if (Array.isArray(fetchedData)) {
             fetchedData.forEach((screen) => {
-              // if (
-              //   screenSelected
-              //     .map((i) => i.trim(""))
-              //     .includes(screen?.screenName)
-              // ) {
-              //   initialCheckboxes[screen.screenID] = true;
-              // } else {
-              //   initialCheckboxes[screen.screenID] = false;
-              // }
-              initialCheckboxes[screen.screenID] = selectedScreens?.includes(screen.screenID) ? true : false;
+              initialCheckboxes[screen.screenID] = selectedScreens?.includes(
+                screen.screenID
+              )
+                ? true
+                : false;
             });
             setScreenCheckboxes(initialCheckboxes);
           }
@@ -363,9 +346,7 @@ const ScreenAssignModal = ({
                     </tr>
                   ))
                 ) : (
-                  <p className="text-center p-2">
-                    No Screen available.
-                  </p>
+                  <p className="text-center p-2">No Screen available.</p>
                 )}
               </tbody>
             </table>
@@ -374,9 +355,8 @@ const ScreenAssignModal = ({
             <button
               className="border-2 border-primary px-5 py-2 rounded-full ml-3"
               onClick={() => {
-                signalROnSave();
-                handleUpdateScreenAssign(screenCheckboxes);
-                setSelectedScreens([]);
+                handleUpdateScreenAssign(screenCheckboxes,selectedScreenMacIdsString);
+                setSelectedScreens([])
               }}
               disabled={selectedScreens?.length === 0}
             >
