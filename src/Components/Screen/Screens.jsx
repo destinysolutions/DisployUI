@@ -371,17 +371,15 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       response
         .then((response) => {
           toast.remove();
-          toast.success("Media Updated.");
-          if (connection) {
-            connection
-              .invoke("ScreenConnected")
-              .then(() => {
-                console.log("SignalR method invoked after Asset update");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          }
+          connection
+            .invoke("ScreenConnected", screenToUpdate?.macid)
+            .then(() => {
+              toast.success("Media Updated.");
+              console.log("SignalR method invoked after Asset update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
           setIsEditingScreen(false);
         })
         .catch((error) => {
@@ -598,94 +596,23 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  // // for call signal R
-  // useEffect(() => {
-  //   const connectSignalR = async () => {
-  //     console.log("run signal r");
-  //     const newConnection = new HubConnectionBuilder()
-  //       .withUrl(SIGNAL_R)
-  //       .configureLogging(LogLevel.Information)
-  //       .withAutomaticReconnect()
-  //       .build();
+  // chagne live status
+  useEffect(() => {
+    console.log("run signal r");
+    connection.on("ScreenConnected", (screenConnected) => {
+      setScreenConnected(screenConnected);
+    });
 
-  //     newConnection.on("ScreenConnected", (screenConnected) => {
-  //       console.log("ScreenConnected", screenConnected);
-  //       setScreenConnected(screenConnected);
-  //     });
-
-  //     newConnection.on("TvStatus", (UserID, ScreenID, status) => {
-  //       console.log("SendTvStatus", UserID, ScreenID, status);
-  //       setSendTvStatus(status);
-  //       setSendTvStatusScreenID(ScreenID);
-  //       // debugger;
-  //       var b = document.getElementById("changetvstatus" + ScreenID);
-  //       b.setAttribute(
-  //         "class",
-  //         "rounded-full px-6 py-2 text-white text-center " +
-  //           (status == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
-  //       );
-  //       b.textContent = status == true ? "Live" : "offline";
-  //     });
-
-  //     try {
-  //       await newConnection.start();
-  //       console.log("Connection established");
-  //       setConnection(newConnection);
-
-  //       // Invoke ScreenConnected method
-  //       await newConnection.invoke("ScreenConnected", "MacID");
-  //       console.log("Message sent:", screenConnected);
-
-  //       // Invoke SendTvStatus method
-  //       //await newConnection.invoke("SendTvStatus", true, "E0:76:D0:32:54:00");
-  //       //console.log("SendTvStatus", 1, "E0:76:D0:32:54:00");
-  //     } catch (error) {
-  //       console.error("Error during connection:", error);
-  //     }
-  //   };
-
-  //   connectSignalR(); // Call the combined function
-
-  //   return () => {
-  //     if (connection) {
-  //       connection
-  //         .stop()
-  //         .then(() => {
-  //           console.log("Connection stopped");
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error stopping connection:", error);
-  //         });
-  //     }
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   if (connection) {
-  //     connection
-  //       .start()
-  //       .then((result) => {
-  //         console.log("Connected!");
-
-  //         console.log("result", result);
-
-  //         connection.on("ScreenConnected", (screenConnected) => {
-  //           console.log("ScreenConnected", screenConnected);
-  //           setScreenConnected(screenConnected);
-  //         });
-
-  //         connection.on("TvStatus", (UserID, ScreenID, status) => {
-  //           console.log("SendTvStatus", UserID, ScreenID, status);
-  //           setSendTvStatus(status);
-  //           setSendTvStatusScreenID(ScreenID);
-  //         });
-
-  //         connection.invoke("ScreenConnected");
-  //         console.log("Message sent:", screenConnected);
-  //       })
-  //       .catch((e) => console.log("Connection failed: ", e));
-  //   }
-  // }, [connection]);
+    connection.on("TvStatus", (UserID, ScreenID, status) => {
+      var b = document.getElementById("changetvstatus" + ScreenID);
+      b.setAttribute(
+        "class",
+        "rounded-full px-6 py-2 text-white text-center " +
+          (status == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
+      );
+      b.textContent = status == true ? "Live" : "offline";
+    });
+  }, []);
 
   // fetch all data
   useEffect(() => {
@@ -762,102 +689,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     setShowActionBox(false);
   }
 
-  // useEffect(() => {
-  //   const newConnection = new HubConnectionBuilder()
-  //     .withUrl(SIGNAL_R)
-  //     .configureLogging(LogLevel.Information)
-  //     .build();
-
-  //   newConnection.on("ChangeTVStatus", (status) => {
-  //     console.log("ChangeTVStatus", status);
-  //     //setScreenConnected(screenConnected);
-  //   });
-
-  //   newConnection
-  //     .start()
-  //     .then(() => {
-  //       console.log("Connection established");
-  //       setConnection(newConnection);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error starting connection:", error);
-  //     });
-
-  //   return () => {
-  //     if (newConnection) {
-  //       newConnection
-  //         .stop()
-  //         .then(() => {
-  //           console.log("Connection stopped");
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error stopping connection:", error);
-  //         });
-  //     }
-  //   };
-  // }, []);
-  // useEffect(() => {
-  //   if (connection) {
-  //     connection
-  //       .invoke("ChangeTVStatus", 1,"")
-  //       .then(() => {
-  //         //console.log("Message sent:", screenConnected);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error sending message:", error);
-  //       });
-  //   } else {
-  //     console.warn("Connection is not established yet.");
-  //   }
-  // }, [connection]);
-  // useEffect(() => {
-  //   const newConnection = new HubConnectionBuilder()
-  //     .withUrl(SIGNAL_R)
-  //     .configureLogging(LogLevel.Information)
-  //     .build();
-
-  //   newConnection.on("TvStatus", (status) => {
-  //     console.log("SendTvStatus", status);
-  //     //setSendTvStatus(sendTvStatus);
-  //   });
-
-  //   newConnection
-  //     .start()
-  //     .then(() => {
-  //       console.log("Connection established");
-  //       setConnection(newConnection);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error starting connection:", error);
-  //     });
-
-  //   return () => {
-  //     if (newConnection) {
-  //       newConnection
-  //         .stop()
-  //         .then(() => {
-  //           console.log("Connection stopped");
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error stopping connection:", error);
-  //         });
-  //     }
-  //   };
-  // }, []);
-  // useEffect(() => {
-  //   if (connection) {
-  //     connection
-  //       .invoke("SendTvStatus", true, "E0:76:D0:32:54:00")
-  //       .then(() => {
-  //         console.log("SendTvStatus", true, "E0:76:D0:32:54:00");
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error sending message:", error);
-  //       });
-  //   } else {
-  //     console.warn("Connection is not established yet.");
-  //   }
-  // }, [connection]);
   const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
   const [sortColumn, setSortColumn] = useState(null); // column name or null if not sorted
   const handleSort = (column) => {

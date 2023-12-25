@@ -107,6 +107,18 @@ const App = () => {
         console.log("signal connected");
       });
     }
+    return () => {
+      if (connection.state==="Connected") {
+        connection
+          .stop()
+          .then(() => {
+            console.log("Connection stopped");
+          })
+          .catch((error) => {
+            console.error("Error stopping connection:", error);
+          });
+      }
+    };
   }, [connection]);
 
   return (

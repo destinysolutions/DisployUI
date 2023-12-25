@@ -32,6 +32,7 @@ import { MdOutlineGroups, MdOutlineModeEdit } from "react-icons/md";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import ScreenAssignModal from "../ScreenAssignModal";
+import { connection } from "../../SignalR";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -56,13 +57,13 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const [compositionId, setCompositionId] = useState("");
   const [searchComposition, setSearchComposition] = useState("");
   const [compostionAllData, setCompostionAllData] = useState([]);
-  const [connection, setConnection] = useState(null);
   const [filteredCompositionData, setFilteredCompositionData] = useState([]);
   const [tags, setTags] = useState([]);
   const [showTagModal, setShowTagModal] = useState(false);
   const [screenType, setScreenType] = useState("");
   const [updateTagComposition, setUpdateTagComposition] = useState(null);
   const [screenSelected, setScreenSelected] = useState([]);
+  const [screenMacids, setScreenMacids] = useState(null);
 
   const modalRef = useRef(null);
   const addScreenRef = useRef(null);
@@ -123,18 +124,16 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
+        // console.log(JSON.stringify(response.data));
         if (response.data.status == 200) {
-          if (connection) {
-            connection
-              .invoke("ScreenConnected")
-              .then(() => {
-                // console.log("SignalR method invoked after screen update");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          }
+          connection
+            .invoke("ScreenConnected")
+            .then(() => {
+              console.log("SignalR method invoked after screen update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
           setSelectScreenModal(false);
           setAddScreenModal(false);
         }
@@ -196,16 +195,14 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
-          if (connection) {
-            connection
-              .invoke("ScreenConnected")
-              .then(() => {
-                // console.log("SignalR method invoked after screen update");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          }
+          connection
+            .invoke("ScreenConnected")
+            .then(() => {
+              // console.log("SignalR method invoked after screen update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
           setSelectScreenModal(false);
           setAddScreenModal(false);
         }
@@ -346,13 +343,14 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const handleUpdateScreenAssign = (screenIds) => {
+  const handleUpdateScreenAssign = (screenIds, macids) => {
     let idS = "";
     for (const key in screenIds) {
       if (screenIds[key] === true) {
         idS += `${key},`;
       }
     }
+
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -362,21 +360,29 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         "Content-Type": "application/json",
       },
     };
+
     toast.loading("Saving...");
     axios
       .request(config)
       .then((response) => {
-        console.log("response:", response.data.data);
         if (response.data.status == 200) {
-          if (connection) {
+          try {
+            // Invoke ScreenConnected method
             connection
-              .invoke("ScreenConnected")
+              .invoke("ScreenConnected", macids)
               .then(() => {
-                console.log("SignalR method invoked after screen update");
+                console.log("func. invoked");
+                toast.remove();
               })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
+              .catch((err) => {
+                toast.remove();
+                console.log("error from invoke", err);
+                toast.error("Something went wrong, try again");
               });
+          } catch (error) {
+            console.error("Error during connection:", error);
+            toast.error("Something went wrong, try again");
+            toast.remove();
           }
           setSelectScreenModal(false);
           setAddScreenModal(false);
@@ -422,39 +428,12 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
-
-    newConnection.on("ScreenConnected", (screenConnected) => {
-      console.log("ScreenConnected", screenConnected);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
     loadComposition();
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
   }, []);
+
+  connection.on("ScreenConnected", (screenConnected) => {
+    console.log("on--------------->", screenConnected);
+  });
 
   // preview modal
   useEffect(() => {
@@ -572,7 +551,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     setCompositionData(sortedData);
   };
 
-  // console.log(layotuDetails);
+  // console.log(screenMacids);
 
   return (
     <>
@@ -903,6 +882,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                       setScreenSelected(
                                         composition?.screenIDs?.split(",")
                                       );
+                                      setScreenMacids(composition?.maciDs);
                                     }}
                                   >
                                     Set to Screens

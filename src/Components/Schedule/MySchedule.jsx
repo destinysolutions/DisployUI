@@ -36,6 +36,7 @@ import {
   handleDeleteScheduleById,
   handleGetAllSchedule,
 } from "../../Redux/ScheduleSlice";
+import { connection } from "../../SignalR";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //for action popup
@@ -48,7 +49,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     : "";
   const [scheduleId, setScheduleId] = useState("");
   const [searchSchedule, setSearchSchedule] = useState("");
-  const [connection, setConnection] = useState(null);
   const [selectAll, setSelectAll] = useState(false);
   const [filteredScheduleData, setFilteredScheduleData] = useState([]);
   const [updateTagSchedule, setUpdateTagSchedule] = useState(null);
@@ -117,7 +117,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectAll(false);
   };
 
-  const handleUpdateScreenAssign = (screenIds) => {
+  const handleUpdateScreenAssign = (screenIds, macids) => {
     let idS = "";
     for (const key in screenIds) {
       if (screenIds[key] === true) {
@@ -139,16 +139,18 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
-          if (connection) {
-            connection
-              .invoke("ScreenConnected")
-              .then(() => {
-                // console.log("SignalR method invoked after screen update");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          }
+          connection
+            .invoke("ScreenConnected", macids)
+            .then(() => {
+              console.log("func. invoked");
+              toast.remove();
+            })
+            .catch((err) => {
+              toast.remove();
+              console.log("error from invoke", err);
+              toast.error("Something went wrong, try again");
+            });
+
           setSelectScreenModal(false);
           setAddScreenModal(false);
           setShowActionBox(false);
@@ -246,38 +248,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     dispatch(handleGetAllSchedule({ token }));
-
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
-
-    newConnection.on("ScreenConnected", (screenConnected) => {
-      // console.log("ScreenConnected", screenConnected);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        // console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            // console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
   }, []);
 
   // add screen modal
