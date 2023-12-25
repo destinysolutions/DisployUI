@@ -68,53 +68,65 @@ const EventEditor = ({
   // console.log("editedStartTime",editedStartTime);
   const handleStartTimeChange = (e) => {
     const newStartTime = e.target.value;
-    if (newStartTime < editedEndTime) {
-      setEditedStartTime(newStartTime);
-    } else {
-      toast.error("Please change End Time.");
-      console.log("Select start time must be after or equal to current date");
-    }
+    // if (newStartTime < editedEndTime) {
+    setEditedStartTime(newStartTime);
+    // } else {
+    //   toast.error("Please change End Time.");
+    //   console.log("Select start time must be after or equal to current date");
+    // }
   };
 
   // console.log("newEndTime",editedEndTime);
   const handleEndTimeChange = (e) => {
     const newEndTime = e.target.value;
-    if (newEndTime > editedStartTime) {
-      setEditedEndTime(newEndTime);
-    } else {
-      console.log("Select End time must be after or equal to start time");
-      toast.error("Please change Start Time.");
-    }
+    // if (newEndTime > editedStartTime) {
+    setEditedEndTime(newEndTime);
+    // } else {
+    //   console.log("Select End time must be after or equal to start time");
+    //   toast.error("Please change Start Time.");
+    // }
   };
 
   const currentDate = moment();
   const today = moment().format("YYYY-MM-DD");
   const handleStartDateChange = (e) => {
     const newStartDate = e.target.value;
-    const givenDate = moment(newStartDate);
-    if (givenDate.isSameOrAfter(currentDate, "day")) {
-      // Calculate and update the end date based on the new start date
-      if (!showRepeatSettings) {
-        setEditedStartDate(newStartDate);
-        const newEndDate = calculateEndDate(newStartDate, editedStartTime);
-        setEditedEndDate(newEndDate);
-      }
-
-      if (showRepeatSettings && newStartDate <= editedEndDate) {
-        setEditedStartDate(newStartDate);
-      } else if (showRepeatSettings) {
-        toast.error("Please change End Date.");
-      }
-    } else {
-      toast.error("Please select a date in the present or future.");
+    if (!showRepeatSettings) {
+      setEditedStartDate(newStartDate);
+      const newEndDate = calculateEndDate(newStartDate, editedStartTime);
+      setEditedEndDate(newEndDate);
     }
+
+    if (showRepeatSettings) {
+      setEditedStartDate(newStartDate);
+    }
+    // const givenDate = moment(newStartDate);
+    // if (givenDate.isSameOrAfter(currentDate, "day")) {
+    // Calculate and update the end date based on the new start date
+    // if (!showRepeatSettings) {
+    // setEditedStartDate(newStartDate);
+    // const newEndDate = calculateEndDate(newStartDate, editedStartTime);
+    // setEditedEndDate(newEndDate);
+    // }
+
+    // if (showRepeatSettings && newStartDate <= editedEndDate) {
+    // setEditedStartDate(newStartDate);
+    // }
+    //  else if (showRepeatSettings) {
+    //   toast.error("Please change End Date.");
+    // }
+    // }
+    // else {
+    //   toast.error("Please select a date in the present or future.");
+    // }
   };
+
 
   const handleEndDateChange = (e) => {
     const newStartDate = e.target.value;
-    if (newStartDate > editedStartDate) {
-      setEditedEndDate(newStartDate);
-    }
+    // if (newStartDate > editedStartDate) {
+    setEditedEndDate(newStartDate);
+    // }
 
     // Calculate and update the end date based on the new start date
     // const newEndDate = calculateEndDate(newStartDate, editedStartTime);
@@ -254,6 +266,29 @@ const EventEditor = ({
     if (!selectedAsset) {
       toast.remove();
       toast.error("Please select Asset");
+      return;
+    }
+    if (editedStartDate < currentDate.format("YYYY-MM-DD")) {
+      toast.remove();
+      toast.error("Please Change Start Date.");
+      return;
+    } else if (showRepeatSettings) {
+      if (editedEndDate < currentDate.format("YYYY-MM-DD")) {
+        toast.remove();
+        toast.error("Please Change End Date.");
+        return;
+      } else if (editedEndDate < editedStartDate) {
+        toast.remove();
+        toast.error("Please Change End Date.");
+        return;
+      } else if (editedStartTime > editedEndTime) {
+        toast.remove();
+        toast.error("Please Change End Time.");
+        return;
+      }
+    } else if (editedEndTime < editedStartTime) {
+      toast.remove();
+      toast.error("Please Change End Time.");
       return;
     }
     if (
@@ -518,7 +553,7 @@ const EventEditor = ({
           assetId = selectedEvent.asset;
         }
         const previousSelectedAsset = allAssets.find(
-          (asset) => asset.assetID === assetId
+          (asset) => asset.assetID === assetId && asset?.assetName !== "New Folder"
         );
         if (previousSelectedAsset) {
           setSelectedAsset(previousSelectedAsset);
@@ -534,7 +569,7 @@ const EventEditor = ({
         );
         setEditedEndTime(moment(selectedEvent.end).format("HH:mm"));
         const selectedAsset = allAssets.find(
-          (asset) => selectedEvent?.asset === asset?.assetID
+          (asset) => selectedEvent?.asset === asset?.assetID && asset?.assetName !== "New Folder"
         );
         setSelectedAsset(selectedAsset);
       } else if (selectedSlot) {
@@ -734,7 +769,7 @@ const EventEditor = ({
                                 <td className="border-b border-[#eee]">
                                   <p className="text-black font-medium">
                                     {moment(item.createdDate).format(
-                                      "YYYY-MM-DD HH:mm"
+                                      "DD-MM-YYYY HH:mm"
                                     )}
                                   </p>
                                 </td>
