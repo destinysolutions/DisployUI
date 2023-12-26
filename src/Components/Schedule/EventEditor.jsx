@@ -121,7 +121,6 @@ const EventEditor = ({
     // }
   };
 
-
   const handleEndDateChange = (e) => {
     const newStartDate = e.target.value;
     // if (newStartDate > editedStartDate) {
@@ -324,15 +323,15 @@ const EventEditor = ({
       setSelectedRepeatDay(repeatDayValue);
     }
 
-    if (
-      moment(selectedEvent?.end).format("YYYY-MM-DD") !== editedEndDate &&
-      !selectAllDays && // Check if no checkbox is selected
-      !areSpecificDaysSelected // Check if no individual day is selected
-    ) {
-      toast.remove();
-      toast.error("Please select repeat for all days otherwise anyone day");
-      return;
-    }
+    // if (
+    //   moment(selectedEvent?.end).format("YYYY-MM-DD") !== editedEndDate &&
+    //   !selectAllDays && // Check if no checkbox is selected
+    //   !areSpecificDaysSelected // Check if no individual day is selected
+    // ) {
+    //   toast.remove();
+    //   toast.error("Please select repeat for all days otherwise anyone day");
+    //   return;
+    // }
     // Check if the end date is modified
     // const isEndDateModified =
     //   selectedEvent?.end && selectedEvent.end.getTime() !== end.getTime();
@@ -377,15 +376,13 @@ const EventEditor = ({
       setSelectedRepeatDay("");
     } else {
       if (selectedEvent) {
-        console.log("selected");
         onSave(
           selectedEvent?.id || selectedEvent?.eventId,
           eventData,
           updateAllValueFlag,
           setShowRepeatSettings(false)
-          );
-        } else {
-        console.log("selected not");
+        );
+      } else {
         onSave(
           null,
           eventData,
@@ -453,7 +450,6 @@ const EventEditor = ({
     axios
       .request(config)
       .then((response) => {
-        console.log(response, "responsedelete");
         onDelete(selectedEvent.id);
         onClose();
         toast.remove();
@@ -555,7 +551,8 @@ const EventEditor = ({
           assetId = selectedEvent.asset;
         }
         const previousSelectedAsset = allAssets.find(
-          (asset) => asset.assetID === assetId && asset?.assetName !== "New Folder"
+          (asset) =>
+            asset.assetID === assetId && asset?.assetName !== "New Folder"
         );
         if (previousSelectedAsset) {
           setSelectedAsset(previousSelectedAsset);
@@ -571,7 +568,9 @@ const EventEditor = ({
         );
         setEditedEndTime(moment(selectedEvent.end).format("HH:mm"));
         const selectedAsset = allAssets.find(
-          (asset) => selectedEvent?.asset === asset?.assetID && asset?.assetName !== "New Folder"
+          (asset) =>
+            selectedEvent?.asset === asset?.assetID &&
+            asset?.assetName !== "New Folder"
         );
         setSelectedAsset(selectedAsset);
       } else if (selectedSlot) {
@@ -643,7 +642,7 @@ const EventEditor = ({
                       className="w-full lg:table-fixed md:table-fixed sm:table-auto xs:table-auto text-sm break-words schedualtime-table"
                       cellPadding={10}
                     >
-                      <thead>
+                      <thead className="sticky z-20">
                         <tr className="bg-lightgray text-left mb-5">
                           <th className="min-w-[220px] py-4 px-4 font-semibold text-black md:pl-10">
                             Assets
@@ -685,53 +684,46 @@ const EventEditor = ({
                                       <img
                                         src={item.assetFolderPath}
                                         alt={item.assetName}
-                                        className="rounded-2xl min-h-[20vh] max-h-[20vh] w-full object-cover"
-                                      />
-                                    </div>
-                                  )}
-                                  {item.assetType === "OnlineVideo" && (
-                                    <div className="imagebox rounded-2xl z-0 relative">
-                                      <video
-                                        controls
-                                        autoPlay={true}
-                                        className="rounded-2xl min-h-[20vh] max-h-[20vh] w-full object-cover"
-                                      >
-                                        <source
-                                          src={item.assetFolderPath}
-                                          type="video/mp4"
+                                        // className="rounded-2xl max-w-[10vw] min-w-[10vw] min-h-[15vh] max-h-[15vh]  object-cover" 
+                                      className="videoTab rounded-2xl object-cover"
+
                                         />
-                                        Your browser does not support the video
-                                        tag.
-                                      </video>
                                     </div>
                                   )}
+
                                   {item.assetType === "Image" && (
                                     <img
                                       src={item.assetFolderPath}
                                       alt={item.assetName}
-                                      className="rounded-2xl min-h-[20vh] object-cover max-h-[20vh] w-full"
-                                    />
+                                      // className="rounded-2xl max-w-[10vw] min-w-[10vw] min-h-[15vh] max-h-[15vh] object-cover"
+                                      className="videoTab rounded-2xl object-cover"
+                                      />
                                   )}
-                                  {item.assetType === "Video" && (
-                                    <div className="relative videobox z-0 w-full min-h-[20vh] max-h-[20vh]">
+                                  {(item.assetType === "Video" ||
+                                    item.assetType === "OnlineVideo") && (
+                                    <div className="max-w-[10vw] min-w-[10vw] min-h-[10vh] max-h-[10vh]">
                                       <ReactPlayer
                                         url={item?.assetFolderPath}
-                                        className="w-full rounded-2xl relative z-20 h-full videoinner object-fill"
+                                        className="rounded-2xl videoTab "
                                         controls={false}
                                         playing={true}
                                       />
                                     </div>
                                   )}
-                                  {item.youTubeURL && (
-                                    <div className="relative rounded-2xl videobox z-0 w-full min-h-[20vh] max-h-[20vh]">
+                                  {/* {item.youTubeURL && (
+                                    <div className=" rounded-2xl z-0 max-w-[10vw] min-w-[10vw] min-h-[20vh] max-h-[20vh]">
                                       <ReactPlayer
                                         url={item?.youTubeURL}
-                                        className="w-full relative rounded-2xl z-20 h-full videoinner object-fill"
+                                        className="w-full rounded-2xl z-20 h-full  object-fill"
                                         controls={false}
                                         playing={true}
+                                        style={{
+                                          width: "100px !important",
+                                          height: "100px !important",
+                                        }}
                                       />
                                     </div>
-                                  )}
+                                  )} */}
                                   {item.text && (
                                     <div className="w-full h-full ">
                                       <marquee

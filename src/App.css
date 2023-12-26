@@ -312,7 +312,8 @@ select:-webkit-autofill:focus {
   border-radius: 50px;
 }
 
-.link-items:focus::before, .link-items.active::before {
+.link-items:focus::before,
+.link-items.active::before {
   background: #fff;
   transition: 2s all;
 }
@@ -1004,4 +1005,8 @@ button.daysbtn {
 .react-tel-input .flag-dropdown {
   border: 1px solid black;
   background-color: white;
+}
+
+.videoTab {
+  @apply  min-w-[8rem] relative z-0 max-w-[8rem] h-20 !important;
 }
