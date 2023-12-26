@@ -45,7 +45,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
     : "";
-    const [selectdata, setSelectData] = useState({});
+  const [selectdata, setSelectData] = useState({});
   const [connection, setConnection] = useState(null);
   const [showTagModal, setShowTagModal] = useState(false);
   const [tags, setTags] = useState([]);
@@ -262,8 +262,8 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const FetchData = () =>{
-
+  const FetchData = () => {
+    
     setLoading(true);
     axios
       .get(GET_ALL_TEXT_SCROLL_INSTANCE, {
@@ -275,12 +275,11 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
         setInstanceData(response.data.data);
         setLoading(false);
       });
-  }
+  };
 
   useEffect(() => {
-    FetchData()
+    FetchData();
   }, []);
-
 
   useEffect(() => {
     const newConnection = new HubConnectionBuilder()
@@ -355,14 +354,14 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
             </h1>
             <div className="lg:flex">
               <Link to="/textscrolldetail">
-              <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-              <TbAppsFilled className="text-2xl mr-2 text-white" />
-              New Instance
-            </button>
+                <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  <TbAppsFilled className="text-2xl mr-2 text-white" />
+                  New Instance
+                </button>
               </Link>
               <Link to="/apps">
-                <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 text-white sm:px-5 bg-primary py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white  hover:bg-primary-500 hover:shadow-lg dark:bg-blue-600 ">
-                  <MdArrowBackIosNew className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
+                <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  <MdArrowBackIosNew className="text-2xl mr-2 text-white rounded-full p-1" />
                   Back
                 </button>
               </Link>

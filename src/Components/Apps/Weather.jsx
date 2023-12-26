@@ -632,8 +632,8 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                 </button>
               </Link>
               <Link to="/apps">
-                <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 text-white sm:px-5 bg-primary py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white  hover:bg-primary-500 hover:shadow-lg dark:bg-blue-600 ">
-                  <MdArrowBackIosNew className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
+                <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  <MdArrowBackIosNew className="text-2xl mr-2 text-white rounded-full p-1" />
                   Back
                 </button>
               </Link>
@@ -646,7 +646,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                   Weather Instance
                 </h1>
                 <div className="flex items-center">
-                {/* <button
+                  {/* <button
                 onClick={() => setAppDetailModal(true)}
                 className="w-8 h-8 ml-2 border-primary hover:bg-SlateBlue hover:border-SlateBlue items-center border-2 rounded-full p-1 text-xl   hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
               >
@@ -781,7 +781,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               Add tags +
                             </h4>
-                            { /*  {item?.tags ? (
+                            {/*  {item?.tags ? (
                               <div className="flex items-center justify-center gap-2">
                                 <h4 className="text-sm font-normal cursor-pointer break-all">
                                   {item?.tags !== null

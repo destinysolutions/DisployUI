@@ -196,6 +196,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleAssetAdd = (asset) => {
+    setAssetPreview(asset)
     setSelectedAsset(asset);
   };
 

@@ -311,7 +311,7 @@ const Defaultmedia = () => {
       </div>
       {mediaTabs === 1 && (
         <div className="grid lg:grid-cols-2 w-full h-auto place-items-center items-center p-6">
-        <div className="lg:w-1/2 w-full">
+          <div className="lg:w-1/2 w-full">
             <div className="flex items-center justify-center mb-5 flex-wrap">
               <label className="mr-3 text-primary lg:text-lg md:text-lg sm:text-base xs:text-base font-medium py-2">
                 Asset / Playing:
@@ -325,9 +325,11 @@ const Defaultmedia = () => {
                     assetName: e.target.value,
                   });
                 }}
-                className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm   hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm line-clamp-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
               >
-                {assetName === "" ? "No image" : assetName}
+                <p className="line-clamp-3">
+                  {assetName === "" ? "No image" : assetName}
+                </p>
                 <AiOutlineCloudUpload className="ml-2 min-w-[1.5rem] min-h-[1.5rem]" />
               </button>
               {showAssetModal && (
@@ -488,42 +490,44 @@ const Defaultmedia = () => {
                                 </tr>
                               </thead>
                               {filteredData.length > 0
-                                ? filteredData.map((asset) => (
-                                    <tbody key={asset.assetID}>
-                                      <tr
-                                        className={`${
-                                          selectedAsset === asset ||
-                                          selectedAsset?.assetName === asset?.assetName || assetName === asset?.assetName
-                                            ? "bg-[#f3c953]"
-                                            : ""
-                                        } border-b border-[#eee] `}
-                                        onClick={() => {
-                                          handleAssetAdd(asset);
-                                          setAssetPreviewPopup(true);
-                                        }}
-                                      >
-                                        <td className="p-3 text-left">
-                                          {asset.assetName}
-                                        </td>
-                                        <td className="p-3 text-center">
-                                          {moment(asset.createdDate).format(
-                                            "YYYY-MM-DD hh:mm"
-                                          )}
-                                        </td>
-                                        <td className="p-3 text-center">
-                                          {asset.fileSize}
-                                        </td>
-                                        <td className="p-3 text-center">
-                                          {asset.assetType}
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  ))
-                                : (
-                                  <div>
-                                  No data Found
-                                  </div>
-                                )}
+                                 ? (filteredData.map((asset) => (
+                                  <tbody key={asset.assetID}>
+                                    <tr
+                                      className={`${
+                                        selectedAsset === asset ||
+                                        selectedAsset?.assetName ===
+                                          asset?.assetName ||
+                                        assetName === asset?.assetName
+                                          ? "bg-[#f3c953]"
+                                          : ""
+                                      } border-b border-[#eee] `}
+                                      onClick={() => {
+                                        handleAssetAdd(asset);
+                                        setAssetPreviewPopup(true);
+                                      }}
+                                    >
+                                      <td className="p-3 text-left">
+                                        {asset.assetName}
+                                      </td>
+                                      <td className="p-3 text-center">
+                                        {moment(asset.createdDate).format(
+                                          "YYYY-MM-DD hh:mm"
+                                        )}
+                                      </td>
+                                      <td className="p-3 text-center">
+                                        {asset.fileSize}
+                                      </td>
+                                      <td className="p-3 text-center">
+                                        {asset.assetType}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                ))
+                              ) : (
+                                <div>
+                                No data Found
+                                </div>
+                              )}
                             </table>
                             {assetPreviewPopup && (
                               <div className="fixed left-1/2 -translate-x-1/2 w-10/12 h-10/12 top-10 bg-black z-50 inset-0">

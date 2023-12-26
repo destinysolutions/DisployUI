@@ -787,7 +787,7 @@ const EventEditor = ({
                         ) : searchAsset !== "" ? (
                           <tr>
                             <td
-                              colSpan={7}
+                              colSpan={6}
                               className="text-center text-xl font-semibold h-60"
                             >
                               <p>No assets found related "{searchAsset}"</p>

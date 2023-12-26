@@ -69,7 +69,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
 
   const handleImageUpload = () => {
     setUploadInProgress(true);
-    selectedImages.forEach((image,index) => {
+    selectedImages.forEach((image, index) => {
       const formData = new FormData();
       formData.append("AssetFolderPath", image.urls.full);
       formData.append("Operation", "Insert");
@@ -85,7 +85,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
         [image.id]: 0,
       }));
       const response = dispatch(handleGetStorageDetails({ token }));
-    
+
       response.then((res) => {
         if (res?.payload?.data?.usedInPercentage == 100) {
           setUploadInProgress(false);
@@ -113,9 +113,14 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
                 ...prevStatus,
                 [image.id]: "success",
               }));
-              if(selectedImages?.length - 1 === index){
+              if (selectedImages?.length - 1 === index) {
                 toast.success("Uploaded Successfully.");
-                navigate(-1);
+                // navigate(-1);
+                if (navigate(-1)) {
+                  navigate(-1);
+                } else {
+                  window.close();
+                }
               }
               setUploadInProgress(false);
             })

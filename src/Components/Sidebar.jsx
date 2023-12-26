@@ -313,10 +313,10 @@ const Sidebar = ({ sidebarOpen }) => {
           </div>
         </>
       ) : (
-        <div className="menu-bars self-center">
+        <div className="menu-bars self-center z-[9999] min-h-[60px] max-h-[60px] flex items-center">
           <HiOutlineMenuAlt2
             onClick={handleSidebarToggle}
-            className={` text-SlateBlue text-3xl ${mobileSidebar && "hidden"} ${
+            className={` text-SlateBlue text-3xl fixed ${mobileSidebar && "hidden"} ${
               mobileSidebar ? "ml-0" : "ml-5"
             }`}
           />
@@ -330,7 +330,7 @@ const Sidebar = ({ sidebarOpen }) => {
           <div className="w-56 fixed top-0 left-0 z-[9999] px-4 h-screen rounded-tr-[50px] bg-primary">
             <div className="flex items-center py-6">
               <img
-                src="/DisployImg/logo.svg"
+                src={logo}
                 alt="Logo"
                 className="cursor-pointer duration-500 w-44"
               />

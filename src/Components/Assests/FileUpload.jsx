@@ -209,6 +209,11 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
 
           if (selectedImages?.length - 1 === index && response.status === 200) {
             toast.success(`File uploaded successfully.`);
+            if (navigate(-1)) {
+              navigate(-1);
+            } else {
+              window.close();
+            }
           }
           if (response.status !== 200) {
             toast.error(`Upload failed for file ${image.name}`);
@@ -222,7 +227,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
       await Promise.all(uploadPromises);
 
       // Once all files are uploaded, navigate to the desired location
-      navigate(-1);
+      // navigate(-1);
     } catch (error) {
       console.error("An error occurred during upload:", error);
     } finally {
