@@ -62,7 +62,7 @@ import {
   handleGetTextScrollData,
   handleGetYoutubeData,
 } from "../../Redux/AppsSlice";
-import { connection } from "../../SignalR";
+import { TvStatus, connection } from "../../SignalR";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -220,7 +220,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       handleDeleteAllScreen({ userID: user?.userID, token })
     );
 
-    console.log("macids",allScreenMacids);
+    console.log("macids", allScreenMacids);
     if (!response) return;
     console.log("signal r");
     response
@@ -592,22 +592,22 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   // chagne live status
-  useEffect(() => {
-    console.log("run signal r");
-    connection.on("ScreenConnected", (screenConnected) => {
-      setScreenConnected(screenConnected);
-    });
+  // useEffect(() => {
+  //   // console.log("run signal r");
+  //   connection.on("ScreenConnected", (screenConnected) => {
+  //     setScreenConnected(screenConnected);
+  //   });
 
-    connection.on("TvStatus", (UserID, ScreenID, status) => {
-      var b = document.getElementById("changetvstatus" + ScreenID);
-      b.setAttribute(
-        "class",
-        "rounded-full px-6 py-2 text-white text-center " +
-          (status == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
-      );
-      b.textContent = status == true ? "Live" : "offline";
-    });
-  }, []);
+  //   connection.on("TvStatus", (UserID, ScreenID, status) => {
+  //     var b = document.getElementById("changetvstatus" + ScreenID);
+  //     b.setAttribute(
+  //       "class",
+  //       "rounded-full px-6 py-2 text-white text-center " +
+  //         (status == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
+  //     );
+  //     b.textContent = status == true ? "Live" : "offline";
+  //   });
+  // }, []);
 
   // fetch all data
   useEffect(() => {
@@ -1159,7 +1159,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
                       {statusContentVisible && (
                         <td className="p-2 text-center">
-                          <button
+                          <span
                             id={`changetvstatus${screen.screenID}`}
                             className={`rounded-full px-6 py-2 text-white text-center ${
                               screen.screenStatus == 1
@@ -1168,7 +1168,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             }`}
                           >
                             {screen.screenStatus == 1 ? "Live" : "offline"}
-                          </button>
+                          </span>
                         </td>
                       )}
                       {/* {lastSeenContentVisible && (

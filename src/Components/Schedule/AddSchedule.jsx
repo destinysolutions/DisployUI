@@ -121,6 +121,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Fetch events associated with the scheduleId
   const loadEventsForSchedule = (scheduleId) => {
+    console.log("running",scheduleId);
     axios
       .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`, {
         headers: {
@@ -327,6 +328,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response?.data?.status == 200) {
           const fetchedData = response.data.data.eventTables;
+          // console.log(fetchedData);
           const updateEvent = fetchedData.map((item) => ({
             id: item.eventId,
             title: item.title,
@@ -340,44 +342,38 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           toast.remove();
 
           loadEventsForSchedule(scheduleIdToUse);
-
-          if (eventId) {
-            const updatedEvent = fetchedData.find(
-              (event) => event.eventId === eventId
-            );
-            connection
-              .invoke("ScreenConnected", myEvents[0]?.macids)
-              .then(() => {
-                console.log("SignalR invoked");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          }
-
-          if (eventId) {
-            const updatedEventsMap = Object.fromEntries(
-              updateEvent.map((event) => [event.id, event])
-            );
-            const updatedMyEvents = myEvents.map((event) => {
-              const updatedEvent = updatedEventsMap[event.id];
-              return updatedEvent ? { ...event, ...updatedEvent } : event;
+          connection
+            .invoke("ScreenConnected", myEvents[0]?.macids)
+            .then(() => {
+              console.log("SignalR invoked");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
             });
-            // console.log(updatedMyEvents,myEvents);
-            setEvents(updatedMyEvents);
-
-            if (selectedEvent && selectedEvent.eventId === eventId) {
-              const updatedEvent = fetchedData.find(
-                (event) => event.eventId === eventId
-              );
-              if (updatedEvent) {
-                setSelectedEvent(updatedEvent);
-              }
-            }
-          } else {
-            // Add new event to events
             setEvents((prevEvents) => [...prevEvents, ...updateEvent]);
-          }
+
+          // if (eventId) {
+          //   const updatedEventsMap = Object.fromEntries(
+          //     updateEvent.map((event) => [event.id, event])
+          //   );
+          //   const updatedMyEvents = myEvents.map((event) => {
+          //     const updatedEvent = updatedEventsMap[event.id];
+          //     return updatedEvent ? { ...event, ...updatedEvent } : event;
+          //   });
+          //   // console.log(updatedMyEvents,myEvents);
+          //   setEvents(updatedMyEvents);
+
+          //   if (selectedEvent && selectedEvent.eventId === eventId) {
+          //     const updatedEvent = fetchedData.find(
+          //       (event) => event.eventId === eventId
+          //     );
+          //     if (updatedEvent) {
+          //       setSelectedEvent(updatedEvent);
+          //     }
+          //   }
+          // } else {
+          //   // Add new event to events
+          // }
         }
       })
       .catch((error) => {

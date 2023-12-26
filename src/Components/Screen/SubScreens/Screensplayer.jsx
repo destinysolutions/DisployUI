@@ -43,7 +43,7 @@ import {
 } from "../../../Redux/AppsSlice";
 import ShowAssetModal from "../../ShowAssetModal";
 import { handleUpdateScreenAsset } from "../../../Redux/Screenslice";
-import { connection } from "../../../SignalR";
+import { TvStatus, connection } from "../../../SignalR";
 
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
@@ -903,6 +903,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     // });
   };
 
+
+  console.log(screenPreviewData);
   return (
     <>
       {showAssetModal && (
@@ -1413,9 +1415,16 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               </p>
                             </td>
                             <td className="text-left">
-                              <button className="bg-gray py-2 px-8 rounded-full text-primary hover:bg-primary hover:text-white">
-                                Offline
-                              </button>
+                            <span
+                            id={`changetvstatus${screen.screenID}`}
+                            className={`rounded-full px-6 py-2 text-white text-center ${
+                              screen.screenStatus == 1
+                                ? "bg-[#3AB700]"
+                                : "bg-[#FF0000]"
+                            }`}
+                          >
+                            {screen.screenStatus == 1 ? "Live" : "offline"}
+                          </span>
                             </td>
                           </tr>
                           <tr className="border-b border-[#D5E3FF]">

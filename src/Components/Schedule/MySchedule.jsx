@@ -26,7 +26,6 @@ import axios from "axios";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineModeEdit } from "react-icons/md";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import toast from "react-hot-toast";
 import ScreenAssignModal from "../ScreenAssignModal";
@@ -245,7 +244,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-
+ 
   useEffect(() => {
     dispatch(handleGetAllSchedule({ token }));
   }, []);

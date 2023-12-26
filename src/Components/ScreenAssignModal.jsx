@@ -307,9 +307,19 @@ const ScreenAssignModal = ({
                       </td>
 
                       <td className="text-center">
-                        <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
+                        <span
+                          id={`changetvstatus${screen.screenID}`}
+                          className={`rounded-full px-6 py-2 text-white text-center ${
+                            screen.screenStatus == 1
+                              ? "bg-[#3AB700]"
+                              : "bg-[#FF0000]"
+                          }`}
+                        >
+                          {screen.screenStatus == 1 ? "Live" : "offline"}
+                        </span>
+                        {/* <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
                           Live
-                        </button>
+                        </button> */}
                       </td>
                       <td className="text-center break-words">
                         {screen.googleLocation}
@@ -353,8 +363,11 @@ const ScreenAssignModal = ({
             <button
               className="border-2 border-primary px-5 py-2 rounded-full ml-3"
               onClick={() => {
-                handleUpdateScreenAssign(screenCheckboxes,selectedScreenMacIdsString);
-                setSelectedScreens([])
+                handleUpdateScreenAssign(
+                  screenCheckboxes,
+                  selectedScreenMacIdsString
+                );
+                setSelectedScreens([]);
               }}
               disabled={selectedScreens?.length === 0}
             >
