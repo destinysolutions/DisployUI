@@ -44,6 +44,9 @@ import {
 import ShowAssetModal from "../../ShowAssetModal";
 import { handleUpdateScreenAsset } from "../../../Redux/Screenslice";
 import { TvStatus, connection } from "../../../SignalR";
+import { handleGetCompositions } from "../../../Redux/CompositionSlice";
+import { handleGetAllAssets } from "../../../Redux/Assetslice";
+import { handleGetAllSchedule } from "../../../Redux/ScheduleSlice";
 
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
@@ -130,14 +133,20 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // // load composition
+    // dispatch(handleGetCompositions({ token }));
+
+    // // get all assets files
+    // dispatch(handleGetAllAssets({ token }));
+
+    // // get all schedule
+    // dispatch(handleGetAllSchedule({ token }));
+
     // get youtube data
     dispatch(handleGetYoutubeData({ token }));
 
     //get text scroll data
     dispatch(handleGetTextScrollData({ token }));
-  }, []);
-
-  useEffect(() => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -222,6 +231,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           setScreenName(fetchedData[0].screenName);
           setSelectedMediaDetailID(fetchedData[0].mediaDetailID);
           setSelectedMediaTypeID(fetchedData[0].mediaType);
+          console.log(fetchedData[0]);
           if (fetchedData[0].mediaType === 5) {
             setSelectedScreenTypeOption(String(fetchedData[0].mediaType - 1));
           } else {
@@ -326,31 +336,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     if (searchQuery === "") {
       setFilteredData(compositionAPIData);
     } else {
-      // if (from !== "composition") {
-      //   const filteredScreen = assetData.filter((entry) =>
-      //     Object.values(entry).some((val) => {
-      //       if (typeof val === "string") {
-      //         const keyWords = searchQuery.split(" ");
-      //         for (let i = 0; i < keyWords.length; i++) {
-      //           return (
-      //             val.toLocaleLowerCase().startsWith(keyWords[i]) ||
-      //             val.toLocaleLowerCase().endsWith(keyWords[i]) ||
-      //             val.toLocaleLowerCase().includes(keyWords[i]) ||
-      //             val.toLocaleLowerCase().includes(searchQuery)
-      //           );
-      //         }
-      //       }
-      //     })
-      //   );
-      //   if (filteredScreen.length > 0) {
-      //     toast.remove();
-      //     setFilteredData(filteredScreen);
-      //   } else {
-      //     toast.remove();
-      //     toast.error("asset not found!!");
-      //     setFilteredData([]);
-      //   }
-      // } else {
       const filteredScreen = compositionAPIData.filter((entry) =>
         Object.values(entry).some((val) => {
           if (typeof val === "string") {
@@ -397,8 +382,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleAssetAdd = (asset) => {
-    setSelectedAsset(asset);
-    setAssetPreview(asset)
+    // setSelectedAsset(asset);
+    setAssetPreview(asset);
   };
 
   const handleCompositionsAdd = (composition) => {
@@ -640,11 +625,16 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       screenOrientation: selectScreenOrientation,
       screenResolution: selectScreenResolution,
       mediaType: mediaType,
-      tags: selectedTag,
+      tags: tagUpdateScreeen?.tags,
       mediaDetailID: moduleID || 0,
       screenName: screenName,
       operation: "Update",
     });
+    console.log(selectedDefaultAsset);
+    if (!selectedAsset && selectedDefaultAsset !== "Default Asset") {
+      toast.remove();
+      return toast.error("Please select asset");
+    }
     toast.loading("Saving...");
 
     let config = {
@@ -741,6 +731,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           setScreenData(updatedScreenData);
         }
         setTagUpdateScreeen(response?.data?.data?.model);
+        console.log(updatedScreenData);
+        console.log(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -880,7 +872,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       operation: "Update",
     };
     toast.loading("Updating...");
-   
 
     connection.invoke("ScreenConnected", screenData[0]?.macid).then(() => {
       console.log("SignalR method invoked after Asset update");
@@ -903,8 +894,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     // });
   };
 
-
-  console.log(screenPreviewData);
+  // console.log(screenPreviewData);
   return (
     <>
       {showAssetModal && (
@@ -925,6 +915,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           selectedAsset={selectedAsset}
           setscreenMacID={setscreenMacID}
           // setAssetScreenID={setAssetScreenID}
+          setSelectedAsset={setSelectedAsset}
           from="new_screen"
         />
       )}
@@ -1116,68 +1107,69 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 </tr>
                               </thead>
                               <tbody>
-                                {scheduleData.map((schedule) => (
-                                  <tr
-                                    className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                                    key={schedule.scheduleId}
-                                  >
-                                    <td className="flex items-center ">
-                                      <input
-                                        type="checkbox"
-                                        className="mr-3"
-                                        checked={
-                                          selectedSchedule?.scheduleId ===
-                                          schedule?.scheduleId
-                                        }
-                                        onChange={() =>
-                                          handleScheduleAdd(schedule)
-                                        }
-                                      />
-                                      <div>{schedule.scheduleName}</div>
-                                    </td>
-                                    <td className="text-center">
-                                      {schedule.timeZoneName}
-                                    </td>
-                                    <td className="text-center">
-                                      {moment(schedule.createdDate).format(
-                                        "YYYY-MM-DD hh:mm"
-                                      )}
-                                    </td>
-                                    <td className="text-center">
-                                      {moment(schedule.startDate).format(
-                                        "YYYY-MM-DD hh:mm"
-                                      )}
-                                    </td>
+                                {scheduleData.length > 0 &&
+                                  scheduleData.map((schedule) => (
+                                    <tr
+                                      className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                      key={schedule.scheduleId}
+                                    >
+                                      <td className="flex items-center ">
+                                        <input
+                                          type="checkbox"
+                                          className="mr-3"
+                                          checked={
+                                            selectedSchedule?.scheduleId ===
+                                            schedule?.scheduleId
+                                          }
+                                          onChange={() =>
+                                            handleScheduleAdd(schedule)
+                                          }
+                                        />
+                                        <div>{schedule.scheduleName}</div>
+                                      </td>
+                                      <td className="text-center">
+                                        {schedule.timeZoneName}
+                                      </td>
+                                      <td className="text-center">
+                                        {moment(schedule.createdDate).format(
+                                          "YYYY-MM-DD hh:mm"
+                                        )}
+                                      </td>
+                                      <td className="text-center">
+                                        {moment(schedule.startDate).format(
+                                          "YYYY-MM-DD hh:mm"
+                                        )}
+                                      </td>
 
-                                    <td className="text-center">
-                                      {moment(schedule.endDate).format(
-                                        "YYYY-MM-DD hh:mm"
-                                      )}
-                                    </td>
-                                    <td className="p-2 text-center">
-                                      {schedule.screenAssigned}
-                                    </td>
-                                    <td className="p-2 text-center">
-                                      {schedule.tags}
-                                    </td>
-                                    <td className="text-center">
-                                      <button
-                                        className="ml-3 relative"
-                                        onClick={() => {
-                                          window.open(
-                                            window.location.origin.concat(
-                                              "/myschedule"
-                                            )
-                                          );
-                                          setShowScheduleModal(false);
-                                          setSelectedSchedule("");
-                                        }}
-                                      >
-                                        <HiDotsVertical />
-                                      </button>
-                                    </td>
-                                  </tr>
-                                ))}
+                                      <td className="text-center">
+                                        {moment(schedule.endDate).format(
+                                          "YYYY-MM-DD hh:mm"
+                                        )}
+                                      </td>
+                                      <td className="p-2 text-center">
+                                        {schedule.screenAssigned}
+                                      </td>
+                                      <td className="p-2 text-center">
+                                        {schedule.tags}
+                                      </td>
+                                      <td className="text-center">
+                                        <button
+                                          className="ml-3 relative"
+                                          onClick={() => {
+                                            window.open(
+                                              window.location.origin.concat(
+                                                "/myschedule"
+                                              )
+                                            );
+                                            setShowScheduleModal(false);
+                                            setSelectedSchedule("");
+                                          }}
+                                        >
+                                          <HiDotsVertical />
+                                        </button>
+                                      </td>
+                                    </tr>
+                                  ))}
                               </tbody>
                             </table>
                           </div>
@@ -1415,16 +1407,16 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               </p>
                             </td>
                             <td className="text-left">
-                            <span
-                            id={`changetvstatus${screen.screenID}`}
-                            className={`rounded-full px-6 py-2 text-white text-center ${
-                              screen.screenStatus == 1
-                                ? "bg-[#3AB700]"
-                                : "bg-[#FF0000]"
-                            }`}
-                          >
-                            {screen.screenStatus == 1 ? "Live" : "offline"}
-                          </span>
+                              <span
+                                id={`changetvstatus${screen.screenID}`}
+                                className={`rounded-full px-6 py-2 text-white text-center ${
+                                  screen.screenStatus == 1
+                                    ? "bg-[#3AB700]"
+                                    : "bg-[#FF0000]"
+                                }`}
+                              >
+                                {screen.screenStatus == 1 ? "Live" : "offline"}
+                              </span>
                             </td>
                           </tr>
                           <tr className="border-b border-[#D5E3FF]">
@@ -1579,27 +1571,31 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                         <td className="text-left">
                           <div className="flex lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
-                            {getScreenOrientation.map((option) => (
-                              <div key={option.orientationID} className="flex">
-                                <input
-                                  type="radio"
-                                  value={option.orientationID}
-                                  checked={
-                                    option.orientationID ===
-                                    selectScreenOrientation
-                                  }
-                                  onChange={(e) =>
-                                    handleScreenOrientationRadio(
-                                      e,
-                                      option.orientationID
-                                    )
-                                  }
-                                />
-                                <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                                  {option.orientationName}
-                                </label>
-                              </div>
-                            ))}
+                            {getScreenOrientation.length > 0 &&
+                              getScreenOrientation.map((option) => (
+                                <div
+                                  key={option.orientationID}
+                                  className="flex"
+                                >
+                                  <input
+                                    type="radio"
+                                    value={option.orientationID}
+                                    checked={
+                                      option.orientationID ===
+                                      selectScreenOrientation
+                                    }
+                                    onChange={(e) =>
+                                      handleScreenOrientationRadio(
+                                        e,
+                                        option.orientationID
+                                      )
+                                    }
+                                  />
+                                  <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
+                                    {option.orientationName}
+                                  </label>
+                                </div>
+                              ))}
                           </div>
                         </td>
                       </tr>
@@ -1611,27 +1607,31 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                         <td className="text-left">
                           <div className="flex lg:flex-nowrap md:flex-nowrap sm:flex-wrap xs:flex-wrap">
-                            {getScreenResolution.map((option) => (
-                              <div key={option.resolutionsID} className="flex">
-                                <input
-                                  type="radio"
-                                  value={option.resolutionsID}
-                                  checked={
-                                    option.resolutionsID ===
-                                    selectScreenResolution
-                                  }
-                                  onChange={(e) =>
-                                    handleScreenResolutionRadio(
-                                      e,
-                                      option.resolutionsID
-                                    )
-                                  }
-                                />
-                                <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
-                                  {option.resolutionsName}
-                                </label>
-                              </div>
-                            ))}
+                            {getScreenResolution.length > 0 &&
+                              getScreenResolution.map((option) => (
+                                <div
+                                  key={option.resolutionsID}
+                                  className="flex"
+                                >
+                                  <input
+                                    type="radio"
+                                    value={option.resolutionsID}
+                                    checked={
+                                      option.resolutionsID ===
+                                      selectScreenResolution
+                                    }
+                                    onChange={(e) =>
+                                      handleScreenResolutionRadio(
+                                        e,
+                                        option.resolutionsID
+                                      )
+                                    }
+                                  />
+                                  <label className="ml-1 mr-4 lg:text-base md:text-base sm:text-xs xs:text-xs">
+                                    {option.resolutionsName}
+                                  </label>
+                                </div>
+                              ))}
                           </div>
                         </td>
                       </tr>
@@ -1649,14 +1649,15 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               setSelectedTimezoneName(e.target.value)
                             }
                           >
-                            {timezones.map((timezone) => (
-                              <option
-                                value={timezone.timeZoneID}
-                                key={timezone.timeZoneID}
-                              >
-                                {timezone.timeZoneName}
-                              </option>
-                            ))}
+                            {timezones &&
+                              timezones.map((timezone) => (
+                                <option
+                                  value={timezone.timeZoneID}
+                                  key={timezone.timeZoneID}
+                                >
+                                  {timezone.timeZoneName}
+                                </option>
+                              ))}
                           </select>
                         </td>
                       </tr>
@@ -1782,7 +1783,16 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             htmlFor="select_asset"
                             className="flex items-center gap-1"
                           >
-                            <input type="radio" name="type" id="select_asset" />
+                            <input
+                              type="radio"
+                              defaultChecked={
+                                selectedAsset ||
+                                selectedComposition ||
+                                selectedApps
+                              }
+                              name="type"
+                              id="select_asset"
+                            />
                             Select type
                           </label>
                           <label
@@ -1800,51 +1810,16 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           >
                             <input
                               type="radio"
-                              defaultChecked
                               name="type"
+                              defaultChecked={
+                                !selectedAsset ||
+                                !selectedComposition ||
+                                !selectedApps
+                              }
                               id="default_asset"
                             />
                             Default Asset
                           </label>
-                          {/* Select Asset */}
-                          {/* <select
-                          className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                          // value={selectedScreenTypeOption}
-                          onChange={handleOptionChange}
-                        >
-                          {(selectedAsset ||
-                            selectedComposition ||
-                           
-                            selectedTextScroll ||
-                            selectedYoutube) && (
-                            <option
-                              label={
-                                selectedAsset?.assetName ||
-                                selectedComposition?.compositionName ||
-                               
-                                selectedTextScroll?.text ||
-                                selectedYoutube?.youtubeId
-                              }
-                            >
-                              {selectedAsset?.assetName ||
-                                selectedComposition?.composition ||
-                               
-                                selectedTextScroll?.text ||
-                                selectedYoutube?.youtubeId}
-                            </option>
-                          )}
-                          <option label={` Select Type`}></option>
-                          <option value="Select Asset">Select Asset</option>
-                          <option value="Default Media">Default Media</option>
-                          {/* {getSelectedScreenTypeOption.map((option) => (
-                            <option
-                              key={option.mediaTypeId}
-                              value={option.mediaTypeId}
-                            >
-                              {option.mediaTypeName}
-                            </option>
-                          ))} */}
-                          {/* </select> */}
                         </td>
                       </tr>
                       {selectedScreenTypeOption === "1" && (

@@ -127,7 +127,11 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
-          navigate("/composition");
+          if(navigate(-2)){
+            navigate("/composition");
+          }else{
+            window.close()
+          }
           setSavingLoader(false);
         }
       })
@@ -815,8 +819,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                     data?.assetFolderPath || data?.youTubeURL
                                   }
                                   className="max-w-[100%] min-w-[100%]  relative z-10  max-h-32"
-                                  controls={false}
-                                  playing={true}
+                                  controls={true}
+                                  playing={false}
                                   loop={false}
                                 />
                               )}
