@@ -382,8 +382,8 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                 </button>
               </Link>
               <Link to="/apps">
-                <button className="flex align-middle border-primary items-center border rounded-full lg:px-6 text-white sm:px-5 bg-primary py-2 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white  hover:bg-primary-500 hover:shadow-lg dark:bg-blue-600 ">
-                  <MdArrowBackIosNew className="text-2xl mr-2 bg-primary text-white rounded-full p-1" />
+                <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  <MdArrowBackIosNew className="text-2xl mr-2 text-white rounded-full p-1" />
                   Back
                 </button>
               </Link>

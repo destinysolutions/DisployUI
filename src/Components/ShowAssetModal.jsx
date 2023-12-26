@@ -9,11 +9,16 @@ import {
   AiOutlineCloseCircle,
   AiOutlineSearch,
 } from "react-icons/ai";
+import axios from "axios";
 import { IoBarChartSharp } from "react-icons/io5";
 import { RiPlayListFill } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { SIGNAL_R } from "../Pages/Api";
+import {
+  GET_ALL_COMPOSITIONS,
+  GET_ALL_FILES,
+  GET_ALL_SCHEDULE,
+} from "../Pages/Api";
 import { connection } from "../SignalR";
 
 const ShowAssetModal = ({
@@ -33,7 +38,7 @@ const ShowAssetModal = ({
   selectedYoutube,
   setscreenMacID,
   type,
-  from,
+  from,setSelectedAsset
 }) => {
   const { user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
@@ -41,12 +46,53 @@ const ShowAssetModal = ({
   const [filteredData, setFilteredData] = useState([]);
   const [searchAssest, setSearchAssest] = useState("");
   const [searchComposition, setSearchComposition] = useState("");
-
+  const [assetData, setAssetData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [assetAllData, setAssetAllData] = useState([]);
+  const [scheduleData, setScheduleData] = useState([]);
+  const [compositionAPIData, setCompositionAPIData] = useState([]);
+  const [compostionAllData, setCompostionAllData] = useState([]);
   const { assets } = useSelector((s) => s.root.asset);
   const { compositions } = useSelector((s) => s.root.composition);
   const { allAppsData } = useSelector((s) => s.root.apps);
   const modalRef = useRef(null);
   console.log("setscreenMacID", setscreenMacID);
+
+  useEffect(() => {
+    setLoading(true);
+    const axiosRequests = [
+      axios.get(GET_ALL_FILES, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_SCHEDULE, { headers: { Authorization: authToken } }),
+      axios.get(GET_ALL_COMPOSITIONS, {
+        headers: { Authorization: authToken },
+      }),
+    ];
+    // Use Promise.all to send all requests concurrently
+    Promise.all(axiosRequests)
+      .then((responses) => {
+        const [filesResponse, scheduleResponse, compositionResponse] =
+          responses;
+        // Process each response and set state accordingly
+        const fetchedData = filesResponse.data;
+        const allAssets = [
+          ...(fetchedData.image ? fetchedData.image : []),
+          ...(fetchedData.video ? fetchedData.video : []),
+          ...(fetchedData.doc ? fetchedData.doc : []),
+          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
+          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
+        ];
+        setAssetData(allAssets);
+        setAssetAllData(allAssets);
+        setScheduleData(scheduleResponse.data.data);
+        setCompositionAPIData(compositionResponse.data.data);
+        setCompostionAllData(compositionResponse.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
+  }, []);
 
   const signalROnConfirm = () => {
     console.log("run signal r");
@@ -54,7 +100,7 @@ const ShowAssetModal = ({
     // newConnection.on("ScreenConnected", (MacID) => {
     //   console.log("ScreenConnected", MacID);
     // });
-
+    
     try {
       // Invoke ScreenConnected method
       connection.invoke("ScreenConnected", setscreenMacID).then(() => {
@@ -67,6 +113,8 @@ const ShowAssetModal = ({
   };
   const handleOnConfirm = (setscreenMacID) => {
     setShowAssetModal(false);
+    setSearchAssest("");
+    setSelectedAsset(assetPreview);
     handleAssetUpdate();
     setAssetPreviewPopup(false);
   };
@@ -84,7 +132,7 @@ const ShowAssetModal = ({
       setFilteredData([]);
     } else {
       if (from === "asset") {
-        const filteredScreen = assets.filter((entry) =>
+        const filteredScreen = assetAllData.filter((entry) =>
           Object.values(entry).some((val) => {
             if (typeof val === "string") {
               const keyWords = searchQuery.split(" ");
@@ -108,7 +156,7 @@ const ShowAssetModal = ({
           setFilteredData([]);
         }
       } else {
-        const filteredScreen = compositions.filter((entry) =>
+        const filteredScreen = compositionAPIData.filter((entry) =>
           Object.values(entry).some((val) => {
             if (typeof val === "string") {
               const keyWords = searchQuery.split(" ");
@@ -139,6 +187,7 @@ const ShowAssetModal = ({
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event?.target)) {
         setShowAssetModal(false);
+        setSearchAssest("");
         setAssetPreviewPopup(false);
       }
     };
@@ -150,6 +199,7 @@ const ShowAssetModal = ({
 
   function handleClickOutside() {
     setShowAssetModal(false);
+    setSearchAssest("");
     setAssetPreviewPopup(false);
   }
 
@@ -160,6 +210,7 @@ const ShowAssetModal = ({
       }
       if (event?.keyCode == 27) {
         setShowAssetModal(false);
+        setSearchAssest("");
         setAssetPreviewPopup(false);
       }
     });
@@ -167,6 +218,64 @@ const ShowAssetModal = ({
       window.removeEventListener("keydown", () => null);
     };
   }, []);
+
+  const handleAssestSearch = (event) => {
+    setSearchAssest(event.target.value);
+    const searchQuery = event.target.value.toLowerCase();
+    if (searchQuery === "") {
+      setAssetData(assetAllData);
+    } else {
+      const filteredScreen = assetAllData.filter((entry) =>
+        Object.values(entry).some((val) => {
+          if (typeof val === "string") {
+            const keyWords = searchQuery.split(" ");
+            for (let i = 0; i < keyWords.length; i++) {
+              return (
+                val.toLocaleLowerCase().startsWith(keyWords[i]) ||
+                val.toLocaleLowerCase().endsWith(keyWords[i]) ||
+                val.toLocaleLowerCase().includes(keyWords[i]) ||
+                val.toLocaleLowerCase().includes(searchQuery)
+              );
+            }
+          }
+        })
+      );
+      if (filteredScreen?.length > 0) {
+        setAssetData(filteredScreen);
+      } else {
+        setAssetData([]);
+      }
+    }
+  };
+
+  const handleCompositionSearch = (event) => {
+    setSearchComposition(event.target.value);
+    const searchQuery = event.target.value.toLowerCase();
+    if (searchQuery === "") {
+      setCompostionAllData(compositionAPIData);
+    } else {
+      const filteredScreen = compositionAPIData.filter((entry) =>
+        Object.values(entry).some((val) => {
+          if (typeof val === "string") {
+            const keyWords = searchQuery.split(" ");
+            for (let i = 0; i < keyWords.length; i++) {
+              return (
+                val.toLocaleLowerCase().startsWith(keyWords[i]) ||
+                val.toLocaleLowerCase().endsWith(keyWords[i]) ||
+                val.toLocaleLowerCase().includes(keyWords[i]) ||
+                val.toLocaleLowerCase().includes(searchQuery)
+              );
+            }
+          }
+        })
+      );
+      if (filteredScreen?.length > 0) {
+        setCompostionAllData(filteredScreen);
+      } else {
+        setCompostionAllData([]);
+      }
+    }
+  };
 
   return (
     <>
@@ -177,7 +286,10 @@ const ShowAssetModal = ({
           </h3>
           <button
             className="p-1 text-xl"
-            onClick={() => setShowAssetModal(false)}
+            onClick={() => {
+              setShowAssetModal(false);
+              setSearchAssest("");    
+            }}
           >
             <AiOutlineCloseCircle className="text-2xl" />
           </button>
@@ -286,11 +398,15 @@ const ShowAssetModal = ({
                       placeholder="Search asset"
                       className="border border-primary rounded-full pl-9 py-2 search-user w-56"
                       value={searchAssest}
-                      onChange={(e) => handleSearchAssest(e, "asset")}
+                      // onChange={(e) => handleSearchAssest(e, "asset")}
+                      onChange={(e) => handleAssestSearch(e)}
                     />
                   </div>
                   <Link to="/fileupload" target="_blank">
-                    <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                    <button
+                      className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                      onClick={() => setShowAssetModal(false)}
+                    >
                       Upload
                     </button>
                   </Link>
@@ -311,7 +427,17 @@ const ShowAssetModal = ({
                         <th className="p-3">Type</th>
                       </tr>
                     </thead>
-                    {assets && assets.length === 0 ? (
+                    {loading && (
+                      <tr>
+                        <td
+                          className="font-semibold text-center bg-white text-lg"
+                          colSpan={4}
+                        >
+                          Loading...
+                        </td>
+                      </tr>
+                    )}
+                    {!loading && assetData && assetData.length === 0 ? (
                       <tr>
                         <td
                           className="font-semibold text-center bg-white text-lg"
@@ -320,8 +446,9 @@ const ShowAssetModal = ({
                           No assets here.
                         </td>
                       </tr>
-                    ) : filteredData.length === 0 ? (
-                      assets
+                    ) : (
+                      assetData.length > 0 &&
+                      assetData
                         .filter((asset) => {
                           return asset.assetType !== "Folder";
                         })
@@ -329,7 +456,7 @@ const ShowAssetModal = ({
                           <tbody key={asset.assetID}>
                             <tr
                               className={`${
-                                selectedAsset === asset ||
+                                selectedAsset?.assetID === asset?.assetID ||
                                 selectedAsset === asset?.assetName
                                   ? "bg-[#f3c953]"
                                   : ""
@@ -344,45 +471,17 @@ const ShowAssetModal = ({
                               <td className="p-3 text-left">
                                 {asset.assetName}
                               </td>
-                              <td className="p-3">
+                              <td className="p-3 text-center">
                                 {moment(asset.createdDate).format(
                                   "YYYY-MM-DD hh:mm"
                                 )}
                               </td>
-                              <td className="p-3">{asset.fileSize}</td>
-                              <td className="p-3">{asset.assetType}</td>
-                            </tr>
-                          </tbody>
-                        ))
-                    ) : (
-                      filteredData
-                        .filter((asset) => {
-                          return asset.assetType !== "Folder";
-                        })
-                        .map((asset) => (
-                          <tbody key={asset.assetID}>
-                            <tr
-                              className={`${
-                                selectedAsset === asset ||
-                                selectedAsset === asset?.assetName
-                                  ? "bg-[#f3c953]"
-                                  : ""
-                              } border-b border-[#eee] `}
-                              onClick={() => {
-                                handleAssetAdd(asset);
-                                setAssetPreviewPopup(true);
-                              }}
-                            >
-                              <td className="p-3 text-left">
-                                {asset.assetName}
+                              <td className="p-3 text-center">
+                                {asset.fileSize}
                               </td>
-                              <td className="p-3">
-                                {moment(asset.createdDate).format(
-                                  "YYYY-MM-DD hh:mm"
-                                )}
+                              <td className="p-3 text-center">
+                                {asset.assetType}
                               </td>
-                              <td className="p-3">{asset.fileSize}</td>
-                              <td className="p-3">{asset.assetType}</td>
                             </tr>
                           </tbody>
                         ))
@@ -407,7 +506,7 @@ const ShowAssetModal = ({
                                 <img
                                   src={assetPreview.assetFolderPath}
                                   alt={assetPreview.assetName}
-                                  className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                                  className="imagebox w-full h-full object-cover top-0 left-0 z-50 fixed"
                                 />
                               </div>
                             )}
@@ -430,7 +529,7 @@ const ShowAssetModal = ({
                               <img
                                 src={assetPreview.assetFolderPath}
                                 alt={assetPreview.assetName}
-                                className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                                className="imagebox w-full h-full object-cover top-0 left-0 z-50 fixed"
                               />
                             )}
                             {assetPreview.assetType === "Video" && (
@@ -471,11 +570,15 @@ const ShowAssetModal = ({
                       placeholder="Search Composition"
                       className="border border-primary rounded-full pl-9 py-2 search-user w-56"
                       value={searchComposition}
-                      onChange={(e) => handleSearchAssest(e, "composition")}
+                      // onChange={(e) => handleSearchAssest(e, "composition")}
+                      onChange={(e) => handleCompositionSearch(e)}
                     />
                   </div>
                   <Link to="/addcomposition" target="_blank">
-                    <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                    <button
+                      className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                      onClick={() => setShowAssetModal(false)}
+                    >
                       Add New Composition
                     </button>
                   </Link>
@@ -496,7 +599,19 @@ const ShowAssetModal = ({
                         <th className="p-3">Duration</th>
                       </tr>
                     </thead>
-                    {compositions && compositions.length === 0 ? (
+                    {loading && (
+                      <tr>
+                        <td
+                          className="font-semibold text-center bg-white text-lg"
+                          colSpan={4}
+                        >
+                          Loading...
+                        </td>
+                      </tr>
+                    )}
+                    {!loading &&
+                    compostionAllData &&
+                    compostionAllData.length === 0 ? (
                       <tr>
                         <td
                           className="font-semibold text-center bg-white text-lg"
@@ -505,8 +620,9 @@ const ShowAssetModal = ({
                           No Composition here.
                         </td>
                       </tr>
-                    ) : filteredData.length === 0 ? (
-                      compositions.map((composition) => (
+                    ) : (
+                      compostionAllData.length > 0 &&
+                      compostionAllData.map((composition) => (
                         <tbody key={composition.compositionID}>
                           <tr
                             className={`${
@@ -523,43 +639,15 @@ const ShowAssetModal = ({
                             <td className="p-3 text-left">
                               {composition.compositionName}
                             </td>
-                            <td className="p-3">
+                            <td className="p-3 text-center">
                               {moment(composition.dateAdded).format(
                                 "YYYY-MM-DD hh:mm"
                               )}
                             </td>
-                            <td className="p-3">{composition.resolution}</td>
-                            <td className="p-3">
-                              {moment
-                                .utc(composition.duration * 1000)
-                                .format("hh:mm:ss")}
+                            <td className="p-3 text-center">
+                              {composition.resolution}
                             </td>
-                          </tr>
-                        </tbody>
-                      ))
-                    ) : (
-                      filteredData.map((composition) => (
-                        <tbody key={composition.compositionID}>
-                          <tr
-                            className={`${
-                              selectedComposition === composition
-                                ? "bg-[#f3c953]"
-                                : ""
-                            } border-b border-[#eee] `}
-                            onClick={() => {
-                              setSelectedComposition(composition);
-                            }}
-                          >
-                            <td className="p-3 text-left">
-                              {composition.compositionName}
-                            </td>
-                            <td className="p-3">
-                              {moment(composition.dateAdded).format(
-                                "YYYY-MM-DD hh:mm"
-                              )}
-                            </td>
-                            <td className="p-3">{composition.resolution}</td>
-                            <td className="p-3">
+                            <td className="p-3 text-center">
                               {moment
                                 .utc(composition.duration * 1000)
                                 .format("hh:mm:ss")}
@@ -625,7 +713,7 @@ const ShowAssetModal = ({
                             <td className="p-3 text-left">
                               {instance.instanceName}
                             </td>
-                            <td className="p-3">
+                            <td className="p-3 text-center">
                               {instance.youTubePlaylist
                                 ? "Youtube Video"
                                 : "Text scroll"}

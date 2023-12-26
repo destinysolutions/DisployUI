@@ -81,7 +81,7 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
     }
     toast.remove();
     setUploadInProgress(true);
-    selectedImages.forEach((image,index) => {
+    selectedImages.forEach((image, index) => {
       const formData = new FormData();
       formData.append("AssetFolderPath", image.webformatURL);
       formData.append("Operation", "Insert");
@@ -120,9 +120,14 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
             })
             .then((response) => {
               // console.log("Upload Success:", response.data);
-              if(selectedImages?.length - 1 === index) {
+              if (selectedImages?.length - 1 === index) {
                 toast.success("Uploaded successfully.");
-                navigate(-1);
+                // navigate(-1);
+                if (navigate(-1)) {
+                  navigate(-1);
+                } else {
+                  window.close();
+                }
               }
             })
             .catch((error) => {

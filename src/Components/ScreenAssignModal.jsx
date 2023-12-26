@@ -235,7 +235,7 @@ const ScreenAssignModal = ({
                   onChange={handleSelectAllCheckboxChange}
                   checked={
                     selectAllChecked ||
-                    Object.values(screenCheckboxes).every((e) => {
+                    Object.values(screenCheckboxes)?.length > 0 && Object.values(screenCheckboxes).every((e) => {
                       return e == true;
                     })
                   }

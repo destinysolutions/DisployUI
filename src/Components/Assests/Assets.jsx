@@ -77,7 +77,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [allData, setAllData] = useState([]);
 
   const [selectdata, setSelectData] = useState({});
-  
+
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
     : "";
@@ -653,7 +653,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const handleDrop = (event, folderId) => {
     const itemId = event.dataTransfer.getData("text/plain");
     let asset_type = selectedItems.assetType == "Folder" ? "Folder" : "Image";
-    moveDataToFolder(itemId, folderId, asset_type);
+    if(Number(itemId) !== folderId){
+      moveDataToFolder(itemId, folderId, asset_type);
+    }
   };
 
   const navigateToFolder = (folderId, selectedData) => {
@@ -1338,7 +1340,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                       setFolderName(e.target.value)
                                     }
                                     onBlur={() => {
-                                      saveFolderName(item.assetID, folderName);
+                                      // saveFolderName(item.assetID, folderName);
                                       setEditMode(null);
                                     }}
                                     onKeyDown={(e) =>
@@ -1351,6 +1353,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     <span
                                       onClick={() => {
                                         setEditMode(item.assetID);
+                                        setFolderName(item?.assetName);
                                       }}
                                       className="cursor-pointer w-full flex-wrap break-all inline-flex justify-center"
                                     >

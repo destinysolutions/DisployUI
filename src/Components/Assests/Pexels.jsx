@@ -140,7 +140,12 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
               // console.log("Upload Success:", response.data);
               if (selectedMedia.images?.length - 1 === index) {
                 toast.success("Uploaded successfully.");
-                navigate(-1);
+                // navigate(-1);
+                if (navigate(-1)) {
+                  navigate(-1);
+                } else {
+                  window.close();
+                }
               }
             })
             .catch((error) => {

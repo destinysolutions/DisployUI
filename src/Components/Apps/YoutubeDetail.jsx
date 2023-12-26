@@ -414,11 +414,11 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
               )}
             </div> */}
 
-              <button className="sm:ml-2 xs:ml-1 sm:mt-2 border-primary items-center border-2  rounded-full text-xl  hover:text-white hover:bg-SlateBlue hover:border-white hover:shadow-lg hover:shadow-primary-500/50 p-2 ">
-                <Link to="/youtube">
+              <Link to="/youtube">
+                <button className="sm:ml-2 xs:ml-1 sm:mt-2 border-primary items-center border-2  rounded-full text-xl  hover:text-white hover:bg-SlateBlue hover:border-white hover:shadow-lg hover:shadow-primary-500/50 p-2 ">
                   <AiOutlineClose />
-                </Link>
-              </button>
+                </button>
+              </Link>
             </div>
           </div>
           <div className="mt-6">
@@ -563,14 +563,14 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
               {showPreviewPopup && (
                 <>
                   <div ref={modalRef} className="video-preview">
-                  <ReactPlayer
-                    url={YoutubeVideo}
-                   className="youtube-preview"
-                    // className="w-full relative z-20 previewinner"
-                    muted={isMuted}
-                    // controls={areSubtitlesOn}
-                    controls={true}
-                  />
+                    <ReactPlayer
+                      url={YoutubeVideo}
+                      className="youtube-preview"
+                      // className="w-full relative z-20 previewinner"
+                      muted={isMuted}
+                      // controls={areSubtitlesOn}
+                      controls={true}
+                    />
                     <span className="absolute -top-4 -right-3 z-40 text-black">
                       <AiOutlineCloseCircle
                         onClick={() => setShowPreviewPopup(false)}

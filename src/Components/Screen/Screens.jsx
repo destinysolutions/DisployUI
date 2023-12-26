@@ -130,7 +130,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const authToken = `Bearer ${token}`;
 
   const [groupName, setGroupName] = useState("");
-  const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
+  const [selectedAsset, setSelectedAsset] = useState({ assetName: "" ,assetID:""});
   const [assetPreview, setAssetPreview] = useState("");
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
   const [popupActiveTab, setPopupActiveTab] = useState(1);
@@ -153,7 +153,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const { loading, screens, deleteLoading } = useSelector((s) => s.root.screen);
   const { schedules } = useSelector((s) => s.root.schedule);
   const { compositions } = useSelector((s) => s.root.composition);
-
   const dispatch = useDispatch();
 
   const selectedScreenIdsString = Array.isArray(selectedCheckboxIDs)
@@ -1188,9 +1187,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               setShowAssetModal(true);
                               setSelectedAsset({
                                 ...selectedAsset,
-                                assetName: e.target.value,
+                                assetName: screen?.assetName,
+                                assetID: screen?.mediaDetailID
                               });
-                              setSelectedAsset(screen?.assetName);
+                              // setSelectedAsset(screen?.assetName);
                             }}
                             title={screen?.assetName}
                             className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
@@ -1215,6 +1215,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               selectedYoutube={selectedYoutube}
                               selectedAsset={selectedAsset}
                               setscreenMacID={setscreenMacID}
+                              setSelectedAsset={setSelectedAsset}
                             />
                           )}
                         </td>
@@ -1254,7 +1255,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                       <AiOutlineCloseCircle className="text-2xl" />
                                     </button>
                                   </div>
-                                  <div className="overflow-x-auto mt-8 px-5">
+                                  <div className="overflow-x-auto mt-8 px-5 min-h-[400px] max-h-[400px] ">
                                     <table
                                       className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
                                       cellPadding={20}
@@ -1352,8 +1353,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                               {schedule.tags}
                                             </td>
                                             <td className="text-center">
-                                              <Link to="/myschedule">
-                                                <button className="ml-3 relative">
+                                              <Link to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`} target="_blank">
+                                                <button className="ml-3 relative" onClick={ () => setShowScheduleModal(false)}>
                                                   <HiDotsVertical />
                                                 </button>
                                               </Link>
@@ -1596,9 +1597,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               setShowAssetModal(true);
                               setSelectedAsset({
                                 ...selectedAsset,
-                                assetName: e.target.value,
+                                assetName: screen?.assetName,
+                                assetID: screen?.mediaDetailID
                               });
-                              setSelectedAsset(screen?.assetName);
+                              // setSelectedAsset(screen?.assetName);
                             }}
                             title={screen?.assetName}
                             className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
@@ -1759,8 +1761,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                               {schedule.tags}
                                             </td>
                                             <td className="text-center">
-                                              <Link to="/myschedule">
-                                                <button className="ml-3 relative">
+                                            <Link to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`} target="_blank">
+                                                <button className="ml-3 relative" onClick={ () => setShowScheduleModal(false)}>
                                                   <HiDotsVertical />
                                                 </button>
                                               </Link>
