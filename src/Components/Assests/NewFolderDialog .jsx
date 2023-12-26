@@ -200,7 +200,10 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     });
     const obj = {
       status: 200,
-      folder: selectedItems?.assetType === "Folder" ? FilteredFolder : FilteredAllAssests,
+      folder:
+        selectedItems?.assetType === "Folder"
+          ? FilteredFolder
+          : FilteredAllAssests,
       image: NestedNewFolder?.image,
       doc: NestedNewFolder?.doc,
       video: NestedNewFolder?.video,
@@ -345,7 +348,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const handleDrop = (event, folderId) => {
     const itemId = event.dataTransfer.getData("text/plain");
     let asset_type = selectedItems.assetType == "Folder" ? "Folder" : "Image";
-    if(Number(itemId) !== folderId){
+    if (Number(itemId) !== folderId) {
       moveDataToFolder(itemId, folderId, asset_type);
     }
   };
@@ -400,24 +403,25 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${SELECT_BY_ASSET_ID}?Id=${assetId}`,
+      url: `${SELECT_BY_ASSET_ID}?Id=${assetId}&AssetType=Image`,
       headers: { Authorization: authToken },
     };
-
+    toast.loading("Deleting");
     axios
       .request(config)
       .then((response) => {
         console.log(response.data);
         if (response?.data?.data == true) {
           setassetsdw(null);
-
           setDeleteMessage(true);
         } else {
           handelDeletedata();
         }
+        toast.remove();
       })
       .catch((error) => {
         console.log(error);
+        toast.remove();
       });
   };
 
@@ -425,6 +429,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     const data = JSON.stringify({
       folderID: folderID,
       operation: "Delete",
+      AssetType: "Folder",
     });
     toast.loading("Deleting...");
     axios
