@@ -121,7 +121,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Fetch events associated with the scheduleId
   const loadEventsForSchedule = (scheduleId) => {
-    console.log("running",scheduleId);
+    // console.log("running",scheduleId);
     axios
       .get(`${SCHEDULE_EVENT_SELECT_BY_ID}?ID=${scheduleId}`, {
         headers: {
@@ -130,7 +130,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       })
       .then((response) => {
         const fetchedData = response.data.data;
-        console.log(fetchedData);
+        // console.log(fetchedData);
         setScheduleAsset(response.data.data);
         const fetchedEvents = fetchedData.map((item) => ({
           id: item.eventId,
@@ -328,7 +328,6 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response?.data?.status == 200) {
           const fetchedData = response.data.data.eventTables;
-          // console.log(fetchedData);
           const updateEvent = fetchedData.map((item) => ({
             id: item.eventId,
             title: item.title,
@@ -342,15 +341,17 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           toast.remove();
 
           loadEventsForSchedule(scheduleIdToUse);
-          connection
-            .invoke("ScreenConnected", myEvents[0]?.macids)
-            .then(() => {
-              console.log("SignalR invoked");
-            })
-            .catch((error) => {
-              console.error("Error invoking SignalR method:", error);
-            });
+          if (myEvents[0]?.macids) {
+            connection
+              .invoke("ScreenConnected", myEvents[0]?.macids)
+              .then(() => {
+                console.log("SignalR invoked");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
             setEvents((prevEvents) => [...prevEvents, ...updateEvent]);
+          }
 
           // if (eventId) {
           //   const updatedEventsMap = Object.fromEntries(
