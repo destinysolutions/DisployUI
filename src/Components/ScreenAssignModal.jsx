@@ -3,9 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { SELECT_BY_USER_SCREENDETAIL, SIGNAL_R } from "../Pages/Api";
-import { handleGetAllAssets } from "../Redux/Assetslice";
 import { handleGetScreen } from "../Redux/Screenslice";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { connection } from "../SignalR";
 import toast from "react-hot-toast";
 
