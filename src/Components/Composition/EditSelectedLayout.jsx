@@ -808,6 +808,9 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   <thead>
                     <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                    <th className="text-[#5A5881] py-2.5 text-base font-semibold">
+                        Asset
+                      </th>
                       <th className="text-[#5A5881] py-2.5 text-base font-semibold">
                         Assets Name
                       </th>
@@ -844,6 +847,60 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               handleDragStartForDivToDiv(event, data)
                             }
                           >
+                             <td className="break-words w-full text-left ">
+                              {data.assetType === "OnlineImage" && (
+                                <img
+                                  className="imagebox relative w-full h-20 object-cover"
+                                  src={data?.assetFolderPath}
+                                  alt={data?.assetName}
+                                />
+                              )}
+                              {data.assetType === "Image" && (
+                                <img
+                                  src={data?.assetFolderPath}
+                                  alt={data?.assetName}
+                                  className="imagebox relative w-full h-20 object-cover"
+                                />
+                              )}
+                              {data.instanceName && data?.scrollType && (
+                                <marquee
+                                  className="text-lg w-full h-full flex items-center text-black"
+                                  direction={
+                                    data?.scrollType == 1 ? "right" : "left"
+                                  }
+                                  scrollamount="10"
+                                >
+                                  {data?.text}
+                                </marquee>
+                              )}
+                              {(data.assetType === "Video" ||
+                                data.assetType === "OnlineVideo" ||
+                                data.assetType === "Youtube" ||
+                                data?.youTubeURL) && (
+                                <ReactPlayer
+                                  url={
+                                    data?.assetFolderPath || data?.youTubeURL
+                                  }
+                                  className="max-w-[100%] min-w-[100%]  relative z-10  max-h-32"
+                                  controls={true}
+                                  playing={false}
+                                  loop={false}
+                                />
+                              )}
+
+                              {data.assetType === "DOC" && (
+                                <p href={data?.assetFolderPath}>
+                                  {data.assetName}
+                                </p>
+                              )}
+                              {/* {data.instanceName && (
+                                    <p
+                                      href={data?.instanceName}
+                                    >
+                                      {data.instanceName}
+                                    </p>
+                                  )} */}
+                            </td>
                             <td className="break-words w-full text-left">
                               {data.assetName || data?.instanceName}
                             </td>
@@ -994,7 +1051,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                       <ReactPlayer
                                         url={item?.assetFolderPath}
                                         className="w-full relative z-20 videoinner max-h-10"
-                                        controls={false}
+                                        controls={true}
                                         playing={false}
                                         loop={false}
                                       />
