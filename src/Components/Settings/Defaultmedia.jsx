@@ -28,7 +28,10 @@ const Defaultmedia = () => {
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [assetData, setAssetData] = useState([]);
   const [assetAllData, setAssetAllData] = useState([]);
-  const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
+  const [selectedAsset, setSelectedAsset] = useState({
+    assetName: "",
+    assetID: "",
+  });
   const [assetName, setAssetName] = useState("");
   const [filePath, setFilePath] = useState("");
   const [filteredData, setFilteredData] = useState([]);
@@ -116,6 +119,10 @@ const Defaultmedia = () => {
       .then((response) => {
         if (response.data.data !== null) {
           setAssetName(response.data.data.assetName);
+          setSelectedAsset({
+            assetName: response.data.data.assetName,
+            assetID: response.data.data.assetID,
+          });
           setFilePath(response.data.data);
         }
       })
@@ -193,8 +200,8 @@ const Defaultmedia = () => {
         setShowAssetModal(false);
         setFilteredData([]);
         setSearchAsset("");
-        setAssetPreviewPopup(false)
-        setSearchAssest("")
+        setAssetPreviewPopup(false);
+        setSearchAssest("");
       }
     };
     document.addEventListener("click", handleClickOutside, true);
@@ -205,9 +212,9 @@ const Defaultmedia = () => {
 
   function handleClickOutside() {
     setShowAssetModal(false);
-    setAssetPreviewPopup(false)
+    setAssetPreviewPopup(false);
     setSearchAsset("");
-    setSearchAssest("")
+    setSearchAssest("");
     setFilteredData([]);
   }
 
@@ -319,7 +326,7 @@ const Defaultmedia = () => {
               <button
                 onClick={(e) => {
                   setShowAssetModal(true);
-                  setFilteredData(assetData)
+                  setFilteredData(assetData);
                   setSelectedAsset({
                     ...selectedAsset,
                     assetName: e.target.value,
@@ -489,15 +496,14 @@ const Defaultmedia = () => {
                                   <th className="p-3">Type</th>
                                 </tr>
                               </thead>
-                              {filteredData.length > 0
-                                 ? (filteredData.map((asset) => (
+                              {filteredData.length > 0 ? (
+                                filteredData.map((asset) => (
                                   <tbody key={asset.assetID}>
                                     <tr
                                       className={`${
-                                        selectedAsset === asset ||
+                                        selectedAsset?.assetID === asset?.assetID ||
                                         selectedAsset?.assetName ===
-                                          asset?.assetName ||
-                                        assetName === asset?.assetName
+                                          asset?.assetName 
                                           ? "bg-[#f3c953]"
                                           : ""
                                       } border-b border-[#eee] `}
@@ -524,9 +530,7 @@ const Defaultmedia = () => {
                                   </tbody>
                                 ))
                               ) : (
-                                <div>
-                                No data Found
-                                </div>
+                                <div>No data Found</div>
                               )}
                             </table>
                             {assetPreviewPopup && (

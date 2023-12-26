@@ -211,6 +211,7 @@ const Screenslice = createSlice({
             return {
               ...screen,
               assetName: meta?.arg?.mediaName,
+              mediaDetailID:meta?.arg?.dataToUpdate?.mediaDetailID
             };
           }
           return screen;
