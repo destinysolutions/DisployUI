@@ -109,7 +109,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     });
   };
 
-  const handelDeleteComposition = (com_id) => {
+  const handelDeleteComposition = (com_id, maciDs) => {
     if (!window.confirm("Are you sure?")) return;
     let config = {
       method: "get",
@@ -119,7 +119,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         Authorization: authToken,
       },
     };
-
     toast.loading("Deleting...");
     axios
       .request(config)
@@ -127,7 +126,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         // console.log(JSON.stringify(response.data));
         if (response.data.status == 200) {
           connection
-            .invoke("ScreenConnected")
+            .invoke("ScreenConnected", maciDs.replace(/^\s+/g, ''))
             .then(() => {
               console.log("SignalR method invoked after screen update");
             })
@@ -196,9 +195,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response.data.status == 200) {
           connection
-            .invoke("ScreenConnected")
+            .invoke("ScreenConnected",compositionData?.map(item=>item?.maciDs).join(",").replace(/^\s+/g, ''))
             .then(() => {
-              // console.log("SignalR method invoked after screen update");
+              console.log("SignalR method invoked after screen update");
             })
             .catch((error) => {
               console.error("Error invoking SignalR method:", error);
@@ -373,10 +372,11 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
           try {
             // Invoke ScreenConnected method
             connection
-              .invoke("ScreenConnected", macids)
+              .invoke("ScreenConnected",macids)
               .then(() => {
                 console.log("func. invoked");
                 toast.remove();
+                loadComposition();
               })
               .catch((err) => {
                 toast.remove();
@@ -434,10 +434,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     loadComposition();
   }, []);
-
-  connection.on("ScreenConnected", (screenConnected) => {
-    console.log("on--------------->", screenConnected);
-  });
 
   // preview modal
   useEffect(() => {
@@ -910,7 +906,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                   <button
                                     onClick={() =>
                                       handelDeleteComposition(
-                                        composition.compositionID
+                                        composition.compositionID,
+                                        composition?.maciDs
                                       )
                                     }
                                   >
@@ -1100,7 +1097,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                   <button
                                     onClick={() =>
                                       handelDeleteComposition(
-                                        composition.compositionID
+                                        composition.compositionID,composition?.maciDs
                                       )
                                     }
                                   >

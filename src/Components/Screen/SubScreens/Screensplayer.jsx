@@ -44,16 +44,13 @@ import {
 import ShowAssetModal from "../../ShowAssetModal";
 import { handleUpdateScreenAsset } from "../../../Redux/Screenslice";
 import { TvStatus, connection } from "../../../SignalR";
-import { handleGetCompositions } from "../../../Redux/CompositionSlice";
-import { handleGetAllAssets } from "../../../Redux/Assetslice";
-import { handleGetAllSchedule } from "../../../Redux/ScheduleSlice";
 
 const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   Screensplayer.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const { token } = useSelector((state) => state.root.auth);
+  const { token ,userDetails} = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [searchParams] = useSearchParams();
@@ -390,12 +387,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedComposition(composition);
   };
 
-  const handleOnConfirm = () => {
-    setShowAssetModal(false);
-    setSearchAsset("");
-    setSelectedAsset(assetPreview);
-    setShowAssestOptionsPopup(false);
-  };
 
   const handleScheduleAdd = (schedule) => {
     setSelectedSchedule(schedule);
@@ -413,19 +404,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  const handleOptionChange = (e) => {
-    setSelectedScreenTypeOption(e.target.value);
-    setSelectedComposition("");
-    setSelectedApps("");
-    setSelectedAsset("");
-    setAssetPreview("");
-    setSelectedSchedule("");
-    setSelectedDefaultAsset("");
-    setSelectedYoutube();
-    setSelectedTextScroll();
-    setConfirmForComposition(false);
-    setSaveForSchedule(false);
-  };
+
 
   const handleConfirmOnComposition = () => {
     setShowCompositionModal(false);
@@ -481,7 +460,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleFetchPreviewScreen = async (macId) => {
     let data = JSON.stringify({
-      macid: macId,
+      macid: macId,IsFromWeb:1
     });
 
     let config = {
@@ -501,6 +480,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         if (response?.data?.status == 200) {
           const { data, myComposition } = response?.data;
           setScreenPreviewData({ data, myComposition });
+          console.log(data,myComposition);
           if (myComposition.length > 0) {
             setFetchLayoutLoading(true);
             handleFetchLayoutById(myComposition[0]?.layoutID);
@@ -517,6 +497,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
   function handleChangePreviewScreen() {
     const { data, myComposition } = screenPreviewData;
+    // console.log(data,myComposition);
     const findCurrentSchedule = data.find((item) => {
       // for schedule
       if (
@@ -534,11 +515,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         return item;
       }
     });
+    // for schedule set
     if (findCurrentSchedule !== undefined && findCurrentSchedule !== null) {
       setPlayerData(findCurrentSchedule);
+      setSelectedDefaultAsset("")
       setCompositionData([]);
       return true;
-    } else if (
+    } else if ( // for composition set
       (findCurrentSchedule === null || findCurrentSchedule === undefined) &&
       myComposition[0]?.compositionPossition.length > 0
     ) {
@@ -566,18 +549,28 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         setCompositionData(newdd);
         setAllCompositionData(newdd);
         setPlayerData(null);
+      setSelectedDefaultAsset("")
+      setSelectedAsset("")
+      setSelectedComposition("")
+      setSelectedApps("")
+      setSelectedSchedule("")
+
       }
       return true;
-    } else {
+    } else {// for default media set
       const findDefaultAsset = data.find(
         (item) => item?.isdefaultAsset == "true"
       );
       setPlayerData(findDefaultAsset);
+      setSelectedDefaultAsset("Default Asset")
+      setSelectedAsset("")
+      setSelectedComposition("")
+      setSelectedApps("")
+      setSelectedSchedule("")
       setCompositionData([]);
       return true;
     }
   }
-
   var interval;
 
   function runFunEverySecForPreview() {
@@ -630,7 +623,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       screenName: screenName,
       operation: "Update",
     });
-    console.log(selectedDefaultAsset);
     if (!selectedAsset && selectedDefaultAsset !== "Default Asset") {
       toast.remove();
       return toast.error("Please select asset");
@@ -894,7 +886,14 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     // });
   };
 
-  // console.log(screenPreviewData);
+
+  console.log(screenPreviewData);
+  // console.log("selected asset",selectedAsset);
+  // console.log("selected comp",selectedComposition);
+  // console.log("selected schedule",selectedSchedule);
+  // console.log("selected apps",selectedApps);
+  // console.log("selected default",selectedDefaultAsset);
+
   return (
     <>
       {showAssetModal && (
@@ -1416,6 +1415,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                 }`}
                               >
                                 {screen.screenStatus == 1 ? "Live" : "offline"}
+                                {/* {TvStatus} */}
                               </span>
                             </td>
                           </tr>
@@ -1522,7 +1522,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             </td>
                             <td className="text-left">
                               <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                                {screen.userName}
+                                {userDetails?.firstName}   {userDetails?.lastName}
                               </p>
                             </td>
                           </tr>
@@ -1786,9 +1786,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             <input
                               type="radio"
                               defaultChecked={
-                                selectedAsset ||
-                                selectedComposition ||
-                                selectedApps
+                                selectedDefaultAsset===""
                               }
                               name="type"
                               id="select_asset"
@@ -1812,9 +1810,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               type="radio"
                               name="type"
                               defaultChecked={
-                                !selectedAsset ||
-                                !selectedComposition ||
-                                !selectedApps
+                                selectedDefaultAsset!==""
                               }
                               id="default_asset"
                             />

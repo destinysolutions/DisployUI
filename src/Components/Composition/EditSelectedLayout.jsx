@@ -89,7 +89,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
     .reduce((acc, curr) => {
       return acc + Number(curr?.duration);
     }, 0);
-    console.log(compositoinDetails?.maciDs);
 
   const onSave = async () => {
     toast.remove();
@@ -135,7 +134,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       const response = await axios.request(config);
       if (response?.data?.status === 200) {
         connection
-          .invoke("ScreenConnected", compositoinDetails?.maciDs)
+          .invoke("ScreenConnected", compositoinDetails?.maciDs.replace(/^\s+/g, ''))
           .then(() => {
             console.log("invoked");
             navigate("/composition");

@@ -104,10 +104,18 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     });
   };
 
-  const handelDeleteSchedule = (scheduleId) => {
+  const handelDeleteSchedule = (scheduleId, maciDs) => {
     if (!window.confirm("Are you sure?")) return;
     if (deleteLoading) return;
     dispatch(handleDeleteScheduleById({ id: scheduleId, token }));
+    connection
+      .invoke("ScreenConnected", maciDs.replace(/^\s+/g, ''))
+      .then(() => {
+        console.log("SignalR method invoked after screen update");
+      })
+      .catch((error) => {
+        console.error("Error invoking SignalR method:", error);
+      });
   };
 
   const handelDeleteAllSchedule = () => {
@@ -115,6 +123,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     if (deleteLoading) return;
     dispatch(handleDeleteScheduleAll({ token }));
     setSelectAll(false);
+    connection
+    .invoke("ScreenConnected", schedules?.map(item=>item?.maciDs).join(",").replace(/^\s+/g, ''))
+    .then(() => {
+      console.log("SignalR method invoked after screen update");
+    })
+    .catch((error) => {
+      console.error("Error invoking SignalR method:", error);
+    });
   };
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
@@ -148,6 +164,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             .then(() => {
               console.log("func. invoked");
               toast.remove();
+              dispatch(handleGetAllSchedule({ token }));
             })
             .catch((err) => {
               toast.remove();
@@ -673,7 +690,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className=" mb-1 text-[#D30000]">
                                 <button
                                   onClick={() =>
-                                    handelDeleteSchedule(schedule.scheduleId)
+                                    handelDeleteSchedule(
+                                      schedule.scheduleId,
+                                      schedule?.maciDs
+                                    )
                                   }
                                 >
                                   Delete
@@ -811,7 +831,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className=" mb-1 text-[#D30000]">
                                 <button
                                   onClick={() =>
-                                    handelDeleteSchedule(schedule.scheduleId)
+                                    handelDeleteSchedule(
+                                      schedule.scheduleId,
+                                      schedule?.maciDs
+                                    )
                                   }
                                 >
                                   Delete

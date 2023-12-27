@@ -110,7 +110,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const handelDeleteInstance = (youtubeId) => {
+  const handelDeleteInstance = (youtubeId, maciDs) => {
     if (!window.confirm("Are you sure?")) return;
     let data = JSON.stringify({
       youtubeId: youtubeId,
@@ -126,14 +126,23 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
       },
       data: data,
     };
-
     toast.loading("Deleting...");
     axios
       .request(config)
       .then((response) => {
+        connection
+          .invoke("ScreenConnected", maciDs)
+          .then(() => {
+            console.log("SignalR method invoked after youtube update");
+          })
+          .catch((error) => {
+            console.error("Error invoking SignalR method:", error);
+          });
+
         const updatedInstanceData = youtubeData.filter(
           (instanceData) => instanceData.youtubeId !== youtubeId
         );
+
         setYoutubeData(updatedInstanceData);
         toast.remove();
       })
@@ -520,7 +529,10 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                     <li
                                       className="flex text-sm items-center cursor-pointer"
                                       onClick={() =>
-                                        handelDeleteInstance(item.youtubeId)
+                                        handelDeleteInstance(
+                                          item.youtubeId,
+                                          item?.maciDs
+                                        )
                                       }
                                     >
                                       <RiDeleteBin5Line className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />

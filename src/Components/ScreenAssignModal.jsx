@@ -370,7 +370,7 @@ const ScreenAssignModal = ({
               onClick={() => {
                 handleUpdateScreenAssign(
                   screenCheckboxes,
-                  selectedScreenMacIdsString
+                  screenMacID.join(",").replace(/^\s+/g, '')
                 );
                 setSelectedScreens([]);
               }}

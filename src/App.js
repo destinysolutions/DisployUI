@@ -117,6 +117,7 @@ const App = () => {
         console.log("signal connected");
       });
     }
+    console.log(connection.state);
     return () => {
       if (connection.state === "Connected") {
         connection
@@ -129,7 +130,7 @@ const App = () => {
           });
       }
     };
-  });
+  },[connection]);
 
   return (
     <>
