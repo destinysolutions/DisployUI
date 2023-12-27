@@ -116,7 +116,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
               if (selectedImages?.length - 1 === index) {
                 toast.success("Uploaded Successfully.");
                 // navigate(-1);
-                if (navigate(-1)) {
+                if (window.history.length > 1) {
                   navigate(-1);
                 } else {
                   window.close();

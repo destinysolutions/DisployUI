@@ -632,7 +632,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      <div className="flex bg-white py-3 border-b border-gray">
+      <div className="flex bg-white border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>

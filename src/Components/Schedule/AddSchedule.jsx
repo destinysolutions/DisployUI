@@ -212,6 +212,10 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const overallEventTimes = getOverallEventTimes(myEvents);
 
   const saveEditedSchedule = () => {
+    if (overallEventTimes === null) {
+      toast.remove();
+      return toast.error("Please create an Event.");
+    }
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;
@@ -241,7 +245,11 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response.data.status === 200) {
           toast.remove();
-          navigate("/myschedule");
+          if (window.history > 1) {
+            navigate("/myschedule");
+          } else {
+            window.close();
+          }
         }
       })
       .catch((error) => {
@@ -640,7 +648,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-12 mt-5">
+          <div className="grid lg:grid-cols-12 md:grid-cols-6 mt-5">
             <div className="bg-white lg:col-span-9 md:col-span-7 sm:col-span-12 xs:col-span-12 p-3 ">
               <DragAndDropCalendar
                 selectable
@@ -676,7 +684,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 myEvents={myEvents}
               />
             </div>
-            <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-5 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
+            <div className=" bg-white lg:ml-5 md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-6 sm:col-span-12 xs:col-span-12 lg:mt-0 md:mt-0 sm:mt-3 xs:mt-3 ">
               {/* <div className="flex justify-center my-3 text-black font-semibold text-xl">
                 Schedule Name
               </div> */}
@@ -837,7 +845,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 //   : handleSaveNewSchedule()
                 saveEditedSchedule()
               }
-              disabled={overallEventTimes === null}
+              // disabled={overallEventTimes === null}
             >
               Save
             </button>

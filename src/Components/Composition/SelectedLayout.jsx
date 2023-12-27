@@ -127,7 +127,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
-          if(navigate(-2)){
+          if(window.history.length > 2){
             navigate("/composition");
           }else{
             window.close()
@@ -569,7 +569,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      <div className="flex bg-white py-3 border-b border-gray">
+      <div className="flex bg-white border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>

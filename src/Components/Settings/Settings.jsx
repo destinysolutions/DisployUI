@@ -225,7 +225,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
 
-      <div className="pt-24 px-5 page-contain">
+      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex justify-between sm:flex xs:block  items-center mb-5 ">
             <div className=" lg:mb-0 md:mb-0 sm:mb-4">
@@ -249,9 +249,9 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="grid w-full grid-cols-5">
+          <div className="grid w-full lg:grid-cols-5 md:grid-cols-5 sm:grid-cols-1">
             {/*Tab*/}
-            <div className="mainsettingtab col-span-1 w-full p-0 ">
+            <div className="mainsettingtab col-span-1 w-full p-0">
               <ul className="w-full">
                 <li>
                   <button

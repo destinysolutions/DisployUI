@@ -209,7 +209,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
 
           if (selectedImages?.length - 1 === index && response.status === 200) {
             toast.success(`File uploaded successfully.`);
-            if (navigate(-1)) {
+            if (window.history.length > 1) {
               navigate(-1);
             } else {
               window.close();
@@ -417,6 +417,14 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     }
   }
 
+  const handleCancel = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      window.close();
+    }
+  };
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -430,8 +438,11 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               Media Upload
             </h1>
             <div className="lg:flex md:flex sm:block">
-              <Link to={-1}>
-                <button className="flex align-middle border-primary items-center border rounded-full lg:px-8 md:px-8 sm:px-4 xs:px-4 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <Link>
+                <button
+                  className="flex align-middle border-primary items-center border rounded-full lg:px-8 md:px-8 sm:px-4 xs:px-4 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  onClick={() => handleCancel()}
+                >
                   Cancel
                 </button>
               </Link>
