@@ -54,6 +54,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [tags, setTags] = useState([]);
   const [showTagModal, setShowTagModal] = useState(false);
   const [screenSelected, setScreenSelected] = useState([]);
+  const [selectdata, setSelectData] = useState({});
 
   const { token } = useSelector((state) => state.root.auth);
   const { loading, schedules, deleteLoading } = useSelector(
@@ -122,6 +123,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       if (screenIds[key] === true) {
         idS += `${key},`;
       }
+    }
+    if (idS === "") {
+      toast.remove();
+      return toast.error("Please Select Screen.");
     }
 
     let config = {
@@ -244,7 +249,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
- 
+
   useEffect(() => {
     dispatch(handleGetAllSchedule({ token }));
   }, []);
@@ -440,6 +445,13 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     <button
                       className="bg-primary text-white px-8 py-2 rounded-full"
                       onClick={() => {
+                        if (selectdata?.screenIDs) {
+                          let arr = [selectdata?.screenIDs];
+                          let newArr = arr[0]
+                            .split(",")
+                            .map((item) => parseInt(item.trim()));
+                          setSelectedScreens(newArr);
+                        }
                         setSelectScreenModal(true);
                         setAddScreenModal(false);
                       }}
@@ -519,7 +531,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 ) : schedules.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={7}
+                      colSpan={8}
                       className="font-semibold text-center text-xl"
                     >
                       No Schedule here.
@@ -651,6 +663,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                     setScreenSelected(
                                       schedule?.screenAssigned?.split(",")
                                     );
+                                    setSelectData(schedule);
                                   }}
                                 >
                                   Add Screens

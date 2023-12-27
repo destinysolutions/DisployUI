@@ -245,7 +245,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response.data.status === 200) {
           toast.remove();
-          if (window.history > 1) {
+          if (window.history?.length > 1) {
             navigate("/myschedule");
           } else {
             window.close();
@@ -264,6 +264,10 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       if (screenIds[key] === true) {
         idS += `${key},`;
       }
+    }
+    if (idS === "") {
+      toast.remove();
+      return toast.error("Please Select Screen.");
     }
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
