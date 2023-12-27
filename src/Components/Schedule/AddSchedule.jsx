@@ -288,7 +288,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         setSelectScreenModal(false);
         connection
-          .invoke("ScreenConnected", macids)
+          .invoke("ScreenConnected", macids.replace(/^\s+/g, ''))
           .then(() => {
             console.log("SignalR method invoked after screen update");
           })
@@ -355,7 +355,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           loadEventsForSchedule(scheduleIdToUse);
           if (myEvents[0]?.macids) {
             connection
-              .invoke("ScreenConnected", myEvents[0]?.macids)
+              .invoke("ScreenConnected", myEvents[0]?.macids.replace(/^\s+/g, ''))
               .then(() => {
                 console.log("SignalR invoked");
               })

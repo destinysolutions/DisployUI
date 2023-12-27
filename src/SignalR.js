@@ -7,16 +7,13 @@ export const connection = new HubConnectionBuilder()
   .withAutomaticReconnect()
   .build();
 
-// useEffect(() => {
-console.log("run signal r");
-// const     connection.on("ScreenConnected", (screenConnected) => {
-//       // setScreenConnected(screenConnected);
-//       return screenConnected
-//     });
+connection.on("ScreenConnected", (screenConnected) => {
+  console.log("on--------------->", screenConnected);
+});
 
 export let TvStatus;
 connection.on("TvStatus", (UserID, ScreenID, status) => {
-  // console.log("sts", status);
+  console.log("status", status);
   var b = document.getElementById("changetvstatus" + ScreenID);
   b.setAttribute(
     "class",
@@ -26,4 +23,3 @@ connection.on("TvStatus", (UserID, ScreenID, status) => {
   b.textContent = status == true ? "Live" : "offline";
   TvStatus = status == true ? "Live" : "Offline";
 });
-// }, []);

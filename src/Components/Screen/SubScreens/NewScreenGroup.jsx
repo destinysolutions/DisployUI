@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../../Styles/sidebar.css";
 import "../../../Styles/screen.css";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
@@ -21,18 +21,19 @@ import { Tooltip } from "@material-tailwind/react";
 import ScreenGroupModal from "./ScreenGroupModal";
 import ShowAssetModal from "./model/ShowGroupAssetModal";
 import { useDispatch, useSelector } from "react-redux";
-import {handleGetScreen,} from "../../../Redux/Screenslice";
-  import { handleGetAllAssets } from "../../../Redux/Assetslice";
-  import { handleGetAllSchedule } from "../../../Redux/ScheduleSlice";
-  import { handleGetCompositions } from "../../../Redux/CompositionSlice";
-  import { handleGetTextScrollData, handleGetYoutubeData} from "../../../Redux/AppsSlice";
-
+import { handleGetScreen } from "../../../Redux/Screenslice";
+import { handleGetAllAssets } from "../../../Redux/Assetslice";
+import { handleGetAllSchedule } from "../../../Redux/ScheduleSlice";
+import { handleGetCompositions } from "../../../Redux/CompositionSlice";
+import {
+  handleGetTextScrollData,
+  handleGetYoutubeData,
+} from "../../../Redux/AppsSlice";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
-
-const { user, token } = useSelector((state) => state.root.auth);
-const authToken = `Bearer ${token}`;
-const dispatch = useDispatch();
+  const { user, token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+  const dispatch = useDispatch();
 
   NewScreenGroup.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -41,14 +42,15 @@ const dispatch = useDispatch();
 
   const [loadFirst, setLoadFirst] = useState(true);
 
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [openAccordionIndex, setOpenAccordionIndex] = useState(null);
 
-//   Model
+  //   Model
   const [showAssetModal, setShowAssetModal] = useState(false);
-  const [selectedComposition, setSelectedComposition] = useState({ compositionName: "" });
+  const [selectedComposition, setSelectedComposition] = useState({
+    compositionName: "",
+  });
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
   const [selectedTextScroll, setSelectedTextScroll] = useState();
@@ -57,55 +59,51 @@ const dispatch = useDispatch();
   const [selectedYoutube, setSelectedYoutube] = useState();
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
 
-
-
   useEffect(() => {
     // const query = { ID : user.userID, sort: sortOrder, col: sortColumn };
     if (loadFirst) {
       console.log(" ---- loadFirst --- ");
       setLoadFirst(false);
     }
-
   }, [loadFirst]);
 
+  // fetch all data
+  useEffect(() => {
+    if (user && loadFirst) {
+      // load composition
+      dispatch(handleGetCompositions({ token }));
 
-    // fetch all data
-    useEffect(() => {
-        if (user && loadFirst) {
-          // load composition
-          dispatch(handleGetCompositions({ token }));
-    
-          // get all assets files
-          dispatch(handleGetAllAssets({ token }));
-    
-          // get all schedule
-          dispatch(handleGetAllSchedule({ token }));
-    
-          // get youtube data
-          dispatch(handleGetYoutubeData({ token }));
-    
-          //get text scroll data
-          dispatch(handleGetTextScrollData({ token }));
-    
-          // get screens
-          const response = dispatch(handleGetScreen({ token }));
-          if (response) {
-            response.then((res) => {
-              if (res?.payload?.status === 200) {
-                const fetchedData = res?.payload.data;
-                const initialCheckboxes = {};
-                if (Array.isArray(fetchedData)) {
-                  fetchedData.forEach((screen) => {
-                    initialCheckboxes[screen.screenID] = false;
-                  }); 
-                  setScreenCheckboxes(initialCheckboxes);
-                }
-              }
-            });
+      // get all assets files
+      dispatch(handleGetAllAssets({ token }));
+
+      // get all schedule
+      dispatch(handleGetAllSchedule({ token }));
+
+      // get youtube data
+      dispatch(handleGetYoutubeData({ token }));
+
+      //get text scroll data
+      dispatch(handleGetTextScrollData({ token }));
+
+      // get screens
+      const response = dispatch(handleGetScreen({ token }));
+      if (response) {
+        response.then((res) => {
+          if (res?.payload?.status === 200) {
+            const fetchedData = res?.payload.data;
+            const initialCheckboxes = {};
+            if (Array.isArray(fetchedData)) {
+              fetchedData.forEach((screen) => {
+                initialCheckboxes[screen.screenID] = false;
+              });
+              setScreenCheckboxes(initialCheckboxes);
+            }
           }
-        }
-        setLoadFirst(false);
-      },[user,loadFirst]);
+        });
+      }
+    }
+    setLoadFirst(false);
+  }, [user, loadFirst]);
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -126,25 +124,24 @@ const dispatch = useDispatch();
   };
 
   const handleRefres = () => {
-    setLoadFirst(true)
+    setLoadFirst(true);
   };
 
   const handleDeleteGroup = (id) => {
-    console.log("---- loadFirst ---- Id --- Delete Group ---- ",id);
-    setLoadFirst(true)
+    console.log("---- loadFirst ---- Id --- Delete Group ---- ", id);
+    setLoadFirst(true);
   };
-
 
   // Model Function
 
   const handleAssetAdd = (asset) => {
-    console.log(" get image ---- >",asset);
+    console.log(" get image ---- >", asset);
     setSelectedAsset(asset);
     setAssetPreview(asset);
   };
 
   const handleAppsAdd = (apps) => {
-    console.log(" get apps ---- >",apps); 
+    console.log(" get apps ---- >", apps);
     setSelectedYoutube(apps);
     setSelectedTextScroll(apps);
   };
@@ -169,13 +166,11 @@ const dispatch = useDispatch();
     //     selectedComposition?.compositionID !== undefined
     //   ? 3
     //   : 0;
-
     // let mediaName =
     //   selectedAsset?.assetName ||
     //   selectedComposition?.compositionName ||
     //   selectedYoutube?.instanceName ||
     //   selectedTextScroll?.instanceName;
-
     // if (screenToUpdate) {
     //   let data = {
     //     ...screenToUpdate,
@@ -215,9 +210,11 @@ const dispatch = useDispatch();
     // }
   };
 
-  const handleSave = () =>{
-    console.log("------------------------------------  End of call function    ------------------");
-  }
+  const handleSave = () => {
+    console.log(
+      "------------------------------------  End of call function    ------------------"
+    );
+  };
 
   const DataGroup = [
     {
@@ -336,167 +333,182 @@ const dispatch = useDispatch();
             </div>
           </div>
 
-          {DataGroup && DataGroup.length  && DataGroup.map((item,i)=>{ 
-            const isAccordionOpen = openAccordionIndex === i;
-            return (
-              <div key={i} className="accordions mt-5">
-                <div
-                  className="section shadow-md p-5 rounded-md bg-white  lg:flex md:flex  sm:block items-center justify-between"
-                  onMouseOver={handleMouseOver}
-                  onMouseOut={handleMouseOut}
-                >
-                  <h1 className="text-lg">{item.name}</h1>
-                  <div className="flex items-center">
-                    <div className=" flex items-center">
-                      {isAccordionOpen && (
-                        <>
-                          <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
-                            Preview
-                          </button>
-                          <button
-                            className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                            onClick={() => setShowAssetModal(true)}
-                          >
-                            <TbUpload className="text-3xl p-1 hover:text-white" />
-                          </button>
-                          <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
-                            <RiDeleteBin5Line
-                              className="text-3xl p-1 hover:text-white"
-                              onClick={() => handleDeleteGroup(item)}
-                            />
-                          </button>
-                        </>
-                      )}
-
-                      <button>
-                        <input type="checkbox" className=" mx-1 w-6 h-5 mt-2" />
-                      </button>
-
-                      <button>
-                        {isAccordionOpen ? (
-                          <div onClick={() => handleAccordionClick(i)}>
-                            <IoIosArrowDropup className="text-3xl" />
-                          </div>
-                        ) : (
-                          <div onClick={() => handleAccordionClick(i)}>
-                            <IoIosArrowDropdown className="text-3xl" />
-                          </div>
+          {DataGroup &&
+            DataGroup.length &&
+            DataGroup.map((item, i) => {
+              const isAccordionOpen = openAccordionIndex === i;
+              return (
+                <div key={i} className="accordions mt-5">
+                  <div
+                    className="section shadow-md p-5 rounded-md bg-white  lg:flex md:flex  sm:block items-center justify-between"
+                    onMouseOver={handleMouseOver}
+                    onMouseOut={handleMouseOut}
+                  >
+                    <h1 className="text-lg">{item.name}</h1>
+                    <div className="flex items-center">
+                      <div className=" flex items-center">
+                        {isAccordionOpen && (
+                          <>
+                            <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
+                              Preview
+                            </button>
+                            <button
+                              className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                              onClick={() => setShowAssetModal(true)}
+                            >
+                              <TbUpload className="text-3xl p-1 hover:text-white" />
+                            </button>
+                            <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                              <RiDeleteBin5Line
+                                className="text-3xl p-1 hover:text-white"
+                                onClick={() => handleDeleteGroup(item)}
+                              />
+                            </button>
+                          </>
                         )}
-                      </button>
+
+                        <button>
+                          <input
+                            type="checkbox"
+                            className=" mx-1 w-6 h-5 mt-2"
+                          />
+                        </button>
+
+                        <button>
+                          {isAccordionOpen ? (
+                            <div onClick={() => handleAccordionClick(i)}>
+                              <IoIosArrowDropup className="text-3xl" />
+                            </div>
+                          ) : (
+                            <div onClick={() => handleAccordionClick(i)}>
+                              <IoIosArrowDropdown className="text-3xl" />
+                            </div>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
+
+                  {isAccordionOpen && (
+                    <div className="overflow-x-auto">
+                      <table
+                        className="mt-9 w-full sm:mt-3 lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white merged-table"
+                        cellPadding={20}
+                      >
+                        <thead>
+                          <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" flex  items-center justify-center px-6 py-2">
+                                Screen
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" flex  items-center justify-center mx-auto px-6 py-2">
+                                Status
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" flex  items-center justify-center mx-auto px-6 py-2">
+                                Last Seen
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" flex  items-center justify-center mx-auto px-6 py-2">
+                                Now Playing
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
+                                Current Schedule
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
+                                Tags
+                              </button>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {isAccordionOpen &&
+                            item &&
+                            item.arrayGroup.length &&
+                            item.arrayGroup.map((groupItem, index) => {
+                              return (
+                                <tr
+                                  key={index}
+                                  className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
+                                >
+                                  <td className="flex items-center ">
+                                    <input type="checkbox" className="mr-3" />
+                                    {groupItem.screen}
+                                  </td>
+                                  <td className="p-2 text-center">
+                                    {groupItem.status === 0 ? (
+                                      <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
+                                        Live
+                                      </button>
+                                    ) : (
+                                      <button className="bg-[#FF0000] rounded-full px-6 py-1 text-white">
+                                        Off
+                                      </button>
+                                    )}
+                                  </td>
+                                  <td className="p-2 text-center">
+                                    {" "}
+                                    {groupItem.last_seen}
+                                  </td>
+                                  <td className="p-2 text-center">
+                                    <button
+                                      onClick={() => setShowAssetModal(true)}
+                                      className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                    >
+                                      Asset Name
+                                      <AiOutlineCloudUpload className="ml-2 text-lg" />
+                                    </button>
+
+                                    {showAssetModal && (
+                                      <ShowAssetModal
+                                        handleAssetAdd={handleAssetAdd}
+                                        handleAssetUpdate={handleAssetUpdate} // function
+                                        setSelectedComposition={
+                                          setSelectedComposition
+                                        }
+                                        handleAppsAdd={handleAppsAdd}
+                                        popupActiveTab={popupActiveTab}
+                                        setAssetPreviewPopup={
+                                          setAssetPreviewPopup
+                                        }
+                                        setPopupActiveTab={setPopupActiveTab}
+                                        setShowAssetModal={setShowAssetModal}
+                                        assetPreviewPopup={assetPreviewPopup}
+                                        assetPreview={assetPreview}
+                                        selectedComposition={
+                                          selectedComposition
+                                        }
+                                        selectedTextScroll={selectedTextScroll}
+                                        selectedYoutube={selectedYoutube}
+                                        selectedAsset={selectedAsset}
+                                        handleSave={handleSave} // save end of the call function confim
+                                      />
+                                    )}
+                                  </td>
+                                  <td className="break-words	w-[150px] p-2 text-center">
+                                    {groupItem.current_Schedule}
+                                  </td>
+                                  <td className="p-2 text-center">
+                                    Tags, Tags
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
-
-                {isAccordionOpen && (
-                  <div className="overflow-x-auto">
-                    <table
-                      className="mt-9 w-full sm:mt-3 lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white merged-table"
-                      cellPadding={20}
-                    >
-                      <thead>
-                        <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" flex  items-center justify-center px-6 py-2">
-                              Screen
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" flex  items-center justify-center mx-auto px-6 py-2">
-                              Status
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" flex  items-center justify-center mx-auto px-6 py-2">
-                              Last Seen
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" flex  items-center justify-center mx-auto px-6 py-2">
-                              Now Playing
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
-                              Current Schedule
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
-                              Tags
-                            </button>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {isAccordionOpen && item && item.arrayGroup.length && item.arrayGroup.map((groupItem, index) => {
-                            return (
-                              <tr
-                                key={index}
-                                className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
-                              >
-                                <td className="flex items-center ">
-                                  <input type="checkbox" className="mr-3" />
-                                  {groupItem.screen}
-                                </td>
-                                <td className="p-2 text-center">
-                                  {groupItem.status === 0 ? (
-                                    <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
-                                      Live
-                                    </button>
-                                  ) : (
-                                    <button className="bg-[#FF0000] rounded-full px-6 py-1 text-white">
-                                      Off
-                                    </button>
-                                  )}
-                                </td>
-                                <td className="p-2 text-center">
-                                  {" "}
-                                  {groupItem.last_seen}
-                                </td>
-                                <td className="p-2 text-center">
-                                  <button
-                                    onClick={() => setShowAssetModal(true)}
-                                    className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                                  >
-                                    Asset Name
-                                    <AiOutlineCloudUpload className="ml-2 text-lg" />
-                                  </button>
-
-                                  {showAssetModal && (
-                                    <ShowAssetModal
-                                      handleAssetAdd={handleAssetAdd}
-                                      handleAssetUpdate={handleAssetUpdate} // function
-                                      setSelectedComposition={setSelectedComposition}
-                                      handleAppsAdd={handleAppsAdd}
-                                      popupActiveTab={popupActiveTab}
-                                      setAssetPreviewPopup={setAssetPreviewPopup}
-                                      setPopupActiveTab={setPopupActiveTab}
-                                      setShowAssetModal={setShowAssetModal}
-                                      assetPreviewPopup={assetPreviewPopup}
-                                      assetPreview={assetPreview}
-                                      selectedComposition={selectedComposition}
-                                      selectedTextScroll={selectedTextScroll}
-                                      selectedYoutube={selectedYoutube}
-                                      selectedAsset={selectedAsset}
-                                      handleSave={handleSave}  // save end of the call function confim 
-                                    />
-                                  )}
-                                </td>
-                                <td className="break-words	w-[150px] p-2 text-center">
-                                  {groupItem.current_Schedule}
-                                </td>
-                                <td className="p-2 text-center">Tags, Tags</td>
-                              </tr>
-                            );
-                          })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-
+              );
+            })}
         </div>
       </div>
       <Footer />

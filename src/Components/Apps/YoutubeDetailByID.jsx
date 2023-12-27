@@ -53,6 +53,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   const [saveLoading, setSaveLoading] = useState(false);
   const [instanceName, setInstanceName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [macids, setMacids] = useState("");
 
   const modalRef = useRef(null);
 
@@ -119,16 +120,16 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
       const response = await axios.request(config);
       if (response?.data?.status === 200) {
         // Wrap the SignalR invocation in a Promise
-        // connection
-        //   .invoke("ScreenConnected")
-        //   .then(() => {
-        //     console.log("SignalR method invoked after youtube update");
-        //   })
-        //   .catch((error) => {
-          //     console.error("Error invoking SignalR method:", error);
-          //   });
-          
-              history("/youtube");
+        connection
+          .invoke("ScreenConnected", macids.replace(/^\s+/g, ''))
+          .then(() => {
+            console.log("SignalR method invoked after youtube update");
+            history("/youtube");
+          })
+          .catch((error) => {
+            console.error("Error invoking SignalR method:", error);
+          });
+
         setSaveLoading(false);
       }
     } catch (error) {
@@ -178,6 +179,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         const data = response?.data?.data[0];
+        setMacids(data?.maciDs);
         setYoutubeVideo(data?.youTubeURL);
         setIsMuted(data?.muteVideos);
         setAreSubtitlesOn(data?.toggleSubtitles);

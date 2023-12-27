@@ -47,7 +47,6 @@ import { handleUpdateScreenAsset } from "../../../Redux/Screenslice";
 import { handleGetCompositions } from "../../../Redux/CompositionSlice";
 import { handleGetAllAssets } from "../../../Redux/Assetslice";
 import { handleGetAllSchedule } from "../../../Redux/ScheduleSlice";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { connection } from "../../../SignalR";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
@@ -196,7 +195,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleAssetAdd = (asset) => {
-    setAssetPreview(asset)
+    setAssetPreview(asset);
     setSelectedAsset(asset);
   };
 
@@ -233,10 +232,6 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   const signalROnConfirm = () => {
     console.log("run signal r");
-
-    // connection.on("ScreenConnected", (MacID) => {
-    //   console.log("ScreenConnected", MacID);
-    // });
 
     try {
       connection.invoke("ScreenConnected", otpData[0]?.MACID).then(() => {

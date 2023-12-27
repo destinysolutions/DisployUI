@@ -103,7 +103,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const handelDeleteInstance = (scrollId) => {
+  const handelDeleteInstance = (scrollId, maciDs) => {
     if (!window.confirm("Are you sure?")) return;
 
     toast.loading("Deleting...");
@@ -125,6 +125,14 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
+        connection
+          .invoke("ScreenConnected", maciDs)
+          .then(() => {
+            console.log("SignalR method invoked after youtube update");
+          })
+          .catch((error) => {
+            console.error("Error invoking SignalR method:", error);
+          });
         const updatedInstanceData = instanceData.filter(
           (instanceData) => instanceData.textScroll_Id !== scrollId
         );
@@ -430,7 +438,8 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                                     className="flex text-sm items-center cursor-pointer"
                                     onClick={() =>
                                       handelDeleteInstance(
-                                        instance.textScroll_Id
+                                        instance.textScroll_Id,
+                                        instance?.maciDs
                                       )
                                     }
                                   >
