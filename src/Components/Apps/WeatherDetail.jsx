@@ -412,7 +412,11 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status === 200) {
-          history("/weather");
+          if (window.history.length === 1) {
+            window.close();
+          } else {
+            history("/weather");
+          }
         }
         setSaveLoading(false);
       })

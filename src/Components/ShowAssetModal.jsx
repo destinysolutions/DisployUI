@@ -21,6 +21,7 @@ import {
 } from "../Pages/Api";
 import { connection } from "../SignalR";
 import ReactPlayer from "react-player";
+import ShowAppsModal from "./ShowAppsModal";
 
 const ShowAssetModal = ({
   setShowAssetModal,
@@ -56,6 +57,7 @@ const ShowAssetModal = ({
   const [compostionAllData, setCompostionAllData] = useState([]);
   const [searchApps, setSearchApps] = useState("");
   const [appsData, setAppsData] = useState([]);
+  const [showAppModal, setShowAppModal] = useState(false);
 
   const { assets } = useSelector((s) => s.root.asset);
   const { compositions } = useSelector((s) => s.root.composition);
@@ -317,7 +319,7 @@ const ShowAssetModal = ({
   return (
     <>
       <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] h-auto top-12 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
-        <div className="flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black">
+        <div className={`${showAppModal ? "hidden" : ""} flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}>
           <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
             Set Content to Add Media
           </h3>
@@ -333,7 +335,7 @@ const ShowAssetModal = ({
         </div>
         <div
           onClick={() => assetPreviewPopup && setAssetPreviewPopup(false)}
-          className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl"
+          className={`${showAppModal ? "hidden" : ""} relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
         >
           <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
             <div className="flex-initial">
@@ -709,11 +711,14 @@ const ShowAssetModal = ({
                       onChange={(e) => handleAppsSearch(e)}
                     />
                   </div>
-                  <Link to="/apps">
-                    <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
-                      Add New App
-                    </button>
-                  </Link>
+                  <button
+                    onClick={() => {
+                        setShowAppModal(true);
+                    }}
+                    className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                  >
+                    Add New App
+                  </button>
                 </div>
                 <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
                   <table
@@ -791,7 +796,7 @@ const ShowAssetModal = ({
           </div>
         </div>
 
-        <div className="flex justify-between items-center pl-5 pr-5 pb-4">
+        <div className={`${showAppModal ? "hidden" : ""} flex justify-between items-center pl-5 pr-5 pb-4`}>
           <p className="text-black">Content will always be playing Confirm</p>
           <button
             className="bg-primary text-white rounded-full px-5 py-2"
@@ -804,6 +809,7 @@ const ShowAssetModal = ({
           </button>
         </div>
       </div>
+      {showAppModal && <ShowAppsModal setShowAppModal={setShowAppModal} />}
       <div
         onClick={() => handleClickOutside()}
         className="fixed inset-0 z-40 bg-black/40"
