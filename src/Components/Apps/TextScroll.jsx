@@ -29,6 +29,7 @@ import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import ReactPlayer from "react-player";
 import textScrollLogo from "../../images/AppsImg/text-scroll-icon.svg";
 import { HiBackward } from "react-icons/hi2";
+import { connection } from "../../SignalR";
 
 const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -46,7 +47,6 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
     ? selectedScreens.join(",")
     : "";
   const [selectdata, setSelectData] = useState({});
-  const [connection, setConnection] = useState(null);
   const [showTagModal, setShowTagModal] = useState(false);
   const [tags, setTags] = useState([]);
   const [updateTextscrollTag, setUpdateTextscrollTag] = useState(null);
@@ -62,11 +62,17 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const addScreenRef = useRef(null);
   const appDropdownRef = useRef(null);
 
-  const handleUpdateScreenAssign = () => {
+  const handleUpdateScreenAssign = (screenIds, macids) => {
+    let idS = "";
+    for (const key in screenIds) {
+      if (screenIds[key] === true) {
+        idS += `${key},`;
+      }
+    }
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AssignTextScrollToScreen?TextScrollId=${textScrollId}&ScreenID=${selectedScreenIdsString}`,
+      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AssignTextScrollToScreen?TextScrollId=${textScrollId}&ScreenID=${idS}`,
       headers: {
         Authorization: authToken,
         "Content-Type": "application/json",
@@ -77,22 +83,17 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
-          if (connection) {
-            connection
-              .invoke("ScreenConnected")
-              .then(() => {
-                // console.log("SignalR method invoked after screen update");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          }
-          setSelectScreenModal(false);
-          setAddScreenModal(false);
-          FetchData();
-          // setShowActionBox(false);
-          // loadScheduleData();
-          toast.remove();
+          connection
+            .invoke("ScreenConnected", macids)
+            .then(() => {
+              console.log(" method invoked");
+              setSelectScreenModal(false);
+              setAddScreenModal(false);
+              FetchData();
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
         }
       })
       .catch((error) => {
@@ -263,7 +264,6 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const FetchData = () => {
-    
     setLoading(true);
     axios
       .get(GET_ALL_TEXT_SCROLL_INSTANCE, {
@@ -282,49 +282,11 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
-
-    newConnection.on("ScreenConnected", (screenConnected) => {
-      // console.log("ScreenConnected", screenConnected);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        // console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            // console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    // if (showSearchModal) {
-    //   window.document.body.style.overflow = "hidden";
-    // }
     const handleClickOutside = (event) => {
       if (
         appDropdownRef.current &&
         !appDropdownRef.current.contains(event?.target)
       ) {
-        // window.document.body.style.overflow = "unset";
         setAppDropDown(false);
         setInstanceView(false);
       }
