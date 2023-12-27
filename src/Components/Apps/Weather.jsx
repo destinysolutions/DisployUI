@@ -33,6 +33,7 @@ import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import moment from "moment";
 import ReactApexChart from "react-apexcharts";
 import { HiBackward } from "react-icons/hi2";
+import { connection } from "../../SignalR";
 
 const Weather = ({ sidebarOpen, setSidebarOpen }) => {
   let api_key = "41b5176532e682fd8b4cb6a44e3bd1a4";
@@ -58,7 +59,6 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
     : "";
   const [selectdata, setSelectData] = useState({});
   const [selectScreenModal, setSelectScreenModal] = useState(false);
-  const [connection, setConnection] = useState(null);
   const [showTagModal, setShowTagModal] = useState(false);
   const [updateTagWeather, setUpdateTagWeather] = useState(null);
   const [tags, setTags] = useState([]);
@@ -218,40 +218,6 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
     setAppDropDown(false);
   }
 
-  // useEffect(() => {
-  //   const newConnection = new HubConnectionBuilder()
-  //     .withUrl(SIGNAL_R)
-  //     .configureLogging(LogLevel.Information)
-  //     .build();
-
-  //   newConnection.on("ScreenConnected", (screenConnected) => {
-  //     // console.log("ScreenConnected", screenConnected);
-  //   });
-
-  //   newConnection
-  //     .start()
-  //     .then(() => {
-  //       // console.log("Connection established");
-  //       setConnection(newConnection);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error starting connection:", error);
-  //     });
-
-  //   return () => {
-  //     if (newConnection) {
-  //       newConnection
-  //         .stop()
-  //         .then(() => {
-  //           // console.log("Connection stopped");
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error stopping connection:", error);
-  //         });
-  //     }
-  //   };
-  // }, []);
-
   const handelDeleteAllInstance = () => {
     if (!window.confirm("Are you sure?")) return;
     const FormData = require("form-data");
@@ -350,15 +316,18 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const handleUpdateScreenAssign = () => {
-    if (selectedScreenIdsString === "") {
-      toast.remove();
-      return toast.error("Please Select Screen.");
+  const handleUpdateScreenAssign = (screenIds, macids) => {
+    let idS = "";
+    for (const key in screenIds) {
+      if (screenIds[key] === true) {
+        idS += `${key},`;
+      }
     }
+
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `${WEATHER_ASSIGN_SECREEN}WeatherId=${instanceID}&ScreenID=${selectedScreenIdsString}`,
+      url: `${WEATHER_ASSIGN_SECREEN}WeatherId=${instanceID}&ScreenID=${idS}`,
       headers: {
         Authorization: authToken,
       },
@@ -368,19 +337,17 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
-          if (connection) {
-            connection
-              .invoke("ScreenConnected")
-              .then(() => {
-                // console.log("SignalR method invoked after screen update");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          }
-          setSelectScreenModal(false);
-          setAddScreenModal(false);
-          FetchData();
+          connection
+            .invoke("ScreenConnected", macids)
+            .then(() => {
+              console.log(" method invoked");
+              setSelectScreenModal(false);
+              setAddScreenModal(false);
+              FetchData();
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
         }
       })
       .catch((error) => {
