@@ -73,6 +73,10 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   const appDropdownRef = useRef(null);
 
   const handleUpdateScreenAssign = () => {
+    if (selectedScreenIdsString === "") {
+      toast.remove();
+      return toast.error("Please Select Screen.");
+    }
     let config = {
       method: "get",
       maxBodyLength: Infinity,

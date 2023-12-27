@@ -64,7 +64,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const [updateTagComposition, setUpdateTagComposition] = useState(null);
   const [screenSelected, setScreenSelected] = useState([]);
   const [screenMacids, setScreenMacids] = useState(null);
-
+  const [selectdata, setSelectData] = useState({});
   const modalRef = useRef(null);
   const addScreenRef = useRef(null);
   const selectScreenRef = useRef(null);
@@ -349,6 +349,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       if (screenIds[key] === true) {
         idS += `${key},`;
       }
+    }
+    if (idS === "") {
+      toast.remove();
+      return toast.error("Please Select Screen.");
     }
 
     let config = {
@@ -636,6 +640,13 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                     <button
                       className="bg-primary text-white px-8 py-2 rounded-full"
                       onClick={() => {
+                        if (selectdata?.screenIDs) {
+                          let arr = [selectdata?.screenIDs];
+                          let newArr = arr[0]
+                            .split(",")
+                            .map((item) => parseInt(item.trim()));
+                          setSelectedScreens(newArr);
+                        }
                         setSelectScreenModal(true);
                         setAddScreenModal(false);
                       }}
@@ -711,12 +722,14 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                 ) : compositionData.length > 0 && !loading ? (
                   filteredCompositionData.length === 0 &&
                   searchComposition !== "" ? (
-                    <td
-                      colSpan="6"
-                      className="font-semibold text-center text-2xl"
-                    >
-                      Composition Not found
-                    </td>
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="font-semibold text-center text-2xl"
+                      >
+                        Composition Not found
+                      </td>
+                    </tr>
                   ) : filteredCompositionData.length === 0 ? (
                     compositionData.map((composition) => (
                       <tr
@@ -752,7 +765,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             .utc(composition?.duration * 1000)
                             .format("HH:mm:ss")}
                         </td>
-                        <td className="text-center">{composition.screenIDs}</td>
+                        <td className="text-center">
+                          {composition?.screenNames}
+                        </td>
+
                         <td
                           title={composition?.tags && composition?.tags}
                           className="text-center flex items-center justify-center w-full flex-wrap gap-2"
@@ -879,8 +895,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                   <button
                                     onClick={() => {
                                       setAddScreenModal(true);
+                                      setSelectData(composition);
                                       setScreenSelected(
-                                        composition?.screenIDs?.split(",")
+                                        composition?.screenNames?.split(",")
                                       );
                                       setScreenMacids(composition?.maciDs);
                                     }}
@@ -904,78 +921,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             )}
                           </div>
                         </td>
-
-                        <PreviewModal show={modalVisible} onClose={closeModal}>
-                          <div
-                            className={`fixed  border left-1/2 -translate-x-1/2 ${
-                              screenType === "portrait"
-                                ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
-                                : "min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]"
-                            }  `}
-                            ref={modalRef}
-                            //   maxWidth: `${layotuDetails?.screenWidth}px`,
-                            //   minWidth: `${layotuDetails?.screenWidth}px`,
-                            //   maxHeight: `${layotuDetails?.screenHeight}px`,
-                            //   minHeight: `${layotuDetails?.screenHeight}px`,
-                            // }}
-                          >
-                            <RxCrossCircled
-                              className="fixed z-50 w-[30px] h-[30px] text-white bg-black/20 rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
-                              onClick={closeModal}
-                            />
-                            {/* screentype toggle "landspace | portrait" */}
-                            <div
-                              className={`fixed z-50 ${
-                                screenType === "Landscape"
-                                  ? "w-14 h-7"
-                                  : "h-14 w-7"
-                              }   rounded-md  bg-black p-2 top-1 right-10 cursor-pointer`}
-                            >
-                              <span
-                                className={`fixed z-50  ${
-                                  screenType === "Landscape"
-                                    ? "w-10 h-5 top-2 right-12"
-                                    : "w-5 h-10 top-3 right-11"
-                                }  rounded-md  bg-white  cursor-pointer`}
-                                title={screenType}
-                                onClick={() => {
-                                  if (screenType === "Landscape") {
-                                    setScreenType("portrait");
-                                  } else {
-                                    setScreenType("Landscape");
-                                  }
-                                }}
-                              />
-                            </div>
-
-                            {!loading &&
-                              layotuDetails?.lstLayloutModelList.length > 0 &&
-                              layotuDetails?.lstLayloutModelList?.map(
-                                (obj, index) => (
-                                  <div
-                                    key={index}
-                                    style={{
-                                      position: "fixed",
-                                      left: obj.leftside + "%",
-                                      top: obj.topside + "%",
-                                      width: obj?.width + "%",
-                                      height: obj?.height + "%",
-                                      backgroundColor: obj.fill,
-                                    }}
-                                  >
-                                    {modalVisible && (
-                                      <Carousel
-                                        items={
-                                          previewModalData[index][index + 1]
-                                        }
-                                        composition={obj}
-                                      />
-                                    )}
-                                  </div>
-                                )
-                              )}
-                          </div>
-                        </PreviewModal>
                       </tr>
                     ))
                   ) : (
@@ -1013,7 +958,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             .utc(composition?.duration * 1000)
                             .format("HH:mm:ss")}
                         </td>
-                        <td className="text-center">{composition.screenIDs}</td>
+                        <td className="text-center">
+                          {composition.screenNames}
+                        </td>
                         <td
                           title={composition?.tags && composition?.tags}
                           className="text-center flex items-center justify-center w-full flex-wrap gap-2"
@@ -1141,7 +1088,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     onClick={() => {
                                       setAddScreenModal(true);
                                       setScreenSelected(
-                                        composition?.screenIDs?.split(",")
+                                        composition?.screenNames?.split(",")
                                       );
                                     }}
                                   >
@@ -1164,78 +1111,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             )}
                           </div>
                         </td>
-
-                        <PreviewModal show={modalVisible} onClose={closeModal}>
-                          <div
-                            className={`fixed  border left-1/2 -translate-x-1/2 ${
-                              screenType === "portrait"
-                                ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
-                                : "min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]"
-                            }  `}
-                            ref={modalRef}
-                            //   maxWidth: `${layotuDetails?.screenWidth}px`,
-                            //   minWidth: `${layotuDetails?.screenWidth}px`,
-                            //   maxHeight: `${layotuDetails?.screenHeight}px`,
-                            //   minHeight: `${layotuDetails?.screenHeight}px`,
-                            // }}
-                          >
-                            <RxCrossCircled
-                              className="fixed z-50 w-[30px] h-[30px] text-white bg-black/20 rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
-                              onClick={closeModal}
-                            />
-                            {/* screentype toggle "landspace | portrait" */}
-                            <div
-                              className={`fixed z-50 ${
-                                screenType === "Landscape"
-                                  ? "w-14 h-7"
-                                  : "h-14 w-7"
-                              }   rounded-md  bg-black p-2 top-1 right-10 cursor-pointer`}
-                            >
-                              <span
-                                className={`fixed z-50  ${
-                                  screenType === "Landscape"
-                                    ? "w-10 h-5 top-2 right-12"
-                                    : "w-5 h-10 top-3 right-11"
-                                }  rounded-md  bg-white  cursor-pointer`}
-                                title={screenType}
-                                onClick={() => {
-                                  if (screenType === "Landscape") {
-                                    setScreenType("portrait");
-                                  } else {
-                                    setScreenType("Landscape");
-                                  }
-                                }}
-                              />
-                            </div>
-
-                            {!loading &&
-                              layotuDetails?.lstLayloutModelList.length > 0 &&
-                              layotuDetails?.lstLayloutModelList?.map(
-                                (obj, index) => (
-                                  <div
-                                    key={index}
-                                    style={{
-                                      position: "fixed",
-                                      left: obj.leftside + "%",
-                                      top: obj.topside + "%",
-                                      width: obj?.width + "%",
-                                      height: obj?.height + "%",
-                                      backgroundColor: obj.fill,
-                                    }}
-                                  >
-                                    {modalVisible && (
-                                      <Carousel
-                                        items={
-                                          previewModalData[index][index + 1]
-                                        }
-                                        composition={obj}
-                                      />
-                                    )}
-                                  </div>
-                                )
-                              )}
-                          </div>
-                        </PreviewModal>
                       </tr>
                     ))
                   )
@@ -1251,6 +1126,71 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+      <PreviewModal show={modalVisible} onClose={closeModal}>
+        <div
+          className={`fixed  border left-1/2 -translate-x-1/2 ${
+            screenType === "portrait"
+              ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
+              : "min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]"
+          }  `}
+          ref={modalRef}
+          //   maxWidth: `${layotuDetails?.screenWidth}px`,
+          //   minWidth: `${layotuDetails?.screenWidth}px`,
+          //   maxHeight: `${layotuDetails?.screenHeight}px`,
+          //   minHeight: `${layotuDetails?.screenHeight}px`,
+          // }}
+        >
+          <RxCrossCircled
+            className="fixed z-50 w-[30px] h-[30px] text-white bg-black/20 rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
+            onClick={closeModal}
+          />
+          {/* screentype toggle "landspace | portrait" */}
+          <div
+            className={`fixed z-50 ${
+              screenType === "Landscape" ? "w-14 h-7" : "h-14 w-7"
+            }   rounded-md  bg-black p-2 top-1 right-10 cursor-pointer`}
+          >
+            <span
+              className={`fixed z-50  ${
+                screenType === "Landscape"
+                  ? "w-10 h-5 top-2 right-12"
+                  : "w-5 h-10 top-3 right-11"
+              }  rounded-md  bg-white  cursor-pointer`}
+              title={screenType}
+              onClick={() => {
+                if (screenType === "Landscape") {
+                  setScreenType("portrait");
+                } else {
+                  setScreenType("Landscape");
+                }
+              }}
+            />
+          </div>
+
+          {!loading &&
+            layotuDetails?.lstLayloutModelList.length > 0 &&
+            layotuDetails?.lstLayloutModelList?.map((obj, index) => (
+              <div
+                key={index}
+                style={{
+                  position: "fixed",
+                  left: obj.leftside + "%",
+                  top: obj.topside + "%",
+                  width: obj?.width + "%",
+                  height: obj?.height + "%",
+                  backgroundColor: obj.fill,
+                }}
+              >
+                {modalVisible && (
+                  <Carousel
+                    items={previewModalData[index][index + 1]}
+                    composition={obj}
+                  />
+                )}
+              </div>
+            ))}
+        </div>
+      </PreviewModal>
       <Footer />
     </>
   );
