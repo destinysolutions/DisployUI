@@ -501,9 +501,7 @@ const Defaultmedia = () => {
                                   <tbody key={asset.assetID}>
                                     <tr
                                       className={`${
-                                        selectedAsset?.assetID === asset?.assetID ||
-                                        selectedAsset?.assetName ===
-                                          asset?.assetName 
+                                        selectedAsset?.assetID === asset?.assetID 
                                           ? "bg-[#f3c953]"
                                           : ""
                                       } border-b border-[#eee] `}

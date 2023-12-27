@@ -123,7 +123,7 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
               if (selectedImages?.length - 1 === index) {
                 toast.success("Uploaded successfully.");
                 // navigate(-1);
-                if (navigate(-1)) {
+                if (window.history.length > 1) {
                   navigate(-1);
                 } else {
                   window.close();

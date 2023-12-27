@@ -564,7 +564,7 @@ const EventEditor = ({
         setEditedStartDate(moment(selectedEvent.start).format("YYYY-MM-DD"));
         setEditedStartTime(moment(selectedEvent.start).format("HH:mm"));
         setEditedEndDate(
-          moment(selectedEvent.actualEndDate).format("YYYY-MM-DD")
+          moment(selectedEvent.end).format("YYYY-MM-DD")
         );
         setEditedEndTime(moment(selectedEvent.end).format("HH:mm"));
         const selectedAsset = allAssets.find(

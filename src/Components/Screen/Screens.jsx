@@ -394,6 +394,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       (screen) => screen?.screenID === scheduleScreenID
     );
     let moduleID = selectedSchedule?.scheduleId;
+    if(!moduleID){
+      toast.remove();
+      return toast.error("Please Select Schedule.")
+    }
     if (screenToUpdate) {
       let data = {
         ...screenToUpdate,
@@ -416,6 +420,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         .then((response) => {
           toast.remove();
           toast.success("Schedule assinged to screen.");
+          setShowScheduleModal(false);
           if (connection) {
             connection
               .invoke("ScreenConnected")
@@ -716,7 +721,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-24 px-5 page-contain">
+      <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           {/* top div */}
           <div className="justify-between flex items-center">
@@ -1371,7 +1376,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                   <div className="py-4 flex justify-center">
                                     <button
                                       onClick={() => {
-                                        setShowScheduleModal(false);
                                         handleScheduleUpdate(screen.screenID);
                                       }}
                                       className="bg-SlateBlue border-primary px-5 py-2 rounded-full ml-3"

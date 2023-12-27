@@ -53,7 +53,7 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      <div className="flex bg-white py-3 border-b border-gray">
+      <div className="flex bg-white border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
@@ -80,7 +80,15 @@ const AddComposition = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="rounded-xl mt-8 shadow bg-white p-5">
             <h4
               className="text-lg font-medium mb-5 flex w-fit items-center gap-2 cursor-pointer "
-              onClick={() => navigation("/composition")}
+              onClick={() => {
+                if (window.history.length > 1) {
+                  // If going back is possible, navigate back
+                  navigation("/composition")
+                } else {
+                  // If going back is not possible, close the window
+                  window.close();
+                }
+              }}
             >
               <HiArrowLongLeft size={30} /> Standard
             </h4>
