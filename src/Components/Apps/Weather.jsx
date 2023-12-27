@@ -316,7 +316,14 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  const handleUpdateScreenAssign = () => {
+  const handleUpdateScreenAssign = (screenIds, macids) => {
+    let idS = "";
+    for (const key in screenIds) {
+      if (screenIds[key] === true) {
+        idS += `${key},`;
+      }
+    }
+
     let config = {
       method: "get",
       maxBodyLength: Infinity,
