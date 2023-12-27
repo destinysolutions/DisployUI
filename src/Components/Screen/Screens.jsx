@@ -1199,26 +1199,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                             <p className="line-clamp-3">{screen.assetName}</p>
                             <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
                           </div>
-                          {showAssetModal && (
-                            <ShowAssetModal
-                              handleAssetAdd={handleAssetAdd}
-                              handleAssetUpdate={handleAssetUpdate}
-                              setSelectedComposition={setSelectedComposition}
-                              handleAppsAdd={handleAppsAdd}
-                              popupActiveTab={popupActiveTab}
-                              setAssetPreviewPopup={setAssetPreviewPopup}
-                              setPopupActiveTab={setPopupActiveTab}
-                              setShowAssetModal={setShowAssetModal}
-                              assetPreviewPopup={assetPreviewPopup}
-                              assetPreview={assetPreview}
-                              selectedComposition={selectedComposition}
-                              selectedTextScroll={selectedTextScroll}
-                              selectedYoutube={selectedYoutube}
-                              selectedAsset={selectedAsset}
-                              setscreenMacID={setscreenMacID}
-                              setSelectedAsset={setSelectedAsset}
-                            />
-                          )}
                         </td>
                       )}
                       {currScheduleContentVisible && (
@@ -1609,24 +1589,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               <p className="line-clamp-3">{screen.assetName}</p>
                               <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
                             </div>
-                            {showAssetModal && (
-                              <ShowAssetModal
-                                handleAssetAdd={handleAssetAdd}
-                                handleAssetUpdate={handleAssetUpdate}
-                                setSelectedComposition={setSelectedComposition}
-                                handleAppsAdd={handleAppsAdd}
-                                popupActiveTab={popupActiveTab}
-                                setAssetPreviewPopup={setAssetPreviewPopup}
-                                setPopupActiveTab={setPopupActiveTab}
-                                setShowAssetModal={setShowAssetModal}
-                                assetPreviewPopup={assetPreviewPopup}
-                                assetPreview={assetPreview}
-                                selectedComposition={selectedComposition}
-                                selectedTextScroll={selectedTextScroll}
-                                selectedYoutube={selectedYoutube}
-                                selectedAsset={selectedAsset}
-                              />
-                            )}
                           </td>
                         )}
                         {currScheduleContentVisible && (
@@ -1922,6 +1884,26 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+      {showAssetModal && (
+        <ShowAssetModal
+          handleAssetAdd={handleAssetAdd}
+          handleAssetUpdate={handleAssetUpdate}
+          setSelectedComposition={setSelectedComposition}
+          handleAppsAdd={handleAppsAdd}
+          popupActiveTab={popupActiveTab}
+          setAssetPreviewPopup={setAssetPreviewPopup}
+          setPopupActiveTab={setPopupActiveTab}
+          setShowAssetModal={setShowAssetModal}
+          assetPreviewPopup={assetPreviewPopup}
+          assetPreview={assetPreview}
+          selectedComposition={selectedComposition}
+          selectedTextScroll={selectedTextScroll}
+          selectedYoutube={selectedYoutube}
+          selectedAsset={selectedAsset}
+          setscreenMacID={setscreenMacID}
+          setSelectedAsset={setSelectedAsset}
+        />
+      )}
       <Footer />
     </>
   );

@@ -27,6 +27,7 @@ const ShowAppsModal = ({ setShowAppModal }) => {
       } else if (appName == "Weather") {
         window.open("/weatherdetail", "_blank");
         //   return navigate("/weatherdetail");
+        setShowAppModal(false);
         return;
       } else if (appName == "text-scroll") {
         window.open("/textscrolldetail", "_blank");
@@ -42,14 +43,22 @@ const ShowAppsModal = ({ setShowAppModal }) => {
         className="bg-black/30 inset-0 fixed w-screen h-screen z-30"
         onClick={() => setShowAppModal(false)}
       />
-      <div className="w-[80vw] h-[70vh] overflow-y-auto bg-white fixed top-1/2 z-40 left-1/2 -translate-y-1/2 -translate-x-1/2">
-        <button
-          onClick={() => {
-            setShowAppModal(false);
-          }}
+      <div className="w-[80vw] h-[70vh] overflow-y-auto bg-white fixed top-1/2 z-[9999] left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-lg">
+        <div
+          className="flex items-start justify-between p-4 px-6 border-b-2 border-slate-200 rounded-t text-black"
         >
-          <AiOutlineCloseCircle className="text-2xl fixed top-0 right-0 w-7 h-7 bg-black text-white rounded-full" />
-        </button>
+          <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+            Apps
+          </h3>
+          <button
+            className="p-1 text-xl"
+            onClick={() => {
+              setShowAppModal(false);
+            }}
+          >
+            <AiOutlineCloseCircle className="text-2xl" />
+          </button>
+        </div>
 
         <div className="w-full grid lg:grid-cols-4 md:grid-cols-3 p-5 items-center gap-5 place-items-center overflow-y-auto">
           {allApps?.loading ? (
