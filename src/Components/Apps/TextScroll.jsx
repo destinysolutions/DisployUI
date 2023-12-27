@@ -62,13 +62,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const addScreenRef = useRef(null);
   const appDropdownRef = useRef(null);
 
-  const handleUpdateScreenAssign = (screenIds, macids) => {
-    let idS = "";
-    for (const key in screenIds) {
-      if (screenIds[key] === true) {
-        idS += `${key},`;
-      }
-    }
+  const handleUpdateScreenAssign = () => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,

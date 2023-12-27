@@ -648,6 +648,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           });
       })
       .catch((error) => {
+        toast.remove();
         console.error("Error invoking SignalR method:", error);
       });
   };
@@ -673,6 +674,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           setscreenMacID={setscreenMacID}
           setAssetScreenID={setAssetScreenID}
           from="new_screen"
+          setSelectedAsset={setSelectedAsset}
         />
       )}
       <div className="flex border-b border-gray">
@@ -937,7 +939,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         <td className="border border-[#D5E3FF] rounded-lg">
                           {selectedAsset?.assetName ||
                             selectedComposition?.compositionName ||
-                            selectedTextScroll?.text ||
+                            selectedTextScroll?.instanceName ||
                             selectedYoutube?.youtubeId}
                         </td>
                       </tr>
