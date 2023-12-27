@@ -24,16 +24,19 @@ import moment from "moment";
 import { useSelector } from "react-redux";
 import toast, { ToastIcon } from "react-hot-toast";
 import Img from "../../images/Assets/img.png";
+import {
+  handleChangeNavigateFromComposition,
+  handleNavigateFromComposition,
+  handleNavigateFromCompositionChannel,
+} from "../../Redux/globalStates";
+import { useDispatch } from "react-redux";
 
 const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   YoutubeDetail.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const { token } = useSelector((state) => state.root.auth);
-  const authToken = `Bearer ${token}`;
 
-  const history = useNavigate();
   const [enabled, setEnabled] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [YoutubeVideo, setYoutubeVideo] = useState("");
@@ -43,6 +46,16 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const [areSubtitlesOn, setAreSubtitlesOn] = useState(false);
   const [showPreviewPopup, setShowPreviewPopup] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
+
+  const { token } = useSelector((state) => state.root.auth);
+  const { navigateFromComposition } = useSelector(
+    (state) => state.root.globalstates
+  );
+
+  const authToken = `Bearer ${token}`;
+
+  const history = useNavigate();
+  const dispatch = useDispatch();
 
   const currentDate = new Date();
   const [instanceName, setInstanceName] = useState(
@@ -110,10 +123,14 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        if (response.data.status === 200) {
+        if (window.history.length === 1) {
+          dispatch(handleNavigateFromComposition());
+          dispatch(handleChangeNavigateFromComposition(false));
+          window.close();
+        } else {
           history("/youtube");
-          setSaveLoading(false);
         }
+        setSaveLoading(false);
       })
       .catch((error) => {
         console.log(error);

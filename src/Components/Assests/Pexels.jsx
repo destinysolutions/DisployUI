@@ -9,6 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { handleGetStorageDetails } from "../../Redux/SettingSlice";
+import { handleNavigateFromComposition } from "../../Redux/globalStates";
 
 const Pexels = ({ closeModal, pexelsModalRef }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -144,6 +145,7 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
                 if (window.history.length > 1) {
                   navigate(-1);
                 } else {
+                  dispatch(handleNavigateFromComposition());
                   window.close();
                 }
               }

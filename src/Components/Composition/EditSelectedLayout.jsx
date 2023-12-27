@@ -30,6 +30,7 @@ import { GoPencil } from "react-icons/go";
 import toast from "react-hot-toast";
 import ReactPlayer from "react-player";
 import { connection } from "../../SignalR";
+import ShowAppsModal from "../ShowAppsModal";
 
 const DEFAULT_IMAGE = "";
 const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
@@ -56,6 +57,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenType, setScreenType] = useState("");
   const [Tags, setTags] = useState("");
   const [compositoinDetails, setCompositoinDetails] = useState(null);
+  const [showAppModal, setShowAppModal] = useState(false);
 
   const { state } = useLocation();
   const { token } = useSelector((state) => state.root.auth);
@@ -87,6 +89,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
     .reduce((acc, curr) => {
       return acc + Number(curr?.duration);
     }, 0);
+    console.log(compositoinDetails?.maciDs);
 
   const onSave = async () => {
     toast.remove();
@@ -132,15 +135,10 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       const response = await axios.request(config);
       if (response?.data?.status === 200) {
         connection
-          // .invoke("ScreenConnected", "hi")
           .invoke("ScreenConnected", compositoinDetails?.maciDs)
           .then(() => {
             console.log("invoked");
-            // console.log(compositoinDetails?.maciDs);
             navigate("/composition");
-            connection.on("ScreenConnected", (screenConnected) => {
-              console.log("on--------------->", screenConnected);
-            });
           })
           .catch((error) => {
             console.error("Error invoking SignalR method:", error);
@@ -632,6 +630,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
+      {showAppModal && <ShowAppsModal setShowAppModal={setShowAppModal} />}
       <div className="flex bg-white border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
@@ -726,8 +725,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                   Save
                 </button>
                 {/* <button type="button" onClick={() => setEdited(false)}>
-                Cancel
-              </button> */}
+            Cancel
+          </button> */}
               </div>
             ) : (
               <>
@@ -794,32 +793,35 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                     </button>
                   </Link>
                 ) : (
-                  <Link to="/apps" target="_blank">
-                    <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                      Add New Apps
-                    </button>
-                  </Link>
+                  // <Link to="/apps" target="_blank">
+                  <button
+                    onClick={() => setShowAppModal(true)}
+                    className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  >
+                    Add New Apps
+                  </button>
+                  // </Link>
                 )}
               </div>
-              <div className="overflow-y-auto min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
+              <div className="overflow-auto min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
                 <table
-                  className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
+                  className="w-full bg-white overflow-x-auto lg:table-fixed md:table-auto sm:table-auto xs:table-auto border border-[#E4E6FF]"
                   cellPadding={20}
                 >
-                  <thead>
+                  <thead className="sticky -top-1 z-20">
                     <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                    <th className="text-[#5A5881] py-2.5 text-base font-semibold">
+                      <th className="text-[#5A5881] py-2.5 text-base font-semibold">
                         Asset
                       </th>
                       <th className="text-[#5A5881] py-2.5 text-base font-semibold">
-                        Assets Name
+                        Asset Name
                       </th>
                       <th className="text-[#5A5881] py-2.5 text-base text-center font-semibold">
                         Type
                       </th>
                       {/* <th className="text-[#5A5881] py-2.5 text-base font-semibold">
-                      Tags
-                    </th> */}
+                  Tags
+                </th> */}
                     </tr>
                   </thead>
 
@@ -847,7 +849,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               handleDragStartForDivToDiv(event, data)
                             }
                           >
-                             <td className="break-words w-full text-left ">
+                            <td className="break-words w-full text-left ">
                               {data.assetType === "OnlineImage" && (
                                 <img
                                   className="imagebox relative w-full h-20 object-cover"
@@ -894,14 +896,14 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                 </p>
                               )}
                               {/* {data.instanceName && (
-                                    <p
-                                      href={data?.instanceName}
-                                    >
-                                      {data.instanceName}
-                                    </p>
-                                  )} */}
+                                  <p
+                                    href={data?.instanceName}
+                                  >
+                                    {data.instanceName}
+                                  </p>
+                                )} */}
                             </td>
-                            <td className="break-words w-full text-left">
+                            <td className="p-2 w-full text-center hyphens-auto break-words">
                               {data.assetName || data?.instanceName}
                             </td>
                             <td className="p-2 w-full text-center">
@@ -947,12 +949,12 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       ></div>
                     ))}
                   {/* <img
-                  src={`data:image/svg+xml;utf8,${encodeURIComponent(
-                    compositonData?.svg
-                  )}`}
-                  alt="Logo"
-                  className="w-32"
-                /> */}
+              src={`data:image/svg+xml;utf8,${encodeURIComponent(
+                compositonData?.svg
+              )}`}
+              alt="Logo"
+              className="w-32"
+            /> */}
                 </div>
                 <div className="layout-detaills">
                   <h3 className="text-lg font-medium block mb-3">
@@ -1032,17 +1034,17 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         className="imagebox relative w-full h-28 object-cover"
                                       />
                                     )}
-                                    {item.assetType === "Text" && (
+                                    {item.instanceName && item?.scrollType && (
                                       <marquee
                                         className="text-lg w-full h-full flex items-center text-black"
                                         direction={
-                                          item?.direction == "Left to Right"
+                                          item?.scrollType == 1
                                             ? "right"
                                             : "left"
                                         }
                                         scrollamount="10"
                                       >
-                                        {item?.assetFolderPath}
+                                        {item?.text}
                                       </marquee>
                                     )}
                                     {(item.assetType === "Video" ||
@@ -1051,9 +1053,9 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                       <ReactPlayer
                                         url={item?.assetFolderPath}
                                         className="w-full relative z-20 videoinner max-h-10"
-                                        controls={true}
+                                        controls={false}
                                         playing={false}
-                                        loop={false}
+                                        loop={true}
                                       />
                                     )}
 
@@ -1062,17 +1064,20 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         {item.assetName}
                                       </p>
                                     )}
-                                    {item.instanceName && (
-                                      <p href={item?.instanceName}>
-                                        {item.instanceName}
-                                      </p>
-                                    )}
+                                    {/* {item.instanceName && (
+                                  <p
+                                    href={item?.instanceName}
+                                  >
+                                    {item.instanceName}
+                                  </p>
+                                )} */}
                                   </div>
                                   <div className="ml-3 w-1/2">
                                     <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
                                       {item?.assetName && item?.assetName}
                                       {item?.text && item?.text}
-                                      {item?.youTubeURL && item?.youTubeURL}
+                                      {item?.instanceName && item?.instanceName}
+                                      {/* {item?.youTubeURL && item?.youTubeURL} */}
                                     </p>
                                   </div>
                                 </div>

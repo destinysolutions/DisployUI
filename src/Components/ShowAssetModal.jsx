@@ -20,6 +20,7 @@ import {
   GET_ALL_SCHEDULE,
 } from "../Pages/Api";
 import { connection } from "../SignalR";
+import ReactPlayer from "react-player";
 
 const ShowAssetModal = ({
   setShowAssetModal,
@@ -38,7 +39,8 @@ const ShowAssetModal = ({
   selectedYoutube,
   setscreenMacID,
   type,
-  from,setSelectedAsset
+  from,
+  setSelectedAsset,
 }) => {
   const { user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
@@ -52,9 +54,13 @@ const ShowAssetModal = ({
   const [scheduleData, setScheduleData] = useState([]);
   const [compositionAPIData, setCompositionAPIData] = useState([]);
   const [compostionAllData, setCompostionAllData] = useState([]);
+  const [searchApps, setSearchApps] = useState("");
+  const [appsData, setAppsData] = useState([]);
+
   const { assets } = useSelector((s) => s.root.asset);
   const { compositions } = useSelector((s) => s.root.composition);
   const { allAppsData } = useSelector((s) => s.root.apps);
+
   const modalRef = useRef(null);
   console.log("setscreenMacID", setscreenMacID);
 
@@ -85,6 +91,7 @@ const ShowAssetModal = ({
         setAssetAllData(allAssets);
         setScheduleData(scheduleResponse.data.data);
         setCompositionAPIData(compositionResponse.data.data);
+        setAppsData(allAppsData);
         setCompostionAllData(compositionResponse.data.data);
         setLoading(false);
       })
@@ -100,7 +107,7 @@ const ShowAssetModal = ({
     // newConnection.on("ScreenConnected", (MacID) => {
     //   console.log("ScreenConnected", MacID);
     // });
-    
+
     try {
       // Invoke ScreenConnected method
       connection.invoke("ScreenConnected", setscreenMacID).then(() => {
@@ -277,6 +284,36 @@ const ShowAssetModal = ({
     }
   };
 
+  const handleAppsSearch = (event) => {
+    setSearchApps(event.target.value);
+    const searchQuery = event.target.value.toLowerCase();
+    if (searchQuery === "") {
+      setAppsData(allAppsData);
+    } else {
+      const filteredScreen = allAppsData.filter((entry) =>
+        Object.values(entry).some((val) => {
+          if (typeof val === "string") {
+            const keyWords = searchQuery.split(" ");
+            for (let i = 0; i < keyWords.length; i++) {
+              return (
+                // val.toLocaleLowerCase().startsWith(keyWords[i]) ||
+                // val.toLocaleLowerCase().endsWith(keyWords[i]) ||
+                // val.toLocaleLowerCase().includes(keyWords[i]) ||
+                // val.toLocaleLowerCase().includes(searchQuery)
+                entry?.instanceName.toLocaleLowerCase().includes(searchQuery)
+              );
+            }
+          }
+        })
+      );
+      if (filteredScreen?.length > 0) {
+        setAppsData(filteredScreen);
+      } else {
+        setAppsData([]);
+      }
+    }
+  };
+
   return (
     <>
       <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] h-auto top-12 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
@@ -288,7 +325,7 @@ const ShowAssetModal = ({
             className="p-1 text-xl"
             onClick={() => {
               setShowAssetModal(false);
-              setSearchAssest("");    
+              setSearchAssest("");
             }}
           >
             <AiOutlineCloseCircle className="text-2xl" />
@@ -392,7 +429,7 @@ const ShowAssetModal = ({
               <div className={popupActiveTab !== 1 && "hidden"}>
                 <div className="flex flex-wrap w-full items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                   <div className="mb-5 relative ">
-                    <AiOutlineSearch className="absolute top-3 left-3 w-5 h-5 z-10 text-gray" />
+                    <AiOutlineSearch className="absolute top-2 left-3 w-5 h-5 z-10 text-gray" />
                     <input
                       type="text"
                       placeholder="Search asset"
@@ -564,7 +601,7 @@ const ShowAssetModal = ({
               <div className={popupActiveTab !== 2 && "hidden"}>
                 <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
                   <div className="mb-5 relative">
-                    <AiOutlineSearch className="absolute top-3 left-3 w-6 h-5 z-10 text-gray" />
+                    <AiOutlineSearch className="absolute top-2 left-3 w-6 h-5 z-10 text-gray" />
                     <input
                       type="text"
                       placeholder="Search Composition"
@@ -662,6 +699,16 @@ const ShowAssetModal = ({
 
               <div className={popupActiveTab !== 3 && "hidden"}>
                 <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                  <div className="mb-5 relative">
+                    <AiOutlineSearch className="absolute top-2 left-3 w-6 h-5 z-10 text-gray" />
+                    <input
+                      type="text"
+                      placeholder="Search Apps"
+                      className="border border-primary rounded-full pl-9 py-2 search-user w-56"
+                      value={searchApps}
+                      onChange={(e) => handleAppsSearch(e)}
+                    />
+                  </div>
                   <Link to="/apps">
                     <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                       Add New App
@@ -694,8 +741,8 @@ const ShowAssetModal = ({
                           No Apps Data here.
                         </td>
                       </tr>
-                    ) : (
-                      allAppsData.map((instance, index) => (
+                    ) : appsData.length > 0 ? (
+                      appsData.map((instance, index) => (
                         <tbody key={index}>
                           <tr
                             className={`${
@@ -727,6 +774,15 @@ const ShowAssetModal = ({
                           </tr>
                         </tbody>
                       ))
+                    ) : (
+                      <tr>
+                        <td
+                          className="font-semibold text-center bg-white text-lg"
+                          colSpan={4}
+                        >
+                          No search result found.
+                        </td>
+                      </tr>
                     )}
                   </table>
                 </div>

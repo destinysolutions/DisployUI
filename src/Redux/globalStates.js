@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getUrl } from "../Pages/Api";
 import toast from "react-hot-toast";
+import { BroadcastChannel } from "broadcast-channel";
 
 export const handleGetAllScheduleTimezone = createAsyncThunk(
   "asset/handleGetAllScheduleTimezone",
@@ -25,15 +26,37 @@ export const handleGetAllScheduleTimezone = createAsyncThunk(
   }
 );
 
+const navigateFromCompositionChannel = new BroadcastChannel(
+  "navigateFromComposition"
+);
+
 const initialState = {
   timezoneLoading: false,
   timezones: [],
+  navigateFromComposition: false,
 };
 
 const globalStates = createSlice({
   name: "globalstates",
   initialState,
-  reducers: {},
+  reducers: {
+    handleChangeNavigateFromComposition: (state, { payload }) => {
+      state.navigateFromComposition = payload;
+    },
+    handleNavigateFromComposition: (state, { payload }) => {
+      navigateFromCompositionChannel.postMessage("");
+      navigateFromCompositionChannel.onmessage = (event) => {
+        navigateFromCompositionChannel.close();
+      };
+    },
+    handleNavigateFromCompositionChannel: (state, { payload }) => {
+      state.navigateFromComposition = false;
+      navigateFromCompositionChannel.onmessage = (event) => {
+        window.location.reload();
+        navigateFromCompositionChannel.close();
+      };
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(
       handleGetAllScheduleTimezone.pending,
@@ -59,6 +82,10 @@ const globalStates = createSlice({
   },
 });
 
-export const {} = globalStates.actions;
+export const {
+  handleChangeNavigateFromComposition,
+  handleNavigateFromCompositionChannel,
+  handleNavigateFromComposition,
+} = globalStates.actions;
 
 export default globalStates.reducer;

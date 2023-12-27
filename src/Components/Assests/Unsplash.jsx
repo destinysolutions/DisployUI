@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { handleGetStorageDetails } from "../../Redux/SettingSlice";
+import { handleNavigateFromComposition } from "../../Redux/globalStates";
 
 const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -115,10 +116,11 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
               }));
               if (selectedImages?.length - 1 === index) {
                 toast.success("Uploaded Successfully.");
-                // navigate(-1);
+
                 if (window.history.length > 1) {
                   navigate(-1);
                 } else {
+                  dispatch(handleNavigateFromComposition());
                   window.close();
                 }
               }
