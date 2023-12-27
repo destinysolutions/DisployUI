@@ -33,6 +33,7 @@ import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import ScreenAssignModal from "../ScreenAssignModal";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import { HiBackward } from "react-icons/hi2";
+import { connection } from "../../SignalR";
 
 const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   Youtube.propTypes = {
@@ -57,7 +58,6 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   const selectedScreenIdsString = Array.isArray(selectedScreens)
     ? selectedScreens.join(",")
     : "";
-  const [connection, setConnection] = useState(null);
   const [instanceName, setInstanceName] = useState("");
   const [screenAssignName, setScreenAssignName] = useState("");
   const [YoutubeVideo, setYoutubeVideo] = useState("");
@@ -73,14 +73,10 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   const appDropdownRef = useRef(null);
 
   const handleUpdateScreenAssign = () => {
-    if (selectedScreenIdsString === "") {
-      toast.remove();
-      return toast.error("Please Select Screen.");
-    }
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AssignYoutubeToScreen?YoutubeId=${instanceID}&ScreenID=${selectedScreenIdsString}`,
+      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AssignYoutubeToScreen?YoutubeId=${instanceID}&ScreenID=${idS}`,
       headers: {
         Authorization: authToken,
       },
@@ -90,20 +86,18 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
-          if (connection) {
-            connection
-              .invoke("ScreenConnected")
-              .then(() => {
-                // console.log("SignalR method invoked after screen update");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          }
-          setSelectScreenModal(false);
-          setAddScreenModal(false);
-          FetchData();
+          connection
+            .invoke("ScreenConnected", macids)
+            .then(() => {
+              console.log(" method invoked");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
         }
+        setSelectScreenModal(false);
+        setAddScreenModal(false);
+        FetchData();
       })
       .catch((error) => {
         console.log(error);
@@ -271,40 +265,6 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
-  useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
-
-    newConnection.on("ScreenConnected", (screenConnected) => {
-      // console.log("ScreenConnected", screenConnected);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        // console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            // console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
-  }, []);
-
   const FetchData = () => {
     setLoading(true);
     axios
@@ -346,15 +306,11 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   }, [handleClickOutside]);
 
   useEffect(() => {
-    // if (showSearchModal) {
-    //   window.document.body.style.overflow = "hidden";
-    // }
     const handleClickOutside = (event) => {
       if (
         appDropdownRef.current &&
         !appDropdownRef.current.contains(event?.target)
       ) {
-        // window.document.body.style.overflow = "unset";
         setAppDropDown(false);
       }
     };
@@ -363,8 +319,6 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
       document.removeEventListener("click", handleClickOutside, true);
     };
   }, [handleClickOutside]);
-
-  // console.log(updateTagYoutube);
 
   return (
     <>
