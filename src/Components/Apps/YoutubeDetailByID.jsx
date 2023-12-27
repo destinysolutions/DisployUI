@@ -29,6 +29,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import Img from "../../images/Assets/img.png";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
+import { connection } from "../../SignalR";
 
 const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   YoutubeDetailByID.propTypes = {
@@ -52,7 +53,6 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   const [saveLoading, setSaveLoading] = useState(false);
   const [instanceName, setInstanceName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [connection, setConnection] = useState(null);
 
   const modalRef = useRef(null);
 
@@ -88,42 +88,6 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   //   videoPreview.style.display = "none";
   // }
 
-  //Insert  API
-
-  useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
-
-    newConnection.on("ScreenConnected", (screenConnected) => {
-      // console.log("ScreenConnected", screenConnected);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        // console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            // console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
-  }, []);
-
   const handleUpdateYoutubeApp = async () => {
     if (instanceName === "" || YoutubeVideo === "") {
       toast.remove();
@@ -154,25 +118,17 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
     try {
       const response = await axios.request(config);
       if (response?.data?.status === 200) {
-        if (connection) {
-          // Wrap the SignalR invocation in a Promise
-          const signalRInvocation = new Promise((resolve, reject) => {
-            connection
-              .invoke("ScreenConnected")
-              .then(() => {
-                console.log("SignalR method invoked after youtube update");
-                resolve();
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-                reject(error);
-              });
-          });
-
-          // Wait for the SignalR invocation to complete before navigating
-          await signalRInvocation;
-        }
-        history("/youtube");
+        // Wrap the SignalR invocation in a Promise
+        // connection
+        //   .invoke("ScreenConnected")
+        //   .then(() => {
+        //     console.log("SignalR method invoked after youtube update");
+        //   })
+        //   .catch((error) => {
+          //     console.error("Error invoking SignalR method:", error);
+          //   });
+          
+              history("/youtube");
         setSaveLoading(false);
       }
     } catch (error) {

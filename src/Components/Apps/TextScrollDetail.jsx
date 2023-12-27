@@ -13,9 +13,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { MdSave } from "react-icons/md";
 import toast from "react-hot-toast";
+import {
+  handleChangeNavigateFromComposition,
+  handleNavigateFromComposition,
+  handleNavigateFromCompositionChannel,
+} from "../../Redux/globalStates";
+import { useDispatch } from "react-redux";
 
 const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
+  const dispatch = useDispatch();
   const authToken = `Bearer ${token}`;
 
   const [scrollType, setScrollType] = useState([]);
@@ -71,7 +78,13 @@ const TextScrollDetail = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status === 200) {
-          history("/text-scroll");
+          if (window.history.length == 1) {
+            dispatch(handleNavigateFromComposition());
+            dispatch(handleChangeNavigateFromComposition(false));
+            window.close();
+          } else {
+            history("/text-scroll");
+          }
         }
         setSaveLoading(false);
       })

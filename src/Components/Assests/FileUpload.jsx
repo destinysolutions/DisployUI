@@ -36,6 +36,8 @@ import { AiOutlineAppstore } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import OtherOptionsForAssets from "./OtherOptionsForAssets";
+import { handleNavigateFromComposition } from "../../Redux/globalStates";
+import { useDispatch } from "react-redux";
 {
   /* end of video*/
 }
@@ -104,6 +106,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   const pexelsModalRef = useRef(null);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onFileChange = (event) => {
     const files = event.target.files;
@@ -209,10 +212,11 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
 
           if (selectedImages?.length - 1 === index && response.status === 200) {
             toast.success(`File uploaded successfully.`);
-            if (window.history.length > 1) {
-              navigate(-1);
-            } else {
+            if (window.history.length == 1) {
+              dispatch(handleNavigateFromComposition());
               window.close();
+            } else {
+              navigate(-1);
             }
           }
           if (response.status !== 200) {

@@ -28,6 +28,7 @@ import { GoPencil } from "react-icons/go";
 import toast from "react-hot-toast";
 import { useRef } from "react";
 import ReactPlayer from "react-player";
+import ShowAppsModal from "../ShowAppsModal";
 
 const DEFAULT_IMAGE = "";
 const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
@@ -51,6 +52,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const [activeTab, setActiveTab] = useState("asset");
   const [dragStartForDivToDiv, setDragStartForDivToDiv] = useState(false);
   const [screenType, setScreenType] = useState("");
+  const [showAppModal, setShowAppModal] = useState(false);
 
   const { state } = useLocation();
   const { token } = useSelector((state) => state.root.auth);
@@ -127,10 +129,10 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
-          if(window.history.length > 2){
+          if (window.history.length > 2) {
             navigate("/composition");
-          }else{
-            window.close()
+          } else {
+            window.close();
           }
           setSavingLoader(false);
         }
@@ -569,6 +571,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
+      {showAppModal && <ShowAppsModal setShowAppModal={setShowAppModal} />}
       <div className="flex bg-white border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
@@ -731,11 +734,14 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                     </button>
                   </Link>
                 ) : (
-                  <Link to="/apps" target="_blank">
-                    <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                      Add New Apps
-                    </button>
-                  </Link>
+                  // <Link to="/apps" target="_blank">
+                  <button
+                    onClick={() => setShowAppModal(true)}
+                    className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  >
+                    Add New Apps
+                  </button>
+                  // </Link>
                 )}
               </div>
               <div className="overflow-auto min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
@@ -840,7 +846,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                             </td>
                             <td className="p-2 w-full text-center hyphens-auto break-words">
                               {data.assetName || data?.instanceName}
-
                             </td>
                             <td className="p-2 w-full text-center">
                               {data?.fileExtention

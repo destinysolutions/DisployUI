@@ -7,7 +7,11 @@ import { useEffect } from "react";
 import { auth } from "./FireBase/firebase";
 import { useState } from "react";
 import { handleGetUserDetails, handleLogout } from "./Redux/Authslice";
-import { handleGetAllScheduleTimezone } from "./Redux/globalStates";
+import {
+  handleChangeNavigateFromComposition,
+  handleGetAllScheduleTimezone,
+  handleNavigateFromCompositionChannel,
+} from "./Redux/globalStates";
 import { connection } from "./SignalR";
 
 const App = () => {
@@ -17,6 +21,12 @@ const App = () => {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(handleNavigateFromCompositionChannel());
+    return () => {
+      dispatch(handleNavigateFromCompositionChannel());
+    };
+  }, []);
   let interval;
 
   const onIdle = () => {
@@ -108,7 +118,7 @@ const App = () => {
       });
     }
     return () => {
-      if (connection.state==="Connected") {
+      if (connection.state === "Connected") {
         connection
           .stop()
           .then(() => {
@@ -119,7 +129,7 @@ const App = () => {
           });
       }
     };
-  }, [connection]);
+  });
 
   return (
     <>
