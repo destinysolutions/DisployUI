@@ -235,9 +235,10 @@ const ScreenAssignModal = ({
                   onChange={handleSelectAllCheckboxChange}
                   checked={
                     selectAllChecked ||
-                    Object.values(screenCheckboxes)?.length > 0 && Object.values(screenCheckboxes).every((e) => {
-                      return e == true;
-                    })
+                    (Object.values(screenCheckboxes)?.length > 0 &&
+                      Object.values(screenCheckboxes).every((e) => {
+                        return e == true;
+                      }))
                   }
                 />
               </div>
@@ -260,7 +261,7 @@ const ScreenAssignModal = ({
             <table className="w-full" cellPadding={20}>
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
                     Screen
                   </th>
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
@@ -354,14 +355,18 @@ const ScreenAssignModal = ({
                     </tr>
                   ))
                 ) : (
-                  <p className="text-center p-2">No Screen available.</p>
+                  <tr>
+                    <td colSpan={6}>
+                      <p className="text-center p-2">No Screen available.</p>
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>
           </div>
           <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
             <button
-              className="border-2 border-primary px-5 py-2 rounded-full ml-3"
+              className={`border-2 border-primary px-5 py-2 rounded-full ml-3 `}
               onClick={() => {
                 handleUpdateScreenAssign(
                   screenCheckboxes,
@@ -369,7 +374,8 @@ const ScreenAssignModal = ({
                 );
                 setSelectedScreens([]);
               }}
-              disabled={selectedScreens?.length === 0}
+              // disabled={selectedScreens?.length === 0}
+           
             >
               Save
             </button>

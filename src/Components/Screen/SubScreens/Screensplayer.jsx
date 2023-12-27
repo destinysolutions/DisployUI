@@ -1822,7 +1822,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           </label>
                         </td>
                       </tr>
-                      {selectedScreenTypeOption === "1" && (
+                      {/* {selectedScreenTypeOption === "1" && (
                         <tr
                           className={`display-none border-b border-[#D5E3FF]`}
                         >
@@ -1884,7 +1884,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             )}
                           </td>
                         </tr>
-                      )}
+                      )} */}
                       {selectedScreenTypeOption === "2" && (
                         <>
                           <tr>
