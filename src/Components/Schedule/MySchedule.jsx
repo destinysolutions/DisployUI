@@ -108,14 +108,32 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     if (!window.confirm("Are you sure?")) return;
     if (deleteLoading) return;
     dispatch(handleDeleteScheduleById({ id: scheduleId, token }));
-    connection
-      .invoke("ScreenConnected", maciDs.replace(/^\s+/g, ''))
-      .then(() => {
-        console.log("SignalR method invoked after screen update");
-      })
-      .catch((error) => {
-        console.error("Error invoking SignalR method:", error);
-      });
+    if (connection.state == "Disconnected") {
+      connection
+        .start()
+        .then((res) => {
+          console.log("signal connected");
+        })
+        .then(() => {
+          connection
+            .invoke("ScreenConnected", maciDs.replace(/^\s+/g, ""))
+            .then(() => {
+              console.log("SignalR method invoked after screen update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
+        });
+    } else {
+      connection
+        .invoke("ScreenConnected", maciDs.replace(/^\s+/g, ""))
+        .then(() => {
+          console.log("SignalR method invoked after screen update");
+        })
+        .catch((error) => {
+          console.error("Error invoking SignalR method:", error);
+        });
+    }
   };
 
   const handelDeleteAllSchedule = () => {
@@ -123,14 +141,44 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     if (deleteLoading) return;
     dispatch(handleDeleteScheduleAll({ token }));
     setSelectAll(false);
-    connection
-    .invoke("ScreenConnected", schedules?.map(item=>item?.maciDs).join(",").replace(/^\s+/g, ''))
-    .then(() => {
-      console.log("SignalR method invoked after screen update");
-    })
-    .catch((error) => {
-      console.error("Error invoking SignalR method:", error);
-    });
+    if (connection.state == "Disconnected") {
+      connection
+        .start()
+        .then((res) => {
+          console.log("signal connected");
+        })
+        .then(() => {
+          connection
+            .invoke(
+              "ScreenConnected",
+              schedules
+                ?.map((item) => item?.maciDs)
+                .join(",")
+                .replace(/^\s+/g, "")
+            )
+            .then(() => {
+              console.log("SignalR method invoked after screen update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
+        });
+    } else {
+      connection
+        .invoke(
+          "ScreenConnected",
+          schedules
+            ?.map((item) => item?.maciDs)
+            .join(",")
+            .replace(/^\s+/g, "")
+        )
+        .then(() => {
+          console.log("SignalR method invoked after screen update");
+        })
+        .catch((error) => {
+          console.error("Error invoking SignalR method:", error);
+        });
+    }
   };
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
@@ -159,18 +207,40 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
-          connection
-            .invoke("ScreenConnected", macids)
-            .then(() => {
-              console.log("func. invoked");
-              toast.remove();
-              dispatch(handleGetAllSchedule({ token }));
-            })
-            .catch((err) => {
-              toast.remove();
-              console.log("error from invoke", err);
-              toast.error("Something went wrong, try again");
-            });
+          if (connection.state == "Disconnected") {
+            connection
+              .start()
+              .then((res) => {
+                console.log("signal connected");
+              })
+              .then(() => {
+                connection
+                  .invoke("ScreenConnected", macids)
+                  .then(() => {
+                    console.log("func. invoked");
+                    toast.remove();
+                    dispatch(handleGetAllSchedule({ token }));
+                  })
+                  .catch((err) => {
+                    toast.remove();
+                    console.log("error from invoke", err);
+                    toast.error("Something went wrong, try again");
+                  });
+              });
+          } else {
+            connection
+              .invoke("ScreenConnected", macids)
+              .then(() => {
+                console.log("func. invoked");
+                toast.remove();
+                dispatch(handleGetAllSchedule({ token }));
+              })
+              .catch((err) => {
+                toast.remove();
+                console.log("error from invoke", err);
+                toast.error("Something went wrong, try again");
+              });
+          }
 
           setSelectScreenModal(false);
           setAddScreenModal(false);

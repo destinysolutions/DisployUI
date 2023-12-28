@@ -390,7 +390,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedComposition(composition);
   };
 
-
   const handleScheduleAdd = (schedule) => {
     setSelectedSchedule(schedule);
   };
@@ -406,8 +405,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedYoutube(apps);
     setSelectedTextScroll(apps);
   };
-
-
 
   const handleConfirmOnComposition = () => {
     setShowCompositionModal(false);
@@ -627,10 +624,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       screenName: screenName,
       operation: "Update",
     });
-    // if (!selectedAsset && selectedDefaultAsset !== "Default Asset") {
-    //   toast.remove();
-    //   return toast.error("Please select asset");
-    // }
+
     toast.loading("Saving...");
 
     let config = {
@@ -868,28 +862,63 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       operation: "Update",
     };
     toast.loading("Updating...");
-
-    connection.invoke("ScreenConnected", screenData[0]?.macid.replace(/^\s+/g, '')).then(() => {
-      console.log("SignalR method invoked after Asset update");
-      const response = dispatch(
-        handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
-      );
-      if (!response) return;
-      response
-        .then((response) => {
-          toast.remove();
-          toast.success("Media Updated.");
+    if (connection.state == "Disconnected") {
+      connection
+        .start()
+        .then((res) => {
+          console.log("signal connected");
         })
-        .catch((error) => {
-          toast.remove();
-          console.log(error);
+        .then(() => {
+          connection
+            .invoke(
+              "ScreenConnected",
+              screenData[0]?.macid.replace(/^\s+/g, "")
+            )
+            .then(() => {
+              console.log("SignalR method invoked after Asset update");
+              const response = dispatch(
+                handleUpdateScreenAsset({
+                  mediaName,
+                  dataToUpdate: data,
+                  token,
+                })
+              );
+              if (!response) return;
+              response
+                .then((response) => {
+                  toast.remove();
+                  toast.success("Media Updated.");
+                })
+                .catch((error) => {
+                  toast.remove();
+                  console.log(error);
+                });
+            });
         });
-    });
+    } else {
+      connection
+        .invoke("ScreenConnected", screenData[0]?.macid.replace(/^\s+/g, ""))
+        .then(() => {
+          console.log("SignalR method invoked after Asset update");
+          const response = dispatch(
+            handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
+          );
+          if (!response) return;
+          response
+            .then((response) => {
+              toast.remove();
+              toast.success("Media Updated.");
+            })
+            .catch((error) => {
+              toast.remove();
+              console.log(error);
+            });
+        });
+    }
     // }) .catch((error) => {
     //   console.error("Error invoking SignalR method:", error);
     // });
   };
-  
 
   // console.log("selected asset",selectedAsset);
   // console.log("selected comp",selectedComposition);
@@ -1828,7 +1857,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               selectedAsset?.assetName ||
                               selectedComposition?.compositionName ||
                               selectedTextScroll?.instanceName ||
-                              selectedYoutube?.youtubeId ||
+                              selectedYoutube?.instanceName ||
                               selectedDefaultAsset
                             }
                           />

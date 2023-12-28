@@ -141,9 +141,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     compositionName: "",
   });
 
-  const [screenConnected, setScreenConnected] = useState(null);
-  const [sendTvStatus, setSendTvStatus] = useState(false);
-  const [sendTvStatusScreenID, setSendTvStatusScreenID] = useState(null);
   const [showNewScreenGroupPopup, setShowNewScreenGroupPopup] = useState(false);
   const [selectedCheckboxIDs, setSelectedCheckboxIDs] = useState([]);
   const [showTagModal, setShowTagModal] = useState(false);
@@ -226,14 +223,32 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     console.log("signal r");
     response
       .then(() => {
-        connection
-          .invoke("ScreenConnected", allScreenMacids)
-          .then(() => {
-            console.log("SignalR method invoked after Asset update");
-          })
-          .catch((error) => {
-            console.error("Error invoking SignalR method:", error);
-          });
+        if (connection.state == "Disconnected") {
+          connection
+            .start()
+            .then((res) => {
+              console.log("signal connected");
+            })
+            .then(() => {
+              connection
+                .invoke("ScreenConnected", allScreenMacids)
+                .then(() => {
+                  console.log("SignalR method invoked after Asset update");
+                })
+                .catch((error) => {
+                  console.error("Error invoking SignalR method:", error);
+                });
+            });
+        } else {
+          connection
+            .invoke("ScreenConnected", allScreenMacids)
+            .then(() => {
+              console.log("SignalR method invoked after Asset update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
+        }
         setTimeout(() => {
           dispatch(handleChangeScreens([]));
           setSelectAllChecked(false);
@@ -253,29 +268,62 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     if (deleteLoading) return;
     toast.loading("Deleting...");
     console.log("signal r");
-    connection
-      .invoke("ScreenConnected", MACID)
-      .then(() => {
-        const response = dispatch(
-          handleDeleteScreenById({ screenID: screenId, token })
-        );
-        if (response) {
-          response
-            .then((res) => {
-              toast.remove();
-              toast.success("Deleted Successfully.");
-              console.log(MACID);
+    if (connection.state == "Disconnected") {
+      connection
+        .start()
+        .then((res) => {
+          console.log("signal connected");
+        })
+        .then(() => {
+          connection
+            .invoke("ScreenConnected", MACID)
+            .then(() => {
+              const response = dispatch(
+                handleDeleteScreenById({ screenID: screenId, token })
+              );
+              if (response) {
+                response
+                  .then((res) => {
+                    toast.remove();
+                    toast.success("Deleted Successfully.");
+                    console.log(MACID);
+                  })
+                  .catch((error) => {
+                    toast.remove();
+                    console.log(error);
+                  });
+              }
+              console.log("SignalR method invoked after Asset update");
             })
             .catch((error) => {
-              toast.remove();
-              console.log(error);
+              console.error("Error invoking SignalR method:", error);
             });
-        }
-        console.log("SignalR method invoked after Asset update");
-      })
-      .catch((error) => {
-        console.error("Error invoking SignalR method:", error);
-      });
+        });
+    } else {
+      connection
+        .invoke("ScreenConnected", MACID)
+        .then(() => {
+          const response = dispatch(
+            handleDeleteScreenById({ screenID: screenId, token })
+          );
+          if (response) {
+            response
+              .then((res) => {
+                toast.remove();
+                toast.success("Deleted Successfully.");
+                console.log(MACID);
+              })
+              .catch((error) => {
+                toast.remove();
+                console.log(error);
+              });
+          }
+          console.log("SignalR method invoked after Asset update");
+        })
+        .catch((error) => {
+          console.error("Error invoking SignalR method:", error);
+        });
+    }
   };
 
   const handleScheduleAdd = (schedule) => {
@@ -365,15 +413,40 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       response
         .then((response) => {
           toast.remove();
-          connection
-            .invoke("ScreenConnected", screenToUpdate?.macid.replace(/^\s+/g, ''))
-            .then(() => {
-              toast.success("Media Updated.");
-              console.log("SignalR method invoked after Asset update");
-            })
-            .catch((error) => {
-              console.error("Error invoking SignalR method:", error);
-            });
+          if (connection.state == "Disconnected") {
+            connection
+              .start()
+              .then((res) => {
+                console.log("signal connected");
+              })
+              .then(() => {
+                connection
+                  .invoke(
+                    "ScreenConnected",
+                    screenToUpdate?.macid.replace(/^\s+/g, "")
+                  )
+                  .then(() => {
+                    toast.success("Media Updated.");
+                    console.log("SignalR method invoked after Asset update");
+                  })
+                  .catch((error) => {
+                    console.error("Error invoking SignalR method:", error);
+                  });
+              });
+          } else {
+            connection
+              .invoke(
+                "ScreenConnected",
+                screenToUpdate?.macid.replace(/^\s+/g, "")
+              )
+              .then(() => {
+                toast.success("Media Updated.");
+                console.log("SignalR method invoked after Asset update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
           setIsEditingScreen(false);
         })
         .catch((error) => {
@@ -418,17 +491,38 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           toast.remove();
           toast.success("Schedule assinged to screen.");
           setShowScheduleModal(false);
-          connection
-            .invoke(
-              "ScreenConnected",
-              screenToUpdate?.macid.replace(/^\s+/g, "")
-            )
-            .then(() => {
-              console.log("SignalR method invoked after Schedule update");
-            })
-            .catch((error) => {
-              console.error("Error invoking SignalR method:", error);
-            });
+          if (connection.state == "Disconnected") {
+            connection
+              .start()
+              .then((res) => {
+                console.log("signal connected");
+              })
+              .then(() => {
+                connection
+                  .invoke(
+                    "ScreenConnected",
+                    screenToUpdate?.macid.replace(/^\s+/g, "")
+                  )
+                  .then(() => {
+                    console.log("SignalR method invoked after Schedule update");
+                  })
+                  .catch((error) => {
+                    console.error("Error invoking SignalR method:", error);
+                  });
+              });
+          } else {
+            connection
+              .invoke(
+                "ScreenConnected",
+                screenToUpdate?.macid.replace(/^\s+/g, "")
+              )
+              .then(() => {
+                console.log("SignalR method invoked after Schedule update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
           setIsEditingScreen(false);
         })
         .catch((error) => {
@@ -783,7 +877,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   />
                 </>
               ) : null}
-              <Tooltip
+              {/* <Tooltip
                 content="New Screen Group"
                 placement="bottom-end"
                 className=" bg-SlateBlue text-white z-10 ml-5"
@@ -799,7 +893,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
-              </Tooltip>
+              </Tooltip> */}
               {showNewScreenGroupPopup && (
                 <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
                   <div className="relative w-auto my-6 mx-auto myplaylist-popup-details">
@@ -1479,335 +1573,300 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 ) : (
                   filteredScreenData.map((screen) => (
                     // <tbody key={screen.screenID}>
-                      <tr
+                    <tr
                       key={screen.screenID}
-                      className="border-b border-b-[#E4E6FF]">
-                        {screenContentVisible && (
-                          <td className="flex items-center ">
-                            <input
-                              type="checkbox"
-                              className="mr-3"
-                              style={{
-                                display: selectAllChecked ? "block" : "none",
-                              }}
-                              onChange={() =>
-                                handleScreenCheckboxChange(screen.screenID)
-                              }
-                              checked={screenCheckboxes[screen.screenID]}
-                            />
+                      className="border-b border-b-[#E4E6FF]"
+                    >
+                      {screenContentVisible && (
+                        <td className="flex items-center ">
+                          <input
+                            type="checkbox"
+                            className="mr-3"
+                            style={{
+                              display: selectAllChecked ? "block" : "none",
+                            }}
+                            onChange={() =>
+                              handleScreenCheckboxChange(screen.screenID)
+                            }
+                            checked={screenCheckboxes[screen.screenID]}
+                          />
 
-                            {isEditingScreen &&
-                            editingScreenID === screen.screenID ? (
-                              <div className="flex items-center gap-2">
-                                <input
-                                  type="text"
-                                  className="border border-primary rounded-md w-full"
-                                  value={editedScreenName}
-                                  onChange={(e) => {
-                                    setEditedScreenName(e.target.value);
-                                  }}
-                                />
-                                <button
-                                  onClick={() => {
-                                    handleScreenNameUpdate(screen.screenID);
-                                  }}
-                                >
-                                  <AiOutlineSave className="text-2xl ml-1 hover:text-primary" />
-                                </button>
-                                {/* {screenNameError && (
+                          {isEditingScreen &&
+                          editingScreenID === screen.screenID ? (
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="text"
+                                className="border border-primary rounded-md w-full"
+                                value={editedScreenName}
+                                onChange={(e) => {
+                                  setEditedScreenName(e.target.value);
+                                }}
+                              />
+                              <button
+                                onClick={() => {
+                                  handleScreenNameUpdate(screen.screenID);
+                                }}
+                              >
+                                <AiOutlineSave className="text-2xl ml-1 hover:text-primary" />
+                              </button>
+                              {/* {screenNameError && (
                               <div className="text-red">
                                 {screenNameError}
                               </div>
                             )} */}
-                              </div>
-                            ) : (
-                              <div className="flex items-center  gap-2">
-                                <Link
-                                  to={`/screensplayer?screenID=${screen.screenID}`}
-                                >
-                                  {screen?.screenName?.length > 10
-                                    ? screen?.screenName.slice(0, 10) + "..."
-                                    : screen.screenName}
-                                </Link>
-                                <button
-                                  onClick={() => {
-                                    setIsEditingScreen(true);
-                                    setEditingScreenID(screen.screenID);
-                                    setEditedScreenName(screen?.screenName);
-                                  }}
-                                >
-                                  <MdOutlineModeEdit className="w-6 h-6 hover:text-primary" />
-                                </button>
-                              </div>
-                            )}
-                          </td>
-                        )}
-                        {locContentVisible && (
-                          <td className="p-2 break-words text-center">
-                            {screen.googleLocation}
-                          </td>
-                        )}
+                            </div>
+                          ) : (
+                            <div className="flex items-center  gap-2">
+                              <Link
+                                to={`/screensplayer?screenID=${screen.screenID}`}
+                              >
+                                {screen?.screenName?.length > 10
+                                  ? screen?.screenName.slice(0, 10) + "..."
+                                  : screen.screenName}
+                              </Link>
+                              <button
+                                onClick={() => {
+                                  setIsEditingScreen(true);
+                                  setEditingScreenID(screen.screenID);
+                                  setEditedScreenName(screen?.screenName);
+                                }}
+                              >
+                                <MdOutlineModeEdit className="w-6 h-6 hover:text-primary" />
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      )}
+                      {locContentVisible && (
+                        <td className="p-2 break-words text-center">
+                          {screen.googleLocation}
+                        </td>
+                      )}
 
-                        {statusContentVisible && (
-                          <td className="p-2 text-center">
-                            <button
-                              id={`changetvstatus${screen.screenID}`}
-                              className={`rounded-full px-6 py-2 text-white text-center ${
-                                screen.screenStatus == 1
-                                  ? "bg-[#3AB700]"
-                                  : "bg-[#FF0000]"
-                              }`}
-                            >
-                              {screen.screenStatus == 1 ? "Live" : "offline"}
-                            </button>
-                          </td>
-                        )}
-                        {/* {lastSeenContentVisible && (
+                      {statusContentVisible && (
+                        <td className="p-2 text-center">
+                          <button
+                            id={`changetvstatus${screen.screenID}`}
+                            className={`rounded-full px-6 py-2 text-white text-center ${
+                              screen.screenStatus == 1
+                                ? "bg-[#3AB700]"
+                                : "bg-[#FF0000]"
+                            }`}
+                          >
+                            {screen.screenStatus == 1 ? "Live" : "offline"}
+                          </button>
+                        </td>
+                      )}
+                      {/* {lastSeenContentVisible && (
                       <td className="p-2 text-center break-words">
                         25 May 2023
                       </td>
                     )} */}
-                        {nowPlayingContentVisible && (
-                          <td
-                            className="p-2 text-center "
-                            style={{ wordBreak: "break-all" }}
+                      {nowPlayingContentVisible && (
+                        <td
+                          className="p-2 text-center "
+                          style={{ wordBreak: "break-all" }}
+                        >
+                          <div
+                            onClick={(e) => {
+                              setAssetScreenID(screen.screenID);
+                              setShowAssetModal(true);
+                              setSelectedAsset({
+                                ...selectedAsset,
+                                assetName: screen?.assetName,
+                                assetID: screen?.mediaDetailID,
+                              });
+                              // setSelectedAsset(screen?.assetName);
+                            }}
+                            title={screen?.assetName}
+                            className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                           >
-                            <div
-                              onClick={(e) => {
-                                setAssetScreenID(screen.screenID);
-                                setShowAssetModal(true);
-                                setSelectedAsset({
-                                  ...selectedAsset,
-                                  assetName: screen?.assetName,
-                                  assetID: screen?.mediaDetailID,
-                                });
-                                // setSelectedAsset(screen?.assetName);
+                            <p className="line-clamp-3">{screen.assetName}</p>
+                            <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
+                          </div>
+                        </td>
+                      )}
+                      {currScheduleContentVisible && (
+                        <td className="break-words	w-[150px] p-2 text-center">
+                          {screen.scheduleName == "" ? (
+                            <button
+                              onClick={() => {
+                                setShowScheduleModal(true);
+                                setScheduleScreenID(screen.screenID);
                               }}
-                              title={screen?.assetName}
-                              className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                             >
-                              <p className="line-clamp-3">{screen.assetName}</p>
-                              <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
-                            </div>
-                          </td>
-                        )}
-                        {currScheduleContentVisible && (
-                          <td className="break-words	w-[150px] p-2 text-center">
-                            {screen.scheduleName == "" ? (
-                              <button
-                                onClick={() => {
-                                  setShowScheduleModal(true);
-                                  setScheduleScreenID(screen.screenID);
-                                }}
-                              >
-                                Set a schedule
-                              </button>
-                            ) : (
-                              `${screen.scheduleName} Till
+                              Set a schedule
+                            </button>
+                          ) : (
+                            `${screen.scheduleName} Till
                         ${moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`
-                            )}
+                          )}
 
-                            {showScheduleModal && (
-                              <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                                <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                                  <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                                    <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                                      <div className="flex items-center">
-                                        <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
-                                          Set Schedule
-                                        </h3>
-                                      </div>
-                                      <button
-                                        className="p-1 text-xl"
-                                        onClick={() =>
-                                          setShowScheduleModal(false)
-                                        }
-                                      >
-                                        <AiOutlineCloseCircle className="text-2xl" />
-                                      </button>
+                          {showScheduleModal && (
+                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                              <div className="w-auto my-6 mx-auto lg:max-w-6xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                  <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                                    <div className="flex items-center">
+                                      <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
+                                        Set Schedule
+                                      </h3>
                                     </div>
-                                    <div className="overflow-x-auto mt-8 px-5">
-                                      <table
-                                        className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
-                                        cellPadding={20}
-                                      >
-                                        <thead>
-                                          <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                                            <th className="font-medium text-[14px]">
-                                              <div className="flex items-center">
-                                                <TbCalendarTime className="mr-2 text-xl" />
-                                                Schedule Name
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className="flex items-center">
-                                                <TbCalendarTime className="mr-2 text-xl" />
-                                                Time Zones
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className=" flex  items-center justify-center mx-auto">
-                                                <VscCalendar className="mr-2 text-xl" />
-                                                Date Added
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className=" flex  items-center justify-center mx-auto">
-                                                <TbCalendarStats className="mr-2 text-xl" />
-                                                start date
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className=" flex  items-center justify-center mx-auto">
-                                                <TbCalendarStats className="mr-2 text-xl" />
-                                                End date
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className=" flex  items-center justify-center mx-auto">
-                                                <RiComputerLine className="mr-2 text-xl" />
-                                                screens Assigned
-                                              </div>
-                                            </th>
-                                            <th className="font-medium text-[14px]">
-                                              <div className="flex  items-center justify-center mx-auto">
-                                                <BsTags className="mr-2 text-xl" />
-                                                Tags
-                                              </div>
-                                            </th>
-                                            <th></th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {schedules.map((schedule) => (
-                                            <tr
-                                              className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                                              key={schedule.scheduleId}
-                                            >
-                                              <td className="flex items-center ">
-                                                <input
-                                                  type="checkbox"
-                                                  className="mr-3"
-                                                  onChange={() =>
-                                                    handleScheduleAdd(schedule)
-                                                  }
-                                                />
+                                    <button
+                                      className="p-1 text-xl"
+                                      onClick={() =>
+                                        setShowScheduleModal(false)
+                                      }
+                                    >
+                                      <AiOutlineCloseCircle className="text-2xl" />
+                                    </button>
+                                  </div>
+                                  <div className="overflow-x-auto mt-8 px-5">
+                                    <table
+                                      className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+                                      cellPadding={20}
+                                    >
+                                      <thead>
+                                        <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                                          <th className="font-medium text-[14px]">
+                                            <div className="flex items-center">
+                                              <TbCalendarTime className="mr-2 text-xl" />
+                                              Schedule Name
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className="flex items-center">
+                                              <TbCalendarTime className="mr-2 text-xl" />
+                                              Time Zones
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <VscCalendar className="mr-2 text-xl" />
+                                              Date Added
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <TbCalendarStats className="mr-2 text-xl" />
+                                              start date
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <TbCalendarStats className="mr-2 text-xl" />
+                                              End date
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className=" flex  items-center justify-center mx-auto">
+                                              <RiComputerLine className="mr-2 text-xl" />
+                                              screens Assigned
+                                            </div>
+                                          </th>
+                                          <th className="font-medium text-[14px]">
+                                            <div className="flex  items-center justify-center mx-auto">
+                                              <BsTags className="mr-2 text-xl" />
+                                              Tags
+                                            </div>
+                                          </th>
+                                          <th></th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {schedules.map((schedule) => (
+                                          <tr
+                                            className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                            key={schedule.scheduleId}
+                                          >
+                                            <td className="flex items-center ">
+                                              <input
+                                                type="checkbox"
+                                                className="mr-3"
+                                                onChange={() =>
+                                                  handleScheduleAdd(schedule)
+                                                }
+                                              />
+                                              <div>
                                                 <div>
-                                                  <div>
-                                                    {schedule.scheduleName}
-                                                  </div>
+                                                  {schedule.scheduleName}
                                                 </div>
-                                              </td>
-                                              <td className="text-center">
-                                                {schedule.timeZoneName}
-                                              </td>
-                                              <td className="text-center">
-                                                {moment(
-                                                  schedule.createdDate
-                                                ).format("YYYY-MM-DD hh:mm")}
-                                              </td>
-                                              <td className="text-center">
-                                                {moment(
-                                                  schedule.startDate
-                                                ).format("YYYY-MM-DD hh:mm")}
-                                              </td>
+                                              </div>
+                                            </td>
+                                            <td className="text-center">
+                                              {schedule.timeZoneName}
+                                            </td>
+                                            <td className="text-center">
+                                              {moment(
+                                                schedule.createdDate
+                                              ).format("YYYY-MM-DD hh:mm")}
+                                            </td>
+                                            <td className="text-center">
+                                              {moment(
+                                                schedule.startDate
+                                              ).format("YYYY-MM-DD hh:mm")}
+                                            </td>
 
-                                              <td className="text-center">
-                                                {moment(
-                                                  schedule.endDate
-                                                ).format("YYYY-MM-DD hh:mm")}
-                                              </td>
-                                              <td className="p-2 text-center">
-                                                {schedule.screenAssigned}
-                                              </td>
-                                              <td className="p-2 text-center">
-                                                {schedule.tags}
-                                              </td>
-                                              <td className="text-center">
-                                                <Link
-                                                  to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
-                                                  target="_blank"
+                                            <td className="text-center">
+                                              {moment(schedule.endDate).format(
+                                                "YYYY-MM-DD hh:mm"
+                                              )}
+                                            </td>
+                                            <td className="p-2 text-center">
+                                              {schedule.screenAssigned}
+                                            </td>
+                                            <td className="p-2 text-center">
+                                              {schedule.tags}
+                                            </td>
+                                            <td className="text-center">
+                                              <Link
+                                                to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
+                                                target="_blank"
+                                              >
+                                                <button
+                                                  className="ml-3 relative"
+                                                  onClick={() =>
+                                                    setShowScheduleModal(false)
+                                                  }
                                                 >
-                                                  <button
-                                                    className="ml-3 relative"
-                                                    onClick={() =>
-                                                      setShowScheduleModal(
-                                                        false
-                                                      )
-                                                    }
-                                                  >
-                                                    <HiDotsVertical />
-                                                  </button>
-                                                </Link>
-                                              </td>
-                                            </tr>
-                                          ))}
-                                        </tbody>
-                                      </table>
-                                    </div>
+                                                  <HiDotsVertical />
+                                                </button>
+                                              </Link>
+                                            </td>
+                                          </tr>
+                                        ))}
+                                      </tbody>
+                                    </table>
+                                  </div>
 
-                                    <div className="py-4 flex justify-center">
-                                      <button
-                                        onClick={() => {
-                                          setShowScheduleModal(false);
-                                          handleScheduleUpdate(screen.screenID);
-                                        }}
-                                        className="bg-SlateBlue border-primary px-5 py-2 rounded-full ml-3"
-                                      >
-                                        Save
-                                      </button>
-                                    </div>
+                                  <div className="py-4 flex justify-center">
+                                    <button
+                                      onClick={() => {
+                                        setShowScheduleModal(false);
+                                        handleScheduleUpdate(screen.screenID);
+                                      }}
+                                      className="bg-SlateBlue border-primary px-5 py-2 rounded-full ml-3"
+                                    >
+                                      Save
+                                    </button>
                                   </div>
                                 </div>
                               </div>
-                            )}
-                          </td>
-                        )}
+                            </div>
+                          )}
+                        </td>
+                      )}
 
-                        {tagsContentVisible && (
-                          <td
-                            title={screen?.tags && screen?.tags}
-                            className="p-2 text-center flex flex-wrap items-center justify-center gap-2 mt-6 break-all"
-                          >
-                            {(screen?.tags === "" || screen?.tags === null) && (
-                              <span>
-                                <AiOutlinePlusCircle
-                                  size={30}
-                                  className="mx-auto cursor-pointer"
-                                  onClick={() => {
-                                    setShowTagModal(true);
-                                    screen.tags === "" || screen?.tags === null
-                                      ? setTags([])
-                                      : setTags(screen?.tags?.split(","));
-                                    setTagUpdateScreeen(screen);
-                                  }}
-                                />
-                              </span>
-                            )}
-
-                            {screen?.tags !== null
-                              ? screen.tags
-                                  .split(",")
-                                  .slice(
-                                    0,
-                                    screen.tags.split(",").length > 2
-                                      ? 3
-                                      : screen.tags.split(",").length
-                                  )
-                                  .map((text) => {
-                                    if (text.toString().length > 10) {
-                                      return text
-                                        .split("")
-                                        .slice(0, 10)
-                                        .concat("...")
-                                        .join("");
-                                    }
-                                    return text;
-                                  })
-                                  .join(",")
-                              : ""}
-                            {screen?.tags !== "" && screen?.tags !== null && (
-                              <MdOutlineModeEdit
+                      {tagsContentVisible && (
+                        <td
+                          title={screen?.tags && screen?.tags}
+                          className="p-2 text-center flex flex-wrap items-center justify-center gap-2 mt-6 break-all"
+                        >
+                          {(screen?.tags === "" || screen?.tags === null) && (
+                            <span>
+                              <AiOutlinePlusCircle
+                                size={30}
+                                className="mx-auto cursor-pointer"
                                 onClick={() => {
                                   setShowTagModal(true);
                                   screen.tags === "" || screen?.tags === null
@@ -1815,67 +1874,101 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                     : setTags(screen?.tags?.split(","));
                                   setTagUpdateScreeen(screen);
                                 }}
-                                className="w-5 h-5 cursor-pointer"
                               />
-                            )}
+                            </span>
+                          )}
 
-                            {/* add or edit tag modal */}
-                            {showTagModal && (
-                              <AddOrEditTagPopup
-                                setShowTagModal={setShowTagModal}
-                                tags={tags}
-                                setTags={setTags}
-                                handleTagsUpdate={handleTagsUpdate}
-                                from="screen"
-                                setTagUpdateScreeen={setTagUpdateScreeen}
-                              />
-                            )}
-                          </td>
-                        )}
+                          {screen?.tags !== null
+                            ? screen.tags
+                                .split(",")
+                                .slice(
+                                  0,
+                                  screen.tags.split(",").length > 2
+                                    ? 3
+                                    : screen.tags.split(",").length
+                                )
+                                .map((text) => {
+                                  if (text.toString().length > 10) {
+                                    return text
+                                      .split("")
+                                      .slice(0, 10)
+                                      .concat("...")
+                                      .join("");
+                                  }
+                                  return text;
+                                })
+                                .join(",")
+                            : ""}
+                          {screen?.tags !== "" && screen?.tags !== null && (
+                            <MdOutlineModeEdit
+                              onClick={() => {
+                                setShowTagModal(true);
+                                screen.tags === "" || screen?.tags === null
+                                  ? setTags([])
+                                  : setTags(screen?.tags?.split(","));
+                                setTagUpdateScreeen(screen);
+                              }}
+                              className="w-5 h-5 cursor-pointer"
+                            />
+                          )}
 
-                        <td className="p-2 text-center relative">
-                          <div className="relative">
-                            <button
-                              className="ml-3 relative"
-                              onClick={() => handleScreenClick(screen.screenID)}
-                            >
-                              <HiDotsVertical />
-                            </button>
-                            {/* action popup start */}
-                            {showActionBox[screen.screenID] && (
-                              <div
-                                ref={showActionModalRef}
-                                className="scheduleAction"
-                              >
-                                <div className="my-1">
-                                  <Link
-                                    to={`/screensplayer?screenID=${screen.screenID}`}
-                                  >
-                                    <button className="text-sm">
-                                      Edit Screen
-                                    </button>
-                                  </Link>
-                                </div>
-
-                                <div className="mb-1 border border-[#F2F0F9]"></div>
-                                <div className=" mb-1 text-[#D30000]">
-                                  <button
-                                    onClick={() =>
-                                      handelDeleteScreen(
-                                        screen.screenID,
-                                        screen?.macid
-                                      )
-                                    }
-                                    className="text-sm text-left"
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
+                          {/* add or edit tag modal */}
+                          {showTagModal && (
+                            <AddOrEditTagPopup
+                              setShowTagModal={setShowTagModal}
+                              tags={tags}
+                              setTags={setTags}
+                              handleTagsUpdate={handleTagsUpdate}
+                              from="screen"
+                              setTagUpdateScreeen={setTagUpdateScreeen}
+                            />
+                          )}
                         </td>
-                      </tr>
+                      )}
+
+                      <td className="p-2 text-center relative">
+                        <div className="relative">
+                          <button
+                            className="ml-3 relative"
+                            onClick={() => handleScreenClick(screen.screenID)}
+                          >
+                            <HiDotsVertical />
+                          </button>
+                          {/* action popup start */}
+                          {showActionBox[screen.screenID] && (
+                            <div
+                              ref={showActionModalRef}
+                              className="scheduleAction"
+                            >
+                              <div className="my-1">
+                                <Link
+                                  to={`/screensplayer?screenID=${screen.screenID}`}
+                                >
+                                  <button className="text-sm">
+                                    Edit Screen
+                                  </button>
+                                </Link>
+                              </div>
+
+                              <div className="mb-1 border border-[#F2F0F9]"></div>
+                              <div className=" mb-1 text-[#D30000]">
+                                <button
+                                  onClick={() =>
+                                    handelDeleteScreen(
+                                      screen.screenID,
+                                      screen?.macid
+                                    )
+                                  }
+                                  className="text-sm text-left"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
                     // </tbody>
                   ))
                 )}

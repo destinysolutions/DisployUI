@@ -125,14 +125,32 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         // console.log(JSON.stringify(response.data));
         if (response.data.status == 200) {
-          connection
-            .invoke("ScreenConnected", maciDs.replace(/^\s+/g, ''))
-            .then(() => {
-              console.log("SignalR method invoked after screen update");
-            })
-            .catch((error) => {
-              console.error("Error invoking SignalR method:", error);
-            });
+          if (connection.state == "Disconnected") {
+            connection
+              .start()
+              .then((res) => {
+                console.log("signal connected");
+              })
+              .then(() => {
+                connection
+                  .invoke("ScreenConnected", maciDs.replace(/^\s+/g, ""))
+                  .then(() => {
+                    console.log("SignalR method invoked after screen update");
+                  })
+                  .catch((error) => {
+                    console.error("Error invoking SignalR method:", error);
+                  });
+              });
+          } else {
+            connection
+              .invoke("ScreenConnected", maciDs.replace(/^\s+/g, ""))
+              .then(() => {
+                console.log("SignalR method invoked after screen update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
           setSelectScreenModal(false);
           setAddScreenModal(false);
         }
@@ -194,14 +212,44 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
-          connection
-            .invoke("ScreenConnected",compositionData?.map(item=>item?.maciDs).join(",").replace(/^\s+/g, ''))
-            .then(() => {
-              console.log("SignalR method invoked after screen update");
-            })
-            .catch((error) => {
-              console.error("Error invoking SignalR method:", error);
-            });
+          if (connection.state == "Disconnected") {
+            connection
+              .start()
+              .then((res) => {
+                console.log("signal connected");
+              })
+              .then(() => {
+                connection
+                  .invoke(
+                    "ScreenConnected",
+                    compositionData
+                      ?.map((item) => item?.maciDs)
+                      .join(",")
+                      .replace(/^\s+/g, "")
+                  )
+                  .then(() => {
+                    console.log("SignalR method invoked after screen update");
+                  })
+                  .catch((error) => {
+                    console.error("Error invoking SignalR method:", error);
+                  });
+              });
+          } else {
+            connection
+              .invoke(
+                "ScreenConnected",
+                compositionData
+                  ?.map((item) => item?.maciDs)
+                  .join(",")
+                  .replace(/^\s+/g, "")
+              )
+              .then(() => {
+                console.log("SignalR method invoked after screen update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
           setSelectScreenModal(false);
           setAddScreenModal(false);
         }
@@ -371,18 +419,40 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         if (response.data.status == 200) {
           try {
             // Invoke ScreenConnected method
-            connection
-              .invoke("ScreenConnected",macids)
-              .then(() => {
-                console.log("func. invoked");
-                toast.remove();
-                loadComposition();
-              })
-              .catch((err) => {
-                toast.remove();
-                console.log("error from invoke", err);
-                toast.error("Something went wrong, try again");
-              });
+            if (connection.state == "Disconnected") {
+              connection
+                .start()
+                .then((res) => {
+                  console.log("signal connected");
+                })
+                .then(() => {
+                  connection
+                    .invoke("ScreenConnected", macids)
+                    .then(() => {
+                      console.log("func. invoked");
+                      toast.remove();
+                      loadComposition();
+                    })
+                    .catch((err) => {
+                      toast.remove();
+                      console.log("error from invoke", err);
+                      toast.error("Something went wrong, try again");
+                    });
+                });
+            } else {
+              connection
+                .invoke("ScreenConnected", macids)
+                .then(() => {
+                  console.log("func. invoked");
+                  toast.remove();
+                  loadComposition();
+                })
+                .catch((err) => {
+                  toast.remove();
+                  console.log("error from invoke", err);
+                  toast.error("Something went wrong, try again");
+                });
+            }
           } catch (error) {
             console.error("Error during connection:", error);
             toast.error("Something went wrong, try again");
@@ -1097,7 +1167,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                   <button
                                     onClick={() =>
                                       handelDeleteComposition(
-                                        composition.compositionID,composition?.maciDs
+                                        composition.compositionID,
+                                        composition?.maciDs
                                       )
                                     }
                                   >

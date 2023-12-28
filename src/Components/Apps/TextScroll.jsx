@@ -22,7 +22,6 @@ import { FiUpload } from "react-icons/fi";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import ScreenAssignModal from "../ScreenAssignModal";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
@@ -84,17 +83,38 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
-          connection
-            .invoke("ScreenConnected", macids)
-            .then(() => {
-              console.log(" method invoked");
-              setSelectScreenModal(false);
-              setAddScreenModal(false);
-              FetchData();
-            })
-            .catch((error) => {
-              console.error("Error invoking SignalR method:", error);
-            });
+          if (connection.state == "Disconnected") {
+            connection
+              .start()
+              .then((res) => {
+                console.log("signal connected");
+              })
+              .then(() => {
+                connection
+                  .invoke("ScreenConnected", macids)
+                  .then(() => {
+                    console.log(" method invoked");
+                    setSelectScreenModal(false);
+                    setAddScreenModal(false);
+                    FetchData();
+                  })
+                  .catch((error) => {
+                    console.error("Error invoking SignalR method:", error);
+                  });
+              });
+          } else {
+            connection
+              .invoke("ScreenConnected", macids)
+              .then(() => {
+                console.log(" method invoked");
+                setSelectScreenModal(false);
+                setAddScreenModal(false);
+                FetchData();
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
         }
       })
       .catch((error) => {
@@ -125,14 +145,32 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
-        connection
-          .invoke("ScreenConnected", maciDs)
-          .then(() => {
-            console.log("SignalR method invoked after youtube update");
-          })
-          .catch((error) => {
-            console.error("Error invoking SignalR method:", error);
-          });
+        if (connection.state == "Disconnected") {
+          connection
+            .start()
+            .then((res) => {
+              console.log("signal connected");
+            })
+            .then(() => {
+              connection
+                .invoke("ScreenConnected", maciDs)
+                .then(() => {
+                  console.log("SignalR method invoked after youtube update");
+                })
+                .catch((error) => {
+                  console.error("Error invoking SignalR method:", error);
+                });
+            });
+        } else {
+          connection
+            .invoke("ScreenConnected", maciDs)
+            .then(() => {
+              console.log("SignalR method invoked after youtube update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
+        }
         const updatedInstanceData = instanceData.filter(
           (instanceData) => instanceData.textScroll_Id !== scrollId
         );

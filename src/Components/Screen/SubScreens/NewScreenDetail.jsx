@@ -234,14 +234,32 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     console.log("run signal r");
 
     try {
-      connection.invoke("ScreenConnected", otpData[0]?.MACID).then(() => {
-        console.log("invoked");
-        console.log("Message sent:", otpData[0]?.MACID);
-        setShowAssetModal(false);
-        setSearchAsset("");
-        setSelectedAsset(assetPreview);
-        setShowAssestOptionsPopup(false);
-      });
+      if (connection.state == "Disconnected") {
+        connection
+          .start()
+          .then((res) => {
+            console.log("signal connected");
+          })
+          .then(() => {
+            connection.invoke("ScreenConnected", otpData[0]?.MACID).then(() => {
+              console.log("invoked");
+              console.log("Message sent:", otpData[0]?.MACID);
+              setShowAssetModal(false);
+              setSearchAsset("");
+              setSelectedAsset(assetPreview);
+              setShowAssestOptionsPopup(false);
+            });
+          });
+      } else {
+        connection.invoke("ScreenConnected", otpData[0]?.MACID).then(() => {
+          console.log("invoked");
+          console.log("Message sent:", otpData[0]?.MACID);
+          setShowAssetModal(false);
+          setSearchAsset("");
+          setSelectedAsset(assetPreview);
+          setShowAssestOptionsPopup(false);
+        });
+      }
     } catch (error) {
       console.error("Error during connection:", error);
     }
@@ -624,28 +642,64 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       operation: "Update",
     };
     toast.loading("Updating...");
-    connection
-      .invoke("ScreenConnected")
-      .then(() => {
-        console.log("SignalR method invoked after Asset update");
-        const response = dispatch(
-          handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
-        );
-        if (!response) return;
-        response
-          .then((response) => {
-            toast.remove();
-            toast.success("Media Updated.");
-          })
-          .catch((error) => {
-            toast.remove();
-            console.log(error);
-          });
-      })
-      .catch((error) => {
-        toast.remove();
-        console.error("Error invoking SignalR method:", error);
-      });
+    if (connection.state == "Disconnected") {
+      connection
+        .start()
+        .then((res) => {
+          console.log("signal connected");
+        })
+        .then(() => {
+          connection
+            .invoke("ScreenConnected")
+            .then(() => {
+              console.log("SignalR method invoked after Asset update");
+              const response = dispatch(
+                handleUpdateScreenAsset({
+                  mediaName,
+                  dataToUpdate: data,
+                  token,
+                })
+              );
+              if (!response) return;
+              response
+                .then((response) => {
+                  toast.remove();
+                  toast.success("Media Updated.");
+                })
+                .catch((error) => {
+                  toast.remove();
+                  console.log(error);
+                });
+            })
+            .catch((error) => {
+              toast.remove();
+              console.error("Error invoking SignalR method:", error);
+            });
+        });
+    } else {
+      connection
+        .invoke("ScreenConnected")
+        .then(() => {
+          console.log("SignalR method invoked after Asset update");
+          const response = dispatch(
+            handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
+          );
+          if (!response) return;
+          response
+            .then((response) => {
+              toast.remove();
+              toast.success("Media Updated.");
+            })
+            .catch((error) => {
+              toast.remove();
+              console.log(error);
+            });
+        })
+        .catch((error) => {
+          toast.remove();
+          console.error("Error invoking SignalR method:", error);
+        });
+    }
   };
 
   return (
