@@ -1,13 +1,50 @@
 import { FilePicker } from "@apideck/file-picker";
-import React, { useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { handleChangeSessionToken } from "../../Redux/globalStates";
 
 const OtherOptionsForAssets = () => {
   const [selectedService, setSelectedService] = useState(null);
+  const { session_token_apideck } = useSelector(
+    (state) => state.root.globalstates
+  );
+
+  const dispatch = useDispatch();
 
   const session_token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDI5NjIwNTIsImV4cCI6MTcwMjk2NTY1Mn0.F7JYhGywIoFCF0so2odsI4TcP0Rjb9b3idf7FH3wmX4";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDM3NDM3NTEsImV4cCI6MTcwMzc0NzM1MX0.ntkj1ho2Z7H3rOw8dkn9l-xXDXxWcEa12Uf5OEaletA";
+  function checkTokenExpire() {
+    const decodeTime = jwtDecode(session_token);
+    const currentTimestamp = moment().unix();
+    const currentMoment = moment.unix(currentTimestamp);
+    const givenMoment = moment.unix(decodeTime?.exp);
+
+    // Get the difference in milliseconds
+    const differenceInMilliseconds = givenMoment.diff(currentMoment);
+
+    // Convert the difference to minutes
+    const differenceInMinutes = moment
+      .duration(differenceInMilliseconds)
+      .asMinutes();
+
+    let checkExpireOrNot = parseInt(differenceInMinutes).toFixed(2) > 0;
+    if (
+      (checkExpireOrNot && session_token_apideck !== null) ||
+      session_token_apideck === null
+    ) {
+      return dispatch(handleChangeSessionToken(session_token));
+    } else if (session_token_apideck !== null && !checkExpireOrNot) {
+      return console.log("call create session api");
+    }
+  }
+  useEffect(() => {
+    console.log(checkTokenExpire());
+  });
+
   const handleSelect = async (file) => {
-    // setFile(file);
     console.log(file);
     // try {
     //   const { data } = await axios.get(
@@ -40,11 +77,10 @@ const OtherOptionsForAssets = () => {
             More options
           </button>
         }
-        token={session_token}
+        token={session_token_apideck}
         title="Choose file from options"
         showAttribution={false}
         onConnectionSelect={(e) => {
-          // console.log(e);
           setSelectedService(e?.service_id);
         }}
       />

@@ -24,17 +24,23 @@ const authPersistConfig = {
   whitelist: ["user", "token"],
 };
 
+const globalStatesPersistConfig = {
+  key: "globalstate",
+  storage,
+  whitelist: ["session_token_apideck"],
+};
+
 const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, AuthSlice),
   asset: Assetslice,
   schedule: ScheduleSlice,
-  globalstates: globalStates,
+  globalstates: persistReducer(globalStatesPersistConfig, globalStates),
   screen: Screenslice,
   composition: CompositionSlice,
   apps: AppsSlice,
   settingUser: SettingUserSlice,
   setting: SettingSlice,
-  screenGroup:ScreenGroupSlice,
+  screenGroup: ScreenGroupSlice,
 });
 
 const persisteRoot = rootReducer;

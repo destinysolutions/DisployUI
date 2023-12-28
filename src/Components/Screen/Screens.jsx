@@ -222,7 +222,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       handleDeleteAllScreen({ userID: user?.userID, token })
     );
 
-    console.log("macids", allScreenMacids);
     if (!response) return;
     console.log("signal r");
     response
@@ -254,31 +253,29 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     if (deleteLoading) return;
     toast.loading("Deleting...");
     console.log("signal r");
-    if (connection) {
-      connection
-        .invoke("ScreenConnected", MACID)
-        .then(() => {
-          const response = dispatch(
-            handleDeleteScreenById({ screenID: screenId, token })
-          );
-          if (response) {
-            response
-              .then((res) => {
-                toast.remove();
-                toast.success("Deleted Successfully.");
-                console.log(MACID);
-              })
-              .catch((error) => {
-                toast.remove();
-                console.log(error);
-              });
-          }
-          console.log("SignalR method invoked after Asset update");
-        })
-        .catch((error) => {
-          console.error("Error invoking SignalR method:", error);
-        });
-    }
+    connection
+      .invoke("ScreenConnected", MACID)
+      .then(() => {
+        const response = dispatch(
+          handleDeleteScreenById({ screenID: screenId, token })
+        );
+        if (response) {
+          response
+            .then((res) => {
+              toast.remove();
+              toast.success("Deleted Successfully.");
+              console.log(MACID);
+            })
+            .catch((error) => {
+              toast.remove();
+              console.log(error);
+            });
+        }
+        console.log("SignalR method invoked after Asset update");
+      })
+      .catch((error) => {
+        console.error("Error invoking SignalR method:", error);
+      });
   };
 
   const handleScheduleAdd = (schedule) => {
@@ -369,7 +366,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         .then((response) => {
           toast.remove();
           connection
-            .invoke("ScreenConnected", screenToUpdate?.macid)
+            .invoke("ScreenConnected", screenToUpdate?.macid.replace(/^\s+/g, ''))
             .then(() => {
               toast.success("Media Updated.");
               console.log("SignalR method invoked after Asset update");
@@ -421,16 +418,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           toast.remove();
           toast.success("Schedule assinged to screen.");
           setShowScheduleModal(false);
-          if (connection) {
-            connection
-              .invoke("ScreenConnected")
-              .then(() => {
-                console.log("SignalR method invoked after Schedule update");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          }
+          connection
+            .invoke(
+              "ScreenConnected",
+              screenToUpdate?.macid.replace(/^\s+/g, "")
+            )
+            .then(() => {
+              console.log("SignalR method invoked after Schedule update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
           setIsEditingScreen(false);
         })
         .catch((error) => {
@@ -1480,8 +1478,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   ))
                 ) : (
                   filteredScreenData.map((screen) => (
-                    <tbody key={screen.screenID}>
-                      <tr className="border-b border-b-[#E4E6FF]">
+                    // <tbody key={screen.screenID}>
+                      <tr
+                      key={screen.screenID}
+                      className="border-b border-b-[#E4E6FF]">
                         {screenContentVisible && (
                           <td className="flex items-center ">
                             <input
@@ -1876,7 +1876,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
                         </td>
                       </tr>
-                    </tbody>
+                    // </tbody>
                   ))
                 )}
               </tbody>

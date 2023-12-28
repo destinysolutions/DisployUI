@@ -36,8 +36,13 @@ import { AiOutlineAppstore } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import OtherOptionsForAssets from "./OtherOptionsForAssets";
-import { handleNavigateFromComposition } from "../../Redux/globalStates";
+import {
+  handleChangeSessionToken,
+  handleNavigateFromComposition,
+} from "../../Redux/globalStates";
 import { useDispatch } from "react-redux";
+import moment from "moment";
+import { jwtDecode } from "jwt-decode";
 {
   /* end of video*/
 }
@@ -46,8 +51,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const { user, token } = useSelector((state) => state.root.auth);
-  const authToken = `Bearer ${token}`;
 
   const [fileSuccessModal, setfileSuccessModal] = useState(false);
   const [fileErrorModal, setfileErrorModal] = useState(false);
@@ -66,13 +69,11 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   const [recordedVideos, setRecordedVideos] = useState([]);
   const [File, setFile] = useState(null);
 
-  /* google drive */
-
-  {
-    /*camera */
-  }
-
-  // file drag and drop our system
+  const { user, token } = useSelector((state) => state.root.auth);
+  const { session_token_apideck } = useSelector(
+    (state) => state.root.globalstates
+  );
+  const authToken = `Bearer ${token}`;
 
   const wrapperRef = useRef(null);
 
@@ -429,6 +430,37 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     }
   };
 
+  const session_token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDM3NDM3NTEsImV4cCI6MTcwMzc0NzM1MX0.ntkj1ho2Z7H3rOw8dkn9l-xXDXxWcEa12Uf5OEaletA";
+
+  function checkTokenExpire() {
+    const decodeTime = jwtDecode(session_token);
+    const currentTimestamp = moment().unix();
+    const currentMoment = moment.unix(currentTimestamp);
+    const givenMoment = moment.unix(decodeTime?.exp);
+
+    // Get the difference in milliseconds
+    const differenceInMilliseconds = givenMoment.diff(currentMoment);
+
+    // Convert the difference to minutes
+    const differenceInMinutes = moment
+      .duration(differenceInMilliseconds)
+      .asMinutes();
+
+    let checkExpireOrNot = parseInt(differenceInMinutes).toFixed(2) > 0;
+    if (
+      (checkExpireOrNot && session_token_apideck !== null) ||
+      session_token_apideck === null
+    ) {
+      return dispatch(handleChangeSessionToken(session_token));
+    } else if (session_token_apideck !== null && !checkExpireOrNot) {
+      return console.log("call create session api");
+    }
+  }
+  useEffect(() => {
+    // console.log(checkTokenExpire());
+  }, []);
+
   return (
     <>
       <div className="flex border-b border-gray">
@@ -604,7 +636,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               {/* end pixabay */}
             </span>
 
-            {/* <OtherOptionsForAssets /> */}
+            <OtherOptionsForAssets />
 
             {/*start app*/}
             {/* <Link
