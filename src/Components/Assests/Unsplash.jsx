@@ -69,6 +69,11 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
   };
 
   const handleImageUpload = () => {
+    if (selectedImages.length === 0) {
+      toast.remove();
+      return toast.error("Please select atleast one image");
+    }
+    toast.remove();
     setUploadInProgress(true);
     selectedImages.forEach((image, index) => {
       const formData = new FormData();
