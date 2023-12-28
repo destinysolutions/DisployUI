@@ -265,19 +265,37 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         "Content-Type": "application/json",
       },
     };
-    console.log(macids);
+    // console.log(macids);
     axios
       .request(config)
       .then((response) => {
         setSelectScreenModal(false);
-        connection
-          .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
-          .then(() => {
-            console.log("SignalR method invoked after screen update");
-          })
-          .catch((error) => {
-            console.error("Error invoking SignalR method:", error);
-          });
+        if (connection.state == "Disconnected") {
+          connection
+            .start()
+            .then((res) => {
+              console.log("signal connected");
+            })
+            .then(() => {
+              connection
+                .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
+                .then(() => {
+                  console.log("SignalR method invoked after screen update");
+                })
+                .catch((error) => {
+                  console.error("Error invoking SignalR method:", error);
+                });
+            });
+        } else {
+          connection
+            .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
+            .then(() => {
+              console.log("SignalR method invoked after screen update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -338,17 +356,38 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           loadEventsForSchedule(scheduleIdToUse);
 
           if (myEvents[0]?.macids) {
-            connection
-              .invoke(
-                "ScreenConnected",
-                myEvents[0]?.macids.replace(/^\s+/g, "")
-              )
-              .then(() => {
-                console.log("SignalR invoked");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
+            if (connection.state == "Disconnected") {
+              connection
+                .start()
+                .then((res) => {
+                  console.log("signal connected");
+                })
+                .then(() => {
+                  connection
+                    .invoke(
+                      "ScreenConnected",
+                      myEvents[0]?.macids.replace(/^\s+/g, "")
+                    )
+                    .then(() => {
+                      console.log("SignalR invoked");
+                    })
+                    .catch((error) => {
+                      console.error("Error invoking SignalR method:", error);
+                    });
+                });
+            } else {
+              connection
+                .invoke(
+                  "ScreenConnected",
+                  myEvents[0]?.macids.replace(/^\s+/g, "")
+                )
+                .then(() => {
+                  console.log("SignalR invoked");
+                })
+                .catch((error) => {
+                  console.error("Error invoking SignalR method:", error);
+                });
+            }
             setEvents((prevEvents) => [...prevEvents, ...updateEvent]);
           } else {
             console.log("send add schedule mac id");
@@ -436,14 +475,32 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const handleEventDelete = (eventId, macids) => {
     const updatedEvents = myEvents.filter((event) => event.id !== eventId);
     setEvents(updatedEvents);
-    connection
-      .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
-      .then(() => {
-        console.log("SignalR invoked");
-      })
-      .catch((error) => {
-        console.error("Error invoking SignalR method:", error);
-      });
+    if (connection.state == "Disconnected") {
+      connection
+        .start()
+        .then((res) => {
+          console.log("signal connected");
+        })
+        .then(() => {
+          connection
+            .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
+            .then(() => {
+              console.log("SignalR invoked");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
+        });
+    } else {
+      connection
+        .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
+        .then(() => {
+          console.log("SignalR invoked");
+        })
+        .catch((error) => {
+          console.error("Error invoking SignalR method:", error);
+        });
+    }
     if (selectedEvent && selectedEvent.id === eventId) {
       setSelectedEvent(null);
       setCreatePopupOpen(false);

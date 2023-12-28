@@ -133,15 +133,40 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
     try {
       const response = await axios.request(config);
       if (response?.data?.status === 200) {
-        connection
-          .invoke("ScreenConnected", compositoinDetails?.maciDs.replace(/^\s+/g, ''))
-          .then(() => {
-            console.log("invoked");
-            navigate("/composition");
-          })
-          .catch((error) => {
-            console.error("Error invoking SignalR method:", error);
-          });
+        if (connection.state == "Disconnected") {
+          connection
+            .start()
+            .then((res) => {
+              console.log("signal connected");
+            })
+            .then(() => {
+              connection
+                .invoke(
+                  "ScreenConnected",
+                  compositoinDetails?.maciDs.replace(/^\s+/g, "")
+                )
+                .then(() => {
+                  console.log("invoked");
+                  navigate("/composition");
+                })
+                .catch((error) => {
+                  console.error("Error invoking SignalR method:", error);
+                });
+            });
+        } else {
+          connection
+            .invoke(
+              "ScreenConnected",
+              compositoinDetails?.maciDs.replace(/^\s+/g, "")
+            )
+            .then(() => {
+              console.log("invoked");
+              navigate("/composition");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
+        }
 
         setSavingLoader(false);
       }

@@ -48,7 +48,7 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
       });
   }, []);
 
-  console.log(macids);
+  // console.log(macids);
 
   const handleUpdateScrollText = async () => {
     if (instanceName === "" || text === "") {
@@ -81,15 +81,34 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
       const response = await axios.request(config);
 
       if (response?.data?.status === 200) {
-        // Wrap the SignalR invocation in a Promise
-        connection
-          .invoke("ScreenConnected", macids)
-          .then(() => {
-            console.log("SignalR method invoked after text scroll update");
-          })
-          .catch((error) => {
-            console.error("Error invoking SignalR method:", error);
-          });
+        if (connection.state == "Disconnected") {
+          connection
+            .start()
+            .then((res) => {
+              console.log("signal connected");
+            })
+            .then(() => {
+              connection
+                .invoke("ScreenConnected", macids)
+                .then(() => {
+                  console.log(
+                    "SignalR method invoked after text scroll update"
+                  );
+                })
+                .catch((error) => {
+                  console.error("Error invoking SignalR method:", error);
+                });
+            });
+        } else {
+          connection
+            .invoke("ScreenConnected", macids)
+            .then(() => {
+              console.log("SignalR method invoked after text scroll update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
+        }
 
         // Wait for the SignalR invocation to complete before navigating
 

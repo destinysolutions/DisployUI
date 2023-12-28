@@ -38,19 +38,42 @@ const ScreenAssignModal = ({
     toast.loading("Saving...");
     try {
       // Invoke ScreenConnected method
-      connection
-        .invoke("ScreenConnected", selectedScreenMacIdsString)
-        .then(() => {
-          console.log("func. invoked");
-          toast.remove();
-          handleUpdateScreenAssign(screenCheckboxes);
-          setSelectedScreens([]);
-        })
-        .catch((err) => {
-          toast.remove();
-          console.log("error from invoke", err);
-          toast.error("Something went wrong, try again");
-        });
+      if (connection.state == "Disconnected") {
+        connection
+          .start()
+          .then((res) => {
+            console.log("signal connected");
+          })
+          .then(() => {
+            connection
+              .invoke("ScreenConnected", selectedScreenMacIdsString)
+              .then(() => {
+                console.log("func. invoked");
+                toast.remove();
+                handleUpdateScreenAssign(screenCheckboxes);
+                setSelectedScreens([]);
+              })
+              .catch((err) => {
+                toast.remove();
+                console.log("error from invoke", err);
+                toast.error("Something went wrong, try again");
+              });
+          });
+      } else {
+        connection
+          .invoke("ScreenConnected", selectedScreenMacIdsString)
+          .then(() => {
+            console.log("func. invoked");
+            toast.remove();
+            handleUpdateScreenAssign(screenCheckboxes);
+            setSelectedScreens([]);
+          })
+          .catch((err) => {
+            toast.remove();
+            console.log("error from invoke", err);
+            toast.error("Something went wrong, try again");
+          });
+      }
     } catch (error) {
       console.error("Error during connection:", error);
       toast.error("Something went wrong, try again");
@@ -370,12 +393,11 @@ const ScreenAssignModal = ({
               onClick={() => {
                 handleUpdateScreenAssign(
                   screenCheckboxes,
-                  screenMacID.join(",").replace(/^\s+/g, '')
+                  screenMacID.join(",").replace(/^\s+/g, "")
                 );
                 setSelectedScreens([]);
               }}
               // disabled={selectedScreens?.length === 0}
-           
             >
               Save
             </button>

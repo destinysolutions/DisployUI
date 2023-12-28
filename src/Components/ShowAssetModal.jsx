@@ -106,16 +106,33 @@ const ShowAssetModal = ({
   const signalROnConfirm = () => {
     console.log("run signal r");
 
-    // newConnection.on("ScreenConnected", (MacID) => {
-    //   console.log("ScreenConnected", MacID);
-    // });
-
     try {
-      // Invoke ScreenConnected method
-      connection.invoke("ScreenConnected", setscreenMacID).then(() => {
-        console.log("invoked");
-        console.log("Message sent:");
-      });
+      if (connection.state == "Disconnected") {
+        connection
+          .start()
+          .then((res) => {
+            console.log("signal connected");
+          })
+          .then(() => {
+            connection.invoke("ScreenConnected", setscreenMacID).then(() => {
+              console.log("invoked");
+              console.log("Message sent:");
+            });
+          })
+          .catch((err) => {
+            console.log(err, "signal error");
+          });
+      } else {
+        connection
+          .invoke("ScreenConnected", setscreenMacID)
+          .then(() => {
+            console.log("invoked");
+            console.log("Message sent:");
+          })
+          .catch((err) => {
+            console.log(err, "signal error");
+          });
+      }
     } catch (error) {
       console.error("Error during connection:", error);
     }
@@ -319,7 +336,11 @@ const ShowAssetModal = ({
   return (
     <>
       <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] h-auto top-12 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
-        <div className={`${showAppModal ? "hidden" : ""} flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}>
+        <div
+          className={`${
+            showAppModal ? "hidden" : ""
+          } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
+        >
           <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
             Set Content to Add Media
           </h3>
@@ -335,7 +356,9 @@ const ShowAssetModal = ({
         </div>
         <div
           onClick={() => assetPreviewPopup && setAssetPreviewPopup(false)}
-          className={`${showAppModal ? "hidden" : ""} relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
+          className={`${
+            showAppModal ? "hidden" : ""
+          } relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
         >
           <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
             <div className="flex-initial">
@@ -713,7 +736,7 @@ const ShowAssetModal = ({
                   </div>
                   <button
                     onClick={() => {
-                        setShowAppModal(true);
+                      setShowAppModal(true);
                     }}
                     className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
                   >
@@ -796,7 +819,11 @@ const ShowAssetModal = ({
           </div>
         </div>
 
-        <div className={`${showAppModal ? "hidden" : ""} flex justify-between items-center pl-5 pr-5 pb-4`}>
+        <div
+          className={`${
+            showAppModal ? "hidden" : ""
+          } flex justify-between items-center pl-5 pr-5 pb-4`}
+        >
           <p className="text-black">Content will always be playing Confirm</p>
           <button
             className="bg-primary text-white rounded-full px-5 py-2"
