@@ -99,6 +99,7 @@ export const UpdateUserDetails = createAsyncThunk(
     formdata.append("languageId", data?.languageId);
     formdata.append("timeZoneId", data?.timeZoneId);
     formdata.append("currencyId", data?.currencyId);
+    formdata.append("IsFromUserMaster", 0);
     if (file !== null && file !== undefined) {
       formdata.append("file", file);
     } else {
