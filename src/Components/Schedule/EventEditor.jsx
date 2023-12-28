@@ -450,7 +450,7 @@ const EventEditor = ({
     axios
       .request(config)
       .then((response) => {
-        onDelete(selectedEvent.id);
+        onDelete(selectedEvent.id, selectedEvent?.macids);
         onClose();
         toast.remove();
       })
@@ -563,9 +563,7 @@ const EventEditor = ({
         setSelectedColor(selectedEvent.color);
         setEditedStartDate(moment(selectedEvent.start).format("YYYY-MM-DD"));
         setEditedStartTime(moment(selectedEvent.start).format("HH:mm"));
-        setEditedEndDate(
-          moment(selectedEvent.end).format("YYYY-MM-DD")
-        );
+        setEditedEndDate(moment(selectedEvent.end).format("YYYY-MM-DD"));
         setEditedEndTime(moment(selectedEvent.end).format("HH:mm"));
         const selectedAsset = allAssets.find(
           (asset) =>
@@ -684,10 +682,9 @@ const EventEditor = ({
                                       <img
                                         src={item.assetFolderPath}
                                         alt={item.assetName}
-                                        // className="rounded-2xl max-w-[10vw] min-w-[10vw] min-h-[15vh] max-h-[15vh]  object-cover" 
-                                      className="videoTab rounded-2xl object-cover"
-
-                                        />
+                                        // className="rounded-2xl max-w-[10vw] min-w-[10vw] min-h-[15vh] max-h-[15vh]  object-cover"
+                                        className="videoTab rounded-2xl object-cover"
+                                      />
                                     </div>
                                   )}
 
@@ -697,7 +694,7 @@ const EventEditor = ({
                                       alt={item.assetName}
                                       // className="rounded-2xl max-w-[10vw] min-w-[10vw] min-h-[15vh] max-h-[15vh] object-cover"
                                       className="videoTab rounded-2xl object-cover"
-                                      />
+                                    />
                                   )}
                                   {(item.assetType === "Video" ||
                                     item.assetType === "OnlineVideo") && (
