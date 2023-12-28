@@ -12,33 +12,25 @@ import {
   AiOutlineSearch,
 } from "react-icons/ai";
 import { RxDashboard } from "react-icons/rx";
-import { BsFillCameraVideoFill, BsImage, BsThreeDots } from "react-icons/bs";
 import "../../Styles/assest.css";
 import { FiDownload, FiUpload } from "react-icons/fi";
-import { RiDeleteBin5Line, RiDeleteBin6Line } from "react-icons/ri";
+import { RiDeleteBin5Line } from "react-icons/ri";
 import { CgMoveRight } from "react-icons/cg";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Footer from "../Footer";
-import { HiDocument, HiOutlineVideoCamera } from "react-icons/hi2";
-import { RiGalleryFill } from "react-icons/ri";
 import { HiDocumentDuplicate, HiDotsVertical } from "react-icons/hi";
 
 import {
   ALL_FILES_UPLOAD,
   CREATE_NEW_FOLDER,
-  DeleteAllData,
-  GET_ALL_FILES,
   MOVE_TO_FOLDER,
   SELECT_BY_ASSET_ID,
-  SIGNAL_R,
 } from "../../Pages/Api";
-import { FcFolder, FcOpenedFolder, FcVideoFile } from "react-icons/fc";
-import moment from "moment";
+import { FcOpenedFolder } from "react-icons/fc";
 import toast from "react-hot-toast";
 import ShowAssetImageModal from "./ShowAssetImageModal";
 import ScreenAssignModal from "../ScreenAssignModal";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -52,6 +44,7 @@ import {
   resetStatus,
 } from "../../Redux/Assetslice";
 import { debounce } from "lodash";
+import { connection } from "../../SignalR";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -63,33 +56,19 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [isMoveToOpen, setIsMoveToOpen] = useState(false);
   const [asstab, setTogglebtn] = useState(2);
-  const [hoveredTabIcon, setHoveredTabIcon] = useState(null);
-  const [assetsdw, setassetsdw] = useState(null);
   const [assetsdw2, setassetsdw2] = useState(null);
   const [selectedItems, setSelectedItems] = useState();
-  const [originalData, setOriginalData] = useState([]);
-  const [gridData, setGridData] = useState([]);
   const [folderName, setFolderName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [deleteMessage, setDeleteMessage] = useState(false);
   const [editMode, setEditMode] = useState(null);
-  const [deleteAssetID, setDeleteAssetID] = useState();
   const [showImageAssetModal, setShowImageAssetModal] = useState(false);
   const [imageAssetModal, setImageAssetModal] = useState(null);
   const [addScreenModal, setAddScreenModal] = useState(false);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
-  const [connection, setConnection] = useState(null);
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [FolderDisable, setFolderDisable] = useState(false);
-  const [searchAsset, setSearchAsset] = useState(""); // used
-  const [filteredAssetData, setFilteredAssetData] = useState([]);
-
+  const [searchAsset, setSearchAsset] = useState("");
   const [selectdata, setSelectData] = useState({});
-
-  const selectedScreenIdsString = Array.isArray(selectedScreens)? selectedScreens.join(",") : "";
-
-  const [clickedTabIcon, setClickedTabIcon] = useState(null);
 
   const actionBoxRef = useRef(null);
   const addScreenRef = useRef(null);
@@ -99,51 +78,19 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const authToken = `Bearer ${token}`;
 
   const history = useNavigate();
-  useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
 
-    newConnection.on("ScreenConnected", (screenConnected) => {
-      // console.log("ScreenConnected", screenConnected);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        // console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            // console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
+  const handleUpdateScreenAssign = (screenIds, macids) => {
+    let idS = "";
+    for (const key in screenIds) {
+      if (screenIds[key] === true) {
+        idS += `${key},`;
       }
-    };
-  }, []);
-
-  const handleUpdateScreenAssign = () => {
-
-    if (selectedScreenIdsString === "") {
-      toast.remove();
-      return toast.error("Please Select Screen.");
     }
 
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/AssetMaster/AssignAssetToScreen?AssetId=${screenAssetID}&ScreenID=${selectedScreenIdsString}`,
+      url: `https://disployapi.thedestinysolutions.com/api/AssetMaster/AssignAssetToScreen?AssetId=${screenAssetID}&ScreenID=${idS}`,
       headers: {
         Authorization: authToken,
       },
@@ -153,159 +100,52 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
-          toast.success("Asset added to Screen Successfully");
-          setLoadFist(true);
-          if (connection) {
+          if (connection.state == "Disconnected") {
             connection
-              .invoke("ScreenConnected")
+              .start()
+              .then((res) => {
+                console.log("signal connected");
+              })
               .then(() => {
-                // console.log("SignalR method invoked after screen update");
+                connection
+                  .invoke("ScreenConnected", macids)
+                  .then(() => {
+                    console.log(" method invoked");
+                    setSelectScreenModal(false);
+                    setAddScreenModal(false);
+                  })
+                  .catch((error) => {
+                    console.error("Error invoking SignalR method:", error);
+                  });
+              });
+          } else {
+            connection
+              .invoke("ScreenConnected", macids)
+              .then(() => {
+                console.log(" method invoked");
+                setSelectScreenModal(false);
+                setAddScreenModal(false);
               })
               .catch((error) => {
                 console.error("Error invoking SignalR method:", error);
               });
           }
-          setSelectScreenModal(false);
-          setAddScreenModal(false);
         }
       })
       .catch((error) => {
+        toast.remove();
         console.log(error);
       });
   };
 
-  const updatetoggle = (id) => {
-    setTogglebtn(id);
-  };
-
-  const handleIconClick = (item) => {
-    // Toggle the visibility of the details for the clicked item
-    if (clickedTabIcon === item) {
-      setClickedTabIcon(null); // If the same item is clicked again, hide its details
-    } else {
-      setClickedTabIcon(item); // Otherwise, show the details of the clicked item
-      setassetsdw(null);
-    }
-  };
-
-  const updateassetsdw = (item) => {
-    if (isMoveToOpen) {
-      setIsMoveToOpen(false);
-    }
-    setDeleteAssetID(item.assetID);
-    setScreenAssetID(item.assetID);
-    if (assetsdw === item) {
-      setassetsdw(null);
-    } else {
-      setassetsdw(item);
-    }
-  };
-
   const updateassetsdw2 = (item) => {
-    setDeleteAssetID(item.assetID);
     setScreenAssetID(item.assetID);
     if (assetsdw2 === item) {
       setassetsdw2(null);
     } else {
       setassetsdw2(item);
     }
-    setIsMoveToOpen(false)
-  };
-
-  const fetchData = () => {
-    setLoading(true);
-    axios
-      .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
-      .then((response) => {
-        const fetchedData = response.data;
-        setOriginalData(fetchedData);
-
-        const allAssets = [
-          ...(fetchedData.image ? fetchedData.image : []),
-          ...(fetchedData.video ? fetchedData.video : []),
-          ...(fetchedData.doc ? fetchedData.doc : []),
-          ...(fetchedData.onlineimages ? fetchedData.onlineimages : []),
-          ...(fetchedData.onlinevideo ? fetchedData.onlinevideo : []),
-          ...(fetchedData.folder ? fetchedData.folder : []),
-        ];
-        // console.log(allAssets);
-        const sortedAssets = allAssets
-          // .filter((asset) => {
-          //   if (asset.assetType != "Folder") {
-          //     return asset;
-          //   }
-          // })
-          .sort((a, b) => {
-            return new Date(b.createdDate) - new Date(a.createdDate);
-          });
-        // console.log(sortedAssets);
-        const data = [];
-
-        sortedAssets.map((arr, i) => {
-          if (arr?.assetType === "Folder") {
-            return data.unshift(arr);
-          } else {
-            return data.push(arr);
-          }
-        });
-
-        // console.log(data);
-        setGridData(data);
-        setLoading(false);
-        setFolderDisable(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
-  };
-
-  const handleActiveBtnClick = (btnNumber) => {
-    // setActivetab(btnNumber);
-    const gridData = [];
-
-    if (btnNumber === 1) {
-      const allAssets = [
-        ...(originalData.image ? originalData.image : []),
-        ...(originalData.video ? originalData.video : []),
-        ...(originalData.doc ? originalData.doc : []),
-        ...(originalData.onlineimages ? originalData.onlineimages : []),
-        ...(originalData.onlinevideo ? originalData.onlinevideo : []),
-        ...(originalData.folder ? originalData.folder : []),
-      ];
-      setGridData(allAssets);
-
-      // fetchData();
-    } else if (btnNumber === 2) {
-      if (originalData.image) {
-        gridData.push(...originalData.image);
-      }
-
-      if (originalData.onlineimages) {
-        gridData.push(...originalData.onlineimages);
-      }
-      setGridData(gridData);
-    } else if (btnNumber === 3) {
-      if (originalData.video) {
-        gridData.push(...originalData.video);
-      }
-
-      if (originalData.onlinevideo) {
-        gridData.push(...originalData.onlinevideo);
-      }
-      setGridData(gridData);
-    } else if (btnNumber === 4) {
-      setGridData(originalData.doc ? originalData.doc : []);
-    } else if (btnNumber === 5) {
-      if (originalData?.folder) {
-        gridData.push(...originalData.folder);
-        setGridData(gridData);
-      }
-    }
-  };
-
-  const folderNameExists = (name) => {
-    return originalData.folder.some((folder) => folder.assetName === name);
+    setIsMoveToOpen(false);
   };
 
   const handleKeyDown = (e, folderID) => {
@@ -346,13 +186,16 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     updateFolderNameInAPI(folderID, newName);
   };
 
-
   const toggleMoveTo = () => {
     setIsMoveToOpen(!isMoveToOpen);
   };
 
   const handleMoveTo = (folderId) => {
-    moveDataToFolder(selectedItems?.assetID,folderId,selectedItems?.assetType);
+    moveDataToFolder(
+      selectedItems?.assetID,
+      folderId,
+      selectedItems?.assetType
+    );
     setLoadFist(true);
   };
 
@@ -380,17 +223,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   useEffect(() => {
-    // fetchData();
-    // handleActiveBtnClick(1);
-  }, []);
-
-  useEffect(() => {
     const handleClickOutside = (event) => {
       if (
         actionBoxRef.current &&
         !actionBoxRef.current.contains(event?.target)
       ) {
-        setassetsdw(null);
         setassetsdw2(null);
       }
     };
@@ -402,7 +239,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   function handleClickOutside() {
     setassetsdw2(null);
-    setassetsdw(null);
   }
 
   // Start
@@ -428,23 +264,18 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       data: query,
     };
     if (loadFist) {
-      toast.loading("Please wait...")
-      dispatch(handleGetAllAssetsTypeBase({ config }))
-      .then(() => {
+      dispatch(handleGetAllAssetsTypeBase({ config })).then(() => {
         setFolderDisable(false);
-        setOriginalData(store.data);
         setLoadFist(false);
-      })
-      .finally(() => toast.remove());
+      });
     }
   }, [loadFist, activeTab, searchAsset.store, store.data, store.folders]);
-
 
   useEffect(() => {
     if (store && store.status === "succeeded") {
       toast.success(store.message);
       setLoadFist(true);
-      setFolderDisable(false)
+      setFolderDisable(false);
       dispatch(resetStatus());
     }
 
@@ -453,17 +284,16 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [store]);
 
-
   useEffect(() => {
     if (store.folders && store.folders.length > 0) {
-      const filteredFolders = store.folders.filter(folder => selectedItems?.assetID !== folder.assetID);
+      const filteredFolders = store.folders.filter(
+        (folder) => selectedItems?.assetID !== folder.assetID
+      );
       setFolderElements(filteredFolders);
     } else {
-      console.log('No folders, create a new folder.');
+      console.log("No folders, create a new folder.");
     }
-
   }, [store.folders, selectedItems]);
-
 
   const cardTableDisplay = () => {
     navigate("/assets");
@@ -471,24 +301,23 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleTabClick = (tab) => {
     localStorage.setItem("tabs", tab);
-      setActiveTab(tab);
-      setLoadFist(true);
+    setActiveTab(tab);
+    setLoadFist(true);
   };
 
-
   const handleSearchAsset = (event) => {
-    toast.loading("Searching...")
+    toast.loading("Searching...");
     const searchQuery = event.target.value;
     setSearchAsset(searchQuery);
     setLoadFist(true);
     setTimeout(() => {
-      toast.remove()
+      toast.remove();
     }, 1000);
   };
 
   const checkFolderImage = async (assetId) => {
     try {
-      setLoadFist(true)
+      setLoadFist(true);
       const config = {
         method: "get",
         maxBodyLength: Infinity,
@@ -506,7 +335,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const checkFolder = async (assetId) => {
     try {
-      setLoadFist(true)
+      setLoadFist(true);
       const config = {
         method: "get",
         maxBodyLength: Infinity,
@@ -536,7 +365,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         },
         data: dataPayload,
       };
-      toast.loading("please wait....") 
+      toast.loading("please wait....");
       if (checkImage.data) {
         Swal.fire({
           title: "Delete Confirmation",
@@ -563,7 +392,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       }
     } catch (error) {
       console.log("error", error);
-    }finally {
+    } finally {
       setLoadFist(true);
     }
   };
@@ -585,7 +414,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         method: "post",
         maxBodyLength: Infinity,
         url: ALL_FILES_UPLOAD,
-        headers: {"Content-Type": "multipart/form-data",Authorization: authToken,},data: formData};
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: authToken,
+        },
+        data: formData,
+      };
 
       if (checkImage.data) {
         Swal.fire({
@@ -645,19 +479,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectAll(!selectAll);
   };
 
-  const handleCheckboxChange = (assetID) => {
-    const updatedAsset = store.data.map((asset) =>
-      asset.assetID === assetID
-        ? { ...asset, isChecked: !asset.isChecked }
-        : asset
-    );
-    setGridData(updatedAsset);
-
-    // Check if all checkboxes are checked or not
-    const allChecked = updatedAsset.every((asset) => asset.isChecked);
-    setSelectAll(allChecked);
-  };
-
   const handleDeleteAll = () => {
     const config = {
       method: "get",
@@ -691,7 +512,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const createFolder = async () => {
-
     let folderNameToCheck = "New Folder";
 
     const formData = new FormData();
@@ -713,38 +533,38 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-const moveTo = (item) =>{
-  toggleMoveTo()
-  setSelectedItems(item)
-}
-
-const moveDataToFolder = async (dataId, folderId, assetType) => {
-  let data = JSON.stringify({
-    folderID: folderId,
-    assetID: dataId,
-    type: assetType === "Folder" ? "Folder" : "Image",
-    operation: "Insert",
-  });
-
-  const config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: MOVE_TO_FOLDER,
-    headers: { Authorization: authToken, "Content-Type": "application/json" },
-    data: data,
+  const moveTo = (item) => {
+    toggleMoveTo();
+    setSelectedItems(item);
   };
 
-  try {
-    await dispatch(handelMoveDataToFolder(config));
-  } catch (error) {
-    toast.remove();
-    console.error(error);
-  } finally {
-    setIsMoveToOpen(false);
-  }
-};
+  const moveDataToFolder = async (dataId, folderId, assetType) => {
+    let data = JSON.stringify({
+      folderID: folderId,
+      assetID: dataId,
+      type: assetType === "Folder" ? "Folder" : "Image",
+      operation: "Insert",
+    });
 
-const debouncedOnChange = debounce(handleSearchAsset, 1000);
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: MOVE_TO_FOLDER,
+      headers: { Authorization: authToken, "Content-Type": "application/json" },
+      data: data,
+    };
+
+    try {
+      await dispatch(handelMoveDataToFolder(config));
+    } catch (error) {
+      toast.remove();
+      console.error(error);
+    } finally {
+      setIsMoveToOpen(false);
+    }
+  };
+
+  const debouncedOnChange = debounce(handleSearchAsset, 1000);
 
   return (
     <>
@@ -776,7 +596,6 @@ const debouncedOnChange = debounce(handleSearchAsset, 1000);
                   type="text"
                   placeholder="Search Asset"
                   className="border border-primary rounded-full pl-10 py-2 search-user"
-                  // value={searchAsset}
                   onChange={debouncedOnChange}
                 />
               </div>
@@ -874,14 +693,14 @@ const debouncedOnChange = debounce(handleSearchAsset, 1000);
                   : "togglecontent"
               }
             >
-              <div className="page-content grid  gap-8 mb-5 assets-section">
-                <div className="relative list-none assetsbox">
-                  <div class="relative shadow-md sm:rounded-lg">
+              <div className="page-content grid  gap-8 mb-5 assets-section ">
+                <div className="relative list-none assetsbox ">
+                  <div className="relative shadow-md sm:rounded-lg p-4">
                     <table
                       cellPadding={20}
-                      class="w-full text-sm lg:table-auto text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                      className="w-full text-sm lg:table-auto text-left rtl:text-right text-gray-500 dark:text-gray-400"
                     >
-                      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr className="items-center border-b border-b-[#E4E6FF] bg-gray-50 table-head-bg">
                           <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                             Preview
@@ -964,17 +783,15 @@ const debouncedOnChange = debounce(handleSearchAsset, 1000);
                                         autoFocus
                                       />
                                     ) : (
-                                      <>
-                                        <span
-                                          onClick={() => {
-                                            setEditMode(item?.assetID);
-                                            setFolderName(item?.assetName);
-                                          }}
-                                          className="cursor-pointer w-full flex-wrap break-all inline-flex justify-center"
-                                        >
-                                          {item.assetName}
-                                        </span>
-                                      </>
+                                      <span
+                                        onClick={() => {
+                                          setEditMode(item?.assetID);
+                                          setFolderName(item?.assetName);
+                                        }}
+                                        className="cursor-pointer w-full flex-wrap break-all inline-flex justify-center"
+                                      >
+                                        {item.assetName}
+                                      </span>
                                     )}
                                   </div>
                                 )}
@@ -1058,27 +875,25 @@ const debouncedOnChange = debounce(handleSearchAsset, 1000);
                               </td>
 
                               <td className="text-center break-words">
-                                {item.assetType === "Folder" && item.assetName}
+                                {item.assetName}
                               </td>
 
-                              <>
-                                {activeTab === "ALL" && (
-                                  <td className="text-center">
-                                    {item.durations}
-                                  </td>
-                                )}
+                              {activeTab === "ALL" && (
+                                <td className="text-center">
+                                  {item.durations}
+                                </td>
+                              )}
 
-                                {activeTab === "VIDEO" && (
-                                  <td className="text-center">
-                                    {item.durations}
-                                  </td>
-                                )}
-                                {activeTab !== "FOLDER" && (
-                                  <td className="text-center">
-                                    {item.resolutions}
-                                  </td>
-                                )}
-                              </>
+                              {activeTab === "VIDEO" && (
+                                <td className="text-center">
+                                  {item.durations}
+                                </td>
+                              )}
+                              {activeTab !== "FOLDER" && (
+                                <td className="text-center">
+                                  {item.resolutions}
+                                </td>
+                              )}
 
                               <td className=" break-all max-w-sm text-center">
                                 {item.assetType}
@@ -1119,7 +934,6 @@ const debouncedOnChange = debounce(handleSearchAsset, 1000);
                                                 className="flex relative w-full"
                                                 onClick={() => {
                                                   setAddScreenModal(true);
-                                                  setassetsdw(null);
                                                 }}
                                               >
                                                 <FiUpload className="mr-2 text-lg" />
