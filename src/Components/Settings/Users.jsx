@@ -171,15 +171,6 @@ const Users = () => {
       console.log("error",error);
     }
 
-    // axios
-    //   .request(config)
-    //   .then((response) => {
-    //     setshowuserModal(false);
-    //     handleGetOrgUsers();
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   };
 
   const handleUpdateUser = () => {
