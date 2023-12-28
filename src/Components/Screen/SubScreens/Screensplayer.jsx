@@ -619,7 +619,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       screenOrientation: selectScreenOrientation,
       screenResolution: selectScreenResolution,
       mediaType: mediaType,
-      tags: tagUpdateScreeen?.tags,
+      tags: screenData[0]?.tags,
       mediaDetailID: moduleID || 0,
       screenName: screenName,
       operation: "Update",
