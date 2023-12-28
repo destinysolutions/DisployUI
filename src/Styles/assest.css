@@ -122,16 +122,17 @@
   padding: 10px 15px;
 }
 
+
 button.tabshow.tabassactive {
   background: #e4aa07;
-  padding: 10px 15px;
+  padding: 11px 15px;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
 }
 
 button.tabshow.tabassactive.right {
   background: #e4aa07;
-  padding: 10px 15px;
+  padding: 11px 15px;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
   border-top-left-radius: 0px;
