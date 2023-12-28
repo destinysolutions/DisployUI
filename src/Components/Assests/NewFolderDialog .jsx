@@ -20,7 +20,6 @@ import {
   GET_ALL_FILES,
   MOVE_TO_FOLDER,
   SELECT_BY_ASSET_ID,
-  SIGNAL_R,
 } from "../../Pages/Api";
 import { TiFolderOpen } from "react-icons/ti";
 import { FcOpenedFolder } from "react-icons/fc";
@@ -29,9 +28,9 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import ShowAssetImageModal from "./ShowAssetImageModal";
 import moment from "moment";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import ScreenAssignModal from "../ScreenAssignModal";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import { connection } from "../../SignalR";
 const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   NewFolderDialog.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -52,10 +51,6 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenAssetID, setScreenAssetID] = useState();
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
-  const selectedScreenIdsString = Array.isArray(selectedScreens)
-    ? selectedScreens.join(",")
-    : "";
-  const [connection, setConnection] = useState(null);
   const [hoveredTabIcon, setHoveredTabIcon] = useState(null);
   const [assetsdw, setassetsdw] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -74,49 +69,18 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const addScreenRef = useRef(null);
   const history = useNavigate();
 
-  useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(SIGNAL_R)
-      .configureLogging(LogLevel.Information)
-      .build();
-
-    newConnection.on("ScreenConnected", (screenConnected) => {
-      // console.log("ScreenConnected", screenConnected);
-    });
-
-    newConnection
-      .start()
-      .then(() => {
-        // console.log("Connection established");
-        setConnection(newConnection);
-      })
-      .catch((error) => {
-        console.error("Error starting connection:", error);
-      });
-
-    return () => {
-      if (newConnection) {
-        newConnection
-          .stop()
-          .then(() => {
-            // console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
+  const handleUpdateScreenAssign = (screenIds, macids) => {
+    let idS = "";
+    for (const key in screenIds) {
+      if (screenIds[key] === true) {
+        idS += `${key},`;
       }
-    };
-  }, []);
-
-  const handleUpdateScreenAssign = () => {
-    if (selectedScreenIdsString === "") {
-      toast.remove();
-      return toast.error("Please Select Screen.");
     }
+
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/AssetMaster/AssignAssetToScreen?AssetId=${screenAssetID}&ScreenID=${selectedScreenIdsString}`,
+      url: `https://disployapi.thedestinysolutions.com/api/AssetMaster/AssignAssetToScreen?AssetId=${screenAssetID}&ScreenID=${idS}`,
       headers: {
         Authorization: authToken,
       },
@@ -126,22 +90,40 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
-          toast.success("Asset added to Screen Successfully");
-          if (connection) {
+          if (connection.state == "Disconnected") {
             connection
-              .invoke("ScreenConnected")
+              .start()
+              .then((res) => {
+                console.log("signal connected");
+              })
               .then(() => {
-                // console.log("SignalR method invoked after screen update");
+                connection
+                  .invoke("ScreenConnected", macids)
+                  .then(() => {
+                    console.log(" method invoked");
+                    setSelectScreenModal(false);
+                    setAddScreenModal(false);
+                  })
+                  .catch((error) => {
+                    console.error("Error invoking SignalR method:", error);
+                  });
+              });
+          } else {
+            connection
+              .invoke("ScreenConnected", macids)
+              .then(() => {
+                console.log(" method invoked");
+                setSelectScreenModal(false);
+                setAddScreenModal(false);
               })
               .catch((error) => {
                 console.error("Error invoking SignalR method:", error);
               });
           }
-          setSelectScreenModal(false);
-          setAddScreenModal(false);
         }
       })
       .catch((error) => {
+        toast.remove();
         console.log(error);
       });
   };
@@ -557,7 +539,6 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                               className="w-full"
                               onChange={(e) => setFolderName(e.target.value)}
                               onBlur={() => {
-                                // saveFolderName(item.assetID, folderName);
                                 setEditMode(null);
                               }}
                               onKeyDown={(e) =>
