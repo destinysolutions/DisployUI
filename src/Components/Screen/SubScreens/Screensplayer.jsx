@@ -50,7 +50,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const { token ,userDetails} = useSelector((state) => state.root.auth);
+  const { token, userDetails } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [searchParams] = useSearchParams();
@@ -228,7 +228,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
           setScreenName(fetchedData[0].screenName);
           setSelectedMediaDetailID(fetchedData[0].mediaDetailID);
           setSelectedMediaTypeID(fetchedData[0].mediaType);
-          console.log(fetchedData[0]);
           if (fetchedData[0].mediaType === 5) {
             setSelectedScreenTypeOption(String(fetchedData[0].mediaType - 1));
           } else {
@@ -264,6 +263,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     let filteredData = [];
 
     switch (selectedmediaTypeID) {
+      case 0:
+        setSelectedDefaultAsset("Default Asset");
+        break;
+
       case 1:
         filteredData = assetData?.filter(
           (item) => item?.assetID === selectedmediaDetailID
@@ -287,7 +290,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         break;
 
       case 3:
-        filteredData = filteredData?.filter(
+        filteredData = compositionAPIData?.filter(
           (item) => item?.compositionID === selectedmediaDetailID
         );
         setSelectedComposition((prevComposition) => ({
@@ -460,7 +463,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleFetchPreviewScreen = async (macId) => {
     let data = JSON.stringify({
-      macid: macId,IsFromWeb:1
+      macid: macId,
+      IsFromWeb: 1,
     });
 
     let config = {
@@ -480,7 +484,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         if (response?.data?.status == 200) {
           const { data, myComposition } = response?.data;
           setScreenPreviewData({ data, myComposition });
-          console.log(data,myComposition);
+          console.log(data, myComposition);
           if (myComposition.length > 0) {
             setFetchLayoutLoading(true);
             handleFetchLayoutById(myComposition[0]?.layoutID);
@@ -518,10 +522,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     // for schedule set
     if (findCurrentSchedule !== undefined && findCurrentSchedule !== null) {
       setPlayerData(findCurrentSchedule);
-      setSelectedDefaultAsset("")
+      setSelectedDefaultAsset("");
       setCompositionData([]);
       return true;
-    } else if ( // for composition set
+    } else if (
+      // for composition set
       (findCurrentSchedule === null || findCurrentSchedule === undefined) &&
       myComposition[0]?.compositionPossition.length > 0
     ) {
@@ -549,24 +554,24 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         setCompositionData(newdd);
         setAllCompositionData(newdd);
         setPlayerData(null);
-      setSelectedDefaultAsset("")
-      setSelectedAsset("")
-      setSelectedComposition("")
-      setSelectedApps("")
-      setSelectedSchedule("")
-
+        setSelectedDefaultAsset("");
+        // setSelectedAsset("");
+        // setSelectedComposition("");
+        // setSelectedApps("");
+        // setSelectedSchedule("");
       }
       return true;
-    } else {// for default media set
+    } else {
+      // for default media set
       const findDefaultAsset = data.find(
         (item) => item?.isdefaultAsset == "true"
       );
       setPlayerData(findDefaultAsset);
-      setSelectedDefaultAsset("Default Asset")
-      setSelectedAsset("")
-      setSelectedComposition("")
-      setSelectedApps("")
-      setSelectedSchedule("")
+      // setSelectedDefaultAsset("Default Asset");
+      // setSelectedAsset("");
+      // setSelectedComposition("");
+      // setSelectedApps("");
+      // setSelectedSchedule("");
       setCompositionData([]);
       return true;
     }
@@ -623,10 +628,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       screenName: screenName,
       operation: "Update",
     });
-    if (!selectedAsset && selectedDefaultAsset !== "Default Asset") {
-      toast.remove();
-      return toast.error("Please select asset");
-    }
+    // if (!selectedAsset && selectedDefaultAsset !== "Default Asset") {
+    //   toast.remove();
+    //   return toast.error("Please select asset");
+    // }
     toast.loading("Saving...");
 
     let config = {
@@ -865,7 +870,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     };
     toast.loading("Updating...");
 
-    connection.invoke("ScreenConnected", screenData[0]?.macid).then(() => {
+    connection.invoke("ScreenConnected", screenData[0]?.macid.replace(/^\s+/g, '')).then(() => {
       console.log("SignalR method invoked after Asset update");
       const response = dispatch(
         handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
@@ -885,7 +890,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
     //   console.error("Error invoking SignalR method:", error);
     // });
   };
-
+  
 
   console.log(screenPreviewData);
   // console.log("selected asset",selectedAsset);
@@ -1522,7 +1527,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             </td>
                             <td className="text-left">
                               <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
-                                {userDetails?.firstName}   {userDetails?.lastName}
+                                {userDetails?.firstName} {userDetails?.lastName}
                               </p>
                             </td>
                           </tr>
@@ -1785,9 +1790,8 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                           >
                             <input
                               type="radio"
-                              defaultChecked={
-                                selectedDefaultAsset===""
-                              }
+                              // defaultChecked={selectedmediaTypeID !== 0}
+                              checked={selectedDefaultAsset === ""}
                               name="type"
                               id="select_asset"
                             />
@@ -1809,389 +1813,29 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             <input
                               type="radio"
                               name="type"
-                              defaultChecked={
-                                selectedDefaultAsset!==""
-                              }
+                              // defaultChecked={selectedmediaTypeID === 0}
+                              checked={selectedDefaultAsset !== ""}
                               id="default_asset"
                             />
                             Default Asset
                           </label>
                         </td>
                       </tr>
-                      {/* {selectedScreenTypeOption === "1" && (
-                        <tr
-                          className={`display-none border-b border-[#D5E3FF]`}
-                        >
-                          <td></td>
-                          <td className="relative">
-                            <input
-                              className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                              value={
-                                selectedAsset.assetName || selectedDefaultAsset
-                              }
-                              readOnly
-                              placeholder="Select option"
-                              onChange={(e) =>
-                                setSelectedAsset({
-                                  ...selectedAsset,
-                                  assetName: e.target.value,
-                                })
-                              }
-                              onClick={() =>
-                                setShowAssestOptionsPopup(
-                                  !showAssestOptionsPopup
-                                )
-                              }
-                            />
-
-                            {showAssestOptionsPopup && (
-                              <>
-                                <div className="absolute left-[10%] bottom-[-3px]  text-[35px]  z-20">
-                                  <img
-                                    src={ploygon}
-                                    alt="notification"
-                                    className="cursor-pointer assestPopup"
-                                  />
-                                </div>
-                                <div className="absolute left-[2%] bottom-[-74px] bg-white rounded-lg border border-[#635b5b] shadow-lg z-10  pr-16">
-                                  <div
-                                    className="text-sm mb-1 mt-2 ml-3 cursor-pointer"
-                                    onClick={() => {
-                                      setShowAssetModal(true);
-                                      setAssetData(assetAllData);
-                                      setShowAssestOptionsPopup(false);
-                                    }}
-                                  >
-                                    Browse
-                                  </div>
-
-                                  <div
-                                    className="text-sm mb-3 mt-3 ml-3 cursor-pointer"
-                                    onClick={() => {
-                                      setSelectedDefaultAsset("Default Asset");
-                                      setSelectedAsset("");
-                                      setShowAssestOptionsPopup(false);
-                                    }}
-                                  >
-                                    Default Assets
-                                  </div>
-                                </div>
-                              </>
-                            )}
-                          </td>
-                        </tr>
-                      )} */}
-                      {selectedScreenTypeOption === "2" && (
-                        <>
-                          <tr>
-                            <td></td>
-                            <td>
-                              <div className="flex">
-                                <input
-                                  className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none"
-                                  value={
-                                    selectedSchedule !== ""
-                                      ? selectedSchedule.scheduleName
-                                      : ""
-                                  }
-                                  placeholder="Set Schedule"
-                                  readOnly
-                                  onChange={(e) =>
-                                    setSelectedSchedule({
-                                      ...selectedSchedule,
-                                      scheduleName: e.target.value,
-                                    })
-                                  }
-                                />
-                                <div className="flex items-center ml-5">
-                                  <span className="bg-lightgray p-2 rounded cursor-pointer">
-                                    <GrScheduleNew
-                                      size={20}
-                                      onClick={() => setShowScheduleModal(true)}
-                                    />
-                                  </span>
-                                </div>
-                              </div>
-                            </td>
-                          </tr>
-                        </>
-                      )}
-                      {selectedScreenTypeOption === "3" && (
-                        <>
-                          <tr>
-                            <td></td>
-                            <td>
-                              <div className="flex">
-                                <input
-                                  className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                  value={
-                                    selectedComposition !== ""
-                                      ? selectedComposition.compositionName
-                                      : ""
-                                  }
-                                  placeholder="Set Composition"
-                                  readOnly
-                                  onChange={(e) =>
-                                    setSelectedComposition({
-                                      ...selectedComposition,
-                                      compositionName: e.target.value,
-                                    })
-                                  }
-                                />
-
-                                <div
-                                  className="flex items-center ml-5"
-                                  onClick={() => {
-                                    setShowCompositionModal(true);
-                                    setCompositionData(allcompositionData);
-                                    setFilteredData(compositionAPIData);
-                                    // setConfirmForComposition(false);
-                                  }}
-                                >
-                                  <span className="bg-lightgray p-2 rounded">
-                                    <svg
-                                      width="15"
-                                      height="15"
-                                      viewBox="0 0 15 15"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        d="M0.961295 0.0665965C0.610654 0.137625 0.274179 0.398062 0.0970872 0.736291L0.015625 0.89526V3.29669C0.015625 5.69136 0.015625 5.69812 0.0935454 5.85709C0.206884 6.09724 0.458355 6.334 0.716909 6.44561C1.02151 6.5809 1.41111 6.58429 1.698 6.45576C1.99905 6.32047 5.27879 4.22006 5.40984 4.078C5.81715 3.63492 5.82424 2.98552 5.43109 2.53567C5.32484 2.41729 1.91405 0.228947 1.68029 0.13086C1.50674 0.0564494 1.16318 0.0260091 0.961295 0.0665965Z"
-                                        fill="#41479B"
-                                      />
-                                      <path
-                                        d="M7.25131 0.0883092C7.08502 0.17676 6.95765 0.417348 6.97888 0.601327C7.00011 0.767615 7.08148 0.891447 7.22654 0.979898C7.33622 1.04712 7.43529 1.05066 11.0087 1.05066H14.6741L14.7874 0.95867C15.0846 0.70393 15.0669 0.289978 14.7449 0.0953853C14.6317 0.0246242 14.5574 0.0246242 11.0016 0.0246242C7.55912 0.0246242 7.36806 0.0281622 7.25131 0.0883092Z"
-                                        fill="#41479B"
-                                      />
-                                      <path
-                                        d="M7.25126 2.87848C7.08851 2.95985 6.9576 3.20398 6.97883 3.39149C7.00006 3.55778 7.08143 3.68161 7.22649 3.7736C7.33617 3.84083 7.42108 3.84083 11.0264 3.83375L14.7095 3.82314L14.805 3.73468C15.0845 3.47287 15.0562 3.07661 14.7448 2.88555C14.6316 2.81479 14.5573 2.81479 11.0016 2.81479C7.61921 2.81479 7.36801 2.81833 7.25126 2.87848Z"
-                                        fill="#41479B"
-                                      />
-                                      <path
-                                        d="M7.23694 5.669C6.89729 5.8742 6.9079 6.3943 7.25463 6.57474C7.34308 6.62073 7.84548 6.62781 10.9943 6.62781C14.5607 6.62781 14.635 6.62781 14.7482 6.55705C15.0843 6.35184 15.0843 5.87774 14.7482 5.67253C14.635 5.60177 14.5607 5.60177 10.9873 5.60177C7.49875 5.60177 7.33954 5.60531 7.23694 5.669Z"
-                                        fill="#41479B"
-                                      />
-                                      <path
-                                        d="M0.255992 8.46306C-0.0801225 8.66827 -0.0801225 9.14237 0.255992 9.34757C0.372748 9.41833 0.450585 9.41833 7.50192 9.41833C14.5533 9.41833 14.6311 9.41833 14.7479 9.34757C15.084 9.14237 15.084 8.66827 14.7479 8.46306C14.6311 8.3923 14.5533 8.3923 7.50192 8.3923C0.450585 8.3923 0.372748 8.3923 0.255992 8.46306Z"
-                                        fill="#41479B"
-                                      />
-                                      <path
-                                        d="M0.319748 11.2081C0.291443 11.2187 0.227758 11.2612 0.185302 11.3036C-0.0835903 11.5477 -0.0482098 11.9511 0.256063 12.1386C0.36928 12.2094 0.44358 12.2094 4.70693 12.2094C8.97028 12.2094 9.04458 12.2094 9.1578 12.1386C9.34178 12.0254 9.41962 11.8697 9.40193 11.6468C9.39131 11.477 9.37362 11.4416 9.24271 11.3178L9.09765 11.1833L4.73524 11.1869C2.33644 11.1869 0.348052 11.1975 0.319748 11.2081Z"
-                                        fill="#41479B"
-                                      />
-                                      <path
-                                        d="M12.758 11.3597C12.5549 11.494 12.5205 11.6111 12.5205 12.1483V12.6235H12.0489C11.6668 12.6235 11.5497 12.6338 11.4534 12.6854C11.0781 12.8714 11.085 13.4189 11.4637 13.5876C11.5807 13.6427 11.6909 13.6565 12.0661 13.6565H12.5205V14.1317C12.5205 14.6482 12.5549 14.7722 12.7339 14.9065C12.9542 15.0683 13.3122 14.9994 13.4568 14.7618C13.5291 14.6517 13.536 14.5862 13.5463 14.1489L13.5601 13.6634L14.0454 13.6496C14.4826 13.6393 14.548 13.6324 14.6582 13.5601C14.8957 13.4155 14.9645 13.0573 14.8027 12.837C14.6685 12.6579 14.5446 12.6235 14.0282 12.6235H13.5532V12.1655C13.5532 11.6386 13.4981 11.4699 13.3053 11.3494C13.147 11.253 12.9095 11.2564 12.758 11.3597Z"
-                                        fill="#41479B"
-                                      />
-                                      <path
-                                        d="M0.211504 14.0658C-0.0856924 14.3206 -0.0680021 14.7345 0.253961 14.9291C0.367178 14.9999 0.441477 14.9999 4.70483 14.9999C8.96818 14.9999 9.04248 14.9999 9.1557 14.9291C9.4812 14.731 9.49535 14.2392 9.18046 14.0446C9.06725 13.9738 9.01417 13.9738 4.69421 13.9738H0.324722L0.211504 14.0658Z"
-                                        fill="#41479B"
-                                      />
-                                    </svg>
-                                  </span>
-                                </div>
-                              </div>
-                            </td>
-                          </tr>
-                        </>
-                      )}
-                      {selectedScreenTypeOption === "4" && (
-                        <>
-                          <tr>
-                            <td></td>
-                            <td>
-                              <div className="flex">
-                                <input
-                                  className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                                  value={
-                                    selectedTextScroll !== "" ||
-                                    selectedYoutube !== ""
-                                      ? selectedTextScroll?.instanceName ||
-                                        selectedYoutube?.instanceName
-                                      : ""
-                                  }
-                                  placeholder="Set Apps"
-                                  readOnly
-                                  onChange={(e) => {
-                                    setSelectedTextScroll({
-                                      ...selectedTextScroll,
-                                      instanceName: e.target.value,
-                                    });
-                                    setSelectedYoutube({
-                                      ...selectedYoutube,
-                                      instanceName: e.target.value,
-                                    });
-                                  }}
-                                />
-
-                                <div
-                                  className="flex items-center ml-5"
-                                  onClick={() => {
-                                    setAppDatas(allAppsData);
-                                    setShowAppsModal(true);
-                                  }}
-                                >
-                                  <RiAppsFill className="border border-[#D5E3FF] p-2 text-4xl rounded" />
-                                </div>
-                              </div>
-                            </td>
-                          </tr>
-                        </>
-                      )}
-                      {showAppsModal && (
-                        <tr>
-                          <td>
-                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
-                              <div
-                                ref={appRef}
-                                className="relative w-auto my-6 mx-auto myplaylist-popup-details"
-                              >
-                                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none addmediapopup">
-                                  <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                                    <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
-                                      Set Content to Add Media
-                                    </h3>
-                                    <button
-                                      className="p-1 text-xl"
-                                      onClick={() => {
-                                        setShowAppsModal(false);
-                                        setSearchAsset("");
-                                      }}
-                                    >
-                                      <AiOutlineCloseCircle className="text-2xl" />
-                                    </button>
-                                  </div>
-
-                                  <div className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 flex-auto">
-                                    <div className="bg-white rounded-[30px]">
-                                      <div>
-                                        <div className="lg:flex lg:flex-wrap lg:items-center md:flex md:flex-wrap md:items-center sm:block xs:block">
-                                          <div className="lg:p-10 md:p-10 sm:p-1 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl">
-                                            <div>
-                                              <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                                                <div className="mb-5 relative ">
-                                                  <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
-                                                  <input
-                                                    type="text"
-                                                    placeholder=" Search by Name"
-                                                    className="border border-primary rounded-full px-7 py-2 search-user"
-                                                    value={searchAsset}
-                                                    onChange={handleAppFilter}
-                                                  />
-                                                </div>
-                                                <button
-                                                  className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
-                                                  onClick={() => {
-                                                    window.open(
-                                                      window.location.origin.concat(
-                                                        "/apps"
-                                                      )
-                                                    );
-                                                    setShowAppsModal(false);
-                                                    setSearchAsset("");
-                                                  }}
-                                                >
-                                                  Add New App
-                                                </button>
-                                              </div>
-                                              <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
-                                                <table
-                                                  style={{
-                                                    borderCollapse: "separate",
-                                                    borderSpacing: " 0 10px",
-                                                    width: "100%",
-                                                  }}
-                                                  className="w-full"
-                                                >
-                                                  <thead className="sticky top-0">
-                                                    <tr className="bg-lightgray">
-                                                      <th className="p-3 w-80 text-left">
-                                                        Instance Name
-                                                      </th>
-                                                      <th>App Type</th>
-                                                      {/*<th className="p-3">Resolution</th>
-                        <th className="p-3">Duration</th> */}
-                                                    </tr>
-                                                  </thead>
-
-                                                  {appDatas?.length > 0 ? (
-                                                    appDatas.map(
-                                                      (instance, index) => (
-                                                        <tbody key={index}>
-                                                          <tr
-                                                            className={`${
-                                                              (selectedTextScroll &&
-                                                                selectedTextScroll?.textScroll_Id ===
-                                                                  instance?.textScroll_Id &&
-                                                                selectedTextScroll?.scrollType ===
-                                                                  instance?.scrollType) ||
-                                                              (selectedYoutube &&
-                                                                selectedYoutube?.youtubeId ===
-                                                                  instance?.youtubeId &&
-                                                                selectedYoutube?.youTubePlaylist ===
-                                                                  instance?.youTubePlaylist)
-                                                                ? "bg-[#f3c953]"
-                                                                : ""
-                                                            } border-b border-[#eee] `}
-                                                            onClick={() => {
-                                                              handleAppsAdd(
-                                                                instance
-                                                              );
-                                                            }}
-                                                          >
-                                                            <td className="p-3 text-left">
-                                                              {
-                                                                instance.instanceName
-                                                              }
-                                                            </td>
-                                                            <td className="p-3 text-center">
-                                                              {instance.youTubePlaylist
-                                                                ? "Youtube Video"
-                                                                : "Text scroll"}
-                                                            </td>
-                                                            {/* <td className="p-3">{composition.resolution}</td>
-                              <td className="p-3">
-                                {moment
-                                  .utc(composition.duration * 1000)
-                                  .format("hh:mm:ss")}
-                              </td> */}
-                                                          </tr>
-                                                        </tbody>
-                                                      )
-                                                    )
-                                                  ) : (
-                                                    <div className="p-3 text-left">
-                                                      <p>No Data Found</p>
-                                                    </div>
-                                                  )}
-                                                </table>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="flex justify-between items-center p-5">
-                                    <p className="text-black">
-                                      Content will always be playing Confirm
-                                    </p>
-                                    <button
-                                      className="bg-primary text-white rounded-full px-5 py-2"
-                                      onClick={() => {
-                                        handleConfirmOnApps();
-                                      }}
-                                    >
-                                      Confirm
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                        </tr>
-                      )}
+                      <tr>
+                        <td></td>
+                        <td>
+                          <input
+                            className=" px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            value={
+                              selectedAsset?.assetName ||
+                              selectedComposition?.compositionName ||
+                              selectedTextScroll?.instanceName ||
+                              selectedYoutube?.youtubeId ||
+                              selectedDefaultAsset
+                            }
+                          />
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                   <div className="flex justify-center my-3">
