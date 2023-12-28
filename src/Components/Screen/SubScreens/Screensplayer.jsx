@@ -484,7 +484,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         if (response?.data?.status == 200) {
           const { data, myComposition } = response?.data;
           setScreenPreviewData({ data, myComposition });
-          console.log(data, myComposition);
           if (myComposition.length > 0) {
             setFetchLayoutLoading(true);
             handleFetchLayoutById(myComposition[0]?.layoutID);
@@ -512,7 +511,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         (moment(moment().format("LLL")).isSameOrAfter(
           moment(item?.cStartDate).format("LLL")
         ) &&
-          moment(moment().format("LLL")).isSameOrBefore(
+          moment(moment().format("LLL")).isBefore(
             moment(item?.cEndDate).format("LLL")
           ))
       ) {
@@ -892,7 +891,6 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
   };
   
 
-  console.log(screenPreviewData);
   // console.log("selected asset",selectedAsset);
   // console.log("selected comp",selectedComposition);
   // console.log("selected schedule",selectedSchedule);

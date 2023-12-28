@@ -7,6 +7,12 @@ export const connection = new HubConnectionBuilder()
   .withAutomaticReconnect()
   .build();
 
+if (connection.state == "Disconnected") {
+  connection.start().then((res) => {
+    console.log("signal connected");
+  });
+}
+
 connection.on("ScreenConnected", (screenConnected) => {
   console.log("on--------------->", screenConnected);
 });

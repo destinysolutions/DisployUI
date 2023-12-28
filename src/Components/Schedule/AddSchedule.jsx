@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useCallback } from "react";
 import { Calendar, Views, momentLocalizer } from "react-big-calendar";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
-import { BsPencilFill } from "react-icons/bs";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -11,32 +10,16 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import EventEditor from "./EventEditor";
 import axios from "axios";
 import "../../Styles/schedule.css";
-import { BsFillInfoCircleFill } from "react-icons/bs";
-import { SlCalender, SlScreenDesktop } from "react-icons/sl";
-import { BiFilterAlt } from "react-icons/bi";
-import { BsTags } from "react-icons/bs";
-
 import {
   ADD_EVENT,
-  GET_ALL_FILES,
   ADD_SCHEDULE,
   SCHEDULE_EVENT_SELECT_BY_ID,
-  GET_TIMEZONE,
   UPDATED_SCHEDULE_DATA,
-  SIGNAL_R,
-  SELECT_BY_USER_SCREENDETAIL,
   UPDATE_SCREEN_ASSIGN,
   GET_SCEDULE_TIMEZONE,
-  UPDATE_TIMEZONE,
-  GET_ALL_EVENTS,
 } from "../../Pages/Api";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-import SaveAssignScreenModal from "./SaveAssignScreenModal";
-import { AiOutlineClose, AiOutlineCloseCircle } from "react-icons/ai";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-import { HiOutlineLocationMarker } from "react-icons/hi";
-import { MdOutlineGroups, MdSave } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { handleGetAllAssets } from "../../Redux/Assetslice";
@@ -282,13 +265,13 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         "Content-Type": "application/json",
       },
     };
-console.log(macids);
+    console.log(macids);
     axios
       .request(config)
       .then((response) => {
         setSelectScreenModal(false);
         connection
-          .invoke("ScreenConnected", macids.replace(/^\s+/g, ''))
+          .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
           .then(() => {
             console.log("SignalR method invoked after screen update");
           })
@@ -353,10 +336,13 @@ console.log(macids);
           toast.remove();
 
           loadEventsForSchedule(scheduleIdToUse);
-          
+
           if (myEvents[0]?.macids) {
             connection
-              .invoke("ScreenConnected", myEvents[0]?.macids.replace(/^\s+/g, ''))
+              .invoke(
+                "ScreenConnected",
+                myEvents[0]?.macids.replace(/^\s+/g, "")
+              )
               .then(() => {
                 console.log("SignalR invoked");
               })
@@ -364,8 +350,7 @@ console.log(macids);
                 console.error("Error invoking SignalR method:", error);
               });
             setEvents((prevEvents) => [...prevEvents, ...updateEvent]);
-          }else{
-            console.log(eventData);
+          } else {
             console.log("send add schedule mac id");
           }
 
@@ -448,9 +433,17 @@ console.log(macids);
   };
 
   // Function to handle the deletion of an event
-  const handleEventDelete = (eventId) => {
+  const handleEventDelete = (eventId, macids) => {
     const updatedEvents = myEvents.filter((event) => event.id !== eventId);
     setEvents(updatedEvents);
+    connection
+      .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
+      .then(() => {
+        console.log("SignalR invoked");
+      })
+      .catch((error) => {
+        console.error("Error invoking SignalR method:", error);
+      });
     if (selectedEvent && selectedEvent.id === eventId) {
       setSelectedEvent(null);
       setCreatePopupOpen(false);
