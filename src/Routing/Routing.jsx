@@ -49,6 +49,8 @@ import YoutubeDetailByID from "../Components/Apps/YoutubeDetailByID";
 import TextScrollDetailById from "../Components/Apps/TextScrollDetailById";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "../Components/ErrorFallback";
+import GridAssets from "../Components/Assests/GridAssets";
+
 
 const Routing = () => {
   //for screen resize sidebar open close
@@ -221,6 +223,17 @@ const Routing = () => {
                 />
               }
             />
+
+            <Route
+              path="/assets-grid"
+              element={
+                <GridAssets
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+
             {/* Apps component route */}
             <Route
               path="/apps"

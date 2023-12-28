@@ -62,6 +62,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const [isMoveToOpen, setIsMoveToOpen] = useState(false);
   const [editMode, setEditMode] = useState(null);
   const [FolderDisable, setFolderDisable] = useState(false);
+  const [selectdata, setSelectData] = useState({});
 
   const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
@@ -713,6 +714,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                                       onClick={() => {
                                         setAddScreenModal(true);
                                         setassetsdw(null);
+                                        setSelectData(item);
                                       }}
                                     >
                                       <FiUpload className="mr-2 text-lg" />
@@ -887,6 +889,13 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                     <button
                       className="bg-primary text-white px-8 py-2 rounded-full"
                       onClick={() => {
+                        if (selectdata?.screenIDs) {
+                          let arr = [selectdata?.screenIDs];
+                          let newArr = arr[0]
+                            .split(",")
+                            .map((item) => parseInt(item.trim()));
+                          setSelectedScreens(newArr);
+                        }
                         setSelectScreenModal(true);
                         setAddScreenModal(false);
                       }}

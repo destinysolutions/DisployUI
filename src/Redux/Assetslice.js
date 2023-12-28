@@ -12,28 +12,141 @@ export const handleGetAllAssets = createAsyncThunk(
           Authorization: token,
         },
       });
-      if (data?.status == 200) return data;
+      if (data?.status === 200) return data;
       else {
         toast.error(data?.message);
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message || "Network error. Please check your internet connection.!!!" );
       rejectWithValue(error?.response?.data?.message);
     }
   }
 );
 
+
+export const handleGetAllAssetsTypeBase = createAsyncThunk("AssetMaster/handleGetAllAssetsTypeBase", async ({ config }, { rejectWithValue }) => {
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    if (error?.response) {
+      toast.error(error?.response?.data?.message || "Network error. Please check your internet connection.!!!" );
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+}
+);
+
+export const handleCheckFolderImage = createAsyncThunk("AssetMaster/checkFolderImage", async ({ config }, { rejectWithValue }) => {
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    if (error?.response) {
+      toast.error(error?.response?.data?.message || "Network error. Please check your internet connection.!!!" );
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+}
+);
+
+export const handleDeleteFolder = createAsyncThunk("AssetMaster/handleDeleteFolder", async ({ config2 }, { rejectWithValue }) => {
+  try {
+    const response = await axios.request(config2);
+    return response.data;
+  } catch (error) {
+    console.log("error handleDeleteFolder ",error);
+    if (error?.response) {
+      toast.error(error?.response?.data?.message || "Network error. Please check your internet connection.!!!" );
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+}
+);
+
+export const handleWarningDelete = createAsyncThunk("AssetMaster/handleWarning", async ({ config }, { rejectWithValue }) => {
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    if (error?.response) {
+      toast.error(error?.response?.data?.message || "Network error. Please check your internet connection.!!!" );
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+}
+);
+
+export const handelDeletedataAssets = createAsyncThunk("AssetMaster/handelDeletedataAssets", async (config , { rejectWithValue }) => {
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    if (error?.response) {
+      toast.error(error?.response?.data?.message || "Network error. Please check your internet connection.!!!" );
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+}
+);
+
+
+export const handelCreateFolder  = createAsyncThunk("AssetMaster/handelCreateFolder", async (config , { rejectWithValue }) => {
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    if (error?.response) {
+      toast.error(error?.response?.data?.message || "Network error. Please check your internet connection.!!!" );
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+}
+);
+
+export const handelAllDelete  = createAsyncThunk("AssetMaster/handelAllDelete", async (config , { rejectWithValue }) => {
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || "Network error. Please check your internet connection.!!!" );
+    return rejectWithValue(error?.response?.data)
+  }
+}
+);
+
+export const handelMoveDataToFolder  = createAsyncThunk("AssetMaster/handelMoveDataToFolder", async (config , { rejectWithValue }) => {
+  try {
+    const response = await axios.request(config);
+    return response.data;
+  } catch (error) {
+    toast.error(error?.response?.data?.message || "Network error. Please check your internet connection.!!!" );
+    return rejectWithValue(error?.response?.data)
+  }
+}
+);
+
+
 const initialState = {
   loading: false,
   assets: [],
   error: null,
+  data: null,       // User data 
+  status: 'idle',   // Request status: 'idle', 'loading', 'succeeded', or 'failed'
+  message: '',      // Message to display (success or error message)
 };
 
 const Assetslice = createSlice({
   name: "asset",
   initialState,
-  reducers: {},
+  reducers: {
+    resetStatus: (state) => {
+      state.error = null;
+      state.message = null;
+      state.status = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(handleGetAllAssets.pending, (state, { payload }) => {
       state.loading = true;
@@ -61,9 +174,117 @@ const Assetslice = createSlice({
       state.error = null;
       state.assets = [];
     });
+
+    builder.addCase(handleGetAllAssetsTypeBase.pending, (state) => {     // Assets Get type
+      state.status = 'loading';
+    })
+    builder.addCase(handleGetAllAssetsTypeBase.fulfilled, (state, action) => {  // Assets Get type
+      state.data = action.payload?.data;
+      state.folders = action.payload?.folderData;
+    })
+    builder.addCase(handleGetAllAssetsTypeBase.rejected, (state, action) => {     // Assets Get type
+      state.status = 'failed';
+      state.error = action.payload?.message;
+      state.message = action.payload?.message;
+    });
+
+    builder.addCase(handleCheckFolderImage.pending, (state) => {     // handleCheckFolderImage
+      state.status = 'loading';
+    })
+    builder.addCase(handleCheckFolderImage.fulfilled, (state, action) => {  // handleCheckFolderImage
+      state.data = action.payload;
+    })
+    builder.addCase(handleCheckFolderImage.rejected, (state, action) => {     // handleCheckFolderImage
+      state.status = 'failed';
+    });
+
+    builder.addCase(handleDeleteFolder.pending, (state) => {     // handleDeleteFolder
+      state.status = 'loading';
+    })
+    builder.addCase(handleDeleteFolder.fulfilled, (state, action) => {  // handleDeleteFolder
+      state.status = 'succeeded';
+      state.message = action.payload?.message;
+
+    })
+    builder.addCase(handleDeleteFolder.rejected, (state, action) => {     // handleDeleteFolder
+      state.status = 'failed';
+      state.error = action.payload?.message;
+    });
+
+    builder.addCase(handleWarningDelete.pending, (state) => {     // handleWarningDelete
+      state.status = 'loading';
+    })
+    builder.addCase(handleWarningDelete.fulfilled, (state, action) => {  // handleWarningDelete
+      state.status = 'succeeded';
+      state.data = action.payload;
+      state.message = action.payload?.message;
+
+    })
+    builder.addCase(handleWarningDelete.rejected, (state, action) => {     // handleWarningDelete
+      state.status = 'failed';
+      state.error = action.payload.message;
+      state.message = action.payload?.message;
+    });
+
+    builder.addCase(handelDeletedataAssets.pending, (state) => {     // handelDeletedataAssets
+      state.status = 'loading';
+    })
+    builder.addCase(handelDeletedataAssets.fulfilled, (state, action) => {  // handelDeletedataAssets
+      state.status = 'succeeded';
+      state.data = action.payload;
+      state.message = action.payload?.message ||  "Delete successFully";
+    })
+    builder.addCase(handelDeletedataAssets.rejected, (state, action) => {     // handelDeletedataAssets
+      state.status = 'failed';
+      state.error = action.payload.message;
+      state.message = action.payload?.message;
+    });
+
+    builder.addCase(handelCreateFolder.pending, (state) => {     // handelCreateFolder
+      state.status = 'loading';
+    })
+    builder.addCase(handelCreateFolder.fulfilled, (state, action) => {  // handelCreateFolder
+      state.status = 'succeeded';
+      state.data = action.payload?.data;
+      state.message = "Creating Folder SuccessFully...";
+    })
+    builder.addCase(handelCreateFolder.rejected, (state, action) => {     // handelCreateFolder
+      state.status = 'failed';
+      state.error = action.payload.message;
+      state.message = action.payload?.message;
+    });
+
+    builder.addCase(handelAllDelete.pending, (state) => {     // handelAllDelete
+      state.status = 'loading';
+    })
+    builder.addCase(handelAllDelete.fulfilled, (state, action) => {  // handelAllDelete
+      state.status = 'succeeded';
+      state.message = action.payload?.message ||  "Delete successFully";
+    })
+    builder.addCase(handelAllDelete.rejected, (state, action) => {     // handelAllDelete
+      state.status = 'failed';
+      state.error = action.payload.message;
+      state.message = action.payload?.message;
+    });
+
+    builder.addCase(handelMoveDataToFolder.pending, (state) => {     // handelMoveDataToFolder
+      state.status = 'loading';
+    })
+    builder.addCase(handelMoveDataToFolder.fulfilled, (state, action) => {  // handelMoveDataToFolder
+      state.status = 'succeeded';
+      state.data = action.payload?.data;
+      state.message = "Data move to Folder successFully...";
+    })
+    builder.addCase(handelMoveDataToFolder.rejected, (state, action) => {     // handelMoveDataToFolder
+      state.status = 'failed';
+      state.error = action.payload.message;
+      state.message = action.payload?.message;
+    });
+
   },
 });
 
-export const {} = Assetslice.actions;
+export const { resetStatus } = Assetslice.actions;
+
 
 export default Assetslice.reducer;

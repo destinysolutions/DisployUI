@@ -48,7 +48,6 @@ export const handleAddNewUser = createAsyncThunk("UserMaster/handleAddUser",
     async ({ config }, { rejectWithValue }) => {
       try {
         const response = await axios.request(config);
-        console.log("response",response.data);
         if (response?.data?.status) {
           return response.data;
         } else {
