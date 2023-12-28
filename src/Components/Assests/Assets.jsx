@@ -370,7 +370,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const handleDrop = (event, folderId) => {
     const itemId = event.dataTransfer.getData("text/plain");
     let asset_type = selectedItems.assetType == "Folder" ? "Folder" : "Image";
-    if (Number(itemId) !== folderId) {
+    if (Number(itemId) === folderId && asset_type !== "Folder"){
       moveDataToFolder(itemId, folderId, asset_type);
     }
   };
@@ -478,7 +478,6 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleSearchAsset = (event) => {
-    // toast.loading("Searching...")
     const searchQuery = event.target.value;
     setSearchAsset(searchQuery);
     setLoadFist(true);
@@ -743,7 +742,8 @@ const moveDataToFolder = async (dataId, folderId, assetType) => {
   }
 };
 
-const debouncedOnChange = debounce(handleSearchAsset, 500);
+
+const debouncedOnChange = debounce(handleSearchAsset, 1000);
 
   return (
     <>
@@ -800,7 +800,6 @@ const debouncedOnChange = debounce(handleSearchAsset, 500);
                     className={
                       asstab === 1 ? "tabshow tabassactive " : "asstab "
                     }
-                    // onClick={() => gridTableDisplay()}
                   >
                     <RxDashboard className="text-primary text-lg" />
                   </button>
@@ -808,7 +807,6 @@ const debouncedOnChange = debounce(handleSearchAsset, 500);
                 <li className="flex items-center ">
                   <button
                     className={asstab === 2 ? "tabshow right " : "asstab "}
-                    // onClick={() => updatetoggle(2)}
                     onClick={() => gridTableDisplay()}
                   >
                     <AiOutlineUnorderedList className="text-primary text-lg" />
@@ -977,7 +975,7 @@ const debouncedOnChange = debounce(handleSearchAsset, 500);
                                 setShowImageAssetModal(true);
                                 setImageAssetModal(item);
                               }}
-                            >
+                              >
                               <source
                                 src={item.assetFolderPath}
                                 type="video/mp4"
@@ -986,7 +984,7 @@ const debouncedOnChange = debounce(handleSearchAsset, 500);
                             </video>
                           </div>
                         )}
-
+                        
                         {item.assetType === "DOC" && (
                           <div className="bg-white px-4 py-5 rounded-lg shadow-lg h-full break-words">
                             {item.assetType === "DOC" && (
