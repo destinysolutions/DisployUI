@@ -13,6 +13,7 @@ import {
   handleNavigateFromCompositionChannel,
 } from "./Redux/globalStates";
 import { connection } from "./SignalR";
+import { useLocation } from "react-router-dom";
 
 const App = () => {
   const [timer, setTimer] = useState(0);
@@ -31,12 +32,7 @@ const App = () => {
 
   const onIdle = () => {
     clearInterval(interval);
-    // auth.signOut();
     dispatch(handleLogout());
-    // window.location.href = window.location.origin;
-    // window.localStorage.clear("timer");
-    // localStorage.setItem("role_access", "");
-    // window.location.reload();
   };
 
   var { start, getRemainingTime, isIdle } = useIdleTimer({
@@ -118,19 +114,20 @@ const App = () => {
       });
     }
     console.log(connection.state);
-    return () => {
-      if (connection.state === "Connected") {
-        connection
-          .stop()
-          .then(() => {
-            console.log("Connection stopped");
-          })
-          .catch((error) => {
-            console.error("Error stopping connection:", error);
-          });
-      }
-    };
-  },[connection]);
+
+    // return () => {
+    //   if (connection.state === "Connected") {
+    //     connection
+    //       .stop()
+    //       .then(() => {
+    //         console.log("Connection stopped");
+    //       })
+    //       .catch((error) => {
+    //         console.error("Error stopping connection:", error);
+    //       });
+    //   }
+    // };
+  }, [connection]);
 
   return (
     <>

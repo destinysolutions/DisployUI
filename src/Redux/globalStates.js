@@ -34,6 +34,7 @@ const initialState = {
   timezoneLoading: false,
   timezones: [],
   navigateFromComposition: false,
+  session_token_apideck: null,
 };
 
 const globalStates = createSlice({
@@ -55,6 +56,9 @@ const globalStates = createSlice({
         window.location.reload();
         navigateFromCompositionChannel.close();
       };
+    },
+    handleChangeSessionToken: (state, { payload }) => {
+      state.session_token_apideck = payload;
     },
   },
   extraReducers: (builder) => {
@@ -86,6 +90,7 @@ export const {
   handleChangeNavigateFromComposition,
   handleNavigateFromCompositionChannel,
   handleNavigateFromComposition,
+  handleChangeSessionToken,
 } = globalStates.actions;
 
 export default globalStates.reducer;

@@ -282,7 +282,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         "Content-Type": "application/json",
       },
     };
-
+console.log(macids);
     axios
       .request(config)
       .then((response) => {
@@ -353,6 +353,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           toast.remove();
 
           loadEventsForSchedule(scheduleIdToUse);
+          
           if (myEvents[0]?.macids) {
             connection
               .invoke("ScreenConnected", myEvents[0]?.macids.replace(/^\s+/g, ''))
@@ -363,6 +364,9 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 console.error("Error invoking SignalR method:", error);
               });
             setEvents((prevEvents) => [...prevEvents, ...updateEvent]);
+          }else{
+            console.log(eventData);
+            console.log("send add schedule mac id");
           }
 
           // if (eventId) {
