@@ -353,7 +353,10 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const handleDrop = (event, folderId) => {
     const itemId = event.dataTransfer.getData("text/plain");
     let asset_type = selectedItems.assetType == "Folder" ? "Folder" : "Image";
-    if (Number(itemId) !== folderId) {
+    if (
+      Number(itemId) !== folderId ||
+      (Number(itemId) === folderId && asset_type !== "Folder")
+    ) {
       moveDataToFolder(itemId, folderId, asset_type);
     }
   };
