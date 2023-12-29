@@ -144,7 +144,7 @@ const Authslice = createSlice({
       state.loading = false;
       // auth.signOut();
       window.location.href = window.location.origin;
-      window.localStorage.clear("timer");
+      window.localStorage.removeItem("timer");
       localStorage.setItem("role_access", "");
       window.location.reload();
     },

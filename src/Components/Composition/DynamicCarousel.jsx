@@ -113,7 +113,9 @@ const Carousel = ({ items, compositonData, from }) => {
                     {item.assetName}
                   </a>
                 )}
-                {(item?.assetType === "Text" || item?.mediaType === "Text") && (
+                {(item?.assetType === "Text" ||
+                  item?.mediaType === "Text" ||
+                  item?.text !== undefined) && (
                   <marquee
                     className="text-lg w-full h-full flex items-center text-black"
                     direction={
@@ -124,10 +126,10 @@ const Carousel = ({ items, compositonData, from }) => {
                     }
                     scrollamount="10"
                   >
-                    {item?.assetFolderPath ?? item?.fileType}
+                    {item?.assetFolderPath || item?.fileType || item?.text}
                   </marquee>
                 )}
-                {item?.text !== undefined && (
+                {/* { && (
                   <marquee
                     className="text-lg w-full h-full flex items-center text-black"
                     direction={
@@ -140,7 +142,7 @@ const Carousel = ({ items, compositonData, from }) => {
                   >
                     {item?.text}
                   </marquee>
-                )}
+                )} */}
               </div>
             );
           }
