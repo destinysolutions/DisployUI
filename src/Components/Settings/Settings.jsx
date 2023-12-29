@@ -235,12 +235,12 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
 
             {/* User Roles search */}
-            <div className={STabs === 2 ? "" : "hidden"}>
+            <div className={STabs === 2 ? "" : "hidden" && STabs === 1 ? "" : "hidden" }>
               <div className="text-right flex items-end justify-end relative">
                 <AiOutlineSearch className="absolute top-[13px] lg:right-[234px] md:right-[234px] sm:right-[234px] xs:right-auto xs:left-3 z-10 text-[#6e6e6e]" />
                 <input
                   type="text"
-                  placeholder=" Search User Role"
+                  placeholder={STabs === 2 ? "Search User Role" : "Search User Name"}
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value) }
                   className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
@@ -310,7 +310,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
             {/*Tab details*/}
             <div className="col-span-4 w-full bg-white  tabdetails rounded-md relative">
               <div className={STabs === 1 ? "" : "hidden"}>
-                <Users />
+                <Users searchValue={searchValue} />
               </div>
               {/*End of userrole details*/}
               <div className={STabs === 2 ? "" : "hidden"}>
