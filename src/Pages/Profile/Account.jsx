@@ -325,7 +325,7 @@ const Account = () => {
               <div className="md:w-1/2 px-3">
                 <label className="label_top text-xs">Zip Code</label>
                 <input
-                  className={`w-full text-black border border-black rounded-lg py-3 px-4 mb-3 `}
+                className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                   type="text"
                   name="zipCode"
                   placeholder="100010"
@@ -337,7 +337,7 @@ const Account = () => {
                 <label className="label_top text-xs">Country</label>
                 <div>
                   <select
-                    className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
+                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                     {...register("countryID", {
                       onChange: (e) => {
                         setSelectedCountry(e.target.value);
@@ -363,7 +363,7 @@ const Account = () => {
                 <label className="label_top text-xs">State</label>
                 <div>
                   <select
-                    className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
+                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                     name="state"
                     {...register("stateId")}
                   >
@@ -388,7 +388,7 @@ const Account = () => {
                 <label className="label_top text-xs">Language</label>
                 <div>
                   <select
-                    className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
+                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                     {...register("languageId")}
                   >
                     <option label="Select language"></option>
@@ -412,7 +412,7 @@ const Account = () => {
                 <label className="label_top text-xs">Timezone</label>
                 <div>
                   <select
-                    className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
+                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                     {...register("timeZoneId")}
                   >
                     <option label="Select timezone"></option>
@@ -435,7 +435,7 @@ const Account = () => {
                 <label className="label_top text-xs">Currency</label>
                 <div>
                   <select
-                    className="w-full  border  text-black text-xs py-3 px-4 pr-8 mb-3 rounded"
+                  className="w-full  text-black border  rounded-lg py-3 px-4 mb-3"
                     {...register("currencyId")}
                   >
                     <option label="Select currency"></option>

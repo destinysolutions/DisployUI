@@ -188,10 +188,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         idS += `${key},`;
       }
     }
-    if (idS === "") {
-      toast.remove();
-      return toast.error("Please Select Screen.");
-    }
+    // if (idS === "") {
+    //   toast.remove();
+    //   return toast.error("Please Select Screen.");
+    // }
 
     let config = {
       method: "post",
@@ -241,7 +241,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 toast.error("Something went wrong, try again");
               });
           }
-
           setSelectScreenModal(false);
           setAddScreenModal(false);
           setShowActionBox(false);
