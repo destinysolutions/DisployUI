@@ -86,7 +86,9 @@ const OtherOptionsForAssets = ({ handleSelect }) => {
 
   return (
     <div>
-      {!tokenLoading && (
+      {tokenLoading ? (
+        <div>...</div>
+      ) : (
         <FilePicker
           onSelect={handleOnchangeFile}
           trigger={<button>More options</button>}
