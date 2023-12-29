@@ -248,10 +248,10 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         idS += `${key},`;
       }
     }
-    if (idS === "") {
-      toast.remove();
-      return toast.error("Please Select Screen.");
-    }
+    // if (idS === "") {
+    //   toast.remove();
+    //   return toast.error("Please Select Screen.");
+    // }
     const scheduleIdToUse = isEditingSchedule
       ? getScheduleId
       : createdScheduleId;

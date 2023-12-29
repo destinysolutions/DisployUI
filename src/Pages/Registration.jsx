@@ -4,17 +4,17 @@ import {
   BsFillEyeSlashFill,
   BsFillInfoCircleFill,
 } from "react-icons/bs";
-import { Link, useNavigate } from "react-router-dom";
-import { BsMicrosoft } from "react-icons/bs";
-import { BsApple } from "react-icons/bs";
-import { BsGoogle } from "react-icons/bs";
-import { FaFacebookF } from "react-icons/fa";
-import { useState } from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {BsMicrosoft} from "react-icons/bs";
+import {BsApple} from "react-icons/bs";
+import {BsGoogle} from "react-icons/bs";
+import {FaFacebookF} from "react-icons/fa";
+import {useState} from "react";
 import axios from "axios";
-import { useFormik } from "formik";
+import {useFormik} from "formik";
 import * as Yup from "yup";
-import { AiOutlineClose } from "react-icons/ai";
-import { ADD_REGISTER_URL } from "./Api";
+import {AiOutlineClose} from "react-icons/ai";
+import {ADD_REGISTER_URL} from "./Api";
 import video from "../images/DisployImg/iStock-1137481126.mp4";
 import {
   Googleauthprovider,
@@ -28,11 +28,11 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
 } from "firebase/auth";
-import { useDispatch } from "react-redux";
-import { handleLoginWithGoogle, handleRegisterUser } from "../Redux/Authslice";
+import {useDispatch} from "react-redux";
+import {handleLoginWithGoogle, handleRegisterUser} from "../Redux/Authslice";
 import logo from "../images/DisployImg/logo.svg";
-import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
+import {GoogleLogin, GoogleOAuthProvider} from "@react-oauth/google";
+import {jwtDecode} from "jwt-decode";
 import ReCAPTCHA from "react-google-recaptcha";
 
 const Registration = () => {
@@ -212,7 +212,7 @@ const Registration = () => {
         data: formData,
       };
 
-      const response = dispatch(handleRegisterUser({ config }));
+      const response = dispatch(handleRegisterUser({config}));
       if (response) {
         response
           .then(() => {
@@ -231,7 +231,7 @@ const Registration = () => {
     },
   });
 
-  const { setFieldValue, values, getFieldProps } = formik;
+  const {setFieldValue, values, getFieldProps} = formik;
 
   const SignInWithGoogle = async (data) => {
     //  return console.log(data);
@@ -254,7 +254,7 @@ const Registration = () => {
 
     // setTimeout(async () => {
     try {
-      const response = await dispatch(handleLoginWithGoogle({ config }));
+      const response = await dispatch(handleLoginWithGoogle({config}));
       if (!response) return;
       response
         .then(() => {
@@ -293,7 +293,7 @@ const Registration = () => {
         })
         .then(() => {
           navigate("/", {
-            state: { message: "Registration successfull !!" },
+            state: {message: "Registration successfull !!"},
           });
         })
         .catch((error) => {
@@ -343,15 +343,13 @@ const Registration = () => {
             top: "16px",
             right: "20px",
             zIndex: "999999",
-          }}
-        >
+          }}>
           <div className="flex text-SlateBlue  text-base font-normal items-center relative">
             <BsFillInfoCircleFill className="mr-1" />
             {errorMessge}
             <button
               className="absolute top-[-26px] right-[-26px] bg-white rounded-full p-1 "
-              onClick={() => setErrorMessgeVisible(false)}
-            >
+              onClick={() => setErrorMessgeVisible(false)}>
               <AiOutlineClose className="text-xl  text-SlateBlue " />
             </button>
           </div>
@@ -377,10 +375,9 @@ const Registration = () => {
                 </div>
                 <form
                   onSubmit={formik.handleSubmit}
-                  className="space-y-3 md:space-y-5"
-                >
-                  <div className="grid lg:grid-rows-4 md:grid-rows-4 sm:grid-rows-7 xs:grid-rows-7 lg:grid-flow-col md:grid-flow-col sm:grid-flow-rows lg:gap-4 md:gap-4 sm:gap-2 xs:gap-2">
-                    <div className="relative">
+                  className="space-y-3 md:space-y-5">
+                  <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 lg:gap-4 md:gap-4 sm:gap-2 xs:gap-2">
+                    <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
                       <input
                         type="text"
                         name="companyName"
@@ -398,8 +395,26 @@ const Registration = () => {
                           </div>
                         )}
                     </div>
+                    <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
+                      <input
+                        type="text"
+                        name="googleLocation"
+                        id="googleLocation"
+                        placeholder="Enter Your Google Location"
+                        className="formInput"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.googleLocation}
+                      />
+                      {formik.errors.googleLocation &&
+                        formik.touched.googleLocation && (
+                          <div className="error">
+                            {formik.errors.googleLocation}
+                          </div>
+                        )}
+                    </div>
 
-                    <div className="relative">
+                    <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
                       <input
                         type="text"
                         name="firstName"
@@ -414,8 +429,22 @@ const Registration = () => {
                         <div className="error">{formik.errors.firstName}</div>
                       )}
                     </div>
-
-                    <div className="relative">
+                    <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
+                      <input
+                        type="text"
+                        name="lastName"
+                        id="lastName"
+                        placeholder="Enter Your Last Name"
+                        className="formInput"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.lastName}
+                      />
+                      {formik.errors.lastName && formik.touched.lastName && (
+                        <div className="error">{formik.errors.lastName}</div>
+                      )}
+                    </div>
+                    <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
                       <input
                         type="tel"
                         name="phoneNumber"
@@ -434,7 +463,22 @@ const Registration = () => {
                         )}
                     </div>
 
-                    <div className="relative">
+                    <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
+                      <input
+                        type="email"
+                        name="emailID"
+                        id="emailID"
+                        className="formInput"
+                        placeholder="Enter Your Email Address"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.emailID}
+                      />
+                      {formik.errors.emailID && formik.touched.emailID && (
+                        <div className="error">{formik.errors.emailID}</div>
+                      )}
+                    </div>
+                    <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
                       <div className="relative">
                         <input
                           type={showPassword ? "text" : "password"}
@@ -462,56 +506,8 @@ const Registration = () => {
                         <div className="error">{formik.errors.password}</div>
                       )}
                     </div>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name="googleLocation"
-                        id="googleLocation"
-                        placeholder="Enter Your Google Location"
-                        className="formInput"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.googleLocation}
-                      />
-                      {formik.errors.googleLocation &&
-                        formik.touched.googleLocation && (
-                          <div className="error">
-                            {formik.errors.googleLocation}
-                          </div>
-                        )}
-                    </div>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        name="lastName"
-                        id="lastName"
-                        placeholder="Enter Your Last Name"
-                        className="formInput"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.lastName}
-                      />
-                      {formik.errors.lastName && formik.touched.lastName && (
-                        <div className="error">{formik.errors.lastName}</div>
-                      )}
-                    </div>
-                    <div className="relative">
-                      <input
-                        type="email"
-                        name="emailID"
-                        id="emailID"
-                        className="formInput"
-                        placeholder="Enter Your Email Address"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.emailID}
-                      />
-                      {formik.errors.emailID && formik.touched.emailID && (
-                        <div className="error">{formik.errors.emailID}</div>
-                      )}
-                    </div>
                   </div>
-                  <div className="relative">
+                  <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
                     <ReCAPTCHA
                       sitekey={process.env.REACT_APP_CAPTCHA}
                       onChange={(e) => {
@@ -551,8 +547,7 @@ const Registration = () => {
                   <button
                     type="submit"
                     className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
-                    disabled={loading}
-                  >
+                    disabled={loading}>
                     {loading ? "Signing up..." : "Create Your Account"}
                   </button>
                   <div className="flex lg:ml-3 text-sm flex-wrap">

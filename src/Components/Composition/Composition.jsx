@@ -397,10 +397,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         idS += `${key},`;
       }
     }
-    if (idS === "") {
-      toast.remove();
-      return toast.error("Please Select Screen.");
-    }
+    // if (idS === "") {
+    //   toast.remove();
+    //   return toast.error("Please Select Screen.");
+    // }
 
     let config = {
       method: "get",

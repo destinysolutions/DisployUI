@@ -179,7 +179,7 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
             <AiOutlineCloseCircle className=" text-SlateBlue" />
           </button>
           <div className="text-center ">
-            <h1 className=" text-SlateBlue lg:text-3xl md:text-3xl sm:lg:text-xl xs:text-lg lg:mb-5 md:mb-5 sm:mb-3 xs:mb-2 font-medium">
+            <h1 className="lg:text-3xl md:text-3xl sm:lg:text-xl xs:text-lg lg:mb-5 md:mb-5 sm:mb-3 xs:mb-2 font-medium">
               Pixabay Image Gallery
             </h1>
 
@@ -189,7 +189,7 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={handleSearchChange}
-                className="form-control-sm py-2 fs-4 text-capitalize border border-3 border-dark unspalsh-searchbox"
+                className="text-black form-control-sm py-2 fs-4 text-capitalize border border-3 border-dark unspalsh-searchbox"
               />
             </div>
           </div>
