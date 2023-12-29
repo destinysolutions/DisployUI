@@ -29,12 +29,12 @@ import slack from "../../images/Settings/Slack_Technologies_Logo.svg";
 import facebook from "../../images/Settings/facebook-logo.svg";
 import twitter from "../../images/Settings/twitter-logo.svg";
 import dribble from "../../images/Settings/dribbble-logo.svg";
+import Swal from "sweetalert2";
 
 const Users = () => {
   const [loadFist, setLoadFist] = useState(true);
 
-  const [passowrdErrors, setErrorsPassword] = useState("");
-  const [emailErrors, setErrorsEmail] = useState("");
+
   const [showuserModal, setshowuserModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [userRoleData, setUserRoleData] = useState([]);
@@ -62,6 +62,14 @@ const Users = () => {
   const [zipCode, setZipCode] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [states, setStates] = useState([]);
+
+   // Error  
+   const [passowrdErrors, setErrorsPassword] = useState("");
+   const [emailErrors, setErrorsEmail] = useState("");
+   const [errorsFirstName, setErrorsFirstName] = useState('');
+   const [errorsLastName, setErrorsLastName] = useState('');
+   const [errorsRole, setErrorsRole] = useState('');
+
 
   const { token } = useSelector((state) => state.root.auth);
   const { Countries } = useSelector((s) => s.root.settingUser);
@@ -127,15 +135,50 @@ const Users = () => {
   }, []);
 
   const handleAddUser = () => {
+    // Clear previous validation errors
+    setErrorsFirstName("");
+    setErrorsLastName("");
+    setErrorsPassword("");
+    setErrorsEmail("");
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     let data = new FormData();
 
     if (!password) {
       setErrorsPassword("Password is required");
       return;
-    } else if (!email) {
-      setErrorsEmail("Email is required");
+    }
+
+    // Check validation for firstName
+    if (!firstName) {
+      setErrorsFirstName("First Name is required");
       return;
     }
+
+    // Check validation for lastName
+    if (!lastName) {
+      setErrorsLastName("Last Name is required");
+      return;
+    }
+
+    // Check validation for password
+    if (!password) {
+      setErrorsPassword("Password is required");
+      return;
+    }
+
+    // Check validation for email format
+    if (!emailRegex.test(email)) {
+      setErrorsEmail('Not a valid email');
+      return;
+    }
+
+    // Check validation for role
+    if (!selectRoleID) {
+      setErrorsRole("Please select a role");
+      return;
+    }
+
     data.append("firstName", firstName);
     data.append("lastName", lastName);
     data.append("password", password);
@@ -144,13 +187,14 @@ const Users = () => {
     data.append("isActive", isActive);
     data.append("orgUserID", 0);
     data.append("userRole", selectRoleID);
-    data.append("countryID", countryID);
-    data.append("StateId", selectedState);
-    data.append("ZipCode", zipCode);
+    data.append("countryID", countryID ? countryID : 0);
+    data.append("StateId", selectedState ? selectedState : 0);
+    data.append("ZipCode", zipCode ? zipCode : 0);
     data.append("File", file);
     data.append("languageId", 0);
     data.append("timeZoneId", 0);
     data.append("currencyId", 0);
+    data.append("IsFromUserMaster", 1);
     data.append("operation", "Save");
 
     let config = {
@@ -165,31 +209,57 @@ const Users = () => {
     };
 
     try {
-      dispatch(handleAddNewUser({config}))
+      dispatch(handleAddNewUser({ config }));
       setshowuserModal(false);
+      handleCancelPopup()
     } catch (error) {
-      console.log("error",error);
+      console.log("error", error);
     }
-
   };
 
   const handleUpdateUser = () => {
+    // Clear previous validation errors
+    setErrorsFirstName("");
+    setErrorsLastName("");
+
+
+    // Check validation for firstName
+    if (!firstName) {
+      setErrorsFirstName("First Name is required");
+      return;
+    }
+
+    // Check validation for lastName
+    if (!lastName) {
+      setErrorsLastName("Last Name is required");
+      return;
+    }
+
+    // Check validation for role
+    if (!selectRoleID) {
+      setErrorsRole("Please select a role");
+      return;
+    }
+
     let data = new FormData();
     data.append("orgUserSpecificID", userID);
     data.append("firstName", firstName);
     data.append("lastName", lastName);
-    data.append("password", password);
-    data.append("email", email);
+    // data.append("password", password);
+    // data.append("email", email);
     data.append("phone", phone);
     data.append("isActive", isActive);
     data.append("orgUserID", 0);
     data.append("userRole", selectRoleID);
-    data.append("countryID", countryID);
+    data.append("countryID", countryID ? countryID : 0);
+    data.append("StateId", selectedState ? selectedState : 0);
     data.append("company", company);
+    data.append("ZipCode", zipCode ? zipCode : 0);
     data.append("File", file);
     data.append("languageId", 0);
     data.append("timeZoneId", 0);
     data.append("currencyId", 0);
+    data.append("IsFromUserMaster", 1);
     data.append("operation", "Save");
 
     let config = {
@@ -266,7 +336,28 @@ const Users = () => {
         Authorization: authToken,
       },
     };
-    dispatch(handleUserDelete({ config }));
+
+    Swal.fire({
+      title: "Delete Confirmation",
+      text: "Are you sure you want to delete this User?",
+      icon: "warning",
+      showCancelButton: true,
+      cancelButtonText: "No, cancel",
+      confirmButtonText: "Yes, I'm sure",
+      customClass: {
+        text: "swal-text-bold",
+        content: "swal-text-color",
+        confirmButton: "swal-confirm-button-color",
+      },
+      confirmButtonColor: "#ff0000",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await  dispatch(handleUserDelete({config}));
+      } else {
+        // User clicked "No, cancel" button
+        setLoadFist(true); // Trigger your action on cancel
+      }
+    });
   };
 
   const selectUserById = (OrgUserSpecificID) => {
@@ -295,6 +386,7 @@ const Users = () => {
           setEmail(fetchedData.email);
           setCompany(fetchedData.company);
           setCountryID(fetchedData.countryID);
+          setSelectedState(fetchedData.stateId);
           setSelectRoleID(fetchedData.userRole);
           setIsActive(fetchedData.isActive);
         }
@@ -321,6 +413,7 @@ const Users = () => {
     setCompany("");
     setZipCode("")
     setCountryID("");
+    setSelectedState("");
     setSelectRoleID("");
     setIsActive(0);
   };
@@ -384,9 +477,7 @@ const Users = () => {
       cell: (row) => (
         <div className="relative">
           <button
-            onClick={() => {
-              handleActionClick(row.orgUserSpecificID);
-            }}
+            onClick={() => {handleActionClick(row.orgUserSpecificID);}}
           >
             <CiMenuKebab />
           </button>
@@ -414,10 +505,10 @@ const Users = () => {
                   </button>
                 </div>
                 <div className=" mb-1 text-[#D30000]">
-                  <button onClick={() => setdeletePopup(true)}>Delete</button>
+                  <button onClick={() => handleDeleteUser(row.orgUserSpecificID) }>Delete</button>
                 </div>
               </div>
-              {deletePopup ? (
+              {/* {deletePopup ? (
                 <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                   <div className="relative w-full max-w-xl max-h-full">
                     <div className="relative bg-white rounded-lg shadow">
@@ -448,7 +539,7 @@ const Users = () => {
                     </div>
                   </div>
                 </div>
-              ) : null}
+              ) : null} */}
             </>
           )}
         </div>
@@ -533,6 +624,7 @@ const Users = () => {
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                       />
+                       {errorsFirstName && <p className="error">{errorsFirstName}</p>}
                     </div>
                   </div>
                   <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
@@ -546,9 +638,11 @@ const Users = () => {
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                       />
+                      {errorsLastName && <p className="error">{errorsLastName}</p>}
                     </div>
                   </div>
 
+                  {!userID && <>
                   <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                     <div className="relative">
                       <label className="formLabel">Email</label>
@@ -560,11 +654,10 @@ const Users = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                       />
-                      {emailErrors ? (
-                        <p className="error">{emailErrors}</p>
-                      ) : null}
+                      {emailErrors ? (<p className="error">{emailErrors}</p>) : null}
                     </div>
                   </div>
+
                   <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                     <div className="relative">
                       <label className="formLabel">Password</label>
@@ -576,9 +669,7 @@ const Users = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                       />
-                      {passowrdErrors ? (
-                        <p className="error">{passowrdErrors}</p>
-                      ) : null}
+                      {passowrdErrors ? (<p className="error">{passowrdErrors}</p>) : null}
                       <div className="icon">
                         {showPassword ? (
                           <BsFillEyeFill
@@ -592,6 +683,8 @@ const Users = () => {
                       </div>
                     </div>
                   </div>
+                 </> } 
+
                   <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                     <div className="relative">
                       <label className="formLabel">Phone No</label>
@@ -601,7 +694,12 @@ const Users = () => {
                         name="phoneno"
                         className="formInput"
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        maxLength="10"
+                        onChange={(e) => {
+                          if (e.target.value.length <= 10) {
+                            setPhone(e.target.value);
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -691,7 +789,6 @@ const Users = () => {
                         onChange={(e) => setSelectRoleID(e.target.value)}
                       >
                         <option label="select User Role"></option>
-
                         {userRoleData && userRoleData?.length > 0 ? (
                           userRoleData.map((userrole) => (
                             <option
@@ -705,6 +802,7 @@ const Users = () => {
                           <div>Data not here.</div>
                         )}
                       </select>
+                      {errorsRole && <p className="error">{errorsRole}</p>}
                     </div>
                   </div>
 
@@ -1712,13 +1810,14 @@ const Users = () => {
                 Add New Users
               </button>
             </div>
-            <div className="clear-both overflow-x-auto">
+            <div className="clear-both overflow-x-auto" >
               <DataTable
                 columns={columns}
                 data={userData}
                 fixedHeader
                 pagination
                 paginationPerPage={10}
+                style={{ minHeight: '200px' }}
               ></DataTable>
             </div>
           </div>

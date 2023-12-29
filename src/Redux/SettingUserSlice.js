@@ -16,7 +16,6 @@ export const handleGetCountries = createAsyncThunk(
                 return rejectWithValue(data?.message);
             }
         } catch (error) {
-            toast.error(error?.response?.data?.message);
             rejectWithValue(error?.response?.data?.message);
         }
     }
@@ -35,7 +34,6 @@ export const handleUserDelete = createAsyncThunk("UserMaster/OrgUserSpecificID",
         }
       } catch (error) {
         if (error?.response) {
-          toast.error(error?.response?.data?.message);
           return rejectWithValue(error?.response?.data);
         }
       }
@@ -55,7 +53,6 @@ export const handleAddNewUser = createAsyncThunk("UserMaster/handleAddUser",
         }
       } catch (error) {
         if (error?.response) {
-          toast.error(error?.response?.data?.message);
           return rejectWithValue(error?.response?.data);
         }
       }
@@ -108,7 +105,7 @@ const SettingUserSlice = createSlice({
         builder.addCase(handleAddNewUser.rejected, (state, action) => {     // Add User
           state.status = 'failed';
           state.error = action.payload.message;
-          state.message = action.payload.message;;
+          state.message = action.payload.message || "This user is not insert try agin";
         });
 
         builder.addCase(handleUserDelete.pending, (state) => {     // Delete User
@@ -117,11 +114,11 @@ const SettingUserSlice = createSlice({
           builder.addCase(handleUserDelete.fulfilled, (state, action) => {  // Delete User
             state.status = 'succeeded';
             state.data = action.payload;
-            state.message =  action.payload.message || 'User deleted successfully';
+            state.message =  action.payload?.message || 'User deleted successfully';
           })
           builder.addCase(handleUserDelete.rejected, (state, action) => {     // Delete User
             state.status = 'failed';
-            state.error = action.payload.message;
+            state.error = action.payload?.message;
             state.message = 'Failed to delete user';
           });
     }
