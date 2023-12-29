@@ -26,6 +26,22 @@ export const handleGetAllScheduleTimezone = createAsyncThunk(
   }
 );
 
+export const handelGetSessionToken = createAsyncThunk(
+  "globalstates/handelGetSessionToken",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await getUrl("GoogleDrive/GetSession");
+      return data;
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Network error. Please check your internet connection.!!!"
+      );
+      return rejectWithValue(error?.response?.data);
+    }
+  }
+);
+
 const navigateFromCompositionChannel = new BroadcastChannel(
   "navigateFromComposition"
 );
@@ -35,6 +51,7 @@ const initialState = {
   timezones: [],
   navigateFromComposition: false,
   session_token_apideck: null,
+  tokenLoading: false,
 };
 
 const globalStates = createSlice({
@@ -83,6 +100,20 @@ const globalStates = createSlice({
         state.timezones = [];
       }
     );
+
+    // get session token
+    builder.addCase(handelGetSessionToken.pending, (state, { payload }) => {
+      state.tokenLoading = true;
+    });
+    builder.addCase(handelGetSessionToken.fulfilled, (state, { payload }) => {
+      let data = JSON.parse(payload?.data);
+      state.session_token_apideck = data?.data?.session_token;
+      state.tokenLoading = false;
+    });
+    builder.addCase(handelGetSessionToken.rejected, (state, { payload }) => {
+      state.session_token_apideck = null;
+      state.tokenLoading = false;
+    });
   },
 });
 

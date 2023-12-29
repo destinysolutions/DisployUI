@@ -37,12 +37,14 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import OtherOptionsForAssets from "./OtherOptionsForAssets";
 import {
+  handelGetSessionToken,
   handleChangeSessionToken,
   handleNavigateFromComposition,
 } from "../../Redux/globalStates";
 import { useDispatch } from "react-redux";
 import moment from "moment";
 import { jwtDecode } from "jwt-decode";
+import { handelPostImageFromDrive } from "../../Redux/Assetslice";
 {
   /* end of video*/
 }
@@ -67,7 +69,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   const [showPexabay, setShowPexabay] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [recordedVideos, setRecordedVideos] = useState([]);
-  const [File, setFile] = useState(null);
 
   const { user, token } = useSelector((state) => state.root.auth);
   const { session_token_apideck } = useSelector(
@@ -430,36 +431,57 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     }
   };
 
-  const session_token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb25zdW1lcl9pZCI6InRlc3QtY29uc3VtZXIiLCJhcHBsaWNhdGlvbl9pZCI6IlpLZmlsM1JYejVzc0JkalhxVWdZeTBLSEtZbTE0TTVjWExxVWciLCJzY29wZXMiOltdLCJpYXQiOjE3MDM3NDM3NTEsImV4cCI6MTcwMzc0NzM1MX0.ntkj1ho2Z7H3rOw8dkn9l-xXDXxWcEa12Uf5OEaletA";
-
   function checkTokenExpire() {
-    const decodeTime = jwtDecode(session_token);
-    const currentTimestamp = moment().unix();
-    const currentMoment = moment.unix(currentTimestamp);
-    const givenMoment = moment.unix(decodeTime?.exp);
+    if (session_token_apideck === null) {
+      return dispatch(handelGetSessionToken());
+    } else if (session_token_apideck !== null) {
+      const decodeToken = jwtDecode(session_token_apideck);
+      const currentTimestamp = moment().unix();
+      const currentMoment = moment.unix(currentTimestamp);
+      const givenMoment = moment.unix(decodeToken?.exp);
 
-    // Get the difference in milliseconds
-    const differenceInMilliseconds = givenMoment.diff(currentMoment);
+      // Get the difference in milliseconds
+      const differenceInMilliseconds = givenMoment.diff(currentMoment);
 
-    // Convert the difference to minutes
-    const differenceInMinutes = moment
-      .duration(differenceInMilliseconds)
-      .asMinutes();
+      // Convert the difference to minutes
+      const differenceInMinutes = moment
+        .duration(differenceInMilliseconds)
+        .asMinutes();
 
-    let checkExpireOrNot = parseInt(differenceInMinutes).toFixed(2) > 0;
-    if (
-      (checkExpireOrNot && session_token_apideck !== null) ||
-      session_token_apideck === null
-    ) {
-      return dispatch(handleChangeSessionToken(session_token));
-    } else if (session_token_apideck !== null && !checkExpireOrNot) {
-      return console.log("call create session api");
+      let checkExpireOrNot = parseInt(differenceInMinutes).toFixed(2) > 0;
+      if (checkExpireOrNot && session_token_apideck !== null) {
+        return dispatch(handleChangeSessionToken(session_token_apideck));
+      } else if (session_token_apideck !== null && !checkExpireOrNot) {
+        console.log("expire token recall");
+        return dispatch(handelGetSessionToken());
+      }
     }
   }
+
+  const handleSelect = async (
+    serviceId,
+    imageId,
+    imageName,
+    fileSizeInBytes,
+    mimeType
+  ) => {
+    toast.loading("Uploading...");
+    dispatch(
+      handelPostImageFromDrive({
+        serviceId,
+        imageId,
+        imageName,
+        token,
+        fileSizeInBytes,
+        mimeType,
+      })
+    );
+  };
+
   useEffect(() => {
-    // console.log(checkTokenExpire());
-  }, []);
+    checkTokenExpire();
+    // console.log("runf");
+  });
 
   return (
     <>
@@ -636,7 +658,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               {/* end pixabay */}
             </span>
 
-            <OtherOptionsForAssets />
+            <OtherOptionsForAssets handleSelect={handleSelect} />
 
             {/*start app*/}
             {/* <Link
