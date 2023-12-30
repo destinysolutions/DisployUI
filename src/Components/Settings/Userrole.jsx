@@ -65,25 +65,53 @@ const Userrole = ({ searchValue }) => {
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
-  //   const [checkboxStates, setCheckboxStates] = useState({});
+  const [errorsRoleName, setErrorsRoleName] = useState("");
 
-  //   const handleCheckboxChange = (id) => {
-  //     setCheckboxStates((prevStates) => ({
-  //       ...prevStates,
-  //       [id]: !prevStates[id], // Toggle the checkbox state
-  //     }));
-  //   };
 
-  // const handleCheckboxChange = (checkboxId, rowId) => {
-  //   // Update checkbox state when clicked
-  //   setCheckboxStates((prevState) => ({
-  //     ...prevState,
-  //     [rowId]: {
-  //       ...prevState[rowId],
-  //       [checkboxId]: !prevState[rowId]?.[checkboxId] || true,
-  //     },
-  //   }));
-  // };
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(6); // Adjust items per page as needed
+  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const [sortedField, setSortedField] = useState(null);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = userData.slice(indexOfFirstItem, indexOfLastItem);
+  // Sort and paginate the data
+
+  const totalPages = Math.ceil(userData.length / itemsPerPage);
+
+  // Function to sort the data based on a field and order
+  const sortData = (data, field, order) => {
+    const sortedData = [...data];
+    sortedData.sort((a, b) => {
+      if (order === "asc") {
+        return a[field] > b[field] ? 1 : -1;
+      } else {
+        return a[field] < b[field] ? 1 : -1;
+      }
+    });
+    return sortedData;
+  };
+
+  const sortedAndPaginatedData = sortData(
+    userData,
+    sortedField,
+    sortOrder
+  ).slice(indexOfFirstItem, indexOfLastItem);
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Handle sorting when a table header is clicked
+  const handleSort = (field) => {
+    if (sortedField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortOrder("asc");
+      setSortedField(field);
+    }
+  };
+
 
   useEffect(() => {
     const searchQuery = searchValue?.toLowerCase();
@@ -141,6 +169,15 @@ const Userrole = ({ searchValue }) => {
   };
 
   const handleSaveUserRole = () => {
+    // Clear previous validation errors
+    setErrorsRoleName("");
+    // Check validation for RoleName
+    setshowuserroleModal(true);
+    if (!roleName) {
+      setErrorsRoleName("Role name is required");
+      return;
+    }
+
     let data = JSON.stringify({
       orgUserRoleID: 0,
       orgUserRole: roleName,
@@ -198,9 +235,7 @@ const Userrole = ({ searchValue }) => {
       data: data,
     };
 
-    axios
-      .request(config)
-      .then((response) => {
+    axios.request(config).then((response) => {
         setRoleName("");
         handleFetchUserRoleData();
       })
@@ -380,106 +415,6 @@ const Userrole = ({ searchValue }) => {
   // Destructure checkboxStates and dropdownStates from localStorageData
   const { checkboxState, dropdownStates } = localStorageData;
 
-  const columns = [
-    {
-      name: "Name",
-      selector: (row) => row.firstName,
-      sortable: true,
-    },
-
-    {
-      name: "Roles",
-      selector: (row) => row.userRoleName,
-      sortable: true,
-    },
-    // {
-    //   name: "Notification",
-    //   //selector: (row) => row.googleLocation,
-    //   sortable: true,
-    // },
-    // {
-    //   name: "Screen Access",
-    //   //selector: (row) => row.phone,
-    //   sortable: true,
-    // },
-    {
-      name: "Status",
-      selector: (row) => row.isActive,
-      sortable: true,
-      cell: (row) => (
-        <div>
-          {row.isActive == 1 ? (
-            <span style={{ color: "green" }}>Active</span>
-          ) : (
-            <span style={{ color: "red" }}>Inactive</span>
-          )}
-        </div>
-      ),
-    },
-
-    // {
-    //   name: "Action",
-    //   cell: (row) => (
-    //     <div className="relative">
-    //       <button onClick={() => handleActionClick(row.orgUserSpecificID)}>
-    //         <CiMenuKebab />
-    //       </button>
-    //       {showActionBox === row.orgUserSpecificID && (
-    //         <>
-    //           <div className="actionpopup z-10 ">
-    //             <button
-    //               onClick={() => setShowActionBox(false)}
-    //               className="bg-white absolute top-[-14px] left-[-8px] z-10  rounded-full drop-shadow-sm p-1"
-    //             >
-    //               <AiOutlineClose />
-    //             </button>
-
-    //             <div className=" my-1">
-    //               <button>Edit User</button>
-    //             </div>
-    //             <div className=" mb-1 text-[#D30000]">
-    //               <button onClick={() => setdeletePopup(true)}>Delete</button>
-    //             </div>
-    //           </div>
-    //           {deletePopup ? (
-    //             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-    //               <div className="relative w-full max-w-xl max-h-full">
-    //                 <div className="relative bg-white rounded-lg shadow">
-    //                   <div className="py-6 text-center">
-    //                     <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
-    //                     <h3 className="mb-5 text-xl text-primary">
-    //                       Are you sure you want to delete this User?
-    //                     </h3>
-    //                     <div className="flex justify-center items-center space-x-4">
-    //                       <button
-    //                         className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
-    //                         onClick={() => setdeletePopup(false)}
-    //                       >
-    //                         No, cancel
-    //                       </button>
-
-    //                       <button
-    //                         className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
-    //                         // onClick={() => {
-    //                         //   handleDelete(row.orgUserSpecificID);
-    //                         //   setdeletePopup(false);
-    //                         // }}
-    //                       >
-    //                         Yes, I'm sure
-    //                       </button>
-    //                     </div>
-    //                   </div>
-    //                 </div>
-    //               </div>
-    //             </div>
-    //           ) : null}
-    //         </>
-    //       )}
-    //     </div>
-    //   ),
-    // },
-  ];
-
   // Billing
   const BillingData = [
     {
@@ -614,7 +549,7 @@ const Userrole = ({ searchValue }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data.data);
+        // console.log(response.data.data);
         setUserData(response.data.data);
       })
       .catch((error) => {
@@ -642,6 +577,7 @@ const Userrole = ({ searchValue }) => {
       if (modalRef.current && !modalRef.current.contains(event?.target)) {
         // window.document.body.style.overflow = "unset";
         setshowuserroleModal(false);
+        setErrorsRoleName('')
         setRoleName("");
         setCheckboxValues({
           screenView: false,
@@ -670,6 +606,7 @@ const Userrole = ({ searchValue }) => {
 
   function handleClickOutside() {
     setshowuserroleModal(false);
+    setErrorsRoleName('')
     setRoleName("");
     setCheckboxValues({
       screenView: false,
@@ -701,7 +638,7 @@ const Userrole = ({ searchValue }) => {
         <div className="lg:col-span-10 md:col-span-9 sm:col-span-9 xs:col-span-6">
           <button
             className=" dashboard-btn  flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5  py-2 text-base sm:text-sm mb-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-            onClick={() => setshowuserroleModal(true)}
+            onClick={() => {setshowuserroleModal(true); setErrorsRoleName('')}}
           >
             Add New Role
           </button>
@@ -764,67 +701,157 @@ const Userrole = ({ searchValue }) => {
           ))}
       </div>
 
-      {/* <div className="md:px-5 sm:px-2 xs:px-2 mt-5">
-        <div className="my-2 flex sm:flex-row flex-col">
-          <div className="flex flex-row mb-1 sm:mb-0">
-            <div className="relative">
-              <select className="h-full rounded-l border block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
-                <option>5</option>
-                <option>10</option>
-                <option>20</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <svg
-                  className="fill-current h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                </svg>
-              </div>
-            </div>
-            <div className="relative">
-              <select className="h-full rounded-r border-t sm:rounded-r-none sm:border-r-0 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
-                <option>All</option>
-                <option>Active</option>
-                <option>Inactive</option>
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <svg
-                  className="fill-current h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                </svg>
-              </div>
-            </div>
+      <div className="mt-5">
+        <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
+          <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
+            <table className="min-w-full leading-normal" cellPadding={20}>
+              <thead>
+                <tr className="border-b border-b-[#E4E6FF] bg-[#EFF3FF]">
+                  <th className="text-[#5A5881] text-base font-semibold">
+                    <span className="flex items-center justify-left">
+                      Name
+                      <svg
+                        className="w-3 h-3 ms-1.5 cursor-pointer"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        onClick={() => handleSort("firstName")}
+                      >
+                        <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                      </svg>
+                    </span>
+                  </th>
+                  <th className="text-[#5A5881] text-base font-semibold">
+                    <span className="flex items-center justify-center">
+                      Roles
+                    </span>
+                  </th>
+                  <th className="text-[#5A5881] text-base font-semibold">
+                    <div className="flex items-center justify-center">
+                      Status
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {userData && sortedAndPaginatedData.length > 0 ? (
+                  sortedAndPaginatedData.map((item) => {
+                    return (
+                      <tr className="border-b border-b-[#E4E6FF]">
+                        <th className="text-[#5E5E5E] text-center flex">
+                          <div className="ps-3 flex text-left">
+                            <div className="font-normal text-gray-500 mt-2">
+                              {item.firstName + " " + item.lastName}
+                            </div>
+                          </div>
+                        </th>
+
+                        <td className="text-[#5E5E5E] text-center">
+                          {item?.userRoleName}
+                        </td>
+                        <td className="text-[#5E5E5E] text-center">
+                          {item.isActive == 1 ? (
+                            <span
+                              style={{ backgroundColor: "#cee9d6" }}
+                              className=" text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                            >
+                              Active
+                            </span>
+                          ) : (
+                            <span
+                              style={{ backgroundColor: "" }}
+                              className=" text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4  text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                            >
+                              Inactive
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <>
+                    <tr>
+                      <td colSpan={4}>
+                        <div className="flex text-center m-5 justify-center">
+                          <svg
+                            aria-hidden="true"
+                            role="status"
+                            className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                            viewBox="0 0 100 101"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                              fill="currentColor"
+                            />
+                            <path
+                              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                              fill="#1C64F2"
+                            />
+                          </svg>
+                          <span className="text-4xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                            Loading...
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </>
+                )}
+              </tbody>
+            </table>
           </div>
-          <div className="block relative">
-            <span className="h-full absolute inset-y-0 left-0 flex items-center pl-2">
+
+          <div className="flex justify-end mb-5 mt-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
               <svg
-                viewBox="0 0 24 24"
-                className="h-4 w-4 fill-current text-gray-500"
+                className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 10"
               >
-                <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"></path>
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 5H1m0 0 4 4M1 5l4-4"
+                />
               </svg>
-            </span>
-            <input
-              placeholder="Search"
-              className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"
-            />
+              Previous
+            </button>
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              Next
+              <svg
+                className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 10"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M1 5h12m0 0L9 1m4 4L9 9"
+                />
+              </svg>
+            </button>
           </div>
         </div>
-      </div> */}
-
-      <div className="p-5">
-        <DataTable
-          columns={columns}
-          data={userData}
-          fixedHeader
-          pagination
-          paginationPerPage={10}
-        ></DataTable>
       </div>
       {showuserroleModal && (
         <>
@@ -873,6 +900,9 @@ const Userrole = ({ searchValue }) => {
                           className="formInput w-full"
                           onChange={(e) => setRoleName(e.target.value)}
                         />
+                        {errorsRoleName && (
+                          <p className="error">{errorsRoleName}</p>
+                        )}
                       </div>
                     </div>
                     <div className="col-span-12">
@@ -1253,6 +1283,7 @@ const Userrole = ({ searchValue }) => {
                             appsApprovar: false,
                             appsReviewer: false,
                           });
+                          setErrorsRoleName('')
                           setshowuserroleModal(false);
                         }}
                       >
@@ -1280,7 +1311,7 @@ const Userrole = ({ searchValue }) => {
                               appsApprovar: false,
                               appsReviewer: false,
                             });
-                            setshowuserroleModal(false);
+                            // setshowuserroleModal(false);
                           }}
                           className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
                         >
@@ -1308,6 +1339,7 @@ const Userrole = ({ searchValue }) => {
                               appsApprovar: false,
                               appsReviewer: false,
                             });
+                            setErrorsRoleName('')
                             setshowuserroleModal(false);
                           }}
                           className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"

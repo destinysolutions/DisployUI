@@ -85,7 +85,7 @@ const SettingUserSlice = createSlice({
             }
         );
         builder.addCase(handleGetCountries.fulfilled,(state, { payload, meta }) => {
-                state.Countries = payload.data
+                state.Countries = payload?.data
                 state.error = null
             }
         );

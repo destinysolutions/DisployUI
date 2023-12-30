@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import React from "react";
-import { BiUserPlus } from "react-icons/bi";
+import { BiEdit, BiUserPlus } from "react-icons/bi";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import "../../Styles/Settings.css";
 import { useEffect } from "react";
@@ -8,18 +8,35 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { GET_ALL_COUNTRY, GET_SELECT_BY_STATE } from "../../Pages/Api";
 import { CiMenuKebab } from "react-icons/ci";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import {
+  RiDeleteBin6Line,
+  RiUser3Fill,
+  RiUser6Fill,
+  RiUserSearchFill,
+  RiUserSettingsLine,
+  RiUserStarLine,
+} from "react-icons/ri";
 import DataTable from "react-data-table-component";
 import { IoIosArrowRoundBack, IoMdNotificationsOutline } from "react-icons/io";
-import { MdLockOutline, MdOutlinePhotoCamera } from "react-icons/md";
+import {
+  MdDeleteForever,
+  MdDeleteSweep,
+  MdLockOutline,
+  MdOutlinePhotoCamera,
+} from "react-icons/md";
 import { IoIosLink } from "react-icons/io";
 import toast from "react-hot-toast";
-import { BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
+import {
+  BsEye,
+  BsEyeFill,
+  BsFillEyeFill,
+  BsFillEyeSlashFill,
+} from "react-icons/bs";
 import {
   handleGetCountries,
   handleUserDelete,
   resetStatus,
-  handleAddNewUser
+  handleAddNewUser,
 } from "../../Redux/SettingUserSlice";
 import user_pic from "../../images/Settings/3user-img.png";
 import link_icon from "../../images/Settings/link-icon.svg";
@@ -31,9 +48,8 @@ import twitter from "../../images/Settings/twitter-logo.svg";
 import dribble from "../../images/Settings/dribbble-logo.svg";
 import Swal from "sweetalert2";
 
-const Users = () => {
+const Users = ({ searchValue }) => {
   const [loadFist, setLoadFist] = useState(true);
-
 
   const [showuserModal, setshowuserModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -63,13 +79,12 @@ const Users = () => {
   const [selectedState, setSelectedState] = useState("");
   const [states, setStates] = useState([]);
 
-   // Error  
-   const [passowrdErrors, setErrorsPassword] = useState("");
-   const [emailErrors, setErrorsEmail] = useState("");
-   const [errorsFirstName, setErrorsFirstName] = useState('');
-   const [errorsLastName, setErrorsLastName] = useState('');
-   const [errorsRole, setErrorsRole] = useState('');
-
+  // Error
+  const [passowrdErrors, setErrorsPassword] = useState("");
+  const [emailErrors, setErrorsEmail] = useState("");
+  const [errorsFirstName, setErrorsFirstName] = useState("");
+  const [errorsLastName, setErrorsLastName] = useState("");
+  const [errorsRole, setErrorsRole] = useState("");
 
   const { token } = useSelector((state) => state.root.auth);
   const { Countries } = useSelector((s) => s.root.settingUser);
@@ -81,6 +96,53 @@ const Users = () => {
   const actionPopupRef = useRef(null);
 
   const dispatch = useDispatch();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(6); // Adjust items per page as needed
+  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const [sortedField, setSortedField] = useState(null);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = userData.slice(indexOfFirstItem, indexOfLastItem);
+  
+  // Filter data based on search term
+  const filteredData = userData.filter((item) =>
+  Object.values(item).some((value) => value && value.toString().toLowerCase().includes(searchValue.toLowerCase())));
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  // Function to sort the data based on a field and order
+  const sortData = (data, field, order) => {
+    const sortedData = [...data];
+    sortedData.sort((a, b) => {
+      if (order === "asc") {
+        return a[field] > b[field] ? 1 : -1;
+      } else {
+        return a[field] < b[field] ? 1 : -1;
+      }
+    });
+    return sortedData;
+  };
+
+  const sortedAndPaginatedData = sortData(
+    filteredData,
+    sortedField,
+    sortOrder
+    ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  
+  // Handle sorting when a table header is clicked
+  const handleSort = (field) => {
+    if (sortedField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortOrder("asc");
+      setSortedField(field);
+    }
+  };
 
   const handleActionClick = (rowId) => {
     if (!showActionBox) {
@@ -169,7 +231,7 @@ const Users = () => {
 
     // Check validation for email format
     if (!emailRegex.test(email)) {
-      setErrorsEmail('Not a valid email');
+      setErrorsEmail("Not a valid email");
       return;
     }
 
@@ -211,7 +273,7 @@ const Users = () => {
     try {
       dispatch(handleAddNewUser({ config }));
       setshowuserModal(false);
-      handleCancelPopup()
+      handleCancelPopup();
     } catch (error) {
       console.log("error", error);
     }
@@ -221,7 +283,7 @@ const Users = () => {
     // Clear previous validation errors
     setErrorsFirstName("");
     setErrorsLastName("");
-
+    setErrorsRole("")
 
     // Check validation for firstName
     if (!firstName) {
@@ -277,6 +339,7 @@ const Users = () => {
       .request(config)
       .then((response) => {
         setshowuserModal(false);
+        selectUserById(userID)
         handleGetOrgUsers();
       })
       .catch((error) => {
@@ -311,8 +374,8 @@ const Users = () => {
     }
 
     if (store && store.status) {
-      setLoadFist(true)
-      dispatch(resetStatus())
+      setLoadFist(true);
+      dispatch(resetStatus());
     }
 
     if (store && store.status === "succeeded") {
@@ -322,9 +385,7 @@ const Users = () => {
     if (store && store.status === "failed") {
       toast.error(store.message);
     }
-
-  }, [loadFist, store,dispatch]);
-
+  }, [loadFist, store, dispatch]);
 
   const handleDeleteUser = (orgUserSpecificID) => {
     let config = {
@@ -352,7 +413,7 @@ const Users = () => {
       confirmButtonColor: "#ff0000",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await  dispatch(handleUserDelete({config}));
+        await dispatch(handleUserDelete({ config }));
       } else {
         // User clicked "No, cancel" button
         setLoadFist(true); // Trigger your action on cancel
@@ -411,141 +472,15 @@ const Users = () => {
     setPhone("");
     setEmail("");
     setCompany("");
-    setZipCode("")
+    setZipCode("");
     setCountryID("");
     setSelectedState("");
     setSelectRoleID("");
     setIsActive(0);
+    setLabelTitle("Add New User")
+    setLoadFist(true)
   };
 
-  const columns = [
-    {
-      name: "Profile Image",
-      sortable: true,
-      cell: (row) => (
-        <div>
-          {row?.profilePhoto ? (
-            <img
-              src={row?.profilePhoto}
-              alt="Profile Image"
-              className="w-16 h-16 object-fill rounded-lg py-1"
-              />
-            ) : (
-              <MdOutlinePhotoCamera className="w-16 h-16 object-fill text-gray" />
-          )}
-        </div>
-      ),
-    },
-    {
-      name: "Name",
-      selector: (row) => row.firstName,
-      sortable: true,
-    },
-
-    {
-      name: "Roles",
-      selector: (row) => row.userRoleName,
-      sortable: true,
-    },
-    // {
-    //   name: "Notification",
-    //   //selector: (row) => row.googleLocation,
-    //   sortable: true,
-    // },
-    // {
-    //   name: "Screen Access",
-    //   //selector: (row) => row.phone,
-    //   sortable: true,
-    // },
-    {
-      name: "Status",
-      selector: (row) => row.isActive,
-      sortable: true,
-      cell: (row) => (
-        <div>
-          {row.isActive == 1 ? (
-            <span style={{ color: "green" }}>Active</span>
-          ) : (
-            <span style={{ color: "red" }}>Inactive</span>
-          )}
-        </div>
-      ),
-    },
-
-    {
-      name: "Actions",
-      cell: (row) => (
-        <div className="relative">
-          <button
-            onClick={() => {handleActionClick(row.orgUserSpecificID);}}
-          >
-            <CiMenuKebab />
-          </button>
-          {showActionBox && userID === row.orgUserSpecificID && (
-            <>
-              <div ref={actionPopupRef} className="actionpopup z-10 ">
-                <div className=" my-1">
-                  <button
-                    onClick={() => {
-                      selectUserById(row.orgUserSpecificID);
-                      setShowUserProfile(true);
-                    }}
-                  >
-                    View User
-                  </button>
-                </div>
-                <div className=" my-1">
-                  <button
-                    onClick={() => {
-                      selectUserById(row.orgUserSpecificID);
-                      setshowuserModal(true);
-                    }}
-                  >
-                    Edit User
-                  </button>
-                </div>
-                <div className=" mb-1 text-[#D30000]">
-                  <button onClick={() => handleDeleteUser(row.orgUserSpecificID) }>Delete</button>
-                </div>
-              </div>
-              {/* {deletePopup ? (
-                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                  <div className="relative w-full max-w-xl max-h-full">
-                    <div className="relative bg-white rounded-lg shadow">
-                      <div className="py-6 text-center">
-                        <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
-                        <h3 className="mb-5 text-xl text-primary">
-                          Are you sure you want to delete this User?
-                        </h3>
-                        <div className="flex justify-center items-center space-x-4">
-                          <button
-                            className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
-                            onClick={() => setdeletePopup(false)}
-                          >
-                            No, cancel
-                          </button>
-
-                          <button
-                            className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
-                            onClick={() => {
-                              handleDeleteUser(row.orgUserSpecificID);
-                              setdeletePopup(false);
-                            }}
-                          >
-                            Yes, I'm sure
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : null} */}
-            </>
-          )}
-        </div>
-      ),
-    },
-  ];
 
   const handleFileChange = (e) => {
     setFileEdit();
@@ -624,12 +559,14 @@ const Users = () => {
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                       />
-                       {errorsFirstName && <p className="error">{errorsFirstName}</p>}
+                      {errorsFirstName && (
+                        <p className="error">{errorsFirstName}</p>
+                      )}
                     </div>
                   </div>
                   <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                     <div className="relative">
-                      <label className="formLabel">Last Name</label>
+                      <label className="formLabel">Last Name </label>
                       <input
                         type="text"
                         placeholder="Enter User Name"
@@ -638,52 +575,60 @@ const Users = () => {
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                       />
-                      {errorsLastName && <p className="error">{errorsLastName}</p>}
+                      {errorsLastName && (
+                        <p className="error">{errorsLastName}</p>
+                      )}
                     </div>
                   </div>
 
-                  {!userID && <>
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                    <div className="relative">
-                      <label className="formLabel">Email</label>
-                      <input
-                        type="email"
-                        placeholder="Enter Email Address"
-                        name="email"
-                        className="formInput"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
-                      {emailErrors ? (<p className="error">{emailErrors}</p>) : null}
-                    </div>
-                  </div>
-
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                    <div className="relative">
-                      <label className="formLabel">Password</label>
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter User Password"
-                        name="fname"
-                        className="formInput"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                      />
-                      {passowrdErrors ? (<p className="error">{passowrdErrors}</p>) : null}
-                      <div className="icon">
-                        {showPassword ? (
-                          <BsFillEyeFill
-                            onClick={() => setShowPassword(!showPassword)}
+                  {labelTitle !== "Update User" && (
+                    <>
+                      <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                        <div className="relative">
+                          <label className="formLabel">Email</label>
+                          <input
+                            type="email"
+                            placeholder="Enter Email Address"
+                            name="email"
+                            className="formInput"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                           />
-                        ) : (
-                          <BsFillEyeSlashFill
-                            onClick={() => setShowPassword(!showPassword)}
-                          />
-                        )}
+                          {emailErrors ? (
+                            <p className="error">{emailErrors}</p>
+                          ) : null}
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                 </> } 
+
+                      <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                        <div className="relative">
+                          <label className="formLabel">Password</label>
+                          <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Enter User Password"
+                            name="fname"
+                            className="formInput"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                          />
+                          {passowrdErrors ? (
+                            <p className="error">{passowrdErrors}</p>
+                          ) : null}
+                          <div className="icon">
+                            {showPassword ? (
+                              <BsFillEyeFill
+                                onClick={() => setShowPassword(!showPassword)}
+                              />
+                            ) : (
+                              <BsFillEyeSlashFill
+                                onClick={() => setShowPassword(!showPassword)}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
 
                   <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                     <div className="relative">
@@ -768,18 +713,6 @@ const Users = () => {
                       </select>
                     </div>
                   </div>
-
-                  {/* <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                      <div className="relative">
-                        <label className="formLabel">Screen Access</label>
-                        <input
-                          type="text"
-                          placeholder="Enter Screen Access"
-                          name="screenaccess"
-                          className="formInput"
-                        />
-                      </div>
-                    </div> */}
                   <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
                     <div className="relative">
                       <label className="formLabel">Roles</label>
@@ -867,7 +800,7 @@ const Users = () => {
                     >
                       Cancel
                     </button>
-                    {!userID ? (
+                    {labelTitle !== "Update User" ? (
                       <button
                         onClick={() => {
                           handleAddUser();
@@ -897,7 +830,10 @@ const Users = () => {
         <>
           <div className="lg:p-4 md:p-4 sm:p-2 xs:p-2 ">
             <h1
-              onClick={() => setShowUserProfile(false)}
+              onClick={() => {
+                setShowUserProfile(false);
+                setLoadFist(true);
+              }}
               className="font-medium flex cursor-pointer w-fit items-center lg:text-2xl md:text-2xl sm:text-xl mb-5"
             >
               <IoIosArrowRoundBack size={30} />
@@ -914,7 +850,7 @@ const Users = () => {
                           className="h-50"
                         />
                       ) : (
-                        <img src={user_pic} />
+                        <img src={user_pic} className="h-50" />
                       )}
                     </span>
                     <span className="user-name">
@@ -1810,15 +1746,211 @@ const Users = () => {
                 Add New Users
               </button>
             </div>
-            <div className="clear-both overflow-x-auto" >
-              <DataTable
-                columns={columns}
-                data={userData}
-                fixedHeader
-                pagination
-                paginationPerPage={10}
-                style={{ minHeight: '200px' }}
-              ></DataTable>
+            <div className="clear-both overflow-x-auto">
+              <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
+                {/* <div>
+                  <input
+                    type="text"
+                    id="small-input"
+                    placeholder="Search User Name..."
+                    class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div> */}
+
+                <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
+                  <table className="min-w-full leading-normal" cellPadding={20}>
+                    <thead>
+                      <tr className="border-b border-b-[#E4E6FF] bg-[#EFF3FF]">
+                        <th className="text-[#5A5881] text-base font-semibold">
+                          <span className="flex items-center justify-left">
+                            UserName
+                            <svg
+                              className="w-3 h-3 ms-1.5 cursor-pointer"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                              onClick={() => handleSort("firstName")}
+                            >
+                              <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                            </svg>
+                          </span>
+                        </th>
+                        <th className="text-[#5A5881] text-base font-semibold">
+                          <span className="flex items-center justify-center">
+                            Roles
+                          </span>
+                        </th>
+                        <th className="text-[#5A5881] text-base font-semibold">
+                          <div className="flex items-center justify-center">
+                            Status
+                          </div>
+                        </th>
+                        <th className="text-[#5A5881] text-base font-semibold">
+                          <div className="flex items-center justify-center">
+                            Action
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {userData && sortedAndPaginatedData.length > 0 ? (
+                        sortedAndPaginatedData.map((item) => {
+                          return (
+                            <tr className="border-b border-b-[#E4E6FF] p-4 mb-4 rounded-lg bg-white shadow-md">
+                              <th className="text-[#5E5E5E] text-center flex">
+                                {item?.profilePhoto ? (
+                                  <img
+                                    class="w-10 h-10 rounded-full"
+                                    src={item?.profilePhoto}
+                                    alt="Jese image"
+                                  />
+                                ) : (
+                                  <RiUser3Fill className="w-10 h-10" />
+                                )}
+                                <div className="ps-3 flex text-center">
+                                  <div className="font-normal text-gray-500 mt-2">
+                                    {item.firstName + " " + item.lastName}
+                                  </div>
+                                </div>
+                              </th>
+
+                              <td className="text-[#5E5E5E] text-center">
+                                {item?.userRoleName}
+                              </td>
+                              <td className="text-[#5E5E5E] text-center">
+                                {item.isActive == 1 ? (
+                                  <span
+                                    style={{ backgroundColor: "#cee9d6" }}
+                                    className=" text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                  >
+                                    Active
+                                  </span>
+                                ) : (
+                                  <span
+                                    style={{ backgroundColor: "" }}
+                                    className=" text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4  text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                  >
+                                    Inactive
+                                  </span>
+                                )}
+                              </td>
+                              <td className="text-center">
+                                <div className="flex justify-center gap-4">
+                                  <div className="cursor-pointer text-[#0000FF] text-xl">
+                                    <BsEyeFill
+                                      onClick={() => {
+                                        setUserID(item.orgUserSpecificID);
+                                        selectUserById(item.orgUserSpecificID);
+                                        setShowUserProfile(true);
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="cursor-pointer text-xl text-[#0000FF]">
+                                    <BiEdit
+                                      onClick={() => {
+                                        setUserID(item.orgUserSpecificID);
+                                        selectUserById(item.orgUserSpecificID);
+                                        setshowuserModal(true);
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="cursor-pointer text-xl text-[#EE4B2B]">
+                                    <MdDeleteForever
+                                      onClick={() =>
+                                        handleDeleteUser(item.orgUserSpecificID)
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <>
+                          <tr>
+                            <td colSpan={4}>
+                              <div className="flex text-center m-5 justify-center">
+                                <svg
+                                  aria-hidden="true"
+                                  role="status"
+                                  className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                                  viewBox="0 0 100 101"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                    fill="currentColor"
+                                  />
+                                  <path
+                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                    fill="#1C64F2"
+                                  />
+                                </svg>
+                                <span className="text-4xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                                  Loading...
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                        </>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="flex justify-end mt-2">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  >
+                    <svg
+                      className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13 5H1m0 0 4 4M1 5l4-4"
+                      />
+                    </svg>
+                    Previous
+                  </button>
+
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  >
+                    Next
+                    <svg
+                      className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M1 5h12m0 0L9 1m4 4L9 9"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </>
