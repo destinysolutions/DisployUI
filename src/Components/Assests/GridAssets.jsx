@@ -635,21 +635,25 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   </button>
                 </li>
               </ul>
-              <button
-                className="p-3 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                onClick={handleDeleteAll}
-                style={{ display: selectAll ? "block" : "none" }}
-              >
-                <RiDeleteBin5Line className="text-lg" />
-              </button>
-              <button className="flex align-middle text-white items-center  rounded-full p-2 text-base">
-                <input
-                  type="checkbox"
-                  className="w-7 h-6"
-                  checked={selectAll}
-                  onChange={() => handleSelectAll()}
-                />
-              </button>
+              {store.data?.length !== 0 && (
+                <>
+                  <button
+                    className="p-3 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                    onClick={handleDeleteAll}
+                    style={{ display: selectAll ? "block" : "none" }}
+                  >
+                    <RiDeleteBin5Line className="text-lg" />
+                  </button>
+                  <button className="flex align-middle   text-white items-center  rounded-full p-2 text-base">
+                    <input
+                      type="checkbox"
+                      className="w-7 h-6"
+                      checked={selectAll}
+                      onChange={handleSelectAll}
+                    />
+                  </button>
+                </>
+              )}
             </div>
           </div>
 
