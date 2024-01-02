@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { auth } from "../FireBase/firebase";
 import screenIcon from "../images/MenuIcons/screens_icon.svg";
 import settingIcon from "../images/MenuIcons/setting_icon.svg";
+import trashIcon from "../images/MenuIcons/Trash_icon.svg";
 import logoutIcon from "../images/MenuIcons/logout_icon.svg";
 import assetsIcon from "../images/MenuIcons/assets_icon.svg";
 import appsIcon from "../images/MenuIcons/apps_icon.svg";
@@ -175,12 +176,12 @@ const Sidebar = ({ sidebarOpen }) => {
     //     />
     //   ),
     // },
-    // {
-    //   title: "Trash",
-    //   cName: "nav-text link-items",
-    //   path: "/trash",
-    //   icon: <img src="/MenuIcons/Trash_icon.svg" alt="Trash" className="w-6" />,
-    // },
+    {
+      title: "Trash",
+      cName: "nav-text link-items",
+      path: "/trash",
+      icon: <img src={trashIcon} alt="Trash" className="w-6" />,
+    },
     {
       title: "Log Out",
       cName: "nav-text link-items",
