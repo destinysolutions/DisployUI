@@ -672,12 +672,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           if (typeof val === "string") {
             const keyWords = searchQuery.split(" ");
             for (let i = 0; i < keyWords.length; i++) {
-              return (
-                val.toLocaleLowerCase().startsWith(keyWords[i]) ||
-                val.toLocaleLowerCase().endsWith(keyWords[i]) ||
-                val.toLocaleLowerCase().includes(keyWords[i]) ||
-                val.toLocaleLowerCase().includes(searchQuery)
-              );
+              return val.toLocaleLowerCase().includes(searchQuery);
             }
           }
         })
@@ -859,13 +854,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 1, y: 10 },
-                }}
-              >
+                }}>
                 <button
                   type="button"
                   className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                  onClick={() => setShowOTPModal(true)}
-                >
+                  onClick={() => setShowOTPModal(true)}>
                   <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
               </Tooltip>
@@ -901,8 +894,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                         <button
                           className="p-1 text-xl"
-                          onClick={() => setShowNewScreenGroupPopup(false)}
-                        >
+                          onClick={() => setShowNewScreenGroupPopup(false)}>
                           <AiOutlineCloseCircle className="text-2xl" />
                         </button>
                       </div>
@@ -919,8 +911,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       <div className="flex justify-center">
                         <button
                           className="mb-4 border border-primary py-2 px-3"
-                          onClick={handleScreenGroup}
-                        >
+                          onClick={handleScreenGroup}>
                           create
                         </button>
                       </div>
@@ -951,14 +942,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 1, y: 10 },
-                }}
-              >
+                }}>
                 <button
                   type="button"
                   className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                   onClick={handleDeleteAllscreen}
-                  style={{ display: selectAllChecked ? "block" : "none" }}
-                >
+                  style={{ display: selectAllChecked ? "block" : "none" }}>
                   <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
               </Tooltip>
@@ -970,13 +959,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   animate={{
                     mount: { scale: 1, y: 0 },
                     unmount: { scale: 1, y: 10 },
-                  }}
-                >
+                  }}>
                   <button
                     type="button"
                     className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                    onClick={() => setMoreModal(!moreModal)}
-                  >
+                    onClick={() => setMoreModal(!moreModal)}>
                     <RiArrowDownSLine className="p-1 px-2 text-4xl text-white hover:text-white" />
                   </button>
                 </Tooltip>
@@ -1065,8 +1052,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       <li className="flex text-sm justify-end mt-2 ">
                         <button
                           className="bg-lightgray text-primary px-4 py-2 rounded-full"
-                          onClick={() => setMoreModal(false)}
-                        >
+                          onClick={() => setMoreModal(false)}>
                           Update
                         </button>
                       </li>
@@ -1082,12 +1068,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 1, y: 10 },
-                }}
-              >
+                }}>
                 <button
                   type="button"
-                  className="flex align-middle text-white items-center rounded-full p-2 text-base  "
-                >
+                  className="flex align-middle text-white items-center rounded-full p-2 text-base  ">
                   <input
                     type="checkbox"
                     className="w-7 h-6"
@@ -1102,15 +1086,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           <div className=" bg-white rounded-xl mt-8 shadow screen-section">
             <table
               className="w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
-              cellPadding={20}
-            >
+              cellPadding={20}>
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
                   {screenContentVisible && (
                     <th
                       className="text-[#5A5881] text-base font-semibold w-fit text-center"
-                      onClick={() => handleSort("screenName")}
-                    >
+                      onClick={() => handleSort("screenName")}>
                       Screen
                       {sortColumn === "screenName" && (
                         <span>{sortOrder === "asc" ? " ▲" : " ▼"}</span>
@@ -1163,8 +1145,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   <tr>
                     <td
                       colSpan="6"
-                      className="font-semibold text-center text-2xl"
-                    >
+                      className="font-semibold text-center text-2xl">
                       No Screens
                     </td>
                   </tr>
@@ -1172,8 +1153,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   <tr>
                     <td
                       colSpan="6"
-                      className="font-semibold text-center text-2xl"
-                    >
+                      className="font-semibold text-center text-2xl">
                       screen not found
                     </td>
                   </tr>
@@ -1181,8 +1161,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   screens?.map((screen) => (
                     <tr
                       className="border-b border-b-[#E4E6FF]"
-                      key={screen.screenID}
-                    >
+                      key={screen.screenID}>
                       {screenContentVisible && (
                         <td className="flex items-center ">
                           <input
@@ -1211,8 +1190,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               <button
                                 onClick={() => {
                                   handleScreenNameUpdate(screen.screenID);
-                                }}
-                              >
+                                }}>
                                 <AiOutlineSave className="text-2xl ml-1 hover:text-primary" />
                               </button>
                               {/* {screenNameError && (
@@ -1224,8 +1202,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           ) : (
                             <div className="flex items-center  gap-2">
                               <Link
-                                to={`/screensplayer?screenID=${screen.screenID}`}
-                              >
+                                to={`/screensplayer?screenID=${screen.screenID}`}>
                                 {screen?.screenName?.length > 10
                                   ? screen?.screenName.slice(0, 10) + "..."
                                   : screen.screenName}
@@ -1235,8 +1212,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                   setIsEditingScreen(true);
                                   setEditingScreenID(screen.screenID);
                                   setEditedScreenName(screen?.screenName);
-                                }}
-                              >
+                                }}>
                                 <MdOutlineModeEdit className="w-6 h-6 hover:text-primary" />
                               </button>
                             </div>
@@ -1257,8 +1233,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               screen.screenStatus == 1
                                 ? "bg-[#3AB700]"
                                 : "bg-[#FF0000]"
-                            }`}
-                          >
+                            }`}>
                             {screen.screenStatus == 1 ? "Live" : "offline"}
                           </span>
                         </td>
@@ -1271,8 +1246,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       {nowPlayingContentVisible && (
                         <td
                           className="text-center "
-                          style={{ wordBreak: "break-all" }}
-                        >
+                          style={{ wordBreak: "break-all" }}>
                           <div
                             onClick={(e) => {
                               setAssetScreenID(screen.screenID);
@@ -1286,8 +1260,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               // setSelectedAsset(screen?.assetName);
                             }}
                             title={screen?.assetName}
-                            className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          >
+                            className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                             <p className="line-clamp-3">{screen.assetName}</p>
                             <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
                           </div>
@@ -1300,8 +1273,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               onClick={() => {
                                 setShowScheduleModal(true);
                                 setScheduleScreenID(screen.screenID);
-                              }}
-                            >
+                              }}>
                               Set a schedule
                             </button>
                           ) : (
@@ -1325,16 +1297,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                       className="p-1"
                                       onClick={() =>
                                         setShowScheduleModal(false)
-                                      }
-                                    >
+                                      }>
                                       <AiOutlineCloseCircle className="text-3xl" />
                                     </button>
                                   </div>
                                   <div className="overflow-x-auto mt-8 px-5 min-h-[400px] max-h-[400px] ">
                                     <table
                                       className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white shadow-2xl p-2"
-                                      cellPadding={20}
-                                    >
+                                      cellPadding={20}>
                                       <thead>
                                         <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
                                           <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
@@ -1366,8 +1336,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                           <tr>
                                             <td
                                               colSpan={8}
-                                              className="text-center font-semibold text-xl"
-                                            >
+                                              className="text-center font-semibold text-xl">
                                               Loading...
                                             </td>
                                           </tr>
@@ -1375,8 +1344,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                           schedules.map((schedule) => (
                                             <tr
                                               className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                                              key={schedule.scheduleId}
-                                            >
+                                              key={schedule.scheduleId}>
                                               <td className="flex items-center">
                                                 <input
                                                   type="checkbox"
@@ -1419,16 +1387,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                               <td className="text-center">
                                                 <Link
                                                   to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
-                                                  target="_blank"
-                                                >
+                                                  target="_blank">
                                                   <button
                                                     className="ml-3 relative"
                                                     onClick={() =>
                                                       setShowScheduleModal(
                                                         false
                                                       )
-                                                    }
-                                                  >
+                                                    }>
                                                     <HiDotsVertical />
                                                   </button>
                                                 </Link>
@@ -1445,8 +1411,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                       onClick={() => {
                                         handleScheduleUpdate(screen.screenID);
                                       }}
-                                      className="border-2 border-primary px-5 py-2 rounded-full ml-3"
-                                    >
+                                      className="border-2 border-primary px-5 py-2 rounded-full ml-3">
                                       Save
                                     </button>
                                   </div>
@@ -1460,8 +1425,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       {tagsContentVisible && (
                         <td
                           title={screen?.tags && screen?.tags}
-                          className="p-2 text-center flex flex-wrap items-center justify-center gap-2 mt-6 break-all"
-                        >
+                          className="p-2 text-center flex flex-wrap items-center justify-center gap-2 mt-6 break-all">
                           {(screen?.tags === "" || screen?.tags === null) && (
                             <span>
                               <AiOutlinePlusCircle
@@ -1530,20 +1494,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className="relative">
                           <button
                             className="ml-3 relative"
-                            onClick={() => handleScreenClick(screen.screenID)}
-                          >
+                            onClick={() => handleScreenClick(screen.screenID)}>
                             <HiDotsVertical />
                           </button>
                           {/* action popup start */}
                           {showActionBox[screen.screenID] && (
                             <div
                               ref={showActionModalRef}
-                              className="scheduleAction"
-                            >
+                              className="scheduleAction">
                               <div className="my-1">
                                 <Link
-                                  to={`/screensplayer?screenID=${screen.screenID}`}
-                                >
+                                  to={`/screensplayer?screenID=${screen.screenID}`}>
                                   <button className="text-sm">
                                     Edit Screen
                                   </button>
@@ -1559,8 +1520,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                       screen?.macid
                                     )
                                   }
-                                  className="text-sm text-left"
-                                >
+                                  className="text-sm text-left">
                                   Delete
                                 </button>
                               </div>
@@ -1575,8 +1535,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     // <tbody key={screen.screenID}>
                     <tr
                       key={screen.screenID}
-                      className="border-b border-b-[#E4E6FF]"
-                    >
+                      className="border-b border-b-[#E4E6FF]">
                       {screenContentVisible && (
                         <td className="flex items-center ">
                           <input
@@ -1605,8 +1564,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               <button
                                 onClick={() => {
                                   handleScreenNameUpdate(screen.screenID);
-                                }}
-                              >
+                                }}>
                                 <AiOutlineSave className="text-2xl ml-1 hover:text-primary" />
                               </button>
                               {/* {screenNameError && (
@@ -1618,8 +1576,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                           ) : (
                             <div className="flex items-center  gap-2">
                               <Link
-                                to={`/screensplayer?screenID=${screen.screenID}`}
-                              >
+                                to={`/screensplayer?screenID=${screen.screenID}`}>
                                 {screen?.screenName?.length > 10
                                   ? screen?.screenName.slice(0, 10) + "..."
                                   : screen.screenName}
@@ -1629,8 +1586,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                   setIsEditingScreen(true);
                                   setEditingScreenID(screen.screenID);
                                   setEditedScreenName(screen?.screenName);
-                                }}
-                              >
+                                }}>
                                 <MdOutlineModeEdit className="w-6 h-6 hover:text-primary" />
                               </button>
                             </div>
@@ -1651,8 +1607,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               screen.screenStatus == 1
                                 ? "bg-[#3AB700]"
                                 : "bg-[#FF0000]"
-                            }`}
-                          >
+                            }`}>
                             {screen.screenStatus == 1 ? "Live" : "offline"}
                           </button>
                         </td>
@@ -1665,8 +1620,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       {nowPlayingContentVisible && (
                         <td
                           className="p-2 text-center "
-                          style={{ wordBreak: "break-all" }}
-                        >
+                          style={{ wordBreak: "break-all" }}>
                           <div
                             onClick={(e) => {
                               setAssetScreenID(screen.screenID);
@@ -1679,8 +1633,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               // setSelectedAsset(screen?.assetName);
                             }}
                             title={screen?.assetName}
-                            className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                          >
+                            className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                             <p className="line-clamp-3">{screen.assetName}</p>
                             <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
                           </div>
@@ -1693,8 +1646,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               onClick={() => {
                                 setShowScheduleModal(true);
                                 setScheduleScreenID(screen.screenID);
-                              }}
-                            >
+                              }}>
                               Set a schedule
                             </button>
                           ) : (
@@ -1716,16 +1668,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                       className="p-1 text-xl"
                                       onClick={() =>
                                         setShowScheduleModal(false)
-                                      }
-                                    >
+                                      }>
                                       <AiOutlineCloseCircle className="text-2xl" />
                                     </button>
                                   </div>
                                   <div className="overflow-x-auto mt-8 px-5">
                                     <table
                                       className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
-                                      cellPadding={20}
-                                    >
+                                      cellPadding={20}>
                                       <thead>
                                         <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
                                           <th className="font-medium text-[14px]">
@@ -1777,8 +1727,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         {schedules.map((schedule) => (
                                           <tr
                                             className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                                            key={schedule.scheduleId}
-                                          >
+                                            key={schedule.scheduleId}>
                                             <td className="flex items-center ">
                                               <input
                                                 type="checkbox"
@@ -1821,14 +1770,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                             <td className="text-center">
                                               <Link
                                                 to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
-                                                target="_blank"
-                                              >
+                                                target="_blank">
                                                 <button
                                                   className="ml-3 relative"
                                                   onClick={() =>
                                                     setShowScheduleModal(false)
-                                                  }
-                                                >
+                                                  }>
                                                   <HiDotsVertical />
                                                 </button>
                                               </Link>
@@ -1845,8 +1792,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         setShowScheduleModal(false);
                                         handleScheduleUpdate(screen.screenID);
                                       }}
-                                      className="bg-SlateBlue border-primary px-5 py-2 rounded-full ml-3"
-                                    >
+                                      className="bg-SlateBlue border-primary px-5 py-2 rounded-full ml-3">
                                       Save
                                     </button>
                                   </div>
@@ -1860,8 +1806,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       {tagsContentVisible && (
                         <td
                           title={screen?.tags && screen?.tags}
-                          className="p-2 text-center flex flex-wrap items-center justify-center gap-2 mt-6 break-all"
-                        >
+                          className="p-2 text-center flex flex-wrap items-center justify-center gap-2 mt-6 break-all">
                           {(screen?.tags === "" || screen?.tags === null) && (
                             <span>
                               <AiOutlinePlusCircle
@@ -1930,20 +1875,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className="relative">
                           <button
                             className="ml-3 relative"
-                            onClick={() => handleScreenClick(screen.screenID)}
-                          >
+                            onClick={() => handleScreenClick(screen.screenID)}>
                             <HiDotsVertical />
                           </button>
                           {/* action popup start */}
                           {showActionBox[screen.screenID] && (
                             <div
                               ref={showActionModalRef}
-                              className="scheduleAction"
-                            >
+                              className="scheduleAction">
                               <div className="my-1">
                                 <Link
-                                  to={`/screensplayer?screenID=${screen.screenID}`}
-                                >
+                                  to={`/screensplayer?screenID=${screen.screenID}`}>
                                   <button className="text-sm">
                                     Edit Screen
                                   </button>
@@ -1959,8 +1901,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                       screen?.macid
                                     )
                                   }
-                                  className="text-sm text-left"
-                                >
+                                  className="text-sm text-left">
                                   Delete
                                 </button>
                               </div>
