@@ -736,9 +736,9 @@ const Userrole = ({ searchValue }) => {
               </thead>
               <tbody>
                 {userData && sortedAndPaginatedData.length > 0 ? (
-                  sortedAndPaginatedData.map((item) => {
+                  sortedAndPaginatedData.map((item,index) => {
                     return (
-                      <tr className="border-b border-b-[#E4E6FF]">
+                      <tr className="border-b border-b-[#E4E6FF]" key={index}>
                         <th className="text-[#5E5E5E] text-center flex">
                           <div className="ps-3 flex text-left">
                             <div className="font-normal text-gray-500 mt-2">

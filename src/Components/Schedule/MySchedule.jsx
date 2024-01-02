@@ -267,9 +267,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             const keyWords = searchQuery.split(" ");
             for (let i = 0; i < keyWords.length; i++) {
               return (
-                val.toLocaleLowerCase().startsWith(keyWords[i]) ||
-                val.toLocaleLowerCase().endsWith(keyWords[i]) ||
-                val.toLocaleLowerCase().includes(keyWords[i]) ||
                 val.toLocaleLowerCase().includes(searchQuery)
               );
             }

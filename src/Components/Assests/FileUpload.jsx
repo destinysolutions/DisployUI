@@ -45,6 +45,7 @@ import { useDispatch } from "react-redux";
 import moment from "moment";
 import { jwtDecode } from "jwt-decode";
 import { handelPostImageFromDrive } from "../../Redux/Assetslice";
+import { handleGetStorageDetails } from "../../Redux/SettingSlice";
 {
   /* end of video*/
 }
@@ -177,56 +178,67 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         formData.append("IsDelete", "false");
         formData.append("FolderID", "0");
 
-        try {
-          const response = await axios.post(ALL_FILES_UPLOAD, formData, {
-            headers: {
-              Authorization: authToken,
-              "Content-Type": "multipart/form-data",
-            },
-            onUploadProgress: (progressEvent) => {
-              const progress = Math.round(
-                (progressEvent.loaded / progressEvent.total) * 100
-              );
+        const response = dispatch(handleGetStorageDetails({ token }));
+        response.then(async (res) => {
+          if (res?.payload?.data?.usedInPercentage == 100) {
+            // setUploadInProgress(false);
+            return;
+          } else {
+            try {
+              const response = await axios.post(ALL_FILES_UPLOAD, formData, {
+                headers: {
+                  Authorization: authToken,
+                  "Content-Type": "multipart/form-data",
+                },
+                onUploadProgress: (progressEvent) => {
+                  const progress = Math.round(
+                    (progressEvent.loaded / progressEvent.total) * 100
+                  );
 
-              // Update the progress of the corresponding image
-              selectedImages[index].progress = progress;
+                  // Update the progress of the corresponding image
+                  selectedImages[index].progress = progress;
 
-              // Calculate overall progress
-              overallProgress =
-                ((index + 1) / selectedImages.length) * 100 +
-                progress / selectedImages.length;
+                  // Calculate overall progress
+                  overallProgress =
+                    ((index + 1) / selectedImages.length) * 100 +
+                    progress / selectedImages.length;
 
-              // Update the overall progress state
-              setOverallUploadProgress(overallProgress);
+                  // Update the overall progress state
+                  setOverallUploadProgress(overallProgress);
 
-              // Update the progress state for this image
-              const updatedProgress = [...uploadProgress];
-              updatedProgress[index] = progress;
-              setUploadProgress(updatedProgress);
-            },
-          });
+                  // Update the progress state for this image
+                  const updatedProgress = [...uploadProgress];
+                  updatedProgress[index] = progress;
+                  setUploadProgress(updatedProgress);
+                },
+              });
 
-          // if (response.status === 200) {
-          //   toast.success(`File ${image.name} uploaded successfully.`);
-          // } else {
-          //   toast.error(`Upload failed for file ${image.name}`);
-          // }
+              // if (response.status === 200) {
+              //   toast.success(`File ${image.name} uploaded successfully.`);
+              // } else {
+              //   toast.error(`Upload failed for file ${image.name}`);
+              // }
 
-          if (selectedImages?.length - 1 === index && response.status === 200) {
-            toast.success(`File uploaded successfully.`);
-            if (window.history.length == 1) {
-              dispatch(handleNavigateFromComposition());
-              window.close();
-            } else {
-              navigate(-1);
+              if (
+                selectedImages?.length - 1 === index &&
+                response.status === 200
+              ) {
+                toast.success(`File uploaded successfully.`);
+                if (window.history.length == 1) {
+                  dispatch(handleNavigateFromComposition());
+                  window.close();
+                } else {
+                  navigate(-1);
+                }
+              }
+              if (response.status !== 200) {
+                toast.error(`Upload failed for file ${image.name}`);
+              }
+            } catch (error) {
+              console.error(`Upload failed for file ${image.name}:`, error);
             }
           }
-          if (response.status !== 200) {
-            toast.error(`Upload failed for file ${image.name}`);
-          }
-        } catch (error) {
-          console.error(`Upload failed for file ${image.name}:`, error);
-        }
+        });
       });
 
       // Use Promise.all to execute all uploads concurrently
@@ -499,8 +511,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               <Link>
                 <button
                   className="flex align-middle border-primary items-center border rounded-full lg:px-8 md:px-8 sm:px-4 xs:px-4 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                  onClick={() => handleCancel()}
-                >
+                  onClick={() => handleCancel()}>
                   Cancel
                 </button>
               </Link>
@@ -537,8 +548,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 1, y: 10 },
-                }}
-              >
+                }}>
                 <button onClick={openCameraModal} className="relative">
                   <img src={cameraimg} className="w-9 relative" />
                 </button>
@@ -561,8 +571,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 1, y: 10 },
-                }}
-              >
+                }}>
                 <button onClick={openVideoModal} className="relative">
                   <img src={videoimg} className="w-9 relative" />
                 </button>
@@ -587,12 +596,10 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 1, y: 10 },
-                }}
-              >
+                }}>
                 <button
                   onClick={handleUnsplashButtonClick}
-                  className="relative"
-                >
+                  className="relative">
                   <FaUnsplash size={30} className="relative" />
                 </button>
               </Tooltip>
@@ -614,12 +621,10 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 1, y: 10 },
-                }}
-              >
+                }}>
                 <button
                   onClick={handlePexelsButtonClick}
-                  className="relative text-[#07a081]"
-                >
+                  className="relative text-[#07a081]">
                   <SiPexels size={30} className="relative" />
                 </button>
               </Tooltip>
@@ -640,12 +645,10 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 1, y: 10 },
-                }}
-              >
+                }}>
                 <button
                   onClick={handlePexabaysButtonClick}
-                  className="relative"
-                >
+                  className="relative">
                   <img src={pixabayimg} className="relative w-9" />
                 </button>
               </Tooltip>
@@ -688,8 +691,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
             className="drop-file-input"
             onDragEnter={onDragEnter}
             onDragLeave={onDragLeave}
-            onDrop={onDrop}
-          >
+            onDrop={onDrop}>
             <div className="relative">
               <div className=" relative flex-col flex  items-center justify-center min-h-full lg:py-16 md:py-10 sm:py-32 xs:pb-32 xs:pt-14 px-2  bg-lightgray lg:mt-14 md:mt-14 sm:mt-5 xs:mt-5  border-2 rounded-[20px] border-SlateBlue border-dashed">
                 <div className=" relative text-center max-auto">
@@ -777,8 +779,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
           {selectedImages.map((image, index) => (
             <div
               key={index}
-              className="shadow-inner bg-lightgray rounded-md m-5 w-100 p-2"
-            >
+              className="shadow-inner bg-lightgray rounded-md m-5 w-100 p-2">
               <h2>{image.name}</h2>
               <div className="flex justify-between items-center">
                 <progress
@@ -806,8 +807,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                   </div>
                   <span
                     className="drop-file-preview__item__del"
-                    onClick={() => fileRemove(item)}
-                  >
+                    onClick={() => fileRemove(item)}>
                     x
                   </span>
                 </div>
@@ -877,8 +877,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                     </p>
                     <button
                       className="text-white bg-[#F21E1E] rounded text-lg font-bold px-7 py-2.5"
-                      onClick={() => setfileErrorModal(false)}
-                    >
+                      onClick={() => setfileErrorModal(false)}>
                       Try Again
                     </button>
                   </div>

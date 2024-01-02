@@ -146,7 +146,7 @@ const Authslice = createSlice({
       window.location.href = window.location.origin;
       window.localStorage.removeItem("timer");
       localStorage.setItem("role_access", "");
-      window.location.reload();
+      // window.location.reload();
     },
   },
   extraReducers: (builder) => {
