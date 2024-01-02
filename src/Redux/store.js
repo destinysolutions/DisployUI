@@ -11,6 +11,7 @@ import AppsSlice from "./AppsSlice";
 import SettingUserSlice from "./SettingUserSlice";
 import SettingSlice from "./SettingSlice";
 import ScreenGroupSlice from "./ScreenGroupSlice";
+import TrashSlice from "./Trash";
 
 // const rootPersistConfig = {
 //   key: "root",
@@ -27,7 +28,7 @@ const authPersistConfig = {
 const globalStatesPersistConfig = {
   key: "globalstate",
   storage,
-  whitelist: ["session_token_apideck"],
+  whitelist: ["session_token_apideck"], 
 };
 
 const rootReducer = combineReducers({
@@ -41,6 +42,7 @@ const rootReducer = combineReducers({
   settingUser: SettingUserSlice,
   setting: SettingSlice,
   screenGroup: ScreenGroupSlice,
+  trashData: TrashSlice,
 });
 
 const persisteRoot = rootReducer;

@@ -57,6 +57,9 @@ export const SIGNAL_R = `${baseUrl}chatHub`;
 
 export const GET_ALL_TRASHDATA = `${baseUrl}api/Trash/GetAllTrash`;
 export const ADD_TRASH = `${baseUrl}api/Trash/AddTrash`;
+export const SINGL_DELETED_TRASH = `${baseUrl}api/Trash/singlDeletedTrash`;
+export const All_DELETED_TRASH = `${baseUrl}api/Trash/AllDeletedTrash`;
+export const RESTORE_TRASH = `${baseUrl}api/Trash/restoreTrash`;
 
 export const CREATE_NEW_FOLDER = `${baseUrl}api/AssetMaster/FolderMaster`;
 
@@ -117,3 +120,4 @@ export const WEATHER_ADD_TAG = `${baseUrl}api/WeatherApp/AddWeatherTags?`
 
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115
+
