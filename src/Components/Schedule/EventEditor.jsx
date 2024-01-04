@@ -100,6 +100,7 @@ const EventEditor = ({
     if (showRepeatSettings) {
       setEditedStartDate(newStartDate);
     }
+    console.log("editedStartDate", editedStartDate);
     // const givenDate = moment(newStartDate);
     // if (givenDate.isSameOrAfter(currentDate, "day")) {
     // Calculate and update the end date based on the new start date
@@ -760,7 +761,7 @@ const EventEditor = ({
                                 <td className="border-b border-[#eee]">
                                   <p className="text-black font-medium">
                                     {moment(item.createdDate).format(
-                                      "YYYY-MM-DD HH:mm"
+                                      "DD-MM-YYYY HH:mm"
                                     )}
                                   </p>
                                 </td>
@@ -1140,8 +1141,13 @@ const EventEditor = ({
                           </li>
                           <li className="border-b-2 border-lightgray p-3">
                             <h3>End Date:</h3>
-                            <div className="mt-2 bg-lightgray rounded-full px-3 py-2 w-full">
-                              {moment(editedStartDate).format("DD-MM-YYYY")}
+                            <div className="mt-2">
+                              <input
+                                type="date"
+                                value={editedStartDate}
+                                className="bg-lightgray rounded-full px-3 py-2 w-full"
+                                readOnly
+                              />
                             </div>
                           </li>
                           <li className="border-b-2 border-lightgray p-3">
