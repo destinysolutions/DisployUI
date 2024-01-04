@@ -760,7 +760,7 @@ const EventEditor = ({
                                 <td className="border-b border-[#eee]">
                                   <p className="text-black font-medium">
                                     {moment(item.createdDate).format(
-                                      "DD-MM-YYYY HH:mm"
+                                      "YYYY-MM-DD HH:mm"
                                     )}
                                   </p>
                                 </td>
