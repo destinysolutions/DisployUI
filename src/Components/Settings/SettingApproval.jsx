@@ -7,8 +7,14 @@ import {
 } from "react-icons/md";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useEffect } from "react";
-const Approval = () => {
+import { useSelector } from "react-redux";
+import axios from "axios";
+const SettingApproval = () => {
   const [showdata, setShowdata] = useState(false);
+
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+
   const handleDropupClick = () => {
     setShowdata(!showdata);
   };
@@ -215,6 +221,25 @@ const Approval = () => {
   // console.log(mergedDropdownStates.apps);
   // console.log(mergedDropdownStates.settings);
   // console.log(mergedDropdownStates.reports);
+
+  useEffect(() => {
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://disployapi.thedestinysolutions.com/api/OrganizationUsersRole/ListOfModule",
+      headers: {
+        Authorization: authToken,
+      },
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   return (
     <>
       <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
@@ -863,4 +888,4 @@ const Approval = () => {
   );
 };
 
-export default Approval;
+export default SettingApproval;

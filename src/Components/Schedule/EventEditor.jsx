@@ -4,17 +4,11 @@ import React, { useRef } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { SketchPicker } from "react-color";
-import {
-  AiOutlineClose,
-  AiOutlineCloseCircle,
-  AiOutlineSearch,
-} from "react-icons/ai";
+import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
 import ReactModal from "react-modal";
 import { ADD_EVENT } from "../../Pages/Api";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
-import { BsFillInfoCircleFill } from "react-icons/bs";
 import { useSelector } from "react-redux";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import toast from "react-hot-toast";
 import ReactPlayer from "react-player";
 import { Link } from "react-router-dom";
@@ -65,26 +59,14 @@ const EventEditor = ({
 
   const modalRef = useRef(null);
 
-  // console.log("editedStartTime",editedStartTime);
   const handleStartTimeChange = (e) => {
     const newStartTime = e.target.value;
-    // if (newStartTime < editedEndTime) {
     setEditedStartTime(newStartTime);
-    // } else {
-    //   toast.error("Please change End Time.");
-    //   console.log("Select start time must be after or equal to current date");
-    // }
   };
 
-  // console.log("newEndTime",editedEndTime);
   const handleEndTimeChange = (e) => {
     const newEndTime = e.target.value;
-    // if (newEndTime > editedStartTime) {
     setEditedEndTime(newEndTime);
-    // } else {
-    //   console.log("Select End time must be after or equal to start time");
-    //   toast.error("Please change Start Time.");
-    // }
   };
 
   const currentDate = moment();
@@ -100,37 +82,11 @@ const EventEditor = ({
     if (showRepeatSettings) {
       setEditedStartDate(newStartDate);
     }
-    console.log("editedStartDate", editedStartDate);
-    // const givenDate = moment(newStartDate);
-    // if (givenDate.isSameOrAfter(currentDate, "day")) {
-    // Calculate and update the end date based on the new start date
-    // if (!showRepeatSettings) {
-    // setEditedStartDate(newStartDate);
-    // const newEndDate = calculateEndDate(newStartDate, editedStartTime);
-    // setEditedEndDate(newEndDate);
-    // }
-
-    // if (showRepeatSettings && newStartDate <= editedEndDate) {
-    // setEditedStartDate(newStartDate);
-    // }
-    //  else if (showRepeatSettings) {
-    //   toast.error("Please change End Date.");
-    // }
-    // }
-    // else {
-    //   toast.error("Please select a date in the present or future.");
-    // }
   };
 
   const handleEndDateChange = (e) => {
     const newStartDate = e.target.value;
-    // if (newStartDate > editedStartDate) {
     setEditedEndDate(newStartDate);
-    // }
-
-    // Calculate and update the end date based on the new start date
-    // const newEndDate = calculateEndDate(newStartDate, editedStartTime);
-    // setEditedEndDate(newEndDate);
   };
 
   // Function to calculate the end date based on start date and time
@@ -177,13 +133,6 @@ const EventEditor = ({
     }
   };
 
-  // Helper function to check if a given day is within the start and end date range
-  const isDayInRange = (dayIndex) => {
-    const currentDate = new Date(startDate);
-    currentDate.setDate(startDate.getDate() + dayIndex);
-    return currentDate >= startDate && currentDate <= endDate;
-  };
-
   // for select all days to repeat day
   function handleCheckboxChange() {
     if (
@@ -202,8 +151,6 @@ const EventEditor = ({
     } else if (daysDiff < 6 && selectAllDays) {
       setSelectAllDays(false);
     }
-
-    // if(isEditMode)
     let days = [];
     for (let i = 0; i < daysDiff; i++) {
       days[i] = moment(moment(startDate).add(i, "day")).format("dddd");
@@ -224,10 +171,8 @@ const EventEditor = ({
       toast.remove();
       return toast.error("Please change end date");
     }
-    // if (isDayInRange(index)) {
     const newSelectedDays = [...selectedDays];
     newSelectedDays[index] = !selectedDays[index];
-    // Check if all individual days are selected, then check the "Repeat for All Day" checkbox.
     const newSelectAllDays = newSelectedDays.every((day) => day === true);
 
     if (
@@ -238,12 +183,8 @@ const EventEditor = ({
       toast.error("Please change End Date");
       return;
     }
-
-    // console.log(newSelectedDays,newSelectAllDays);
     setSelectedDays(newSelectedDays);
     setSelectAllDays(newSelectAllDays);
-
-    // }
   };
 
   const handleAssetAdd = (asset) => {
@@ -324,24 +265,6 @@ const EventEditor = ({
       setSelectedRepeatDay(repeatDayValue);
     }
 
-    // if (
-    //   moment(selectedEvent?.end).format("YYYY-MM-DD") !== editedEndDate &&
-    //   !selectAllDays && // Check if no checkbox is selected
-    //   !areSpecificDaysSelected // Check if no individual day is selected
-    // ) {
-    //   toast.remove();
-    //   toast.error("Please select repeat for all days otherwise anyone day");
-    //   return;
-    // }
-    // Check if the end date is modified
-    // const isEndDateModified =
-    //   selectedEvent?.end && selectedEvent.end.getTime() !== end.getTime();
-    // if (isEndDateModified) {
-    //   if (!areSpecificDaysSelected && !selectAllDays) {
-    //     alert("Please select repeat for all days otherwise anyone day");
-    //   }
-    // }
-
     let eventData = {
       title: title,
       start: start,
@@ -362,7 +285,6 @@ const EventEditor = ({
     if (areSpecificDaysSelected || selectAllDays) {
       eventData.repeatDay = repeatDayValue;
     }
-    // Check if the selected event is present and has the same data as the form data
     if (
       selectedEvent &&
       selectedEvent.title === title &&
@@ -395,8 +317,6 @@ const EventEditor = ({
       setSelectedRepeatDay("");
       setSelectedDays([]);
     }
-
-    // Check if the repeat days have changed and show the message
     if (
       !JSON.stringify(selectedEvent?.repeatDay) ===
       JSON.stringify(selectedRepeatDay)
@@ -404,7 +324,6 @@ const EventEditor = ({
       toast.remove();
       toast.error("Repeat Day has changed!");
     }
-    // Clear the selected repeat days after saving the event
     setSelectAllDays(false);
     setSelectedDays(new Array(buttons.length).fill(false));
   };
@@ -450,7 +369,7 @@ const EventEditor = ({
 
     axios
       .request(config)
-      .then((response) => {
+      .then(() => {
         onDelete(selectedEvent.id, selectedEvent?.macids);
         onClose();
         toast.remove();
@@ -505,15 +424,11 @@ const EventEditor = ({
       return resolve(data);
     } else if (days.length > buttons.length) {
       return resolve(buttons);
-    } else {
-      // return reject("error");
     }
   });
 
   useEffect(() => {
     if (myEvents.length > 0) {
-      // handleCheckboxChange();
-      // console.log(myEvents[myEvents.length - 1]?.end);
       setEditedEndDate(myEvents[myEvents.length - 1]?.end);
     }
   }, [myEvents]);
@@ -589,11 +504,6 @@ const EventEditor = ({
   // for clear selectedDays
   useEffect(() => {
     setAllAssets([...assets]);
-    // setAllAssets([
-    //   ...youtube?.youtubeData,
-    //   ...textScroll?.textScrollData,
-    //   ...assets,
-    // ]);
   }, [textScroll.loading, youtube.loading, loading]);
 
   useEffect(() => {
@@ -683,7 +593,6 @@ const EventEditor = ({
                                       <img
                                         src={item.assetFolderPath}
                                         alt={item.assetName}
-                                        // className="rounded-2xl max-w-[10vw] min-w-[10vw] min-h-[15vh] max-h-[15vh]  object-cover"
                                         className="videoTab rounded-2xl object-cover"
                                       />
                                     </div>
@@ -693,7 +602,6 @@ const EventEditor = ({
                                     <img
                                       src={item.assetFolderPath}
                                       alt={item.assetName}
-                                      // className="rounded-2xl max-w-[10vw] min-w-[10vw] min-h-[15vh] max-h-[15vh] object-cover"
                                       className="videoTab rounded-2xl object-cover"
                                     />
                                   )}
@@ -708,20 +616,7 @@ const EventEditor = ({
                                       />
                                     </div>
                                   )}
-                                  {/* {item.youTubeURL && (
-                                    <div className=" rounded-2xl z-0 max-w-[10vw] min-w-[10vw] min-h-[20vh] max-h-[20vh]">
-                                      <ReactPlayer
-                                        url={item?.youTubeURL}
-                                        className="w-full rounded-2xl z-20 h-full  object-fill"
-                                        controls={false}
-                                        playing={true}
-                                        style={{
-                                          width: "100px !important",
-                                          height: "100px !important",
-                                        }}
-                                      />
-                                    </div>
-                                  )} */}
+
                                   {item.text && (
                                     <div className="w-full h-full ">
                                       <marquee
@@ -1078,7 +973,6 @@ const EventEditor = ({
                               type="time"
                               value={editedEndTime}
                               onChange={handleEndTimeChange}
-                              // onChange={(e) => setEditedEndTime(e.target.value)}
                               className="bg-lightgray rounded-full px-3 py-2 w-full"
                             />
                           </div>
@@ -1168,7 +1062,6 @@ const EventEditor = ({
                                 type="time"
                                 value={editedEndTime}
                                 onChange={handleEndTimeChange}
-                                // onChange={(e) =>setEditedEndTime(e.target.value)}
                                 className="bg-lightgray rounded-full px-3 py-2 w-full"
                               />
                             </div>
@@ -1227,8 +1120,6 @@ const EventEditor = ({
                   <button
                     className="border-2 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
                     onClick={() => {
-                      // handleSave()
-                      // handleWarn()
                       selectedEvent?.isfutureDateExists == 0
                         ? handleSave()
                         : handleWarn();
