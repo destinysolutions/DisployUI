@@ -50,7 +50,7 @@ import TextScrollDetailById from "../Components/Apps/TextScrollDetailById";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "../Components/ErrorFallback";
 import GridAssets from "../Components/Assests/GridAssets";
-
+import SettingApproval from "../Components/Settings/SettingApproval";
 
 const Routing = () => {
   //for screen resize sidebar open close
@@ -523,6 +523,15 @@ const Routing = () => {
               path="/trash"
               element={
                 <Trash
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/settingapproval"
+              element={
+                <SettingApproval
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />

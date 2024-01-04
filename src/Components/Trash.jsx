@@ -3,8 +3,18 @@ import PropTypes, { array } from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
-import { All_DELETED_TRASH, GET_ALL_TRASHDATA, RESTORE_TRASH, SINGL_DELETED_TRASH } from "../Pages/Api";
-import { handleGetTrash, handleTrash, handleTrashAll, handleTrashRestore } from "../Redux/Trash";
+import {
+  All_DELETED_TRASH,
+  GET_ALL_TRASHDATA,
+  RESTORE_TRASH,
+  SINGL_DELETED_TRASH,
+} from "../Pages/Api";
+import {
+  handleGetTrash,
+  handleTrash,
+  handleTrashAll,
+  handleTrashRestore,
+} from "../Redux/Trash";
 import toast, { CheckmarkIcon } from "react-hot-toast";
 import moment from "moment";
 import { CgFolder, CgYoutube } from "react-icons/cg";
@@ -14,7 +24,6 @@ import { FiImage } from "react-icons/fi";
 import { MdDeleteForever, MdRestore } from "react-icons/md";
 import Swal from "sweetalert2";
 import { RiDeleteBin5Line } from "react-icons/ri";
-
 
 const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   Trash.propTypes = {
@@ -26,8 +35,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
-
-  const [loadFist, setLoadFist] = useState(true)
+  const [loadFist, setLoadFist] = useState(true);
 
   // Use Redux state instead of local state
   const store = useSelector((state) => state.root.trashData);
@@ -41,11 +49,15 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   const [sortedField, setSortedField] = useState(null);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = store.deletedData?.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = store.deletedData?.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   // Filter data based on search term
   const filteredData = store.deletedData?.filter((item) =>
-    Object.values(item).some((value) => value && value.toString().toLowerCase()));
+    Object.values(item).some((value) => value && value.toString().toLowerCase())
+  );
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   // Function to sort the data based on a field and order
@@ -81,7 +93,6 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-
   useEffect(() => {
     let config = {
       method: "get",
@@ -96,22 +107,29 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
       setLoadFist(false);
     }
 
-    if (store && store.successMessage && store.successMessage !== "DELETE" && store.successMessage !== "RESTORE") {
+    if (
+      store &&
+      store.successMessage &&
+      store.successMessage !== "DELETE" &&
+      store.successMessage !== "RESTORE"
+    ) {
       toast.success(store.successMessage);
-      setLoadFist(true)
+      setLoadFist(true);
     }
 
-    if (store && store.successMessage && store.successMessage === "DELETE" || store.successMessage === "RESTORE") {
-       setLoadFist(true)
+    if (
+      (store && store.successMessage && store.successMessage === "DELETE") ||
+      store.successMessage === "RESTORE"
+    ) {
+      setLoadFist(true);
     }
 
     if (store && store.error) {
       toast.error(`Error: ${store.error}`);
     }
-
   }, [loadFist, store]); // Make sure to include dispatch as a dependency if you're using it in the effect
 
-  console.log("store.successMessage",store.successMessage);
+  console.log("store.successMessage", store.successMessage);
 
   const handleSelectAllChange = () => {
     setSelectAll((prevSelectAll) => !prevSelectAll);
@@ -127,26 +145,26 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
     Swal.fire({
       title: "Delete Permanently",
       text: "Are you sure you want to delete this item permanently?",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(handleTrashAll({ config }));
-          Swal.fire({
-            title: 'Deleted Permanently',
-            icon: 'success',
-            timer: 2000, // Set the duration for the success message to be displayed (in milliseconds)
-            showConfirmButton: false, // Hide the "OK" button
-          });
-          setSelectAll(false)
+        Swal.fire({
+          title: "Deleted Permanently",
+          icon: "success",
+          timer: 2000, // Set the duration for the success message to be displayed (in milliseconds)
+          showConfirmButton: false, // Hide the "OK" button
+        });
+        setSelectAll(false);
       }
     });
-  }
+  };
 
-  const handleDeletePermanently = (id,type) => {
+  const handleDeletePermanently = (id, type) => {
     let config = {
       method: "delete",
       maxBodyLength: Infinity,
@@ -157,30 +175,28 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
       Swal.fire({
         title: "Delete Permanently",
         text: "Are you sure you want to delete this item permanently?",
-        icon: 'warning',
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!',
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
       }).then((result) => {
         if (result.isConfirmed) {
-            dispatch(handleTrash({ config }));
-            Swal.fire({
-              title: 'Deleted Permanently',
-              icon: 'success',
-              timer: 1500, // Set the duration for the success message to be displayed (in milliseconds)
-              showConfirmButton: false, // Hide the "OK" button
-            });
+          dispatch(handleTrash({ config }));
+          Swal.fire({
+            title: "Deleted Permanently",
+            icon: "success",
+            timer: 1500, // Set the duration for the success message to be displayed (in milliseconds)
+            showConfirmButton: false, // Hide the "OK" button
+          });
         }
       });
-      
     } catch (error) {
-      console.log("error handleDeletePermanently Singal --- ", error );
+      console.log("error handleDeletePermanently Singal --- ", error);
     }
+  };
 
-  }
-
-  const handleRestore = (id,type) => {
+  const handleRestore = (id, type) => {
     try {
       let config = {
         method: "post",
@@ -191,27 +207,27 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
       Swal.fire({
         title: "Restore Item",
         text: "Are you sure you want to restore this item?",
-        icon: 'warning',
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: '#4caf50',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, restore it!',
+        confirmButtonColor: "#4caf50",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, restore it!",
       }).then((result) => {
         if (result.isConfirmed) {
           dispatch(handleTrashRestore({ config }));
-            Swal.fire({
-              title: 'Restored Successfully',
-              icon: 'success',
-              timer: 1500, // Set the duration for the success message to be displayed (in milliseconds)
-              showConfirmButton: false, // Hide the "OK" button
-            });
-            setLoadFist(true)
+          Swal.fire({
+            title: "Restored Successfully",
+            icon: "success",
+            timer: 1500, // Set the duration for the success message to be displayed (in milliseconds)
+            showConfirmButton: false, // Hide the "OK" button
+          });
+          setLoadFist(true);
         }
       });
     } catch (error) {
-      console.log(" handleRestore --- ",error);
+      console.log(" handleRestore --- ", error);
     }
-  }
+  };
 
   return (
     <div>
@@ -248,10 +264,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
               cellPadding={20}
             >
               <thead>
-                <tr
-                  className="text-left text-blue-600"
-                  style={{ backgroundColor: "#e4e6ff" }}
-                >
+                <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
                   <th className=" sticky top-0 border-b border-lightgray th-bg-100 text-md font-semibold flex items-center justify-left">
                     Name
                     <svg
@@ -262,7 +275,11 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       viewBox="0 0 24 24"
                       onClick={() => handleSort("assetName")}
                     >
-                      <path strokeWidth="2"  strokeLinecap="round" d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                      <path
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
+                      />
                     </svg>
                   </th>
                   <th className=" sticky top-0 border-b border-lightgray th-bg-100 text-md font-semibold">
@@ -313,7 +330,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       </div>
                     </td>
                   </tr>
-                ) : store &&  sortedAndPaginatedData?.length === 0 ? (
+                ) : store && sortedAndPaginatedData?.length === 0 ? (
                   <tr>
                     <td colSpan={6}>
                       <div className="flex text-center m-5 justify-center">
@@ -324,7 +341,8 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                     </td>
                   </tr>
                 ) : (
-                  sortedAndPaginatedData.length && sortedAndPaginatedData?.map((item,i) => (
+                  sortedAndPaginatedData.length &&
+                  sortedAndPaginatedData?.map((item, i) => (
                     <tr
                       key={i}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -332,30 +350,79 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       <td className=" border-b border-lightgray text-sm ">
                         <div className="flex gap-2">
                           {selectAll && <CheckmarkIcon />}
-                          {item.assetType === "Folder" && (<span><HiFolder />{" "}</span>)}
-                          {item.assetType === "Image" && (<span>{" "}<FiImage />{" "}</span>)}
-                          {item.assetType === "OnlineImage" && (<span>{" "}<FiImage />{" "}</span>)}
-                          {item.assetType === "OnlineVideo" && (<span>{" "}<CgYoutube />{" "}</span>)}
-                          {item.assetType === "DOC" && (<span>{" "}<HiDocument />{" "}</span>)}
-                          {item.assetType === "Video" && (<span>{" "}<HiVideoCamera />{" "}</span>)}{" "}
+                          {item.assetType === "Folder" && (
+                            <span>
+                              <HiFolder />{" "}
+                            </span>
+                          )}
+                          {item.assetType === "Image" && (
+                            <span>
+                              {" "}
+                              <FiImage />{" "}
+                            </span>
+                          )}
+                          {item.assetType === "OnlineImage" && (
+                            <span>
+                              {" "}
+                              <FiImage />{" "}
+                            </span>
+                          )}
+                          {item.assetType === "OnlineVideo" && (
+                            <span>
+                              {" "}
+                              <CgYoutube />{" "}
+                            </span>
+                          )}
+                          {item.assetType === "DOC" && (
+                            <span>
+                              {" "}
+                              <HiDocument />{" "}
+                            </span>
+                          )}
+                          {item.assetType === "Video" && (
+                            <span>
+                              {" "}
+                              <HiVideoCamera />{" "}
+                            </span>
+                          )}{" "}
                           {item.assetName}
                         </div>
                       </td>
                       {/* <td className=" border-b border-lightgray text-sm ">{item.assetFolderPath}</td> */}
-                      <td className=" border-b border-lightgray text-sm ">Not Found</td>
-                      <td className=" border-b border-lightgray text-sm ">{moment(item.createdDate).format("DD/MM/YY, h:mm:ss a")}{" "}</td>
-                      <td className=" border-b border-lightgray text-sm ">{item.fileSize}{" "}</td>
-                      <td className=" border-b border-lightgray text-sm ">{item.assetType}{" "}</td>
-                      <td className=" border-b border-lightgray text-sm ">{" "}{moment(item.createdDate).format("DD/MM/YY, h:mm:ss a")}{" "}</td>
+                      <td className=" border-b border-lightgray text-sm ">
+                        Not Found
+                      </td>
+                      <td className=" border-b border-lightgray text-sm ">
+                        {moment(item.createdDate).format("DD/MM/YY, h:mm:ss a")}{" "}
+                      </td>
+                      <td className=" border-b border-lightgray text-sm ">
+                        {item.fileSize}{" "}
+                      </td>
+                      <td className=" border-b border-lightgray text-sm ">
+                        {item.assetType}{" "}
+                      </td>
+                      <td className=" border-b border-lightgray text-sm ">
+                        {" "}
+                        {moment(item.createdDate).format(
+                          "DD/MM/YY, h:mm:ss a"
+                        )}{" "}
+                      </td>
                       <td className="border-b border-lightgray text-sm">
-                        <div className="cursor-pointer text-xl flex gap-4 "> 
+                        <div className="cursor-pointer text-xl flex gap-4 ">
                           <MdDeleteForever
-                          className="text-[#EE4B2B]"
-                            onClick={() => handleDeletePermanently(item.assetID,item.assetType)}
+                            className="text-[#EE4B2B]"
+                            onClick={() =>
+                              handleDeletePermanently(
+                                item.assetID,
+                                item.assetType
+                              )
+                            }
                           />
                           <MdRestore
-                          className="text-[#2563eb]"
-                            onClick={() => handleRestore(item.assetID,item.assetType)}
+                            className="text-[#2563eb]"
+                            onClick={() =>
+                              handleRestore(item.assetID, item.assetType)
+                            }
                           />
                         </div>
                       </td>
