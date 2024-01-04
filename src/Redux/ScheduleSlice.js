@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getUrl, postUrl } from "../Pages/Api";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 export const handleGetAllSchedule = createAsyncThunk(
   "schedule/handleGetAllSchedule",
@@ -17,7 +18,6 @@ export const handleGetAllSchedule = createAsyncThunk(
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
       rejectWithValue(error?.response?.data?.message);
     }
   }
@@ -39,7 +39,6 @@ export const handleGetScheduleById = createAsyncThunk(
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
       rejectWithValue(error?.response?.data?.message);
     }
   }
@@ -67,7 +66,6 @@ export const handleUpdateTimezone = createAsyncThunk(
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
       rejectWithValue(error?.response?.data?.message);
     }
   }
@@ -93,41 +91,31 @@ export const handleDeleteScheduleById = createAsyncThunk(
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
       rejectWithValue(error?.response?.data?.message);
     }
   }
 );
 
-export const handleDeleteScheduleAll = createAsyncThunk(
-  "schedule/handleDeleteScheduleAll",
-  async ({ token }, { rejectWithValue }) => {
-    try {
-      const { data } = await postUrl("ScheduleMaster/AddSchedule", {
-        data: {
-          operation: "ALLDelete",
-        },
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-        },
-      });
-      if (data?.status == 200) return data;
-      else {
-        toast.error(data?.message);
-        return rejectWithValue(data?.message);
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message);
-      rejectWithValue(error?.response?.data?.message);
+export const handleDeleteScheduleAll = createAsyncThunk("schedule/handleDeleteScheduleAll", async ({ config }, { rejectWithValue }) => {
+  try {
+    const response = await axios.request(config);
+    if (response?.data?.status) {
+      return response.data;
+    } else {
+      return rejectWithValue(response?.data);
     }
+  } catch (error) {
+    console.log("error", error);
   }
+}
 );
 
 const initialState = {
   loading: false,
+  successMessage : null,
   schedules: [],
   error: null,
+  type:null,
   deleteLoading: false,
   singleSchedule: null,
 };
@@ -220,17 +208,16 @@ const ScheduleSlice = createSlice({
 
     //delete all
     builder.addCase(
-      handleDeleteScheduleAll.pending,
-      (state, { payload, meta, type }) => {
+      handleDeleteScheduleAll.pending,(state, { payload, meta, type }) => {
         state.deleteLoading = true;
         state.error = null;
       }
     );
-    builder.addCase(
-      handleDeleteScheduleAll.fulfilled,
-      (state, { payload, meta }) => {
+    builder.addCase(handleDeleteScheduleAll.fulfilled,(state, { payload, meta }) => {
         state.deleteLoading = false;
-        state.schedules = [];
+        state.type = "DELETE"
+        state.successMessage = payload?.message || "Delete SuccessFully"
+        state.schedules = payload?.data ?? [];
         state.error = null;
       }
     );

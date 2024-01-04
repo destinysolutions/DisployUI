@@ -15,6 +15,7 @@ import {
 import Footer from "../Footer";
 import {
   ADD_SCHEDULE,
+  DELETE_SCHEDULE,
   GET_ALL_SCHEDULE,
   SCHEDULE_EVENT_SELECT_BY_ID,
   SELECT_BY_USER_SCREENDETAIL,
@@ -27,7 +28,7 @@ import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineModeEdit } from "react-icons/md";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
-import toast from "react-hot-toast";
+import toast, { CheckmarkIcon } from "react-hot-toast";
 import ScreenAssignModal from "../ScreenAssignModal";
 import {
   handleChangeSchedule,
@@ -36,6 +37,7 @@ import {
   handleGetAllSchedule,
 } from "../../Redux/ScheduleSlice";
 import { connection } from "../../SignalR";
+import Swal from "sweetalert2";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //for action popup
@@ -43,9 +45,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [addScreenModal, setAddScreenModal] = useState(false);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
-  const selectedScreenIdsString = Array.isArray(selectedScreens)
-    ? selectedScreens.join(",")
-    : "";
+  const selectedScreenIdsString = Array.isArray(selectedScreens) ? selectedScreens.join(",") : "";
   const [scheduleId, setScheduleId] = useState("");
   const [searchSchedule, setSearchSchedule] = useState("");
   const [selectAll, setSelectAll] = useState(false);
@@ -57,40 +57,95 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectdata, setSelectData] = useState({});
 
   const { token } = useSelector((state) => state.root.auth);
-  const { loading, schedules, deleteLoading } = useSelector(
-    (s) => s.root.schedule
-  );
+  const { loading, schedules, deleteLoading,successMessage,type } = useSelector((s) => s.root.schedule);
   const authToken = `Bearer ${token}`;
 
   const addScreenRef = useRef(null);
   const selectScreenRef = useRef(null);
   const showActionModalRef = useRef(null);
 
-  const dispatch = useDispatch();
+  const [selectedItems, setSelectedItems] = useState([]);  // Multipal check
 
+  //   Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10); // Adjust items per page as needed
+  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const [sortedField, setSortedField] = useState(null);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = schedules?.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Filter data based on search term
+  const filteredData = schedules.filter((item) =>
+    Object.values(item).some((value) => value && value.toString().toLowerCase().includes(searchSchedule.toLowerCase())));
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  // Function to sort the data based on a field and order
+  const sortData = (data, field, order) => {
+    const sortedData = [...data];
+    sortedData.sort((a, b) => {
+      if (order === "asc") {
+        return a[field] > b[field] ? 1 : -1;
+      } else {
+        return a[field] < b[field] ? 1 : -1;
+      }
+    });
+    return sortedData;
+  };
+
+  const sortedAndPaginatedData = sortData(
+    filteredData,
+    sortedField,
+    sortOrder
+  ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Handle sorting when a table header is clicked
+  const handleSort = (field) => {
+    if (sortedField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortOrder("asc");
+      setSortedField(field);
+    }
+  };
+  // Pagination End
+
+  const dispatch = useDispatch();
   // Function to handle the "Select All" checkbox change
+
+
+  useEffect(() => {
+    dispatch(handleGetAllSchedule({ token }));
+
+    if (successMessage && type === "DELETE") {
+       toast.success(successMessage)
+    }
+
+  }, [successMessage]);
+
+
   const handleSelectAll = () => {
-    const updatedScheduleAsset = schedules.map((schedule) => ({
-      ...schedule,
-      isChecked: !selectAll,
-    }));
-    dispatch(handleChangeSchedule(updatedScheduleAsset));
     setSelectAll(!selectAll);
+
+    if (selectedItems.length === schedules.length) {
+      setSelectedItems([]);
+    } else {
+      const allIds = schedules.map((schedule) => schedule.scheduleId);
+      setSelectedItems(allIds);
+    }
   };
 
   const handleCheckboxChange = (scheduleId) => {
-    const updatedScheduleAsset = schedules.map((schedule) =>
-      schedule.scheduleId === scheduleId
-        ? { ...schedule, isChecked: !schedule.isChecked }
-        : schedule
-    );
-    dispatch(handleChangeSchedule(updatedScheduleAsset));
-
-    // Check if all checkboxes are checked or not
-    const allChecked = updatedScheduleAsset.every(
-      (schedule) => schedule.isChecked
-    );
-    setSelectAll(allChecked);
+    if (selectedItems.includes(scheduleId)) {
+      setSelectedItems(selectedItems.filter((id) => id !== scheduleId));
+    } else {
+      setSelectedItems([...selectedItems, scheduleId]);
+    }
   };
 
   const handleScheduleItemClick = (scheduleId) => {
@@ -136,49 +191,73 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+
   const handelDeleteAllSchedule = () => {
-    if (!window.confirm("Are you sure?")) return;
-    if (deleteLoading) return;
-    dispatch(handleDeleteScheduleAll({ token }));
-    setSelectAll(false);
-    if (connection.state == "Disconnected") {
-      connection
-        .start()
-        .then((res) => {
-          console.log("signal connected");
-        })
-        .then(() => {
-          connection
-            .invoke(
-              "ScreenConnected",
-              schedules
-                ?.map((item) => item?.maciDs)
-                .join(",")
-                .replace(/^\s+/g, "")
-            )
-            .then(() => {
-              console.log("SignalR method invoked after screen update");
-            })
-            .catch((error) => {
-              console.error("Error invoking SignalR method:", error);
-            });
-        });
-    } else {
-      connection
-        .invoke(
-          "ScreenConnected",
-          schedules
-            ?.map((item) => item?.maciDs)
-            .join(",")
-            .replace(/^\s+/g, "")
-        )
-        .then(() => {
-          console.log("SignalR method invoked after screen update");
-        })
-        .catch((error) => {
-          console.error("Error invoking SignalR method:", error);
-        });
-    }
+    let config = {
+      method: "delete",
+      maxBodyLength: Infinity,
+      url: DELETE_SCHEDULE,
+      url: `${DELETE_SCHEDULE}?ScheduleIds=${selectedItems}`,
+      headers: { Authorization: authToken },
+    };
+
+    Swal.fire({
+      title: "Delete Schedules",
+      text: "Are you sure you want to delete this schedules",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(handleDeleteScheduleAll({ config }));
+        setSelectAll(false)
+        setSelectedItems([])
+        dispatch(handleGetAllSchedule({ token }));
+      }
+
+      if (connection.state == "Disconnected") {
+        connection
+          .start()
+          .then((res) => {
+            console.log("signal connected");
+          })
+          .then(() => {
+            connection
+              .invoke(
+                "ScreenConnected",
+                schedules
+                  ?.map((item) => item?.maciDs)
+                  .join(",")
+                  .replace(/^\s+/g, "")
+              )
+              .then(() => {
+                console.log("SignalR method invoked after screen update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          });
+      } else {
+        connection
+          .invoke(
+            "ScreenConnected",
+            schedules
+              ?.map((item) => item?.maciDs)
+              .join(",")
+              .replace(/^\s+/g, "")
+          )
+          .then(() => {
+            console.log("SignalR method invoked after screen update");
+          })
+          .catch((error) => {
+            console.error("Error invoking SignalR method:", error);
+          });
+      }
+
+    });
+   
   };
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
@@ -257,28 +336,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const handleSearchSchedule = (event) => {
     const searchQuery = event.target.value.toLowerCase();
     setSearchSchedule(searchQuery);
-
-    if (searchQuery === "") {
-      setFilteredScheduleData([]);
-    } else {
-      const filteredSchedule = schedules.filter((entry) =>
-        Object.values(entry).some((val) => {
-          if (typeof val === "string") {
-            const keyWords = searchQuery.split(" ");
-            for (let i = 0; i < keyWords.length; i++) {
-              return (
-                val.toLocaleLowerCase().includes(searchQuery)
-              );
-            }
-          }
-        })
-      );
-      if (filteredSchedule.length > 0) {
-        setFilteredScheduleData(filteredSchedule);
-      } else {
-        setFilteredScheduleData([]);
-      }
-    }
   };
 
   const handleUpadteScheduleTags = (tags) => {
@@ -332,10 +389,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-
-  useEffect(() => {
-    dispatch(handleGetAllSchedule({ token }));
-  }, []);
 
   // add screen modal
   useEffect(() => {
@@ -413,28 +466,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   function handleClickOutside() {
     setShowActionBox(false);
   }
-
-  const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
-  const [sortColumn, setSortColumn] = useState(null); // column name or null if not sorted
-  const handleSort = (column) => {
-    // Toggle sorting order if the same column is clicked
-    const newSortOrder =
-      column === sortColumn && sortOrder === "asc" ? "desc" : "asc";
-    setSortOrder(newSortOrder);
-    setSortColumn(column);
-
-    // Sort the data based on the selected column and order
-    const sortedData = [...schedules].sort((a, b) => {
-      const aValue = a[column];
-      const bValue = b[column];
-      return newSortOrder === "asc"
-        ? aValue.localeCompare(bValue)
-        : bValue.localeCompare(aValue);
-    });
-
-    // Update the state with the sorted data
-    dispatch(handleChangeSchedule(sortedData));
-  };
+  console.log('Selected IDs:', selectedItems);
 
   return (
     <>
@@ -485,6 +517,17 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <RiDeleteBin5Line className="text-lg" />
               </button>
+
+                {/* multipal remove */}
+              {selectedItems.length !== 0 && !selectAll && (
+                <button
+                  className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  onClick={handelDeleteAllSchedule}
+                >
+                  <RiDeleteBin5Line className="text-lg" />
+                </button>
+              )}
+
               {/* <button className="sm:ml-2 xs:ml-1 flex align-middle  bg-SlateBlue text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <HiMagnifyingGlass className="text-lg" />
               </button> */}
@@ -498,72 +541,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             </div>
           </div>
-          {/* add screen modal start */}
-          {addScreenModal && (
-            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-              <div
-                ref={addScreenRef}
-                className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
-              >
-                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                  <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
-                    <div className="flex items-center">
-                      <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                        Select the Screen you want Schedule add
-                      </h3>
-                    </div>
-                    <button
-                      className="p-1 text-xl ml-8"
-                      onClick={() => setAddScreenModal(false)}
-                    >
-                      <AiOutlineCloseCircle className="text-2xl" />
-                    </button>
-                  </div>
-                  <div className="flex justify-center p-9 ">
-                    <p className="break-words w-[280px] text-base text-black text-center">
-                      New schedule would be applied. Do you want to proceed?
-                    </p>
-                  </div>
-                  <div className="pb-6 flex justify-center">
-                    <button
-                      className="bg-primary text-white px-8 py-2 rounded-full"
-                      onClick={() => {
-                        if (selectdata?.screenIDs) {
-                          let arr = [selectdata?.screenIDs];
-                          let newArr = arr[0]
-                            .split(",")
-                            .map((item) => parseInt(item.trim()));
-                          setSelectedScreens(newArr);
-                        }
-                        setSelectScreenModal(true);
-                        setAddScreenModal(false);
-                      }}
-                    >
-                      OK
-                    </button>
 
-                    <button
-                      className="bg-primary text-white px-4 py-2 rounded-full ml-3"
-                      onClick={() => setAddScreenModal(false)}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-          {/* add screen modal end */}
-          {selectScreenModal && (
-            <ScreenAssignModal
-              setAddScreenModal={setAddScreenModal}
-              setSelectScreenModal={setSelectScreenModal}
-              handleUpdateScreenAssign={handleUpdateScreenAssign}
-              selectedScreens={selectedScreens}
-              setSelectedScreens={setSelectedScreens}
-              screenSelected={screenSelected}
-            />
-          )}
           <div className="schedual-table bg-white rounded-xl mt-8 shadow">
             <table
               className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
@@ -571,14 +549,18 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             >
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                  <th
-                    onClick={() => handleSort("scheduleName")}
-                    className="text-[#5A5881] text-base font-semibold w-fit text-center"
-                  >
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
                     Schedule Name
-                    {sortColumn === "scheduleName" && (
-                      <span>{sortOrder === "asc" ? " ▲" : " ▼"}</span>
-                    )}
+                    <svg
+                      className="w-3 h-3 ms-1.5 cursor-pointer"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      onClick={() => handleSort("scheduleName")}
+                    >
+                      <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                    </svg>
                   </th>
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Time Zones
@@ -598,328 +580,285 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Tags
                   </th>
-                  <th></th>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center"> Action </th>
                 </tr>
               </thead>
               <tbody>
+
                 {loading ? (
                   <tr>
-                    <td
-                      colSpan={8}
-                      className="text-center font-semibold text-xl"
-                    >
-                      Loading...
-                    </td>
-                  </tr>
-                ) : schedules.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={8}
-                      className="font-semibold text-center text-xl"
-                    >
-                      No Schedule here.
-                    </td>
-                  </tr>
-                ) : filteredScheduleData.length === 0 &&
-                  searchSchedule !== "" ? (
-                  <tr>
-                    <td
-                      colSpan="8"
-                      className="text-center font-semibold text-xl"
-                    >
-                      Schedule not found
-                    </td>
-                  </tr>
-                ) : filteredScheduleData.length === 0 ? (
-                  schedules.map((schedule) => (
-                    <tr
-                      className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                      key={schedule.scheduleId}
-                    >
-                      <td className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="mr-3"
-                          style={{ display: selectAll ? "block" : "none" }}
-                          checked={schedule.isChecked || false}
-                          onChange={() =>
-                            handleCheckboxChange(schedule.scheduleId)
-                          }
-                        />
-                        {schedule.scheduleName}
-                      </td>
-                      <td className="text-center">{schedule.timeZoneName}</td>
-                      <td className="text-center">
-                        {moment(schedule.createdDate).format(
-                          "YYYY-MM-DD hh:mm"
-                        )}
-                      </td>
-                      <td className="text-center">
-                        {moment(schedule.startDate).format("YYYY-MM-DD hh:mm")}
-                      </td>
-
-                      <td className="text-center">
-                        {moment(schedule.endDate).format("YYYY-MM-DD hh:mm")}
-                      </td>
-                      <td className="text-center">{schedule.screenAssigned}</td>
-                      <td
-                        title={schedule?.tags && schedule?.tags}
-                        className="text-center flex items-center justify-center gap-2 w-full flex-wrap"
-                      >
-                        {(schedule?.tags === "" || schedule?.tags === null) && (
-                          <span>
-                            <AiOutlinePlusCircle
-                              size={30}
-                              className="mx-auto cursor-pointer"
-                              onClick={() => {
-                                setShowTagModal(true);
-                                schedule.tags === "" || schedule?.tags === null
-                                  ? setTags([])
-                                  : setTags(schedule?.tags?.split(","));
-                                setUpdateTagSchedule(schedule);
-                              }}
-                            />
-                          </span>
-                        )}
-                        {schedule.tags !== null
-                          ? schedule.tags
-                              .split(",")
-                              .slice(
-                                0,
-                                schedule.tags.split(",").length > 2
-                                  ? 3
-                                  : schedule.tags.split(",").length
-                              )
-                              .join(",")
-                          : ""}
-                        {schedule?.tags !== "" && schedule?.tags !== null && (
-                          <MdOutlineModeEdit
-                            onClick={() => {
-                              setShowTagModal(true);
-                              schedule.tags === "" || schedule?.tags === null
-                                ? setTags([])
-                                : setTags(schedule?.tags?.split(","));
-                              setUpdateTagSchedule(schedule);
-                            }}
-                            className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
+                    <td colSpan={8}>
+                      <div className="flex text-center m-5 justify-center">
+                        <svg
+                          aria-hidden="true"
+                          role="status"
+                          className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                          viewBox="0 0 100 101"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="currentColor"
                           />
-                        )}
-                        {/* add or edit tag modal */}
-                        {showTagModal && (
-                          <AddOrEditTagPopup
-                            setShowTagModal={setShowTagModal}
-                            tags={tags}
-                            setTags={setTags}
-                            handleUpadteScheduleTags={handleUpadteScheduleTags}
-                            from="schedule"
-                            setUpdateTagSchedule={setUpdateTagSchedule}
+                          <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="#1C64F2"
                           />
-                        )}
-                      </td>
-                      <td className="text-center relative">
-                        <div className="relative">
-                          <button
-                            className="ml-3 relative"
-                            onClick={() => {
-                              handleScheduleItemClick(schedule.scheduleId);
-                            }}
-                          >
-                            <HiDotsVertical />
-                          </button>
-                          {/* action popup start */}
-                          {showActionBox[schedule.scheduleId] && (
-                            <div
-                              ref={showActionModalRef}
-                              className="scheduleAction z-10 "
-                            >
-                              <div className="my-1">
-                                <Link
-                                  to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
-                                >
-                                  <button>Edit Schedule</button>
-                                </Link>
-                              </div>
-                              <div className=" mb-1">
-                                <button
-                                  onClick={() => {
-                                    setAddScreenModal(true);
-                                    setScreenSelected(
-                                      schedule?.screenAssigned?.split(",")
-                                    );
-                                    setSelectData(schedule);
-                                  }}
-                                >
-                                  Add Screens
-                                </button>
-                              </div>
-                              <div className="mb-1 border border-[#F2F0F9]"></div>
-                              <div className=" mb-1 text-[#D30000]">
-                                <button
-                                  onClick={() =>
-                                    handelDeleteSchedule(
-                                      schedule.scheduleId,
-                                      schedule?.maciDs
-                                    )
-                                  }
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </div>
-                          )}
-                          {/* action popup end */}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                        </svg>
+                        <span className="text-4xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                          Loading...
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : schedules && sortedAndPaginatedData?.length === 0 ? (
+                  <tr>
+                    <td colSpan={6}>
+                      <div className="flex text-center m-5 justify-center">
+                        <span className="text-4xl text-gray-800 font-semibold py-2 px-4 rounded-full text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
+                          Data Not Found
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
                 ) : (
-                  filteredScheduleData.map((schedule) => (
-                    <tr
-                      className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                      key={schedule.scheduleId}
-                    >
-                      <td className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="mr-3"
-                          style={{ display: selectAll ? "block" : "none" }}
-                          checked={schedule.isChecked || false}
-                          onChange={() =>
-                            handleCheckboxChange(schedule.scheduleId)
-                          }
-                        />
-                        {schedule.scheduleName}
-                      </td>
-                      <td className="text-center">{schedule.timeZoneName}</td>
-                      <td className="text-center">
-                        {moment(schedule.createdDate).format(
-                          "YYYY-MM-DD hh:mm"
-                        )}
-                      </td>
-                      <td className="text-center">
-                        {moment(schedule.startDate).format("YYYY-MM-DD hh:mm")}
-                      </td>
+                  <>
+                    {schedules && sortedAndPaginatedData.length > 0 && sortedAndPaginatedData.map((schedule, index) => {
+                      return (
+                        <>
+                          <tr className="text-[#5E5E5E]">
+                            <td className="text-[#5E5E5E] text-center">
+                              <div className="flex gap-1">
+                                {selectAll ? (<CheckmarkIcon className="w-5 h-5" />) : ( 
+                                  <input
+                                  type="checkbox"
+                                  checked={selectedItems.includes(schedule.scheduleId)}
+                                  onChange={() => handleCheckboxChange(schedule.scheduleId)}
+                                 />
+                                 )}
+                                {schedule.scheduleName}
+                              </div>
+                            </td>
+                            <td className="text-center">{schedule.timeZoneName}</td>
+                            <td className="text-center">{moment(schedule.createdDate).format("YYYY-MM-DD hh:mm")}</td>
+                            <td className="text-center">{moment(schedule.startDate).format("YYYY-MM-DD hh:mm")}</td>
+                            <td className="text-center">{moment(schedule.endDate).format("YYYY-MM-DD hh:mm")}</td>
+                            <td className="text-center">{schedule.screenAssigned}</td>
 
-                      <td className="text-center">
-                        {moment(schedule.endDate).format("YYYY-MM-DD hh:mm")}
-                      </td>
-                      <td className="text-center">{schedule.screenAssigned}</td>
-                      <td
-                        title={schedule?.tags && schedule?.tags}
-                        className="text-center flex items-center justify-center gap-2 w-full flex-wrap"
-                      >
-                        {(schedule?.tags === "" || schedule?.tags === null) && (
-                          <span>
-                            <AiOutlinePlusCircle
-                              size={30}
-                              className="mx-auto cursor-pointer"
-                              onClick={() => {
-                                setShowTagModal(true);
-                                schedule.tags === "" || schedule?.tags === null
-                                  ? setTags([])
-                                  : setTags(schedule?.tags?.split(","));
-                                setUpdateTagSchedule(schedule);
-                              }}
-                            />
-                          </span>
-                        )}
-                        {schedule.tags !== null
-                          ? schedule.tags
-                              .split(",")
-                              .slice(
-                                0,
-                                schedule.tags.split(",").length > 2
-                                  ? 3
-                                  : schedule.tags.split(",").length
-                              )
-                              .join(",")
-                          : ""}
-                        {schedule?.tags !== "" && schedule?.tags !== null && (
-                          <MdOutlineModeEdit
-                            onClick={() => {
-                              setShowTagModal(true);
-                              schedule.tags === "" || schedule?.tags === null
-                                ? setTags([])
-                                : setTags(schedule?.tags?.split(","));
-                              setUpdateTagSchedule(schedule);
-                            }}
-                            className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
-                          />
-                        )}
-                        {/* add or edit tag modal */}
-                        {showTagModal && (
-                          <AddOrEditTagPopup
-                            setShowTagModal={setShowTagModal}
-                            tags={tags}
-                            setTags={setTags}
-                            handleUpadteScheduleTags={handleUpadteScheduleTags}
-                            from="schedule"
-                            setUpdateTagSchedule={setUpdateTagSchedule}
-                          />
-                        )}
-                      </td>
-                      <td className="text-center relative">
-                        <div className="relative">
-                          <button
-                            className="ml-3 relative"
-                            onClick={() => {
-                              handleScheduleItemClick(schedule.scheduleId);
-                            }}
-                          >
-                            <HiDotsVertical />
-                          </button>
-                          {/* action popup start */}
-                          {showActionBox[schedule.scheduleId] && (
-                            <div
-                              ref={showActionModalRef}
-                              className="scheduleAction z-10 "
+                            <td
+                              title={schedule?.tags && schedule?.tags}
+                              className="text-center flex items-center justify-center gap-2 w-full flex-wrap"
                             >
-                              <div className="my-1">
-                                <Link
-                                  to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
-                                >
-                                  <button>Edit Schedule</button>
-                                </Link>
-                              </div>
-                              <div className=" mb-1">
-                                <button
+                              {(schedule?.tags === "" || schedule?.tags === null) && (
+                                <span>
+                                  <AiOutlinePlusCircle
+                                    size={30}
+                                    className="mx-auto cursor-pointer"
+                                    onClick={() => {
+                                      setShowTagModal(true);
+                                      schedule.tags === "" || schedule?.tags === null ? setTags([]) : setTags(schedule?.tags?.split(","));
+                                      setUpdateTagSchedule(schedule);
+                                    }}
+                                  />
+                                </span>
+                              )}
+                              {schedule.tags !== null ? schedule.tags.split(",").slice(0, schedule.tags.split(",").length > 2 ? 3 : schedule.tags.split(",").length).join(",") : ""}
+                              {schedule?.tags !== "" && schedule?.tags !== null && (
+                                <MdOutlineModeEdit
                                   onClick={() => {
-                                    setAddScreenModal(true);
-                                    setScreenSelected(
-                                      schedule?.screenAssigned?.split(",")
-                                    );
+                                    setShowTagModal(true);
+                                    schedule.tags === "" || schedule?.tags === null
+                                      ? setTags([])
+                                      : setTags(schedule?.tags?.split(","));
+                                    setUpdateTagSchedule(schedule);
                                   }}
-                                >
-                                  Add Screens
-                                </button>
-                              </div>
-                              <div className="mb-1 border border-[#F2F0F9]"></div>
-                              <div className=" mb-1 text-[#D30000]">
+                                  className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
+                                />
+                              )}
+                              {showTagModal && (
+                                <AddOrEditTagPopup
+                                  setShowTagModal={setShowTagModal}
+                                  tags={tags}
+                                  setTags={setTags}
+                                  handleUpadteScheduleTags={handleUpadteScheduleTags}
+                                  from="schedule"
+                                  setUpdateTagSchedule={setUpdateTagSchedule}
+                                />
+                              )}
+                            </td>
+
+                            <td className="text-center relative">
+                              <div className="relative">
                                 <button
-                                  onClick={() =>
-                                    handelDeleteSchedule(
-                                      schedule.scheduleId,
-                                      schedule?.maciDs
-                                    )
-                                  }
+                                  className="ml-3 relative"
+                                  onClick={() => { handleScheduleItemClick(schedule.scheduleId); }}
                                 >
-                                  Delete
+                                  <HiDotsVertical />
                                 </button>
+                                {showActionBox[schedule.scheduleId] && (
+                                  <div ref={showActionModalRef} className="scheduleAction z-10 "
+                                  >
+                                    <div className="my-1">
+                                      <Link to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`} >
+                                        <button>Edit Schedule</button>
+                                      </Link>
+                                    </div>
+                                    <div className=" mb-1">
+                                      <button
+                                        onClick={() => {
+                                          setAddScreenModal(true);
+                                          setScreenSelected(schedule?.screenAssigned?.split(",")); setSelectData(schedule);
+                                        }}
+                                      >
+                                        Add Screens
+                                      </button>
+                                    </div>
+                                    <div className="mb-1 border border-[#F2F0F9]"></div>
+                                    <div className=" mb-1 text-[#D30000]">
+                                      <button
+                                        onClick={() => handelDeleteSchedule(schedule.scheduleId, schedule?.maciDs)}
+                                      >
+                                        Delete
+                                      </button>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
-                            </div>
-                          )}
-                          {/* action popup end */}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                            </td>
+                          </tr>
+                        </>
+                      )
+                    })}
+                  </>
                 )}
               </tbody>
             </table>
           </div>
+
+          <div className="flex justify-end mt-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              <svg
+                className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 10"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 5H1m0 0 4 4M1 5l4-4"
+                />
+              </svg>
+              Previous
+            </button>
+            {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              Next
+              <svg
+                className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 10"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M1 5h12m0 0L9 1m4 4L9 9"
+                />
+              </svg>
+            </button>
+          </div>
+
         </div>
       </div>
       <Footer />
+
+      {/* Model */}
+
+      {/* add screen modal start */}
+      {addScreenModal && (
+        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+          <div
+            ref={addScreenRef}
+            className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+          >
+            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+                <div className="flex items-center">
+                  <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
+                    Select the Screen you want Schedule add
+                  </h3>
+                </div>
+                <button
+                  className="p-1 text-xl ml-8"
+                  onClick={() => setAddScreenModal(false)}
+                >
+                  <AiOutlineCloseCircle className="text-2xl" />
+                </button>
+              </div>
+              <div className="flex justify-center p-9 ">
+                <p className="break-words w-[280px] text-base text-black text-center">
+                  New schedule would be applied. Do you want to proceed?
+                </p>
+              </div>
+              <div className="pb-6 flex justify-center">
+                <button
+                  className="bg-primary text-white px-8 py-2 rounded-full"
+                  onClick={() => {
+                    if (selectdata?.screenIDs) {
+                      let arr = [selectdata?.screenIDs];
+                      let newArr = arr[0]
+                        .split(",")
+                        .map((item) => parseInt(item.trim()));
+                      setSelectedScreens(newArr);
+                    }
+                    setSelectScreenModal(true);
+                    setAddScreenModal(false);
+                  }}
+                >
+                  OK
+                </button>
+
+                <button
+                  className="bg-primary text-white px-4 py-2 rounded-full ml-3"
+                  onClick={() => setAddScreenModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* add screen modal end */}
+      {selectScreenModal && (
+        <ScreenAssignModal
+          setAddScreenModal={setAddScreenModal}
+          setSelectScreenModal={setSelectScreenModal}
+          handleUpdateScreenAssign={handleUpdateScreenAssign}
+          selectedScreens={selectedScreens}
+          setSelectedScreens={setSelectedScreens}
+          screenSelected={screenSelected}
+        />
+      )}
+
+
     </>
   );
 };

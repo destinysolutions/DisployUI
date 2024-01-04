@@ -1,28 +1,19 @@
 import { useState, useRef } from "react";
 import React from "react";
-import { BiEdit, BiUserPlus } from "react-icons/bi";
+import { BiEdit, BiSolidUser, BiUserPlus } from "react-icons/bi";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import "../../Styles/Settings.css";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { GET_ALL_COUNTRY, GET_SELECT_BY_STATE } from "../../Pages/Api";
-import { CiMenuKebab } from "react-icons/ci";
+import { CHNAGE_PASSWORD, GET_ALL_COUNTRY, GET_SELECT_BY_STATE, USER_UPDATE_PASSWORD } from "../../Pages/Api";
 import {
-  RiDeleteBin6Line,
   RiUser3Fill,
-  RiUser6Fill,
-  RiUserSearchFill,
-  RiUserSettingsLine,
-  RiUserStarLine,
 } from "react-icons/ri";
-import DataTable from "react-data-table-component";
 import { IoIosArrowRoundBack, IoMdNotificationsOutline } from "react-icons/io";
 import {
   MdDeleteForever,
-  MdDeleteSweep,
   MdLockOutline,
-  MdOutlinePhotoCamera,
 } from "react-icons/md";
 import { IoIosLink } from "react-icons/io";
 import toast from "react-hot-toast";
@@ -47,6 +38,10 @@ import facebook from "../../images/Settings/facebook-logo.svg";
 import twitter from "../../images/Settings/twitter-logo.svg";
 import dribble from "../../images/Settings/dribbble-logo.svg";
 import Swal from "sweetalert2";
+import { Formik, useFormik } from "formik";
+import * as Yup from "yup";
+import { FiPauseCircle } from "react-icons/fi";
+
 
 const Users = ({ searchValue }) => {
   const [loadFist, setLoadFist] = useState(true);
@@ -91,6 +86,11 @@ const Users = ({ searchValue }) => {
   const store = useSelector((state) => state.root.settingUser);
   const authToken = `Bearer ${token}`;
 
+  const [currentPasswordShow, setCurrentPassword] = useState(false);
+  const [newPasswordShow, setNewPassword] = useState(false);
+  const [confirmPasswordShow, setConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const hiddenFileInput = useRef(null);
   const modalRef = useRef(null);
   const actionPopupRef = useRef(null);
@@ -105,10 +105,10 @@ const Users = ({ searchValue }) => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = userData.slice(indexOfFirstItem, indexOfLastItem);
-  
+
   // Filter data based on search term
   const filteredData = userData.filter((item) =>
-  Object.values(item).some((value) => value && value.toString().toLowerCase().includes(searchValue.toLowerCase())));
+    Object.values(item).some((value) => value && value.toString().toLowerCase().includes(searchValue.toLowerCase())));
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   // Function to sort the data based on a field and order
@@ -128,12 +128,27 @@ const Users = ({ searchValue }) => {
     filteredData,
     sortedField,
     sortOrder
-    ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+
+  const validationSchema = Yup.object().shape({
+    currentPassword: Yup.string().required("Current Password is required"),
+    newPassword: Yup.string()
+      .min(8, "Password must be at least 8 characters long")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
+      )
+      .required("New Password is required"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
+      .required("Confirm New Password is required"),
+  });
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  
+
   // Handle sorting when a table header is clicked
   const handleSort = (field) => {
     if (sortedField === field) {
@@ -530,6 +545,53 @@ const Users = ({ searchValue }) => {
     setShowActionBox(false);
   }
 
+
+  const formik = useFormik({
+    initialValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+      acceptTerms: false,
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      try {
+        const payload = {
+          userID: userID,
+          currentPassword: values.currentPassword,
+          newPassword: values.newPassword,
+          confirmPassword: values.confirmPassword,
+        };
+
+        const config = {
+          method: "post", // Change method to 'put' for changing the password
+          url: USER_UPDATE_PASSWORD, // Assuming CHNAGE_PASSWORD is your API endpoint
+          headers: {
+            Authorization: authToken,
+          },
+          params: {
+            userID: payload.userID,
+            OldPassowrd: payload.currentPassword, // Note: Typo in OldPassword corrected
+            NewPassword: payload.newPassword,
+          },
+          maxBodyLength: Infinity,
+        };
+
+        const response = await axios.request(config);
+        if (response.status) {
+          formik.resetForm()
+          toast.success("Password Update")
+        }
+      } catch (error) {
+        console.error("Error updating password:", error.message);
+        toast.error("Error updating password. Please try again.");
+      } finally {
+        console.log("------------- YES --------------- Password Update ");
+      }
+    },
+  });
+
+
   return (
     <>
       {showuserModal && (
@@ -841,110 +903,137 @@ const Users = ({ searchValue }) => {
             </h1>
             <div className="full flex flex-wrap -mx-3 mb-3">
               <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                <div className="card-shadow pt-6">
+                <div className="card-shadow pt-6 text-[#5E5E5E]">
                   <div className="user-details text-center border-b border-b-[#E4E6FF]">
                     <span className="user-img flex justify-center mb-3">
                       {userDetailData.profilePhoto ? (
                         <img
                           src={userDetailData?.profilePhoto}
-                          className="h-50"
+                          className="w-30 h-25 mb-3 rounded shadow-lg"
+                          style={{ width: '200px', height: '185px' }}
                         />
                       ) : (
-                        <img src={user_pic} className="h-50" />
+                        <BiSolidUser className="w-20 h-20" />
                       )}
                     </span>
-                    <span className="user-name">
+                    <span className="user-name text-gray-900 dark:text-white font-semibold capitalize">
                       {userDetailData.firstName} {userDetailData.lastName}
                     </span>
                     <div className="user-designation my-2">
-                      {userDetailData.userRoleName}
-                    </div>
-                    {/* <div className="total-screens-count my-4">
-                      <span className="screen-icon me-3">
-                        <img src="../../../Settings/screen-icon.svg" alt="" />
-                      </span>
-                      <span className="screen-count text-left">
-                        <strong>50</strong>
-                        <p>Total Screens</p>
-                      </span>
-                    </div> */}
-                  </div>
-                  <div className="user-pro-details">
-                    <h3 className="user-name my-2">Details</h3>
-                    <div className="flex">
-                      <label className="font-semibold">User ID :</label>
-                      <span className="ml-2">
-                        {userDetailData.orgUserSpecificID}
-                      </span>
-                    </div>
-                    <div className="flex">
-                      <label className="font-semibold">User Name :</label>
-                      <span className="ml-2">
-                        {userDetailData.firstName} {userDetailData.lastName}
-                      </span>
-                    </div>
-                    <div className="flex">
-                      <label className="font-semibold">Company Name :</label>
-                      <span className="ml-2">{userDetailData.company}</span>
-                    </div>
-
-                    <div className="flex">
-                      <label className="font-semibold">Email :</label>
-                      <span className="ml-2">{userDetailData.email}</span>
-                    </div>
-
-                    <div className="flex">
-                      <label className="font-semibold">Status :</label>
-
-                      {userDetailData.isActive == 1 ? (
-                        <span className="ml-2 bg-lime-700 px-3 rounded">
-                          Active
-                        </span>
-                      ) : (
-                        <span className="ml-2 bg-red px-3 rounded">
-                          Inactive
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex">
-                      <label className="font-semibold">Role :</label>
-                      <span className="ml-2">
+                      <span
+                        style={{ backgroundColor: "#cee9d6" }}
+                        className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                      >
                         {userDetailData.userRoleName}
                       </span>
                     </div>
+                  </div>
+                  <div className="user-pro-details mt-10">
+                    <h3 className="user-name my-2">Details</h3>
 
-                    {/* <div className="flex">
-                      <label>Tax ID:</label>
-                      <span>Tax-8894</span>
-                    </div> */}
-                    <div className="flex">
-                      <label className="font-semibold">Contact :</label>
-                      <span className="ml-2">{userDetailData.phone}</span>
+                    <div className="grid grid-flow-row-dense grid-cols-3 grid-rows-3 mt-4">
+                      {/* User ID : */}
+                      <div className="font-semibold">
+                        <span>User ID : </span>
+                      </div>
+                      <div className="col-span-2">
+                        <span>{userDetailData.orgUserSpecificID}</span>
+                      </div>
+                      {/* User Name  */}
+                      <div className="font-semibold">
+                        <span>User Name : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span> {userDetailData.firstName} {userDetailData.lastName}</span>
+                      </div>
+
+                      {/* Company Name  */}
+                      <div className="font-semibold">
+                        <span>Company Name : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span> {userDetailData.company}</span>
+                      </div>
+
+                      {/* Email   */}
+                      <div className="font-semibold">
+                        <span>Email : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span> {userDetailData.email}</span>
+                      </div>
+
+                      {/* Status   */}
+                      <div className="font-semibold">
+                        <span>Status : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span>
+                          {userDetailData.isActive == 1 ? (
+                            <span
+                              style={{ backgroundColor: "#cee9d6" }}
+                              className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                            >
+                              Active
+                            </span>
+                          ) : (
+                            <span
+                              style={{ backgroundColor: "#cee9d6" }}
+                              className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                            >
+                              Inactive
+                            </span>
+                          )}
+                        </span>
+                      </div>
+
+                      {/* Role   */}
+                      <div className="font-semibold">
+                        <span>Role : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span> {userDetailData.userRoleName}</span>
+                      </div>
+
+                      {/* Contact   */}
+                      <div className="font-semibold">
+                        <span>Contact : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span> {userDetailData.phone}</span>
+                      </div>
+
+                       {/* language */}
+                       <div className="font-semibold">
+                        <span>Language : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span>English</span>
+                      </div>
+
+                      {/* Country   */}
+                      <div className="font-semibold">
+                        <span>Country : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span> {userDetailData.countryName}</span>
+                      </div>
+
                     </div>
-                    {/* <div className="flex">
-                      <label>Language:</label>
-                      <span>English</span>
-                    </div> */}
-                    <div className="flex">
-                      <label className="font-semibold">Country :</label>
-                      <span className="ml-2">{userDetailData.countryName}</span>
-                    </div>
-                    <div className="flex justify-center w-full">
+
+
+                    <div className="flex justify-center w-full mt-10">
                       <button
                         onClick={() => {
                           setshowuserModal(true);
                           selectUserById(userDetailData.orgUserSpecificID);
                         }}
-                        className="me-3 hover:bg-white hover:text-primary text-base px-8 py-2 border border-primary  shadow-md rounded-full bg-primary text-white "
-                      >
-                        Edit
+                        className="me-3 hover:bg-white hover:text-primary text-base px-8 py-2 border border-primary  shadow-md rounded-full bg-primary text-white ">
+                        Edit Profile
                       </button>
-
-                      {/* <button className="hover:bg-white hover:text-primary text-base px-8 py-3 border border-red shadow-md rounded-full text-red-900  bg-red-200 ">
-                   
+                      <button className="hover:text-#ffbebe px-8 py-3 border border-red shadow-md rounded-full text-red-600 text-1xl font-semibold bg-[#ffbebe] ">
                         Suspend
-                      </button> */}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -998,59 +1087,111 @@ const Users = ({ searchValue }) => {
                       </div>
                       <div className="w-full mb-4">
                         <form
-                          action=""
-                          method="post"
-                          name="signupForm"
-                          id="signupForm"
+                          className="space-y-2"
+                          action="#"
+                          onSubmit={formik.handleSubmit}
                         >
-                          <div className="inputDiv relative mb-5">
-                            <label className="w-full inputLabel" for="password">
-                              Old Password
+                          <div className="relative">
+                            <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
+                              Current Password
                             </label>
                             <input
-                              type="password"
-                              className="w-full border border-[#D5E3FF] rounded-xl p-2"
-                              con
-                              id="password"
-                              name="password"
-                              required
+                              type={currentPasswordShow ? "text" : "password"}
+                              name="currentPassword"
+                              id="currentPassword"
+                              className=" border  text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              placeholder="Enter Current Password"
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              value={formik.values.currentPassword}
                             />
+                            <div className="icon mt-3">
+                              {currentPasswordShow ? (
+                                <BsFillEyeFill
+                                  onClick={() => setCurrentPassword(!currentPasswordShow)}
+                                />
+                              ) : (
+                                <BsFillEyeSlashFill
+                                  onClick={() => setCurrentPassword(!currentPasswordShow)}
+                                />
+                              )}
+                            </div>
                           </div>
-                          <div className="inputDiv relative mb-5">
-                            <label className="w-full inputLabel" for="password">
+                          {formik.touched.currentPassword &&
+                            formik.errors.currentPassword ? (
+                            <div className="text-red-500 error">
+                              {formik.errors.currentPassword}
+                            </div>
+                          ) : null}
+                          <div className="relative">
+                            <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
                               New Password
                             </label>
                             <input
-                              type="password"
-                              className="w-full border border-[#D5E3FF] rounded-xl p-2"
-                              con
-                              id="password"
-                              name="password"
-                              required
+                              type={newPasswordShow ? "text" : "password"}
+                              name="newPassword"
+                              id="newPassword"
+                              placeholder="Enter New Password"
+                              className=" border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              value={formik.values.password}
                             />
+                            <div className="icon mt-3">
+                              {newPasswordShow ? (
+                                <BsFillEyeFill
+                                  onClick={() => setNewPassword(!newPasswordShow)}
+                                />
+                              ) : (
+                                <BsFillEyeSlashFill
+                                  onClick={() => setNewPassword(!newPasswordShow)}
+                                />
+                              )}
+                            </div>
                           </div>
-
-                          <div className="inputDiv relative mb-5">
-                            <label className="inputLabel" for="confirmPassword">
-                              Confirm Password
+                          {formik.touched.newPassword && formik.errors.newPassword ? (
+                            <div className="text-red-500 error">
+                              {formik.errors.newPassword}
+                            </div>
+                          ) : null}
+                          <div className="relative">
+                            <label className="label_top text-sm font-medium text-gray-900 dark:text-white">
+                              Confirm password
                             </label>
                             <input
-                              type="password"
-                              className="w-full border border-[#D5E3FF] rounded-xl p-2"
-                              id="confirmPassword"
+                              type={confirmPasswordShow ? "text" : "password"}
                               name="confirmPassword"
+                              id="confirmPassword"
+                              placeholder="Enter Confirm New Password"
+                              className=" border  text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              value={formik.values.password}
                             />
+                            <div className="icon mt-3">
+                              {confirmPasswordShow ? (
+                                <BsFillEyeFill
+                                  onClick={() => setConfirmPassword(!confirmPasswordShow)}
+                                />
+                              ) : (
+                                <BsFillEyeSlashFill
+                                  onClick={() => setConfirmPassword(!confirmPasswordShow)}
+                                />
+                              )}
+                            </div>
                           </div>
-
-                          <div className="buttonWrapper">
+                          {formik.touched.confirmPassword &&
+                            formik.errors.confirmPassword ? (
+                            <div className="text-red-500 error">
+                              {formik.errors.confirmPassword}
+                            </div>
+                          ) : null}
+                          <div className="md:w-full flex pt-7">
                             <button
-                              type="submit"
-                              id="submitButton"
-                              onclick="validateSignupForm()"
-                              className="me-3 hover:bg-white hover:text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full bg-primary text-white"
+                              className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3"
+                              disabled={loading}
                             >
-                              <span>Change Password</span>
-                              <span id="loader"></span>
+                              {loading ? "Saving..." : "Save Changes"}
                             </button>
                           </div>
                         </form>
@@ -1567,7 +1708,7 @@ const Users = ({ searchValue }) => {
                 </div>
               </div>
             </div>
-          </div>
+          </div >
           <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full">
             <h3 className="user-name my-4">Selected Screens</h3>
             <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
@@ -1797,7 +1938,7 @@ const Users = ({ searchValue }) => {
                     </thead>
                     <tbody>
                       {userData && sortedAndPaginatedData.length > 0 ? (
-                        sortedAndPaginatedData.map((item,index) => {
+                        sortedAndPaginatedData.map((item, index) => {
                           return (
                             <tr className="border-b border-b-[#E4E6FF] p-4 mb-4 rounded-lg bg-white shadow-md" key={index}>
                               <th className="text-[#5E5E5E] text-center flex">
