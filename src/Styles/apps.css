@@ -101,8 +101,9 @@
 .videoplayer,
 .videoinner {
   width: 100% !important;
-  min-height: 100% !important;
-  max-height: 100% !important;
+  height: 100% !important;
+  /* min-height: 100% !important;
+  max-height: 100% !important; */
 }
 .videoplayer {
   border: 5px solid #000;
