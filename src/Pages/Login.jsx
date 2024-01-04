@@ -5,7 +5,7 @@ import { BsMicrosoft } from "react-icons/bs";
 import { BsApple } from "react-icons/bs";
 import { BsGoogle } from "react-icons/bs";
 import { FaFacebookF } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 // import { useCookies } from "react-cookie";
 import { Alert } from "@material-tailwind/react";
@@ -47,7 +47,9 @@ const Login = () => {
   const dispatch = useDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
-
+  const modalRef = useRef(null);
+  const [showModal, setShowModal] = useState(false);
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
   //using for login faild or success meg display
   const [errorMessge, setErrorMessge] = useState(false);
   const location = useLocation();
@@ -73,128 +75,6 @@ const Login = () => {
     captcha: Yup.string().required("captcha is required."),
   });
 
-  // const formik = useFormik({
-  //   initialValues: {
-  //     password: "",
-  //     emailID: "",
-  //     // terms: false,
-  //   },
-  //   validationSchema: validationSchema,
-  //   onSubmit: (values) => {
-  //     let data = JSON.stringify({
-  //       emailID: values.emailID,
-  //       password: values.password,
-  //     });
-
-  //     let config = {
-  //       method: "post",
-  //       maxBodyLength: Infinity,
-  //       url: LOGIN_URL,
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       data: data,
-  //     };
-
-  //     const response = dispatch(handleLoginUser({ config }));
-  //     if (response) {
-  //       response
-  //         .then((res) => {
-  //           const response = res?.payload;
-  //           localStorage.setItem("userID", JSON.stringify(response));
-  //           const createdDate = new Date(response.createdDate);
-  //           const trialEndDate = new Date(createdDate);
-  //           trialEndDate.setDate(trialEndDate.getDate() + response.trialDays);
-
-  //           const currentDate = new Date();
-  //           const daysRemaining = Math.ceil(
-  //             (trialEndDate - currentDate) / (1000 * 60 * 60 * 24)
-  //           );
-  //           // if (daysRemaining > 0) {
-  //           if (response.status == 200) {
-  //             window.localStorage.setItem("timer", JSON.stringify(18_00));
-
-  //             const userRole = response.role;
-  //             if (userRole == 1) {
-  //               localStorage.setItem("role_access", "ADMIN");
-  //               toast.success("Login successfully.");
-  //               window.location.href = "/";
-  //               // navigate("/");
-  //             } else if (userRole == 2) {
-  //               // User login logic
-  //               signInWithEmailAndPassword(
-  //                 auth,
-  //                 values.emailID,
-  //                 values.password
-  //               ).then((userCredential) => {
-  //                 const user = userCredential.user;
-  //                 if (!user.emailVerified) {
-  //                   alert("Please verify your email.");
-  //                 } else {
-  //                   const user_ID = response.userID;
-  //                   localStorage.setItem("userID", JSON.stringify(response));
-  //                   localStorage.setItem("role_access", "USER");
-  //                   toast.success("Login successfully.");
-  //                   navigate("/screens");
-  //                 }
-  //               });
-  //               // .catch((error) => {
-  //               //   var errorMessage = JSON.parse(error.message);
-  //               //   console.log("errorMessage", errorMessage);
-  //               //   switch (errorMessage.error.message) {
-  //               //     case "ERROR_INVALID_EMAIL":
-  //               //       alert("Your email address appears to be malformed.");
-  //               //       break;
-  //               //     case "ERROR_WRONG_PASSWORD":
-  //               //       alert("Your password is wrong.");
-  //               //       break;
-  //               //     case "ERROR_USER_NOT_FOUND":
-  //               //       alert("User with this email doesn't exist.");
-  //               //       break;
-  //               //     case "ERROR_USER_DISABLED":
-  //               //       alert("User with this email has been disabled.");
-  //               //       break;
-  //               //     case "ERROR_TOO_MANY_REQUESTS":
-  //               //       alert("Too many requests. Try again later.");
-  //               //       break;
-  //               //     case "ERROR_OPERATION_NOT_ALLOWED":
-  //               //       alert(
-  //               //         "Signing in with Email and Password is not enabled."
-  //               //       );
-  //               //       break;
-  //               //     case "INVALID_LOGIN_CREDENTIALS":
-  //               //       alert("Invaild Email Or Password");
-  //               //       break;
-
-  //               //     default:
-  //               //       alert("Something went wrong");
-  //               //   }
-  //               //
-  //               // });
-  //             } else {
-  //               // Handle other roles or unknown roles
-  //               console.log("Unexpected role value:", userRole);
-  //               alert("Invalid role: " + userRole);
-  //             }
-  //           } else {
-  //             toast.remove();
-  //             setErrorMessge(response.message);
-
-  //             toast.error(response?.message);
-  //           }
-
-  //           // } else {
-  //           //   alert(
-  //           //     "Trial days has been expired please contact the Administration"
-  //           //   );
-  //           // }
-  //         })
-  //         .catch((error) => {
-  //           console.log(error);
-  //         });
-  //     }
-  //   },
-  // });
 
   const formik = useFormik({
     initialValues: {
@@ -205,6 +85,12 @@ const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
+
+      if (!isCheckboxChecked) {
+        toast.error("Please check & accept the terms and conditions.");
+        return; // Exit the submission process if checkbox is not checked
+      }
+
       let data = JSON.stringify({
         emailID: values.emailID,
         password: values.password,
@@ -269,6 +155,7 @@ const Login = () => {
       }
     },
   });
+
   const { setFieldValue, values, getFieldProps } = formik;
 
   const SignInWithGoogle = async (data) => {
@@ -415,6 +302,17 @@ const Login = () => {
     navigate("/forgotpassword");
   };
 
+  const handleCheckboxChange = (e, formik) => {
+    setIsCheckboxChecked(e.target.checked);
+    setShowModal(true);
+  };
+
+  const handleAcceptTerms = () => {
+    setShowModal(false);
+  }
+
+
+
   return (
     <>
       {/* register success meg display start */}
@@ -513,16 +411,14 @@ const Login = () => {
                       <div className="error">{formik.errors.password}</div>
                     )}
                   </div>
-                  {/* <div className="flex items-start">
-
+                  <div className="flex items-start">
                     <div className="flex items-center h-5">
                       <input
                         id="terms"
                         name="terms"
                         type="checkbox"
-                        checked={formik.values.terms}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
+                        checked={isCheckboxChecked}
+                        onChange={handleCheckboxChange}
                         className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
                       />
                     </div>
@@ -530,15 +426,15 @@ const Login = () => {
                       <p className="not-italic text-white font-medium">
                         I accept the
                       </p>
-                      <Link to="/termsconditions">
-                        <p className="ml-1 not-italic text-white font-medium decoration-white border-b ">
-                          terms and conditions
-                        </p>
-                      </Link>
+                      {/* Modal trigger */}
+                      <p
+                        className="ml-1 not-italic text-white font-medium decoration-white border-b cursor-pointer"
+                        onClick={() => setShowModal(true)}
+                      >
+                        terms and conditions
+                      </p>
                     </div>
-
-                 
-                  </div> */}
+                  </div>
 
                   <div className="relative">
                     <div className="relative">
@@ -627,6 +523,53 @@ const Login = () => {
         </div>
       </div>
       {/* Login form end*/}
+
+      {showModal && (
+        <div className="backdrop">
+          <div ref={modalRef} className="user-model">
+            <div className="relative overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+              <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 p-4">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white w-full max-w-2xl max-h-full">
+                  Terms And Conditions
+                </h3>
+                <button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="default-modal" onClick={() => { setShowModal(false); setIsCheckboxChecked() }}>
+                  <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                  </svg>
+                  <span className="sr-only">Close modal</span>
+                </button>
+              </div>
+              <div className="p-4 md:p-5 space-y-4 overflow-y-auto max-h-[calc(100vh - 200px)]">
+                <ol className="space-y-4 text-gray-500 list-decimal list-inside dark:text-gray-400">
+                  <li>
+                    <b>Prohibited Activities</b>
+                    <ul className="ps-5 mt-2 space-y-1 list-disc list-inside">
+                      <li>You may not access or use the Site for any purpose other than that for which we make the Site available. The Site may not be used in connection with any commercial endeavors except those that are specifically endorsed or approved by us.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <b>Contribution License</b>
+                    <ul className="ps-5 mt-2 space-y-1 list-disc list-inside">
+                      <li>You and the Site agree that we may access, store, process, and use any information and personal data that you provide following the terms of the Privacy Policy and your choices (including settings). By submitting suggestions or other feedback regarding the Site, you agree that we can use and share such feedback for any purpose without compensation to you.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <b>Term And Termination</b>
+                    <ul className="ps-5 mt-2 space-y-1 list-disc list-inside">
+                      <li>These terms of use shall remain in full force and effect while you use the site. Without limiting any other provision of these terms of use, we reserve the right to, in our sole discretion and without notice or liability, deny access to and use of the site and the marketplace offerings (including blocking certain ip addresses), to any person for any reason or for no reason, including without limitation for breach of any representation, warranty, or covenant contained in these terms of use or of any applicable law or regulation. We may terminate your use or participation in the site and the marketplace offerings or delete any content or information that you posted at any time, without warning, in our sole discretion.</li>
+                    </ul>
+                  </li>
+                </ol>
+              </div>
+              <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                <button data-modal-hide="default-modal" type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" onClick={() => handleAcceptTerms()}>I accept</button>
+                <button data-modal-hide="default-modal" type="button" className="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600" onClick={() => { setShowModal(false); setIsCheckboxChecked() }}>Decline</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </>
   );
 };

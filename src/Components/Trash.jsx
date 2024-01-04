@@ -121,7 +121,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "delete",
       maxBodyLength: Infinity,
-      url: `${All_DELETED_TRASH}&type=All`,
+      url: All_DELETED_TRASH,
       headers: { Authorization: authToken },
     };
     Swal.fire({
@@ -141,6 +141,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
             timer: 2000, // Set the duration for the success message to be displayed (in milliseconds)
             showConfirmButton: false, // Hide the "OK" button
           });
+          setSelectAll(false)
       }
     });
   }
@@ -167,10 +168,9 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
             Swal.fire({
               title: 'Deleted Permanently',
               icon: 'success',
-              timer: 2000, // Set the duration for the success message to be displayed (in milliseconds)
+              timer: 1500, // Set the duration for the success message to be displayed (in milliseconds)
               showConfirmButton: false, // Hide the "OK" button
             });
-            setLoadFist(true)
         }
       });
       
@@ -181,34 +181,36 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   }
 
   const handleRestore = (id,type) => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `${RESTORE_TRASH}?assetID=${id}&assetType${type}`,
-      headers: { Authorization: authToken },
-    };
-    Swal.fire({
-      title: "Restore Item",
-      text: "Are you sure you want to restore this item?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#4caf50',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, restore it!',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dispatch(handleTrashRestore({ config }));
-        if (store.successMessage === "RESTORE") {
-          Swal.fire({
-            title: 'Restored Successfully',
-            icon: 'success',
-            timer: 1500, // Set the duration for the success message to be displayed (in milliseconds)
-            showConfirmButton: false, // Hide the "OK" button
-          });
-          setLoadFist(true)
+    try {
+      let config = {
+        method: "post",
+        maxBodyLength: Infinity,
+        url: `${RESTORE_TRASH}?assetID=${id}&assetType=${type}`,
+        headers: { Authorization: authToken },
+      };
+      Swal.fire({
+        title: "Restore Item",
+        text: "Are you sure you want to restore this item?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#4caf50',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, restore it!',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          dispatch(handleTrashRestore({ config }));
+            Swal.fire({
+              title: 'Restored Successfully',
+              icon: 'success',
+              timer: 1500, // Set the duration for the success message to be displayed (in milliseconds)
+              showConfirmButton: false, // Hide the "OK" button
+            });
+            setLoadFist(true)
         }
-      }
-    });
+      });
+    } catch (error) {
+      console.log(" handleRestore --- ",error);
+    }
   }
 
   return (
@@ -340,7 +342,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       </td>
                       {/* <td className=" border-b border-lightgray text-sm ">{item.assetFolderPath}</td> */}
-                      <td className=" border-b border-lightgray text-sm ">File location</td>
+                      <td className=" border-b border-lightgray text-sm ">Not Found</td>
                       <td className=" border-b border-lightgray text-sm ">{moment(item.createdDate).format("DD/MM/YY, h:mm:ss a")}{" "}</td>
                       <td className=" border-b border-lightgray text-sm ">{item.fileSize}{" "}</td>
                       <td className=" border-b border-lightgray text-sm ">{item.assetType}{" "}</td>

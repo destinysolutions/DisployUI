@@ -46,6 +46,7 @@ export const GET_ALL_EVENTS = `${baseUrl}api/EventMaster/GetAllEvent`;
 export const ADD_EVENT = `${baseUrl}api/EventMaster/AddEvent`;
 export const GET_ALL_SCHEDULE = `${baseUrl}api/ScheduleMaster/GetAllSchedule`;
 export const ADD_SCHEDULE = `${baseUrl}api/ScheduleMaster/AddSchedule`;
+export const DELETE_SCHEDULE = `${baseUrl}api/ScheduleMaster/DeleteSchedule`;
 
 export const UPDATE_SCREEN_ASSIGN = `${baseUrl}api/ScheduleMaster/UpdateAssignScreen`;
 
@@ -110,6 +111,7 @@ export const FORGOTPASSWORD = `${baseUrl}api/UserMaster/ForgotPassword`;
 
 export const CHNAGE_PASSWORD = `${baseUrl}api/UserMaster/ResetPassword?`;
 export const UPDATE_PASSWORD = `${baseUrl}api/UserMaster/UpdatePassword?`;
+export const USER_UPDATE_PASSWORD = `${baseUrl}api/UserMaster/UserUpdatePassword?`;
 
 // Weather App Api
 export const WEATHER_APP = `${baseUrl}api/WeatherApp/AddWeatherApp`
