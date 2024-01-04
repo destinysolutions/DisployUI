@@ -30,7 +30,7 @@ const ApprovalReq = () => {
   //   );
   //   if (storedCheckboxStates) {
   //     setCheckboxStates(storedCheckboxStates);
-  //   } 
+  //   }
 
   //   const storedDropdownStates = JSON.parse(
   //     localStorage.getItem("approvalReqDropdowns")
@@ -86,7 +86,7 @@ const ApprovalReq = () => {
               />
             </td>
             <td>
-              <select
+              {/* <select
                 className="border border-primary"
                 value={dropdownStates["screen"]}
                 onChange={(e) => handleDropdownChange("screen", e.target.value)}
@@ -96,7 +96,15 @@ const ApprovalReq = () => {
                 <option value="3">3</option>
                 <option value="4">4</option>
                 <option value="5">5</option>
-              </select>
+              </select> */}
+              <input type="radio" />
+              <label className="mx-2">1</label>
+              <input type="radio" />
+              <label className="mx-2">2</label>
+              <input type="radio" />
+              <label className="mx-2">3</label>
+              <input type="radio" />
+              <label className="mx-2">4</label>
             </td>
           </tr>
           <tr>
@@ -205,9 +213,10 @@ const ApprovalReq = () => {
       </table>
       <div className="py-4 px-44">
         <Link to="/userrole">
-        <button className="border border-primary px-4 py-2 rounded-full">
-          save
-        </button></Link>
+          <button className="border border-primary px-4 py-2 rounded-full">
+            save
+          </button>
+        </Link>
       </div>
     </div>
   );

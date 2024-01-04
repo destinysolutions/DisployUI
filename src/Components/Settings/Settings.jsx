@@ -15,6 +15,7 @@ import Defaultmedia from "./Defaultmedia";
 import "../../Styles/Settings.css";
 import Footer from "../Footer";
 import Users from "./Users";
+import ApprovalReq from "./ApprovalReq";
 
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
   Settings.propTypes = {
@@ -127,7 +128,6 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
   const [records, setRecords] = useState(data);
   const [searchValue, setSearchValue] = useState("");
 
-
   function updateTab(id) {
     setSTabs(id);
   }
@@ -235,14 +235,20 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
 
             {/* User Roles search */}
-            <div className={STabs === 2 ? "" : "hidden" && STabs === 1 ? "" : "hidden" }>
+            <div
+              className={
+                STabs === 2 ? "" : "hidden" && STabs === 1 ? "" : "hidden"
+              }
+            >
               <div className="text-right flex items-end justify-end relative">
                 <AiOutlineSearch className="absolute top-[13px] lg:right-[234px] md:right-[234px] sm:right-[234px] xs:right-auto xs:left-3 z-10 text-[#6e6e6e]" />
                 <input
                   type="text"
-                  placeholder={STabs === 2 ? "Search User Role" : "Search User Name"}
+                  placeholder={
+                    STabs === 2 ? "Search User Role" : "Search User Name"
+                  }
                   value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value) }
+                  onChange={(e) => setSearchValue(e.target.value)}
                   className="border border-gray rounded-full px-7 py-2 setting-searchbtn w-full"
                 />
               </div>
@@ -304,6 +310,20 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                     </span>
                   </button>
                 </li>
+
+                <li>
+                  <button
+                    className={
+                      STabs === 5 ? "stabshow settingtabactive" : "settingtab"
+                    }
+                    onClick={() => updateTab(5)}
+                  >
+                    <SiMediamarkt className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
+                    <span className="text-base text-primary">
+                      Approval Required
+                    </span>
+                  </button>
+                </li>
               </ul>
             </div>
 
@@ -323,6 +343,9 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
               {/*Storage Limits*/}
               <div className={STabs === 4 ? "" : "hidden"}>
                 <Defaultmedia />
+              </div>
+              <div className={STabs === 5 ? "" : "hidden"}>
+                <ApprovalReq />
               </div>
 
               {/*Default Media*/}

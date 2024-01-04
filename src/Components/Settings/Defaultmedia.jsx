@@ -61,7 +61,7 @@ const Defaultmedia = () => {
         ];
         setAssetData(allAssets);
         setAssetAllData(allAssets);
-        setFilteredData(allAssets)
+        setFilteredData(allAssets);
       })
       .catch((error) => {
         console.log(error);
@@ -501,7 +501,8 @@ const Defaultmedia = () => {
                                   <tbody key={asset.assetID}>
                                     <tr
                                       className={`${
-                                        selectedAsset?.assetID === asset?.assetID 
+                                        selectedAsset?.assetID ===
+                                        asset?.assetID
                                           ? "bg-[#f3c953]"
                                           : ""
                                       } border-b border-[#eee] `}
@@ -747,7 +748,7 @@ const Defaultmedia = () => {
                 Object.values(filePath).includes("OnlineVideo")) && (
                 <ReactPlayer
                   url={filePath?.assetFolderPath}
-                  className="w-full relative z-20 videoinner"
+                  className="relative z-20 videoinner"
                   controls={true}
                   playing={true}
                 />

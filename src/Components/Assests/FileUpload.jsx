@@ -1,13 +1,9 @@
 import { useState, useEffect } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-
 import { FaUnsplash } from "react-icons/fa";
 import { FiUploadCloud } from "react-icons/fi";
 import "../../Styles/assest.css";
-import { AiFillFile } from "react-icons/ai";
-import { RxCross2 } from "react-icons/rx";
-import { IoMdRefresh } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { FiCheckCircle } from "react-icons/fi";
 import { BiError } from "react-icons/bi";
@@ -17,22 +13,16 @@ import { useRef } from "react";
 import axios from "axios";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import Unsplash from "./Unsplash";
-import OneDrive from "./OneDrive";
 import Pexels from "./Pexels";
 import { SiPexels } from "react-icons/si";
-import DropboxUpload from "./DropboxUpload";
-import GoogleDrive from "./GoogleDrive";
 import Camera from "./Camera";
 import VideoRecorder from "./VideoRecorder";
 import Pixabay from "./Pixabay";
 import { Tooltip } from "@material-tailwind/react";
 import cameraimg from "../../images/Assets/photography.png";
 import videoimg from "../../images/Assets/camera.png";
-import Googledrive from "../../images/Assets/google-drive.png";
 import pixabayimg from "../../images/Assets/pixabay.png";
 import { useNavigate } from "react-router-dom";
-import { FcFile } from "react-icons/fc";
-import { AiOutlineAppstore } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import OtherOptionsForAssets from "./OtherOptionsForAssets";
@@ -85,22 +75,11 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
 
   const onDrop = () => wrapperRef.current.classList.remove("dragover");
 
-  const onFileDrop = (e) => {
-    const newFile = e.target.files[0];
-    if (newFile) {
-      const updatedList = [...fileList, newFile];
-      setFileList(updatedList);
-    }
-  };
-
   const fileRemove = (file) => {
     const updatedList = [...fileList];
     updatedList.splice(fileList.indexOf(file), 1);
     setFileList(updatedList);
   };
-  // file upload
-
-  const fileInputRef = useRef(null);
 
   const cameraModalRef = useRef(null);
   const videoModalRef = useRef(null);
@@ -231,19 +210,16 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                   navigate(-1);
                 }
               }
-              if (response.status !== 200) {
-                toast.error(`Upload failed for file ${image.name}`);
-              }
             } catch (error) {
+              toast.error(`Upload failed`);
               console.error(`Upload failed for file ${image.name}:`, error);
+              handleCancel();
             }
           }
         });
       });
-
       // Use Promise.all to execute all uploads concurrently
       await Promise.all(uploadPromises);
-
       // Once all files are uploaded, navigate to the desired location
       // navigate(-1);
     } catch (error) {
@@ -253,31 +229,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     }
   };
 
-  const getFileType = (fileName, mimeType) => {
-    const extension = fileName.split(".").pop().toLowerCase();
-
-    if (extension === "jpg" || extension === "jpeg" || extension === "png") {
-      return "Image";
-    } else if (
-      extension === "mp4" ||
-      extension === "avi" ||
-      extension === "mov"
-    ) {
-      return "Video";
-    } else if (
-      mimeType &&
-      (mimeType.startsWith("application/pdf") ||
-        mimeType.startsWith("text/") ||
-        mimeType === "application/msword" ||
-        mimeType === "application/vnd.ms-excel" ||
-        mimeType ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-    ) {
-      return "DOC";
-    } else {
-      return "file type not found"; // You can set a default value or handle other file types as needed
-    }
-  };
   // Function to extract content type from the MIME type
   const getContentType = (mime) => {
     if (mime.startsWith("image/")) {
@@ -373,13 +324,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
   };
 
   // end video
-
-  const handleDelete = (indexToDelete) => {
-    const updatedImages = selectedImages.filter(
-      (_, index) => index !== indexToDelete
-    );
-    setSelectedImages(updatedImages);
-  };
 
   useEffect(() => {
     const handleClickOutsideModal = (event) => {
@@ -492,7 +436,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
 
   useEffect(() => {
     checkTokenExpire();
-    // console.log("runf");
   });
 
   return (
@@ -511,34 +454,14 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               <Link>
                 <button
                   className="flex align-middle border-primary items-center border rounded-full lg:px-8 md:px-8 sm:px-4 xs:px-4 py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                  onClick={() => handleCancel()}>
+                  onClick={() => handleCancel()}
+                >
                   Cancel
                 </button>
               </Link>
             </div>
           </div>
           <div className="flex lg:justify-between md:justify-between flex-wrap sm:justify-start xs:justify-start items-center lg:mt-7 md:mt-7 sm:mt-5 xs:mt-5 media-icon">
-            {/* notepad ma che */}
-            {/* <GoogleDrive /> */}
-            {/* <Tooltip
-              content="Google Drive"
-              placement="bottom-end"
-              className=" bg-SlateBlue text-white z-10 ml-5"
-              animate={{
-                mount: { scale: 1, y: 0 },
-                unmount: { scale: 1, y: 10 },
-              }}
-            >
-              <button className="fileUploadIcon" 
-              // onClick={handleGet}
-              >
-                <img
-                  src={Googledrive}
-                  className="w-9"
-                  alt="Google Drive Icon"
-                />
-              </button>
-            </Tooltip> */}
             {/* start Camera */}
             <span className="fileUploadIcon" data-tip="Camera">
               <Tooltip
@@ -548,7 +471,8 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 1, y: 10 },
-                }}>
+                }}
+              >
                 <button onClick={openCameraModal} className="relative">
                   <img src={cameraimg} className="w-9 relative" />
                 </button>
@@ -571,7 +495,8 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 1, y: 10 },
-                }}>
+                }}
+              >
                 <button onClick={openVideoModal} className="relative">
                   <img src={videoimg} className="w-9 relative" />
                 </button>
@@ -596,10 +521,12 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 1, y: 10 },
-                }}>
+                }}
+              >
                 <button
                   onClick={handleUnsplashButtonClick}
-                  className="relative">
+                  className="relative"
+                >
                   <FaUnsplash size={30} className="relative" />
                 </button>
               </Tooltip>
@@ -621,10 +548,12 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 1, y: 10 },
-                }}>
+                }}
+              >
                 <button
                   onClick={handlePexelsButtonClick}
-                  className="relative text-[#07a081]">
+                  className="relative text-[#07a081]"
+                >
                   <SiPexels size={30} className="relative" />
                 </button>
               </Tooltip>
@@ -645,10 +574,12 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 1, y: 10 },
-                }}>
+                }}
+              >
                 <button
                   onClick={handlePexabaysButtonClick}
-                  className="relative">
+                  className="relative"
+                >
                   <img src={pixabayimg} className="relative w-9" />
                 </button>
               </Tooltip>
@@ -660,30 +591,9 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               )}
               {/* end pixabay */}
             </span>
-
-            <OtherOptionsForAssets handleSelect={handleSelect} />
-
-            {/*start app*/}
-            {/* <Link
-              to={"/apps"}
-              className="bg-white text-SlateBlue px-3 leading-none  rounded-[45px] fileUploadIcon relative"
-            >
-              <Tooltip
-                content="More App"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
-              >
-                <button className="relative">
-                  <AiOutlineAppstore className="relative text-3xl" />
-                </button>
-              </Tooltip>
-            </Link> */}
-            {/* end pixabay */}
-            {/*End app*/}
+            <span className="bg-white text-SlateBlue px-3 leading-none  rounded-[45px] fileUploadIcon relative">
+              <OtherOptionsForAssets handleSelect={handleSelect} />
+            </span>
           </div>
           <div className="flex w-full flex-col gap-4"></div>
           <div
@@ -691,7 +601,8 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
             className="drop-file-input"
             onDragEnter={onDragEnter}
             onDragLeave={onDragLeave}
-            onDrop={onDrop}>
+            onDrop={onDrop}
+          >
             <div className="relative">
               <div className=" relative flex-col flex  items-center justify-center min-h-full lg:py-16 md:py-10 sm:py-32 xs:pb-32 xs:pt-14 px-2  bg-lightgray lg:mt-14 md:mt-14 sm:mt-5 xs:mt-5  border-2 rounded-[20px] border-SlateBlue border-dashed">
                 <div className=" relative text-center max-auto">
@@ -711,75 +622,14 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                     Drop your first video, photo or document here
                   </p>
                 </div>
-                {/* <div className=" relative z-10 text-center ">
-                  <button
-                    className="bg-SlateBlue text-white px-7 py-2 rounded mt-4 z-10"
-                    onClick={uploadData}
-                    disabled={uploading} >
-                    Upload
-                  </button>
-              </div>*/}
-
-                {/* <div className="relative max-w-[750px] text-center mt-5">
-                  {selectedImages.map((item, index) => (
-                    <div key={index} className="image-item flex  justify-between items-center bg-white p-2 rounded-sm shadow-inner">
-                      <div className="image-item flex  items-center">
-                        {item.isVideo ? (
-                          <>
-                            <video controls className="max-w-16 max-h-16 rounded-lg">
-                              <source src={URL.createObjectURL(item.file)} type={item.file.type} />
-                              Your browser does not support the video tag.
-                            </video>
-                            <div className="ml-2 text-left">
-                              <p className="text-base">{item.name}</p>
-                              <p className="text-sm"><span className="font-medium text-base">Size:</span> {item.size}</p>
-                            </div></>
-                        ) : item.isDocument ? ( // Check if it's a document
-                          <div className="flex" >
-                            <FcFile size={40} color="red" /> {/* Render the document icon */}
-                {/*<div className="ml-2 text-left">
-                              <p className="text-base">{item.name}</p>
-                              <p className="text-sm"><span className="font-medium text-base">Size:</span> {item.size}</p>
-                            </div>
-                          </div>
-                        ) : (
-                          <>
-                            <img src={item.preview} alt={`Selected Image ${index}`} className="max-w-16 max-h-16 rounded-lg" />
-                            <div className="ml-2 text-left">
-                              <p className="text-base">{item.name}</p>
-                              <p className="text-sm"><span className="font-medium text-base">Size:</span> {item.size}</p>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                      <button onClick={() => handleDelete(index)}><RiDeleteBin6Line className="text-red text-lg ml-5" /></button>
-                    </div>
-                  ))}
-
-                </div> */}
               </div>
             </div>
           </div>
-
-          {/*  {uploading && (
-            <div className="progressbar-popup bg-white shadow-2xl">
-              <div className="flex justify-between items-center bg-white w-96 p-10">
-                <div>
-                  <h1>Uploading... {uploadProgress}%</h1>
-                  <progress
-                    value={uploadProgress}
-                    max={100}
-                    className="w-full custom-progress bg-SlateBlue rounded-sm"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-        */}
           {selectedImages.map((image, index) => (
             <div
               key={index}
-              className="shadow-inner bg-lightgray rounded-md m-5 w-100 p-2">
+              className="shadow-inner bg-lightgray rounded-md m-5 w-100 p-2"
+            >
               <h2>{image.name}</h2>
               <div className="flex justify-between items-center">
                 <progress
@@ -807,19 +657,14 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                   </div>
                   <span
                     className="drop-file-preview__item__del"
-                    onClick={() => fileRemove(item)}>
+                    onClick={() => fileRemove(item)}
+                  >
                     x
                   </span>
                 </div>
               ))}
             </div>
           ) : null}
-
-          {/* End of  Dropbox*/}
-          {/* ... start camera */}
-
-          {/* end of camera */}
-          {/* ... start Video*/}
           <div>
             {recordedVideos.map((blob, index) => (
               <div key={index}>
@@ -831,7 +676,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
               </div>
             ))}
           </div>
-          {/* ... end camera */}
 
           {fileSuccessModal ? (
             <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -877,7 +721,8 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                     </p>
                     <button
                       className="text-white bg-[#F21E1E] rounded text-lg font-bold px-7 py-2.5"
-                      onClick={() => setfileErrorModal(false)}>
+                      onClick={() => setfileErrorModal(false)}
+                    >
                       Try Again
                     </button>
                   </div>
