@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-import { RiDeleteBinLine } from "react-icons/ri";
+import { RiDeleteBin5Line, RiDeleteBinLine } from "react-icons/ri";
 import {
   AiOutlineCloseCircle,
   AiOutlinePlusCircle,
@@ -15,6 +15,7 @@ import {
   ADDPLAYLIST,
   COMPOSITION_BY_ID,
   DELETE_ALL_COMPOSITIONS,
+  DELETE_COMPOSITION,
   DELETE_COMPOSITION_BY_ID,
   GET_ALL_COMPOSITIONS,
   SELECT_BY_LIST,
@@ -24,7 +25,7 @@ import {
 import { useSelector } from "react-redux";
 import axios from "axios";
 import moment from "moment";
-import toast from "react-hot-toast";
+import toast, { CheckmarkIcon } from "react-hot-toast";
 import PreviewModal from "./PreviewModel";
 import { RxCrossCircled } from "react-icons/rx";
 import Carousel from "./DynamicCarousel";
@@ -33,9 +34,14 @@ import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import ScreenAssignModal from "../ScreenAssignModal";
 import { connection } from "../../SignalR";
+import Swal from "sweetalert2";
+import { useDispatch } from "react-redux";
+import { handleDeleteAll, handleGetCompositions, resetStatus } from "../../Redux/CompositionSlice";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
+  const { successMessage,error, type } = useSelector((state) => state.root.composition);
+
   const authToken = `Bearer ${token}`;
 
   const navigation = useNavigate();
@@ -72,6 +78,60 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
+
+  const [selectedItems, setSelectedItems] = useState([]);  // Multipal check
+
+
+  //   Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10); // Adjust items per page as needed
+  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const [sortedField, setSortedField] = useState(null);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = compositionData?.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Filter data based on search term
+  const filteredData = compositionData.filter((item) =>
+    Object.values(item).some((value) => value && value.toString().toLowerCase().includes(searchComposition.toLowerCase())));
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  // Function to sort the data based on a field and order
+  const sortData = (data, field, order) => {
+    const sortedData = [...data];
+    sortedData.sort((a, b) => {
+      if (order === "asc") {
+        return a[field] > b[field] ? 1 : -1;
+      } else {
+        return a[field] < b[field] ? 1 : -1;
+      }
+    });
+    return sortedData;
+  };
+
+  const sortedAndPaginatedData = sortData(
+    filteredData,
+    sortedField,
+    sortOrder
+  ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Handle sorting when a table header is clicked
+  const handleSort = (field) => {
+    if (sortedField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortOrder("asc");
+      setSortedField(field);
+    }
+  };
+  // Pagination End
+  const dispatch = useDispatch();
+
 
   const loadComposition = () => {
     let config = {
@@ -184,57 +244,122 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     });
   };
 
+
   const handleSelectAll = () => {
-    setCompositionData((prevCompositionData) => {
-      const updatedComposition = prevCompositionData.map((composition) => ({
-        ...composition,
-        isChecked: !selectAll,
-      }));
+    setSelectAll(!selectAll);
 
-      setSelectAll(!selectAll);
-
-      return updatedComposition;
-    });
+    if (selectedItems.length === compositionData.length) {
+      setSelectedItems([]);
+    } else {
+      const allIds = compositionData.map((composition) => composition.compositionID);
+      setSelectedItems(allIds);
+    }
   };
 
+  // Multipal check
+  const handleCheckboxChange = (compositionID) => {
+    if (selectedItems.includes(compositionID)) {
+      setSelectedItems(selectedItems.filter((id) => id !== compositionID));
+    } else {
+      setSelectedItems([...selectedItems, compositionID]);
+    }
+  };
+
+  // const handleDeleteAllCompositions = () => {
+  //   if (!window.confirm("Are you sure?")) return;
+  //   let config = {
+  //     method: "get",
+  //     maxBodyLength: Infinity,
+  //     url: DELETE_ALL_COMPOSITIONS,
+  //     headers: {
+  //       Authorization: authToken,
+  //     },
+  //   };
+
+  //   axios
+  //     .request(config)
+  //     .then((response) => {
+  //       if (response.data.status == 200) {
+  //         if (connection.state == "Disconnected") {
+  //           connection
+  //             .start()
+  //             .then((res) => {
+  //               console.log("signal connected");
+  //             })
+  //             .then(() => {
+  //               connection
+  //                 .invoke(
+  //                   "ScreenConnected",
+  //                   compositionData
+  //                     ?.map((item) => item?.maciDs)
+  //                     .join(",")
+  //                     .replace(/^\s+/g, "")
+  //                 )
+  //                 .then(() => {
+  //                   console.log("SignalR method invoked after screen update");
+  //                 })
+  //                 .catch((error) => {
+  //                   console.error("Error invoking SignalR method:", error);
+  //                 });
+  //             });
+  //         } else {
+  //           connection
+  //             .invoke(
+  //               "ScreenConnected",
+  //               compositionData
+  //                 ?.map((item) => item?.maciDs)
+  //                 .join(",")
+  //                 .replace(/^\s+/g, "")
+  //             )
+  //             .then(() => {
+  //               console.log("SignalR method invoked after screen update");
+  //             })
+  //             .catch((error) => {
+  //               console.error("Error invoking SignalR method:", error);
+  //             });
+  //         }
+  //         setSelectScreenModal(false);
+  //         setAddScreenModal(false);
+  //       }
+  //       console.log(JSON.stringify(response.data));
+  //       loadComposition();
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
+
   const handleDeleteAllCompositions = () => {
-    if (!window.confirm("Are you sure?")) return;
     let config = {
-      method: "get",
+      method: "delete",
       maxBodyLength: Infinity,
-      url: DELETE_ALL_COMPOSITIONS,
-      headers: {
-        Authorization: authToken,
-      },
+      url: `${DELETE_COMPOSITION}?CompositionIds=${selectedItems}`,
+      headers: { Authorization: authToken, },
     };
 
-    axios
-      .request(config)
-      .then((response) => {
-        if (response.data.status == 200) {
-          if (connection.state == "Disconnected") {
-            connection
-              .start()
-              .then((res) => {
-                console.log("signal connected");
-              })
-              .then(() => {
-                connection
-                  .invoke(
-                    "ScreenConnected",
-                    compositionData
-                      ?.map((item) => item?.maciDs)
-                      .join(",")
-                      .replace(/^\s+/g, "")
-                  )
-                  .then(() => {
-                    console.log("SignalR method invoked after screen update");
-                  })
-                  .catch((error) => {
-                    console.error("Error invoking SignalR method:", error);
-                  });
-              });
-          } else {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(handleDeleteAll({ config }));
+        setSelectAll(false)
+        setSelectedItems([])
+        dispatch(handleGetCompositions({ token }));
+      }
+
+      if (connection.state == "Disconnected") {
+        connection
+          .start()
+          .then((res) => {
+            console.log("signal connected");
+          })
+          .then(() => {
             connection
               .invoke(
                 "ScreenConnected",
@@ -249,16 +374,28 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               .catch((error) => {
                 console.error("Error invoking SignalR method:", error);
               });
-          }
-          setSelectScreenModal(false);
-          setAddScreenModal(false);
-        }
-        console.log(JSON.stringify(response.data));
-        loadComposition();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+          });
+      } else {
+        connection
+          .invoke(
+            "ScreenConnected",
+            compositionData
+              ?.map((item) => item?.maciDs)
+              .join(",")
+              .replace(/^\s+/g, "")
+          )
+          .then(() => {
+            console.log("SignalR method invoked after screen update");
+          })
+          .catch((error) => {
+            console.error("Error invoking SignalR method:", error);
+          });
+      }
+      setSelectScreenModal(false);
+      setAddScreenModal(false);
+
+    });
+
   };
 
   const handleFetchCompositionById = async (id, from) => {
@@ -474,33 +611,21 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const handleSearchComposition = (event) => {
     const searchQuery = event.target.value.toLowerCase();
     setSearchComposition(searchQuery);
-
-    if (searchQuery === "") {
-      setFilteredCompositionData([]);
-    } else {
-      const filteredComposition = compositionData.filter((entry) =>
-        Object.values(entry).some((val) => {
-          if (typeof val === "string") {
-            const keyWords = searchQuery.split(" ");
-            for (let i = 0; i < keyWords.length; i++) {
-              return (
-                val.toLocaleLowerCase().includes(searchQuery)
-              );
-            }
-          }
-        })
-      );
-      if (filteredComposition.length > 0) {
-        setFilteredCompositionData(filteredComposition);
-      } else {
-        setFilteredCompositionData([]);
-      }
-    }
   };
 
   useEffect(() => {
     loadComposition();
-  }, []);
+    if (successMessage && type === "DELETE") {
+      toast.success(successMessage)
+      dispatch(resetStatus())
+    }
+
+    if (error && type === "ERROR") {
+      toast.error(error)
+      dispatch(resetStatus())
+    }
+
+  }, [successMessage,error]);
 
   // preview modal
   useEffect(() => {
@@ -594,31 +719,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     setShowActionBox(false);
   }
 
-  const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
-  const [sortColumn, setSortColumn] = useState(null); // column name or null if not sorted
-  const handleSort = (column) => {
-    // Toggle sorting order if the same column is clicked
-    const newSortOrder =
-      column === sortColumn && sortOrder === "asc" ? "desc" : "asc";
-    setSortOrder(newSortOrder);
-    setSortColumn(column);
-
-    // Sort the data based on the selected column and order
-    const sortedData = [...compositionData].sort((a, b) => {
-      // Implement your sorting logic here based on the column
-      // Example: Sort by compositionName
-      const aValue = a[column];
-      const bValue = b[column];
-      return newSortOrder === "asc"
-        ? aValue.localeCompare(bValue)
-        : bValue.localeCompare(aValue);
-    });
-
-    // Update the state with the sorted data
-    setCompositionData(sortedData);
-  };
-
-  // console.log(screenMacids);
 
   return (
     <>
@@ -644,9 +744,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   onChange={handleSearchComposition}
                 />
               </div>
-              {/* <button className="sm:ml-2 xs:ml-1 flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                Preview
-              </button> */}
               <button
                 onClick={() => navigation("/addcomposition")}
                 className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
@@ -662,6 +759,17 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   >
                     <RiDeleteBinLine />
                   </button>
+
+                  {/* multipal remove */}
+                  {selectedItems.length !== 0 && !selectAll && (
+                    <button
+                    className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                      onClick={handleDeleteAllCompositions}
+                    >
+                      <RiDeleteBinLine />
+                    </button>
+                  )}
+
                   <button className="sm:ml-2 xs:ml-1  flex align-middle text-white items-center  rounded-full p-2 text-base ">
                     <input
                       type="checkbox"
@@ -674,90 +782,28 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               )}
             </div>
           </div>
-          {addScreenModal && (
-            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-              <div
-                ref={addScreenRef}
-                className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
-              >
-                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                  <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
-                    <div className="flex items-center">
-                      <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                        Select the screen to set the composition
-                      </h3>
-                    </div>
-                    <button
-                      className="p-1 text-xl ml-8"
-                      onClick={() => setAddScreenModal(false)}
-                    >
-                      <AiOutlineCloseCircle className="text-2xl" />
-                    </button>
-                  </div>
-                  <div className="flex justify-center p-9 ">
-                    <p className="break-words w-[280px] text-base text-black text-center">
-                      New composition would be applied. Do you want to proceed?
-                    </p>
-                  </div>
-                  <div className="pb-6 flex justify-center">
-                    <button
-                      className="bg-primary text-white px-8 py-2 rounded-full"
-                      onClick={() => {
-                        if (selectdata?.screenIDs) {
-                          let arr = [selectdata?.screenIDs];
-                          let newArr = arr[0]
-                            .split(",")
-                            .map((item) => parseInt(item.trim()));
-                          setSelectedScreens(newArr);
-                        }
-                        setSelectScreenModal(true);
-                        setAddScreenModal(false);
-                      }}
-                    >
-                      OK
-                    </button>
 
-                    <button
-                      className="bg-primary text-white px-4 py-2 rounded-full ml-3"
-                      onClick={() => setAddScreenModal(false)}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-          {selectScreenModal && (
-            <ScreenAssignModal
-              setAddScreenModal={setAddScreenModal}
-              setSelectScreenModal={setSelectScreenModal}
-              handleUpdateScreenAssign={handleUpdateScreenAssign}
-              selectedScreens={selectedScreens}
-              setSelectedScreens={setSelectedScreens}
-              screenSelected={screenSelected}
-            />
-          )}
-          <div className="rounded-xl mt-8 shadow bg-white mb-6">
+          <div className="rounded-xl mt-5 mb-6  overflow-x-auto shadow-md sm:rounded-lg">
             <table
               className="w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
               cellPadding={20}
             >
               <thead>
-                <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                <tr className="items-center border-b border-b-[#E4E6FF]  bg-[#e6e6e6]">
                   <th
-                    className={`text-[#5A5881] text-base font-semibold w-fit text-center ${
-                      sortColumn === "compositionName" ? "primary" : ""
-                    }`}
-                    onClick={() => handleSort("compositionName")}
+                    className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center"
                   >
                     Composition Name
-                    {sortColumn === "compositionName" &&
-                      sortOrder === "asc" &&
-                      "▲"}
-                    {sortColumn === "compositionName" &&
-                      sortOrder === "desc" &&
-                      "▼"}
+                    <svg
+                      className="w-3 h-3 ms-1.5 cursor-pointer"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      onClick={() => handleSort("compositionName")}
+                    >
+                      <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                    </svg>
                   </th>
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Date Added
@@ -774,488 +820,392 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Tags
                   </th>
-                  <th></th>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr className="text-center justify-center font-semibold text-lg w-full">
-                    <td colSpan="5">Loading...</td>
-                  </tr>
-                ) : compositionData.length > 0 && !loading ? (
-                  filteredCompositionData.length === 0 &&
-                  searchComposition !== "" ? (
-                    <tr>
-                      <td
-                        colSpan="6"
-                        className="font-semibold text-center text-2xl"
-                      >
-                        Composition Not found
-                      </td>
-                    </tr>
-                  ) : filteredCompositionData.length === 0 ? (
-                    compositionData.map((composition) => (
-                      <tr
-                        className="border-b border-b-[#E4E6FF] "
-                        key={composition?.compositionID}
-                      >
-                        <td
-                          className={`flex items-center ${
-                            selectAll ? "" : "justify-center"
-                          }`}
+                  <tr>
+                    <td colSpan={8}>
+                      <div className="flex text-center m-5 justify-center">
+                        <svg
+                          aria-hidden="true"
+                          role="status"
+                          className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                          viewBox="0 0 100 101"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
                         >
-                          <input
-                            type="checkbox"
-                            className="w-6 h-5 mr-2"
-                            style={{ display: selectAll ? "block" : "none" }}
-                            checked={composition?.isChecked || false}
-                            onChange={() =>
-                              handleSelectComposition(
-                                composition?.compositionID
-                              )
-                            }
+                          <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="currentColor"
                           />
-                          {composition?.compositionName}
-                        </td>
-                        <td className="text-center">
-                          {moment(composition?.dateAdded).format("LLL")}
-                        </td>
-                        <td className="text-center ">
-                          {composition?.resolution}
-                        </td>
-                        <td className="text-center">
-                          {moment
-                            .utc(composition?.duration * 1000)
-                            .format("HH:mm:ss")}
-                        </td>
-                        <td className="text-center">
-                          {composition?.screenNames}
-                        </td>
-
-                        <td
-                          title={composition?.tags && composition?.tags}
-                          className="text-center flex items-center justify-center w-full flex-wrap gap-2"
-                        >
-                          {(composition?.tags === "" ||
-                            composition?.tags === null) && (
-                            <span>
-                              <AiOutlinePlusCircle
-                                size={30}
-                                className="mx-auto cursor-pointer"
-                                onClick={() => {
-                                  setShowTagModal(true);
-                                  composition?.tags === "" ||
-                                  composition?.tags === null
-                                    ? setTags([])
-                                    : setTags(composition?.tags?.split(","));
-                                  handleFetchCompositionById(
-                                    composition?.compositionID,
-                                    "tags"
-                                  );
-                                }}
-                              />
-                            </span>
-                          )}
-                          {composition?.tags !== null
-                            ? composition?.tags
-                                .split(",")
-                                .slice(
-                                  0,
-                                  composition?.tags.split(",").length > 2
-                                    ? 3
-                                    : composition?.tags.split(",").length
-                                )
-                                .map((text) => {
-                                  if (text.toString().length > 10) {
-                                    return text
-                                      .split("")
-                                      .slice(0, 10)
-                                      .concat("...")
-                                      .join("");
-                                  }
-                                  return text;
-                                })
-                                .join(",")
-                            : ""}
-                          {composition?.tags !== "" &&
-                            composition?.tags !== null && (
-                              <MdOutlineModeEdit
-                                onClick={() => {
-                                  setShowTagModal(true);
-                                  composition?.tags === "" ||
-                                  composition?.tags === null
-                                    ? setTags([])
-                                    : setTags(composition?.tags?.split(","));
-                                  handleFetchCompositionById(
-                                    composition?.compositionID,
-                                    "tags"
-                                  );
-                                }}
-                                className="w-5 h-5 cursor-pointer"
-                              />
-                            )}
-                          {/* add or edit tag modal */}
-                          {showTagModal && (
-                            <AddOrEditTagPopup
-                              setShowTagModal={setShowTagModal}
-                              tags={tags}
-                              setTags={setTags}
-                              handleUpdateTagsOfComposition={
-                                handleUpdateTagsOfComposition
-                              }
-                              from="composition"
-                              setUpdateTagComposition={setUpdateTagComposition}
-                            />
-                          )}
-                        </td>
-                        <td className="text-center relative">
-                          <div className="">
-                            <button
-                              className="ml-3 "
-                              onClick={() => {
-                                onClickMoreComposition(
-                                  composition.compositionID
-                                );
-                              }}
-                            >
-                              <HiDotsVertical />
-                            </button>
-                            {/* action popup start */}
-                            {showActionBox[composition.compositionID] && (
-                              <div
-                                ref={showActionModalRef}
-                                className="scheduleAction z-20"
-                              >
-                                <div className="my-1">
-                                  <button
-                                    onClick={() =>
-                                      navigation(
-                                        `/editcomposition/${composition?.compositionID}/${composition?.layoutID}`
-                                      )
-                                    }
-                                  >
-                                    Edit
-                                  </button>
-                                </div>
-                                <div className=" mb-1">
-                                  <button
-                                    onClick={() => {
-                                      handleFetchCompositionById(
-                                        composition?.compositionID
-                                      );
-                                      handleFetchLayoutById(
-                                        composition?.layoutID
-                                      );
-                                    }}
-                                  >
-                                    Preview
-                                  </button>
-                                </div>
-                                {/* <div className=" mb-1">
-                                <button>Duplicate</button>
-                              </div> */}
-                                <div className=" mb-1">
-                                  <button
-                                    onClick={() => {
-                                      setAddScreenModal(true);
-                                      setSelectData(composition);
-                                      setScreenSelected(
-                                        composition?.screenNames?.split(",")
-                                      );
-                                      setScreenMacids(composition?.maciDs);
-                                    }}
-                                  >
-                                    Set to Screens
-                                  </button>
-                                </div>
-                                <div className="mb-1 border border-[#F2F0F9]"></div>
-                                <div className=" mb-1 text-[#D30000]">
-                                  <button
-                                    onClick={() =>
-                                      handelDeleteComposition(
-                                        composition.compositionID,
-                                        composition?.maciDs
-                                      )
-                                    }
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    filteredCompositionData.map((composition) => (
-                      <tr
-                        className="border-b border-b-[#E4E6FF] "
-                        key={composition?.compositionID}
-                      >
-                        <td
-                          className={`flex items-center ${
-                            selectAll ? "" : "justify-center"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            className="w-6 h-5 mr-2"
-                            style={{ display: selectAll ? "block" : "none" }}
-                            checked={composition?.isChecked || false}
-                            onChange={() =>
-                              handleSelectComposition(
-                                composition?.compositionID
-                              )
-                            }
+                          <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="#1C64F2"
                           />
-                          {composition?.compositionName}
-                        </td>
-                        <td className="text-center">
-                          {moment(composition?.dateAdded).format("LLL")}
-                        </td>
-                        <td className="text-center ">
-                          {composition?.resolution}
-                        </td>
-                        <td className="text-center">
-                          {moment
-                            .utc(composition?.duration * 1000)
-                            .format("HH:mm:ss")}
-                        </td>
-                        <td className="text-center">
-                          {composition.screenNames}
-                        </td>
-                        <td
-                          title={composition?.tags && composition?.tags}
-                          className="text-center flex items-center justify-center w-full flex-wrap gap-2"
-                        >
-                          {(composition?.tags === "" ||
-                            composition?.tags === null) && (
-                            <span>
-                              <AiOutlinePlusCircle
-                                size={30}
-                                className="mx-auto cursor-pointer"
-                                onClick={() => {
-                                  setShowTagModal(true);
-                                  composition?.tags === "" ||
-                                  composition?.tags === null
-                                    ? setTags([])
-                                    : setTags(composition?.tags?.split(","));
-                                  handleFetchCompositionById(
-                                    composition?.compositionID,
-                                    "tags"
-                                  );
-                                }}
-                              />
-                            </span>
-                          )}
-                          {composition?.tags !== null
-                            ? composition?.tags
-                                .split(",")
-                                .slice(
-                                  0,
-                                  composition?.tags.split(",").length > 2
-                                    ? 3
-                                    : composition?.tags.split(",").length
-                                )
-                                .map((text) => {
-                                  if (text.toString().length > 10) {
-                                    return text
-                                      .split("")
-                                      .slice(0, 10)
-                                      .concat("...")
-                                      .join("");
-                                  }
-                                  return text;
-                                })
-                                .join(",")
-                            : ""}
-                          {composition?.tags !== "" &&
-                            composition?.tags !== null && (
-                              <MdOutlineModeEdit
-                                onClick={() => {
-                                  setShowTagModal(true);
-                                  composition?.tags === "" ||
-                                  composition?.tags === null
-                                    ? setTags([])
-                                    : setTags(composition?.tags?.split(","));
-                                  handleFetchCompositionById(
-                                    composition?.compositionID,
-                                    "tags"
-                                  );
-                                }}
-                                className="w-5 h-5 cursor-pointer"
-                              />
-                            )}
-                          {/* add or edit tag modal */}
-                          {showTagModal && (
-                            <AddOrEditTagPopup
-                              setShowTagModal={setShowTagModal}
-                              tags={tags}
-                              setTags={setTags}
-                              handleUpdateTagsOfComposition={
-                                handleUpdateTagsOfComposition
-                              }
-                              from="composition"
-                              setUpdateTagComposition={setUpdateTagComposition}
-                            />
-                          )}
-                        </td>
-                        <td className="text-center relative">
-                          <div className="">
-                            <button
-                              className="ml-3 "
-                              onClick={() => {
-                                onClickMoreComposition(
-                                  composition.compositionID
-                                );
-                              }}
-                            >
-                              <HiDotsVertical />
-                            </button>
-                            {/* action popup start */}
-                            {showActionBox[composition.compositionID] && (
-                              <div
-                                ref={showActionModalRef}
-                                className="scheduleAction z-20"
-                              >
-                                <div className="my-1">
-                                  <button
-                                    onClick={() =>
-                                      navigation(
-                                        `/editcomposition/${composition?.compositionID}/${composition?.layoutID}`
-                                      )
-                                    }
-                                  >
-                                    Edit
-                                  </button>
-                                </div>
-                                <div className=" mb-1">
-                                  <button
-                                    onClick={() => {
-                                      handleFetchCompositionById(
-                                        composition?.compositionID
-                                      );
-                                      handleFetchLayoutById(
-                                        composition?.layoutID
-                                      );
-                                    }}
-                                  >
-                                    Preview
-                                  </button>
-                                </div>
-                                {/* <div className=" mb-1">
-                              <button>Duplicate</button>
-                            </div> */}
-                                <div className=" mb-1">
-                                  <button
-                                    onClick={() => {
-                                      setAddScreenModal(true);
-                                      setScreenSelected(
-                                        composition?.screenNames?.split(",")
-                                      );
-                                    }}
-                                  >
-                                    Set to Screens
-                                  </button>
-                                </div>
-                                <div className="mb-1 border border-[#F2F0F9]"></div>
-                                <div className=" mb-1 text-[#D30000]">
-                                  <button
-                                    onClick={() =>
-                                      handelDeleteComposition(
-                                        composition.compositionID,
-                                        composition?.maciDs
-                                      )
-                                    }
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )
-                ) : (
-                  <tr className="text-center p-2 font-semibold w-full">
-                    <td colSpan="6" className="p-3 text-center">
-                      No CompositionData here.
+                        </svg>
+                        <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2 px dark:bg-green-900 dark:text-green-300">
+                          Loading...
+                        </span>
+                      </div>
                     </td>
                   </tr>
+                ) : compositionData && sortedAndPaginatedData?.length === 0 ? (
+                  <tr>
+                    <td colSpan={6}>
+                      <div className="flex text-center m-5 justify-center">
+                        <span className="text-4xl text-gray-800 font-semibold py-2 px-4 rounded-full text-red-800 me-2 dark:bg-red-900 dark:text-red-300">
+                          Data Not Found
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  <>
+                    {compositionData && sortedAndPaginatedData.length > 0 && sortedAndPaginatedData.map((composition, index) => {
+                      return (
+                        <>
+                          <tr className="border-b border-b-[#E4E6FF] " key={composition?.compositionID} >
+                            <td className="text-[#5E5E5E] text-center">
+                              <div className="flex gap-1">
+                                {selectAll ? (<CheckmarkIcon className="w-5 h-5" />) : (
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedItems.includes(composition?.compositionID)}
+                                    onChange={() => handleCheckboxChange(composition?.compositionID)}
+                                  />
+                                )}
+                                {composition?.compositionName}
+                              </div>
+                            </td>
+                            <td className="text-center text-[#5E5E5E]">{moment(composition?.dateAdded).format("LLL")}</td>
+                            <td className="text-center text-[#5E5E5E]">{composition?.resolution}</td>
+                            <td className="text-center text-[#5E5E5E]">{moment.utc(composition?.duration * 1000).format("HH:mm:ss")}</td>
+                            <td className="text-center text-[#5E5E5E]">{composition?.screenNames}</td>
+                            <td
+                              title={composition?.tags && composition?.tags}
+                              className="text-center flex items-center justify-center w-full flex-wrap gap-2"
+                            >
+                              {(composition?.tags === "" ||
+                                composition?.tags === null) && (
+                                  <span>
+                                    <AiOutlinePlusCircle
+                                      size={30}
+                                      className="mx-auto cursor-pointer"
+                                      onClick={() => {
+                                        setShowTagModal(true);
+                                        composition?.tags === "" ||
+                                          composition?.tags === null
+                                          ? setTags([])
+                                          : setTags(composition?.tags?.split(","));
+                                        handleFetchCompositionById(
+                                          composition?.compositionID,
+                                          "tags"
+                                        );
+                                      }}
+                                    />
+                                  </span>
+                                )}
+                              {composition?.tags !== null
+                                ? composition?.tags
+                                  .split(",")
+                                  .slice(
+                                    0,
+                                    composition?.tags.split(",").length > 2
+                                      ? 3
+                                      : composition?.tags.split(",").length
+                                  )
+                                  .map((text) => {
+                                    if (text.toString().length > 10) {
+                                      return text
+                                        .split("")
+                                        .slice(0, 10)
+                                        .concat("...")
+                                        .join("");
+                                    }
+                                    return text;
+                                  })
+                                  .join(",")
+                                : ""}
+                              {composition?.tags !== "" &&
+                                composition?.tags !== null && (
+                                  <MdOutlineModeEdit
+                                    onClick={() => {
+                                      setShowTagModal(true);
+                                      composition?.tags === "" ||
+                                        composition?.tags === null
+                                        ? setTags([])
+                                        : setTags(composition?.tags?.split(","));
+                                      handleFetchCompositionById(
+                                        composition?.compositionID,
+                                        "tags"
+                                      );
+                                    }}
+                                    className="w-5 h-5 cursor-pointer"
+                                  />
+                                )}
+                              {/* add or edit tag modal */}
+                              {showTagModal && (
+                                <AddOrEditTagPopup
+                                  setShowTagModal={setShowTagModal}
+                                  tags={tags}
+                                  setTags={setTags}
+                                  handleUpdateTagsOfComposition={
+                                    handleUpdateTagsOfComposition
+                                  }
+                                  from="composition"
+                                  setUpdateTagComposition={setUpdateTagComposition}
+                                />
+                              )}
+                            </td>
+
+                            <td className="text-center relative">
+                              <div className="">
+                                <button
+                                  className="ml-3 "
+                                  onClick={() => {
+                                    onClickMoreComposition(
+                                      composition.compositionID
+                                    );
+                                  }}
+                                >
+                                  <HiDotsVertical />
+                                </button>
+                                {/* action popup start */}
+                                {showActionBox[composition.compositionID] && (
+                                  <div
+                                    ref={showActionModalRef}
+                                    className="scheduleAction z-20"
+                                  >
+                                    <div className="my-1">
+                                      <button
+                                        onClick={() =>
+                                          navigation(
+                                            `/editcomposition/${composition?.compositionID}/${composition?.layoutID}`
+                                          )
+                                        }
+                                      >
+                                        Edit
+                                      </button>
+                                    </div>
+                                    <div className=" mb-1">
+                                      <button
+                                        onClick={() => {
+                                          handleFetchCompositionById(
+                                            composition?.compositionID
+                                          );
+                                          handleFetchLayoutById(
+                                            composition?.layoutID
+                                          );
+                                        }}
+                                      >
+                                        Preview
+                                      </button>
+                                    </div>
+                                    {/* <div className=" mb-1">
+                                <button>Duplicate</button>
+                              </div> */}
+                                    <div className=" mb-1">
+                                      <button
+                                        onClick={() => {
+                                          setAddScreenModal(true);
+                                          setSelectData(composition);
+                                          setScreenSelected(
+                                            composition?.screenNames?.split(",")
+                                          );
+                                          setScreenMacids(composition?.maciDs);
+                                        }}
+                                      >
+                                        Set to Screens
+                                      </button>
+                                    </div>
+                                    <div className="mb-1 border border-[#F2F0F9]"></div>
+                                    <div className=" mb-1 text-[#D30000]">
+                                      <button
+                                        onClick={() =>
+                                          handelDeleteComposition(
+                                            composition.compositionID,
+                                            composition?.maciDs
+                                          )
+                                        }
+                                      >
+                                        Delete
+                                      </button>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+
+                          </tr>
+                        </>
+                      )
+                    })}
+                  </>
                 )}
               </tbody>
             </table>
           </div>
-        </div>
-      </div>
-      <PreviewModal show={modalVisible} onClose={closeModal}>
-        <div
-          className={`fixed  border left-1/2 -translate-x-1/2 ${
-            screenType === "portrait"
-              ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
-              : "min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]"
-          }  `}
-          ref={modalRef}
-          //   maxWidth: `${layotuDetails?.screenWidth}px`,
-          //   minWidth: `${layotuDetails?.screenWidth}px`,
-          //   maxHeight: `${layotuDetails?.screenHeight}px`,
-          //   minHeight: `${layotuDetails?.screenHeight}px`,
-          // }}
-        >
-          <RxCrossCircled
-            className="fixed z-50 w-[30px] h-[30px] text-white bg-black/20 rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
-            onClick={closeModal}
-          />
-          {/* screentype toggle "landspace | portrait" */}
-          <div
-            className={`fixed z-50 ${
-              screenType === "Landscape" ? "w-14 h-7" : "h-14 w-7"
-            }   rounded-md  bg-black p-2 top-1 right-10 cursor-pointer`}
-          >
-            <span
-              className={`fixed z-50  ${
-                screenType === "Landscape"
-                  ? "w-10 h-5 top-2 right-12"
-                  : "w-5 h-10 top-3 right-11"
-              }  rounded-md  bg-white  cursor-pointer`}
-              title={screenType}
-              onClick={() => {
-                if (screenType === "Landscape") {
-                  setScreenType("portrait");
-                } else {
-                  setScreenType("Landscape");
-                }
-              }}
-            />
+
+          <div className="flex justify-end mt-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              <svg
+                className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 10"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 5H1m0 0 4 4M1 5l4-4"
+                />
+              </svg>
+              Previous
+            </button>
+            {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              Next
+              <svg
+                className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 10"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M1 5h12m0 0L9 1m4 4L9 9"
+                />
+              </svg>
+            </button>
           </div>
 
-          {!loading &&
-            layotuDetails?.lstLayloutModelList.length > 0 &&
-            layotuDetails?.lstLayloutModelList?.map((obj, index) => (
-              <div
-                key={index}
-                style={{
-                  position: "fixed",
-                  left: obj.leftside + "%",
-                  top: obj.topside + "%",
-                  width: obj?.width + "%",
-                  height: obj?.height + "%",
-                  backgroundColor: obj.fill,
-                }}
-              >
-                {modalVisible && (
-                  <Carousel
-                    items={previewModalData[index][index + 1]}
-                    composition={obj}
-                  />
-                )}
+        </div>
+      </div>
+
+      {addScreenModal && (
+        <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+          <div
+            ref={addScreenRef}
+            className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+          >
+            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                <div className="flex items-center">
+                  <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
+                    Select the screen to set the composition
+                  </h3>
+                </div>
+                <button
+                  className="p-1 text-xl ml-8"
+                  onClick={() => setAddScreenModal(false)}
+                >
+                  <AiOutlineCloseCircle className="text-2xl" />
+                </button>
               </div>
-            ))}
+              <div className="flex justify-center p-9 ">
+                <p className="break-words w-[280px] text-base text-black text-center">
+                  New composition would be applied. Do you want to proceed?
+                </p>
+              </div>
+              <div className="pb-6 flex justify-center">
+                <button
+                  className="bg-primary text-white px-8 py-2 rounded-full"
+                  onClick={() => {
+                    if (selectdata?.screenIDs) {
+                      let arr = [selectdata?.screenIDs];
+                      let newArr = arr[0]
+                        .split(",")
+                        .map((item) => parseInt(item.trim()));
+                      setSelectedScreens(newArr);
+                    }
+                    setSelectScreenModal(true);
+                    setAddScreenModal(false);
+                  }}
+                >
+                  OK
+                </button>
+
+                <button
+                  className="bg-primary text-white px-4 py-2 rounded-full ml-3"
+                  onClick={() => setAddScreenModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectScreenModal && (
+        <ScreenAssignModal
+          setAddScreenModal={setAddScreenModal}
+          setSelectScreenModal={setSelectScreenModal}
+          handleUpdateScreenAssign={handleUpdateScreenAssign}
+          selectedScreens={selectedScreens}
+          setSelectedScreens={setSelectedScreens}
+          screenSelected={screenSelected}
+        />
+      )}
+
+      <PreviewModal show={modalVisible} onClose={closeModal} >
+        <div
+          className={`fixed left-1/2 -translate-x-1/2 ${screenType === "portrait"
+              ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
+              : "min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]"
+            }  `}
+
+          ref={modalRef}
+        >
+          <div style={{ padding: "15px", backgroundColor: "white" }}>
+            <RxCrossCircled
+              className="fixed z-50 text-4xl p-1 m-2 rounded-full top-[-27px] right-[-23px] cursor-pointer bg-black text-white"
+              onClick={closeModal}
+            />
+
+            {!loading &&
+              layotuDetails?.lstLayloutModelList.length > 0 &&
+              layotuDetails?.lstLayloutModelList?.map((obj, index) => (
+                <div
+                  key={index}
+                  style={{
+                    position: "fixed",
+                    left: obj.leftside + "%",
+                    top: obj.topside + "%",
+                    width: obj?.width + "%",
+                    height: obj?.height + "%",
+                    // backgroundColor: obj.fill,
+                  }}
+                >
+                  {modalVisible && (
+                    <Carousel
+                      items={previewModalData[index][index + 1]}
+                      composition={obj}
+                    />
+                  )}
+                </div>
+              ))}
+          </div>
         </div>
       </PreviewModal>
+
       <Footer />
     </>
   );

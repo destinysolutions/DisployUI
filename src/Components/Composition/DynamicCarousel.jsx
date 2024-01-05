@@ -24,12 +24,12 @@ const Carousel = ({ items, compositonData, from }) => {
   // console.log(items);
   return (
     <>
-      <div className="h-full w-full">
+      <div className="h-full w-full p-1 bg-white">
         {items?.map((item, index) => {
           // console.log(item);
           if (currentIndex === index) {
             return (
-              <div className="h-full w-full" key={index}>
+              <div className="h-full w-full text-[#5A5881] font-semibold rounded shadow" key={index}>
                 {item.assetType === "OnlineImage" && (
                   <img
                     className="w-full h-full object-fill rounded-sm"
@@ -117,7 +117,7 @@ const Carousel = ({ items, compositonData, from }) => {
                   item?.mediaType === "Text" ||
                   item?.text !== undefined) && (
                   <marquee
-                    className="text-lg w-full h-full flex items-center text-black"
+                    className="text-3xl w-full h-full flex items-center text-black"
                     direction={
                       item?.scrollType == 1 ||
                       item?.direction == "Left to Right"

@@ -974,7 +974,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </div>
 
-            <div className="relative screenplayer-section w-[60vw] h-[90vh] mx-auto">
+            <div className="relative screenplayer-section w-[60vw] h-[50vh] mx-auto">
               <div className="w-full h-full pb-5 mx-auto">
                 {loading ? (
                   <div className="text-center font-semibold text-2xl">

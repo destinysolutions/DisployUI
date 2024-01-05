@@ -16,13 +16,12 @@ export const handleGetCompositions = createAsyncThunk(
           signal,
         }
       );
-      if (data?.status == 200) return data;
+      if (data?.status === 200) return data;
       else {
         toast.error(data?.message);
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
       rejectWithValue(error?.response?.data?.message);
     }
   }
@@ -33,15 +32,29 @@ export const handleGetCompositionLayouts = createAsyncThunk(
   async ({ config }, { rejectWithValue, signal }) => {
     try {
       const { data } = await axios.request(config);
-      if (data?.status == 200) return data;
+      if (data?.status === 200) return data;
       else {
         toast.error(data?.message);
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
       rejectWithValue(error?.response?.data?.message);
     }
+  }
+);
+
+export const handleDeleteAll = createAsyncThunk("composition/handleDeleteAll",async ({ config }, { rejectWithValue, signal }) => {
+  try {
+    const response = await axios.request(config);
+    if (response?.data?.status) {
+      return response.data;
+    } else {
+      return rejectWithValue(response?.data);
+    }
+  } catch (error) {
+    console.log("error", error);
+    throw error; // Re-throw the error to be handled in the rejected action
+  }
   }
 );
 
@@ -50,12 +63,20 @@ const initialState = {
   compositions: [],
   error: null,
   compositionLayouts: [],
+  successMessage: null,
+  type: null,
 };
 
 const CompositionSlice = createSlice({
   name: "composition",
   initialState,
-  reducers: {},
+  reducers: {
+    resetStatus: (state) => {
+      state.error = null;
+      state.successMessage = null;
+      state.type = null;
+    },
+  },
   extraReducers: (builder) => {
     //get all compostions
     builder.addCase(
@@ -102,9 +123,30 @@ const CompositionSlice = createSlice({
         state.compositionLayouts = [];
       }
     );
+
+    //delete all
+    builder.addCase(handleDeleteAll.pending, (state, action) => {
+      console.log("action",action);
+      state.loading = true;
+      state.error = null;
+    });
+    
+    builder.addCase(handleDeleteAll.fulfilled, (state, action) => {
+      state.loading = false;
+      state.type = "DELETE";
+      state.successMessage = action.payload?.message || "Delete SuccessFully";
+      state.error = null;
+    });
+    
+    builder.addCase(handleDeleteAll.rejected, (state, action) => {
+      state.loading = false;
+      state.type = "ERROR";
+      state.error = action.error.message ?? null;
+    });
+
   },
 });
 
-export const {} = CompositionSlice.actions;
+export const { resetStatus } = CompositionSlice.actions;
 
 export default CompositionSlice.reducer;
