@@ -45,7 +45,9 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [addScreenModal, setAddScreenModal] = useState(false);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
-  const selectedScreenIdsString = Array.isArray(selectedScreens) ? selectedScreens.join(",") : "";
+  const selectedScreenIdsString = Array.isArray(selectedScreens)
+    ? selectedScreens.join(",")
+    : "";
   const [scheduleId, setScheduleId] = useState("");
   const [searchSchedule, setSearchSchedule] = useState("");
   const [selectAll, setSelectAll] = useState(false);
@@ -57,14 +59,15 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectdata, setSelectData] = useState({});
 
   const { token } = useSelector((state) => state.root.auth);
-  const { loading, schedules, deleteLoading,successMessage,type } = useSelector((s) => s.root.schedule);
+  const { loading, schedules, deleteLoading, successMessage, type } =
+    useSelector((s) => s.root.schedule);
   const authToken = `Bearer ${token}`;
 
   const addScreenRef = useRef(null);
   const selectScreenRef = useRef(null);
   const showActionModalRef = useRef(null);
 
-  const [selectedItems, setSelectedItems] = useState([]);  // Multipal check
+  const [selectedItems, setSelectedItems] = useState([]); // Multipal check
 
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -78,7 +81,12 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Filter data based on search term
   const filteredData = schedules.filter((item) =>
-    Object.values(item).some((value) => value && value.toString().toLowerCase().includes(searchSchedule.toLowerCase())));
+    Object.values(item).some(
+      (value) =>
+        value &&
+        value.toString().toLowerCase().includes(searchSchedule.toLowerCase())
+    )
+  );
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   // Function to sort the data based on a field and order
@@ -118,16 +126,13 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const dispatch = useDispatch();
   // Function to handle the "Select All" checkbox change
 
-
   useEffect(() => {
     dispatch(handleGetAllSchedule({ token }));
 
     if (successMessage && type === "DELETE") {
-       toast.success(successMessage)
+      toast.success(successMessage);
     }
-
   }, [successMessage]);
-
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
@@ -191,7 +196,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-
   const handelDeleteAllSchedule = () => {
     let config = {
       method: "delete",
@@ -204,16 +208,16 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(handleDeleteScheduleAll({ config }));
-        setSelectAll(false)
-        setSelectedItems([])
+        setSelectAll(false);
+        setSelectedItems([]);
         dispatch(handleGetAllSchedule({ token }));
       }
 
@@ -255,9 +259,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             console.error("Error invoking SignalR method:", error);
           });
       }
-
     });
-   
   };
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
@@ -475,7 +477,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {/* navbar and sidebar end */}
-      <div className="pt-20 px-5 page-contain ">
+      <div className="pt-24 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -517,7 +519,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 <RiDeleteBin5Line className="text-lg" />
               </button>
 
-                {/* multipal remove */}
+              {/* multipal remove */}
               {selectedItems.length !== 0 && !selectAll && (
                 <button
                   className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
@@ -579,11 +581,13 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Tags
                   </th>
-                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center"> Action </th>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    {" "}
+                    Action{" "}
+                  </th>
                 </tr>
               </thead>
               <tbody>
-
                 {loading ? (
                   <tr>
                     <td colSpan={8}>
@@ -623,64 +627,108 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   </tr>
                 ) : (
                   <>
-                    {schedules && sortedAndPaginatedData.length > 0 && sortedAndPaginatedData.map((schedule, index) => {
-                      return (
-                        <>
-                          <tr className="border-b-[#E4E6FF] border-b">
+                    {schedules &&
+                      sortedAndPaginatedData.length > 0 &&
+                      sortedAndPaginatedData.map((schedule, index) => {
+                        return (
+                          <tr
+                            className="border-b-[#E4E6FF] border-b"
+                            key={index}
+                          >
                             <td className="text-[#5E5E5E] text-center">
                               <div className="flex gap-1">
-                                {selectAll ? (<CheckmarkIcon className="w-5 h-5" />) : ( 
+                                {selectAll ? (
+                                  <CheckmarkIcon className="w-5 h-5" />
+                                ) : (
                                   <input
-                                  type="checkbox"
-                                  checked={selectedItems.includes(schedule.scheduleId)}
-                                  onChange={() => handleCheckboxChange(schedule.scheduleId)}
-                                 />
-                                 )}
+                                    type="checkbox"
+                                    checked={selectedItems.includes(
+                                      schedule.scheduleId
+                                    )}
+                                    onChange={() =>
+                                      handleCheckboxChange(schedule.scheduleId)
+                                    }
+                                  />
+                                )}
                                 {schedule.scheduleName}
                               </div>
                             </td>
-                            <td className="text-center">{schedule.timeZoneName}</td>
-                            <td className="text-center">{moment(schedule.createdDate).format("YYYY-MM-DD hh:mm")}</td>
-                            <td className="text-center">{moment(schedule.startDate).format("YYYY-MM-DD hh:mm")}</td>
-                            <td className="text-center">{moment(schedule.endDate).format("YYYY-MM-DD hh:mm")}</td>
-                            <td className="text-center">{schedule.screenAssigned}</td>
+                            <td className="text-center">
+                              {schedule.timeZoneName}
+                            </td>
+                            <td className="text-center">
+                              {moment(schedule.createdDate).format(
+                                "YYYY-MM-DD hh:mm"
+                              )}
+                            </td>
+                            <td className="text-center">
+                              {moment(schedule.startDate).format(
+                                "YYYY-MM-DD hh:mm"
+                              )}
+                            </td>
+                            <td className="text-center">
+                              {moment(schedule.endDate).format(
+                                "YYYY-MM-DD hh:mm"
+                              )}
+                            </td>
+                            <td className="text-center">
+                              {schedule.screenAssigned}
+                            </td>
 
                             <td
                               title={schedule?.tags && schedule?.tags}
                               className="text-center flex items-center justify-center gap-2 w-full flex-wrap"
                             >
-                              {(schedule?.tags === "" || schedule?.tags === null) && (
+                              {(schedule?.tags === "" ||
+                                schedule?.tags === null) && (
                                 <span>
                                   <AiOutlinePlusCircle
                                     size={30}
                                     className="mx-auto cursor-pointer"
                                     onClick={() => {
                                       setShowTagModal(true);
-                                      schedule.tags === "" || schedule?.tags === null ? setTags([]) : setTags(schedule?.tags?.split(","));
+                                      schedule.tags === "" ||
+                                      schedule?.tags === null
+                                        ? setTags([])
+                                        : setTags(schedule?.tags?.split(","));
                                       setUpdateTagSchedule(schedule);
                                     }}
                                   />
                                 </span>
                               )}
-                              {schedule.tags !== null ? schedule.tags.split(",").slice(0, schedule.tags.split(",").length > 2 ? 3 : schedule.tags.split(",").length).join(",") : ""}
-                              {schedule?.tags !== "" && schedule?.tags !== null && (
-                                <MdOutlineModeEdit
-                                  onClick={() => {
-                                    setShowTagModal(true);
-                                    schedule.tags === "" || schedule?.tags === null
-                                      ? setTags([])
-                                      : setTags(schedule?.tags?.split(","));
-                                    setUpdateTagSchedule(schedule);
-                                  }}
-                                  className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
-                                />
-                              )}
+                              {schedule.tags !== null
+                                ? schedule.tags
+                                    .split(",")
+                                    .slice(
+                                      0,
+                                      schedule.tags.split(",").length > 2
+                                        ? 3
+                                        : schedule.tags.split(",").length
+                                    )
+                                    .join(",")
+                                : ""}
+                              {schedule?.tags !== "" &&
+                                schedule?.tags !== null && (
+                                  <MdOutlineModeEdit
+                                    onClick={() => {
+                                      setShowTagModal(true);
+                                      schedule.tags === "" ||
+                                      schedule?.tags === null
+                                        ? setTags([])
+                                        : setTags(schedule?.tags?.split(","));
+                                      setUpdateTagSchedule(schedule);
+                                    }}
+                                    className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
+                                  />
+                                )}
                               {showTagModal && (
                                 <AddOrEditTagPopup
                                   setShowTagModal={setShowTagModal}
                                   tags={tags}
                                   setTags={setTags}
-                                  handleUpadteScheduleTags={handleUpadteScheduleTags}
+                                  handleUpadteScheduleTags={
+                                    handleUpadteScheduleTags
+                                  }
                                   from="schedule"
                                   setUpdateTagSchedule={setUpdateTagSchedule}
                                 />
@@ -691,15 +739,23 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                               <div className="relative">
                                 <button
                                   className="ml-3 relative"
-                                  onClick={() => { handleScheduleItemClick(schedule.scheduleId); }}
+                                  onClick={() => {
+                                    handleScheduleItemClick(
+                                      schedule.scheduleId
+                                    );
+                                  }}
                                 >
                                   <HiDotsVertical />
                                 </button>
                                 {showActionBox[schedule.scheduleId] && (
-                                  <div ref={showActionModalRef} className="scheduleAction z-10 "
+                                  <div
+                                    ref={showActionModalRef}
+                                    className="scheduleAction z-10 "
                                   >
                                     <div className="my-1">
-                                      <Link to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`} >
+                                      <Link
+                                        to={`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`}
+                                      >
                                         <button>Edit Schedule</button>
                                       </Link>
                                     </div>
@@ -707,7 +763,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                       <button
                                         onClick={() => {
                                           setAddScreenModal(true);
-                                          setScreenSelected(schedule?.screenAssigned?.split(",")); setSelectData(schedule);
+                                          setScreenSelected(
+                                            schedule?.screenAssigned?.split(",")
+                                          );
+                                          setSelectData(schedule);
                                         }}
                                       >
                                         Add Screens
@@ -716,7 +775,12 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                     <div className="mb-1 border border-[#F2F0F9]"></div>
                                     <div className=" mb-1 text-[#D30000]">
                                       <button
-                                        onClick={() => handelDeleteSchedule(schedule.scheduleId, schedule?.maciDs)}
+                                        onClick={() =>
+                                          handelDeleteSchedule(
+                                            schedule.scheduleId,
+                                            schedule?.maciDs
+                                          )
+                                        }
                                       >
                                         Delete
                                       </button>
@@ -726,9 +790,8 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                               </div>
                             </td>
                           </tr>
-                        </>
-                      )
-                    })}
+                        );
+                      })}
                   </>
                 )}
               </tbody>
@@ -750,9 +813,9 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <path
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M13 5H1m0 0 4 4M1 5l4-4"
                 />
               </svg>
@@ -774,15 +837,14 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <path
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M1 5h12m0 0L9 1m4 4L9 9"
                 />
               </svg>
             </button>
           </div>
-
         </div>
       </div>
       <Footer />
@@ -856,8 +918,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
           screenSelected={screenSelected}
         />
       )}
-
-
     </>
   );
 };

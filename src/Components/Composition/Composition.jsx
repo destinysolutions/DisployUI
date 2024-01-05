@@ -36,11 +36,17 @@ import ScreenAssignModal from "../ScreenAssignModal";
 import { connection } from "../../SignalR";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
-import { handleDeleteAll, handleGetCompositions, resetStatus } from "../../Redux/CompositionSlice";
+import {
+  handleDeleteAll,
+  handleGetCompositions,
+  resetStatus,
+} from "../../Redux/CompositionSlice";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
-  const { successMessage,error, type } = useSelector((state) => state.root.composition);
+  const { successMessage, error, type } = useSelector(
+    (state) => state.root.composition
+  );
 
   const authToken = `Bearer ${token}`;
 
@@ -79,8 +85,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
-  const [selectedItems, setSelectedItems] = useState([]);  // Multipal check
-
+  const [selectedItems, setSelectedItems] = useState([]); // Multipal check
 
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -90,11 +95,19 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = compositionData?.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = compositionData?.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   // Filter data based on search term
   const filteredData = compositionData.filter((item) =>
-    Object.values(item).some((value) => value && value.toString().toLowerCase().includes(searchComposition.toLowerCase())));
+    Object.values(item).some(
+      (value) =>
+        value &&
+        value.toString().toLowerCase().includes(searchComposition.toLowerCase())
+    )
+  );
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   // Function to sort the data based on a field and order
@@ -131,7 +144,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   };
   // Pagination End
   const dispatch = useDispatch();
-
 
   const loadComposition = () => {
     let config = {
@@ -244,14 +256,15 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     });
   };
 
-
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
 
     if (selectedItems.length === compositionData.length) {
       setSelectedItems([]);
     } else {
-      const allIds = compositionData.map((composition) => composition.compositionID);
+      const allIds = compositionData.map(
+        (composition) => composition.compositionID
+      );
       setSelectedItems(allIds);
     }
   };
@@ -334,22 +347,22 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       method: "delete",
       maxBodyLength: Infinity,
       url: `${DELETE_COMPOSITION}?CompositionIds=${selectedItems}`,
-      headers: { Authorization: authToken, },
+      headers: { Authorization: authToken },
     };
 
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(handleDeleteAll({ config }));
-        setSelectAll(false)
-        setSelectedItems([])
+        setSelectAll(false);
+        setSelectedItems([]);
         dispatch(handleGetCompositions({ token }));
       }
 
@@ -393,9 +406,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       }
       setSelectScreenModal(false);
       setAddScreenModal(false);
-
     });
-
   };
 
   const handleFetchCompositionById = async (id, from) => {
@@ -616,16 +627,15 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     loadComposition();
     if (successMessage && type === "DELETE") {
-      toast.success(successMessage)
-      dispatch(resetStatus())
+      toast.success(successMessage);
+      dispatch(resetStatus());
     }
 
     if (error && type === "ERROR") {
-      toast.error(error)
-      dispatch(resetStatus())
+      toast.error(error);
+      dispatch(resetStatus());
     }
-
-  }, [successMessage,error]);
+  }, [successMessage, error]);
 
   // preview modal
   useEffect(() => {
@@ -719,7 +729,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     setShowActionBox(false);
   }
 
-
   return (
     <>
       <div className="flex bg-white border-b border-gray">
@@ -727,7 +736,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
 
-      <div className="pt-20 px-5 page-contain">
+      <div className="pt-24 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block xs:block  items-center">
             <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 "></h1>
@@ -763,7 +772,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   {/* multipal remove */}
                   {selectedItems.length !== 0 && !selectAll && (
                     <button
-                    className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                      className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                       onClick={handleDeleteAllCompositions}
                     >
                       <RiDeleteBinLine />
@@ -790,9 +799,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
             >
               <thead>
                 <tr className="items-center border-b border-b-[#E4E6FF]  bg-[#e6e6e6]">
-                  <th
-                    className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center"
-                  >
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
                     Composition Name
                     <svg
                       className="w-3 h-3 ms-1.5 cursor-pointer"
@@ -820,7 +827,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Tags
                   </th>
-                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">Action</th>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -863,70 +872,94 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   </tr>
                 ) : (
                   <>
-                    {compositionData && sortedAndPaginatedData.length > 0 && sortedAndPaginatedData.map((composition, index) => {
-                      return (
-                        <>
-                          <tr className="border-b border-b-[#E4E6FF] " key={composition?.compositionID} >
+                    {compositionData &&
+                      sortedAndPaginatedData.length > 0 &&
+                      sortedAndPaginatedData.map((composition, index) => {
+                        return (
+                          <tr
+                            className="border-b border-b-[#E4E6FF] "
+                            key={composition?.compositionID}
+                          >
                             <td className="text-[#5E5E5E] text-center">
                               <div className="flex gap-1">
-                                {selectAll ? (<CheckmarkIcon className="w-5 h-5" />) : (
+                                {selectAll ? (
+                                  <CheckmarkIcon className="w-5 h-5" />
+                                ) : (
                                   <input
                                     type="checkbox"
-                                    checked={selectedItems.includes(composition?.compositionID)}
-                                    onChange={() => handleCheckboxChange(composition?.compositionID)}
+                                    checked={selectedItems.includes(
+                                      composition?.compositionID
+                                    )}
+                                    onChange={() =>
+                                      handleCheckboxChange(
+                                        composition?.compositionID
+                                      )
+                                    }
                                   />
                                 )}
                                 {composition?.compositionName}
                               </div>
                             </td>
-                            <td className="text-center text-[#5E5E5E]">{moment(composition?.dateAdded).format("LLL")}</td>
-                            <td className="text-center text-[#5E5E5E]">{composition?.resolution}</td>
-                            <td className="text-center text-[#5E5E5E]">{moment.utc(composition?.duration * 1000).format("HH:mm:ss")}</td>
-                            <td className="text-center text-[#5E5E5E]">{composition?.screenNames}</td>
+                            <td className="text-center text-[#5E5E5E]">
+                              {moment(composition?.dateAdded).format("LLL")}
+                            </td>
+                            <td className="text-center text-[#5E5E5E]">
+                              {composition?.resolution}
+                            </td>
+                            <td className="text-center text-[#5E5E5E]">
+                              {moment
+                                .utc(composition?.duration * 1000)
+                                .format("HH:mm:ss")}
+                            </td>
+                            <td className="text-center text-[#5E5E5E]">
+                              {composition?.screenNames}
+                            </td>
                             <td
                               title={composition?.tags && composition?.tags}
                               className="text-center flex items-center justify-center w-full flex-wrap gap-2"
                             >
                               {(composition?.tags === "" ||
                                 composition?.tags === null) && (
-                                  <span>
-                                    <AiOutlinePlusCircle
-                                      size={30}
-                                      className="mx-auto cursor-pointer"
-                                      onClick={() => {
-                                        setShowTagModal(true);
-                                        composition?.tags === "" ||
-                                          composition?.tags === null
-                                          ? setTags([])
-                                          : setTags(composition?.tags?.split(","));
-                                        handleFetchCompositionById(
-                                          composition?.compositionID,
-                                          "tags"
-                                        );
-                                      }}
-                                    />
-                                  </span>
-                                )}
+                                <span>
+                                  <AiOutlinePlusCircle
+                                    size={30}
+                                    className="mx-auto cursor-pointer"
+                                    onClick={() => {
+                                      setShowTagModal(true);
+                                      composition?.tags === "" ||
+                                      composition?.tags === null
+                                        ? setTags([])
+                                        : setTags(
+                                            composition?.tags?.split(",")
+                                          );
+                                      handleFetchCompositionById(
+                                        composition?.compositionID,
+                                        "tags"
+                                      );
+                                    }}
+                                  />
+                                </span>
+                              )}
                               {composition?.tags !== null
                                 ? composition?.tags
-                                  .split(",")
-                                  .slice(
-                                    0,
-                                    composition?.tags.split(",").length > 2
-                                      ? 3
-                                      : composition?.tags.split(",").length
-                                  )
-                                  .map((text) => {
-                                    if (text.toString().length > 10) {
-                                      return text
-                                        .split("")
-                                        .slice(0, 10)
-                                        .concat("...")
-                                        .join("");
-                                    }
-                                    return text;
-                                  })
-                                  .join(",")
+                                    .split(",")
+                                    .slice(
+                                      0,
+                                      composition?.tags.split(",").length > 2
+                                        ? 3
+                                        : composition?.tags.split(",").length
+                                    )
+                                    .map((text) => {
+                                      if (text.toString().length > 10) {
+                                        return text
+                                          .split("")
+                                          .slice(0, 10)
+                                          .concat("...")
+                                          .join("");
+                                      }
+                                      return text;
+                                    })
+                                    .join(",")
                                 : ""}
                               {composition?.tags !== "" &&
                                 composition?.tags !== null && (
@@ -934,9 +967,11 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     onClick={() => {
                                       setShowTagModal(true);
                                       composition?.tags === "" ||
-                                        composition?.tags === null
+                                      composition?.tags === null
                                         ? setTags([])
-                                        : setTags(composition?.tags?.split(","));
+                                        : setTags(
+                                            composition?.tags?.split(",")
+                                          );
                                       handleFetchCompositionById(
                                         composition?.compositionID,
                                         "tags"
@@ -955,7 +990,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     handleUpdateTagsOfComposition
                                   }
                                   from="composition"
-                                  setUpdateTagComposition={setUpdateTagComposition}
+                                  setUpdateTagComposition={
+                                    setUpdateTagComposition
+                                  }
                                 />
                               )}
                             </td>
@@ -1037,11 +1074,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                 )}
                               </div>
                             </td>
-
                           </tr>
-                        </>
-                      )
-                    })}
+                        );
+                      })}
                   </>
                 )}
               </tbody>
@@ -1063,9 +1098,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <path
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M13 5H1m0 0 4 4M1 5l4-4"
                 />
               </svg>
@@ -1087,15 +1122,14 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <path
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M1 5h12m0 0L9 1m4 4L9 9"
                 />
               </svg>
             </button>
           </div>
-
         </div>
       </div>
 
@@ -1165,13 +1199,13 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      <PreviewModal show={modalVisible} onClose={closeModal} >
+      <PreviewModal show={modalVisible} onClose={closeModal}>
         <div
-          className={`fixed left-1/2 -translate-x-1/2 ${screenType === "portrait"
+          className={`fixed left-1/2 -translate-x-1/2 ${
+            screenType === "portrait"
               ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
               : "min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]"
-            }  `}
-
+          }  `}
           ref={modalRef}
         >
           <div style={{ padding: "15px", backgroundColor: "white" }}>

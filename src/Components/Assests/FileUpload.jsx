@@ -158,6 +158,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         formData.append("FolderID", "0");
 
         const response = dispatch(handleGetStorageDetails({ token }));
+        console.log("response -- ", response);
         response.then(async (res) => {
           if (res?.payload?.data?.usedInPercentage == 100) {
             // setUploadInProgress(false);
