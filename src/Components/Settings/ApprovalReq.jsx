@@ -6,6 +6,9 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 const ApprovalReq = () => {
+  const [titleData, setTitleData] = useState([]);
+
+  const RadioButton = ["One", "Two", "Three", "Four", "Five"];
   const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
@@ -66,6 +69,7 @@ const ApprovalReq = () => {
       .request(config)
       .then((response) => {
         console.log(response.data);
+        setTitleData(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -234,7 +238,7 @@ const ApprovalReq = () => {
       <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
         <div className="inline-block min-w-full shadow rounded-lg overflow-hidden overflow-x-auto w-full">
           <table className="min-w-full leading-normal" cellPadding={20}>
-            <thead className="text-left">
+            <thead className="text-center">
               <tr className="border-b border-b-[#E4E6FF] bg-[#EFF3FF]">
                 <th className="text-[#5A5881] text-base font-semibold">
                   Title
@@ -247,241 +251,45 @@ const ApprovalReq = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="text-left">
-              <tr className="border-b border-b-[#E4E6FF]">
-                <td>Screen</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={checkboxState["screen"]}
-                    onChange={() => handleCheckboxChange("screen")}
-                  />
-                </td>
-                <td>
-                  <div class="text-center flex">
-                    <div class="flex items-center mr-4 ">
-                      <input
-                        id="radio1"
-                        type="radio"
-                        name="radio"
-                        class="hidden"
-                        checked
-                      />
-                      <label
-                        for="radio1"
-                        class="flex items-center cursor-pointer"
-                      >
-                        <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-                        One
-                      </label>
-                    </div>
-
-                    <div class="flex items-center mr-4">
-                      <input
-                        id="radio2"
-                        type="radio"
-                        name="radio"
-                        class="hidden"
-                      />
-                      <label
-                        for="radio2"
-                        class="flex items-center cursor-pointer"
-                      >
-                        <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-                        Second
-                      </label>
-                    </div>
-
-                    <div class="flex items-center mr-4">
-                      <input
-                        id="radio3"
-                        type="radio"
-                        name="radio"
-                        class="hidden"
-                      />
-                      <label
-                        for="radio3"
-                        class="flex items-center cursor-pointer"
-                      >
-                        <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-                        Third
-                      </label>
-                    </div>
-
-                    <div class="flex items-center mr-4 ">
-                      <input
-                        id="radio4"
-                        type="radio"
-                        name="radio"
-                        class="hidden"
-                      />
-                      <label
-                        for="radio4"
-                        class="flex items-center cursor-pointer"
-                      >
-                        <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-                        Fourth{" "}
-                      </label>
-                    </div>
-
-                    <div class="flex items-center mr-4 ">
-                      <input
-                        id="radio5"
-                        type="radio"
-                        name="radio"
-                        class="hidden"
-                      />
-                      <label
-                        for="radio5"
-                        class="flex items-center cursor-pointer"
-                      >
-                        <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-                        Five
-                      </label>
-                    </div>
-                    <div class="flex items-center mr-4 ">
-                      <input
-                        id="radio6"
-                        type="radio"
-                        name="radio"
-                        class="hidden"
-                      />
-                      <label
-                        for="radio6"
-                        class="flex items-center cursor-pointer"
-                      >
-                        <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-                        Six
-                      </label>
-                    </div>
-                    <div class="flex items-center mr-4 ">
-                      <input
-                        id="radio7"
-                        type="radio"
-                        name="radio"
-                        class="hidden"
-                      />
-                      <label
-                        for="radio7"
-                        class="flex items-center cursor-pointer"
-                      >
-                        <span class="w-4 h-4 inline-block mr-1 rounded-full border border-grey"></span>
-                        Seven
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* <input type="radio" />
-                        <label className="mx-2">1</label>
-                        <input type="radio" />
-                        <label className="mx-2">2</label>
-                        <input type="radio" />
-                        <label className="mx-2">3</label>
-                        <input type="radio" />
-                        <label className="mx-2">4</label> */}
-                </td>
-              </tr>
-              <tr className="border-b border-b-[#E4E6FF]">
-                <td>My Schedule</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={checkboxState["mySchedule"]}
-                    onChange={() => handleCheckboxChange("mySchedule")}
-                  />
-                </td>
-                <td>
-                  <select
-                    className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-24 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    value={dropdownStates["mySchedule"]}
-                    onChange={(e) =>
-                      handleDropdownChange("mySchedule", e.target.value)
-                    }
-                  >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-                </td>
-              </tr>
-              <tr className="border-b border-b-[#E4E6FF]">
-                <td>Apps</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={checkboxState["apps"]}
-                    onChange={() => handleCheckboxChange("apps")}
-                  />
-                </td>
-                <td>
-                  <select
-                    className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-24 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    value={dropdownStates["apps"]}
-                    onChange={(e) =>
-                      handleDropdownChange("apps", e.target.value)
-                    }
-                  >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-                </td>
-              </tr>
-              <tr className="border-b border-b-[#E4E6FF]">
-                <td>Settings</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={checkboxState["settings"]}
-                    onChange={() => handleCheckboxChange("settings")}
-                  />
-                </td>
-                <td>
-                  <select
-                    className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-24 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    value={dropdownStates["settings"]}
-                    onChange={(e) =>
-                      handleDropdownChange("settings", e.target.value)
-                    }
-                  >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-                </td>
-              </tr>
-              <tr className="border-b border-b-[#E4E6FF]">
-                <td>Reports</td>
-
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={checkboxState["reports"]}
-                    onChange={() => handleCheckboxChange("reports")}
-                  />
-                </td>
-                <td>
-                  <select
-                    className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-24 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500border"
-                    value={dropdownStates["reports"]}
-                    onChange={(e) =>
-                      handleDropdownChange("reports", e.target.value)
-                    }
-                  >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
-                </td>
-              </tr>
+            <tbody className="text-center">
+              {titleData.map((title, index) => {
+                return (
+                  title.isForApproval === true && (
+                    <tr className="border-b border-b-[#E4E6FF]">
+                      <td>{title.pageName}</td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={checkboxState[title.pageName]}
+                          onChange={() => handleCheckboxChange(title.pageName)}
+                        />
+                      </td>
+                      <td className="flex justify-center">
+                        {RadioButton.map((radio, radioIndex) => (
+                          <React.Fragment key={radioIndex}>
+                            <input
+                              id={`radio${index}-${radioIndex}`}
+                              type="radio"
+                              name={`radio${index}`}
+                              className="ml-3"
+                              // checked={/* Your condition for checking the radio button */}
+                              // onChange={() =>
+                              //   handleRadioChange(radioIndex, title.moduleID)
+                              // }
+                            />
+                            <label
+                              htmlFor={`radio${index}-${radioIndex}`}
+                              className="flex items-center cursor-pointer ml-2"
+                            >
+                              {radio}
+                            </label>
+                          </React.Fragment>
+                        ))}
+                      </td>
+                    </tr>
+                  )
+                );
+              })}
             </tbody>
           </table>
         </div>

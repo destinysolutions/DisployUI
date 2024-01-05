@@ -6,15 +6,15 @@ import "../../Styles/Settings.css";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { CHNAGE_PASSWORD, GET_ALL_COUNTRY, GET_SELECT_BY_STATE, USER_UPDATE_PASSWORD } from "../../Pages/Api";
 import {
-  RiUser3Fill,
-} from "react-icons/ri";
+  CHNAGE_PASSWORD,
+  GET_ALL_COUNTRY,
+  GET_SELECT_BY_STATE,
+  USER_UPDATE_PASSWORD,
+} from "../../Pages/Api";
+import { RiUser3Fill } from "react-icons/ri";
 import { IoIosArrowRoundBack, IoMdNotificationsOutline } from "react-icons/io";
-import {
-  MdDeleteForever,
-  MdLockOutline,
-} from "react-icons/md";
+import { MdDeleteForever, MdLockOutline } from "react-icons/md";
 import { IoIosLink } from "react-icons/io";
 import toast from "react-hot-toast";
 import {
@@ -41,7 +41,6 @@ import Swal from "sweetalert2";
 import { Formik, useFormik } from "formik";
 import * as Yup from "yup";
 import { FiPauseCircle } from "react-icons/fi";
-
 
 const Users = ({ searchValue }) => {
   const [loadFist, setLoadFist] = useState(true);
@@ -108,7 +107,12 @@ const Users = ({ searchValue }) => {
 
   // Filter data based on search term
   const filteredData = userData.filter((item) =>
-    Object.values(item).some((value) => value && value.toString().toLowerCase().includes(searchValue.toLowerCase())));
+    Object.values(item).some(
+      (value) =>
+        value &&
+        value.toString().toLowerCase().includes(searchValue.toLowerCase())
+    )
+  );
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   // Function to sort the data based on a field and order
@@ -129,7 +133,6 @@ const Users = ({ searchValue }) => {
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
 
   const validationSchema = Yup.object().shape({
     currentPassword: Yup.string().required("Current Password is required"),
@@ -186,10 +189,10 @@ const Users = ({ searchValue }) => {
   }, [countryID]);
 
   useEffect(() => {
-    getUsers()
+    getUsers();
   }, []);
 
-  const getUsers = () =>{
+  const getUsers = () => {
     let data = JSON.stringify({
       mode: "Selectlist",
     });
@@ -213,7 +216,7 @@ const Users = ({ searchValue }) => {
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
 
   const handleAddUser = () => {
     // Clear previous validation errors
@@ -302,7 +305,7 @@ const Users = ({ searchValue }) => {
     // Clear previous validation errors
     setErrorsFirstName("");
     setErrorsLastName("");
-    setErrorsRole("")
+    setErrorsRole("");
 
     // Check validation for firstName
     if (!firstName) {
@@ -358,7 +361,7 @@ const Users = ({ searchValue }) => {
       .request(config)
       .then((response) => {
         setshowuserModal(false);
-        selectUserById(userID)
+        selectUserById(userID);
         handleGetOrgUsers();
       })
       .catch((error) => {
@@ -496,12 +499,10 @@ const Users = ({ searchValue }) => {
     setSelectedState("");
     setSelectRoleID("");
     setIsActive(0);
-    setLabelTitle("Add New User")
-    setLoadFist(true)
-    getUsers()
-
+    setLabelTitle("Add New User");
+    setLoadFist(true);
+    getUsers();
   };
-
 
   const handleFileChange = (e) => {
     setFileEdit();
@@ -551,7 +552,6 @@ const Users = ({ searchValue }) => {
     setShowActionBox(false);
   }
 
-
   const formik = useFormik({
     initialValues: {
       currentPassword: "",
@@ -585,8 +585,8 @@ const Users = ({ searchValue }) => {
 
         const response = await axios.request(config);
         if (response.status) {
-          formik.resetForm()
-          toast.success("Password Update")
+          formik.resetForm();
+          toast.success("Password Update");
         }
       } catch (error) {
         console.error("Error updating password:", error.message);
@@ -596,7 +596,6 @@ const Users = ({ searchValue }) => {
       }
     },
   });
-
 
   return (
     <>
@@ -916,7 +915,7 @@ const Users = ({ searchValue }) => {
                         <img
                           src={userDetailData?.profilePhoto}
                           className="w-30 h-25 mb-3 rounded shadow-lg"
-                          style={{ width: '200px', height: '185px' }}
+                          style={{ width: "200px", height: "185px" }}
                         />
                       ) : (
                         <BiSolidUser className="w-20 h-20" />
@@ -950,7 +949,10 @@ const Users = ({ searchValue }) => {
                         <span>User Name : </span>
                       </div>
                       <div className="col-span-2 capitalize">
-                        <span> {userDetailData.firstName} {userDetailData.lastName}</span>
+                        <span>
+                          {" "}
+                          {userDetailData.firstName} {userDetailData.lastName}
+                        </span>
                       </div>
 
                       {/* Company Name  */}
@@ -1009,8 +1011,8 @@ const Users = ({ searchValue }) => {
                         <span> {userDetailData.phone}</span>
                       </div>
 
-                       {/* language */}
-                       <div className="font-semibold">
+                      {/* language */}
+                      <div className="font-semibold">
                         <span>Language : </span>
                       </div>
                       <div className="col-span-2 capitalize">
@@ -1024,9 +1026,7 @@ const Users = ({ searchValue }) => {
                       <div className="col-span-2 capitalize">
                         <span> {userDetailData.countryName}</span>
                       </div>
-
                     </div>
-
 
                     <div className="flex justify-center w-full mt-10">
                       <button
@@ -1034,7 +1034,8 @@ const Users = ({ searchValue }) => {
                           setshowuserModal(true);
                           selectUserById(userDetailData.orgUserSpecificID);
                         }}
-                        className="me-3 hover:bg-white hover:text-primary text-base px-8 py-2 border border-primary  shadow-md rounded-full bg-primary text-white ">
+                        className="me-3 hover:bg-white hover:text-primary text-base px-8 py-2 border border-primary  shadow-md rounded-full bg-primary text-white "
+                      >
                         Edit Profile
                       </button>
                       <button className="hover:text-#ffbebe px-8 py-3 border border-red shadow-md rounded-full text-red-600 text-1xl font-semibold bg-[#ffbebe] ">
@@ -1114,17 +1115,21 @@ const Users = ({ searchValue }) => {
                             <div className="icon mt-3">
                               {currentPasswordShow ? (
                                 <BsFillEyeFill
-                                  onClick={() => setCurrentPassword(!currentPasswordShow)}
+                                  onClick={() =>
+                                    setCurrentPassword(!currentPasswordShow)
+                                  }
                                 />
                               ) : (
                                 <BsFillEyeSlashFill
-                                  onClick={() => setCurrentPassword(!currentPasswordShow)}
+                                  onClick={() =>
+                                    setCurrentPassword(!currentPasswordShow)
+                                  }
                                 />
                               )}
                             </div>
                           </div>
                           {formik.touched.currentPassword &&
-                            formik.errors.currentPassword ? (
+                          formik.errors.currentPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.currentPassword}
                             </div>
@@ -1146,16 +1151,21 @@ const Users = ({ searchValue }) => {
                             <div className="icon mt-3">
                               {newPasswordShow ? (
                                 <BsFillEyeFill
-                                  onClick={() => setNewPassword(!newPasswordShow)}
+                                  onClick={() =>
+                                    setNewPassword(!newPasswordShow)
+                                  }
                                 />
                               ) : (
                                 <BsFillEyeSlashFill
-                                  onClick={() => setNewPassword(!newPasswordShow)}
+                                  onClick={() =>
+                                    setNewPassword(!newPasswordShow)
+                                  }
                                 />
                               )}
                             </div>
                           </div>
-                          {formik.touched.newPassword && formik.errors.newPassword ? (
+                          {formik.touched.newPassword &&
+                          formik.errors.newPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.newPassword}
                             </div>
@@ -1177,17 +1187,21 @@ const Users = ({ searchValue }) => {
                             <div className="icon mt-3">
                               {confirmPasswordShow ? (
                                 <BsFillEyeFill
-                                  onClick={() => setConfirmPassword(!confirmPasswordShow)}
+                                  onClick={() =>
+                                    setConfirmPassword(!confirmPasswordShow)
+                                  }
                                 />
                               ) : (
                                 <BsFillEyeSlashFill
-                                  onClick={() => setConfirmPassword(!confirmPasswordShow)}
+                                  onClick={() =>
+                                    setConfirmPassword(!confirmPasswordShow)
+                                  }
                                 />
                               )}
                             </div>
                           </div>
                           {formik.touched.confirmPassword &&
-                            formik.errors.confirmPassword ? (
+                          formik.errors.confirmPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.confirmPassword}
                             </div>
@@ -1714,7 +1728,7 @@ const Users = ({ searchValue }) => {
                 </div>
               </div>
             </div>
-          </div >
+          </div>
           <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full">
             <h3 className="user-name my-4">Selected Screens</h3>
             <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
@@ -1935,7 +1949,10 @@ const Users = ({ searchValue }) => {
                       {userData && sortedAndPaginatedData.length > 0 ? (
                         sortedAndPaginatedData.map((item, index) => {
                           return (
-                            <tr className="border-b border-b-[#E4E6FF] p-4 mb-4 rounded-lg bg-white shadow-md" key={index}>
+                            <tr
+                              className="border-b border-b-[#E4E6FF] p-4 mb-4 rounded-lg bg-white shadow-md"
+                              key={index}
+                            >
                               <th className="text-[#5E5E5E] text-center flex">
                                 {item?.profilePhoto ? (
                                   <img
@@ -2037,9 +2054,9 @@ const Users = ({ searchValue }) => {
                     >
                       <path
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="M13 5H1m0 0 4 4M1 5l4-4"
                       />
                     </svg>
@@ -2061,9 +2078,9 @@ const Users = ({ searchValue }) => {
                     >
                       <path
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="M1 5h12m0 0L9 1m4 4L9 9"
                       />
                     </svg>

@@ -639,7 +639,6 @@ const Userrole = ({ searchValue }) => {
 
   const handleDeleteRole = () => {};
 
-
   return (
     <>
       <div className="grid grid-cols-12 lg:px-5 md:px-5 sm:px-2 xs:px-2 mt-5 ">
@@ -674,7 +673,7 @@ const Userrole = ({ searchValue }) => {
               <div className="grid grid-flow-row-dense grid-cols-3 grid-rows-3 text-[#5E5E5E] h-20">
                 <div className="font-semibold">
                   <p>Total {userrole.userCount} Users </p>
-                  <p class="text-1xl text-gray-900 dark:text-white capitalize mt-2 w-80">
+                  <p className="text-1xl text-gray-900 dark:text-white capitalize mt-2 w-80">
                     {userrole.orgUserRole}
                   </p>
 
@@ -700,9 +699,9 @@ const Userrole = ({ searchValue }) => {
                   <div className="role-user flex justify-end">
                     {userrole?.profilePics.slice(0, 3)?.map((item, index) => {
                       return (
-                        <span>
+                        <span key={index}>
                           <img
-                            class="w-5 h-5 rounded-full"
+                            className="w-5 h-5 rounded-full"
                             src={item}
                             alt="Not Image"
                           ></img>
@@ -865,9 +864,9 @@ const Userrole = ({ searchValue }) => {
               >
                 <path
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M13 5H1m0 0 4 4M1 5l4-4"
                 />
               </svg>
@@ -889,9 +888,9 @@ const Userrole = ({ searchValue }) => {
               >
                 <path
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M1 5h12m0 0L9 1m4 4L9 9"
                 />
               </svg>

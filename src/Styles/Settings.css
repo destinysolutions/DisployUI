@@ -1,58 +1,57 @@
 .settingtab,
 button.stabshow.settingtabactive {
-    display: flex;
+  display: flex;
 
-    align-items: center;
-    padding: 10px 10px 10px 20px;
+  align-items: center;
+  padding: 10px 10px 10px 20px;
 }
 
 button.settingtab span,
 button.stabshow.settingtabactive span {
-    text-align: left;
-    display: block;
+  text-align: left;
+  display: block;
 }
 
 .mainsettingtab li {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
 
 button.stabshow.settingtabactive {
-    background: #fff;
-    width: 100%;
-    box-shadow: -8px 5px 15px -2px #00000045;
-    padding: 10px 10px 10px 20px;
-    border-top-left-radius: 25px;
-    border-bottom-left-radius: 25px;
+  background: #fff;
+  width: 100%;
+  box-shadow: -8px 5px 15px -2px #00000045;
+  padding: 10px 10px 10px 20px;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
 }
 
 .tabdetails {
-    box-shadow: 30px 15px 21px -24px #0000005c;
+  box-shadow: 30px 15px 21px -24px #0000005c;
 }
 
 .tabdetails .hbgCLW:nth-child(even) {
-    background: #fff;
+  background: #fff;
 }
 
 .tabdetails .sc-eqUAAy.gocYik.rdt_TableHeadRow {
-    border: none;
-    border-radius: 10px;
+  border: none;
+  border-radius: 10px;
 }
 
 .setting-searchbtn::placeholder {
-    font-size: 14px !important;
-    color: #6e6e6e !important;
+  font-size: 14px !important;
+  color: #6e6e6e !important;
 }
 
 /* user */
 .user-model {
-    position: fixed;
-    background: #fff;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 20px;
-    overflow-y: auto;
-
+  position: fixed;
+  background: #fff;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 20px;
+  overflow-y: auto;
 }
 
 .user-model input,
@@ -60,199 +59,190 @@ button.stabshow.settingtabactive {
 .screen-authorize-section input,
 .addnewcard input,
 .user-model .formInput {
-    border: 1px solid #41479b78 !important;
+  border: 1px solid #41479b78 !important;
 }
 
 .user-model input:focus,
 .screen-authorize-section input:focus,
 .addnewcard input:focus,
 .user-model .formInput:focus {
-    border: 1px solid #303791 !important;
+  border: 1px solid #303791 !important;
 }
 
 .screen-authorize-section input::placeholder {
-    color: #ccc !important;
+  color: #ccc !important;
 }
 
 /* screen-authorize-section */
 
 .screen-authorize-section {
-    position: absolute;
-    width: 90%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  width: 90%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* Billings */
 
 .paymentbox {
-    box-shadow: 0px 0px 2px 1px #41479b36;
+  box-shadow: 0px 0px 2px 1px #41479b36;
 }
 
-@media(max-width:767px) {
+@media (max-width: 767px) {
+  .settingtab,
+  button.stabshow.settingtabactive {
+    padding: 10px 05px 10px 10px;
+  }
 
-    .settingtab,
-    button.stabshow.settingtabactive {
-        padding: 10px 05px 10px 10px;
-    }
+  button.settingtab span,
+  button.stabshow.settingtabactive span {
+    font-size: 13px !important;
+    display: block;
+  }
 
-    button.settingtab span,
-    button.stabshow.settingtabactive span {
-        font-size: 13px !important;
-        display: block;
-    }
-
-    .user-model {
-        width: 90%;
-    }
+  .user-model {
+    width: 90%;
+  }
 }
 
-@media(max-width:480px) {
-
-    .settingtab,
-    button.stabshow.settingtabactive {
-        display: block;
-    }
-
-
-
+@media (max-width: 480px) {
+  .settingtab,
+  button.stabshow.settingtabactive {
+    display: block;
+  }
 }
 
-@media(max-width:400px) {
+@media (max-width: 400px) {
+  .settingtab,
+  button.stabshow.settingtabactive {
+    display: flex;
+    padding: 10px 10px 10px 20px;
+  }
 
-    .settingtab,
-    button.stabshow.settingtabactive {
-        display: flex;
-        padding: 10px 10px 10px 20px;
-    }
+  button.stabshow.settingtabactive {
+    border-radius: 25px;
+  }
 
-    button.stabshow.settingtabactive {
-        border-radius: 25px;
-    }
+  .screen-authorize-section {
+    position: relative;
+    width: 100%;
+    top: inherit;
+    left: inherit;
+    padding: 30px 10px;
+    transform: translate(0%, 0%);
+  }
 
-    .screen-authorize-section {
-        position: relative;
-        width: 100%;
-        top: inherit;
-        left: inherit;
-        padding: 30px 10px;
-        transform: translate(0%, 0%);
-    }
+  .exact-val {
+    font-size: 12px !important;
+  }
 
-    .exact-val {
-        font-size: 12px !important;
-    }
-
-    .planformgroup .formInput {
-        padding: 1px;
-        width: 35px;
-        margin: 0 1px;
-    }
-
+  .planformgroup .formInput {
+    padding: 1px;
+    width: 35px;
+    margin: 0 1px;
+  }
 }
 
 /* couponcode-table popup */
 .couponcode-table tr th {
-    background-color: #fff;
+  background-color: #fff;
 }
 
 .couponcode-table tr:nth-child(odd) {
-    background: #E4E6FF;
+  background: #e4e6ff;
 }
 
 #coupon-tooltip-bottom::before {
-    content: '';
-    position: absolute;
-    border-top: 9px solid transparent;
-    border-bottom: 9px solid #00072e;
-    border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
-    right: 5px;
-    top: -17px;
+  content: "";
+  position: absolute;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid #00072e;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  right: 5px;
+  top: -17px;
 }
 
 /* Default media */
 button.Mediatabshow,
 button.Mediatab {
-    border-bottom: 1px solid #00072E;
-    background-color: #fff;
-    width: 100%;
-    padding: 15px 0;
-
+  border-bottom: 1px solid #00072e;
+  background-color: #fff;
+  width: 100%;
+  padding: 15px 0;
 }
 
 button.Mediatabshow.mediatabactive {
-    background: #00072E;
-    color: #fff;
-
+  background: #00072e;
+  color: #fff;
 }
 
 /* checkbox */
 .check {
-    cursor: pointer;
-    position: relative;
-    margin: auto;
-    width: 18px;
-    height: 18px;
-    -webkit-tap-highlight-color: transparent;
-    transform: translate3d(0, 0, 0);
+  cursor: pointer;
+  position: relative;
+  margin: auto;
+  width: 18px;
+  height: 18px;
+  -webkit-tap-highlight-color: transparent;
+  transform: translate3d(0, 0, 0);
 }
 
 .check:before {
-    content: "";
-    position: absolute;
-    top: -15px;
-    left: -15px;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: #7e83ce29;
-    opacity: 0;
-    transition: opacity 0.2s ease;
+  content: "";
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #7e83ce29;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
 .check svg {
-    position: relative;
-    z-index: 1;
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke: #5A5881;
-    stroke-width: 1.5;
-    transform: translate3d(0, 0, 0);
-    transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke: #5a5881;
+  stroke-width: 1.5;
+  transform: translate3d(0, 0, 0);
+  transition: all 0.2s ease;
 }
 
 .check svg path {
-    stroke-dasharray: 60;
-    stroke-dashoffset: 0;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 0;
 }
 
 .check svg polyline {
-    stroke-dasharray: 22;
-    stroke-dashoffset: 66;
+  stroke-dasharray: 22;
+  stroke-dashoffset: 66;
 }
 
 .check:hover:before {
-    opacity: 1;
+  opacity: 1;
 }
 
 .check:hover svg {
-    stroke: #4147b5;
+  stroke: #4147b5;
 }
 
-.cbx:checked+.check svg {
-    stroke: #4147b5;
+.cbx:checked + .check svg {
+  stroke: #4147b5;
 }
 
-.cbx:checked+.check svg path {
-    stroke-dashoffset: 60;
-    transition: all 0.3s linear;
+.cbx:checked + .check svg path {
+  stroke-dashoffset: 60;
+  transition: all 0.3s linear;
 }
 
-.cbx:checked+.check svg polyline {
-    stroke-dashoffset: 42;
-    transition: all 0.2s linear;
-    transition-delay: 0.15s;
+.cbx:checked + .check svg polyline {
+  stroke-dashoffset: 42;
+  transition: all 0.2s linear;
+  transition-delay: 0.15s;
 }

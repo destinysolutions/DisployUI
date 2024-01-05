@@ -310,7 +310,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                     </span>
                   </button>
                 </li>
-
+                {/* 
                 <li>
                   <button
                     className={
@@ -323,7 +323,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                       Approval Required
                     </span>
                   </button>
-                </li>
+                </li> */}
               </ul>
             </div>
 
