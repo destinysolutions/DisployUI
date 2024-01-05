@@ -664,13 +664,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
               ref={modalRef}
-              // className={`absolute left-1/2 -translate-x-1/2 `}
-              // style={{
-              //   minHeight: compositonData?.screenHeight + "px",
-              //   maxHeight: compositonData?.screenHeight + "px",
-              //   maxWidth: compositonData?.screenWidth + "px",
-              //   minWidth: compositonData?.screenWidth + "px",
-              // }}
               className={`fixed  border left-1/2 -translate-x-1/2 ${
                 screenType === "portrait"
                   ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
@@ -678,31 +671,9 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
               }  `}
             >
               <RxCrossCircled
-                className="fixed z-50 w-[30px] h-[30px] text-white bg-black rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
+                className="fixed z-50 w-[30px] h-[30px] text-white bg-black rounded-full hover:bg-white hover:text-black top-[-22px] right-[-18px] cursor-pointer "
                 onClick={closeModal}
               />
-              {/* screentype toggle "landspace | portrait" */}
-              <div
-                className={`fixed z-50 ${
-                  screenType === "Landscape" ? "w-14 h-7" : "h-14 w-7"
-                }   rounded-md  bg-black p-2 top-1 right-10 cursor-pointer`}
-              >
-                <span
-                  className={`fixed z-50  ${
-                    screenType === "Landscape"
-                      ? "w-10 h-5 top-2 right-12"
-                      : "w-5 h-10 top-3 right-11"
-                  }  rounded-md  bg-white  cursor-pointer`}
-                  title={screenType}
-                  onClick={() => {
-                    if (screenType === "Landscape") {
-                      setScreenType("portrait");
-                    } else {
-                      setScreenType("Landscape");
-                    }
-                  }}
-                />
-              </div>
 
               {!loading &&
                 compositonData !== null &&

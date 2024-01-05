@@ -186,6 +186,10 @@ const Users = ({ searchValue }) => {
   }, [countryID]);
 
   useEffect(() => {
+    getUsers()
+  }, []);
+
+  const getUsers = () =>{
     let data = JSON.stringify({
       mode: "Selectlist",
     });
@@ -209,7 +213,7 @@ const Users = ({ searchValue }) => {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }
 
   const handleAddUser = () => {
     // Clear previous validation errors
@@ -494,6 +498,8 @@ const Users = ({ searchValue }) => {
     setIsActive(0);
     setLabelTitle("Add New User")
     setLoadFist(true)
+    getUsers()
+
   };
 
 
@@ -565,7 +571,7 @@ const Users = ({ searchValue }) => {
 
         const config = {
           method: "post", // Change method to 'put' for changing the password
-          url: USER_UPDATE_PASSWORD, // Assuming CHNAGE_PASSWORD is your API endpoint
+          url: CHNAGE_PASSWORD, // Assuming CHNAGE_PASSWORD is your API endpoint
           headers: {
             Authorization: authToken,
           },
@@ -922,7 +928,7 @@ const Users = ({ searchValue }) => {
                     <div className="user-designation my-2">
                       <span
                         style={{ backgroundColor: "#cee9d6" }}
-                        className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                        className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
                       >
                         {userDetailData.userRoleName}
                       </span>
@@ -972,14 +978,14 @@ const Users = ({ searchValue }) => {
                           {userDetailData.isActive == 1 ? (
                             <span
                               style={{ backgroundColor: "#cee9d6" }}
-                              className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                              className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
                             >
                               Active
                             </span>
                           ) : (
                             <span
                               style={{ backgroundColor: "#cee9d6" }}
-                              className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                              className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
                             >
                               Inactive
                             </span>
@@ -1889,21 +1895,10 @@ const Users = ({ searchValue }) => {
             </div>
             <div className="clear-both overflow-x-auto">
               <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
-                {/* <div>
-                  <input
-                    type="text"
-                    id="small-input"
-                    placeholder="Search User Name..."
-                    class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div> */}
-
                 <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
                   <table className="min-w-full leading-normal" cellPadding={20}>
                     <thead>
-                      <tr className="border-b border-b-[#E4E6FF] bg-[#EFF3FF]">
+                      <tr className="border-b border-b-[#E4E6FF] bg-[#e6e6e6]">
                         <th className="text-[#5A5881] text-base font-semibold">
                           <span className="flex items-center justify-left">
                             UserName
@@ -1965,14 +1960,14 @@ const Users = ({ searchValue }) => {
                                 {item.isActive == 1 ? (
                                   <span
                                     style={{ backgroundColor: "#cee9d6" }}
-                                    className=" text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                    className=" text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
                                   >
                                     Active
                                   </span>
                                 ) : (
                                   <span
                                     style={{ backgroundColor: "" }}
-                                    className=" text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4  text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                    className=" text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
                                   >
                                     Inactive
                                   </span>
@@ -2015,7 +2010,7 @@ const Users = ({ searchValue }) => {
                           <tr>
                             <td colSpan={4}>
                               <div className="flex text-center justify-center">
-                                <span className="text-4xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                                <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
                                   No user Found
                                 </span>
                               </div>

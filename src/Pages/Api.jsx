@@ -100,6 +100,7 @@ export const GET_ALL_COMPOSITIONS = `${baseUrl}api/CompositionMaster/GetAllCompo
 
 export const DELETE_COMPOSITION_BY_ID = `${baseUrl}api/CompositionMaster/DeleteCompositionByID`;
 export const DELETE_ALL_COMPOSITIONS = `${baseUrl}api/CompositionMaster/DeleteAllComposition`;
+export const DELETE_COMPOSITION = `${baseUrl}api/CompositionMaster/DeleteComposition`;
 export const GET_ALL_TAGS = `${baseUrl}api/CompositionMaster/GetAllTag`;
 export const GET_CURRENT_ASSET = `${baseUrl}api/EventMaster/GetCurrentAsset`;
 
@@ -111,7 +112,6 @@ export const FORGOTPASSWORD = `${baseUrl}api/UserMaster/ForgotPassword`;
 
 export const CHNAGE_PASSWORD = `${baseUrl}api/UserMaster/ResetPassword?`;
 export const UPDATE_PASSWORD = `${baseUrl}api/UserMaster/UpdatePassword?`;
-export const USER_UPDATE_PASSWORD = `${baseUrl}api/UserMaster/UserUpdatePassword?`;
 
 // Weather App Api
 export const WEATHER_APP = `${baseUrl}api/WeatherApp/AddWeatherApp`

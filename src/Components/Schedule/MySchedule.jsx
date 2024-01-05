@@ -202,8 +202,8 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     };
 
     Swal.fire({
-      title: "Delete Schedules",
-      text: "Are you sure you want to delete this schedules",
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -466,7 +466,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   function handleClickOutside() {
     setShowActionBox(false);
   }
-  console.log('Selected IDs:', selectedItems);
 
   return (
     <>
@@ -476,7 +475,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {/* navbar and sidebar end */}
-      <div className="pt-28 px-5 page-contain ">
+      <div className="pt-20 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
@@ -542,13 +541,13 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="schedual-table bg-white rounded-xl mt-8 shadow">
+          <div className="schedual-tabl rounded-xl mt-5 overflow-x-auto shadow-md sm:rounded-lg">
             <table
-              className="w-full  lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+              className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
               cellPadding={20}
             >
               <thead>
-                <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                <tr className="items-center border-b border-b-[#E4E6FF] bg-[#e6e6e6]">
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
                     Schedule Name
                     <svg
@@ -606,7 +605,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             fill="#1C64F2"
                           />
                         </svg>
-                        <span className="text-4xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                        <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2  dark:bg-green-900 dark:text-green-300">
                           Loading...
                         </span>
                       </div>
@@ -616,7 +615,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   <tr>
                     <td colSpan={6}>
                       <div className="flex text-center m-5 justify-center">
-                        <span className="text-4xl text-gray-800 font-semibold py-2 px-4 rounded-full text-red-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">
+                        <span className="text-4xl text-gray-800 font-semibold py-2 px-4 rounded-full text-red-800  me-2  dark:bg-red-900 dark:text-red-300">
                           Data Not Found
                         </span>
                       </div>
@@ -627,7 +626,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     {schedules && sortedAndPaginatedData.length > 0 && sortedAndPaginatedData.map((schedule, index) => {
                       return (
                         <>
-                          <tr className="text-[#5E5E5E]">
+                          <tr className="border-b-[#E4E6FF] border-b">
                             <td className="text-[#5E5E5E] text-center">
                               <div className="flex gap-1">
                                 {selectAll ? (<CheckmarkIcon className="w-5 h-5" />) : ( 
@@ -736,7 +735,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             </table>
           </div>
 
-          <div className="flex justify-end mt-2">
+          <div className="flex justify-end mt-4">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
@@ -798,7 +797,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
           >
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                 <div className="flex items-center">
                   <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
                     Select the Screen you want Schedule add
