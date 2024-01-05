@@ -45,6 +45,7 @@ import {
 } from "../../Redux/Assetslice";
 import { debounce } from "lodash";
 import { connection } from "../../SignalR";
+import { handleGetStorageDetails } from "../../Redux/SettingSlice";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -564,6 +565,23 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+  const openFileUpload = () => {
+    const response = dispatch(handleGetStorageDetails({ token }));
+    response.then(async (res) => {
+      if (res?.payload?.data?.usedInPercentage >= 100) {
+        // Storage limit reached, maximum 3GB allowed.
+        Swal.fire({
+          icon: 'error',
+          title: 'Storage Limit Reached',
+          text: 'Maximum 3GB allowed. Please free up space before uploading more files.',
+        });
+        return;
+      } else {
+        navigate('/FileUpload');
+      }
+    });
+  };
+
   const debouncedOnChange = debounce(handleSearchAsset, 1000);
 
   return (
@@ -607,12 +625,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                 <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
                 New Folder
               </button>
-              <Link to={"/FileUpload"}>
-                <button className=" dashboard-btn lg:mt-0 md:mt-0 sm:mt-3 flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                  <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
-                  Upload
-                </button>
-              </Link>
+             {/* <Link> */}
+             <button onClick={() => openFileUpload()} className=" dashboard-btn lg:mt-0 md:mt-0 sm:mt-3 flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
+                Upload
+              </button>
+              {/* </Link> */}
 
               <ul className="flex items-center  xs:mt-2 sm:mt-2 md:mt-0 lg:mt-0 xs:mr-1 mr-3 rounded-full border-2 border-SlateBlue">
                 <li className="flex items-center ">
