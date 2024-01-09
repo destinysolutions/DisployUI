@@ -43,6 +43,7 @@ const Userrole = ({ searchValue }) => {
   const [roleName, setRoleName] = useState("");
   const [userRoleID, setUserRoleID] = useState("");
   const [userData, setUserData] = useState([]);
+  const [selectRoleID, setSelectRoleID] = useState("");
   const [showActionBox, setShowActionBox] = useState(false);
   const [deletePopup, setdeletePopup] = useState(false);
   const [checkboxValues, setCheckboxValues] = useState({
@@ -69,15 +70,18 @@ const Userrole = ({ searchValue }) => {
 
   const [errorsRoleName, setErrorsRoleName] = useState("");
   const [roleMethod, setRoleMethod] = useState("Add New Role");
-
+  const [moduleTitle, setModuleTitle] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(6); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState({});
+  const [levelOfApproval, setLevelOfApproval] = useState({});
+  const [selectedLevel, setSelectedLevel] = useState({});
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = userData.slice(indexOfFirstItem, indexOfLastItem);
+
   // Sort and paginate the data
 
   const totalPages = Math.ceil(userData.length / itemsPerPage);
@@ -115,6 +119,26 @@ const Userrole = ({ searchValue }) => {
   };
 
   useEffect(() => {
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://disployapi.thedestinysolutions.com/api/OrganizationUsersRole/ListOfModule",
+      headers: {
+        Authorization: authToken,
+      },
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data);
+        setModuleTitle(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
     const searchQuery = searchValue?.toLowerCase();
     if (searchQuery) {
       const filteredUser = userRoleData?.filter((item) =>
@@ -130,20 +154,38 @@ const Userrole = ({ searchValue }) => {
     }
   }, [searchValue]);
 
-  const handleActionClick = (rowId) => {
-    setShowActionBox(rowId);
+  const handleCheckboxChange = (moduleId, pageName, checkboxType) => {
+    setSelectedCheckboxes((prevSelectedCheckboxes) => {
+      const moduleCheckboxes = prevSelectedCheckboxes[moduleId] || {};
+      const pageCheckboxes = moduleCheckboxes[pageName] || {};
+      const updatedCheckboxes = {
+        ...prevSelectedCheckboxes,
+        [moduleId]: {
+          ...moduleCheckboxes,
+          [pageName]: {
+            ...pageCheckboxes,
+            [checkboxType]: !pageCheckboxes[checkboxType],
+          },
+        },
+      };
+
+      return updatedCheckboxes;
+    });
   };
 
-  const handleCheckboxChange = (category, value) => {
-    setCheckboxValues((prevValues) => ({
-      ...prevValues,
-      [category]: value,
+  const handleSetApprovalChange = (moduleId) => {
+    setLevelOfApproval((prevLevelOfApproval) => ({
+      ...prevLevelOfApproval,
+      [moduleId]: prevLevelOfApproval[moduleId] ? null : 1,
     }));
   };
+
+  console.log("selectRoleID====", selectRoleID);
 
   const handleFetchUserRoleData = () => {
     let data = JSON.stringify({
       mode: "Selectlist",
+      UserIDs: "1,2",
     });
 
     let config = {
@@ -179,48 +221,103 @@ const Userrole = ({ searchValue }) => {
       return;
     }
 
+    // let data = JSON.stringify({
+    //   orgUserRoleID: 0,
+    //   orgUserRole: roleName,
+    //   isActive: 1,
+    //   userID: 0,
+    //   mode: "Save",
+    //   useraccess: [
+    //     {
+    //       userAccessID: 0,
+    //       userRoleID: 0,
+    //       moduleID: 1,
+    //       isView: checkboxValues.screenView,
+    //       isSave: checkboxValues.screenCreateEdit,
+    //       isDelete: checkboxValues.screenDelete,
+    //       isApprove: checkboxValues.screenApprovar,
+    //       approverID: screenIsApprovarID || 0,
+    //       isReviewer: checkboxValues.screenReviewer,
+    //       reviewerID: screenIsReviwerID || 0,
+    //     },
+    //     {
+    //       userAccessID: 0,
+    //       userRoleID: 0,
+    //       moduleID: 2,
+    //       isView: checkboxValues.myScheduleView,
+    //       isSave: checkboxValues.myScheduleCreateEdit,
+    //       isDelete: checkboxValues.myScheduleDelete,
+    //       isApprove: checkboxValues.myScheduleApprovar,
+    //       approverID: myScheduleIsApprovarID || 0,
+    //       isReviewer: checkboxValues.myScheduleReviewer,
+    //       reviewerID: myScheduleIsReviwerID || 0,
+    //     },
+    //     {
+    //       userAccessID: 0,
+    //       userRoleID: 0,
+    //       moduleID: 3,
+    //       isView: checkboxValues.appsView,
+    //       isSave: checkboxValues.appsCreateEdit,
+    //       isDelete: checkboxValues.appsDelete,
+    //       isApprove: checkboxValues.appsApprovar,
+    //       approverID: appsIsApprovarID || 0,
+    //       isReviewer: checkboxValues.appsReviewer,
+    //       reviewerID: appsIsReviwerID || 0,
+    //     },
+    //   ],
+    // });
+
     let data = JSON.stringify({
       orgUserRoleID: 0,
       orgUserRole: roleName,
       isActive: 1,
       userID: 0,
       mode: "Save",
+      userCount: 0,
       useraccess: [
         {
           userAccessID: 0,
           userRoleID: 0,
           moduleID: 1,
-          isView: checkboxValues.screenView,
-          isSave: checkboxValues.screenCreateEdit,
-          isDelete: checkboxValues.screenDelete,
-          isApprove: checkboxValues.screenApprovar,
-          approverID: screenIsApprovarID || 0,
-          isReviewer: checkboxValues.screenReviewer,
-          reviewerID: screenIsReviwerID || 0,
-        },
-        {
-          userAccessID: 0,
-          userRoleID: 0,
-          moduleID: 2,
-          isView: checkboxValues.myScheduleView,
-          isSave: checkboxValues.myScheduleCreateEdit,
-          isDelete: checkboxValues.myScheduleDelete,
-          isApprove: checkboxValues.myScheduleApprovar,
-          approverID: myScheduleIsApprovarID || 0,
-          isReviewer: checkboxValues.myScheduleReviewer,
-          reviewerID: myScheduleIsReviwerID || 0,
-        },
-        {
-          userAccessID: 0,
-          userRoleID: 0,
-          moduleID: 3,
-          isView: checkboxValues.appsView,
-          isSave: checkboxValues.appsCreateEdit,
-          isDelete: checkboxValues.appsDelete,
-          isApprove: checkboxValues.appsApprovar,
-          approverID: appsIsApprovarID || 0,
-          isReviewer: checkboxValues.appsReviewer,
-          reviewerID: appsIsReviwerID || 0,
+          isView: true,
+          isSave: true,
+          isDelete: true,
+          isApprove: true,
+          noofApproval: 5,
+          listApproverDetails: [
+            {
+              appoverId: 0,
+              userId: 0,
+              levelNo: 1,
+              userAccessID: 0,
+            },
+            {
+              appoverId: 0,
+              userId: 0,
+              levelNo: 2,
+              userAccessID: 0,
+            },
+            {
+              appoverId: 0,
+              userId: 0,
+              levelNo: 3,
+              userAccessID: 0,
+            },
+            {
+              appoverId: 0,
+              userId: 0,
+              levelNo: 4,
+              userAccessID: 0,
+            },
+            {
+              appoverId: 0,
+              userId: 0,
+              levelNo: 5,
+              userAccessID: 0,
+            },
+          ],
+          isReviewer: true,
+          reviewerID: 1,
         },
       ],
     });
@@ -402,148 +499,6 @@ const Userrole = ({ searchValue }) => {
       });
   };
 
-  // Function to handle the "Set Approval" button click
-  const handleSetApprovalClick = (rowId) => {
-    if (isAnyCheckboxChecked) {
-      // If any checkbox is checked, fetch selected row names and show the popup
-      const rowData = tableData.find((row) => row.id === rowId);
-      setSelectedRows(rowData ? [rowData.name] : []);
-      setShowPopup(true);
-    }
-  };
-
-  // Function to close the popup
-  const closePopup = () => {
-    setShowPopup(false);
-  };
-
-  // Check if any checkbox is checked
-  const isAnyCheckboxChecked = Object.values(checkboxStates).some(
-    (isChecked) => isChecked
-  );
-
-  // Destructure checkboxStates and dropdownStates from localStorageData
-  const { checkboxState, dropdownStates } = localStorageData;
-
-  // Billing
-  const BillingData = [
-    {
-      id: 7,
-      name: "Payment Method",
-      create: true,
-      edit: false,
-      delete: true,
-      proposeChanges: false,
-      approveChanges: true,
-    },
-    {
-      id: 8,
-      name: "receive bank Access",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-  ];
-
-  // content
-  const contentData = [
-    {
-      id: 9,
-      name: "Assets",
-      create: true,
-      edit: false,
-      delete: true,
-      proposeChanges: false,
-      approveChanges: true,
-    },
-    {
-      id: 10,
-      name: "Disploy Studio",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-    {
-      id: 11,
-      name: "Playlist",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-    {
-      id: 12,
-      name: "Template",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-  ];
-
-  const tableData = [
-    {
-      id: 1,
-      name: "Screen",
-      create: true,
-      edit: false,
-      delete: true,
-      proposeChanges: false,
-      approveChanges: true,
-    },
-    {
-      id: 2,
-      name: "My Schedule",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-    {
-      id: 3,
-      name: "Apps",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-    {
-      id: 4,
-      name: "Settings",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-    {
-      id: 5,
-      name: "Reports",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-    {
-      id: 6,
-      name: "Trash",
-      create: false,
-      edit: true,
-      delete: true,
-      proposeChanges: true,
-      approveChanges: false,
-    },
-  ];
-
   useEffect(() => {
     handleFetchUserRoleData();
 
@@ -559,7 +514,6 @@ const Userrole = ({ searchValue }) => {
     axios
       .request(config)
       .then((response) => {
-        // console.log(response.data.data);
         setUserData(response.data.data);
       })
       .catch((error) => {
@@ -638,6 +592,92 @@ const Userrole = ({ searchValue }) => {
   }
 
   const handleDeleteRole = () => {};
+
+  const DynamicDesignComponent = ({ length }) => {
+    const [selectedRoleIDs, setSelectedRoleIDs] = useState(
+      Array(length).fill("")
+    );
+
+    const handleRoleChange = (index, value) => {
+      setSelectedRoleIDs((prevSelectedRoleIDs) => {
+        const newRoleIDs = [...prevSelectedRoleIDs];
+        newRoleIDs[index] = value;
+        return newRoleIDs;
+      });
+    };
+    const array = Array.from({ length }, (_, index) => index + 1);
+    const commaSeparatedRoleIDs = selectedRoleIDs.join(",");
+    console.log(commaSeparatedRoleIDs, "commaSeparatedRoleIDs");
+
+    // useEffect(() => {
+    //   let data = JSON.stringify({
+    //     mode: "Selectlist",
+    //     UserIDs: "1,2",
+    //   });
+
+    //   let config = {
+    //     method: "post",
+    //     maxBodyLength: Infinity,
+    //     url: "https://disployapi.thedestinysolutions.com/api/OrganizationUsersRole/AddUpdateOrganizationUsersRole",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: authToken,
+    //     },
+    //     data: data,
+    //   };
+
+    //   axios
+    //     .request(config)
+    //     .then((response) => {
+    //       if (response?.data?.message !== "Data not found.") {
+    //         setUserRoleData(response.data.data);
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // }, []);
+    return (
+      <tr>
+        <td className="flex items-center text-center">
+          {array.map((item) => (
+            <div key={item}>
+              {/* <select
+                className="ml-3 border border-primary rounded-lg px-2 py-1"
+                value={selectRoleID}
+                onChange={(e) => setSelectRoleID(e.target.value)}
+              >
+                <option label="select User Role"></option>
+                {userRoleData.map((userrole) => (
+                  <option
+                    key={userrole?.orgUserRoleID}
+                    value={userrole?.orgUserRoleID}
+                  >
+                    {userrole.orgUserRole}
+                  </option>
+                ))}
+              </select> */}
+              <select
+                className="ml-3 border border-primary rounded-lg px-2 py-1"
+                value={selectedRoleIDs[item - 1]}
+                onChange={(e) => handleRoleChange(item - 1, e.target.value)}
+              >
+                <option value="" label="Select User Role"></option>
+                {userRoleData.map((userrole) => (
+                  <option
+                    key={userrole?.orgUserRoleID}
+                    value={userrole?.orgUserRoleID}
+                  >
+                    {userrole.orgUserRole}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
+        </td>
+      </tr>
+    );
+  };
 
   return (
     <>
@@ -965,343 +1005,122 @@ const Userrole = ({ searchValue }) => {
                             <th>View</th>
                             <th>Create & Edit</th>
                             <th>Delete</th>
-                            <th>Approval</th>
-                            <th>Reviewer</th>
+                            <th>Set Approval</th>
+                            <th>Level Of Approval</th>
+                            <th></th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr className="border-b border-lightgray rounded-md">
-                            <td>Screen</td>
-                            <td className="text-center">
-                              <div>
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.screenView}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "screenView",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              </div>
-                            </td>
-
-                            <td className="text-center">
-                              <div>
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.screenCreateEdit}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "screenCreateEdit",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              </div>
-                            </td>
-                            <td className="text-center">
-                              <div>
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.screenDelete}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "screenDelete",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              </div>
-                            </td>
-                            <td className="text-center">
-                              {checkboxValues.screenApprovar == true ? (
-                                <select
-                                  className="formInput"
-                                  value={screenIsApprovarID}
-                                  onChange={(e) =>
-                                    setScreenIsApprovarID(e.target.value)
-                                  }
+                          {moduleTitle.map((title) => {
+                            return (
+                              title.isForApproval === true && (
+                                <tr
+                                  className="border-b border-lightgray rounded-md"
+                                  key={title.moduleID}
                                 >
-                                  <option label="select Approvar"></option>
-                                  {userRoleData.map((userrole) => (
-                                    <option
-                                      key={userrole.orgUserRoleID}
-                                      value={userrole.orgUserRoleID}
+                                  <td>{title.pageName}</td>
+                                  <td className="text-center">
+                                    <div>
+                                      <input
+                                        type="checkbox"
+                                        checked={
+                                          selectedCheckboxes[title.moduleID]?.[
+                                            title.pageName
+                                          ]?.View || false
+                                        }
+                                        onChange={() =>
+                                          handleCheckboxChange(
+                                            title.moduleID,
+                                            title.pageName,
+                                            "View"
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                  </td>
+                                  <td className="text-center">
+                                    <div>
+                                      <input
+                                        type="checkbox"
+                                        checked={
+                                          selectedCheckboxes[title.moduleID]?.[
+                                            title.pageName
+                                          ]?.CreateEdit || false
+                                        }
+                                        onChange={() =>
+                                          handleCheckboxChange(
+                                            title.moduleID,
+                                            title.pageName,
+                                            "CreateEdit"
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                  </td>
+                                  <td className="text-center">
+                                    <div>
+                                      <input
+                                        type="checkbox"
+                                        checked={
+                                          selectedCheckboxes[title.moduleID]?.[
+                                            title.pageName
+                                          ]?.Delete || false
+                                        }
+                                        onChange={() =>
+                                          handleCheckboxChange(
+                                            title.moduleID,
+                                            title.pageName,
+                                            "Delete"
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                  </td>
+                                  <td className="text-center">
+                                    <input
+                                      type="checkbox"
+                                      onChange={() =>
+                                        handleSetApprovalChange(title.moduleID)
+                                      }
+                                    />
+                                  </td>
+                                  <td className="text-center">
+                                    <select
+                                      className="border border-primary rounded-lg px-4 py-1"
+                                      disabled={
+                                        !levelOfApproval[title.moduleID]
+                                      }
+                                      value={
+                                        selectedLevel[title.moduleID] || ""
+                                      }
+                                      onChange={(e) => {
+                                        const moduleId = title.moduleID;
+                                        const level = parseInt(
+                                          e.target.value,
+                                          10
+                                        );
+                                        setSelectedLevel(
+                                          (prevSelectedLevel) => ({
+                                            ...prevSelectedLevel,
+                                            [moduleId]: level,
+                                          })
+                                        );
+                                      }}
                                     >
-                                      {userrole.orgUserRole}
-                                    </option>
-                                  ))}
-                                </select>
-                              ) : (
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.screenApprovar}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "screenApprovar",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              )}
-                            </td>
-                            <td className="text-center">
-                              {checkboxValues.screenReviewer == true ? (
-                                <select
-                                  className="formInput"
-                                  value={screenIsReviwerID}
-                                  onChange={(e) =>
-                                    setScreenIsReviwerID(e.target.value)
-                                  }
-                                >
-                                  <option label="select Reviewer"></option>
-                                  {userRoleData.map((userrole) => (
-                                    <option
-                                      key={userrole.orgUserRoleID}
-                                      value={userrole.orgUserRoleID}
-                                    >
-                                      {userrole.orgUserRole}
-                                    </option>
-                                  ))}
-                                </select>
-                              ) : (
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.screenReviewer}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "screenReviewer",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              )}
-                            </td>
-                          </tr>
-
-                          <tr className="border-b border-lightgray rounded-md">
-                            <td>My Schedule</td>
-                            <td className="text-center">
-                              <div>
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.myScheduleView}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "myScheduleView",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              </div>
-                            </td>
-
-                            <td className="text-center">
-                              <div>
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.myScheduleCreateEdit}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "myScheduleCreateEdit",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              </div>
-                            </td>
-                            <td className="text-center">
-                              <div>
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.myScheduleDelete}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "myScheduleDelete",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              </div>
-                            </td>
-                            <td className="text-center">
-                              {checkboxValues.myScheduleApprovar == true ? (
-                                <select
-                                  className="formInput"
-                                  value={myScheduleIsApprovarID}
-                                  onChange={(e) =>
-                                    setMyScheduleIsApprovarID(e.target.value)
-                                  }
-                                >
-                                  <option label="select Approver"></option>
-                                  {userRoleData.map((userrole) => (
-                                    <option
-                                      key={userrole.orgUserRoleID}
-                                      value={userrole.orgUserRoleID}
-                                    >
-                                      {userrole.orgUserRole}
-                                    </option>
-                                  ))}
-                                </select>
-                              ) : (
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.myScheduleApprovar}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "myScheduleApprovar",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              )}
-                            </td>
-                            <td className="text-center">
-                              {checkboxValues.myScheduleReviewer == true ? (
-                                <select
-                                  className="formInput"
-                                  value={myScheduleIsReviwerID}
-                                  onChange={(e) =>
-                                    setMyScheduleIsReviwerID(e.target.value)
-                                  }
-                                >
-                                  <option label="select Reviewer"></option>
-                                  {userRoleData.map((userrole) => (
-                                    <option
-                                      key={userrole.orgUserRoleID}
-                                      value={userrole.orgUserRoleID}
-                                    >
-                                      {userrole.orgUserRole}
-                                    </option>
-                                  ))}
-                                </select>
-                              ) : (
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.myScheduleReviewer}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "myScheduleReviewer",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              )}
-                            </td>
-                          </tr>
-
-                          <tr className="border-b border-lightgray rounded-md">
-                            <td>Apps</td>
-                            <td className="text-center">
-                              <div>
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.appsView}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "appsView",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              </div>
-                            </td>
-
-                            <td className="text-center">
-                              <div>
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.appsCreateEdit}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "appsCreateEdit",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              </div>
-                            </td>
-                            <td className="text-center">
-                              <div>
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.appsDelete}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "appsDelete",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              </div>
-                            </td>
-                            <td className="text-center">
-                              {checkboxValues.appsApprovar == true ? (
-                                <select
-                                  className="formInput"
-                                  value={appsIsApprovarID}
-                                  onChange={(e) =>
-                                    setAppsIsApprovarID(e.target.value)
-                                  }
-                                >
-                                  <option label="select Approver"></option>
-                                  {userRoleData.map((userrole) => (
-                                    <option
-                                      key={userrole.orgUserRoleID}
-                                      value={userrole.orgUserRoleID}
-                                    >
-                                      {userrole.orgUserRole}
-                                    </option>
-                                  ))}
-                                </select>
-                              ) : (
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.appsApprovar}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "appsApprovar",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              )}
-                            </td>
-                            <td className="text-center">
-                              {checkboxValues.appsReviewer == true ? (
-                                <select
-                                  className="formInput"
-                                  value={appsIsReviwerID}
-                                  onChange={(e) =>
-                                    setAppsIsReviwerID(e.target.value)
-                                  }
-                                >
-                                  <option label="select Reviewer"></option>
-                                  {userRoleData.map((userrole) => (
-                                    <option
-                                      key={userrole.orgUserRoleID}
-                                      value={userrole.orgUserRoleID}
-                                    >
-                                      {userrole.orgUserRole}
-                                    </option>
-                                  ))}
-                                </select>
-                              ) : (
-                                <input
-                                  type="checkbox"
-                                  checked={checkboxValues.appsReviewer}
-                                  onChange={(e) =>
-                                    handleCheckboxChange(
-                                      "appsReviewer",
-                                      e.target.checked
-                                    )
-                                  }
-                                />
-                              )}
-                            </td>
-                          </tr>
+                                      <option value="1">1</option>
+                                      <option value="2">2</option>
+                                      <option value="3">3</option>
+                                      <option value="4">4</option>
+                                      <option value="5">5</option>
+                                    </select>
+                                  </td>
+                                  <DynamicDesignComponent
+                                    length={selectedLevel?.[title.moduleID]}
+                                  />
+                                </tr>
+                              )
+                            );
+                          })}
                         </tbody>
                       </table>
                     </div>
