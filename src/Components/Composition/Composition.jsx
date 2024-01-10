@@ -346,7 +346,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "delete",
       maxBodyLength: Infinity,
-      url: `${DELETE_COMPOSITION}?CompositionIds=${selectedItems}`,
+      url: `${DELETE_ALL_COMPOSITIONS}?CompositionIds=${selectedItems}`,
       headers: { Authorization: authToken },
     };
 

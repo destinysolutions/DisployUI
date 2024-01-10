@@ -6,7 +6,11 @@ import { SelectByUserScreen } from "../../../Redux/ScreenGroupSlice";
 import toast from "react-hot-toast";
 import { SELECT_BY_USER_SCREENDETAIL } from "../../../Pages/Api";
 
-const ScreenGroupModal = ({ onClose }) => {
+const ScreenGroupModal = ({ 
+  onClose, 
+  handleSave,
+  editSelectedScreen
+ }) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.root.screenGroup);
 
@@ -14,8 +18,6 @@ const ScreenGroupModal = ({ onClose }) => {
   const authToken = `Bearer ${token}`;
 
   const [loadFirst, setLoadFirst] = useState(true);
-  const [sortOrder, setSortOrder] = useState("asc");
-  const [sortColumn, setSortColumn] = useState("");
 
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -23,6 +25,41 @@ const ScreenGroupModal = ({ onClose }) => {
 
   const [screenGroupName, setScreenGroupName] = useState("");
   const [screenGroupNameError, setScreenGroupNameError] = useState(""); // Name validationError check
+
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const [sortedField, setSortedField] = useState(null);
+
+  // Filter data based on search term
+  const filteredData = store.data?.filter((item) =>
+    Object.values(item).some(
+      (value) =>
+        value &&
+        value.toString().toLowerCase()
+    )
+  );
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  // Function to sort the data based on a field and order
+  const sortData = (data, field, order) => {
+    const sortedData = [...data];
+    sortedData.sort((a, b) => {
+      if (order === "asc") {
+        return a[field] > b[field] ? 1 : -1;
+      } else {
+        return a[field] < b[field] ? 1 : -1;
+      }
+    });
+    return sortedData;
+  };
+
+  const sortedAndPaginatedData = sortData(
+    filteredData,
+    sortedField,
+    sortOrder
+  ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   useEffect(() => {
     // const query = { ID : user.userID, sort: sortOrder, col: sortColumn };
@@ -41,25 +78,20 @@ const ScreenGroupModal = ({ onClose }) => {
       setLoadFirst(false);
     }
 
-    // Set message based on status
-    // if (store && store.status === "loading") {
-    //   toast.loading("Saving data...");
-    // } else if (store && store.status === "succeeded") {
-    //   toast.success("Data saved successfully");
-    //   onClose(); // Close the modal when data is saved successfully
-    // } else if (store && store.status === "failed") {
-    //   toast.error("Failed to save data");
-    // } else {
-    //   toast.dismiss();
-    // }
   }, [dispatch, loadFirst, sortOrder, store]);
 
-  const sorting = (val) => {
-    // Toggle sorting direction when clicking on the same column
-    const direction = sortOrder === "asc" ? "desc" : "asc";
-    setSortOrder(direction);
-    setSortColumn(val);
-    setLoadFirst(true); // Trigger API call on sorting change
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Handle sorting when a table header is clicked
+  const handleSort = (field) => {
+    if (sortedField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortOrder("asc");
+      setSortedField(field);
+    }
   };
 
   const handleScreenGroupNameChange = (e) => {
@@ -97,7 +129,7 @@ const ScreenGroupModal = ({ onClose }) => {
     }
   };
 
-  const handleSave = () => {
+  const handleSaveScreen = async () => {
     // Validate screenGroupName before saving
     if (!screenGroupName.trim()) {
       setScreenGroupNameError("Screen Group Name is required");
@@ -107,12 +139,8 @@ const ScreenGroupModal = ({ onClose }) => {
     const payLoad = {
       screenGroupName: screenGroupName,
       selectedItems: selectedItems,
-      ScreenGroupID: 0,
     };
-
-    // Handle the logic to process the selected items
-    console.log("payLoad Items:", payLoad);
-
+    await handleSave(payLoad)
     // Close the modal
     onClose();
   };
@@ -130,6 +158,15 @@ const ScreenGroupModal = ({ onClose }) => {
       window.removeEventListener("keydown", () => null);
     };
   }, []);
+
+  useEffect(() => {
+    if (editSelectedScreen) {
+      setScreenGroupName(editSelectedScreen.name || '');
+      // setSelectedItems(editSelectedScreen.selectedItems || []);
+    }
+  }, [editSelectedScreen]);
+  
+console.log("--------------- ",editSelectedScreen );
 
   return (
     <div>
@@ -178,18 +215,17 @@ const ScreenGroupModal = ({ onClose }) => {
               )}
             </div>
 
-            <div className="schedual-table bg-white rounded-xl mt-5 shadow">
-              <div className="relative overflow-x-auto shadow-md sm:rounded-lg p-2">
+            <div className="schedual-table bg-white rounded-xl mt-5">
+              <div className="relative overflow-x-auto">
                 <table
-                  className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                  className="min-w-full leading-normal text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
                   cellPadding={20}
                 >
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                      <th scope="col" className="px-6 py-3">
+                  <thead className="text-xs text-gray-700  bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                      <th scope="col" className="text-[#5A5881] text-sm font-semibold p-2">
                         <div className="flex items-center">
                           Screen
-                          {/* <a href="#" onClick={() => sorting("screen")} > */}
                           <a href="#">
                             <svg
                               className="w-3 h-3 ms-1.5"
@@ -197,99 +233,46 @@ const ScreenGroupModal = ({ onClose }) => {
                               xmlns="http://www.w3.org/2000/svg"
                               fill="currentColor"
                               viewBox="0 0 24 24"
+                              onClick={() => handleSort("screenName")}
                             >
                               <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
                             </svg>
                           </a>
                         </div>
                       </th>
-                      <th scope="col" className="px-6 py-3">
+                      <th scope="col" className="text-[#5A5881] text-sm font-semibold p-2">
                         <div className="flex items-center">
                           Status
-                          <a href="#">
-                            <svg
-                              className="w-3 h-3 ms-1.5"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                            </svg>
-                          </a>
                         </div>
                       </th>
-                      <th scope="col" className="px-6 py-3">
+                      <th scope="col" className="text-[#5A5881] text-sm font-semibold p-2">
                         <div className="flex items-center">
                           Google Location
-                          <a href="#">
-                            <svg
-                              className="w-3 h-3 ms-1.5"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                            </svg>
-                          </a>
                         </div>
                       </th>
-                      <th scope="col" className="px-6 py-3">
+                      <th scope="col" className="text-[#5A5881] text-sm font-semibold p-2">
                         <div className="flex items-center">
                           Associated Schedule
-                          <a href="#">
-                            <svg
-                              className="w-3 h-3 ms-1.5"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                            </svg>
-                          </a>
-                        </div>
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        <div className="flex items-center">
-                          Tags
-                          <a href="#">
-                            <svg
-                              className="w-3 h-3 ms-1.5"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                            </svg>
-                          </a>
                         </div>
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {store &&
-                      store.data.length &&
-                      store.data.map((screen) => (
+                    {store && store.data?.length > 0 ? (
+                      sortedAndPaginatedData.map((screen) => (
                         <tr
                           key={screen.screenID}
-                          className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                          className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
                         >
                           <td className="flex items-center">
                             <input
                               type="checkbox"
                               className="mr-3"
                               checked={selectedItems.includes(screen.screenID)}
-                              onChange={() =>
-                                handleCheckboxChange(screen.screenID)
-                              }
+                              onChange={() => handleCheckboxChange(screen.screenID)}
                             />
-
                             {screen.screenName}
                           </td>
-
                           <td className="text-center">
                             <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
                               Live
@@ -298,24 +281,85 @@ const ScreenGroupModal = ({ onClose }) => {
                           <td className="text-center break-words">
                             {screen.googleLocation}
                           </td>
-
                           <td className="text-center break-words">
-                            Schedule Name Till 28 June 2023
-                          </td>
-                          <td className="text-center break-words">
-                            {screen.tags}
+                            {screen.scheduleName}
                           </td>
                         </tr>
-                      ))}
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="4" className="text-center">
+                          {store && store.data?.length === 0
+                            ? "No data found"
+                            : <>
+                              <span className="text-sm  hover:bg-gray-400 text-gray-800 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
+                                Data not found
+                              </span>
+                            </>
+                          }
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
+
                 </table>
+
+                <div className="flex justify-end m-5">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  >
+                    <svg
+                      className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 5H1m0 0 4 4M1 5l4-4"
+                      />
+                    </svg>
+                    Previous
+                  </button>
+
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  >
+                    Next
+                    <svg
+                      className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 14 10"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M1 5h12m0 0L9 1m4 4L9 9"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+
                 {/* Modal footer */}
                 <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                   <button
                     data-modal-hide="static-modal"
                     type="button"
                     className="border-2 border-primary px-5 py-2 rounded-full ml-3 text-white bg-primary  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    onClick={handleSave}
+                    onClick={handleSaveScreen}
                   >
                     Save
                   </button>

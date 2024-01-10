@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
-import { getUrl, postUrl } from "../Pages/Api";
+import { deleteUrl, getUrl, postUrl } from "../Pages/Api";
+import axios from "axios";
 
 export const handleGetScreen = createAsyncThunk(
   "screen/handleGetScreen",
@@ -24,30 +25,18 @@ export const handleGetScreen = createAsyncThunk(
   }
 );
 
-export const handleDeleteAllScreen = createAsyncThunk(
-  "screen/handleDeleteAllScreen",
-  async ({ userID, token }, { rejectWithValue }) => {
-    try {
-      const { data } = await postUrl("NewScreen/UpdateNewScreen", {
-        data: {
-          userID,
-          operation: "DeleteUserIdScreenOtp",
-        },
-        headers: {
-          Authorization: token,
-          "Content-Type": "application/json",
-        },
-      });
-      if (data?.status == 200) return data;
-      else {
-        toast.error(data?.message);
-        return rejectWithValue(data?.message);
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message);
-      rejectWithValue(error?.response?.data?.message);
+export const handleDeleteAllScreen = createAsyncThunk("screen/handleDeleteAllScreen", async ({ config }, { rejectWithValue }) => {
+  try {
+    const response = await axios.request(config);
+    if (response?.data?.status) {
+      return response.data;
+    } else {
+      return rejectWithValue(response?.data);
     }
+  } catch (error) {
+    console.log("error", error);
   }
+}
 );
 
 export const handleUpdateScreenName = createAsyncThunk(

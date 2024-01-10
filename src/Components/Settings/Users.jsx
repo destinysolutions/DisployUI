@@ -62,6 +62,7 @@ const Users = ({ searchValue }) => {
   const [showActionBox, setShowActionBox] = useState(false);
   const [deletePopup, setdeletePopup] = useState(false);
   const [userID, setUserID] = useState();
+  const [UserMasterID, setUserMasterID] = useState();
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userDetailData, setUserDetailData] = useState([]);
   const [activeTab, setActiveTab] = useState(1);
@@ -551,7 +552,7 @@ const Users = ({ searchValue }) => {
   function handleClickOutside() {
     setShowActionBox(false);
   }
-
+console.log("UserMasterID",UserMasterID);
   const formik = useFormik({
     initialValues: {
       currentPassword: "",
@@ -563,7 +564,7 @@ const Users = ({ searchValue }) => {
     onSubmit: async (values) => {
       try {
         const payload = {
-          userID: userID,
+          userID: UserMasterID,
           currentPassword: values.currentPassword,
           newPassword: values.newPassword,
           confirmPassword: values.confirmPassword,
@@ -1945,6 +1946,7 @@ const Users = ({ searchValue }) => {
                         </th>
                       </tr>
                     </thead>
+                    
                     <tbody>
                       {userData && sortedAndPaginatedData.length > 0 ? (
                         sortedAndPaginatedData.map((item, index) => {
@@ -1983,7 +1985,7 @@ const Users = ({ searchValue }) => {
                                   </span>
                                 ) : (
                                   <span
-                                    style={{ backgroundColor: "" }}
+                                    style={{ backgroundColor: "#d1d5db" }}
                                     className=" text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
                                   >
                                     Inactive
@@ -1997,15 +1999,17 @@ const Users = ({ searchValue }) => {
                                       onClick={() => {
                                         setUserID(item.orgUserSpecificID);
                                         selectUserById(item.orgUserSpecificID);
+                                        setUserMasterID(item.userMasterID)
                                         setShowUserProfile(true);
                                       }}
                                     />
                                   </div>
-                                  <div className="cursor-pointer text-xl text-[#0000FF]">
+                                  <div className="cursor-pointer text-xl text-[#0000FF]">                              
                                     <BiEdit
                                       onClick={() => {
                                         setUserID(item.orgUserSpecificID);
                                         selectUserById(item.orgUserSpecificID);
+                                        setUserMasterID(item.userMasterID)
                                         setshowuserModal(true);
                                       }}
                                     />
@@ -2035,6 +2039,7 @@ const Users = ({ searchValue }) => {
                           </tr>
                         </>
                       )}
+                      
                     </tbody>
                   </table>
                 </div>
