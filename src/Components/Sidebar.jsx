@@ -65,13 +65,13 @@ const Sidebar = ({ sidebarOpen }) => {
             <MdOutlineAddToQueue className=" text-gray text-lg opacity-60 " />
           ),
         },
-        // {
-        //   title: "New Screen Group",
-        //   path: "/newscreengroup",
-        //   icon: (
-        //     <HiOutlineRectangleGroup className=" text-gray text-xl opacity-60 " />
-        //   ),
-        // },
+        {
+          title: "New Screen Group",
+          path: "/newscreengroup",
+          icon: (
+            <HiOutlineRectangleGroup className=" text-gray text-xl opacity-60 " />
+          ),
+        },
         // {
         //   title: "Merge Screens",
         //   path: "/mergescreen",

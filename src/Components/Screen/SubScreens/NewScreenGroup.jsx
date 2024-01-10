@@ -3,20 +3,15 @@ import "../../../Styles/sidebar.css";
 import "../../../Styles/screen.css";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
 import { TbUpload } from "react-icons/tb";
-import { RiDeleteBin5Line } from "react-icons/ri";
-import { LuMonitor } from "react-icons/lu";
-import { TbArrowBarRight } from "react-icons/tb";
-import { MdOutlineModeEdit } from "react-icons/md";
+import { RiAddBoxFill, RiDeleteBin5Line } from "react-icons/ri";
+import { MdDeleteForever } from "react-icons/md";
 import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
 import { HiOutlineRectangleGroup } from "react-icons/hi2";
 import { IoMdRefresh } from "react-icons/io";
-import { TbScanEye } from "react-icons/tb";
 import PropTypes from "prop-types";
 import Footer from "../../Footer";
 import { AiOutlineCloudUpload } from "react-icons/ai";
-import { SELECT_ALL_SCREENGROUP } from "../../../Pages/Api";
-import axios from "axios";
 import { Tooltip } from "@material-tailwind/react";
 import ScreenGroupModal from "./ScreenGroupModal";
 import ShowAssetModal from "./model/ShowGroupAssetModal";
@@ -29,10 +24,16 @@ import {
   handleGetTextScrollData,
   handleGetYoutubeData,
 } from "../../../Redux/AppsSlice";
+import { BiEdit, BiSave } from "react-icons/bi";
+import { getGroupData, resetStatus, saveGroupData } from "../../../Redux/ScreenGroupSlice";
+import toast from "react-hot-toast";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
+
   const { user, token } = useSelector((state) => state.root.auth);
+  const store = useSelector((state) => state.root.screenGroup);
   const authToken = `Bearer ${token}`;
+
   const dispatch = useDispatch();
 
   NewScreenGroup.propTypes = {
@@ -45,27 +46,24 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [openAccordionIndex, setOpenAccordionIndex] = useState(null);
+ 
+
+  // GroupNameUpdate
+  const [newGroupName, setNewGroupName] = useState('');
+  const [editIndex, setEditIndex] = useState(-1); // Initially no index is being edited
 
   //   Model
   const [showAssetModal, setShowAssetModal] = useState(false);
-  const [selectedComposition, setSelectedComposition] = useState({
-    compositionName: "",
-  });
+  const [selectedComposition, setSelectedComposition] = useState({ compositionName: "", });
   const [popupActiveTab, setPopupActiveTab] = useState(1);
-  const [screenCheckboxes, setScreenCheckboxes] = useState({});
+  // const [screenCheckboxes, setScreenCheckboxes] = useState({});
   const [selectedTextScroll, setSelectedTextScroll] = useState();
   const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
   const [assetPreview, setAssetPreview] = useState("");
   const [selectedYoutube, setSelectedYoutube] = useState();
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
 
-  useEffect(() => {
-    // const query = { ID : user.userID, sort: sortOrder, col: sortColumn };
-    if (loadFirst) {
-      console.log(" ---- loadFirst --- ");
-      setLoadFirst(false);
-    }
-  }, [loadFirst]);
+  const [editSelectedScreen,setEditSelectedScreen] = useState('');
 
   // fetch all data
   useEffect(() => {
@@ -86,24 +84,47 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       dispatch(handleGetTextScrollData({ token }));
 
       // get screens
-      const response = dispatch(handleGetScreen({ token }));
-      if (response) {
-        response.then((res) => {
-          if (res?.payload?.status === 200) {
-            const fetchedData = res?.payload.data;
-            const initialCheckboxes = {};
-            if (Array.isArray(fetchedData)) {
-              fetchedData.forEach((screen) => {
-                initialCheckboxes[screen.screenID] = false;
-              });
-              setScreenCheckboxes(initialCheckboxes);
-            }
-          }
-        });
-      }
+      // const response = dispatch(handleGetScreen({ token }));
+      // if (response) {
+      //   response.then((res) => {
+      //     if (res?.payload?.status === 200) {
+      //       const fetchedData = res?.payload.data;
+      //       const initialCheckboxes = {};
+      //       if (Array.isArray(fetchedData)) {
+      //         fetchedData.forEach((screen) => {
+      //           initialCheckboxes[screen.screenID] = false;
+      //         });
+      //         setScreenCheckboxes(initialCheckboxes);
+      //       }
+      //     }
+      //   });
+      // }
     }
     setLoadFirst(false);
   }, [user, loadFirst]);
+
+
+  useEffect(() => {
+    if (loadFirst) {
+      dispatch(getGroupData());
+      setLoadFirst(false);
+    }
+
+    if (store && store.status === "failed") {
+      toast.error(store.error)
+    }
+
+
+    if (store && store.status === "succeeded") {
+      toast.success(store.error)
+      setLoadFirst(true)
+    }
+
+    if (store && store.status) {
+      dispatch(resetStatus())
+    }
+
+  }, [dispatch, loadFirst, store]);
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -133,7 +154,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   // Model Function
-
   const handleAssetAdd = (asset) => {
     console.log(" get image ---- >", asset);
     setSelectedAsset(asset);
@@ -210,16 +230,39 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     // }
   };
 
-  const handleSave = () => {
-    console.log(
-      "------------------------------------  End of call function    ------------------"
-    );
+
+  const editGroupName = (index) => {     // GroupNameUpdate
+    setEditIndex(index);
+    setNewGroupName(DataGroup[index].name);
+  }
+
+  const updateGroupName = (index) => {    // GroupNameUpdate
+    const updatedGroups = [...DataGroup];
+    updatedGroups[index].name = newGroupName;
+    setEditIndex(-1);
+    setLoadFirst(true)
+  }
+
+  const newAddGroup = (item) => {
+    if (item) {
+      setEditSelectedScreen(item)
+    }else{
+      setEditSelectedScreen()
+    }
+    setIsModalOpen(true)
+  }
+
+  const handleSave = async (payload) => {
+    await dispatch(saveGroupData(payload))
+    console.log("------------------------------------  End of call function    ------------------", payload);
   };
+
+
 
   const DataGroup = [
     {
       id: 1,
-      name: "Test 1",
+      name: "test 1",
       arrayGroup: [
         {
           id: 1,
@@ -230,7 +273,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         },
         {
           id: 2,
-          screen: " Secound ",
+          screen: " secound ",
           status: 1,
           last_seen: " Today ",
           current_Schedule: "Today",
@@ -304,20 +347,20 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                 <button
                   type="button"
                   className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => newAddGroup()}
                 >
                   <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
               </Tooltip>
 
               {isModalOpen && (
-                <ScreenGroupModal isOpen={isModalOpen} onClose={closeModal} />
+                <ScreenGroupModal isOpen={isModalOpen} onClose={closeModal} handleSave={handleSave}  editSelectedScreen={editSelectedScreen} />
               )}
 
               <Tooltip
                 content="Select All ScreenGroup"
                 placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
+                className="bg-SlateBlue text-white z-10 ml-5"
                 animate={{
                   mount: { scale: 1, y: 0 },
                   unmount: { scale: 1, y: 10 },
@@ -333,184 +376,221 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          {DataGroup &&
-            DataGroup.length &&
-            DataGroup.map((item, i) => {
-              const isAccordionOpen = openAccordionIndex === i;
-              return (
-                <div key={i} className="accordions mt-5">
-                  <div
-                    className="section shadow-md p-5 rounded-md bg-white  lg:flex md:flex  sm:block items-center justify-between"
-                    onMouseOver={handleMouseOver}
-                    onMouseOut={handleMouseOut}
-                  >
-                    <h1 className="text-lg">{item.name}</h1>
-                    <div className="flex items-center">
-                      <div className=" flex items-center">
-                        {isAccordionOpen && (
-                          <>
-                            <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
-                              Preview
-                            </button>
-                            <button
-                              className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                              onClick={() => setShowAssetModal(true)}
-                            >
-                              <TbUpload className="text-3xl p-1 hover:text-white" />
-                            </button>
-                            <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
-                              <RiDeleteBin5Line
-                                className="text-3xl p-1 hover:text-white"
-                                onClick={() => handleDeleteGroup(item)}
-                              />
-                            </button>
-                          </>
-                        )}
+          {DataGroup && DataGroup.length && DataGroup.map((item, i) => {
+            const isAccordionOpen = openAccordionIndex === i;
+            return (
+              <div key={i} className="accordions mt-5">
+                <div
+                  className="section shadow-md p-5 bg-white  lg:flex md:flex  sm:block items-center justify-between"
+                  onMouseOver={handleMouseOver}
+                  onMouseOut={handleMouseOut}
+                >
 
-                        <button>
-                          <input
-                            type="checkbox"
-                            className=" mx-1 w-6 h-5 mt-2"
-                          />
-                        </button>
-
-                        <button>
-                          {isAccordionOpen ? (
-                            <div onClick={() => handleAccordionClick(i)}>
-                              <IoIosArrowDropup className="text-3xl" />
-                            </div>
-                          ) : (
-                            <div onClick={() => handleAccordionClick(i)}>
-                              <IoIosArrowDropdown className="text-3xl" />
-                            </div>
-                          )}
-                        </button>
-                      </div>
-                    </div>
+                  <div className="flex gap-2 items-center">
+                    {editIndex === i ? (
+                      <>
+                        <input
+                          type="text"
+                          name="name"
+                          className="formInput block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          value={newGroupName}
+                          onChange={(e) => setNewGroupName(e.target.value)}
+                        />
+                        <BiSave className="cursor-pointer text-xl text-[#0000FF]" onClick={() => updateGroupName(i)} />
+                      </>
+                    ) : (
+                      <>
+                        <h1 className="text-lg capitalize">{item.name}</h1>
+                        <BiEdit className="cursor-pointer text-xl text-[#0000FF]" onClick={() => editGroupName(i)} />
+                      </>
+                    )}
                   </div>
 
-                  {isAccordionOpen && (
-                    <div className="overflow-x-auto">
-                      <table
-                        className="mt-9 w-full sm:mt-3 lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white merged-table"
-                        cellPadding={20}
-                      >
-                        <thead>
-                          <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                            <th className="text-[#444] text-sm font-semibold p-2">
-                              <button className=" flex  items-center justify-center px-6 py-2">
-                                Screen
-                              </button>
-                            </th>
-                            <th className="text-[#444] text-sm font-semibold p-2">
-                              <button className=" flex  items-center justify-center mx-auto px-6 py-2">
-                                Status
-                              </button>
-                            </th>
-                            <th className="text-[#444] text-sm font-semibold p-2">
-                              <button className=" flex  items-center justify-center mx-auto px-6 py-2">
-                                Last Seen
-                              </button>
-                            </th>
-                            <th className="text-[#444] text-sm font-semibold p-2">
-                              <button className=" flex  items-center justify-center mx-auto px-6 py-2">
-                                Now Playing
-                              </button>
-                            </th>
-                            <th className="text-[#444] text-sm font-semibold p-2">
-                              <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
-                                Current Schedule
-                              </button>
-                            </th>
-                            <th className="text-[#444] text-sm font-semibold p-2">
-                              <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
-                                Tags
-                              </button>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {isAccordionOpen &&
-                            item &&
-                            item.arrayGroup.length &&
-                            item.arrayGroup.map((groupItem, index) => {
-                              return (
-                                <tr
-                                  key={index}
-                                  className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
-                                >
-                                  <td className="flex items-center ">
-                                    <input type="checkbox" className="mr-3" />
-                                    {groupItem.screen}
-                                  </td>
-                                  <td className="p-2 text-center">
-                                    {groupItem.status === 0 ? (
-                                      <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
-                                        Live
-                                      </button>
-                                    ) : (
-                                      <button className="bg-[#FF0000] rounded-full px-6 py-1 text-white">
-                                        Off
-                                      </button>
-                                    )}
-                                  </td>
-                                  <td className="p-2 text-center">
-                                    {" "}
-                                    {groupItem.last_seen}
-                                  </td>
-                                  <td className="p-2 text-center">
-                                    <button
-                                      onClick={() => setShowAssetModal(true)}
-                                      className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                                    >
-                                      Asset Name
-                                      <AiOutlineCloudUpload className="ml-2 text-lg" />
-                                    </button>
 
-                                    {showAssetModal && (
-                                      <ShowAssetModal
-                                        handleAssetAdd={handleAssetAdd}
-                                        handleAssetUpdate={handleAssetUpdate} // function
-                                        setSelectedComposition={
-                                          setSelectedComposition
-                                        }
-                                        handleAppsAdd={handleAppsAdd}
-                                        popupActiveTab={popupActiveTab}
-                                        setAssetPreviewPopup={
-                                          setAssetPreviewPopup
-                                        }
-                                        setPopupActiveTab={setPopupActiveTab}
-                                        setShowAssetModal={setShowAssetModal}
-                                        assetPreviewPopup={assetPreviewPopup}
-                                        assetPreview={assetPreview}
-                                        selectedComposition={
-                                          selectedComposition
-                                        }
-                                        selectedTextScroll={selectedTextScroll}
-                                        selectedYoutube={selectedYoutube}
-                                        selectedAsset={selectedAsset}
-                                        handleSave={handleSave} // save end of the call function confim
-                                      />
-                                    )}
-                                  </td>
-                                  <td className="break-words	w-[150px] p-2 text-center">
-                                    {groupItem.current_Schedule}
-                                  </td>
-                                  <td className="p-2 text-center">
-                                    Tags, Tags
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                        </tbody>
-                      </table>
+                  <div className="flex items-center">
+                    <div className=" flex items-center">
+                      {isAccordionOpen && (
+                        <>
+
+                          <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() => newAddGroup(item)}>
+                            <b>+</b>
+                          </button>
+
+                          <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
+                            Preview
+                          </button>
+                          <button
+                            className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                            onClick={() => setShowAssetModal(true)}
+                          >
+                            <TbUpload className="text-3xl p-1 hover:text-white" />
+                          </button>
+                          <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                            <RiDeleteBin5Line
+                              className="text-3xl p-1 hover:text-white"
+                              onClick={() => handleDeleteGroup(item)}
+                            />
+                          </button>
+                        </>
+                      )}
+
+                      <button>
+                        <input
+                          type="checkbox"
+                          className=" mx-1 w-6 h-5 mt-2"
+                        />
+                      </button>
+
+                      <button>
+                        {isAccordionOpen ? (
+                          <div onClick={() => handleAccordionClick(i)}>
+                            <IoIosArrowDropup className="text-3xl" />
+                          </div>
+                        ) : (
+                          <div onClick={() => handleAccordionClick(i)}>
+                            <IoIosArrowDropdown className="text-3xl" />
+                          </div>
+                        )}
+                      </button>
                     </div>
-                  )}
+                  </div>
                 </div>
-              );
-            })}
+
+                {isAccordionOpen && (
+                  <div className="overflow-x-auto relative shadow-md ">
+                    <table
+                      // className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white merged-table rtl:text-right text-gray-500 dark:text-gray-400 "
+                      className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
+                      cellPadding={20}
+                    >
+                      <thead>
+                        <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                          <th className="text-[#444] text-sm font-semibold p-2">
+                            <button className="flex items-center justify-center px-6 py-2">
+                              Screen
+                            </button>
+                          </th>
+                          <th className="text-[#444] text-sm font-semibold p-2">
+                            <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                              Status
+                            </button>
+                          </th>
+                          <th className="text-[#444] text-sm font-semibold p-2">
+                            <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                              Last Seen
+                            </button>
+                          </th>
+                          <th className="text-[#444] text-sm font-semibold p-2">
+                            <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                              Now Playing
+                            </button>
+                          </th>
+                          <th className="text-[#444] text-sm font-semibold p-2">
+                            <button className=" px-6 py-2 flex items-center justify-center mx-auto">
+                              Current Schedule
+                            </button>
+                          </th>
+                          <th className="text-[#444] text-sm font-semibold p-2">
+                            <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
+                              Tags
+                            </button>
+                          </th>
+                          <th className="text-[#444] text-sm font-semibold p-2">
+                            <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
+                              Action
+                            </button>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {isAccordionOpen &&
+                          item &&
+                          item.arrayGroup.length &&
+                          item.arrayGroup.map((groupItem, index) => {
+                            return (
+                              <tr
+                                key={index}
+                                className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
+                              >
+                                <td className="flex items-center">
+                                  <input type="checkbox" className="mr-3" />
+                                  {groupItem.screen}
+                                </td>
+                                <td className="p-2 text-center">
+                                  {groupItem.status === 0 ? (
+                                    <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
+                                      Live
+                                    </button>
+                                  ) : (
+                                    <button className="bg-[#FF0000] rounded-full px-6 py-1 text-white">
+                                      Off
+                                    </button>
+                                  )}
+                                </td>
+                                <td className="p-2 text-center">
+                                  {groupItem.last_seen}
+                                </td>
+                                <td className="p-2 text-center">
+                                  <button
+                                    onClick={() => setShowAssetModal(true)}
+                                    className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                  >
+                                    Asset Name
+                                    <AiOutlineCloudUpload className="ml-2 text-lg" />
+                                  </button>
+                                </td>
+                                <td className="break-words	w-[150px] p-2 text-center">
+                                  {groupItem.current_Schedule}
+                                </td>
+                                <td className="p-2 text-center">
+                                  Tags, Tags1 ,Tags2
+                                </td>
+                                <td className="p-2 justify-center flex ">
+                                  <div className="cursor-pointer text-xl flex gap-3 text-right">
+                                    <MdDeleteForever className="text-[#EE4B2B]" />
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
+
+      {/* Model */}
+      {showAssetModal && (
+        <ShowAssetModal
+          handleAssetAdd={handleAssetAdd}
+          handleAssetUpdate={handleAssetUpdate} // function
+          setSelectedComposition={
+            setSelectedComposition
+          }
+          handleAppsAdd={handleAppsAdd}
+          popupActiveTab={popupActiveTab}
+          setAssetPreviewPopup={
+            setAssetPreviewPopup
+          }
+          setPopupActiveTab={setPopupActiveTab}
+          setShowAssetModal={setShowAssetModal}
+          assetPreviewPopup={assetPreviewPopup}
+          assetPreview={assetPreview}
+          selectedComposition={
+            selectedComposition
+          }
+          selectedTextScroll={selectedTextScroll}
+          selectedYoutube={selectedYoutube}
+          selectedAsset={selectedAsset}
+          handleSave={handleSave} // save end of the call function confim
+        />
+      )}
+
+
       <Footer />
     </>
   );

@@ -36,7 +36,7 @@ import { BsCollectionPlay, BsPencilSquare, BsTags } from "react-icons/bs";
 import Footer from "../Footer";
 import { Tooltip } from "@material-tailwind/react";
 
-import { SCREEN_GROUP, SIGNAL_R, UPDATE_NEW_SCREEN } from "../../Pages/Api";
+import { SCREEN_DELETE_ALL, SCREEN_GROUP, SIGNAL_R, UPDATE_NEW_SCREEN } from "../../Pages/Api";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -45,7 +45,7 @@ import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { IoBarChartSharp } from "react-icons/io5";
 import ShowAssetModal from "../ShowAssetModal";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
-import toast from "react-hot-toast";
+import toast, { CheckmarkIcon } from "react-hot-toast";
 import {
   handleChangeScreens,
   handleDeleteAllScreen,
@@ -63,6 +63,7 @@ import {
   handleGetYoutubeData,
 } from "../../Redux/AppsSlice";
 import { TvStatus, connection } from "../../SignalR";
+import Swal from "sweetalert2";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -115,7 +116,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     tagsCheckboxClick,
   ]);
 
-  const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
 
   const [editedScreenName, setEditedScreenName] = useState("");
@@ -154,7 +154,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const { schedules } = useSelector((s) => s.root.schedule);
   const { compositions } = useSelector((s) => s.root.composition);
   const dispatch = useDispatch();
-
+  const [selectedItems, setSelectedItems] = useState([]); // Multipal check
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+   const [loadFist , setLoadFist] = useState(true)
   const selectedScreenIdsString = Array.isArray(selectedCheckboxIDs)
     ? selectedCheckboxIDs.join(",")
     : "";
@@ -182,47 +184,57 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     });
   };
 
+
+  //  multipal select
   const handleScreenCheckboxChange = (screenID) => {
-    const updatedCheckboxes = { ...screenCheckboxes };
-    updatedCheckboxes[screenID] = !updatedCheckboxes[screenID];
-    setScreenCheckboxes(updatedCheckboxes);
-
-    // Check if any individual screen checkbox is unchecked
-    const allChecked = Object.values(updatedCheckboxes).every(
-      (isChecked) => isChecked
-    );
-
-    setSelectAllChecked(allChecked);
-  };
-
-  const handleSelectAllCheckboxChange = (e) => {
-    const checked = e.target.checked;
-    setSelectAllChecked(checked);
-
-    // Set the state of all individual screen checkboxes
-    const updatedCheckboxes = {};
-    for (const screenID in screenCheckboxes) {
-      updatedCheckboxes[screenID] = checked;
+    if (selectedItems.includes(screenID)) {
+      setSelectedItems(selectedItems.filter((id) => id !== screenID));
+    } else {
+      setSelectedItems([...selectedItems, screenID]);
     }
-    setScreenCheckboxes(updatedCheckboxes);
   };
+
+  // all select
+  const handleSelectAllCheckboxChange = (e) => {
+     setSelectAllChecked(!selectAllChecked)
+    if (selectedItems.length === screens.length) {
+      setSelectedItems([]);
+    } else {
+      const allIds = screens.map((item) => item.screenID);
+      setSelectedItems(allIds);
+    }
+  };
+
 
   const handleDeleteAllscreen = () => {
-    if (window.confirm("Are you sure?") == false) return;
-    if (deleteLoading) return;
-    toast.loading("Deleting...");
-
     const allScreenMacids = screens.map((i) => i?.macid).join(",");
-    // console.log(allScreenMacids);
 
-    const response = dispatch(
-      handleDeleteAllScreen({ userID: user?.userID, token })
-    );
+    let config = {
+      method: "delete",
+      maxBodyLength: Infinity,
+      url: `${SCREEN_DELETE_ALL}?ScreenIDS=${selectedItems}`,
+      headers: { Authorization: authToken },
+    };
 
-    if (!response) return;
-    console.log("signal r");
-    response
-      .then(() => {
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result)=>{
+      if (result.isConfirmed) {
+        dispatch(handleDeleteAllScreen({config}));
+        dispatch(handleChangeScreens([]));
+        setSelectedItems([]);
+        setSelectAllChecked(false);
+        setScreenCheckboxes({});
+        toast.remove();
+        setLoadFist(true)
+        toast.success("Screen deleted Successfully!");
         if (connection.state == "Disconnected") {
           connection
             .start()
@@ -249,18 +261,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               console.error("Error invoking SignalR method:", error);
             });
         }
-        setTimeout(() => {
-          dispatch(handleChangeScreens([]));
-          setSelectAllChecked(false);
-          setScreenCheckboxes({});
-          toast.remove();
-          toast.success("Deleted Successfully.");
-        }, 1000);
-      })
-      .catch((error) => {
-        toast.remove();
-        console.log(error);
-      });
+      }
+    })
+
   };
 
   const handelDeleteScreen = (screenId, MACID) => {
@@ -381,14 +384,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-      ? 4
-      : selectedYoutube?.youtubeId !== null &&
-        selectedYoutube?.youtubeId !== undefined
-      ? 5
-      : selectedComposition?.compositionID !== null &&
-        selectedComposition?.compositionID !== undefined
-      ? 3
-      : 0;
+        ? 4
+        : selectedYoutube?.youtubeId !== null &&
+          selectedYoutube?.youtubeId !== undefined
+          ? 5
+          : selectedComposition?.compositionID !== null &&
+            selectedComposition?.compositionID !== undefined
+            ? 3
+            : 0;
 
     let mediaName =
       selectedAsset?.assetName ||
@@ -653,7 +656,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
     axios
       .request(config)
-      .then((response) => {})
+      .then((response) => { })
       .catch((error) => {
         console.log(error);
       });
@@ -739,6 +742,28 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       }
     }
   }, [user]);
+
+useEffect(() =>{
+  if (loadFist) {
+    const response = dispatch(handleGetScreen({ token }));
+    if (response) {
+      response.then((res) => {
+        if (res?.payload?.status == 200) {
+          const fetchedData = res?.payload.data;
+          const initialCheckboxes = {};
+          if (Array.isArray(fetchedData)) {
+            fetchedData.forEach((screen) => {
+              initialCheckboxes[screen.screenID] = false;
+            });
+            setScreenCheckboxes(initialCheckboxes);
+          }
+        }
+      });
+    }
+    setLoadFist(false)
+  }
+},[loadFist])
+
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -951,6 +976,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
               </Tooltip>
+              
+                {/* multipal remove */}
+                {selectedItems?.length !== 0 && !selectAllChecked && (
+                  <button
+                    className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                    onClick={handleDeleteAllscreen}
+                  >
+                    <RiDeleteBin5Line className="text-lg" />
+                  </button>
+                )}
+
               <div className="relative mt-1">
                 <Tooltip
                   content="More"
@@ -1091,7 +1127,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
                   {screenContentVisible && (
                     <th
-                      className="text-[#5A5881] text-base font-semibold w-fit text-center"
+                      className="text-[#5A5881] text-base font-semibold w-fit text-left"
                       onClick={() => handleSort("screenName")}>
                       Screen
                       {sortColumn === "screenName" && (
@@ -1139,30 +1175,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               <tbody>
                 {loading ? (
                   <tr className="text-center justify-center font-semibold text-lg w-full">
-                    <td colSpan="6">
-                    <div className="flex text-center m-5 justify-center">
-                     <svg
-                       aria-hidden="true"
-                       role="status"
-                       className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
-                       viewBox="0 0 100 101"
-                       fill="none"
-                       xmlns="http://www.w3.org/2000/svg"
-                     >
-                       <path
-                         d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                         fill="currentColor"
-                       />
-                       <path
-                         d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                         fill="#1C64F2"
-                       />
-                     </svg>
-                     <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2 px dark:bg-green-900 dark:text-green-300">
-                       Loading...
-                     </span>
-                   </div>
-                    </td>
+                    <td colSpan="5">Loading...</td>
                   </tr>
                 ) : screens?.length === 0 && !loading ? (
                   <tr>
@@ -1187,20 +1200,16 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       key={screen.screenID}>
                       {screenContentVisible && (
                         <td className="flex items-center ">
-                          <input
-                            type="checkbox"
-                            className="mr-3"
-                            style={{
-                              display: selectAllChecked ? "block" : "none",
-                            }}
-                            onChange={() =>
-                              handleScreenCheckboxChange(screen.screenID)
-                            }
-                            checked={screenCheckboxes[screen.screenID]}
-                          />
-
+                          {selectAllChecked ? (<CheckmarkIcon className="w-5 h-5" />) : (
+                            <input
+                              type="checkbox"
+                              className="mr-3"
+                              onChange={() => handleScreenCheckboxChange(screen.screenID)}
+                              checked={selectedItems.includes(screen.screenID)}
+                            />
+                          )}
                           {isEditingScreen &&
-                          editingScreenID === screen.screenID ? (
+                            editingScreenID === screen.screenID ? (
                             <div className="flex items-center gap-2">
                               <input
                                 type="text"
@@ -1252,11 +1261,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <td className="text-center">
                           <span
                             id={`changetvstatus${screen.screenID}`}
-                            className={`rounded-full px-6 py-2 text-white text-center ${
-                              screen.screenStatus == 1
+                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
                                 ? "bg-[#3AB700]"
                                 : "bg-[#FF0000]"
-                            }`}>
+                              }`}>
                             {screen.screenStatus == 1 ? "Live" : "offline"}
                           </span>
                         </td>
@@ -1467,24 +1475,24 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
                           {screen?.tags !== null
                             ? screen.tags
-                                .split(",")
-                                .slice(
-                                  0,
-                                  screen.tags.split(",").length > 2
-                                    ? 3
-                                    : screen.tags.split(",").length
-                                )
-                                .map((text) => {
-                                  if (text.toString().length > 10) {
-                                    return text
-                                      .split("")
-                                      .slice(0, 10)
-                                      .concat("...")
-                                      .join("");
-                                  }
-                                  return text;
-                                })
-                                .join(",")
+                              .split(",")
+                              .slice(
+                                0,
+                                screen.tags.split(",").length > 2
+                                  ? 3
+                                  : screen.tags.split(",").length
+                              )
+                              .map((text) => {
+                                if (text.toString().length > 10) {
+                                  return text
+                                    .split("")
+                                    .slice(0, 10)
+                                    .concat("...")
+                                    .join("");
+                                }
+                                return text;
+                              })
+                              .join(",")
                             : ""}
                           {screen?.tags !== "" && screen?.tags !== null && (
                             <MdOutlineModeEdit
@@ -1561,20 +1569,17 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                       className="border-b border-b-[#E4E6FF]">
                       {screenContentVisible && (
                         <td className="flex items-center ">
-                          <input
-                            type="checkbox"
-                            className="mr-3"
-                            style={{
-                              display: selectAllChecked ? "block" : "none",
-                            }}
-                            onChange={() =>
-                              handleScreenCheckboxChange(screen.screenID)
-                            }
-                            checked={screenCheckboxes[screen.screenID]}
-                          />
+                         {selectAllChecked ? (<CheckmarkIcon className="w-5 h-5" />) : (
+                            <input
+                              type="checkbox"
+                              className="mr-3"
+                              onChange={() => handleScreenCheckboxChange(screen.screenID)}
+                              checked={selectedItems.includes(screen.screenID)}
+                            />
+                          )}
 
                           {isEditingScreen &&
-                          editingScreenID === screen.screenID ? (
+                            editingScreenID === screen.screenID ? (
                             <div className="flex items-center gap-2">
                               <input
                                 type="text"
@@ -1626,11 +1631,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <td className="p-2 text-center">
                           <button
                             id={`changetvstatus${screen.screenID}`}
-                            className={`rounded-full px-6 py-2 text-white text-center ${
-                              screen.screenStatus == 1
+                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
                                 ? "bg-[#3AB700]"
                                 : "bg-[#FF0000]"
-                            }`}>
+                              }`}>
                             {screen.screenStatus == 1 ? "Live" : "offline"}
                           </button>
                         </td>
@@ -1848,24 +1852,24 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
                           {screen?.tags !== null
                             ? screen.tags
-                                .split(",")
-                                .slice(
-                                  0,
-                                  screen.tags.split(",").length > 2
-                                    ? 3
-                                    : screen.tags.split(",").length
-                                )
-                                .map((text) => {
-                                  if (text.toString().length > 10) {
-                                    return text
-                                      .split("")
-                                      .slice(0, 10)
-                                      .concat("...")
-                                      .join("");
-                                  }
-                                  return text;
-                                })
-                                .join(",")
+                              .split(",")
+                              .slice(
+                                0,
+                                screen.tags.split(",").length > 2
+                                  ? 3
+                                  : screen.tags.split(",").length
+                              )
+                              .map((text) => {
+                                if (text.toString().length > 10) {
+                                  return text
+                                    .split("")
+                                    .slice(0, 10)
+                                    .concat("...")
+                                    .join("");
+                                }
+                                return text;
+                              })
+                              .join(",")
                             : ""}
                           {screen?.tags !== "" && screen?.tags !== null && (
                             <MdOutlineModeEdit

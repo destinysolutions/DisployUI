@@ -6,6 +6,12 @@ export const postUrl = axios.create({
   baseURL: "https://disployapi.thedestinysolutions.com/api/",
   method: "post",
 });
+
+export const deleteUrl = axios.create({
+  baseURL: "https://disployapi.thedestinysolutions.com/api/",
+  method: "delete",
+});
+
 export const getUrl = axios.create({
   baseURL: "https://disployapi.thedestinysolutions.com/api/",
   method: "get",
@@ -119,6 +125,13 @@ export const GET_All_WEATHER = `${baseUrl}api/WeatherApp/GetWeatherApp`
 export const GET_WEATHER_BY_ID = `${baseUrl}api/WeatherApp/GetWeatherApp?`
 export const WEATHER_ASSIGN_SECREEN = `${baseUrl}api/WeatherApp/AssignWeatherToScreen?`
 export const WEATHER_ADD_TAG = `${baseUrl}api/WeatherApp/AddWeatherTags?`
+
+
+export const SCREEN_DELETE_ALL = `${baseUrl}api/NewScreen/DeleteAllScreenByIds`
+
+// Group Screen
+export const GET_GROUP_SCREEN = `${baseUrl}/api/GroupScreen/GetAllGroupName`
+export const ADD_GROUP_SCREEN = `${baseUrl}/api/GroupScreen/AddGroupScreen`
 
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115

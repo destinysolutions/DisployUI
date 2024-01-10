@@ -77,10 +77,10 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = schedules?.slice(indexOfFirstItem, indexOfLastItem);
+  // const currentItems = schedules?.slice(indexOfFirstItem, indexOfLastItem);
 
   // Filter data based on search term
-  const filteredData = schedules.filter((item) =>
+  const filteredData = schedules?.filter((item) =>
     Object.values(item).some(
       (value) =>
         value &&
@@ -200,7 +200,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "delete",
       maxBodyLength: Infinity,
-      url: DELETE_SCHEDULE,
       url: `${DELETE_SCHEDULE}?ScheduleIds=${selectedItems}`,
       headers: { Authorization: authToken },
     };

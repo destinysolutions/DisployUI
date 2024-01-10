@@ -842,12 +842,12 @@ const Userrole = ({ searchValue }) => {
                           {item.isActive == 1 ? (
                             <span
                               style={{ backgroundColor: "#cee9d6" }}
-                              className="bg-gray-300 hover:bg-gray-400 text-[#33d117]   text-green-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                              className="text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
                             >
                               Active
                             </span>
                           ) : (
-                            <span className="text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                            <span style={{ backgroundColor: "#d1d5db" }} className="text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
                               Inactive
                             </span>
                           )}
@@ -877,7 +877,7 @@ const Userrole = ({ searchValue }) => {
                               fill="#1C64F2"
                             />
                           </svg>
-                          <span className="text-4xl  hover:bg-gray-400 text-gray-800 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
+                          <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
                             Loading...
                           </span>
                         </div>
