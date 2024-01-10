@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { CiMenuKebab } from "react-icons/ci";
 import { BiEdit } from "react-icons/bi";
+import toast from "react-hot-toast";
 
 const Userrole = ({ searchValue }) => {
   const [showdata, setShowdata] = useState(false);
@@ -46,6 +47,9 @@ const Userrole = ({ searchValue }) => {
   const [selectRoleID, setSelectRoleID] = useState("");
   const [showActionBox, setShowActionBox] = useState(false);
   const [deletePopup, setdeletePopup] = useState(false);
+  const [selectedRoleIDs, setSelectedRoleIDs] = useState([]);
+  const [storeArray, setStoreArray] = useState([]);
+
   const [checkboxValues, setCheckboxValues] = useState({
     screenView: false,
     screenCreateEdit: false,
@@ -78,6 +82,7 @@ const Userrole = ({ searchValue }) => {
   const [selectedCheckboxes, setSelectedCheckboxes] = useState({});
   const [levelOfApproval, setLevelOfApproval] = useState({});
   const [selectedLevel, setSelectedLevel] = useState({});
+  const [showDynamicComponent, setShowDynamicComponent] = useState(false);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -180,8 +185,6 @@ const Userrole = ({ searchValue }) => {
     }));
   };
 
-  console.log("selectRoleID====", selectRoleID);
-
   const handleFetchUserRoleData = () => {
     let data = JSON.stringify({
       mode: "Selectlist",
@@ -210,63 +213,10 @@ const Userrole = ({ searchValue }) => {
         console.log(error);
       });
   };
-
   const handleSaveUserRole = () => {
-    // Clear previous validation errors
-    setErrorsRoleName("");
-    // Check validation for RoleName
-    setshowuserroleModal(true);
     if (!roleName) {
-      setErrorsRoleName("Role name is required");
-      return;
+      toast.error("Role name is required");
     }
-
-    // let data = JSON.stringify({
-    //   orgUserRoleID: 0,
-    //   orgUserRole: roleName,
-    //   isActive: 1,
-    //   userID: 0,
-    //   mode: "Save",
-    //   useraccess: [
-    //     {
-    //       userAccessID: 0,
-    //       userRoleID: 0,
-    //       moduleID: 1,
-    //       isView: checkboxValues.screenView,
-    //       isSave: checkboxValues.screenCreateEdit,
-    //       isDelete: checkboxValues.screenDelete,
-    //       isApprove: checkboxValues.screenApprovar,
-    //       approverID: screenIsApprovarID || 0,
-    //       isReviewer: checkboxValues.screenReviewer,
-    //       reviewerID: screenIsReviwerID || 0,
-    //     },
-    //     {
-    //       userAccessID: 0,
-    //       userRoleID: 0,
-    //       moduleID: 2,
-    //       isView: checkboxValues.myScheduleView,
-    //       isSave: checkboxValues.myScheduleCreateEdit,
-    //       isDelete: checkboxValues.myScheduleDelete,
-    //       isApprove: checkboxValues.myScheduleApprovar,
-    //       approverID: myScheduleIsApprovarID || 0,
-    //       isReviewer: checkboxValues.myScheduleReviewer,
-    //       reviewerID: myScheduleIsReviwerID || 0,
-    //     },
-    //     {
-    //       userAccessID: 0,
-    //       userRoleID: 0,
-    //       moduleID: 3,
-    //       isView: checkboxValues.appsView,
-    //       isSave: checkboxValues.appsCreateEdit,
-    //       isDelete: checkboxValues.appsDelete,
-    //       isApprove: checkboxValues.appsApprovar,
-    //       approverID: appsIsApprovarID || 0,
-    //       isReviewer: checkboxValues.appsReviewer,
-    //       reviewerID: appsIsReviwerID || 0,
-    //     },
-    //   ],
-    // });
-
     let data = JSON.stringify({
       orgUserRoleID: 0,
       orgUserRole: roleName,
@@ -279,45 +229,112 @@ const Userrole = ({ searchValue }) => {
           userAccessID: 0,
           userRoleID: 0,
           moduleID: 1,
-          isView: true,
-          isSave: true,
-          isDelete: true,
-          isApprove: true,
-          noofApproval: 5,
+          isView: selectedCheckboxes[1]?.Screen?.View || false,
+          isSave: selectedCheckboxes[1]?.Screen?.CreateEdit || false,
+          isDelete: selectedCheckboxes[1]?.Screen?.Delete || false,
+          isApprove: selectedCheckboxes[1]?.Screen?.Approval || false,
+          noofApproval: selectedLevel[1],
           listApproverDetails: [
             {
               appoverId: 0,
-              userId: 0,
+              userId: selectedRoleIDs[1][0] || 0,
               levelNo: 1,
-              userAccessID: 0,
             },
             {
               appoverId: 0,
-              userId: 0,
+              userId: selectedRoleIDs[1][1] || 0,
               levelNo: 2,
-              userAccessID: 0,
             },
             {
               appoverId: 0,
-              userId: 0,
+              userId: selectedRoleIDs[1][2] || 0,
               levelNo: 3,
-              userAccessID: 0,
             },
             {
               appoverId: 0,
-              userId: 0,
+              userId: selectedRoleIDs[1][3] || 0,
               levelNo: 4,
-              userAccessID: 0,
             },
             {
               appoverId: 0,
-              userId: 0,
+              userId: selectedRoleIDs[1][4] || 0,
               levelNo: 5,
-              userAccessID: 0,
             },
           ],
-          isReviewer: true,
-          reviewerID: 1,
+        },
+        {
+          userAccessID: 0,
+          userRoleID: 0,
+          moduleID: 2,
+          isView: selectedCheckboxes[2]?.MySchedule?.View || false,
+          isSave: selectedCheckboxes[2]?.MySchedule?.CreateEdit || false,
+          isDelete: selectedCheckboxes[2]?.MySchedule?.Delete || false,
+          isApprove: selectedCheckboxes[2]?.MySchedule?.Approval || false,
+          noofApproval: selectedLevel[2],
+          listApproverDetails: [
+            {
+              appoverId: 0,
+              userId: selectedRoleIDs[2][0] || 0,
+              levelNo: 1,
+            },
+            {
+              appoverId: 0,
+              userId: selectedRoleIDs[2][1] || 0,
+              levelNo: 2,
+            },
+            {
+              appoverId: 0,
+              userId: selectedRoleIDs[2][2] || 0,
+              levelNo: 3,
+            },
+            {
+              appoverId: 0,
+              userId: selectedRoleIDs[2][3] || 0,
+              levelNo: 4,
+            },
+            {
+              appoverId: 0,
+              userId: selectedRoleIDs[2][4] || 0,
+              levelNo: 5,
+            },
+          ],
+        },
+        {
+          userAccessID: 0,
+          userRoleID: 0,
+          moduleID: 3,
+          isView: selectedCheckboxes[3]?.Apps?.View || false,
+          isSave: selectedCheckboxes[3]?.Apps?.CreateEdit || false,
+          isDelete: selectedCheckboxes[3]?.Apps?.Delete || false,
+          isApprove: selectedCheckboxes[3]?.Apps?.Approval || false,
+          noofApproval: selectedLevel[3],
+          listApproverDetails: [
+            {
+              appoverId: 0,
+              userId: selectedRoleIDs[3][0] || 0,
+              levelNo: 1,
+            },
+            {
+              appoverId: 0,
+              userId: selectedRoleIDs[3][1] || 0,
+              levelNo: 2,
+            },
+            {
+              appoverId: 0,
+              userId: selectedRoleIDs[3][2] || 0,
+              levelNo: 3,
+            },
+            {
+              appoverId: 0,
+              userId: selectedRoleIDs[3][3] || 0,
+              levelNo: 4,
+            },
+            {
+              appoverId: 0,
+              userId: selectedRoleIDs[3][4] || 0,
+              levelNo: 5,
+            },
+          ],
         },
       ],
     });
@@ -336,8 +353,7 @@ const Userrole = ({ searchValue }) => {
     axios
       .request(config)
       .then((response) => {
-        setRoleName("");
-        handleFetchUserRoleData();
+        console.log(JSON.stringify(response.data));
       })
       .catch((error) => {
         console.log(error);
@@ -593,74 +609,55 @@ const Userrole = ({ searchValue }) => {
 
   const handleDeleteRole = () => {};
 
-  const DynamicDesignComponent = ({ length }) => {
-    const [selectedRoleIDs, setSelectedRoleIDs] = useState(
-      Array(length).fill("")
-    );
+  const handleRoleChange = (moduleID, index, value) => {
+    setSelectedRoleIDs((prevSelectedRoleIDs) => {
+      const newRoleIDs = {
+        ...prevSelectedRoleIDs,
+        [moduleID]: [...(prevSelectedRoleIDs[moduleID] || [])],
+      };
 
-    const handleRoleChange = (index, value) => {
-      setSelectedRoleIDs((prevSelectedRoleIDs) => {
-        const newRoleIDs = [...prevSelectedRoleIDs];
-        newRoleIDs[index] = value;
-        return newRoleIDs;
-      });
-    };
+      const roleId = parseInt(value, 10);
+
+      const existingIndex = newRoleIDs[moduleID].indexOf(roleId);
+
+      if (existingIndex === -1) {
+        newRoleIDs[moduleID][index] = roleId;
+      } else {
+        toast.error("User ID already selected within this module");
+      }
+
+      return newRoleIDs;
+    });
+  };
+
+  const DynamicDesignComponent = ({
+    length,
+    selectedRoleIDs,
+    handleRoleChange,
+    userRoleData,
+    moduleID,
+  }) => {
     const array = Array.from({ length }, (_, index) => index + 1);
-    const commaSeparatedRoleIDs = selectedRoleIDs.join(",");
-    console.log(commaSeparatedRoleIDs, "commaSeparatedRoleIDs");
-
     // useEffect(() => {
-    //   let data = JSON.stringify({
-    //     mode: "Selectlist",
-    //     UserIDs: "1,2",
-    //   });
-
-    //   let config = {
-    //     method: "post",
-    //     maxBodyLength: Infinity,
-    //     url: "https://disployapi.thedestinysolutions.com/api/OrganizationUsersRole/AddUpdateOrganizationUsersRole",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Authorization: authToken,
-    //     },
-    //     data: data,
-    //   };
-
-    //   axios
-    //     .request(config)
-    //     .then((response) => {
-    //       if (response?.data?.message !== "Data not found.") {
-    //         setUserRoleData(response.data.data);
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
+    //   if (array) {
+    //     setStoreArray(array);
+    //   }
     // }, []);
+
     return (
       <tr>
         <td className="flex items-center text-center">
           {array.map((item) => (
             <div key={item}>
-              {/* <select
-                className="ml-3 border border-primary rounded-lg px-2 py-1"
-                value={selectRoleID}
-                onChange={(e) => setSelectRoleID(e.target.value)}
-              >
-                <option label="select User Role"></option>
-                {userRoleData.map((userrole) => (
-                  <option
-                    key={userrole?.orgUserRoleID}
-                    value={userrole?.orgUserRoleID}
-                  >
-                    {userrole.orgUserRole}
-                  </option>
-                ))}
-              </select> */}
               <select
                 className="ml-3 border border-primary rounded-lg px-2 py-1"
-                value={selectedRoleIDs[item - 1]}
-                onChange={(e) => handleRoleChange(item - 1, e.target.value)}
+                value={
+                  selectedRoleIDs[moduleID] &&
+                  selectedRoleIDs[moduleID][item - 1]
+                }
+                onChange={(e) =>
+                  handleRoleChange(moduleID, item - 1, e.target.value)
+                }
               >
                 <option value="" label="Select User Role"></option>
                 {userRoleData.map((userrole) => (
@@ -847,7 +844,10 @@ const Userrole = ({ searchValue }) => {
                               Active
                             </span>
                           ) : (
-                            <span style={{ backgroundColor: "#d1d5db" }} className="text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+                            <span
+                              style={{ backgroundColor: "#d1d5db" }}
+                              className="text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                            >
                               Inactive
                             </span>
                           )}
@@ -985,9 +985,6 @@ const Userrole = ({ searchValue }) => {
                           className="formInput w-full"
                           onChange={(e) => setRoleName(e.target.value)}
                         />
-                        {errorsRoleName && (
-                          <p className="error">{errorsRoleName}</p>
-                        )}
                       </div>
                     </div>
                     <div className="col-span-12">
@@ -1001,13 +998,25 @@ const Userrole = ({ searchValue }) => {
                       >
                         <thead>
                           <tr className="bg-lightgray">
-                            <th></th>
-                            <th>View</th>
-                            <th>Create & Edit</th>
-                            <th>Delete</th>
-                            <th>Set Approval</th>
-                            <th>Level Of Approval</th>
-                            <th></th>
+                            {!showDynamicComponent ? (
+                              <>
+                                <th></th>
+                                <th>View</th>
+                                <th>Create & Edit</th>
+                                <th>Delete</th>
+                              </>
+                            ) : (
+                              <>
+                                <th></th>
+                                <th>Set Approval</th>
+                                <th>Level Of Approval</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                              </>
+                            )}
                           </tr>
                         </thead>
                         <tbody>
@@ -1019,104 +1028,156 @@ const Userrole = ({ searchValue }) => {
                                   key={title.moduleID}
                                 >
                                   <td>{title.pageName}</td>
-                                  <td className="text-center">
-                                    <div>
-                                      <input
-                                        type="checkbox"
-                                        checked={
-                                          selectedCheckboxes[title.moduleID]?.[
-                                            title.pageName
-                                          ]?.View || false
-                                        }
-                                        onChange={() =>
-                                          handleCheckboxChange(
-                                            title.moduleID,
-                                            title.pageName,
-                                            "View"
-                                          )
-                                        }
+                                  {!showDynamicComponent && (
+                                    <>
+                                      <td className="text-center">
+                                        <div>
+                                          <input
+                                            type="checkbox"
+                                            checked={
+                                              selectedCheckboxes[
+                                                title.moduleID
+                                              ]?.[title.pageName]?.View || false
+                                            }
+                                            onChange={() =>
+                                              handleCheckboxChange(
+                                                title.moduleID,
+                                                title.pageName,
+                                                "View"
+                                              )
+                                            }
+                                          />
+                                        </div>
+                                      </td>
+                                      <td className="text-center">
+                                        <div>
+                                          <input
+                                            type="checkbox"
+                                            checked={
+                                              selectedCheckboxes[
+                                                title.moduleID
+                                              ]?.[title.pageName]?.CreateEdit ||
+                                              false
+                                            }
+                                            onChange={() =>
+                                              handleCheckboxChange(
+                                                title.moduleID,
+                                                title.pageName,
+                                                "CreateEdit"
+                                              )
+                                            }
+                                          />
+                                        </div>
+                                      </td>
+                                      <td className="text-center">
+                                        <div>
+                                          <input
+                                            type="checkbox"
+                                            checked={
+                                              selectedCheckboxes[
+                                                title.moduleID
+                                              ]?.[title.pageName]?.Delete ||
+                                              false
+                                            }
+                                            onChange={() =>
+                                              handleCheckboxChange(
+                                                title.moduleID,
+                                                title.pageName,
+                                                "Delete"
+                                              )
+                                            }
+                                          />
+                                        </div>
+                                      </td>
+                                    </>
+                                  )}
+                                  {showDynamicComponent && (
+                                    <>
+                                      <td className="text-center">
+                                        <input
+                                          type="checkbox"
+                                          onChange={() => {
+                                            handleSetApprovalChange(
+                                              title.moduleID
+                                            );
+                                            handleCheckboxChange(
+                                              title.moduleID,
+                                              title.pageName,
+                                              "Approval"
+                                            );
+                                          }}
+                                        />
+                                      </td>
+                                      <td className="text-center">
+                                        <select
+                                          className="border border-primary rounded-lg px-4 py-1"
+                                          disabled={
+                                            !levelOfApproval[title.moduleID]
+                                          }
+                                          value={
+                                            selectedLevel[title.moduleID] || ""
+                                          }
+                                          onChange={(e) => {
+                                            const moduleId = title.moduleID;
+                                            const level = parseInt(
+                                              e.target.value,
+                                              10
+                                            );
+                                            setSelectedLevel(
+                                              (prevSelectedLevel) => ({
+                                                ...prevSelectedLevel,
+                                                [moduleId]: level,
+                                              })
+                                            );
+                                          }}
+                                        >
+                                          <option
+                                            value=""
+                                            label="-- Select --"
+                                            disabled
+                                          ></option>
+                                          <option
+                                            value="1"
+                                            disabled={userRoleData.length < 1}
+                                          >
+                                            1
+                                          </option>
+                                          <option
+                                            value="2"
+                                            disabled={userRoleData.length < 2}
+                                          >
+                                            2
+                                          </option>
+                                          <option
+                                            value="3"
+                                            disabled={userRoleData.length < 3}
+                                          >
+                                            3
+                                          </option>
+                                          <option
+                                            value="4"
+                                            disabled={userRoleData.length < 4}
+                                          >
+                                            4
+                                          </option>
+                                          <option
+                                            value="5"
+                                            disabled={userRoleData.length < 5}
+                                          >
+                                            5
+                                          </option>
+                                        </select>
+                                      </td>
+
+                                      <DynamicDesignComponent
+                                        moduleID={title.moduleID}
+                                        length={selectedLevel?.[title.moduleID]}
+                                        selectedRoleIDs={selectedRoleIDs}
+                                        handleRoleChange={handleRoleChange}
+                                        userRoleData={userRoleData}
                                       />
-                                    </div>
-                                  </td>
-                                  <td className="text-center">
-                                    <div>
-                                      <input
-                                        type="checkbox"
-                                        checked={
-                                          selectedCheckboxes[title.moduleID]?.[
-                                            title.pageName
-                                          ]?.CreateEdit || false
-                                        }
-                                        onChange={() =>
-                                          handleCheckboxChange(
-                                            title.moduleID,
-                                            title.pageName,
-                                            "CreateEdit"
-                                          )
-                                        }
-                                      />
-                                    </div>
-                                  </td>
-                                  <td className="text-center">
-                                    <div>
-                                      <input
-                                        type="checkbox"
-                                        checked={
-                                          selectedCheckboxes[title.moduleID]?.[
-                                            title.pageName
-                                          ]?.Delete || false
-                                        }
-                                        onChange={() =>
-                                          handleCheckboxChange(
-                                            title.moduleID,
-                                            title.pageName,
-                                            "Delete"
-                                          )
-                                        }
-                                      />
-                                    </div>
-                                  </td>
-                                  <td className="text-center">
-                                    <input
-                                      type="checkbox"
-                                      onChange={() =>
-                                        handleSetApprovalChange(title.moduleID)
-                                      }
-                                    />
-                                  </td>
-                                  <td className="text-center">
-                                    <select
-                                      className="border border-primary rounded-lg px-4 py-1"
-                                      disabled={
-                                        !levelOfApproval[title.moduleID]
-                                      }
-                                      value={
-                                        selectedLevel[title.moduleID] || ""
-                                      }
-                                      onChange={(e) => {
-                                        const moduleId = title.moduleID;
-                                        const level = parseInt(
-                                          e.target.value,
-                                          10
-                                        );
-                                        setSelectedLevel(
-                                          (prevSelectedLevel) => ({
-                                            ...prevSelectedLevel,
-                                            [moduleId]: level,
-                                          })
-                                        );
-                                      }}
-                                    >
-                                      <option value="1">1</option>
-                                      <option value="2">2</option>
-                                      <option value="3">3</option>
-                                      <option value="4">4</option>
-                                      <option value="5">5</option>
-                                    </select>
-                                  </td>
-                                  <DynamicDesignComponent
-                                    length={selectedLevel?.[title.moduleID]}
-                                  />
+                                    </>
+                                  )}
                                 </tr>
                               )
                             );
@@ -1153,29 +1214,11 @@ const Userrole = ({ searchValue }) => {
                       >
                         Cancel
                       </button>
-                      {userRoleID == "" ? (
+
+                      {showDynamicComponent ? (
                         <button
                           onClick={() => {
                             handleSaveUserRole();
-                            setRoleName("");
-                            setCheckboxValues({
-                              screenView: false,
-                              screenCreateEdit: false,
-                              screenDelete: false,
-                              screenApprovar: false,
-                              screenReviewer: false,
-                              myScheduleView: false,
-                              myScheduleCreateEdit: false,
-                              myScheduleDelete: false,
-                              myScheduleApprovar: false,
-                              myScheduleReviewer: false,
-                              appsView: false,
-                              appsCreateEdit: false,
-                              appsDelete: false,
-                              appsApprovar: false,
-                              appsReviewer: false,
-                            });
-                            // setshowuserroleModal(false);
                           }}
                           className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
                         >
@@ -1184,31 +1227,11 @@ const Userrole = ({ searchValue }) => {
                       ) : (
                         <button
                           onClick={() => {
-                            handleUpdateUserRole();
-                            setRoleName("");
-                            setCheckboxValues({
-                              screenView: false,
-                              screenCreateEdit: false,
-                              screenDelete: false,
-                              screenApprovar: false,
-                              screenReviewer: false,
-                              myScheduleView: false,
-                              myScheduleCreateEdit: false,
-                              myScheduleDelete: false,
-                              myScheduleApprovar: false,
-                              myScheduleReviewer: false,
-                              appsView: false,
-                              appsCreateEdit: false,
-                              appsDelete: false,
-                              appsApprovar: false,
-                              appsReviewer: false,
-                            });
-                            // setErrorsRoleName('')
-                            // setshowuserroleModal(false);
+                            setShowDynamicComponent(true);
                           }}
                           className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
                         >
-                          Update
+                          Next
                         </button>
                       )}
                     </div>
