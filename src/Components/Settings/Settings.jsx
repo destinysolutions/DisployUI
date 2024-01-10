@@ -123,7 +123,7 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
       ),
     },
   ];
-  const storedTab = localStorage.getItem('STabs');
+  const storedTab = localStorage.getItem("STabs");
   const initialTab = storedTab ? parseInt(storedTab) : 1;
   const [STabs, setSTabs] = useState(initialTab);
   const [records, setRecords] = useState(data);
@@ -131,11 +131,11 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
 
   function updateTab(id) {
     setSTabs(id);
-    localStorage.setItem('STabs', id.toString());
+    localStorage.setItem("STabs", id.toString());
   }
 
   useEffect(() => {
-    console.log("STabs",STabs)
+    console.log("STabs", STabs);
   }, [STabs]);
 
   return (
@@ -230,20 +230,6 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
                     </span>
                   </button>
                 </li>
-                {/* 
-                <li>
-                  <button
-                    className={
-                      STabs === 5 ? "stabshow settingtabactive" : "settingtab"
-                    }
-                    onClick={() => updateTab(5)}
-                  >
-                    <SiMediamarkt className="bg-primary text-white text-3xl rounded-md p-1 mr-2" />
-                    <span className="text-base text-primary">
-                      Approval Required
-                    </span>
-                  </button>
-                </li> */}
               </ul>
             </div>
 
@@ -263,9 +249,6 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
               {/*Storage Limits*/}
               <div className={STabs === 4 ? "" : "hidden"}>
                 <Defaultmedia />
-              </div>
-              <div className={STabs === 5 ? "" : "hidden"}>
-                <ApprovalReq />
               </div>
 
               {/*Default Media*/}
