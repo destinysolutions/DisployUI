@@ -53,6 +53,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
     indexOfFirstItem,
     indexOfLastItem
   );
+  const [selectedItems, setSelectedItems] = useState([]); // Multipal check
 
   // Filter data based on search term
   const filteredData = store.deletedData?.filter((item) =>
@@ -130,14 +131,22 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   }, [loadFist, store]); // Make sure to include dispatch as a dependency if you're using it in the effect
 
   const handleSelectAllChange = () => {
-    setSelectAll((prevSelectAll) => !prevSelectAll);
+    setSelectAll(!selectAll);
+    if (selectedItems.length === sortedAndPaginatedData?.length) {
+      setSelectedItems([]);
+    } else {
+      const allIds = sortedAndPaginatedData?.map((item) => item.assetID);
+      setSelectedItems(allIds);
+    }
+
   };
 
   const handleDeleteAllPermanently = () => {
     let config = {
       method: "delete",
       maxBodyLength: Infinity,
-      url: All_DELETED_TRASH,
+      url: `${All_DELETED_TRASH}?assetID=${selectedItems}`,
+      // url: `${SINGL_DELETED_TRASH}?assetID=${id}&assetType=${type}`,
       headers: { Authorization: authToken },
     };
     Swal.fire({
@@ -159,6 +168,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
         });
         setSelectAll(false);
       }
+      setSelectedItems([])
     });
   };
 
@@ -193,6 +203,16 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
       console.log("error handleDeletePermanently Singal --- ", error);
     }
   };
+
+  // Multipal check
+  const handleCheckboxChange = (item) => {
+    if (selectedItems.includes(item)) {
+      setSelectedItems(selectedItems.filter((id) => id !== item));
+    } else {
+      setSelectedItems([...selectedItems, item]);
+    }
+  };
+
 
   const handleRestore = (id, type) => {
     try {
@@ -240,13 +260,14 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
               Trash
             </h1>
             <div className="m-5 flex gap-4">
-              <button
-                className="p-2 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                onClick={handleDeleteAllPermanently}
-                style={{ display: selectAll ? "block" : "none" }}
-              >
-                <RiDeleteBin5Line className="text-lg" />
-              </button>
+              {selectedItems?.length > 0 && (
+                <button
+                  className="p-2 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  onClick={handleDeleteAllPermanently}
+                >
+                  <RiDeleteBin5Line className="text-lg" />
+                </button>
+              )}
               <input
                 type="checkbox"
                 className="w-8 h-8"
@@ -292,9 +313,9 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                   <th className=" sticky top-0 border-b border-lightgray th-bg-100 text-md font-semibold">
                     Item type
                   </th>
-                  <th className=" sticky top-0 border-b border-lightgray th-bg-100 text-md font-semibold">
+                  {/* <th className=" sticky top-0 border-b border-lightgray th-bg-100 text-md font-semibold">
                     Date modified
-                  </th>
+                  </th> */}
                   <th className=" sticky top-0 border-b border-lightgray th-bg-100 text-md font-semibold">
                     Action
                   </th>
@@ -347,7 +368,15 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                     >
                       <td className=" border-b border-lightgray text-sm ">
                         <div className="flex gap-2">
-                          {selectAll && <CheckmarkIcon />}
+                          {selectAll ? <CheckmarkIcon /> :
+                            <button>
+                              <input
+                                type="checkbox"
+                                className="mx-1"
+                                checked={selectedItems.includes(item.assetID)}
+                                onClick={() => handleCheckboxChange(item.assetID)}
+                              />
+                            </button>}
                           {item.assetType === "Folder" && (
                             <span>
                               <HiFolder />
@@ -386,7 +415,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                         Not Found
                       </td>
                       <td className=" border-b border-lightgray text-sm ">
-                        {moment(item.createdDate).format("DD/MM/YY, h:mm:ss a")}
+                        {moment(item.deleteDate).format("DD/MM/YY, h:mm:ss a")}
                       </td>
                       <td className=" border-b border-lightgray text-sm ">
                         {item.fileSize}
@@ -394,9 +423,10 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       <td className=" border-b border-lightgray text-sm ">
                         {item.assetType}
                       </td>
-                      <td className=" border-b border-lightgray text-sm ">
-                        {moment(item.createdDate).format("DD/MM/YY, h:mm:ss a")}
-                      </td>
+                      {/* <td className=" border-b border-lightgray text-sm ">
+                        {JSON.stringify(item)}
+                        {moment(item.deleteDate).format("DD/MM/YY, h:mm:ss a")}
+                      </td> */}
                       <td className="border-b border-lightgray text-sm">
                         <div className="cursor-pointer text-xl flex gap-4 ">
                           <MdDeleteForever

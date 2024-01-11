@@ -1,18 +1,18 @@
-import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { SelectByUserScreen } from "../../../Redux/ScreenGroupSlice";
-import toast from "react-hot-toast";
 import { SELECT_BY_USER_SCREENDETAIL } from "../../../Pages/Api";
 
-const ScreenGroupModal = ({ 
-  onClose, 
-  handleSave,
-  editSelectedScreen
- }) => {
+const ScreenGroupModal = ({
+  label,
+  onClose,
+  handleSaveNew,
+  editSelectedScreen,
+  updateScreen
+}) => {
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.root.screenGroup);
+  const store = useSelector((state) => state.root.screenGroup.data);
 
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
@@ -29,41 +29,10 @@ const ScreenGroupModal = ({
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5); // Adjust items per page as needed
-  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
-  const [sortedField, setSortedField] = useState(null);
 
-  // Filter data based on search term
-  const filteredData = store.data?.filter((item) =>
-    Object.values(item).some(
-      (value) =>
-        value &&
-        value.toString().toLowerCase()
-    )
-  );
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-
-  // Function to sort the data based on a field and order
-  const sortData = (data, field, order) => {
-    const sortedData = [...data];
-    sortedData.sort((a, b) => {
-      if (order === "asc") {
-        return a[field] > b[field] ? 1 : -1;
-      } else {
-        return a[field] < b[field] ? 1 : -1;
-      }
-    });
-    return sortedData;
-  };
-
-  const sortedAndPaginatedData = sortData(
-    filteredData,
-    sortedField,
-    sortOrder
-  ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   useEffect(() => {
     // const query = { ID : user.userID, sort: sortOrder, col: sortColumn };
-
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -78,21 +47,16 @@ const ScreenGroupModal = ({
       setLoadFirst(false);
     }
 
-  }, [dispatch, loadFirst, sortOrder, store]);
+  }, [dispatch, loadFirst, store]);
+
+
+  const totalPages = Math.ceil(store.data?.length / itemsPerPage);
+  const paginatedData = store.data?.slice((currentPage - 1) * itemsPerPage,currentPage * itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  // Handle sorting when a table header is clicked
-  const handleSort = (field) => {
-    if (sortedField === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortOrder("asc");
-      setSortedField(field);
-    }
-  };
 
   const handleScreenGroupNameChange = (e) => {
     const value = e.target.value;
@@ -135,22 +99,34 @@ const ScreenGroupModal = ({
       setScreenGroupNameError("Screen Group Name is required");
       return; // Do not proceed with saving if validation fails
     }
-
     const payLoad = {
       screenGroupName: screenGroupName,
-      selectedItems: selectedItems,
+      screenGroupLists: selectedItems.map((itemID) => ({
+        screenGroupListID: 0,
+        groupID: 0,
+        userID: 0,
+        mode: "Save",
+        screenID: itemID,
+      })),
+      userID: 0
     };
-    await handleSave(payLoad)
-    // Close the modal
+
+    if (editSelectedScreen && editSelectedScreen.screenGroupID) {
+      payLoad.screenGroupID = editSelectedScreen.screenGroupID
+      await updateScreen(payLoad)
+    } else {
+      payLoad.screenGroupID = 0
+      await handleSaveNew(payLoad)
+    }
     onClose();
   };
 
   useEffect(() => {
     window.addEventListener("keydown", function (event, characterCode) {
-      if (typeof characterCode == "undefined") {
+      if (typeof characterCode === "undefined") {
         characterCode = -1;
       }
-      if (event?.keyCode == 27) {
+      if (event?.keyCode === 27) {
         onClose();
       }
     });
@@ -159,14 +135,18 @@ const ScreenGroupModal = ({
     };
   }, []);
 
+
   useEffect(() => {
     if (editSelectedScreen) {
-      setScreenGroupName(editSelectedScreen.name || '');
-      // setSelectedItems(editSelectedScreen.selectedItems || []);
+      setScreenGroupName(editSelectedScreen.screenGroupName || '');
+      const selectedScreenIDs = editSelectedScreen.screenGroupLists?.map(group => group.screenID);
+      const selectedScreens = store?.data?.filter(screen => selectedScreenIDs.includes(screen.screenID));
+      const selectedItemsIDs = selectedScreens?.map(screen => screen.screenID);
+      setSelectedItems(selectedItemsIDs || []);
     }
-  }, [editSelectedScreen]);
+  }, [editSelectedScreen, store]);
   
-console.log("--------------- ",editSelectedScreen );
+
 
   return (
     <div>
@@ -222,22 +202,10 @@ console.log("--------------- ",editSelectedScreen );
                   cellPadding={20}
                 >
                   <thead className="text-xs text-gray-700  bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                    <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg ">
                       <th scope="col" className="text-[#5A5881] text-sm font-semibold p-2">
-                        <div className="flex items-center">
+                        <div className="flex items-center justify-center">
                           Screen
-                          <a href="#">
-                            <svg
-                              className="w-3 h-3 ms-1.5"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                              onClick={() => handleSort("screenName")}
-                            >
-                              <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                            </svg>
-                          </a>
                         </div>
                       </th>
                       <th scope="col" className="text-[#5A5881] text-sm font-semibold p-2">
@@ -259,7 +227,7 @@ console.log("--------------- ",editSelectedScreen );
                   </thead>
                   <tbody>
                     {store && store.data?.length > 0 ? (
-                      sortedAndPaginatedData.map((screen) => (
+                      paginatedData?.map((screen) => (
                         <tr
                           key={screen.screenID}
                           className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
@@ -354,14 +322,14 @@ console.log("--------------- ",editSelectedScreen );
 
 
                 {/* Modal footer */}
-                <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 justify-start">
                   <button
                     data-modal-hide="static-modal"
                     type="button"
-                    className="border-2 border-primary px-5 py-2 rounded-full ml-3 text-white bg-primary  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    className="border-2 border-primary  rounded-lg ml-3 text-white bg-primary  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                     onClick={handleSaveScreen}
                   >
-                    Save
+                    {label}
                   </button>
                   <button
                     data-modal-hide="static-modal"

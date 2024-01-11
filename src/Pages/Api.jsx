@@ -129,9 +129,13 @@ export const WEATHER_ADD_TAG = `${baseUrl}api/WeatherApp/AddWeatherTags?`
 
 export const SCREEN_DELETE_ALL = `${baseUrl}api/NewScreen/DeleteAllScreenByIds`
 
+
 // Group Screen
-export const GET_GROUP_SCREEN = `${baseUrl}/api/GroupScreen/GetAllGroupName`
-export const ADD_GROUP_SCREEN = `${baseUrl}/api/GroupScreen/AddGroupScreen`
+export const GET_GROUP_SCREEN = `${baseUrl}api/GroupScreen/GetAllGroupData`
+export const ADD_GROUP_SCREEN = `${baseUrl}api/GroupScreen/AddGroupScreen`
+export const DELETE_SINGLE_GROUP_SCREEN = `${baseUrl}api/GroupScreen/DeleteGroupByID`
+export const DELETE_GROUP_SCREEN_ALL = `${baseUrl}api/GroupScreen/DeleteAllGroupScreen`
+export const GROUP_IN_SCREEN_DELETE_ALL = `${baseUrl}api/GroupScreen/DeleteScreenByID`
 
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115

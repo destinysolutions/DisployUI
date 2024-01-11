@@ -3,7 +3,7 @@ import "../../../Styles/sidebar.css";
 import "../../../Styles/screen.css";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
 import { TbUpload } from "react-icons/tb";
-import { RiAddBoxFill, RiDeleteBin5Line } from "react-icons/ri";
+import { RiDeleteBin5Line } from "react-icons/ri";
 import { MdDeleteForever } from "react-icons/md";
 import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
@@ -11,12 +11,13 @@ import { HiOutlineRectangleGroup } from "react-icons/hi2";
 import { IoMdRefresh } from "react-icons/io";
 import PropTypes from "prop-types";
 import Footer from "../../Footer";
+import { connection } from "../../../SignalR";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import { Tooltip } from "@material-tailwind/react";
 import ScreenGroupModal from "./ScreenGroupModal";
 import ShowAssetModal from "./model/ShowGroupAssetModal";
 import { useDispatch, useSelector } from "react-redux";
-import { handleGetScreen } from "../../../Redux/Screenslice";
+// import { handleGetScreen } from "../../../Redux/Screenslice";
 import { handleGetAllAssets } from "../../../Redux/Assetslice";
 import { handleGetAllSchedule } from "../../../Redux/ScheduleSlice";
 import { handleGetCompositions } from "../../../Redux/CompositionSlice";
@@ -25,14 +26,18 @@ import {
   handleGetYoutubeData,
 } from "../../../Redux/AppsSlice";
 import { BiEdit, BiSave } from "react-icons/bi";
-import { getGroupData, resetStatus, saveGroupData } from "../../../Redux/ScreenGroupSlice";
-import toast from "react-hot-toast";
+import { getGroupData, groupInScreenDelete, resetStatus, saveGroupData, screenGroupDelete, screenGroupDeleteAll, updateGroupData } from "../../../Redux/ScreenGroupSlice";
+import toast, { CheckmarkIcon } from "react-hot-toast";
+import Swal from "sweetalert2";
+import { IoClose } from "react-icons/io5";
+import AssetPreview from "./model/AssetPreview";
+
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   const { user, token } = useSelector((state) => state.root.auth);
   const store = useSelector((state) => state.root.screenGroup);
-  const authToken = `Bearer ${token}`;
+  // const authToken = `Bearer ${token}`;
 
   const dispatch = useDispatch();
 
@@ -44,15 +49,18 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [loadFirst, setLoadFirst] = useState(true);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
   const [openAccordionIndex, setOpenAccordionIndex] = useState(null);
- 
+
 
   // GroupNameUpdate
   const [newGroupName, setNewGroupName] = useState('');
   const [editIndex, setEditIndex] = useState(-1); // Initially no index is being edited
+  const [selectAll, setSelectAll] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]); // Multipal check
+  const [editGroupID, setEditGroupID] = useState()
 
   //   Model
+  const [label, setLabel] = useState('');
   const [showAssetModal, setShowAssetModal] = useState(false);
   const [selectedComposition, setSelectedComposition] = useState({ compositionName: "", });
   const [popupActiveTab, setPopupActiveTab] = useState(1);
@@ -63,11 +71,22 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedYoutube, setSelectedYoutube] = useState();
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
 
-  const [editSelectedScreen,setEditSelectedScreen] = useState('');
+  const [editSelectedScreen, setEditSelectedScreen] = useState('');
 
-  // fetch all data
+  //  AssetsPreviwe Model 
+  const [openAssetPreview, setOpenAssetPreview] = useState(false);
+  const [dispayUrl, setDispayUrl] = useState('');
+
+
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+
   useEffect(() => {
-    if (user && loadFirst) {
+    if (loadFirst) {
+      // get all screen group
+      dispatch(getGroupData());
+
       // load composition
       dispatch(handleGetCompositions({ token }));
 
@@ -82,31 +101,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
       //get text scroll data
       dispatch(handleGetTextScrollData({ token }));
-
-      // get screens
-      // const response = dispatch(handleGetScreen({ token }));
-      // if (response) {
-      //   response.then((res) => {
-      //     if (res?.payload?.status === 200) {
-      //       const fetchedData = res?.payload.data;
-      //       const initialCheckboxes = {};
-      //       if (Array.isArray(fetchedData)) {
-      //         fetchedData.forEach((screen) => {
-      //           initialCheckboxes[screen.screenID] = false;
-      //         });
-      //         setScreenCheckboxes(initialCheckboxes);
-      //       }
-      //     }
-      //   });
-      // }
-    }
-    setLoadFirst(false);
-  }, [user, loadFirst]);
-
-
-  useEffect(() => {
-    if (loadFirst) {
-      dispatch(getGroupData());
       setLoadFirst(false);
     }
 
@@ -116,7 +110,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
 
     if (store && store.status === "succeeded") {
-      toast.success(store.error)
+      toast.success(store.message)
       setLoadFirst(true)
     }
 
@@ -126,18 +120,58 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   }, [dispatch, loadFirst, store]);
 
+  const totalPages = Math.ceil((Array.isArray(store?.data) ? store.data.length : 0) / itemsPerPage);
+  const paginatedData = Array.isArray(store?.data) ? store.data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : [];
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+
+  const callSignalR = () => {
+    if (connection.state === "Disconnected") {
+      connection
+        .start()
+        .then((res) => {
+          console.log("signal connected");
+        })
+        .then(() => {
+          connection
+            .invoke(
+              "ScreenConnected",
+              store.data
+                ?.map((item) => item?.maciDs)
+                .join(",")
+                .replace(/^\s+/g, "")
+            )
+            .then(() => {
+              console.log("SignalR method invoked after screen update");
+            })
+            .catch((error) => {
+              console.error("Error invoking SignalR method:", error);
+            });
+        });
+    } else {
+      connection
+        .invoke(
+          "ScreenConnected",
+          store.data
+            ?.map((item) => item?.maciDs)
+            .join(",")
+            .replace(/^\s+/g, "")
+        )
+        .then(() => {
+          console.log("SignalR method invoked after screen update");
+        })
+        .catch((error) => {
+          console.error("Error invoking SignalR method:", error);
+        });
+    }
+  }
+
   const closeModal = () => {
     setIsModalOpen(false);
-  };
-
-  const handleMouseOver = () => {
-    if (openAccordionIndex !== null) {
-      setIsHovering(true);
-    }
-  };
-
-  const handleMouseOut = () => {
-    setIsHovering(false);
+    setLoadFirst(true)
   };
 
   const handleAccordionClick = (index) => {
@@ -145,23 +179,37 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleRefres = () => {
-    setLoadFirst(true);
+    callSignalR()
   };
 
-  const handleDeleteGroup = (id) => {
-    console.log("---- loadFirst ---- Id --- Delete Group ---- ", id);
-    setLoadFirst(true);
+  // Multipal check
+  const handleCheckboxChange = (item) => {
+    if (selectedItems.includes(item)) {
+      setSelectedItems(selectedItems.filter((id) => id !== item));
+    } else {
+      setSelectedItems([...selectedItems, item]);
+    }
+  };
+
+  // Function to handle the "Select All" checkbox change
+  const handleSelectAll = () => {
+    setSelectAll(!selectAll);
+
+    if (selectedItems.length === store.data?.length) {
+      setSelectedItems([]);
+    } else {
+      const allIds = store.data?.map((item) => item.screenGroupID);
+      setSelectedItems(allIds);
+    }
   };
 
   // Model Function
   const handleAssetAdd = (asset) => {
-    console.log(" get image ---- >", asset);
     setSelectedAsset(asset);
     setAssetPreview(asset);
   };
 
   const handleAppsAdd = (apps) => {
-    console.log(" get apps ---- >", apps);
     setSelectedYoutube(apps);
     setSelectedTextScroll(apps);
   };
@@ -230,78 +278,95 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     // }
   };
 
-
   const editGroupName = (index) => {     // GroupNameUpdate
     setEditIndex(index);
-    setNewGroupName(DataGroup[index].name);
+    setNewGroupName(store.data[index].screenGroupName);
+    setEditGroupID(store.data[index].screenGroupID)
   }
 
-  const updateGroupName = (index) => {    // GroupNameUpdate
-    const updatedGroups = [...DataGroup];
-    updatedGroups[index].name = newGroupName;
-    setEditIndex(-1);
-    setLoadFirst(true)
+  const updateGroupName = async (index) => {    // GroupNameUpdate
+    const payload = {
+      screenGroupID: editGroupID,
+      screenGroupName: newGroupName
+    }
+    await dispatch(saveGroupData(payload))
+    setEditIndex(-1)
   }
 
   const newAddGroup = (item) => {
     if (item) {
+      setLabel("Update")
       setEditSelectedScreen(item)
-    }else{
+    } else {
+      setLabel("Save")
       setEditSelectedScreen()
     }
     setIsModalOpen(true)
   }
 
-  const handleSave = async (payload) => {
+  // New add groupScreen
+  const handleSaveNew = async (payload) => {
     await dispatch(saveGroupData(payload))
-    console.log("------------------------------------  End of call function    ------------------", payload);
   };
 
+  const updateScreen = async (payload) => {
+    await dispatch(saveGroupData(payload))
+  }
 
+  const handleDeleteGroup = (item) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(screenGroupDelete(item.screenGroupID))
+        setSelectedItems([]);
+        setSelectAll(false)
+        callSignalR()
+      }
+    })
+  };
 
-  const DataGroup = [
-    {
-      id: 1,
-      name: "test 1",
-      arrayGroup: [
-        {
-          id: 1,
-          screen: " Fist ",
-          status: 0,
-          last_seen: " Today ",
-          current_Schedule: "Today",
-        },
-        {
-          id: 2,
-          screen: " secound ",
-          status: 1,
-          last_seen: " Today ",
-          current_Schedule: "Today",
-        },
-      ],
-    },
+  const handleDeleteGroupAll = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(screenGroupDeleteAll(selectedItems))
+        setSelectedItems([]);
+        setSelectAll(false)
+        callSignalR()
+      }
+    })
+  };
 
-    {
-      id: 2,
-      name: "Test 2",
-      arrayGroup: [
-        {
-          id: 1,
-          screen: " Secound",
-          status: 1,
-          last_seen: " Today ",
-          current_Schedule: "Today",
-        },
-        {
-          id: 2,
-          screen: " For ",
-          status: 0,
-          last_seen: " Today ",
-          current_Schedule: "Today",
-        },
-      ],
-    },
-  ];
+  const deleteGroupInScreen = (payload) => {
+    dispatch(groupInScreenDelete(payload))
+  }
+
+  const closePreview = () => {
+    setOpenAssetPreview(false);
+  };
+
+  const openPreview = (item) => {
+    setOpenAssetPreview(true)
+    setDispayUrl('https://www.youtube.com/watch?v=dZ2jJCQ3WQU')
+  }
+
+const handleSave = () => {
+   console.log("---------------------------------",selectedAsset)
+}
 
   return (
     <>
@@ -317,7 +382,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                 Group Name
               </h1>
             </div>
-            <div className="flex items-center sm:mt-3 flex-wrap">
+            <div className="flex items-center sm:mt-3 flex-wrap gap-1">
               <Tooltip
                 content="Refresh Screen"
                 placement="bottom-end"
@@ -354,7 +419,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
               </Tooltip>
 
               {isModalOpen && (
-                <ScreenGroupModal isOpen={isModalOpen} onClose={closeModal} handleSave={handleSave}  editSelectedScreen={editSelectedScreen} />
+                <ScreenGroupModal isOpen={isModalOpen} onClose={closeModal} handleSaveNew={handleSaveNew} updateScreen={updateScreen} editSelectedScreen={editSelectedScreen} label={label} />
               )}
 
               <Tooltip
@@ -368,23 +433,39 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
               >
                 <button
                   type="button"
-                  className="flex align-middle border-white bg-SlateBlue text-white items-center border-2 rounded-full p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  className="flex align-middle border-white text-white items-center"
                 >
-                  <input type="checkbox" className="w-6 h-5" />
+                  <input type="checkbox" className="w-6 h-5" checked={selectAll} onChange={handleSelectAll} />
                 </button>
               </Tooltip>
+              {selectedItems.length > 0 && (
+                <Tooltip
+                  content="All Delete"
+                  placement="bottom-end"
+                  className="bg-SlateBlue text-white z-10 ml-5"
+                  animate={{
+                    mount: { scale: 1, y: 0 },
+                    unmount: { scale: 1, y: 10 },
+                  }}
+                >
+                  <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                    <RiDeleteBin5Line
+                      className="text-3xl p-1 hover:text-white"
+                      onClick={() => handleDeleteGroupAll()}
+                    />
+                  </button>
+                </Tooltip>
+              )}
+
             </div>
           </div>
 
-          {DataGroup && DataGroup.length && DataGroup.map((item, i) => {
+          {paginatedData && paginatedData.length > 0 ? paginatedData.map((item, i) => {
             const isAccordionOpen = openAccordionIndex === i;
             return (
               <div key={i} className="accordions mt-5">
                 <div
-                  className="section shadow-md p-5 bg-white  lg:flex md:flex  sm:block items-center justify-between"
-                  onMouseOver={handleMouseOver}
-                  onMouseOut={handleMouseOut}
-                >
+                  className="section shadow-md p-5 bg-white  lg:flex md:flex  sm:block items-center justify-between" >
 
                   <div className="flex gap-2 items-center">
                     {editIndex === i ? (
@@ -396,22 +477,23 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                           value={newGroupName}
                           onChange={(e) => setNewGroupName(e.target.value)}
                         />
-                        <BiSave className="cursor-pointer text-xl text-[#0000FF]" onClick={() => updateGroupName(i)} />
+                        <div>
+                          <BiSave className="cursor-pointer text-xl text-[#0000FF]" onClick={() => updateGroupName(i)} />
+                          <IoClose className="cursor-pointer text-xl text-[#FF0000]" onClick={() => { setEditIndex(-1); setNewGroupName("") }} />
+                        </div>
                       </>
                     ) : (
                       <>
-                        <h1 className="text-lg capitalize">{item.name}</h1>
+                        <h1 className="text-lg capitalize">{item.screenGroupName}</h1>
                         <BiEdit className="cursor-pointer text-xl text-[#0000FF]" onClick={() => editGroupName(i)} />
                       </>
                     )}
                   </div>
 
-
                   <div className="flex items-center">
                     <div className=" flex items-center">
                       {isAccordionOpen && (
                         <>
-
                           <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() => newAddGroup(item)}>
                             <b>+</b>
                           </button>
@@ -425,21 +507,27 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                           >
                             <TbUpload className="text-3xl p-1 hover:text-white" />
                           </button>
-                          <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
-                            <RiDeleteBin5Line
-                              className="text-3xl p-1 hover:text-white"
-                              onClick={() => handleDeleteGroup(item)}
-                            />
-                          </button>
+                          {!selectedItems?.length && (
+                            <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                              <RiDeleteBin5Line
+                                className="text-3xl p-1 hover:text-white"
+                                onClick={() => handleDeleteGroup(item)}
+                              />
+                            </button>
+                          )}
                         </>
                       )}
 
-                      <button>
-                        <input
-                          type="checkbox"
-                          className=" mx-1 w-6 h-5 mt-2"
-                        />
-                      </button>
+                      {selectAll ? (<CheckmarkIcon className="w-5 h-5" />) : (
+                        <button>
+                          <input
+                            type="checkbox"
+                            className=" mx-1 w-6 h-5 mt-2"
+                            checked={selectedItems.includes(item.screenGroupID)}
+                            onClick={() => handleCheckboxChange(item.screenGroupID)}
+                          />
+                        </button>
+                      )}
 
                       <button>
                         {isAccordionOpen ? (
@@ -457,9 +545,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
 
                 {isAccordionOpen && (
-                  <div className="overflow-x-auto relative shadow-md ">
+                  <div className=" relative shadow-md ">
                     <table
-                      // className="w-full lg:table-fixed md:table-auto sm:table-auto xs:table-auto bg-white merged-table rtl:text-right text-gray-500 dark:text-gray-400 "
                       className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
                       cellPadding={20}
                     >
@@ -503,64 +590,130 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {isAccordionOpen &&
-                          item &&
-                          item.arrayGroup.length &&
-                          item.arrayGroup.map((groupItem, index) => {
-                            return (
-                              <tr
-                                key={index}
-                                className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
-                              >
-                                <td className="flex items-center">
-                                  <input type="checkbox" className="mr-3" />
-                                  {groupItem.screen}
-                                </td>
-                                <td className="p-2 text-center">
-                                  {groupItem.status === 0 ? (
-                                    <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
-                                      Live
-                                    </button>
-                                  ) : (
-                                    <button className="bg-[#FF0000] rounded-full px-6 py-1 text-white">
-                                      Off
-                                    </button>
-                                  )}
-                                </td>
-                                <td className="p-2 text-center">
-                                  {groupItem.last_seen}
-                                </td>
-                                <td className="p-2 text-center">
-                                  <button
-                                    onClick={() => setShowAssetModal(true)}
-                                    className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2  lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                                  >
-                                    Asset Name
-                                    <AiOutlineCloudUpload className="ml-2 text-lg" />
+                        {isAccordionOpen && item && item.screenGroupLists?.length > 0 && item.screenGroupLists.map((groupItem, index) => {
+                          return (
+                            <tr
+                              key={index}
+                              className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
+                            >
+                              <td className="flex items-center">
+                                <input type="checkbox" className="mr-3" />
+                                {groupItem.screenName}
+                              </td>
+                              <td className="p-2 text-center">
+                                {groupItem.screenStatus === 1 ? (
+                                  <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
+                                    Live
                                   </button>
-                                </td>
-                                <td className="break-words	w-[150px] p-2 text-center">
-                                  {groupItem.current_Schedule}
-                                </td>
-                                <td className="p-2 text-center">
-                                  Tags, Tags1 ,Tags2
-                                </td>
-                                <td className="p-2 justify-center flex ">
-                                  <div className="cursor-pointer text-xl flex gap-3 text-right">
-                                    <MdDeleteForever className="text-[#EE4B2B]" />
-                                  </div>
-                                </td>
-                              </tr>
-                            );
-                          })}
+                                ) : (
+                                  <button className="bg-[#FF0000] rounded-full px-6 py-1 text-white">
+                                    Off
+                                  </button>
+                                )}
+                              </td>
+                              <td className="p-2 text-center">
+                                {groupItem.last_seen}
+                              </td>
+                              <td className="p-2 text-center">
+                                <button
+                                  // onClick={() => setShowAssetModal(true)}
+                                  onClick={() => openPreview(groupItem)}
+                                  className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                >
+                                 {groupItem.assetName}
+                                  <AiOutlineCloudUpload className="ml-2 text-lg" />
+                                  {/* {openAssetPreview && <AssetPreview  closePreview={closePreview} setOpenAssetPreview={setOpenAssetPreview} />} */}
+                                </button>
+                              </td>
+                              <td className="break-words	w-[150px] p-2 text-center">
+                                {groupItem.scheduleName}
+                              </td>
+                              <td className="p-2 text-center">
+                                {groupItem.tags !== null
+                                  ? groupItem.tags
+                                    .split(",")
+                                    .slice(
+                                      0,
+                                      groupItem.tags.split(",").length > 2
+                                        ? 3
+                                        : groupItem.tags.split(",").length
+                                    )
+                                    .join(",")
+                                  : ""}
+                              </td>
+                              <td className="p-2 justify-center flex ">
+                                <div className="cursor-pointer text-xl flex gap-3 text-right">
+                                  <MdDeleteForever className="text-[#EE4B2B]" onClick={() => deleteGroupInScreen({ScreenGroupListID: groupItem.screenGroupListID })} />
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
                 )}
               </div>
             );
-          })}
+          }) : <>
+            <div className="flex text-center m-5 justify-center">
+              <span className="text-2xl hover:bg-gray-400 text-gray-800 mt-20 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
+                Data not found!
+              </span>
+            </div>
+          </>}
         </div>
+        {/* end  pagination */}
+        {paginatedData && paginatedData.length > 0 && (
+          <div className="flex justify-end m-5">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              <svg
+                className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 10"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13 5H1m0 0 4 4M1 5l4-4"
+                />
+              </svg>
+              Previous
+            </button>
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              Next
+              <svg
+                className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 10"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M1 5h12m0 0L9 1m4 4L9 9"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
+        {/* end  pagination */}
       </div>
 
       {/* Model */}
