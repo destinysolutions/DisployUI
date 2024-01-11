@@ -159,15 +159,17 @@ const Userrole = ({ searchValue }) => {
     }
   }, [searchValue]);
 
-  const handleCheckboxChange = (moduleId, pageName, checkboxType) => {
+  const handleCheckboxChange = (moduleId, moduleName, checkboxType) => {
     setSelectedCheckboxes((prevSelectedCheckboxes) => {
       const moduleCheckboxes = prevSelectedCheckboxes[moduleId] || {};
-      const pageCheckboxes = moduleCheckboxes[pageName] || {};
+
+      const pageCheckboxes = moduleCheckboxes[moduleName] || {};
+
       const updatedCheckboxes = {
         ...prevSelectedCheckboxes,
         [moduleId]: {
           ...moduleCheckboxes,
-          [pageName]: {
+          [moduleName]: {
             ...pageCheckboxes,
             [checkboxType]: !pageCheckboxes[checkboxType],
           },
@@ -218,7 +220,7 @@ const Userrole = ({ searchValue }) => {
       toast.error("Role name is required");
     }
     let data = JSON.stringify({
-      orgUserRoleID: 0,
+      orgUserRoleID: userRoleID || 0,
       orgUserRole: roleName,
       isActive: 1,
       userID: 0,
@@ -229,10 +231,10 @@ const Userrole = ({ searchValue }) => {
           userAccessID: 0,
           userRoleID: 0,
           moduleID: 1,
-          isView: selectedCheckboxes[1]?.Screen?.View || false,
-          isSave: selectedCheckboxes[1]?.Screen?.CreateEdit || false,
-          isDelete: selectedCheckboxes[1]?.Screen?.Delete || false,
-          isApprove: selectedCheckboxes[1]?.Screen?.Approval || false,
+          isView: selectedCheckboxes[1]?.Module1?.View || false,
+          isSave: selectedCheckboxes[1]?.Module1?.CreateEdit || false,
+          isDelete: selectedCheckboxes[1]?.Module1?.Delete || false,
+          isApprove: selectedCheckboxes[1]?.Module1?.Approval || false,
           noofApproval: selectedLevel[1],
           listApproverDetails: [
             {
@@ -266,10 +268,10 @@ const Userrole = ({ searchValue }) => {
           userAccessID: 0,
           userRoleID: 0,
           moduleID: 2,
-          isView: selectedCheckboxes[2]?.MySchedule?.View || false,
-          isSave: selectedCheckboxes[2]?.MySchedule?.CreateEdit || false,
-          isDelete: selectedCheckboxes[2]?.MySchedule?.Delete || false,
-          isApprove: selectedCheckboxes[2]?.MySchedule?.Approval || false,
+          isView: selectedCheckboxes[2]?.Module2?.View || false,
+          isSave: selectedCheckboxes[2]?.Module2?.CreateEdit || false,
+          isDelete: selectedCheckboxes[2]?.Module2?.Delete || false,
+          isApprove: selectedCheckboxes[2]?.Module2?.Approval || false,
           noofApproval: selectedLevel[2],
           listApproverDetails: [
             {
@@ -303,10 +305,10 @@ const Userrole = ({ searchValue }) => {
           userAccessID: 0,
           userRoleID: 0,
           moduleID: 3,
-          isView: selectedCheckboxes[3]?.Apps?.View || false,
-          isSave: selectedCheckboxes[3]?.Apps?.CreateEdit || false,
-          isDelete: selectedCheckboxes[3]?.Apps?.Delete || false,
-          isApprove: selectedCheckboxes[3]?.Apps?.Approval || false,
+          isView: selectedCheckboxes[3]?.Module3?.View || false,
+          isSave: selectedCheckboxes[3]?.Module3?.CreateEdit || false,
+          isDelete: selectedCheckboxes[3]?.Module3?.Delete || false,
+          isApprove: selectedCheckboxes[3]?.Module3?.Approval || false,
           noofApproval: selectedLevel[3],
           listApproverDetails: [
             {
@@ -338,7 +340,7 @@ const Userrole = ({ searchValue }) => {
         },
       ],
     });
-
+    toast.loading("saving..");
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -354,19 +356,25 @@ const Userrole = ({ searchValue }) => {
       .request(config)
       .then((response) => {
         console.log(JSON.stringify(response.data));
+        if (response?.data?.status == 200) {
+          setshowuserroleModal(false);
+          handleFetchUserRoleData();
+          setSelectedLevel({});
+        }
+        toast.remove();
       })
       .catch((error) => {
         console.log(error);
+        toast.remove();
       });
   };
 
   const handleSelectByID = (user_role_id) => {
     setUserRoleID(user_role_id);
     let data = JSON.stringify({
-      OrgUserRoleID: user_role_id,
+      orgUserRoleID: user_role_id,
       mode: "SelectByID",
     });
-
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -377,44 +385,65 @@ const Userrole = ({ searchValue }) => {
       },
       data: data,
     };
-
     axios
       .request(config)
       .then((response) => {
+        console.log(response.data);
         const selectedRole = response.data.data;
         setRoleName(selectedRole.orgUserRole);
-        setCheckboxValues({
-          screenView: selectedRole.useraccess[0].isView,
-          screenCreateEdit: selectedRole.useraccess[0].isSave,
-          screenDelete: selectedRole.useraccess[0].isDelete,
-          screenApprovar: selectedRole.useraccess[0].isApprove,
-          screenReviewer: selectedRole.useraccess[0].isReviewer,
+        // Update checkboxes based on the selected role data
+        const updatedCheckboxes = {};
+        const updatedLevelOfApproval = {};
+        const updatedSelectedRoleIDs = {};
 
-          myScheduleView: selectedRole.useraccess[1].isView,
-          myScheduleCreateEdit: selectedRole.useraccess[1].isSave,
-          myScheduleDelete: selectedRole.useraccess[1].isDelete,
-          myScheduleApprovar: selectedRole.useraccess[1].isApprove,
-          myScheduleReviewer: selectedRole.useraccess[1].isReviewer,
+        selectedRole.useraccess.forEach((access) => {
+          const {
+            moduleID,
+            isView,
+            isSave,
+            isDelete,
+            isApprove,
+            noofApproval,
+            listApproverDetails,
+          } = access;
 
-          appsView: selectedRole.useraccess[2].isView,
-          appsCreateEdit: selectedRole.useraccess[2].isSave,
-          appsDelete: selectedRole.useraccess[2].isDelete,
-          appsApprovar: selectedRole.useraccess[2].isApprove,
-          appsReviewer: selectedRole.useraccess[2].isReviewer,
+          // Use a default name for the module if pageName is not provided
+          const moduleName = `Module${moduleID}`;
+
+          updatedCheckboxes[moduleID] = {
+            ...updatedCheckboxes[moduleID],
+            [moduleName]: {
+              View: isView,
+              CreateEdit: isSave,
+              Delete: isDelete,
+              Approval: isApprove,
+            },
+          };
+
+          // Update level of approval if it's not null
+          if (noofApproval !== null) {
+            updatedLevelOfApproval[moduleID] = noofApproval;
+          }
+
+          // Update selected role IDs
+          const roleIDs = listApproverDetails.map(
+            (approver) => approver.userId
+          );
+          updatedSelectedRoleIDs[moduleID] = roleIDs;
         });
 
-        setScreenIsApprovarID(selectedRole.useraccess[0].approverID);
-        setScreenIsReviwerID(selectedRole.useraccess[0].reviewerID);
-        setMyScheduleIsApprovarID(selectedRole.useraccess[1].approverID);
-        setMyScheduleIsReviwerID(selectedRole.useraccess[1].reviewerID);
-        setAppsIsApprovarID(selectedRole.useraccess[2].approverID);
-        setAppsIsReviwerID(selectedRole.useraccess[2].reviewerID);
+        setSelectedCheckboxes(updatedCheckboxes);
+        setLevelOfApproval(updatedLevelOfApproval);
+        setSelectedLevel(updatedLevelOfApproval); // Set selected level
+        setSelectedRoleIDs(updatedSelectedRoleIDs); // Set selected role IDs
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
+  console.log(levelOfApproval, "levelOfApproval");
+  console.log(selectedRoleIDs, "selectedRoleIDs");
   const handleUpdateUserRole = () => {
     if (!roleName) {
       setErrorsRoleName("Role name is required");
@@ -689,8 +718,11 @@ const Userrole = ({ searchValue }) => {
             className=" dashboard-btn  flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5  py-2 text-base sm:text-sm mb-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
             onClick={() => {
               setshowuserroleModal(true);
-              setErrorsRoleName("");
               setRoleMethod("Add New Role");
+              setShowDynamicComponent(false);
+              setSelectedCheckboxes({});
+              setRoleName("");
+              setSelectedLevel({});
             }}
           >
             Add New Role
@@ -734,7 +766,7 @@ const Userrole = ({ searchValue }) => {
                 </div>
                 <div className="col-span-2">
                   <div className="role-user flex justify-end">
-                    {userrole?.profilePics.slice(0, 3)?.map((item, index) => {
+                    {userrole?.profilePics?.slice(0, 3)?.map((item, index) => {
                       return (
                         <span key={index}>
                           <img
@@ -745,7 +777,7 @@ const Userrole = ({ searchValue }) => {
                         </span>
                       );
                     })}
-                    {userrole?.profilePics.length > 2 && (
+                    {userrole?.profilePics?.length > 2 && (
                       <span
                         style={{ backgroundColor: "#41479b" }}
                         className="text-white text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold text-green-800  me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300"
@@ -950,25 +982,8 @@ const Userrole = ({ searchValue }) => {
                   className="text-4xl text-primary cursor-pointer"
                   onClick={() => {
                     setshowuserroleModal(false);
-                    setUserRoleID("");
-                    setRoleName("");
-                    setCheckboxValues({
-                      screenView: false,
-                      screenCreateEdit: false,
-                      screenDelete: false,
-                      screenApprovar: false,
-                      screenReviewer: false,
-                      myScheduleView: false,
-                      myScheduleCreateEdit: false,
-                      myScheduleDelete: false,
-                      myScheduleApprovar: false,
-                      myScheduleReviewer: false,
-                      appsView: false,
-                      appsCreateEdit: false,
-                      appsDelete: false,
-                      appsApprovar: false,
-                      appsReviewer: false,
-                    });
+                    setShowDynamicComponent(false);
+                    setSelectedLevel({});
                   }}
                 />
               </div>
@@ -1021,6 +1036,7 @@ const Userrole = ({ searchValue }) => {
                         </thead>
                         <tbody>
                           {moduleTitle.map((title) => {
+                            const moduleName = `Module${title.moduleID}`;
                             return (
                               title.isForApproval === true && (
                                 <tr
@@ -1037,12 +1053,12 @@ const Userrole = ({ searchValue }) => {
                                             checked={
                                               selectedCheckboxes[
                                                 title.moduleID
-                                              ]?.[title.pageName]?.View || false
+                                              ]?.[moduleName]?.View || false
                                             }
                                             onChange={() =>
                                               handleCheckboxChange(
                                                 title.moduleID,
-                                                title.pageName,
+                                                moduleName,
                                                 "View"
                                               )
                                             }
@@ -1056,13 +1072,13 @@ const Userrole = ({ searchValue }) => {
                                             checked={
                                               selectedCheckboxes[
                                                 title.moduleID
-                                              ]?.[title.pageName]?.CreateEdit ||
+                                              ]?.[moduleName]?.CreateEdit ||
                                               false
                                             }
                                             onChange={() =>
                                               handleCheckboxChange(
                                                 title.moduleID,
-                                                title.pageName,
+                                                moduleName,
                                                 "CreateEdit"
                                               )
                                             }
@@ -1076,13 +1092,12 @@ const Userrole = ({ searchValue }) => {
                                             checked={
                                               selectedCheckboxes[
                                                 title.moduleID
-                                              ]?.[title.pageName]?.Delete ||
-                                              false
+                                              ]?.[moduleName]?.Delete || false
                                             }
                                             onChange={() =>
                                               handleCheckboxChange(
                                                 title.moduleID,
-                                                title.pageName,
+                                                moduleName,
                                                 "Delete"
                                               )
                                             }
@@ -1096,13 +1111,18 @@ const Userrole = ({ searchValue }) => {
                                       <td className="text-center">
                                         <input
                                           type="checkbox"
+                                          checked={
+                                            selectedCheckboxes[
+                                              title.moduleID
+                                            ]?.[moduleName]?.Approval || false
+                                          }
                                           onChange={() => {
                                             handleSetApprovalChange(
                                               title.moduleID
                                             );
                                             handleCheckboxChange(
                                               title.moduleID,
-                                              title.pageName,
+                                              moduleName,
                                               "Approval"
                                             );
                                           }}
@@ -1189,27 +1209,9 @@ const Userrole = ({ searchValue }) => {
                       <button
                         className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
                         onClick={() => {
-                          setUserRoleID("");
-                          setRoleName("");
-                          setCheckboxValues({
-                            screenView: false,
-                            screenCreateEdit: false,
-                            screenDelete: false,
-                            screenApprovar: false,
-                            screenReviewer: false,
-                            myScheduleView: false,
-                            myScheduleCreateEdit: false,
-                            myScheduleDelete: false,
-                            myScheduleApprovar: false,
-                            myScheduleReviewer: false,
-                            appsView: false,
-                            appsCreateEdit: false,
-                            appsDelete: false,
-                            appsApprovar: false,
-                            appsReviewer: false,
-                          });
-                          setErrorsRoleName("");
                           setshowuserroleModal(false);
+                          setShowDynamicComponent(false);
+                          setSelectedLevel({});
                         }}
                       >
                         Cancel
@@ -1219,6 +1221,7 @@ const Userrole = ({ searchValue }) => {
                         <button
                           onClick={() => {
                             handleSaveUserRole();
+                            setShowDynamicComponent(false);
                           }}
                           className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
                         >
