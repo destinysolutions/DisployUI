@@ -736,7 +736,7 @@ const Userrole = ({ searchValue }) => {
           userRoleData.length > 0 &&
           userRoleData?.map((userrole) => (
             <div
-              className="rounded-xl p-6 bg-[#e6e6e6]"
+              className="rounded-xl p-6 bg-[#e6e6e6] md:pb-20"
               key={userrole.orgUserRoleID}
             >
               <div className="grid grid-flow-row-dense grid-cols-3 grid-rows-3 text-[#5E5E5E] h-20">
@@ -746,22 +746,32 @@ const Userrole = ({ searchValue }) => {
                     {userrole.orgUserRole}
                   </p>
 
-                  <div className="flex justify-left items-center mt-2 gap-3">
-                    <div className="cursor-pointer text-2xl text-[#0000FF]">
-                      <BiEdit
+                  <div className="flex justify-left items-center mt-3 gap-3">
+                    {/* <div className="cursor-pointer text-2xl text-[#0000FF]"> */}
+                    <button
+                      onClick={() => {
+                        handleSelectByID(userrole.orgUserRoleID);
+                        setshowuserroleModal(true);
+                        setRoleMethod("Update Role");
+                      }}
+                      className="bg-primary text-white items-center  rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50 border border-primary"
+                    >
+                      Edit Role
+                    </button>
+                    {/* <BiEdit
                         className=""
                         onClick={() => {
                           handleSelectByID(userrole.orgUserRoleID);
                           setshowuserroleModal(true);
                           setRoleMethod("Update Role");
                         }}
-                      />
-                    </div>
-                    <div className="cursor-pointer text-2xl text-[#EE4B2B]">
+                      /> */}
+                    {/* </div> */}
+                    {/* <div className="cursor-pointer text-2xl text-[#EE4B2B]">
                       <MdDeleteForever
                         onClick={() => handleDeleteRole(userrole.orgUserRoleID)}
                       />
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 <div className="col-span-2">
@@ -973,38 +983,28 @@ const Userrole = ({ searchValue }) => {
       {showuserroleModal && (
         <>
           <div className="backdrop">
-            <div ref={modalRef} className="user-model">
-              <div className="hours-heading flex justify-between items-center p-5 border-b border-gray">
-                <h1 className="text-lg font-medium text-primary">
-                  {roleMethod}
-                </h1>
-                <AiOutlineCloseCircle
-                  className="text-4xl text-primary cursor-pointer"
-                  onClick={() => {
-                    setshowuserroleModal(false);
-                    setShowDynamicComponent(false);
-                    setSelectedLevel({});
-                  }}
-                />
-              </div>
-              <hr className="border-gray " />
+            <div ref={modalRef} className="user-model ">
               <div className="model-body lg:p-5 md:p-5 sm:p-2 xs:p-2 ">
                 <div className=" lg:p-3 md:p-3 sm:p-2 xs:py-3 xs:px-1 text-left rounded-2xl">
                   <div className="grid grid-cols-12 gap-6">
-                    <div className="col-span-12">
-                      <div className="relative">
-                        <input
-                          type="text"
-                          placeholder="Enter New Role Name"
-                          value={roleName}
-                          className="formInput w-full"
-                          onChange={(e) => setRoleName(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-span-12">
-                      <h5 className="mr-2">Administrator Access</h5>
-                    </div>
+                    {!showDynamicComponent && (
+                      <>
+                        <div className="col-span-12">
+                          <div className="relative">
+                            <input
+                              type="text"
+                              placeholder="Enter New Role Name"
+                              value={roleName}
+                              className="formInput w-full"
+                              onChange={(e) => setRoleName(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-span-12">
+                          <h5 className="mr-2">Administrator Access</h5>
+                        </div>
+                      </>
+                    )}
                     <div className="col-span-12">
                       <table
                         className="w-full"

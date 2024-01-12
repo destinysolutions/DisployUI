@@ -12,10 +12,15 @@ import {
   ADD_ORGANIZATION_MASTER,
   GET_ALL_ORGANIZATION_MASTER,
 } from "./AdminAPI";
+import { useSelector } from "react-redux";
 
 const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
   const [userData, setUserData] = useState([]);
   const [originalUserData, setOriginalUserData] = useState([]);
+
+  const { token } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+
   const fetchUserData = () => {
     let config = {
       method: "get",
@@ -36,6 +41,40 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
   };
   useEffect(() => {
     fetchUserData();
+    let data = JSON.stringify({
+      status: true,
+      data: [
+        {
+          storageId: 2,
+          userId: 32,
+          organizationId: 0,
+          increasesize: 2,
+          flagdeleted: true,
+          createdby: 0,
+          createddate: "2024-01-12T08:55:14.017",
+        },
+      ],
+    });
+
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: "https://disployapi.thedestinysolutions.com/api/Storage/GetAllStorage",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authToken,
+      },
+      data: data,
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
   const [deletePopup, setdeletePopup] = useState(false);
   const [showActionBox, setShowActionBox] = useState(false);

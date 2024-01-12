@@ -1,16 +1,23 @@
 import React from "react";
 import DataTable from "react-data-table-component";
-import "../../images/DisployImg/india.png";
+import india from "../../images/DisployImg/india.png";
+import USA from "../../images/DisployImg/united-states.png";
+import Australia from "../../images/DisployImg/australia.png";
+import Indonesia from "../../images/DisployImg/indonesia.png";
+import Japan from "../../images/DisployImg/japan.png";
+import China from "../../images/DisployImg/china.png";
+import Vietnam from "../../images/DisployImg/vietnam.png";
+import Russia from "../../images/DisployImg/russia.png";
+import UK from "../../images/DisployImg/united-kingdom.png";
+import South from "../../images/DisployImg/south-korea.png";
 
 const RevenueTable = () => {
   const revenueData = [
     {
       id: 1,
-      flagImg: (
-        <img src="../../../public/DisployImg/india.png" className="h-8 w-8" />
-      ),
+      flagImg: <img src={india} className="h-8 w-8" />,
       country: "India",
-      total:'377,620',
+      total: "377,620",
       users: "45679(24.3%)",
       transactions: "35(19.7%)",
       revenue: "$5432(16.9%)",
@@ -18,12 +25,7 @@ const RevenueTable = () => {
     },
     {
       id: 2,
-      flagImg: (
-        <img
-          src="../../../public/DisployImg/united-states.png"
-          className="h-8 w-8"
-        />
-      ),
+      flagImg: <img src={USA} className="h-8 w-8" />,
       country: "USA",
       users: "92896(41.6%)",
       transactions: "67(34.3%)",
@@ -32,12 +34,7 @@ const RevenueTable = () => {
     },
     {
       id: 3,
-      flagImg: (
-        <img
-          src="../../../public/DisployImg/australia.png"
-          className="h-8 w-8"
-        />
-      ),
+      flagImg: <img src={Australia} className="h-8 w-8" />,
       country: "Australia",
       users: "45679(24.3%)",
       transactions: "35(19.7%)",
@@ -46,12 +43,7 @@ const RevenueTable = () => {
     },
     {
       id: 4,
-      flagImg: (
-        <img
-          src="../../../public/DisployImg/indonesia.png"
-          className="h-8 w-8"
-        />
-      ),
+      flagImg: <img src={Indonesia} className="h-8 w-8" />,
       country: "Indonesia",
       users: "45679(24.3%)",
       transactions: "35(19.7%)",
@@ -60,9 +52,7 @@ const RevenueTable = () => {
     },
     {
       id: 5,
-      flagImg: (
-        <img src="../../../public/DisployImg/japan.png" className="h-8 w-8" />
-      ),
+      flagImg: <img src={Japan} className="h-8 w-8" />,
       country: "Japan",
       users: "45679(24.3%)",
       transactions: "35(19.7%)",
@@ -71,9 +61,7 @@ const RevenueTable = () => {
     },
     {
       id: 6,
-      flagImg: (
-        <img src="../../../public/DisployImg/china.png" className="h-8 w-8" />
-      ),
+      flagImg: <img src={China} className="h-8 w-8" />,
       country: "China",
       users: "45679(24.3%)",
       transactions: "35(19.7%)",
@@ -82,9 +70,7 @@ const RevenueTable = () => {
     },
     {
       id: 7,
-      flagImg: (
-        <img src="../../../public/DisployImg/vietnam.png" className="h-8 w-8" />
-      ),
+      flagImg: <img src={Vietnam} className="h-8 w-8" />,
       country: "Vietnam",
       users: "45679(24.3%)",
       transactions: "35(19.7%)",
@@ -93,9 +79,7 @@ const RevenueTable = () => {
     },
     {
       id: 8,
-      flagImg: (
-        <img src="../../../public/DisployImg/russia.png" className="h-8 w-8" />
-      ),
+      flagImg: <img src={Russia} className="h-8 w-8" />,
       country: "Russia",
       users: "45679(24.3%)",
       transactions: "35(19.7%)",
@@ -104,12 +88,7 @@ const RevenueTable = () => {
     },
     {
       id: 9,
-      flagImg: (
-        <img
-          src="../../../public/DisployImg/united-kingdom.png"
-          className="h-8 w-8"
-        />
-      ),
+      flagImg: <img src={UK} className="h-8 w-8" />,
       country: "United Kingdom",
       users: "45679(24.3%)",
       transactions: "35(19.7%)",
@@ -118,12 +97,7 @@ const RevenueTable = () => {
     },
     {
       id: 10,
-      flagImg: (
-        <img
-          src="../../../public/DisployImg/south-korea.png"
-          className="h-8 w-8"
-        />
-      ),
+      flagImg: <img src={South} className="h-8 w-8" />,
       country: "South Korea",
       users: "45679(24.3%)",
       transactions: "35(19.7%)",
@@ -133,12 +107,11 @@ const RevenueTable = () => {
   ];
 
   const column = [
-
     {
       name: "COUNTRY",
       cell: (row) => (
         <div className="flex items-center w-[600px]">
-            <div className="mr-4">{row.id}</div>
+          <div className="mr-4">{row.id}</div>
           <div className="mr-3">{row.flagImg}</div>
           <span>{row.country}</span>
         </div>
@@ -185,7 +158,7 @@ const RevenueTable = () => {
             data={revenueData}
             fixedHeader
             pagination
-            paginationPerPage={5}
+            paginationPerPage={10}
           ></DataTable>
         </div>
       </div>
