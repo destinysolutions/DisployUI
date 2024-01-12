@@ -13,6 +13,10 @@ import RevenueTable from "../RevenueTable";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import mapImg from "../../../images/DisployImg/mapImg.png";
 import flagUmg from "../../../images/DisployImg/flag.png";
+import Grafana from "../../../images/AppsImg/app1.png";
+import Slack from "../../../images/AppsImg/app2.png";
+import Tableau from "../../../images/AppsImg/app3.png";
+import More from "../../../images/AppsImg/app4.png";
 
 //for sales revenue chart options
 const SalesOptions = {
@@ -450,7 +454,7 @@ const Business = () => {
           <div className="lg:col-span-3 md:col-span-6 sm:col-span-12 ">
             <div className="shadow-md  bg-white rounded-lg text-center py-10">
               <img
-                src="/AppsImg/app1.png"
+                src={Grafana}
                 alt="Logo"
                 className="cursor-pointer mx-auto h-16 w-16"
               />
@@ -460,17 +464,17 @@ const Business = () => {
           <div className="lg:col-span-3 md:col-span-6 sm:col-span-12">
             <div className="shadow-md  bg-white rounded-lg text-center py-10">
               <img
-                src="/AppsImg/app2.png"
+                src={Slack}
                 alt="Logo"
                 className="cursor-pointer mx-auto h-16 w-16 "
               />
-              <h4 className="text-size-md font-semibold py-5">Tableau</h4>
+              <h4 className="text-size-md font-semibold py-5">Slack</h4>
             </div>
           </div>
           <div className="lg:col-span-3 md:col-span-6 sm:col-span-12">
             <div className="shadow-md  bg-white rounded-lg text-center py-10">
               <img
-                src="/AppsImg/app3.png"
+                src={Tableau}
                 alt="Logo"
                 className="cursor-pointer mx-auto h-[64px] w-[64px]"
               />
@@ -480,7 +484,7 @@ const Business = () => {
           <div className="lg:col-span-3 md:col-span-6 sm:col-span-12">
             <div className="shadow-md  bg-white rounded-lg text-center py-10">
               <img
-                src="/AppsImg/app4.png"
+                src={More}
                 alt="Logo"
                 className="cursor-pointer mx-auto h-16 w-16"
               />
