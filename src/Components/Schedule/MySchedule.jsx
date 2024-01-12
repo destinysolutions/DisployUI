@@ -59,8 +59,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectdata, setSelectData] = useState({});
 
   const { token } = useSelector((state) => state.root.auth);
-  const { loading, schedules, deleteLoading, successMessage, type } =
-    useSelector((s) => s.root.schedule);
+  const { loading, schedules, deleteLoading, successMessage, type } = useSelector((s) => s.root.schedule);
   const authToken = `Bearer ${token}`;
 
   const addScreenRef = useRef(null);
@@ -79,15 +78,30 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   // const currentItems = schedules?.slice(indexOfFirstItem, indexOfLastItem);
 
+  const dispatch = useDispatch();
+  // Function to handle the "Select All" checkbox change
+
+  useEffect(() => {
+    dispatch(handleGetAllSchedule({ token }));
+
+    if (successMessage && type === "DELETE") {
+      toast.success(successMessage);
+    }
+  }, [successMessage]);
+
   // Filter data based on search term
-  const filteredData = schedules?.filter((item) =>
-    Object.values(item).some(
-      (value) =>
-        value &&
-        value.toString().toLowerCase().includes(searchSchedule.toLowerCase())
+  const filteredData = Array.isArray(schedules)
+  ? schedules.filter((item) =>
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value.toString().toLowerCase().includes(searchSchedule.toLowerCase())
+      )
     )
-  );
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  : [];
+
+
+  const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
 
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
@@ -123,16 +137,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
   // Pagination End
 
-  const dispatch = useDispatch();
-  // Function to handle the "Select All" checkbox change
-
-  useEffect(() => {
-    dispatch(handleGetAllSchedule({ token }));
-
-    if (successMessage && type === "DELETE") {
-      toast.success(successMessage);
-    }
-  }, [successMessage]);
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
@@ -168,6 +172,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     if (!window.confirm("Are you sure?")) return;
     if (deleteLoading) return;
     dispatch(handleDeleteScheduleById({ id: scheduleId, token }));
+    dispatch(handleGetAllSchedule({ token }));
     if (connection.state == "Disconnected") {
       connection
         .start()

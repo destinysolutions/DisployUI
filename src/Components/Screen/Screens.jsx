@@ -944,7 +944,7 @@ useEffect(() =>{
                   </div>
                 </div>
               )}
-              {/* <Tooltip
+              <Tooltip
                 content="Deactivate/Activate"
                 placement="bottom-end"
                 className=" bg-SlateBlue text-white z-10 ml-5"
@@ -959,7 +959,7 @@ useEffect(() =>{
                 >
                   <RiSignalTowerLine className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
-              </Tooltip> */}
+              </Tooltip>
               <Tooltip
                 content="Delete"
                 placement="bottom-end"
