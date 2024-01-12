@@ -130,24 +130,39 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [loadFist, store]); // Make sure to include dispatch as a dependency if you're using it in the effect
 
+
+  // const handleSelectAllChange = () => {
+  //   setSelectAll(!selectAll);
+  //   if (selectedItems.length === sortedAndPaginatedData?.length) {
+  //     setSelectedItems([]);
+  //   } else {
+  //     const allIds = sortedAndPaginatedData?.map((item) => item.assetID);
+  //     setSelectedItems(allIds);
+  //   }
+  // };
+
   const handleSelectAllChange = () => {
     setSelectAll(!selectAll);
+  
     if (selectedItems.length === sortedAndPaginatedData?.length) {
       setSelectedItems([]);
     } else {
-      const allIds = sortedAndPaginatedData?.map((item) => item.assetID);
+      const allIds = sortedAndPaginatedData?.map((item) => ({
+        assetID: item.assetID,
+        assetType: item.assetType,
+      })) || [];
       setSelectedItems(allIds);
     }
-
   };
+  
 
   const handleDeleteAllPermanently = () => {
     let config = {
       method: "delete",
       maxBodyLength: Infinity,
-      url: `${All_DELETED_TRASH}?assetID=${selectedItems}`,
-      // url: `${SINGL_DELETED_TRASH}?assetID=${id}&assetType=${type}`,
+      url: `${All_DELETED_TRASH}`,
       headers: { Authorization: authToken },
+      data: selectedItems,
     };
     Swal.fire({
       title: "Delete Permanently",
@@ -204,15 +219,27 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-  // Multipal check
+  // // Multipal check
   const handleCheckboxChange = (item) => {
-    if (selectedItems.includes(item)) {
-      setSelectedItems(selectedItems.filter((id) => id !== item));
+    const isItemSelected = selectedItems.some(
+      (selectedItem) =>
+        selectedItem.assetID === item.assetID &&
+        selectedItem.assetType === item.assetType
+    );
+
+    if (isItemSelected) {
+      setSelectedItems((prevSelected) =>
+        prevSelected.filter(
+          (selectedItem) =>
+            selectedItem.assetID !== item.assetID ||
+            selectedItem.assetType !== item.assetType
+        )
+      );
     } else {
-      setSelectedItems([...selectedItems, item]);
+      setSelectedItems((prevSelected) => [...prevSelected, item]);
     }
   };
-
+  
 
   const handleRestore = (id, type) => {
     try {
@@ -278,6 +305,9 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
 
           <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
+            <div>
+            <h4 class="text-1xl font-bold dark:text-white m-3 text-center"> This data is stored upto 30 days after that it will get auto deleted. </h4>
+            </div>
             <table
               className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
               cellPadding={20}
@@ -373,8 +403,12 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                               <input
                                 type="checkbox"
                                 className="mx-1"
-                                checked={selectedItems.includes(item.assetID)}
-                                onClick={() => handleCheckboxChange(item.assetID)}
+                                checked={selectedItems.some(
+                                  (selectedItem) =>
+                                    selectedItem.assetID === item.assetID &&
+                                    selectedItem.assetType === item.assetType
+                                )}
+                                onChange={() => handleCheckboxChange({assetID:item.assetID,assetType:item.assetType})}
                               />
                             </button>}
                           {item.assetType === "Folder" && (

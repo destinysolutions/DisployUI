@@ -4,7 +4,7 @@ import "../../../Styles/screen.css";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
 import { TbUpload } from "react-icons/tb";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import { MdDeleteForever } from "react-icons/md";
+import { MdDeleteForever, MdOutlineModeEdit } from "react-icons/md";
 import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
 import { HiOutlineRectangleGroup } from "react-icons/hi2";
@@ -12,7 +12,7 @@ import { IoMdRefresh } from "react-icons/io";
 import PropTypes from "prop-types";
 import Footer from "../../Footer";
 import { connection } from "../../../SignalR";
-import { AiOutlineCloudUpload } from "react-icons/ai";
+import { AiOutlineCloudUpload, AiOutlinePlusCircle } from "react-icons/ai";
 import { Tooltip } from "@material-tailwind/react";
 import ScreenGroupModal from "./ScreenGroupModal";
 import ShowAssetModal from "./model/ShowGroupAssetModal";
@@ -26,18 +26,20 @@ import {
   handleGetYoutubeData,
 } from "../../../Redux/AppsSlice";
 import { BiEdit, BiSave } from "react-icons/bi";
-import { getGroupData, groupInScreenDelete, resetStatus, saveGroupData, screenGroupDelete, screenGroupDeleteAll, updateGroupData } from "../../../Redux/ScreenGroupSlice";
+import { addTagsAndUpdate, getGroupData, groupInScreenDelete, resetStatus, saveGroupData, screenGroupDelete, screenGroupDeleteAll, updateGroupData } from "../../../Redux/ScreenGroupSlice";
 import toast, { CheckmarkIcon } from "react-hot-toast";
 import Swal from "sweetalert2";
 import { IoClose } from "react-icons/io5";
-import AssetPreview from "./model/AssetPreview";
+import AddOrEditTagPopup from "../../AddOrEditTagPopup";
+import { UPDATE_NEW_SCREEN } from "../../../Pages/Api";
+import { handleChangeScreens } from "../../../Redux/Screenslice";
 
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   const { user, token } = useSelector((state) => state.root.auth);
   const store = useSelector((state) => state.root.screenGroup);
-  // const authToken = `Bearer ${token}`;
+  const authToken = `Bearer ${token}`;
 
   const dispatch = useDispatch();
 
@@ -58,6 +60,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]); // Multipal check
   const [editGroupID, setEditGroupID] = useState()
+  const [getGroup, setGetGroup] = useState()   // used to singl group in all screenId get and handl save asstes
 
   //   Model
   const [label, setLabel] = useState('');
@@ -73,9 +76,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   const [editSelectedScreen, setEditSelectedScreen] = useState('');
 
-  //  AssetsPreviwe Model 
-  const [openAssetPreview, setOpenAssetPreview] = useState(false);
-  const [dispayUrl, setDispayUrl] = useState('');
+  const [showTagModal, setShowTagModal] = useState(false);
+  const [tags, setTags] = useState([]);
+  const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
 
 
   // pagination
@@ -355,18 +358,61 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     dispatch(groupInScreenDelete(payload))
   }
 
-  const closePreview = () => {
-    setOpenAssetPreview(false);
+  const handleTagsUpdate = (tags) => {
+    const {
+      otp,
+      googleLocation,
+      timeZone,
+      screenOrientation,
+      screenResolution,
+      macid,
+      ipAddress,
+      postalCode,
+      latitude,
+      longitude,
+      userID,
+      mediaType,
+      mediaDetailID,
+      tvTimeZone,
+      tvScreenOrientation,
+      tvScreenResolution,
+    } = tagUpdateScreeen;
+
+    let data = {
+      screenID: tagUpdateScreeen?.screenID,
+      otp,
+      googleLocation,
+      timeZone,
+      screenOrientation,
+      screenResolution,
+      macid,
+      ipAddress,
+      postalCode,
+      latitude,
+      longitude,
+      userID,
+      mediaType,
+      tags,
+      mediaDetailID,
+      tvTimeZone,
+      tvScreenOrientation,
+      tvScreenResolution,
+      screenName: null,
+      operation: "Update",
+    };
+
+    dispatch(addTagsAndUpdate(data))
+
   };
 
-  const openPreview = (item) => {
-    setOpenAssetPreview(true)
-    setDispayUrl('https://www.youtube.com/watch?v=dZ2jJCQ3WQU')
-  }
 
-const handleSave = () => {
-   console.log("---------------------------------",selectedAsset)
-}
+  const handleSave = () => {
+    const payload = {
+      screenID: getGroup.screenGroupLists.map((item) => item.screenID).join(','),
+      assetID : selectedAsset.assetID
+    }
+    console.log("---------------------------------", selectedAsset, payload)
+  }
 
   return (
     <>
@@ -503,7 +549,7 @@ const handleSave = () => {
                           </button>
                           <button
                             className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                            onClick={() => setShowAssetModal(true)}
+                            onClick={() => { setShowAssetModal(true); setGetGroup(item) }}
                           >
                             <TbUpload className="text-3xl p-1 hover:text-white" />
                           </button>
@@ -590,18 +636,17 @@ const handleSave = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {isAccordionOpen && item && item.screenGroupLists?.length > 0 && item.screenGroupLists.map((groupItem, index) => {
+                        {isAccordionOpen && item && item.screenGroupLists?.length > 0 && item.screenGroupLists.map((screen, index) => {
                           return (
                             <tr
                               key={index}
                               className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
                             >
                               <td className="flex items-center">
-                                <input type="checkbox" className="mr-3" />
-                                {groupItem.screenName}
+                                {screen.screenName}
                               </td>
                               <td className="p-2 text-center">
-                                {groupItem.screenStatus === 1 ? (
+                                {screen.screenStatus === 1 ? (
                                   <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
                                     Live
                                   </button>
@@ -612,38 +657,65 @@ const handleSave = () => {
                                 )}
                               </td>
                               <td className="p-2 text-center">
-                                {groupItem.last_seen}
+                                {screen.last_seen}
                               </td>
                               <td className="p-2 text-center">
                                 <button
-                                  // onClick={() => setShowAssetModal(true)}
-                                  onClick={() => openPreview(groupItem)}
-                                  className="flex  items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                                  className="flex items-centerborder-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500 "
                                 >
-                                 {groupItem.assetName}
+                                  {screen.assetName}
                                   <AiOutlineCloudUpload className="ml-2 text-lg" />
-                                  {/* {openAssetPreview && <AssetPreview  closePreview={closePreview} setOpenAssetPreview={setOpenAssetPreview} />} */}
                                 </button>
                               </td>
                               <td className="break-words	w-[150px] p-2 text-center">
-                                {groupItem.scheduleName}
+                                {screen.scheduleName}
                               </td>
-                              <td className="p-2 text-center">
-                                {groupItem.tags !== null
-                                  ? groupItem.tags
-                                    .split(",")
-                                    .slice(
-                                      0,
-                                      groupItem.tags.split(",").length > 2
-                                        ? 3
-                                        : groupItem.tags.split(",").length
-                                    )
-                                    .join(",")
-                                  : ""}
+                              <td
+                                title={screen?.tags && screen?.tags}
+                                className="mx-auto  p-2 text-center">
+                                {(screen?.tags === "" || screen?.tags === null) && (
+                                  <span>
+                                    <AiOutlinePlusCircle
+                                      size={30}
+                                      className="mx-auto cursor-pointer"
+                                      onClick={() => {
+                                        setShowTagModal(true);
+                                        screen.tags === "" || screen?.tags === null
+                                          ? setTags([])
+                                          : setTags(screen?.tags?.split(","));
+                                        setTagUpdateScreeen(screen);
+                                      }}
+                                    />
+                                  </span>
+                                )}
+                                {screen?.tags !== null ? screen.tags.split(",").slice(0, screen.tags.split(",").length > 2 ? 3 : screen.tags.split(",").length)
+                                  .map((text) => {
+                                    if (text.toString().length > 10) {
+                                      return text.split("").slice(0, 10).concat("...").join("");
+                                    } return text;
+                                  }).join(",") : ""}
+                                {screen?.tags !== "" && screen?.tags !== null && (
+                                  <AiOutlinePlusCircle
+                                    onClick={() => { setShowTagModal(true); screen.tags === "" || screen?.tags === null ? setTags([]) : setTags(screen?.tags?.split(",")); setTagUpdateScreeen(screen); }}
+                                    className="mx-auto  w-5 h-5 cursor-pointer "
+                                  />
+                                )}
+
+                                {/* add or edit tag modal */}
+                                {showTagModal && (
+                                  <AddOrEditTagPopup
+                                    setShowTagModal={setShowTagModal}
+                                    tags={tags}
+                                    setTags={setTags}
+                                    handleTagsUpdate={handleTagsUpdate}
+                                    from="screen"
+                                    setTagUpdateScreeen={setTagUpdateScreeen}
+                                  />
+                                )}
                               </td>
                               <td className="p-2 justify-center flex ">
                                 <div className="cursor-pointer text-xl flex gap-3 text-right">
-                                  <MdDeleteForever className="text-[#EE4B2B]" onClick={() => deleteGroupInScreen({ScreenGroupListID: groupItem.screenGroupListID })} />
+                                  <MdDeleteForever className="text-[#EE4B2B]" onClick={() => deleteGroupInScreen({ ScreenGroupListID: screen.screenGroupListID })} />
                                 </div>
                               </td>
                             </tr>

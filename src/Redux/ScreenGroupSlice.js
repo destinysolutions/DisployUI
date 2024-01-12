@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { ADD_GROUP_SCREEN, DELETE_GROUP_SCREEN_ALL, DELETE_SINGLE_GROUP_SCREEN, GET_GROUP_SCREEN, GROUP_IN_SCREEN_DELETE_ALL } from "../Pages/Api";
+import { ADD_GROUP_SCREEN, DELETE_GROUP_SCREEN_ALL, DELETE_SINGLE_GROUP_SCREEN, GET_GROUP_SCREEN, GROUP_IN_SCREEN_DELETE_ALL, UPDATE_NEW_SCREEN } from "../Pages/Api";
 
 const initialState = {
   data: [],
@@ -146,6 +146,25 @@ export const groupInScreenDelete = createAsyncThunk("data/groupInScreenDelete", 
   }
 });
 
+// Group in screen Deleted 
+export const addTagsAndUpdate = createAsyncThunk("data/AddTagsAndUpdate", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const response = await axios.post(UPDATE_NEW_SCREEN, payload,{headers: {Authorization: `Bearer ${token}`}});
+    if (response.data.status) {
+      return {
+        status: true,
+        message: response.data.message,
+        data: response.data.data,
+      };
+    } else {
+      return { status: false, message: "Failed to delete data" };
+    }
+  } catch (error) {
+    throw error;
+  }
+});
+
 const screenGroupSlice = createSlice({
   name: "screenGroup",
   initialState,
@@ -156,9 +175,9 @@ const screenGroupSlice = createSlice({
       state.status = null;
     },
   },
+  
   extraReducers: (builder) => {
     builder
-
       .addCase(SelectByUserScreen.pending, (state) => {   // SelectByUserScreen
         state.status = null;
       })
@@ -189,7 +208,6 @@ const screenGroupSlice = createSlice({
       .addCase(saveGroupData.fulfilled, (state, action) => {    // Save ScreenGroup
         state.status = "succeeded";
         state.message = action.payload.message;
-        state.data = action.payload.data;
       })
       .addCase(saveGroupData.rejected, (state, action) => {     // Save ScreenGroup
         state.status = "failed";
@@ -202,7 +220,6 @@ const screenGroupSlice = createSlice({
       .addCase(screenGroupDelete.fulfilled, (state, action) => {    // screenGroupDelete
         state.status = "succeeded";
         state.message = action.payload.message;
-        state.data = action.payload.data;
       })
       .addCase(screenGroupDelete.rejected, (state, action) => {     // screenGroupDelete
         state.status = "failed";
@@ -215,7 +232,6 @@ const screenGroupSlice = createSlice({
       .addCase(updateGroupData.fulfilled, (state, action) => {    // updateGroupData
         state.status = "succeeded";
         state.message = action.payload.message;
-        state.data = action.payload.data;
       })
       .addCase(updateGroupData.rejected, (state, action) => {     // updateGroupData
         state.status = "failed";
@@ -228,7 +244,6 @@ const screenGroupSlice = createSlice({
       .addCase(screenGroupDeleteAll.fulfilled, (state, action) => {    // screenGroupDeleteAll
         state.status = "succeeded";
         state.message = action.payload.message;
-        state.data = action.payload.data;
       })
       .addCase(screenGroupDeleteAll.rejected, (state, action) => {     // screenGroupDeleteAll
         state.status = "failed";
@@ -241,9 +256,20 @@ const screenGroupSlice = createSlice({
       .addCase(groupInScreenDelete.fulfilled, (state, action) => {    // groupInScreenDelete
         state.status = "succeeded";
         state.message = action.payload.message;
-        state.data = action.payload.data;
       })
       .addCase(groupInScreenDelete.rejected, (state, action) => {     // groupInScreenDelete
+        state.status = "failed";
+        state.error = action.error.message || "Failed to delete data";
+      })
+
+      .addCase(addTagsAndUpdate.pending, (state) => {      // addTagsAndUpdate
+        state.status = "loading";
+      })
+      .addCase(addTagsAndUpdate.fulfilled, (state, action) => {    // addTagsAndUpdate
+        state.status = "succeeded";
+        state.message = action.payload.message || "This operation successFully" ; 
+      })
+      .addCase(addTagsAndUpdate.rejected, (state, action) => {     // addTagsAndUpdate
         state.status = "failed";
         state.error = action.error.message || "Failed to delete data";
       });
