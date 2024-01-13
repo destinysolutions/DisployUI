@@ -5,10 +5,10 @@ import {
   BsFillInfoCircleFill,
 } from "react-icons/bs";
 import {Link, useNavigate} from "react-router-dom";
-import {BsMicrosoft} from "react-icons/bs";
-import {BsApple} from "react-icons/bs";
-import {BsGoogle} from "react-icons/bs";
-import {FaFacebookF} from "react-icons/fa";
+// import {BsMicrosoft} from "react-icons/bs";
+// import {BsApple} from "react-icons/bs";
+// import {BsGoogle} from "react-icons/bs";
+// import {FaFacebookF} from "react-icons/fa";
 import {useState} from "react";
 import axios from "axios";
 import {useFormik} from "formik";
@@ -17,22 +17,15 @@ import {AiOutlineClose} from "react-icons/ai";
 import {ADD_REGISTER_URL} from "./Api";
 import video from "../images/DisployImg/iStock-1137481126.mp4";
 import {
-  Googleauthprovider,
   appleProvider,
   auth,
   facebookProvider,
   microsoftProvider,
 } from "../FireBase/firebase";
 import toast from "react-hot-toast";
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-} from "firebase/auth";
 import {useDispatch} from "react-redux";
 import {handleLoginWithGoogle, handleRegisterUser} from "../Redux/Authslice";
 import logo from "../images/DisployImg/logo.svg";
-import {GoogleLogin, GoogleOAuthProvider} from "@react-oauth/google";
-import {jwtDecode} from "jwt-decode";
 import ReCAPTCHA from "react-google-recaptcha";
 
 const Registration = () => {
@@ -454,6 +447,7 @@ const Registration = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.phoneNumber}
+                        maxLength="12"
                       />
                       {formik.errors.phoneNumber &&
                         formik.touched.phoneNumber && (
