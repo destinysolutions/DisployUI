@@ -1,7 +1,11 @@
 import React from "react";
 import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
-import { AiOutlineClose, AiOutlineSearch } from "react-icons/ai";
+import {
+  AiOutlineClose,
+  AiOutlineCloseCircle,
+  AiOutlineSearch,
+} from "react-icons/ai";
 import { useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useState } from "react";
@@ -13,11 +17,12 @@ import {
   GET_ALL_ORGANIZATION_MASTER,
 } from "./AdminAPI";
 import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
 const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
   const [userData, setUserData] = useState([]);
   const [originalUserData, setOriginalUserData] = useState([]);
-
+  const [showRequestModal, setShowRequestModal] = useState(false);
   const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
@@ -82,6 +87,44 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
     setShowActionBox(rowId);
   };
 
+  const handleClick = (organizationID) => {
+    Swal.fire({
+      title: "Are you sure storage request accept ?",
+      icon: "warning",
+      showCancelButton: true,
+      cancelButtonText: "Cancel",
+      confirmButtonText: "Yes, Accept it!",
+      customClass: {
+        text: "swal-text-bold",
+        content: "swal-text-color",
+        confirmButton: "swal-confirm-button-color",
+      },
+      confirmButtonColor: "#008000",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let config = {
+          method: "post",
+          maxBodyLength: Infinity,
+          url: `https://disployapi.thedestinysolutions.com/api/Storage/IncreaseStorage?OrganizationId=${organizationID}`,
+          headers: {
+            Authorization: authToken,
+          },
+        };
+        axios
+          .request(config)
+          .then((response) => {
+            console.log(response.data);
+            if (response?.data?.status == true) {
+              fetchUserData();
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    });
+  };
+
   const columns = [
     {
       name: "First Name",
@@ -122,6 +165,37 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
       name: "Screen",
       selector: (row) => row.screen,
       sortable: true,
+    },
+    {
+      name: "Storage Request",
+      // selector: (row) => row.isIncreaseRequest,
+      sortable: true,
+      cell: (row) => (
+        <div>
+          {row.isIncreaseRequest === true && (
+            <button
+              style={{ color: "red" }}
+              onClick={() => setShowRequestModal(true)}
+              className="flex items-center"
+            >
+              {!showRequestModal && "View Request"}
+            </button>
+          )}
+          {showRequestModal && (
+            <div>
+              <span className="flex justify-center">
+                {!row.increaseSize == 0 && `${row.increaseSize} GB`}
+              </span>
+              <button
+                className=" text-red"
+                onClick={() => handleClick(row.organizationID)}
+              >
+                {!row.increaseSize == 0 && "Requested"}
+              </button>
+            </div>
+          )}
+        </div>
+      ),
     },
     {
       name: "Active",
@@ -265,6 +339,26 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
               />
             </div>
           </div>
+          {/* {showRequestModal && (
+            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+              <div className="w-auto my-6 mx-auto lg:max-w-xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                <div
+                  // ref={modalRef}
+                  className="border-0 rounded-lg w-[60vw] overflow-y-auto shadow-lg relative flex flex-col bg-white outline-none focus:outline-none min-h-[350px] max-h-[550px]"
+                >
+                  <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7] rounded-t">
+                    <h3 className="text-xl font-medium">New Screen</h3>
+                    <button
+                      className="p-1 text-xl"
+                      onClick={() => setShowRequestModal(false)}
+                    >
+                      <AiOutlineCloseCircle className="text-3xl text-primary" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )} */}
           <div className="mt-7">
             <DataTable
               columns={columns}

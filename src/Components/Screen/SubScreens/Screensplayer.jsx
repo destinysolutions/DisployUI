@@ -3,7 +3,7 @@ import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
 import "../../../Styles/screen.css";
 import { MdArrowBackIosNew, MdOutlineModeEdit } from "react-icons/md";
-import { RiAppsFill, RiComputerLine } from "react-icons/ri";
+import { RiComputerLine } from "react-icons/ri";
 import { AiOutlinePlusCircle, AiOutlineSearch } from "react-icons/ai";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -640,9 +640,49 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
 
     axios
       .request(config)
-      .then(() => {
-        navigate("/screens");
-        toast.remove();
+      .then((response) => {
+        if (response?.data?.status === 200) {
+          if (connection.state == "Disconnected") {
+            connection
+              .start()
+              .then((res) => {
+                console.log("signal connected");
+              })
+              .then(() => {
+                connection
+                  .invoke(
+                    "ScreenConnected",
+                    screenData[0]?.macid.replace(/^\s+/g, "")
+                  )
+                  .then(() => {
+                    console.log(
+                      "SignalR method invoked after screen detail update"
+                    );
+                  })
+                  .catch((error) => {
+                    console.error("Error invoking SignalR method:", error);
+                  });
+              });
+          } else {
+            connection
+              .invoke(
+                "ScreenConnected",
+                screenData[0]?.macid.replace(/^\s+/g, "")
+              )
+              .then(() => {
+                console.log(
+                  "SignalR method invoked after screen detail update"
+                );
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          }
+
+          navigate("/screens");
+
+          toast.remove();
+        }
       })
       .catch((error) => {
         console.log(error);

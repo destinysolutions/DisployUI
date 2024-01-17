@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { handleGetStorageDetails } from "../../Redux/SettingSlice";
 import { GrAddCircle } from "react-icons/gr";
-import { AiOutlineSave } from "react-icons/ai";
+import { FaCodePullRequest } from "react-icons/fa6";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -22,14 +22,16 @@ const Storagelimit = () => {
     if (!response) return;
   }, []);
   console.log(storageDegtails);
+
   const handleSave = () => {
     let data = JSON.stringify({
-      data: {
-        storageId: 0,
-        userId: user.userID,
-        organizationId: user.organizationId,
-        increasesize: storageValue,
-      },
+      storageId: 0,
+      userId: user.userID,
+      organizationId: user.organizationId,
+      increasesize: storageValue,
+      flagdeleted: false,
+      createdby: 0,
+      isAccepted: 0,
     });
     toast.loading("saving");
     let config = {
@@ -42,7 +44,6 @@ const Storagelimit = () => {
       },
       data: data,
     };
-
     axios
       .request(config)
       .then((response) => {
@@ -129,9 +130,6 @@ const Storagelimit = () => {
                       borderRadius: "5px",
                     }}
                   >
-                    {/* {storageDegtails?.availableSpace == 3
-                      ? `${storageDegtails?.availableSpace} GB`
-                      : `${storageDegtails?.availableSpace} MB`} */}
                     {storageDegtails?.availableSpace} GB
                   </span>
                 </td>
@@ -146,20 +144,19 @@ const Storagelimit = () => {
                         className="border border-[#5E5E5E] w-12 h-8 rounded"
                         onChange={(e) => setStorageValue(e.target.value)}
                       />
-                      <button onClick={() => handleSave()}>
-                        <AiOutlineSave className="text-3xl ml-2" />
-                      </button>
+                      <div className="flex items-center ">
+                        <label className="ml-2 text-xl"> GB</label>
+                        <button onClick={() => handleSave()}>
+                          <FaCodePullRequest className="text-3xl ml-4 border border-[#E4E6FF] p-1 rounded bg-[#E4E6FF] text-[#5E5E5E]" />
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <>
-                      <button
-                        className="flex items-center justify-center w-full"
-                        onClick={() => setIncreaseStorage(true)}
-                      >
-                        <GrAddCircle className="text-2xl" />
-                      </button>
-                      {/* {storageDegtails?.isRquested == true ? (
-                        <span className="">Requested</span>
+                      {storageDegtails?.isRquested == 1 || request ? (
+                        <span className="text-[#BC7100] bg-[#FFF2DE] px-3 py-2 rounded">
+                          Pending
+                        </span>
                       ) : (
                         <button
                           className="flex items-center justify-center w-full"
@@ -167,7 +164,7 @@ const Storagelimit = () => {
                         >
                           <GrAddCircle className="text-2xl" />
                         </button>
-                      )} */}
+                      )}
                     </>
                   )}
                 </td>

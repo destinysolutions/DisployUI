@@ -439,7 +439,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
           <div className="mt-6">
-            <div className="grid grid-cols-12 gap-4">
+            <div className="grid grid-cols-12 gap-4 h-[380px]">
               <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 shadow-md bg-white rounded-lg p-5  items-center">
                 <div className=" ">
                   <table
@@ -541,37 +541,18 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
               <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 relative">
                 <div className="w-full videoplayer relative bg-white">
-                  <ReactPlayer
-                    url={YoutubeVideo}
-                    className="w-full relative z-20 videoinner"
-                    muted={isMuted}
-                    controls={true} // Enable video controls
-                    // captions={{
-                    //   active: areSubtitlesOn, // Enable subtitles based on the areSubtitlesOn state
-                    //   file: areSubtitlesOn ? "URL_TO_SUBTITLE_FILE" : undefined, // Provide the URL to the subtitle file if subtitles are enabled
-                    // }}
-
-                    // config={{
-                    //   file: {
-                    //     tracks: [
-                    //       {
-                    //         kind: "subtitles",
-                    //         src: "",
-                    //         srcLang: "en",
-                    //         default: true,
-                    //         label:"English"
-                    //       },
-                    //     ],
-                    //   },
-
-                    // youtube:{
-                    //   playerVars:
-                    // }
-                    // }}
-                  />
-                </div>
-                <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-10">
-                  <img src={Img} />
+                  {YoutubeVideo === "" ? (
+                    <div>
+                      <img src={Img} className="m-auto" />
+                    </div>
+                  ) : (
+                    <ReactPlayer
+                      url={YoutubeVideo}
+                      className="w-full relative z-20 videoinner"
+                      muted={isMuted}
+                      controls={true}
+                    />
+                  )}
                 </div>
               </div>
 
