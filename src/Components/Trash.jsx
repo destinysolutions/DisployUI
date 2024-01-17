@@ -306,7 +306,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
 
           <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
             <div>
-            <h4 class="text-1xl font-bold dark:text-white m-3 text-center"> This data is stored upto 30 days after that it will get auto deleted. </h4>
+            <h4 className="text-1xl font-bold dark:text-white m-3 text-center"> This data is stored upto 30 days after that it will get auto deleted. </h4>
             </div>
             <table
               className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
@@ -446,7 +446,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       </td>
                       {/* <td className=" border-b border-lightgray text-sm ">{item.assetFolderPath}</td> */}
                       <td className=" border-b border-lightgray text-sm ">
-                        Not Found
+                        {item.folderPath}
                       </td>
                       <td className=" border-b border-lightgray text-sm ">
                         {moment(item.deleteDate).format("DD/MM/YY, h:mm:ss a")}

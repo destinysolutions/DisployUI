@@ -1,11 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
-import { deleteUrl, getUrl, postUrl } from "../Pages/Api";
+import { SCREEN_DEACTIVATE_ACTIVATE, deleteUrl, getUrl, postUrl } from "../Pages/Api";
 import axios from "axios";
 
-export const handleGetScreen = createAsyncThunk(
-  "screen/handleGetScreen",
-  async ({ id, token }, { rejectWithValue, signal }) => {
+export const handleGetScreen = createAsyncThunk("screen/handleGetScreen",async ({ id, token }, { rejectWithValue, signal }) => {
     try {
       const { data } = await getUrl(`NewScreen/SelectByUserScreen`, {
         headers: {
@@ -19,7 +17,6 @@ export const handleGetScreen = createAsyncThunk(
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
       rejectWithValue(error?.response?.data?.message);
     }
   }
@@ -56,7 +53,6 @@ export const handleUpdateScreenName = createAsyncThunk(
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
       rejectWithValue(error?.response?.data?.message);
     }
   }
@@ -79,7 +75,6 @@ export const handleUpdateScreenAsset = createAsyncThunk(
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
       rejectWithValue(error?.response?.data?.message);
     }
   }
@@ -102,7 +97,6 @@ export const handleUpdateScreenSchedule = createAsyncThunk(
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
       rejectWithValue(error?.response?.data?.message);
     }
   }
@@ -128,11 +122,32 @@ export const handleDeleteScreenById = createAsyncThunk(
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
       rejectWithValue(error?.response?.data?.message);
     }
   }
 );
+
+// Group in screen Deleted 
+export const screenDeactivateActivate = createAsyncThunk("data/AddTagsAndUpdate", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const queryParams = new URLSearchParams(payload).toString();
+    const response = await axios.put(`${SCREEN_DEACTIVATE_ACTIVATE}?${queryParams}`, null, { headers: { Authorization: `Bearer ${token}` } });
+    
+    console.log("response",response);
+    if (response.data.status) {
+      return {
+        status: true,
+        message: response.data.message,
+        data: response.data.data,
+      };
+    } else {
+      return { status: false, message: "Failed to delete data" };
+    }
+  } catch (error) {
+    throw error;
+  }
+});
 
 const initialState = {
   loading: false,
@@ -214,11 +229,7 @@ const Screenslice = createSlice({
     });
 
     //update screen schedule
-    builder.addCase(
-      handleUpdateScreenSchedule.fulfilled,
-      (state, { payload, meta }) => {
-        console.log(meta, payload);
-
+    builder.addCase(handleUpdateScreenSchedule.fulfilled,(state, { payload, meta }) => {
         state.screens = state.screens?.map((screen) => {
           if (screen.screenID === meta?.arg?.dataToUpdate?.screenID) {
             return {
@@ -247,13 +258,9 @@ const Screenslice = createSlice({
         state.error = null;
       }
     );
-    builder.addCase(
-      handleDeleteScreenById.fulfilled,
-      (state, { payload, meta }) => {
+    builder.addCase(handleDeleteScreenById.fulfilled,(state, { payload, meta }) => {
         state.deleteLoading = false;
-        state.screens = state.screens.filter(
-          (data) => data.screenID !== meta.arg?.screenID
-        );
+        state.screens = state.screens.filter((data) => data.screenID !== meta.arg?.screenID);
         state.error = null;
       }
     );
@@ -283,7 +290,20 @@ const Screenslice = createSlice({
       state.deleteLoading = false;
       state.error = payload ?? null;
       state.screens = state.screens;
+    })
+
+    .addCase(screenDeactivateActivate.pending, (state) => {      // screenDeactivateActivate
+      state.status = "loading";
+    })
+    .addCase(screenDeactivateActivate.fulfilled, (state, action) => {    // screenDeactivateActivate
+      state.status = "succeeded";
+      state.message = action.payload.message || "This operation successFully" ; 
+    })
+    .addCase(screenDeactivateActivate.rejected, (state, action) => {     // screenDeactivateActivate
+      state.status = "failed";
+      state.error = action.error.message || "Failed to delete data";
     });
+
   },
 });
 

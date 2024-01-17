@@ -5,6 +5,7 @@ import NewScreenGroup from "../Components/Screen/SubScreens/NewScreenGroup";
 import Screensplayer from "../Components/Screen/SubScreens/Screensplayer";
 import { useState, useEffect, useCallback } from "react";
 import MergeScreen from "../Components/Screen/SubScreens/MergeScreen";
+import AddMergeScreen from "../Components/Screen/SubScreens/AddMergeScreen";
 import NewScreenDetail from "../Components/Screen/SubScreens/NewScreenDetail";
 import Assets from "../Components/Assests/Assets";
 import Apps from "../Components/Apps/Apps";
@@ -172,6 +173,15 @@ const Routing = () => {
               path="/mergescreen"
               element={
                 <MergeScreen
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+             <Route
+              path="/add-mergescreen"
+              element={
+                <AddMergeScreen
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />

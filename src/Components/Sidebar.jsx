@@ -16,28 +16,81 @@ import trashIcon from "../images/MenuIcons/Trash_icon.svg";
 import logoutIcon from "../images/MenuIcons/logout_icon.svg";
 import assetsIcon from "../images/MenuIcons/assets_icon.svg";
 import appsIcon from "../images/MenuIcons/apps_icon.svg";
+import approvalIcon from "../images/MenuIcons/approval_icon.svg";
 import compositionIcon from "../images/MenuIcons/playlist_icon.svg";
 import scheduleIcon from "../images/MenuIcons/schedule_icon.svg";
 import logo from "../images/DisployImg/logo.svg";
 import { useDispatch } from "react-redux";
 import { handleLogout } from "../Redux/Authslice";
 import merge_screen from "../images/MenuIcons/merge_screen.svg";
+import { useSelector } from "react-redux";
+import { getMenuAll } from "../Redux/SidebarSlice";
 
 const Sidebar = ({ sidebarOpen }) => {
   Sidebar.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
   };
+  const navigation = useNavigate();
+  const dispatch = useDispatch();
 
   const [showOTPModal, setShowOTPModal] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState(false);
   const [mobileSidebar, setMobileSidebar] = useState(false);
   const [submenuStates, setSubmenuStates] = useState({});
 
-  const navigation = useNavigate();
+  const [menuData, setMenuData] = useState([]);
 
-  const dispatch = useDispatch();
 
-  //for menu list
+  const store = useSelector((state) => state.root.sidebarData);
+
+  useEffect(() => {
+    dispatch(getMenuAll())
+  }, []);
+  
+
+  // useEffect(() => {
+  //   if (store.data) {
+  //     const formattedMenuData = store.data
+  //       .map((item) => ({
+  //         title: item.pageName,
+  //         cName: "nav-text link-items", // You may need to adjust this based on your styles
+  //         path: item.path,
+  //         icon: <img src={item.icon} alt={item.alt} className="w-6" />,
+  //         // subMenus: item.subMenus
+  //         //   ? item.subMenus.map((submenu) => ({
+  //         //       title: submenu.title,
+  //         //       path: submenu.path,
+  //         //       icon: <img src={submenu.icon} alt={submenu.title} className="w-6" />,
+  //         //     }))
+  //         //   : null,
+  //       }))
+  //       .sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
+  
+  //     // Assuming you have a way to get the current path (e.g., from React Router)
+  //     const currentPath = window.location.pathname;
+  
+  //     // Set isActive for the currently active item
+  //     formattedMenuData.forEach((menuItem) => {
+  //       if (menuItem.path === currentPath) {
+  //         menuItem.isActive = true;
+  //       } else if (menuItem.subMenus) {
+  //         menuItem.subMenus.forEach((submenuItem) => {
+  //           if (submenuItem.path === currentPath) {
+  //             submenuItem.isActive = true;
+  //             menuItem.isActive = true; // Set parent as active if a submenu item is active
+  //           }
+  //         });
+  //       }
+  //     });
+  
+  //     setMenuData(formattedMenuData);
+  //   }
+  // }, [store.data]);
+
+
+  // console.log("store ------------------- ",store.data , menuData);
+  
+  // menu list
   const Menus = [
     // {
     //   title: "Dashboard",
@@ -124,18 +177,12 @@ const Sidebar = ({ sidebarOpen }) => {
     //     <img src="/MenuIcons/reports_icon.svg" alt="Reports" className="w-6" />
     //   ),
     // },
-    // {
-    //   title: "Approval",
-    //   cName: "nav-text link-items",
-    //   path: "/approval",
-    //   icon: (
-    //     <img
-    //       src="/MenuIcons/approval_icon.svg"
-    //       alt="Approval"
-    //       className="w-6"
-    //     />
-    //   ),
-    // },
+    {
+      title: "Approval",
+      cName: "nav-text link-items",
+      path: "/approval",
+      icon: <img src={approvalIcon} alt="Approval" className="w-6" />
+    },
     // {
     //   title: "Social Media Tools",
     //   cName: "nav-text link-items",

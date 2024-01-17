@@ -137,6 +137,16 @@ export const DELETE_SINGLE_GROUP_SCREEN = `${baseUrl}api/GroupScreen/DeleteGroup
 export const DELETE_GROUP_SCREEN_ALL = `${baseUrl}api/GroupScreen/DeleteAllGroupScreen`
 export const GROUP_IN_SCREEN_DELETE_ALL = `${baseUrl}api/GroupScreen/DeleteScreenByID`
 
+// screen Marge
+export const GET_MARGE_SCREEN = `${baseUrl}api/MergeScreen/GetAllMergeScreen`
+
+
+export const SCREEN_DEACTIVATE_ACTIVATE  =  `${baseUrl}api/NewScreen/EnableScreen`
+
+// sidebar
+export const GET_SIDEBAR_MENU = `${baseUrl}api/OrganizationUsersRole/SideBarMenu`
+
+
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115
 

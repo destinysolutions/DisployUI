@@ -12,6 +12,8 @@ import SettingUserSlice from "./SettingUserSlice";
 import SettingSlice from "./SettingSlice";
 import ScreenGroupSlice from "./ScreenGroupSlice";
 import TrashSlice from "./Trash";
+import SidebarSlice from "./SidebarSlice";
+import ScreenMergeSlice from "./ScreenMergeSlice";
 
 // const rootPersistConfig = {
 //   key: "root",
@@ -42,7 +44,9 @@ const rootReducer = combineReducers({
   settingUser: SettingUserSlice,
   setting: SettingSlice,
   screenGroup: ScreenGroupSlice,
+  screenMarge: ScreenMergeSlice,
   trashData: TrashSlice,
+  sidebarData : SidebarSlice
 });
 
 const persisteRoot = rootReducer;
