@@ -1,22 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { auth } from "../FireBase/firebase";
-
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { handleLogout } from "../Redux/Authslice";
 
 const AdminNavbar = () => {
-  //used for apply navigation
-  const history = useNavigate();
-
-  //for signout
-  const handleSignOut = () => {
-    localStorage.removeItem("hasSeenMessage");
-    // localStorage.removeItem("user");
-    localStorage.removeItem("userID");
-
-    localStorage.setItem("role_access", "");
-    window.location.reload();
-    history("/");
-    // auth.signOut();
-  };
+  const dispatch = useDispatch();
 
   return (
     // navbar component start
@@ -27,7 +16,7 @@ const AdminNavbar = () => {
             <div className=" justify-end items-center mx-auto px-4 flex relative">
               <button
                 className="text-[#001737] font-bold text-base "
-                onClick={handleSignOut}
+                onClick={() => dispatch(handleLogout())}
               >
                 Sign out
               </button>

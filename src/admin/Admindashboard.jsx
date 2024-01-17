@@ -22,7 +22,7 @@ const AdminDashboard = ({ sidebarOpen, setSidebarOpen }) => {
       <div className="pt-6 px-5 page-contain ">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block items-center">
-            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] lg:mb-0 lg:mb-0 md:mb-0 sm:mb-4 ">
+            <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
               Overview dashboard
             </h1>
             <div className="flex flex-wrap">
