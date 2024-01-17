@@ -729,6 +729,105 @@ const Userrole = ({ searchValue }) => {
           </button>
         </div>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:px-5 md:px-5 sm:px-2 xs:px-2 ">
+        {userRoleData &&
+          filteruserRoleData?.length === 0 &&
+          userRoleData.length > 0 &&
+          userRoleData?.map((userrole) => (
+            <div
+              className="rounded-xl p-6 bg-[#e6e6e6] md:pb-20"
+              key={userrole.orgUserRoleID}
+            >
+              <div className="grid grid-flow-row-dense grid-cols-3 grid-rows-3 text-[#5E5E5E] h-20">
+                <div className="font-semibold">
+                  <p>Total {userrole.userCount} Users </p>
+                  <p className="text-1xl text-gray-900 dark:text-white capitalize mt-2 w-80">
+                    {userrole.orgUserRole}
+                  </p>
+
+                  <div className="flex justify-left items-center mt-3 gap-3">
+                    {/* <div className="cursor-pointer text-2xl text-[#0000FF]"> */}
+                    <button
+                      onClick={() => {
+                        handleSelectByID(userrole.orgUserRoleID);
+                        setshowuserroleModal(true);
+                        setRoleMethod("Update Role");
+                      }}
+                      className="bg-primary text-white items-center  rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50 border border-primary"
+                    >
+                      Edit Role
+                    </button>
+                    {/* <BiEdit
+                        className=""
+                        onClick={() => {
+                          handleSelectByID(userrole.orgUserRoleID);
+                          setshowuserroleModal(true);
+                          setRoleMethod("Update Role");
+                        }}
+                      /> */}
+                    {/* </div> */}
+                    {/* <div className="cursor-pointer text-2xl text-[#EE4B2B]">
+                      <MdDeleteForever
+                        onClick={() => handleDeleteRole(userrole.orgUserRoleID)}
+                      />
+                    </div> */}
+                  </div>
+                </div>
+                <div className="col-span-2">
+                  <div className="role-user flex justify-end">
+                    {userrole?.profilePics?.slice(0, 3)?.map((item, index) => {
+                      return (
+                        <span key={index}>
+                          <img
+                            className="w-5 h-5 rounded-full"
+                            src={item}
+                            alt="Not Image"
+                          ></img>
+                        </span>
+                      );
+                    })}
+                    {userrole?.profilePics?.length > 2 && (
+                      <span
+                        style={{ backgroundColor: "#41479b" }}
+                        className="text-white text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold text-green-800  me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300"
+                      >
+                        3+
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        {filteruserRoleData &&
+          filteruserRoleData?.length > 0 &&
+          filteruserRoleData?.map((userrole) => (
+            <div
+              className="rounded-xl p-6 bg-[#E7EFFF]"
+              key={userrole.orgUserRoleID}
+            >
+              <div className="flex justify-between">
+                <div className="role-name">
+                  <p>Total {userrole.userCount} Users</p>
+                  <h3 className="text-3xl text-primary my-2 break-words">
+                    {userrole.orgUserRole}
+                  </h3>
+                  <button
+                    onClick={() => {
+                      handleSelectByID(userrole.orgUserRoleID);
+                      setshowuserroleModal(true);
+                    }}
+                    className="bg-primary text-white items-center  rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50 border border-primary"
+                  >
+                    Edit Role
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+      </div>
+
       <div className="mt-5">
         <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
           <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
@@ -737,7 +836,7 @@ const Userrole = ({ searchValue }) => {
                 <tr className="border-b border-b-[#E4E6FF] bg-[#e6e6e6]">
                   <th className="text-[#5A5881] text-base font-semibold">
                     <span className="flex items-center justify-left">
-                      Roles
+                      Name
                       <svg
                         className="w-3 h-3 ms-1.5 cursor-pointer"
                         aria-hidden="true"
@@ -752,61 +851,132 @@ const Userrole = ({ searchValue }) => {
                   </th>
                   <th className="text-[#5A5881] text-base font-semibold">
                     <span className="flex items-center justify-center">
-                      Total Users
+                      Roles
                     </span>
                   </th>
                   <th className="text-[#5A5881] text-base font-semibold">
                     <div className="flex items-center justify-center">
-                      Edit Role
+                      Status
                     </div>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {userRoleData.map((item, index) => {
-                  return (
-                    <tr className="border-b border-b-[#E4E6FF]" key={index}>
-                      <td className="text-[#5E5E5E] text-center">
-                        {item?.orgUserRole}
-                      </td>
-                      <td className="text-[#5E5E5E] text-center">
-                        {item?.profilePics?.slice(0, 3)?.map((item, index) => {
-                          return (
-                            <span key={index}>
-                              <img
-                                className="w-5 h-5 rounded-full"
-                                src={item}
-                                alt="Not Image"
-                              ></img>
+                {userData && sortedAndPaginatedData.length > 0 ? (
+                  sortedAndPaginatedData.map((item, index) => {
+                    return (
+                      <tr className="border-b border-b-[#E4E6FF]" key={index}>
+                        <th className="text-[#5E5E5E] text-center flex">
+                          <div className="ps-3 flex text-left">
+                            <div className="font-normal text-gray-500 mt-2">
+                              {item.firstName + " " + item.lastName}
+                            </div>
+                          </div>
+                        </th>
+
+                        <td className="text-[#5E5E5E] text-center">
+                          {item?.userRoleName}
+                        </td>
+                        <td className="text-[#5E5E5E] text-center">
+                          {item.isActive == 1 ? (
+                            <span
+                              style={{ backgroundColor: "#cee9d6" }}
+                              className="text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                            >
+                              Active
                             </span>
-                          );
-                        })}
-                        {item?.profilePics?.length > 2 && (
-                          <span
-                            style={{ backgroundColor: "#41479b" }}
-                            className="text-white text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold text-green-800  me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300"
+                          ) : (
+                            <span
+                              style={{ backgroundColor: "#d1d5db" }}
+                              className="text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                            >
+                              Inactive
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <>
+                    <tr>
+                      <td colSpan={4}>
+                        <div className="flex text-center m-5 justify-center">
+                          <svg
+                            aria-hidden="true"
+                            role="status"
+                            className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                            viewBox="0 0 100 101"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
                           >
-                            3+
+                            <path
+                              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                              fill="currentColor"
+                            />
+                            <path
+                              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                              fill="#1C64F2"
+                            />
+                          </svg>
+                          <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
+                            Loading...
                           </span>
-                        )}
-                      </td>
-                      <td className="text-[#5E5E5E] text-center">
-                        <button
-                          onClick={() => {
-                            handleSelectByID(item.orgUserRoleID);
-                            setshowuserroleModal(true);
-                            setRoleMethod("Update Role");
-                          }}
-                          className="bg-primary text-white items-center  rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50 border border-primary"
-                        >
-                          Edit Role
-                        </button>
+                        </div>
                       </td>
                     </tr>
-                  );
-                })}
+                  </>
+                )}
               </tbody>
             </table>
+          </div>
+
+          <div className="flex justify-end mb-5 mt-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              <svg
+                className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 10"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13 5H1m0 0 4 4M1 5l4-4"
+                />
+              </svg>
+              Previous
+            </button>
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              Next
+              <svg
+                className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 10"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M1 5h12m0 0L9 1m4 4L9 9"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -868,167 +1038,168 @@ const Userrole = ({ searchValue }) => {
                           {moduleTitle.map((title) => {
                             const moduleName = `Module${title.moduleID}`;
                             return (
-                              // title.isForApproval === true && (
-                              <tr
-                                className="border-b border-lightgray rounded-md"
-                                key={title.moduleID}
-                              >
-                                <td>{title.pageName}</td>
-                                {!showDynamicComponent && (
-                                  <>
-                                    <td className="text-center">
-                                      <div>
+                              title.isForApproval === true && (
+                                <tr
+                                  className="border-b border-lightgray rounded-md"
+                                  key={title.moduleID}
+                                >
+                                  <td>{title.pageName}</td>
+                                  {!showDynamicComponent && (
+                                    <>
+                                      <td className="text-center">
+                                        <div>
+                                          <input
+                                            type="checkbox"
+                                            checked={
+                                              selectedCheckboxes[
+                                                title.moduleID
+                                              ]?.[moduleName]?.View || false
+                                            }
+                                            onChange={() =>
+                                              handleCheckboxChange(
+                                                title.moduleID,
+                                                moduleName,
+                                                "View"
+                                              )
+                                            }
+                                          />
+                                        </div>
+                                      </td>
+                                      <td className="text-center">
+                                        <div>
+                                          <input
+                                            type="checkbox"
+                                            checked={
+                                              selectedCheckboxes[
+                                                title.moduleID
+                                              ]?.[moduleName]?.CreateEdit ||
+                                              false
+                                            }
+                                            onChange={() =>
+                                              handleCheckboxChange(
+                                                title.moduleID,
+                                                moduleName,
+                                                "CreateEdit"
+                                              )
+                                            }
+                                          />
+                                        </div>
+                                      </td>
+                                      <td className="text-center">
+                                        <div>
+                                          <input
+                                            type="checkbox"
+                                            checked={
+                                              selectedCheckboxes[
+                                                title.moduleID
+                                              ]?.[moduleName]?.Delete || false
+                                            }
+                                            onChange={() =>
+                                              handleCheckboxChange(
+                                                title.moduleID,
+                                                moduleName,
+                                                "Delete"
+                                              )
+                                            }
+                                          />
+                                        </div>
+                                      </td>
+                                    </>
+                                  )}
+                                  {showDynamicComponent && (
+                                    <>
+                                      <td className="text-center">
                                         <input
                                           type="checkbox"
                                           checked={
                                             selectedCheckboxes[
                                               title.moduleID
-                                            ]?.[moduleName]?.View || false
+                                            ]?.[moduleName]?.Approval || false
                                           }
-                                          onChange={() =>
-                                            handleCheckboxChange(
-                                              title.moduleID,
-                                              moduleName,
-                                              "View"
-                                            )
-                                          }
-                                        />
-                                      </div>
-                                    </td>
-                                    <td className="text-center">
-                                      <div>
-                                        <input
-                                          type="checkbox"
-                                          checked={
-                                            selectedCheckboxes[
+                                          onChange={() => {
+                                            handleSetApprovalChange(
                                               title.moduleID
-                                            ]?.[moduleName]?.CreateEdit || false
-                                          }
-                                          onChange={() =>
+                                            );
                                             handleCheckboxChange(
                                               title.moduleID,
                                               moduleName,
-                                              "CreateEdit"
-                                            )
-                                          }
+                                              "Approval"
+                                            );
+                                          }}
                                         />
-                                      </div>
-                                    </td>
-                                    <td className="text-center">
-                                      <div>
-                                        <input
-                                          type="checkbox"
-                                          checked={
-                                            selectedCheckboxes[
-                                              title.moduleID
-                                            ]?.[moduleName]?.Delete || false
+                                      </td>
+                                      <td className="text-center">
+                                        <select
+                                          className="border border-primary rounded-lg px-4 py-1"
+                                          disabled={
+                                            !levelOfApproval[title.moduleID]
                                           }
-                                          onChange={() =>
-                                            handleCheckboxChange(
-                                              title.moduleID,
-                                              moduleName,
-                                              "Delete"
-                                            )
+                                          value={
+                                            selectedLevel[title.moduleID] || ""
                                           }
-                                        />
-                                      </div>
-                                    </td>
-                                  </>
-                                )}
-                                {showDynamicComponent && (
-                                  <>
-                                    <td className="text-center">
-                                      <input
-                                        type="checkbox"
-                                        checked={
-                                          selectedCheckboxes[title.moduleID]?.[
-                                            moduleName
-                                          ]?.Approval || false
-                                        }
-                                        onChange={() => {
-                                          handleSetApprovalChange(
-                                            title.moduleID
-                                          );
-                                          handleCheckboxChange(
-                                            title.moduleID,
-                                            moduleName,
-                                            "Approval"
-                                          );
-                                        }}
-                                      />
-                                    </td>
-                                    <td className="text-center">
-                                      <select
-                                        className="border border-primary rounded-lg px-4 py-1"
-                                        disabled={
-                                          !levelOfApproval[title.moduleID]
-                                        }
-                                        value={
-                                          selectedLevel[title.moduleID] || ""
-                                        }
-                                        onChange={(e) => {
-                                          const moduleId = title.moduleID;
-                                          const level = parseInt(
-                                            e.target.value,
-                                            10
-                                          );
-                                          setSelectedLevel(
-                                            (prevSelectedLevel) => ({
-                                              ...prevSelectedLevel,
-                                              [moduleId]: level,
-                                            })
-                                          );
-                                        }}
-                                      >
-                                        <option
-                                          value=""
-                                          label="-- Select --"
-                                          disabled
-                                        ></option>
-                                        <option
-                                          value="1"
-                                          disabled={userRoleData.length < 1}
+                                          onChange={(e) => {
+                                            const moduleId = title.moduleID;
+                                            const level = parseInt(
+                                              e.target.value,
+                                              10
+                                            );
+                                            setSelectedLevel(
+                                              (prevSelectedLevel) => ({
+                                                ...prevSelectedLevel,
+                                                [moduleId]: level,
+                                              })
+                                            );
+                                          }}
                                         >
-                                          1
-                                        </option>
-                                        <option
-                                          value="2"
-                                          disabled={userRoleData.length < 2}
-                                        >
-                                          2
-                                        </option>
-                                        <option
-                                          value="3"
-                                          disabled={userRoleData.length < 3}
-                                        >
-                                          3
-                                        </option>
-                                        <option
-                                          value="4"
-                                          disabled={userRoleData.length < 4}
-                                        >
-                                          4
-                                        </option>
-                                        <option
-                                          value="5"
-                                          disabled={userRoleData.length < 5}
-                                        >
-                                          5
-                                        </option>
-                                      </select>
-                                    </td>
+                                          <option
+                                            value=""
+                                            label="-- Select --"
+                                            disabled
+                                          ></option>
+                                          <option
+                                            value="1"
+                                            disabled={userRoleData.length < 1}
+                                          >
+                                            1
+                                          </option>
+                                          <option
+                                            value="2"
+                                            disabled={userRoleData.length < 2}
+                                          >
+                                            2
+                                          </option>
+                                          <option
+                                            value="3"
+                                            disabled={userRoleData.length < 3}
+                                          >
+                                            3
+                                          </option>
+                                          <option
+                                            value="4"
+                                            disabled={userRoleData.length < 4}
+                                          >
+                                            4
+                                          </option>
+                                          <option
+                                            value="5"
+                                            disabled={userRoleData.length < 5}
+                                          >
+                                            5
+                                          </option>
+                                        </select>
+                                      </td>
 
-                                    <DynamicDesignComponent
-                                      moduleID={title.moduleID}
-                                      length={selectedLevel?.[title.moduleID]}
-                                      selectedRoleIDs={selectedRoleIDs}
-                                      handleRoleChange={handleRoleChange}
-                                      userRoleData={userRoleData}
-                                    />
-                                  </>
-                                )}
-                              </tr>
-                              // )
+                                      <DynamicDesignComponent
+                                        moduleID={title.moduleID}
+                                        length={selectedLevel?.[title.moduleID]}
+                                        selectedRoleIDs={selectedRoleIDs}
+                                        handleRoleChange={handleRoleChange}
+                                        userRoleData={userRoleData}
+                                      />
+                                    </>
+                                  )}
+                                </tr>
+                              )
                             );
                           })}
                         </tbody>
