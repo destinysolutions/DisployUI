@@ -552,7 +552,7 @@ const Users = ({ searchValue }) => {
   function handleClickOutside() {
     setShowActionBox(false);
   }
-console.log("UserMasterID",UserMasterID);
+
   const formik = useFormik({
     initialValues: {
       currentPassword: "",
@@ -1946,7 +1946,7 @@ console.log("UserMasterID",UserMasterID);
                         </th>
                       </tr>
                     </thead>
-                    
+
                     <tbody>
                       {userData && sortedAndPaginatedData.length > 0 ? (
                         sortedAndPaginatedData.map((item, index) => {
@@ -1999,17 +1999,17 @@ console.log("UserMasterID",UserMasterID);
                                       onClick={() => {
                                         setUserID(item.orgUserSpecificID);
                                         selectUserById(item.orgUserSpecificID);
-                                        setUserMasterID(item.userMasterID)
+                                        setUserMasterID(item.userMasterID);
                                         setShowUserProfile(true);
                                       }}
                                     />
                                   </div>
-                                  <div className="cursor-pointer text-xl text-[#0000FF]">                              
+                                  <div className="cursor-pointer text-xl text-[#0000FF]">
                                     <BiEdit
                                       onClick={() => {
                                         setUserID(item.orgUserSpecificID);
                                         selectUserById(item.orgUserSpecificID);
-                                        setUserMasterID(item.userMasterID)
+                                        setUserMasterID(item.userMasterID);
                                         setshowuserModal(true);
                                       }}
                                     />
@@ -2039,7 +2039,6 @@ console.log("UserMasterID",UserMasterID);
                           </tr>
                         </>
                       )}
-                      
                     </tbody>
                   </table>
                 </div>
