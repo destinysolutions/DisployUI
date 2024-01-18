@@ -152,6 +152,13 @@ export const SCREEN_DEACTIVATE_ACTIVATE  =  `${baseUrl}api/NewScreen/EnableScree
 // sidebar
 export const GET_SIDEBAR_MENU = `${baseUrl}api/OrganizationUsersRole/SideBarMenu`
 
+// reports
+export const AUDITREPORT = `${baseUrl}api/Report/GetAuditLogsReport`
+export const UPTIMEREPORT = `${baseUrl}api/Report/GetUptimeReport`
+export const SALESREPORT = `${baseUrl}api/Report/GetSalesReport`
+export const CANCELREPORT = `${baseUrl}api/Report/GetCancelReport`
+export const MEDIAREPORT = `${baseUrl}api/Report/GetAssetReport`
+export const BILLINGREPORT = `${baseUrl}api/Report/GetBillingReport`
 
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115

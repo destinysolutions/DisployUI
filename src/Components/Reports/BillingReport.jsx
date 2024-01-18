@@ -1,10 +1,10 @@
-import { LuDownload } from "react-icons/lu";
-import { AiOutlineSearch } from "react-icons/ai";
-import { MdKeyboardArrowLeft } from "react-icons/md";
-import { Link } from "react-router-dom";
+import React from 'react'
+import { AiOutlineSearch } from 'react-icons/ai'
+import { LuDownload } from 'react-icons/lu'
+import { MdKeyboardArrowLeft } from 'react-icons/md'
+import { Link } from 'react-router-dom'
 
-const CancelReport = ({ allReportData, debouncedOnChange, exportDataToCSV, loading, sidebarOpen }) => {
-
+const BillingReport = ({ allReportData, debouncedOnChange, exportDataToCSV, loading, sidebarOpen }) => {
   return (
     <>
       <div className="pt-16 px-5 page-contain">
@@ -15,28 +15,28 @@ const CancelReport = ({ allReportData, debouncedOnChange, exportDataToCSV, loadi
                 <MdKeyboardArrowLeft className="text-4xl text-primary" />
               </Link>
               <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl xs:text-xs text-[#001737]  ">
-                Cancel Report
+                Billing Report
               </h1>
             </div>
 
             <div className="rightbtn flex items-center flex-wrap pr-4">
               {/*<ul className="p-0 m-0 lg:flex md:flex sm:block xs:block items-center border rounded-md border-primary  lg:mr-3 md:mr-3 sm:mr-2 xs:mr-0 lg:w-auto md:w-auto sm:w-auto xs:w-full">
-                <li className="bg-primary text-white py-1 px-4 font-light-[26px] rounded-tl-md rounded-tb-md">
-                  <label className=" leading-8">Daily</label>
-                </li>
-                <li>
-                  <input
-                    type="date"
-                    className="date-formate px-2 py-1 bg-[transparent] text-base lg:w-auto md:w-auto sm:w-full xs:w-full"
-                  />
-                </li>
-  </ul>*/}
+            <li className="bg-primary text-white py-1 px-4 font-light-[26px] rounded-tl-md rounded-tb-md">
+              <label className=" leading-8">Daily</label>
+            </li>
+            <li>
+              <input
+                type="date"
+                className="date-formate px-2 py-1 bg-[transparent] text-base lg:w-auto md:w-auto sm:w-full xs:w-full"
+              />
+            </li>
+          </ul>*/}
 
               <div className=" flex items-end justify-end relative sm:mr-0">
                 <AiOutlineSearch className="absolute top-[13px] left-[10px] z-10 text-primary searchicon" />
                 <input
                   type="text"
-                  placeholder=" Search "
+                  placeholder="Search"
                   className="border border-primary rounded-full bg-[transparent] pl-8 py-2 search-user placeholder:text-primary"
                   onChange={(e) => debouncedOnChange(e)}
                 />
@@ -54,18 +54,22 @@ const CancelReport = ({ allReportData, debouncedOnChange, exportDataToCSV, loadi
           <div className="sectiondetails mt-5 bg-white p-5 rounded-md drop-shadow-sm overflow-x-auto">
             <table className="w-full text-[#5E5E5E]" cellPadding={20}>
               <thead>
-                <tr className="bg-lightgray rounded-md text-left">
-                  <th className=" font-medium p-3">Date</th>
-                  <th className=" font-medium p-3">Plan</th>
-                  <th className=" font-medium  p-3">Total Screens</th>
-                  <th className=" font-medium  p-3">Customer</th>
-                  <th className=" font-medium  p-3">Google Location</th>
+                <tr className="bg-lightgray rounded-md">
+                  <th className="flex items-center font-medium p-3">
+                    Customer
+                  </th>
+                  <th className=" font-medium text-left p-3">Email</th>
+                  <th className=" font-medium text-center p-3">Phone Number</th>
+                  <th className=" font-medium text-center p-3">Billing cycle</th>
+                  <th className=" font-medium text-center p-3">Google Location</th>
+                  <th className=" font-medium text-center p-3">Total Screens</th>
+                  <th className=" font-medium text-center p-3">Plan</th>
                 </tr>
               </thead>
               <tbody>
               {loading && (
                 <tr className="text-center col-span-full font-semibold text-xl">
-                    <td colSpan={5}>
+                    <td colSpan={7}>
                       <svg
                         aria-hidden="true"
                         role="status"
@@ -92,21 +96,39 @@ const CancelReport = ({ allReportData, debouncedOnChange, exportDataToCSV, loadi
               {allReportData?.SearchData?.length > 0 && !loading && (
                 allReportData?.SearchData?.map((item,index)=>{
                   return(
-                    <tr className=" border-b border-[#E4E6FF]" key={index}>
-                      <td>
-                        <p>{item?.date}</p>
-                      </td>
-                      <td>
-                        <p>{item?.plan}</p>
-                      </td>
-                      <td>
-                        <p>{item?.totalScreens}</p>
-                      </td>
-                      <td>
+                    <tr className="align-middle border-b border-[#E4E6FF]" key={index}>
+                      <td className='text-left'>
                         <p>{item?.customer}</p>
                       </td>
-                      <td className="p-2 break-words  w-[200px]">
-                      {item?.location}
+                      <td className="text-center">
+                        <span className="text-base">
+                        {item?.email}
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <span className="text-base">
+                        {item?.phoneNumber}
+                        </span>
+                      </td>
+                      <td className="text-left">
+                        <div className="text-left">
+                          <span className="text-base">{item?.billingcycle}</span>
+                        </div>
+                      </td>
+                      <td className="text-center">
+                        <span className="text-base">
+                        {item?.googleLocation}
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <span className="text-base">
+                        {item?.totalScreens}
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <span className="text-base">
+                        {item?.plan}
+                        </span>
                       </td>
                     </tr>
                   )
@@ -116,7 +138,7 @@ const CancelReport = ({ allReportData, debouncedOnChange, exportDataToCSV, loadi
                   <tr>
                     <td
                       className="font-semibold text-center bg-white text-lg p-3"
-                      colSpan={5}
+                      colSpan={7}
                     >
                       No Data Available.
                     </td>
@@ -128,7 +150,7 @@ const CancelReport = ({ allReportData, debouncedOnChange, exportDataToCSV, loadi
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default CancelReport;
+export default BillingReport
