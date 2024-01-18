@@ -1028,3 +1028,8 @@ button.daysbtn {
 .sc-scrollbar::-webkit-scrollbar-button {
   display: none;
 }
+
+
+.hoverToltip:hover .hover-text {
+  display: inline; /* Display the text on hover */
+}

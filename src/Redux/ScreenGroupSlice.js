@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { ADD_GROUP_SCREEN, DELETE_GROUP_SCREEN_ALL, DELETE_SINGLE_GROUP_SCREEN, GET_GROUP_SCREEN, GROUP_IN_SCREEN_DELETE_ALL, UPDATE_NEW_SCREEN } from "../Pages/Api";
+import { ADD_GROUP_SCREEN, DELETE_GROUP_SCREEN_ALL, DELETE_SINGLE_GROUP_SCREEN, GET_GROUP_SCREEN, GROUP_IN_SCREEN_ASSETS_UPDATE_ALL, GROUP_IN_SCREEN_DELETE_ALL, PRIVIEW_GROUP_SCREEN, UPDATE_NEW_SCREEN } from "../Pages/Api";
 
 const initialState = {
   data: [],
@@ -165,6 +165,47 @@ export const addTagsAndUpdate = createAsyncThunk("data/AddTagsAndUpdate", async 
   }
 });
 
+// Group in screen Deleted 
+export const groupAssetsInUpdateScreen = createAsyncThunk("data/groupAssetsInUpdateScreen", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const queryParams = new URLSearchParams(payload).toString();
+    const response = await axios.put(`${GROUP_IN_SCREEN_ASSETS_UPDATE_ALL}?${queryParams}`, null, { headers: { Authorization: `Bearer ${token}` } });
+
+    if (response.data.status) {
+      return {
+        status: true,
+        message: response.data.message,
+        data: response.data.data,
+      };
+    } else {
+      return { status: false, message: "Failed to delete data" };
+    }
+  } catch (error) {
+    throw error;
+  }
+});
+
+export const openPriviewModel = createAsyncThunk("data/openPriviewModel", async (payload, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().root.auth.token;
+    const queryParams = new URLSearchParams({ ScreenGroupID: payload }).toString();    
+    const response = await axios.get(`${PRIVIEW_GROUP_SCREEN}?${queryParams}`, {headers: { Authorization: `Bearer ${token}` }});
+    if (response.data.status) {
+      return {
+        status: true,
+        message: response.data.message,
+        data: response.data.data,
+      };
+    } else {
+      return { status: false, message: "Failed to delete data" };
+    }
+  } catch (error) {
+    throw error;
+  }
+});
+
+
 const screenGroupSlice = createSlice({
   name: "screenGroup",
   initialState,
@@ -272,7 +313,32 @@ const screenGroupSlice = createSlice({
       .addCase(addTagsAndUpdate.rejected, (state, action) => {     // addTagsAndUpdate
         state.status = "failed";
         state.error = action.error.message || "Failed to delete data";
-      });
+      })
+
+      .addCase(groupAssetsInUpdateScreen.pending, (state) => {      // groupAssetsInUpdateScreen
+        state.status = "loading";
+      })
+      .addCase(groupAssetsInUpdateScreen.fulfilled, (state, action) => {    // groupAssetsInUpdateScreen
+        state.status = "succeeded";
+        state.message = action.payload.message || "This operation successFully" ; 
+      })
+      .addCase(groupAssetsInUpdateScreen.rejected, (state, action) => {     // groupAssetsInUpdateScreen
+        state.status = "failed";
+        state.error = action.error.message || "Failed to data";
+      })
+
+      .addCase(openPriviewModel.pending, (state) => {      // openPriviewModel
+        state.status = "loading";
+      })
+      .addCase(openPriviewModel.fulfilled, (state, action) => {    // openPriviewModel
+        state.status = "priview";
+        state.message = action.payload.message || "This operation successFully" ; 
+        state.data = action.payload?.data;
+      })
+      .addCase(openPriviewModel.rejected, (state, action) => {     // openPriviewModel
+        state.status = "failed";
+        state.error = action.error.message || "Failed to data";
+      })
 
   },
 });
