@@ -46,50 +46,65 @@ const Sidebar = ({ sidebarOpen }) => {
   useEffect(() => {
     dispatch(getMenuAll())
   }, []);
-  
-
-  // useEffect(() => {
-  //   if (store.data) {
-  //     const formattedMenuData = store.data
-  //       .map((item) => ({
-  //         title: item.pageName,
-  //         cName: "nav-text link-items", // You may need to adjust this based on your styles
-  //         path: item.path,
-  //         icon: <img src={item.icon} alt={item.alt} className="w-6" />,
-  //         // subMenus: item.subMenus
-  //         //   ? item.subMenus.map((submenu) => ({
-  //         //       title: submenu.title,
-  //         //       path: submenu.path,
-  //         //       icon: <img src={submenu.icon} alt={submenu.title} className="w-6" />,
-  //         //     }))
-  //         //   : null,
-  //       }))
-  //       .sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
-  
-  //     // Assuming you have a way to get the current path (e.g., from React Router)
-  //     const currentPath = window.location.pathname;
-  
-  //     // Set isActive for the currently active item
-  //     formattedMenuData.forEach((menuItem) => {
-  //       if (menuItem.path === currentPath) {
-  //         menuItem.isActive = true;
-  //       } else if (menuItem.subMenus) {
-  //         menuItem.subMenus.forEach((submenuItem) => {
-  //           if (submenuItem.path === currentPath) {
-  //             submenuItem.isActive = true;
-  //             menuItem.isActive = true; // Set parent as active if a submenu item is active
-  //           }
-  //         });
-  //       }
-  //     });
-  
-  //     setMenuData(formattedMenuData);
-  //   }
-  // }, [store.data]);
 
 
-  // console.log("store ------------------- ",store.data , menuData);
-  
+  useEffect(() => {
+    if (store.data.menu) {
+      const formattedMenuData = store.data.menu
+        .map((item) => ({
+          title: item.pageName,
+          cName: "nav-text link-items", // You may need to adjust this based on your styles
+          path: item.path,
+          icon: <img src={item.icon} alt={item.alt} className="w-6" />,
+          subMenus: item.submenu
+            ? item.submenu.map((submenu) => ({
+              title: submenu.pageName,
+              path: submenu.path,
+              icon: <img src={submenu.icon} alt={submenu.alt} className="w-6" />,
+            }))
+            : null,
+        }))
+        .sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
+
+      const currentPath = window.location.pathname;
+      let foundActive = false;
+
+      const updateIsActive = (menuItems) => {
+        menuItems.forEach((menuItem) => {
+          if (menuItem.path === currentPath) {
+            menuItem.isActive = true;
+            foundActive = true;
+          } else if (menuItem.subMenus) {
+            updateIsActive(menuItem.subMenus);
+            if (menuItem.isActive) {
+              foundActive = true;
+            }
+          }
+        });
+      };
+
+      updateIsActive(formattedMenuData);
+
+      // If no active item is found, reset all isActive properties to false
+      if (!foundActive) {
+        formattedMenuData.forEach((menuItem) => {
+          menuItem.isActive = false;
+          if (menuItem.subMenus) {
+            menuItem.subMenus.forEach((submenuItem) => {
+              submenuItem.isActive = false;
+            });
+          }
+        });
+      }
+
+      setMenuData(formattedMenuData);
+    }
+  }, [store.data]);
+
+
+
+  // console.log("store ------------------- ", store.data.menu, { menuData });
+
   // menu list
   const Menus = [
     // {
@@ -125,11 +140,11 @@ const Sidebar = ({ sidebarOpen }) => {
             <HiOutlineRectangleGroup className=" text-gray text-xl opacity-60 " />
           ),
         },
-        // {
-        //   title: "Merge Screens",
-        //   path: "/mergescreen",
-        //   icon: <img src={merge_screen} alt="" />,
-        // },
+        {
+          title: "Merge Screens",
+          path: "/mergescreen",
+          icon: <img src={merge_screen} alt="" />,
+        },
       ],
     },
     {
@@ -304,12 +319,12 @@ const Sidebar = ({ sidebarOpen }) => {
                           <div>{item.icon}</div>
                           <span className="ml-5">{item.title}</span>
                         </Link>
+
                         {item.subMenus && (
                           <div className="ml-5 absolute right-0">
                             <FiIcons.FiChevronDown
-                              className={`${
-                                submenuIsOpen ? "transform rotate-180" : ""
-                              } transition-transform duration-300 text-white `}
+                              className={`${submenuIsOpen ? "transform rotate-180" : ""
+                                } transition-transform duration-300 text-white `}
                               onClick={(e) => {
                                 e.preventDefault();
                                 updateSubmenuState(item.title, !submenuIsOpen);
@@ -318,6 +333,7 @@ const Sidebar = ({ sidebarOpen }) => {
                           </div>
                         )}
                       </div>
+
                       {submenuIsOpen && item.subMenus && (
                         <ul className="ml-4 mt-3">
                           {item.subMenus.map((submenu, subIndex) => (
@@ -326,6 +342,13 @@ const Sidebar = ({ sidebarOpen }) => {
                                 <div>{submenu.icon}</div>
                                 <span className="ml-5">{submenu.title}</span>
                               </Link>
+                              {/* {submenu.title === "New Screen" && (
+                                <div className="absolute right-0 top-0">
+                                  <button onClick={() => setShowOTPModal(true)}>
+                                    <MdOutlineAddToQueue className="text-gray text-lg opacity-60" />
+                                  </button>
+                                </div>
+                              )} */}
                             </li>
                           ))}
                         </ul>
@@ -333,9 +356,11 @@ const Sidebar = ({ sidebarOpen }) => {
                     </li>
                   );
                 })}
+
                 <li>
                   <div className="dotline my-4"></div>
                 </li>
+
                 {MenuIcons.map((item, MIindex) => {
                   const isActive = window.location.pathname === item.path; // Check if the item is active
                   return (
@@ -364,9 +389,8 @@ const Sidebar = ({ sidebarOpen }) => {
         <div className="menu-bars self-center z-[9999] min-h-[60px] max-h-[60px] flex items-center">
           <HiOutlineMenuAlt2
             onClick={handleSidebarToggle}
-            className={` text-SlateBlue text-3xl fixed ${mobileSidebar && "hidden"} ${
-              mobileSidebar ? "ml-0" : "ml-5"
-            }`}
+            className={` text-SlateBlue text-3xl fixed ${mobileSidebar && "hidden"} ${mobileSidebar ? "ml-0" : "ml-5"
+              }`}
           />
         </div>
       )}
@@ -401,9 +425,8 @@ const Sidebar = ({ sidebarOpen }) => {
                       {item.subMenus && (
                         <div className="ml-5 absolute right-0">
                           <FiIcons.FiChevronDown
-                            className={`${
-                              activeSubmenu ? "transform rotate-180" : ""
-                            } transition-transform duration-300 text-white 
+                            className={`${activeSubmenu ? "transform rotate-180" : ""
+                              } transition-transform duration-300 text-white 
                           `}
                             onClick={() => setActiveSubmenu(!activeSubmenu)}
                           />

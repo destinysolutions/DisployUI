@@ -1132,7 +1132,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                     <>
                       {screens && sortedAndPaginatedData?.length > 0 && sortedAndPaginatedData.map((screen, index) => {
                           return (
-                            <tr className="font-semibold"
+                            <tr 
                               key={screen.screenID}>
                               {screenContentVisible && (
                                 <td className="">
@@ -1177,7 +1177,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                             setEditingScreenID(screen.screenID);
                                             setEditedScreenName(screen?.screenName);
                                           }}>
-                                          <MdOutlineModeEdit className="w-6 h-6 hover:text-primary text-[#0000FF]" />
+                                          <MdOutlineModeEdit className="w-6 h-5 hover:text-primary text-[#0000FF]" />
                                         </button>
                                       </div>
                                     )}
@@ -1458,7 +1458,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               </td>
 
                               <td className="text-center">
-                                <div className="flex justify-center gap-4">
+                                <div className="flex justify-center gap-2 items-center">
                                   <div className="cursor-pointer text-xl">
                                     {screen.isActive === true ? (
                                       <button

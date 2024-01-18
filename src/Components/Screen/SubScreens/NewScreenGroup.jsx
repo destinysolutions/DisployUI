@@ -26,7 +26,7 @@ import {
   handleGetYoutubeData,
 } from "../../../Redux/AppsSlice";
 import { BiEdit, BiSave } from "react-icons/bi";
-import { addTagsAndUpdate, getGroupData, groupInScreenDelete, resetStatus, saveGroupData, screenGroupDelete, screenGroupDeleteAll, updateGroupData } from "../../../Redux/ScreenGroupSlice";
+import { addTagsAndUpdate, getGroupData, groupAssetsInUpdateScreen, groupInScreenDelete, openPriviewModel, resetStatus, saveGroupData, screenGroupDelete, screenGroupDeleteAll, updateGroupData } from "../../../Redux/ScreenGroupSlice";
 import toast, { CheckmarkIcon } from "react-hot-toast";
 import Swal from "sweetalert2";
 import { IoClose } from "react-icons/io5";
@@ -34,6 +34,7 @@ import AddOrEditTagPopup from "../../AddOrEditTagPopup";
 import { UPDATE_NEW_SCREEN } from "../../../Pages/Api";
 import { handleChangeScreens } from "../../../Redux/Screenslice";
 import PreviewModel from "./model/previewModel";
+import ReactTooltip from 'react-tooltip';
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
@@ -412,20 +413,70 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleSave = () => {
     const payload = {
-      screenID: getGroup.screenGroupLists.map((item) => item.screenID).join(','),
-      assetID: selectedAsset.assetID
+      GroupID: getGroup.screenGroupID,
+      MediaID: '',
+      MediaDetailID: '',
+      AssetName: '',
+      AssetType: '',
+      FilePath: '',
+    };
+
+    if (selectedAsset.assetID) {
+      payload.MediaID = selectedAsset.assetID;
+      payload.AssetName = selectedAsset.assetName;
+      payload.AssetType = selectedAsset.assetType;
+      payload.FilePath = selectedAsset.assetFolderPath;
+      payload.MediaDetailID = 1;
     }
-    console.log("---------------------------------", selectedAsset, payload)
+
+    if (selectedComposition.compositionID) {
+      payload.AssetName = selectedComposition.compositionName
+      payload.MediaID = selectedComposition.compositionID;
+      payload.AssetType = '';
+      payload.FilePath = '';
+      payload.MediaDetailID = 3;
+    }
+
+    if (selectedTextScroll.textScroll_Id) {
+      payload.AssetName = selectedTextScroll.instanceName
+      payload.MediaID = selectedTextScroll.textScroll_Id;
+      payload.AssetType = '';
+      payload.FilePath = '';
+      payload.MediaDetailID = 4;
+    }
+
+    if (selectedYoutube.compositionID) {
+      payload.AssetName = selectedYoutube.instanceName
+      payload.MediaID = selectedYoutube.compositionID;
+      payload.AssetType = '';
+      payload.FilePath = '';
+      payload.MediaDetailID = 3;
+    }
+
+    if (selectedYoutube.youtubeId) {
+      payload.MediaID = selectedYoutube.instanceName;
+      payload.AssetType = '';
+      payload.FilePath = '';
+      payload.MediaDetailID = 5;
+    }
+
+    dispatch(groupAssetsInUpdateScreen(payload))
   }
 
   const handleOpenPreview = (item) => {
     setIsPreviewOpen(true);
+    dispatch(openPriviewModel(item.screenGroupID))
     setPreviewData(item)
   };
 
   const handleClosePreview = () => {
     setIsPreviewOpen(false);
+    setLoadFirst(true)
   };
+
+  if (store.status === "priview") {
+    console.log("----------- store priview -",store.data);
+  }
 
   return (
     <>
@@ -442,78 +493,65 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
               </h1>
             </div>
             <div className="flex items-center sm:mt-3 flex-wrap gap-1">
-              <Tooltip
-                content="Refresh Screen"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
+
+              <button
+                data-tip data-for="Refresh Screen"
+                type="button"
+                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                onClick={() => handleRefres()}
               >
-                <button
-                  type="button"
-                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                  onClick={() => handleRefres()}
-                >
-                  <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
-                </button>
-              </Tooltip>
-              <Tooltip
-                content="Screen Group"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
+                <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
+                <ReactTooltip id="Refresh Screen" place="left" type="warning" effect="float">
+                  <span>Refresh Screen</span>
+                </ReactTooltip>
+              </button>
+
+              <button
+                data-tip data-for="Screen Group"
+                type="button"
+                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                onClick={() => newAddGroup()}
               >
-                <button
-                  type="button"
-                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                  onClick={() => newAddGroup()}
-                >
-                  <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
-                </button>
-              </Tooltip>
+                <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
+                <ReactTooltip id="Screen Group" place="left" type="warning" effect="float">
+                  <span>Screen Group</span>
+                </ReactTooltip>
+              </button>
 
               {isModalOpen && (
                 <ScreenGroupModal isOpen={isModalOpen} onClose={closeModal} handleSaveNew={handleSaveNew} updateScreen={updateScreen} editSelectedScreen={editSelectedScreen} label={label} />
               )}
 
-              <Tooltip
-                content="Select All ScreenGroup"
-                placement="bottom-end"
-                className="bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
-              >
-                <button
-                  type="button"
-                  className="flex align-middle border-white text-white items-center"
-                >
-                  <input type="checkbox" className="w-6 h-5" checked={selectAll} onChange={handleSelectAll} />
-                </button>
-              </Tooltip>
+              {store.data?.length > 0 && (
+                <div>
+                  <button
+                    data-tip data-for="Select All"
+                    type="button"
+                    className="flex align-middle border-white text-white items-center"
+                  >
+                    <input type="checkbox" className="w-6 h-5" checked={selectAll} onChange={handleSelectAll} readOnly />
+                  </button>
+
+                  <ReactTooltip id="Select All" place="left" type="warning" effect="float">
+                    <span>Select All</span>
+                  </ReactTooltip>
+
+                </div>
+              )}
+
               {selectedItems.length > 0 && (
-                <Tooltip
-                  content="All Delete"
-                  placement="bottom-end"
-                  className="bg-SlateBlue text-white z-10 ml-5"
-                  animate={{
-                    mount: { scale: 1, y: 0 },
-                    unmount: { scale: 1, y: 10 },
-                  }}
-                >
-                  <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                <div>
+                  <button data-tip data-for="All Delete" className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
                     <RiDeleteBin5Line
                       className="text-3xl p-1 hover:text-white"
                       onClick={() => handleDeleteGroupAll()}
                     />
                   </button>
-                </Tooltip>
+
+                  <ReactTooltip id="All Delete" place="left" type="warning" effect="float">
+                    <span>Delete</span>
+                  </ReactTooltip>
+                </div>
               )}
 
             </div>
@@ -525,7 +563,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
               <div key={i} className="accordions mt-5">
                 <div
                   className="section shadow-md p-5 bg-white  lg:flex md:flex  sm:block items-center justify-between" >
-
                   <div className="flex gap-2 items-center">
                     {editIndex === i ? (
                       <>
@@ -553,90 +590,62 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                     <div className=" flex items-center">
                       {isAccordionOpen && (
                         <>
-                          <Tooltip
-                            content="Add Screen"
-                            placement="bottom-end"
-                            className=" bg-SlateBlue text-white z-10 ml-5"
-                            animate={{
-                              mount: { scale: 1, y: 0 },
-                              unmount: { scale: 1, y: 10 },
-                            }}
-                          >
-                            <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() => newAddGroup(item)}>
-                              <b>+</b>
-                            </button>
-                          </Tooltip>
+                          <button data-tip data-for="Add Screen" className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() => newAddGroup(item)}>
+                            Add <b>+</b>
+                            <ReactTooltip id="Add Screen" place="left" type="warning" effect="float">
+                              <span>Add Screen</span>
+                            </ReactTooltip>
+                          </button>
 
-                          <Tooltip
-                            content="Preview"
-                            placement="bottom-end"
-                            className=" bg-SlateBlue text-white z-10 ml-5"
-                            animate={{
-                              mount: { scale: 1, y: 0 },
-                              unmount: { scale: 1, y: 10 },
-                            }}
-                          >
-                            <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() =>handleOpenPreview(item)}>
+
+                          {!item.isPreview &&
+                            <button data-tip data-for="Preview" className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() => handleOpenPreview(item)}>
                               Preview
+                              <ReactTooltip id="Preview" place="left" type="warning" effect="float">
+                                <span>Preview</span>
+                              </ReactTooltip>
                             </button>
-                          </Tooltip>
+                          }
 
-                          <Tooltip
-                            content="Upload"
-                            placement="bottom-end"
-                            className=" bg-SlateBlue text-white z-10 ml-5"
-                            animate={{
-                              mount: { scale: 1, y: 0 },
-                              unmount: { scale: 1, y: 10 },
-                            }}
+                          <button
+                            data-tip data-for="Upload"
+                            className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                            onClick={() => { setShowAssetModal(true); setGetGroup(item) }}
                           >
-                            <button
-                              className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                              onClick={() => { setShowAssetModal(true); setGetGroup(item) }}
-                            >
-                              <TbUpload className="text-3xl p-1 hover:text-white" />
+                            <TbUpload className="text-3xl p-1 hover:text-white" />
+                            <ReactTooltip id="Upload" place="left" type="warning" effect="float">
+                              <span>Upload</span>
+                            </ReactTooltip>
+                          </button>
+
+                          {!selectedItems?.length && (
+                            <button data-tip data-for="All Delete" className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                              <RiDeleteBin5Line
+                                className="text-3xl p-1 hover:text-white"
+                                onClick={() => handleDeleteGroup(item)}
+                              />
+                              <ReactTooltip id="All Delete" place="left" type="warning" effect="float">
+                                <span>Delete</span>
+                              </ReactTooltip>
                             </button>
-                          </Tooltip>
-                          <Tooltip
-                            content="Delete"
-                            placement="bottom-end"
-                            className=" bg-SlateBlue text-white z-10 ml-5"
-                            animate={{
-                              mount: { scale: 1, y: 0 },
-                              unmount: { scale: 1, y: 10 },
-                            }}
-                          >
-                            {!selectedItems?.length && (
-                              <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
-                                <RiDeleteBin5Line
-                                  className="text-3xl p-1 hover:text-white"
-                                  onClick={() => handleDeleteGroup(item)}
-                                />
-                              </button>
-                            )}
-                          </Tooltip>
+                          )}
+
                         </>
                       )}
 
                       {selectAll ? (<CheckmarkIcon className="w-5 h-5" />) : (
-                        <Tooltip
-                        content="Select Group"
-                        placement="bottom-end"
-                        className=" bg-SlateBlue text-white z-10 ml-5"
-                        animate={{
-                          mount: { scale: 1, y: 0 },
-                          unmount: { scale: 1, y: 10 },
-                        }}
-                      >
-                        <button>
+                        <div>
                           <input
                             type="checkbox"
+                            data-tip data-for="Select"
                             className=" mx-1 w-6 h-5 mt-2"
-                            checked={selectedItems.includes(item.screenGroupID)}
-                            onClick={() => handleCheckboxChange(item.screenGroupID)}
+                            checked={selectedItems.includes(item?.mergeScreenId)}
+                            onChange={() => handleCheckboxChange(item?.mergeScreenId)}
                           />
-                        </button>
-                        </Tooltip>
+                          <ReactTooltip id="Select" place="left" type="warning" effect="float">
+                            <span>Select</span>
+                          </ReactTooltip>
+                        </div>
                       )}
 
                       <button>
@@ -725,7 +734,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                               </td>
                               <td className="p-2 text-center">
                                 <button
-                                  style={{width:"max-content"}}
+                                  style={{ width: "max-content" }}
                                   className="flex items-centerborder-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500"
                                 >
                                   {screen.assetName}
@@ -870,9 +879,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           setShowAssetModal={setShowAssetModal}
           assetPreviewPopup={assetPreviewPopup}
           assetPreview={assetPreview}
-          selectedComposition={
-            selectedComposition
-          }
+          selectedComposition={selectedComposition}
           selectedTextScroll={selectedTextScroll}
           selectedYoutube={selectedYoutube}
           selectedAsset={selectedAsset}
@@ -880,7 +887,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {isPreviewOpen && <PreviewModel open={isPreviewOpen} onClose={handleClosePreview} previewData={previewData} />} 
+      {isPreviewOpen && <PreviewModel open={isPreviewOpen} onClose={handleClosePreview} previewData={previewData} />}
 
       <Footer />
     </>
