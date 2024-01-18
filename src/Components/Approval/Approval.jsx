@@ -16,7 +16,7 @@ const Approval = ({ sidebarOpen, setSidebarOpen }) => {
         <Navbar />
       </div>
       {/* sidebar and navbar display end */}
-      <div className="pt-16 px-5 page-contain">
+      <div className="pt-24 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
             Approval

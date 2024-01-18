@@ -1,95 +1,44 @@
 import React, { useRef } from "react";
 import { useState } from "react";
-import { FaCertificate } from "react-icons/fa";
-import {
-  MdDeleteForever,
-  MdOutlineKeyboardArrowDown,
-  MdOutlineKeyboardArrowUp,
-} from "react-icons/md";
-import { AiOutlineClose, AiOutlineCloseCircle } from "react-icons/ai";
 import { useEffect } from "react";
-import DataTable from "react-data-table-component";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { CiMenuKebab } from "react-icons/ci";
-import { BiEdit } from "react-icons/bi";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { getUserRoleData } from "../../Redux/UserRoleSlice";
+import { BiEdit } from "react-icons/bi";
+import { BsEyeFill } from "react-icons/bs";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 
 const Userrole = ({ searchValue }) => {
-  const [showdata, setShowdata] = useState(false);
-  const handleDropupClick = () => {
-    setShowdata(!showdata);
-  };
-  {
-    /*model */
-  }
+  const store = useSelector((state) => state.root.userRole);
   const [showuserroleModal, setshowuserroleModal] = useState(false);
-  const [checkboxStates, setCheckboxStates] = useState({});
-
-  const [showPopup, setShowPopup] = useState(false); // New state to control the popup visibility
-  const [selectedRows, setSelectedRows] = useState([]);
-  // State to store the checkbox and dropdown states retrieved from localStorage
-  const [localStorageData, setLocalStorageData] = useState({
-    checkboxState: {},
-    dropdownStates: {},
-  });
   const [userRoleData, setUserRoleData] = useState([]);
   const [filteruserRoleData, setFilterUserRoleData] = useState([]);
-  const [screenIsApprovarID, setScreenIsApprovarID] = useState("");
-  const [screenIsReviwerID, setScreenIsReviwerID] = useState("");
-  const [myScheduleIsApprovarID, setMyScheduleIsApprovarID] = useState("");
-  const [myScheduleIsReviwerID, setMyScheduleIsReviwerID] = useState("");
-  const [appsIsApprovarID, setAppsIsApprovarID] = useState("");
-  const [appsIsReviwerID, setAppsIsReviwerID] = useState("");
   const [roleName, setRoleName] = useState("");
   const [userRoleID, setUserRoleID] = useState("");
   const [userData, setUserData] = useState([]);
-  const [selectRoleID, setSelectRoleID] = useState("");
-  const [showActionBox, setShowActionBox] = useState(false);
-  const [deletePopup, setdeletePopup] = useState(false);
   const [selectedRoleIDs, setSelectedRoleIDs] = useState([]);
-  const [storeArray, setStoreArray] = useState([]);
-
-  const [checkboxValues, setCheckboxValues] = useState({
-    screenView: false,
-    screenCreateEdit: false,
-    screenDelete: false,
-    screenApprovar: false,
-    screenReviewer: false,
-    myScheduleView: false,
-    myScheduleCreateEdit: false,
-    myScheduleDelete: false,
-    myScheduleApprovar: false,
-    myScheduleReviewer: false,
-    appsView: false,
-    appsCreateEdit: false,
-    appsDelete: false,
-    appsApprovar: false,
-    appsReviewer: false,
-  });
 
   const modalRef = useRef(null);
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
-
-  const [errorsRoleName, setErrorsRoleName] = useState("");
-  const [roleMethod, setRoleMethod] = useState("Add New Role");
   const [moduleTitle, setModuleTitle] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(6); // Adjust items per page as needed
-  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const [itemsPerPage] = useState(6);
+  const [sortOrder, setSortOrder] = useState("asc");
   const [sortedField, setSortedField] = useState(null);
   const [selectedCheckboxes, setSelectedCheckboxes] = useState({});
   const [levelOfApproval, setLevelOfApproval] = useState({});
   const [selectedLevel, setSelectedLevel] = useState({});
   const [showDynamicComponent, setShowDynamicComponent] = useState(false);
+  const [firstLoad, setLoadFirst] = useState(true);
+  const [showUsers, setShowUsers] = useState(false);
+  const dispatch = useDispatch();
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
-  // Sort and paginate the data
-
-  const totalPages = Math.ceil(userData.length / itemsPerPage);
+  const totalPages = Math.ceil(userRoleData.length / itemsPerPage);
 
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
@@ -105,7 +54,7 @@ const Userrole = ({ searchValue }) => {
   };
 
   const sortedAndPaginatedData = sortData(
-    userData,
+    userRoleData,
     sortedField,
     sortOrder
   ).slice(indexOfFirstItem, indexOfLastItem);
@@ -135,7 +84,6 @@ const Userrole = ({ searchValue }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data);
         setModuleTitle(response.data.data);
       })
       .catch((error) => {
@@ -215,10 +163,21 @@ const Userrole = ({ searchValue }) => {
         console.log(error);
       });
   };
+
+  useEffect(() => {
+    if (firstLoad) {
+      dispatch(getUserRoleData());
+      setLoadFirst(false);
+    }
+  }, [firstLoad, store]);
+  console.log(store.data, "store.data");
+
   const handleSaveUserRole = () => {
     if (!roleName) {
       toast.error("Role name is required");
+      return;
     }
+
     let data = JSON.stringify({
       orgUserRoleID: userRoleID || 0,
       orgUserRole: roleName,
@@ -226,120 +185,29 @@ const Userrole = ({ searchValue }) => {
       userID: 0,
       mode: "Save",
       userCount: 0,
-      useraccess: [
-        {
-          userAccessID: 0,
-          userRoleID: 0,
-          moduleID: 1,
-          isView: selectedCheckboxes[1]?.Module1?.View || false,
-          isSave: selectedCheckboxes[1]?.Module1?.CreateEdit || false,
-          isDelete: selectedCheckboxes[1]?.Module1?.Delete || false,
-          isApprove: selectedCheckboxes[1]?.Module1?.Approval || false,
-          noofApproval: selectedLevel[1],
-          listApproverDetails: [
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[1][0] || 0,
-              levelNo: 1,
-            },
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[1][1] || 0,
-              levelNo: 2,
-            },
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[1][2] || 0,
-              levelNo: 3,
-            },
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[1][3] || 0,
-              levelNo: 4,
-            },
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[1][4] || 0,
-              levelNo: 5,
-            },
-          ],
-        },
-        {
-          userAccessID: 0,
-          userRoleID: 0,
-          moduleID: 2,
-          isView: selectedCheckboxes[2]?.Module2?.View || false,
-          isSave: selectedCheckboxes[2]?.Module2?.CreateEdit || false,
-          isDelete: selectedCheckboxes[2]?.Module2?.Delete || false,
-          isApprove: selectedCheckboxes[2]?.Module2?.Approval || false,
-          noofApproval: selectedLevel[2],
-          listApproverDetails: [
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[2][0] || 0,
-              levelNo: 1,
-            },
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[2][1] || 0,
-              levelNo: 2,
-            },
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[2][2] || 0,
-              levelNo: 3,
-            },
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[2][3] || 0,
-              levelNo: 4,
-            },
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[2][4] || 0,
-              levelNo: 5,
-            },
-          ],
-        },
-        {
-          userAccessID: 0,
-          userRoleID: 0,
-          moduleID: 3,
-          isView: selectedCheckboxes[3]?.Module3?.View || false,
-          isSave: selectedCheckboxes[3]?.Module3?.CreateEdit || false,
-          isDelete: selectedCheckboxes[3]?.Module3?.Delete || false,
-          isApprove: selectedCheckboxes[3]?.Module3?.Approval || false,
-          noofApproval: selectedLevel[3],
-          listApproverDetails: [
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[3][0] || 0,
-              levelNo: 1,
-            },
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[3][1] || 0,
-              levelNo: 2,
-            },
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[3][2] || 0,
-              levelNo: 3,
-            },
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[3][3] || 0,
-              levelNo: 4,
-            },
-            {
-              appoverId: 0,
-              userId: selectedRoleIDs[3][4] || 0,
-              levelNo: 5,
-            },
-          ],
-        },
-      ],
+      useraccess: moduleTitle.map((title) => {
+        const moduleId = title.moduleID;
+        const moduleName = `Module${moduleId}`;
+
+        // Customize the structure based on your needs
+        return {
+          moduleID: moduleId,
+          isView: selectedCheckboxes[moduleId]?.[moduleName]?.View || false,
+          isSave:
+            selectedCheckboxes[moduleId]?.[moduleName]?.CreateEdit || false,
+          isDelete: selectedCheckboxes[moduleId]?.[moduleName]?.Delete || false,
+          isApprove:
+            selectedCheckboxes[moduleId]?.[moduleName]?.Approval || false,
+          noofApproval: selectedLevel[moduleId],
+          listApproverDetails: Array.from({ length: 5 }, (_, index) => ({
+            appoverId: 0,
+            userId: selectedRoleIDs[moduleId]?.[index] || 0,
+            levelNo: index + 1,
+          })),
+        };
+      }),
     });
+
     toast.loading("saving..");
     let config = {
       method: "post",
@@ -355,7 +223,6 @@ const Userrole = ({ searchValue }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(JSON.stringify(response.data));
         if (response?.data?.status == 200) {
           setshowuserroleModal(false);
           handleFetchUserRoleData();
@@ -388,10 +255,8 @@ const Userrole = ({ searchValue }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data);
         const selectedRole = response.data.data;
         setRoleName(selectedRole.orgUserRole);
-        // Update checkboxes based on the selected role data
         const updatedCheckboxes = {};
         const updatedLevelOfApproval = {};
         const updatedSelectedRoleIDs = {};
@@ -442,108 +307,6 @@ const Userrole = ({ searchValue }) => {
       });
   };
 
-  console.log(levelOfApproval, "levelOfApproval");
-  console.log(selectedRoleIDs, "selectedRoleIDs");
-  const handleUpdateUserRole = () => {
-    if (!roleName) {
-      setErrorsRoleName("Role name is required");
-      return;
-    }
-
-    let data = JSON.stringify({
-      orgUserRoleID: userRoleID,
-      orgUserRole: roleName,
-      isActive: 1,
-      userID: 0,
-      mode: "Save",
-      useraccess: [
-        {
-          userAccessID: 0,
-          userRoleID: 0,
-          moduleID: 1,
-          isView: checkboxValues.screenView,
-          isSave: checkboxValues.screenCreateEdit,
-          isDelete: checkboxValues.screenDelete,
-          isApprove: checkboxValues.screenApprovar,
-          approverID: screenIsApprovarID || 0,
-          isReviewer: checkboxValues.screenReviewer,
-          reviewerID: screenIsReviwerID || 0,
-        },
-        {
-          userAccessID: 0,
-          userRoleID: 0,
-          moduleID: 2,
-          isView: checkboxValues.myScheduleView,
-          isSave: checkboxValues.myScheduleCreateEdit,
-          isDelete: checkboxValues.myScheduleDelete,
-          isApprove: checkboxValues.myScheduleApprovar,
-          approverID: myScheduleIsApprovarID || 0,
-          isReviewer: checkboxValues.myScheduleReviewer,
-          reviewerID: myScheduleIsReviwerID || 0,
-        },
-        {
-          userAccessID: 0,
-          userRoleID: 0,
-          moduleID: 3,
-          isView: checkboxValues.appsView,
-          isSave: checkboxValues.appsCreateEdit,
-          isDelete: checkboxValues.appsDelete,
-          isApprove: checkboxValues.appsApprovar,
-          approverID: appsIsApprovarID || 0,
-          isReviewer: checkboxValues.appsReviewer,
-          reviewerID: appsIsReviwerID || 0,
-        },
-      ],
-    });
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/OrganizationUsersRole/AddUpdateOrganizationUsersRole",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authToken,
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        handleFetchUserRoleData();
-        setRoleName("");
-        setshowuserroleModal(false);
-        setErrorsRoleName("");
-        setCheckboxValues({
-          screenView: false,
-          screenCreateEdit: false,
-          screenDelete: false,
-          screenApprovar: false,
-          screenReviewer: false,
-          myScheduleView: false,
-          myScheduleCreateEdit: false,
-          myScheduleDelete: false,
-          myScheduleApprovar: false,
-          myScheduleReviewer: false,
-          appsView: false,
-          appsCreateEdit: false,
-          appsDelete: false,
-          appsApprovar: false,
-          appsReviewer: false,
-        });
-
-        setScreenIsApprovarID(0);
-        setScreenIsReviwerID(0);
-        setMyScheduleIsApprovarID(0);
-        setMyScheduleIsReviwerID(0);
-        setAppsIsApprovarID(0);
-        setAppsIsReviwerID(0);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   useEffect(() => {
     handleFetchUserRoleData();
 
@@ -564,79 +327,7 @@ const Userrole = ({ searchValue }) => {
       .catch((error) => {
         console.log(error);
       });
-
-    const storedCheckboxStates = JSON.parse(
-      localStorage.getItem("approvalReqCheckboxes")
-    );
-    const storedDropdownStates = JSON.parse(
-      localStorage.getItem("approvalReqDropdowns")
-    );
-
-    setLocalStorageData({
-      checkboxState: storedCheckboxStates || {},
-      dropdownStates: storedDropdownStates || {},
-    });
   }, []);
-
-  useEffect(() => {
-    // if (showSearchModal) {
-    //   window.document.body.style.overflow = "hidden";
-    // }
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event?.target)) {
-        // window.document.body.style.overflow = "unset";
-        setshowuserroleModal(false);
-        setErrorsRoleName("");
-        setRoleName("");
-        setCheckboxValues({
-          screenView: false,
-          screenCreateEdit: false,
-          screenDelete: false,
-          screenApprovar: false,
-          screenReviewer: false,
-          myScheduleView: false,
-          myScheduleCreateEdit: false,
-          myScheduleDelete: false,
-          myScheduleApprovar: false,
-          myScheduleReviewer: false,
-          appsView: false,
-          appsCreateEdit: false,
-          appsDelete: false,
-          appsApprovar: false,
-          appsReviewer: false,
-        });
-      }
-    };
-    document.addEventListener("click", handleClickOutside, true);
-    return () => {
-      document.removeEventListener("click", handleClickOutside, true);
-    };
-  }, [handleClickOutside]);
-
-  function handleClickOutside() {
-    setshowuserroleModal(false);
-    setErrorsRoleName("");
-    setRoleName("");
-    setCheckboxValues({
-      screenView: false,
-      screenCreateEdit: false,
-      screenDelete: false,
-      screenApprovar: false,
-      screenReviewer: false,
-      myScheduleView: false,
-      myScheduleCreateEdit: false,
-      myScheduleDelete: false,
-      myScheduleApprovar: false,
-      myScheduleReviewer: false,
-      appsView: false,
-      appsCreateEdit: false,
-      appsDelete: false,
-      appsApprovar: false,
-      appsReviewer: false,
-    });
-  }
-
-  const handleDeleteRole = () => {};
 
   const handleRoleChange = (moduleID, index, value) => {
     setSelectedRoleIDs((prevSelectedRoleIDs) => {
@@ -654,24 +345,32 @@ const Userrole = ({ searchValue }) => {
       } else {
         toast.error("User ID already selected within this module");
       }
-
       return newRoleIDs;
     });
   };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event?.target)) {
+        setshowuserroleModal(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, [handleClickOutside]);
+
+  function handleClickOutside() {
+    setshowuserroleModal(false);
+  }
 
   const DynamicDesignComponent = ({
     length,
     selectedRoleIDs,
     handleRoleChange,
-    userRoleData,
     moduleID,
   }) => {
     const array = Array.from({ length }, (_, index) => index + 1);
-    // useEffect(() => {
-    //   if (array) {
-    //     setStoreArray(array);
-    //   }
-    // }, []);
 
     return (
       <tr>
@@ -689,12 +388,9 @@ const Userrole = ({ searchValue }) => {
                 }
               >
                 <option value="" label="Select User Role"></option>
-                {userRoleData.map((userrole) => (
-                  <option
-                    key={userrole?.orgUserRoleID}
-                    value={userrole?.orgUserRoleID}
-                  >
-                    {userrole.orgUserRole}
+                {store.data.map((userrole) => (
+                  <option key={userrole?.value} value={userrole?.value}>
+                    {userrole.text}
                   </option>
                 ))}
               </select>
@@ -718,7 +414,6 @@ const Userrole = ({ searchValue }) => {
             className=" dashboard-btn  flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5  py-2 text-base sm:text-sm mb-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
             onClick={() => {
               setshowuserroleModal(true);
-              setRoleMethod("Add New Role");
               setShowDynamicComponent(false);
               setSelectedCheckboxes({});
               setRoleName("");
@@ -730,113 +425,16 @@ const Userrole = ({ searchValue }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:px-5 md:px-5 sm:px-2 xs:px-2 ">
-        {userRoleData &&
-          filteruserRoleData?.length === 0 &&
-          userRoleData.length > 0 &&
-          userRoleData?.map((userrole) => (
-            <div
-              className="rounded-xl p-6 bg-[#e6e6e6] md:pb-20"
-              key={userrole.orgUserRoleID}
-            >
-              <div className="grid grid-flow-row-dense grid-cols-3 grid-rows-3 text-[#5E5E5E] h-20">
-                <div className="font-semibold">
-                  <p>Total {userrole.userCount} Users </p>
-                  <p className="text-1xl text-gray-900 dark:text-white capitalize mt-2 w-80">
-                    {userrole.orgUserRole}
-                  </p>
-
-                  <div className="flex justify-left items-center mt-3 gap-3">
-                    {/* <div className="cursor-pointer text-2xl text-[#0000FF]"> */}
-                    <button
-                      onClick={() => {
-                        handleSelectByID(userrole.orgUserRoleID);
-                        setshowuserroleModal(true);
-                        setRoleMethod("Update Role");
-                      }}
-                      className="bg-primary text-white items-center  rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50 border border-primary"
-                    >
-                      Edit Role
-                    </button>
-                    {/* <BiEdit
-                        className=""
-                        onClick={() => {
-                          handleSelectByID(userrole.orgUserRoleID);
-                          setshowuserroleModal(true);
-                          setRoleMethod("Update Role");
-                        }}
-                      /> */}
-                    {/* </div> */}
-                    {/* <div className="cursor-pointer text-2xl text-[#EE4B2B]">
-                      <MdDeleteForever
-                        onClick={() => handleDeleteRole(userrole.orgUserRoleID)}
-                      />
-                    </div> */}
-                  </div>
-                </div>
-                <div className="col-span-2">
-                  <div className="role-user flex justify-end">
-                    {userrole?.profilePics?.slice(0, 3)?.map((item, index) => {
-                      return (
-                        <span key={index}>
-                          <img
-                            className="w-5 h-5 rounded-full"
-                            src={item}
-                            alt="Not Image"
-                          ></img>
-                        </span>
-                      );
-                    })}
-                    {userrole?.profilePics?.length > 2 && (
-                      <span
-                        style={{ backgroundColor: "#41479b" }}
-                        className="text-white text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold text-green-800  me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300"
-                      >
-                        3+
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        {filteruserRoleData &&
-          filteruserRoleData?.length > 0 &&
-          filteruserRoleData?.map((userrole) => (
-            <div
-              className="rounded-xl p-6 bg-[#E7EFFF]"
-              key={userrole.orgUserRoleID}
-            >
-              <div className="flex justify-between">
-                <div className="role-name">
-                  <p>Total {userrole.userCount} Users</p>
-                  <h3 className="text-3xl text-primary my-2 break-words">
-                    {userrole.orgUserRole}
-                  </h3>
-                  <button
-                    onClick={() => {
-                      handleSelectByID(userrole.orgUserRoleID);
-                      setshowuserroleModal(true);
-                    }}
-                    className="bg-primary text-white items-center  rounded-full lg:px-4 sm:px-3 py-2 text-base sm:text-sm  hover:bg-white hover:text-primary  hover:shadow-lg hover:shadow-primary-500/50 border border-primary"
-                  >
-                    Edit Role
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-      </div>
-
       <div className="mt-5">
         <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
           <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
             <table className="min-w-full leading-normal" cellPadding={20}>
               <thead>
                 <tr className="border-b border-b-[#E4E6FF] bg-[#e6e6e6]">
+                  <th></th>
                   <th className="text-[#5A5881] text-base font-semibold">
                     <span className="flex items-center justify-left">
-                      Name
+                      Role Name
                       <svg
                         className="w-3 h-3 ms-1.5 cursor-pointer"
                         aria-hidden="true"
@@ -850,49 +448,61 @@ const Userrole = ({ searchValue }) => {
                     </span>
                   </th>
                   <th className="text-[#5A5881] text-base font-semibold">
-                    <span className="flex items-center justify-center">
-                      Roles
-                    </span>
+                    View Users
                   </th>
                   <th className="text-[#5A5881] text-base font-semibold">
-                    <div className="flex items-center justify-center">
-                      Status
-                    </div>
+                    Action
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {userData && sortedAndPaginatedData.length > 0 ? (
+                {userRoleData && sortedAndPaginatedData.length > 0 ? (
                   sortedAndPaginatedData.map((item, index) => {
                     return (
                       <tr className="border-b border-b-[#E4E6FF]" key={index}>
-                        <th className="text-[#5E5E5E] text-center flex">
-                          <div className="ps-3 flex text-left">
-                            <div className="font-normal text-gray-500 mt-2">
-                              {item.firstName + " " + item.lastName}
-                            </div>
-                          </div>
-                        </th>
-
-                        <td className="text-[#5E5E5E] text-center">
-                          {item?.userRoleName}
-                        </td>
-                        <td className="text-[#5E5E5E] text-center">
-                          {item.isActive == 1 ? (
+                        <td>
+                          {item?.profilePics
+                            ?.slice(0, 3)
+                            ?.map((item, index) => {
+                              return (
+                                <span key={index}>
+                                  <img
+                                    className="w-5 h-5 rounded-full"
+                                    src={item}
+                                    alt="Not Image"
+                                  ></img>
+                                </span>
+                              );
+                            })}
+                          {item?.profilePics?.length > 2 && (
                             <span
-                              style={{ backgroundColor: "#cee9d6" }}
-                              className="text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                              style={{ backgroundColor: "#41479b" }}
+                              className="text-white text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold text-green-800  me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300"
                             >
-                              Active
-                            </span>
-                          ) : (
-                            <span
-                              style={{ backgroundColor: "#d1d5db" }}
-                              className="text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                            >
-                              Inactive
+                              3+
                             </span>
                           )}
+                        </td>
+                        <td className="text-[#5E5E5E] text-left flex">
+                          {item.orgUserRole}
+                        </td>
+
+                        <td
+                          className="text-center"
+                          onClick={() => setShowUsers(true)}
+                        >
+                          <button>{item.userCount}</button>
+                        </td>
+                        <td className="text-center">
+                          <button
+                            onClick={() => {
+                              handleSelectByID(item.orgUserRoleID);
+                              setshowuserroleModal(true);
+                            }}
+                            className="cursor-pointer text-xl text-[#0000FF]"
+                          >
+                            <BiEdit />
+                          </button>
                         </td>
                       </tr>
                     );
@@ -930,7 +540,78 @@ const Userrole = ({ searchValue }) => {
               </tbody>
             </table>
           </div>
+          {/* {showUsers && (
+            <>
+              <div>
+                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                  <div
+                    // ref={selectScreenRef}
+                    className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                  >
+                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                      <div className="z-50 w-[30px] h-[30px] text-white bg-black rounded-full top-0 right-0 cursor-pointer ">
+                        <button
+                          className="p-1 text-xl"
+                          onClick={() => {
+                            setShowUsers(false);
+                          }}
+                        >
+                          <AiOutlineCloseCircle className="text-3xl" />
+                        </button>
+                      </div>
+                      <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3">
+                        <table className="w-full" cellPadding={20}>
+                          <thead>
+                            <tr className="items-center  table-head-bg">
+                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                Screen
+                              </th>
+                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                Status
+                              </th>
+                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                Google Location
+                              </th>
+                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                Associated Schedule
+                              </th>
+                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                Tags
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {userData.map((screen) => (
+                              <tr
+                                key={screen.screenID}
+                                className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                              >
+                                <td className="text-center">
+                                  <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
+                                    Live
+                                  </button>
+                                </td>
+                                <td className="text-center break-words">
+                                  {screen.googleLocation}
+                                </td>
 
+                                <td className="text-center break-words">
+                                  Schedule Name Till 28 June 2023
+                                </td>
+                                <td className="text-center break-words">
+                                  {screen.tags}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )} */}
           <div className="flex justify-end mb-5 mt-2">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
@@ -1158,31 +839,31 @@ const Userrole = ({ searchValue }) => {
                                           ></option>
                                           <option
                                             value="1"
-                                            disabled={userRoleData.length < 1}
+                                            disabled={store?.data?.length < 1}
                                           >
                                             1
                                           </option>
                                           <option
                                             value="2"
-                                            disabled={userRoleData.length < 2}
+                                            disabled={store?.data?.length < 2}
                                           >
                                             2
                                           </option>
                                           <option
                                             value="3"
-                                            disabled={userRoleData.length < 3}
+                                            disabled={store?.data?.length < 3}
                                           >
                                             3
                                           </option>
                                           <option
                                             value="4"
-                                            disabled={userRoleData.length < 4}
+                                            disabled={store?.data?.length < 4}
                                           >
                                             4
                                           </option>
                                           <option
                                             value="5"
-                                            disabled={userRoleData.length < 5}
+                                            disabled={store?.data?.length < 5}
                                           >
                                             5
                                           </option>

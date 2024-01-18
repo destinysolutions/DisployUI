@@ -18,10 +18,8 @@ const Storagelimit = () => {
 
   useEffect(() => {
     const response = dispatch(handleGetStorageDetails({ token }));
-
     if (!response) return;
   }, []);
-  console.log(storageDegtails);
 
   const handleSave = () => {
     let data = JSON.stringify({
@@ -47,7 +45,6 @@ const Storagelimit = () => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data);
         if (response?.data?.status == true) {
           setIncreaseStorage(false);
           setRequest(true);

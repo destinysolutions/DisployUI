@@ -21,15 +21,16 @@ const Carousel = ({ items, compositonData, from }) => {
     };
   }, [items, currentIndex]);
 
-  // console.log(items);
   return (
     <>
       <div className="h-full w-full p-1 bg-white">
         {items?.map((item, index) => {
-          // console.log(item);
           if (currentIndex === index) {
             return (
-              <div className="h-full w-full text-[#5A5881] font-semibold rounded shadow" key={index}>
+              <div
+                className="h-full w-full text-[#5A5881] font-semibold rounded shadow"
+                key={index}
+              >
                 {item.assetType === "OnlineImage" && (
                   <img
                     className="w-full h-full object-fill rounded-sm"
@@ -41,7 +42,6 @@ const Carousel = ({ items, compositonData, from }) => {
                   <img
                     className="w-full h-full rounded-sm object-fill "
                     src={item.fileType}
-                    // alt={item.assetName}
                   />
                 )}
                 {item.assetType === "Image" && (
@@ -85,15 +85,6 @@ const Carousel = ({ items, compositonData, from }) => {
                     loop={true}
                     playing={true}
                   />
-                  // <video
-                  //   loop
-                  //   autoPlay
-                  //   controls
-                  //   className={`w-full h-full rounded-sm `}
-                  // >
-                  //   <source src={item.fileType} type="video/mp4" />
-                  //   Your browser does not support the video tag.
-                  // </video>
                 )}
                 {item.assetType === "DOC" && (
                   <a
@@ -129,20 +120,6 @@ const Carousel = ({ items, compositonData, from }) => {
                     {item?.assetFolderPath || item?.fileType || item?.text}
                   </marquee>
                 )}
-                {/* { && (
-                  <marquee
-                    className="text-lg w-full h-full flex items-center text-black"
-                    direction={
-                      item?.scrollType == 1 ||
-                      item?.direction == "Left to Right"
-                        ? "right"
-                        : "left"
-                    }
-                    scrollamount="10"
-                  >
-                    {item?.text}
-                  </marquee>
-                )} */}
               </div>
             );
           }
