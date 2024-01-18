@@ -19,6 +19,7 @@ import appsIcon from "../images/MenuIcons/apps_icon.svg";
 import approvalIcon from "../images/MenuIcons/approval_icon.svg";
 import compositionIcon from "../images/MenuIcons/playlist_icon.svg";
 import scheduleIcon from "../images/MenuIcons/schedule_icon.svg";
+import reportIcon from "../images/MenuIcons/reports_icon.svg";
 import logo from "../images/DisployImg/logo.svg";
 import { useDispatch } from "react-redux";
 import { handleLogout } from "../Redux/Authslice";
@@ -169,14 +170,14 @@ const Sidebar = ({ sidebarOpen }) => {
       icon: <img src={appsIcon} alt="Apps" className="w-6" />,
     },
 
-    // {
-    //   title: "Reports",
-    //   cName: "nav-text link-items",
-    //   path: "/reports",
-    //   icon: (
-    //     <img src="/MenuIcons/reports_icon.svg" alt="Reports" className="w-6" />
-    //   ),
-    // },
+    {
+      title: "Reports",
+      cName: "nav-text link-items",
+      path: "/reports",
+      icon: (
+        <img src={reportIcon} alt="Reports" className="w-6" />
+      ),
+    },
     {
       title: "Approval",
       cName: "nav-text link-items",

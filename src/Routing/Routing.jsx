@@ -52,6 +52,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "../Components/ErrorFallback";
 import GridAssets from "../Components/Assests/GridAssets";
 import SettingApproval from "../Components/Settings/SettingApproval";
+import FinalReport from "../Components/Reports/FinalReport";
 
 const Routing = () => {
   //for screen resize sidebar open close
@@ -178,7 +179,7 @@ const Routing = () => {
                 />
               }
             />
-             <Route
+            <Route
               path="/add-mergescreen"
               element={
                 <AddMergeScreen
@@ -398,6 +399,15 @@ const Routing = () => {
               path="/reports"
               element={
                 <Report
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/reports/:report/:daily/:date"
+              element={
+                <FinalReport
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />
