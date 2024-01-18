@@ -332,12 +332,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       toast.error("Seconds should be less than or equal to 3 digits.");
       return;
     }
-    // if (Number(e) < 1) {
-    //   toast.remove();
-    //   toast.error("Minimum number should 1.");
-    //   return;
-    // }
-
     const CompositionData = [...addAsset];
 
     const updated = CompositionData.map((item, index) => {
@@ -399,7 +393,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response?.data?.status == 200) {
-          // console.log(response.data?.data);
           setcompositonData(response.data?.data[0]);
         }
         setLoading(false);
@@ -581,13 +574,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
               ref={modalRef}
-              // className={`absolute left-1/2 -translate-x-1/2 `}
-              // style={{
-              //   minHeight: compositonData?.screenHeight + "px",
-              //   maxHeight: compositonData?.screenHeight + "px",
-              //   maxWidth: compositonData?.screenWidth + "px",
-              //   minWidth: compositonData?.screenWidth + "px",
-              // }}
               className={`fixed  border left-1/2 -translate-x-1/2 ${
                 screenType === "portrait"
                   ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
@@ -595,31 +581,9 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
               }  `}
             >
               <RxCrossCircled
-                className="fixed z-50 w-[30px] h-[30px] text-white bg-black rounded-full hover:bg-white hover:text-black top-0 right-0 cursor-pointer"
+                className="fixed z-50 w-[30px] h-[30px] text-white bg-black rounded-full hover:bg-white hover:text-black -top-4 -right-4 cursor-pointer"
                 onClick={closeModal}
               />
-              {/* screentype toggle "landspace | portrait" */}
-              <div
-                className={`fixed z-50 ${
-                  screenType === "Landscape" ? "w-14 h-7" : "h-14 w-7"
-                }   rounded-md  bg-black p-2 top-1 right-10 cursor-pointer`}
-              >
-                <span
-                  className={`fixed z-50  ${
-                    screenType === "Landscape"
-                      ? "w-10 h-5 top-2 right-12"
-                      : "w-5 h-10 top-3 right-11"
-                  }  rounded-md  bg-white  cursor-pointer`}
-                  title={screenType}
-                  onClick={() => {
-                    if (screenType === "Landscape") {
-                      setScreenType("portrait");
-                    } else {
-                      setScreenType("Landscape");
-                    }
-                  }}
-                />
-              </div>
 
               {!loading &&
                 compositonData !== null &&
@@ -665,9 +629,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   Save
                 </button>
-                {/* <button type="button" onClick={() => setEdited(false)}>
-              Cancel
-            </button> */}
               </div>
             ) : (
               <>
@@ -734,14 +695,12 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                     </button>
                   </Link>
                 ) : (
-                  // <Link to="/apps" target="_blank">
                   <button
                     onClick={() => setShowAppModal(true)}
                     className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                   >
                     Add New Apps
                   </button>
-                  // </Link>
                 )}
               </div>
               <div className="overflow-auto min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
@@ -760,9 +719,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       <th className="text-[#5A5881] py-2.5 text-base text-center font-semibold">
                         Type
                       </th>
-                      {/* <th className="text-[#5A5881] py-2.5 text-base font-semibold">
-                    Tags
-                  </th> */}
                     </tr>
                   </thead>
 
@@ -836,13 +792,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                   {data.assetName}
                                 </p>
                               )}
-                              {/* {data.instanceName && (
-                                    <p
-                                      href={data?.instanceName}
-                                    >
-                                      {data.instanceName}
-                                    </p>
-                                  )} */}
                             </td>
                             <td className="p-2 w-full text-center hyphens-auto break-words">
                               {data.assetName || data?.instanceName}
@@ -889,13 +838,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                         className="border border-black "
                       ></div>
                     ))}
-                  {/* <img
-                src={`data:image/svg+xml;utf8,${encodeURIComponent(
-                  compositonData?.svg
-                )}`}
-                alt="Logo"
-                className="w-32"
-              /> */}
                 </div>
                 <div className="layout-detaills">
                   <h3 className="text-lg font-medium block mb-3">
@@ -916,7 +858,6 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               : "text-primary"
                           }  rounded-full py-2 border border-primary `}
                           key={index}
-                          // disabled={addAsset.length !== currentSection - 1}
                           onClick={() => setcurrentSection(index + 1)}
                         >
                           Section {index + 1}
@@ -1005,20 +946,12 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         {item.assetName}
                                       </p>
                                     )}
-                                    {/* {item.instanceName && (
-                                    <p
-                                      href={item?.instanceName}
-                                    >
-                                      {item.instanceName}
-                                    </p>
-                                  )} */}
                                   </div>
                                   <div className="ml-3 w-1/2">
                                     <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
                                       {item?.assetName && item?.assetName}
                                       {item?.text && item?.text}
                                       {item?.instanceName && item?.instanceName}
-                                      {/* {item?.youTubeURL && item?.youTubeURL} */}
                                     </p>
                                   </div>
                                 </div>

@@ -373,11 +373,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       toast.error("Seconds should be less than or equal to 3 digits.");
       return;
     }
-    // if (Number(e) < 1) {
-    //   toast.remove();
-    //   toast.error("Minimum number should 1.");
-    //   return;
-    // }
 
     const CompositionData = [...addAsset];
 
@@ -719,9 +714,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   Save
                 </button>
-                {/* <button type="button" onClick={() => setEdited(false)}>
-            Cancel
-          </button> */}
               </div>
             ) : (
               <>
@@ -735,7 +727,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </>
             )}
-            {/* cancel + preview + save btns */}
+
             <div className="flex md:mt-5 lg:mt-0 sm:flex-wrap md:flex-nowrap xs:flex-wrap playlistbtn">
               <button
                 onClick={handleClickOnCancel}
@@ -788,14 +780,12 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                     </button>
                   </Link>
                 ) : (
-                  // <Link to="/apps" target="_blank">
                   <button
                     onClick={() => setShowAppModal(true)}
                     className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                   >
                     Add New Apps
                   </button>
-                  // </Link>
                 )}
               </div>
               <div className="overflow-auto min-h-[50vh] max-h-[50vh] rounded-xl shadow bg-white mb-6">
@@ -814,9 +804,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       <th className="text-[#5A5881] py-2.5 text-base text-center font-semibold">
                         Type
                       </th>
-                      {/* <th className="text-[#5A5881] py-2.5 text-base font-semibold">
-                  Tags
-                </th> */}
                     </tr>
                   </thead>
 
@@ -890,13 +877,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                   {data.assetName}
                                 </p>
                               )}
-                              {/* {data.instanceName && (
-                                  <p
-                                    href={data?.instanceName}
-                                  >
-                                    {data.instanceName}
-                                  </p>
-                                )} */}
                             </td>
                             <td className="p-2 w-full text-center hyphens-auto break-words">
                               {data.assetName || data?.instanceName}
@@ -943,13 +923,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                         className="border border-black "
                       ></div>
                     ))}
-                  {/* <img
-              src={`data:image/svg+xml;utf8,${encodeURIComponent(
-                compositonData?.svg
-              )}`}
-              alt="Logo"
-              className="w-32"
-            /> */}
                 </div>
                 <div className="layout-detaills">
                   <h3 className="text-lg font-medium block mb-3">
@@ -970,7 +943,6 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               : "text-primary"
                           }  rounded-full py-2 border border-primary `}
                           key={index}
-                          // disabled={addAsset.length !== currentSection - 1}
                           onClick={() => setcurrentSection(index + 1)}
                         >
                           Section {index + 1}
@@ -1059,20 +1031,12 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         {item.assetName}
                                       </p>
                                     )}
-                                    {/* {item.instanceName && (
-                                  <p
-                                    href={item?.instanceName}
-                                  >
-                                    {item.instanceName}
-                                  </p>
-                                )} */}
                                   </div>
                                   <div className="ml-3 w-1/2">
                                     <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
                                       {item?.assetName && item?.assetName}
                                       {item?.text && item?.text}
                                       {item?.instanceName && item?.instanceName}
-                                      {/* {item?.youTubeURL && item?.youTubeURL} */}
                                     </p>
                                   </div>
                                 </div>

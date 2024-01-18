@@ -2,6 +2,13 @@ import React from "react";
 import Modal from 'react-responsive-modal';
 import "react-responsive-modal/styles.css";
 
+
+// Define a custom style with a fixed height
+const modalStyle = {
+    width: '80%', // You can adjust the width based on your preference
+    height: '500px', // Set the fixed height here
+};
+
 const Preview = ({
     open,
     onClose,
@@ -11,58 +18,68 @@ const Preview = ({
     const handleModalClose = () => {
         onClose();
     };
-    console.log("previewData", previewData)
+    // console.log("previewData", previewData)
     return (
         <>
             <Modal
                 open={open}
                 onClose={handleModalClose}
                 center
+                styles={{ modal: modalStyle }}
             >
-                <h3 className="text-xl font-semibold font-bold bg-white dark:text-white m-5 ">{previewData.screenGroupName}</h3>
-                <div className="grid mb-8  rounded-lg shadow-sm dark:border-gray-700 md:mb-12 md:grid-cols-2 bg-white dark:bg-gray-800">
-                    {previewData && previewData.screenGroupLists.length > 0 && previewData?.screenGroupLists.map((item, index) => (
-                        <div key={index} className="grid border shadow dark:border-gray-700 gap-10 md:grid-cols-2bg-white dark:bg-gray-800 sm:p-8 dark:bg-gray-800 dark:border-gray-700">
-                            {index} <figure className="flex flex-col items-center justify-center p-8 text-center bg-white rounded-t-lg md:rounded-t-none md:rounded-ss-lg dark:bg-gray-800 dark:border-gray-700">
+                <h3 className="text-xl font-semibold bg-white dark:text-white m-5 capitalize">{previewData.screenGroupName}</h3>
+                <hr className="m-2 h-10" />
+                <div class="w-full p-4 text-center bg-white rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700 h-[300px]">
+                    {previewData.assetType === 'Video' &&
+                        <video controls className="w-full h-auto" style={{ maxWidth: "100%", height: "auto" }}>
+                            <source src={previewData.assetURL} type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    }
 
-                                {item.assetType === 'Video' &&
-                                    <video controls className="w-full h-auto" style={{ maxWidth: "100%", height: "auto" }}>
-                                        <source src={item.assetURL} type="video/mp4" />
-                                        Your browser does not support the video tag.
-                                    </video>
-                                }
+                    {previewData.assetType === 'OnlineVideo' &&
+                        <video controls className="w-full h-auto" style={{ maxWidth: "100%", height: "auto" }}>
+                            <source src={previewData.assetURL} type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    }
 
+                    {previewData.assetType === 'Video' &&
+                        <video controls className="w-full h-auto" style={{ maxWidth: "100%", height: "auto" }}>
+                            <source src={previewData.assetURL} type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    }
 
-                                {item.assetType === 'OnlineVideo' &&
-                                    <video controls className="w-full h-auto" style={{ maxWidth: "100%", height: "auto" }}>
-                                        <source src={item.assetURL} type="video/mp4" />
-                                        Your browser does not support the video tag.
-                                    </video>
-                                }
+                    {previewData.assetType === 'OnlineImage' &&
+                        <video controls className="w-full h-auto" style={{ maxWidth: "100%", height: "auto" }}>
+                            <source src={previewData.assetURL} type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    }
 
-                                {item.assetType === 'Video' &&
-                                    <video controls className="w-full h-auto" style={{ maxWidth: "100%", height: "auto" }}>
-                                        <source src={item.assetURL} type="video/mp4" />
-                                        Your browser does not support the video tag.
-                                    </video>
-                                }
+                    {previewData.assetType === 'Image' &&
+                        <video controls className="w-full h-auto" style={{ maxWidth: "100%", height: "auto" }}>
+                            <source src={previewData.assetURL} type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    }
+                    
+                    {previewData.assetType === 'Text' &&
+                       <marquee
+                       className="text-3xl w-full h-full flex items-center text-black"
+                    //    direction={
+                    //      item?.scrollType == 1 ||
+                    //      item?.direction == "Left to Right"
+                    //        ? "right"
+                    //        : "left"
+                    //    }
+                       scrollamount="10"
+                     >
+                       {previewData.assetURL}
+                     </marquee>
+                    }
 
-                                {item.assetType === 'OnlineImage' &&
-                                    <video controls className="w-full h-auto" style={{ maxWidth: "100%", height: "auto" }}>
-                                        <source src={item.assetURL} type="video/mp4" />
-                                        Your browser does not support the video tag.
-                                    </video>
-                                }
-
-                                {item.assetType === 'Image' &&
-                                    <video controls className="w-full h-auto" style={{ maxWidth: "100%", height: "auto" }}>
-                                        <source src={item.assetURL} type="video/mp4" />
-                                        Your browser does not support the video tag.
-                                    </video>
-                                }
-                            </figure>
-                        </div>
-                    ))}
                 </div>
             </Modal>
         </>

@@ -15,7 +15,6 @@ import Defaultmedia from "./Defaultmedia";
 import "../../Styles/Settings.css";
 import Footer from "../Footer";
 import Users from "./Users";
-import ApprovalReq from "./ApprovalReq";
 
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
   Settings.propTypes = {
@@ -134,9 +133,9 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
     localStorage.setItem("STabs", id.toString());
   }
 
-  useEffect(() => {
-    console.log("STabs", STabs);
-  }, [STabs]);
+  // useEffect(() => {
+  //   console.log("STabs", STabs);
+  // }, [STabs]);
 
   return (
     <>

@@ -12,6 +12,7 @@ import { IoBarChartSharp } from "react-icons/io5";
 import { RiPlayListFill } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import ShowAppsModal from "../../../ShowAppsModal";
 
 const ShowAssetModal = ({
   setShowAssetModal,
@@ -37,6 +38,7 @@ const ShowAssetModal = ({
   const [filteredData, setFilteredData] = useState([]);
   const [searchAssest, setSearchAssest] = useState("");
   const [searchComposition, setSearchComposition] = useState("");
+  const [showAppModal, setShowAppModal] = useState(false);
 
   const { assets } = useSelector((s) => s.root.asset);
   const { compositions } = useSelector((s) => s.root.composition);
@@ -150,7 +152,10 @@ const ShowAssetModal = ({
   return (
     <>
       <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] h-auto top-12 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
-        <div className="flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black">
+        <div 
+        className={`${showAppModal ? "hidden" : ""
+          } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
+        >
           <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
             Set Content to Add Media
           </h3>
@@ -163,7 +168,9 @@ const ShowAssetModal = ({
         </div>
         <div
           onClick={() => assetPreviewPopup && setAssetPreviewPopup(false)}
-          className="relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl"
+          className={`${
+            showAppModal ? "hidden" : ""
+          } relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
         >
           <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
             <div className="flex-initial">
@@ -183,8 +190,8 @@ const ShowAssetModal = ({
                     >
                       <span
                         className={`p-1 rounded ${popupActiveTab === 1
-                            ? "bg-primary text-white"
-                            : "bg-lightgray"
+                          ? "bg-primary text-white"
+                          : "bg-lightgray"
                           } `}
                       >
                         <IoBarChartSharp size={15} />
@@ -200,8 +207,8 @@ const ShowAssetModal = ({
                     >
                       <span
                         className={`p-1 rounded ${popupActiveTab === 2
-                            ? "bg-primary text-white"
-                            : "bg-lightgray"
+                          ? "bg-primary text-white"
+                          : "bg-lightgray"
                           } `}
                       >
                         <RiPlayListFill size={15} />
@@ -216,8 +223,8 @@ const ShowAssetModal = ({
                     >
                       <span
                         className={`p-1 rounded ${popupActiveTab === 3
-                            ? "bg-primary text-white"
-                            : "bg-lightgray"
+                          ? "bg-primary text-white"
+                          : "bg-lightgray"
                           } `}
                       >
                         <AiOutlineAppstoreAdd size={15} />
@@ -237,12 +244,12 @@ const ShowAssetModal = ({
                     <input
                       type="text"
                       placeholder="Search assest"
-                      className="border border-primary rounded-full pl-7 py-2 search-user"
+                      className="border border-primary rounded-full pl-8 py-2 search-user"
                       value={searchAssest}
                       onChange={(e) => handleSearchAssest(e, "asset")}
                     />
                   </div>
-                  <Link to="/fileupload">
+                  <Link to="/fileupload" target="_blank">
                     <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                       Upload
                     </button>
@@ -273,9 +280,9 @@ const ShowAssetModal = ({
                           <tbody key={asset.assetID}>
                             <tr
                               className={`${selectedAsset === asset ||
-                                  selectedAsset === asset?.assetName
-                                  ? "bg-[#f3c953]"
-                                  : ""
+                                selectedAsset === asset?.assetName
+                                ? "bg-[#f3c953]"
+                                : ""
                                 } border-b border-[#eee] text-center cursor-pointer hover:bg-black hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
                               onClick={() => {
                                 handleAssetAdd(asset);
@@ -305,9 +312,9 @@ const ShowAssetModal = ({
                           <tbody key={asset.assetID}>
                             <tr
                               className={`${selectedAsset === asset ||
-                                  selectedAsset === asset?.assetName
-                                  ? "bg-[#f3c953]"
-                                  : ""
+                                selectedAsset === asset?.assetName
+                                ? "bg-[#f3c953]"
+                                : ""
                                 } border-b border-[#eee] text-center cursor-pointer hover:bg-black hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
                               onClick={() => {
                                 handleAssetAdd(asset);
@@ -414,7 +421,7 @@ const ShowAssetModal = ({
                       onChange={(e) => handleSearchAssest(e, "composition")}
                     />
                   </div>
-                  <Link to="/addcomposition">
+                  <Link to="/addcomposition" target="_blank">
                     <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                       Add New Composition
                     </button>
@@ -441,8 +448,8 @@ const ShowAssetModal = ({
                         <tbody key={composition.compositionID}>
                           <tr
                             className={`${selectedComposition === composition
-                                ? "bg-[#f3c953]"
-                                : ""
+                              ? "bg-[#f3c953]"
+                              : ""
                               } border-b border-[#eee] text-center cursor-pointer hover:bg-black hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
                             onClick={() => {
                               setSelectedComposition(composition);
@@ -471,8 +478,8 @@ const ShowAssetModal = ({
                         <tbody key={composition.compositionID}>
                           <tr
                             className={`${selectedComposition === composition
-                                ? "bg-[#f3c953]"
-                                : ""
+                              ? "bg-[#f3c953]"
+                              : ""
                               } border-b border-[#eee] `}
                             onClick={() => {
                               setSelectedComposition(composition);
@@ -501,11 +508,13 @@ const ShowAssetModal = ({
 
               <div className={popupActiveTab !== 3 && "hidden"}>
                 <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                  <Link to="/apps">
-                    <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
-                      Add New App
-                    </button>
-                  </Link>
+                  <button
+                    onClick={() => {
+                      setShowAppModal(true);
+                    }}
+                    className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                    Add New App
+                  </button>
                 </div>
                 <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
                   <table
@@ -526,9 +535,9 @@ const ShowAssetModal = ({
                       <tbody key={index}>
                         <tr
                           className={`${selectedTextScroll === instance ||
-                              selectedYoutube === instance
-                              ? "bg-[#f3c953]"
-                              : ""
+                            selectedYoutube === instance
+                            ? "bg-[#f3c953]"
+                            : ""
                             } border-b border-[#eee] text-center cursor-pointer hover:bg-black hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
                           onClick={() => {
                             handleAppsAdd(instance);
@@ -554,7 +563,10 @@ const ShowAssetModal = ({
           </div>
         </div>
 
-        <div className="flex justify-between items-center p-5">
+        <div
+          className={`${showAppModal ? "hidden" : ""
+            } flex justify-between items-center p-5`}
+        >
           <p className="text-black">Content will always be playing Confirm</p>
           <button
             className="bg-primary text-white rounded-full px-5 py-2"
@@ -566,6 +578,7 @@ const ShowAssetModal = ({
           </button>
         </div>
       </div>
+      {showAppModal && <ShowAppsModal setShowAppModal={setShowAppModal} />}
       <div
         onClick={() => handleClickOutside()}
         className="fixed inset-0 z-30 bg-black/20"

@@ -14,6 +14,7 @@ import ScreenGroupSlice from "./ScreenGroupSlice";
 import TrashSlice from "./Trash";
 import SidebarSlice from "./SidebarSlice";
 import ScreenMergeSlice from "./ScreenMergeSlice";
+import UserRoleSlice from "./UserRoleSlice";
 
 // const rootPersistConfig = {
 //   key: "root",
@@ -30,7 +31,7 @@ const authPersistConfig = {
 const globalStatesPersistConfig = {
   key: "globalstate",
   storage,
-  whitelist: ["session_token_apideck"], 
+  whitelist: ["session_token_apideck"],
 };
 
 const rootReducer = combineReducers({
@@ -46,7 +47,8 @@ const rootReducer = combineReducers({
   screenGroup: ScreenGroupSlice,
   screenMarge: ScreenMergeSlice,
   trashData: TrashSlice,
-  sidebarData : SidebarSlice
+  sidebarData: SidebarSlice,
+  userRole: UserRoleSlice,
 });
 
 const persisteRoot = rootReducer;

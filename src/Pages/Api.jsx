@@ -125,7 +125,8 @@ export const GET_All_WEATHER = `${baseUrl}api/WeatherApp/GetWeatherApp`
 export const GET_WEATHER_BY_ID = `${baseUrl}api/WeatherApp/GetWeatherApp?`
 export const WEATHER_ASSIGN_SECREEN = `${baseUrl}api/WeatherApp/AssignWeatherToScreen?`
 export const WEATHER_ADD_TAG = `${baseUrl}api/WeatherApp/AddWeatherTags?`
-
+export const USER_ROLE_GET = `${baseUrl}api/OrganizationUsersRole/ListOfModule`;
+export const USER_ROLE_COMBINE = `${baseUrl}api/OrganizationUsersRole/GetUserRolesCombine`;
 
 export const SCREEN_DELETE_ALL = `${baseUrl}api/NewScreen/DeleteAllScreenByIds`
 
@@ -136,9 +137,14 @@ export const ADD_GROUP_SCREEN = `${baseUrl}api/GroupScreen/AddGroupScreen`
 export const DELETE_SINGLE_GROUP_SCREEN = `${baseUrl}api/GroupScreen/DeleteGroupByID`
 export const DELETE_GROUP_SCREEN_ALL = `${baseUrl}api/GroupScreen/DeleteAllGroupScreen`
 export const GROUP_IN_SCREEN_DELETE_ALL = `${baseUrl}api/GroupScreen/DeleteScreenByID`
+export const GROUP_IN_SCREEN_ASSETS_UPDATE_ALL = `${baseUrl}api/GroupScreen/UpdateGroupMedia`
+export const PRIVIEW_GROUP_SCREEN = `${baseUrl}api/GroupScreen/GetGroupPreview`
 
 // screen Marge
 export const GET_MARGE_SCREEN = `${baseUrl}api/MergeScreen/GetAllMergeScreen`
+export const ADD_MERGE_SCREEN = `${baseUrl}api/MergeScreen/AddMergeScreen`
+export const DELETE_MERGE_SCREEN_ALL = `${baseUrl}api/MergeScreen/DeleteAllMergeScreen`
+
 
 
 export const SCREEN_DEACTIVATE_ACTIVATE  =  `${baseUrl}api/NewScreen/EnableScreen`

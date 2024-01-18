@@ -54,6 +54,7 @@ import GridAssets from "../Components/Assests/GridAssets";
 import SettingApproval from "../Components/Settings/SettingApproval";
 import FinalReport from "../Components/Reports/FinalReport";
 
+
 const Routing = () => {
   //for screen resize sidebar open close
   const { user, token } = useSelector((state) => state.root.auth);
@@ -543,15 +544,6 @@ const Routing = () => {
               path="/trash"
               element={
                 <Trash
-                  sidebarOpen={sidebarOpen}
-                  setSidebarOpen={setSidebarOpen}
-                />
-              }
-            />
-            <Route
-              path="/settingapproval"
-              element={
-                <SettingApproval
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />
