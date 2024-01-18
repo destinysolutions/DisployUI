@@ -33,7 +33,7 @@ import { IoClose } from "react-icons/io5";
 import AddOrEditTagPopup from "../../AddOrEditTagPopup";
 import { UPDATE_NEW_SCREEN } from "../../../Pages/Api";
 import { handleChangeScreens } from "../../../Redux/Screenslice";
-
+import PreviewModel from "./model/previewModel";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
@@ -79,6 +79,10 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [showTagModal, setShowTagModal] = useState(false);
   const [tags, setTags] = useState([]);
   const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
+
+  //PreView model
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewData, setPreviewData] = useState();
 
 
   // pagination
@@ -409,10 +413,19 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const handleSave = () => {
     const payload = {
       screenID: getGroup.screenGroupLists.map((item) => item.screenID).join(','),
-      assetID : selectedAsset.assetID
+      assetID: selectedAsset.assetID
     }
     console.log("---------------------------------", selectedAsset, payload)
   }
+
+  const handleOpenPreview = (item) => {
+    setIsPreviewOpen(true);
+    setPreviewData(item)
+  };
+
+  const handleClosePreview = () => {
+    setIsPreviewOpen(false);
+  };
 
   return (
     <>
@@ -540,31 +553,81 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                     <div className=" flex items-center">
                       {isAccordionOpen && (
                         <>
-                          <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() => newAddGroup(item)}>
-                            <b>+</b>
-                          </button>
-
-                          <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white">
-                            Preview
-                          </button>
-                          <button
-                            className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                            onClick={() => { setShowAssetModal(true); setGetGroup(item) }}
+                          <Tooltip
+                            content="Add Screen"
+                            placement="bottom-end"
+                            className=" bg-SlateBlue text-white z-10 ml-5"
+                            animate={{
+                              mount: { scale: 1, y: 0 },
+                              unmount: { scale: 1, y: 10 },
+                            }}
                           >
-                            <TbUpload className="text-3xl p-1 hover:text-white" />
-                          </button>
-                          {!selectedItems?.length && (
-                            <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
-                              <RiDeleteBin5Line
-                                className="text-3xl p-1 hover:text-white"
-                                onClick={() => handleDeleteGroup(item)}
-                              />
+                            <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() => newAddGroup(item)}>
+                              <b>+</b>
                             </button>
-                          )}
+                          </Tooltip>
+
+                          <Tooltip
+                            content="Preview"
+                            placement="bottom-end"
+                            className=" bg-SlateBlue text-white z-10 ml-5"
+                            animate={{
+                              mount: { scale: 1, y: 0 },
+                              unmount: { scale: 1, y: 10 },
+                            }}
+                          >
+                            <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() =>handleOpenPreview(item)}>
+                              Preview
+                            </button>
+                          </Tooltip>
+
+                          <Tooltip
+                            content="Upload"
+                            placement="bottom-end"
+                            className=" bg-SlateBlue text-white z-10 ml-5"
+                            animate={{
+                              mount: { scale: 1, y: 0 },
+                              unmount: { scale: 1, y: 10 },
+                            }}
+                          >
+                            <button
+                              className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                              onClick={() => { setShowAssetModal(true); setGetGroup(item) }}
+                            >
+                              <TbUpload className="text-3xl p-1 hover:text-white" />
+                            </button>
+                          </Tooltip>
+                          <Tooltip
+                            content="Delete"
+                            placement="bottom-end"
+                            className=" bg-SlateBlue text-white z-10 ml-5"
+                            animate={{
+                              mount: { scale: 1, y: 0 },
+                              unmount: { scale: 1, y: 10 },
+                            }}
+                          >
+                            {!selectedItems?.length && (
+                              <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                                <RiDeleteBin5Line
+                                  className="text-3xl p-1 hover:text-white"
+                                  onClick={() => handleDeleteGroup(item)}
+                                />
+                              </button>
+                            )}
+                          </Tooltip>
                         </>
                       )}
 
                       {selectAll ? (<CheckmarkIcon className="w-5 h-5" />) : (
+                        <Tooltip
+                        content="Select Group"
+                        placement="bottom-end"
+                        className=" bg-SlateBlue text-white z-10 ml-5"
+                        animate={{
+                          mount: { scale: 1, y: 0 },
+                          unmount: { scale: 1, y: 10 },
+                        }}
+                      >
                         <button>
                           <input
                             type="checkbox"
@@ -573,6 +636,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                             onClick={() => handleCheckboxChange(item.screenGroupID)}
                           />
                         </button>
+                        </Tooltip>
                       )}
 
                       <button>
@@ -661,7 +725,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                               </td>
                               <td className="p-2 text-center">
                                 <button
-                                  className="flex items-centerborder-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500 "
+                                  style={{width:"max-content"}}
+                                  className="flex items-centerborder-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500"
                                 >
                                   {screen.assetName}
                                   <AiOutlineCloudUpload className="ml-2 text-lg" />
@@ -815,6 +880,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
+      {isPreviewOpen && <PreviewModel open={isPreviewOpen} onClose={handleClosePreview} previewData={previewData} />} 
 
       <Footer />
     </>

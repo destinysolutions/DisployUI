@@ -1013,3 +1013,18 @@ button.daysbtn {
 .sc-dmlpXa.qDYwR{
   min-height : 500px
 }
+
+.screen-table th{width: 200px;}
+.sc-scrollbar::-webkit-scrollbar {
+  height: 3px;
+  background-color: white;
+}
+
+.sc-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #999;
+  border-radius: 3px;
+}
+
+.sc-scrollbar::-webkit-scrollbar-button {
+  display: none;
+}
