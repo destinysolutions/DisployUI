@@ -50,6 +50,7 @@ import {
 import { debounce } from "lodash";
 import { connection } from "../../SignalR";
 import { handleGetStorageDetails } from "../../Redux/SettingSlice";
+import PreviewDoc from "./PreviewDoc";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -70,6 +71,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [imageAssetModal, setImageAssetModal] = useState(null);
   const [addScreenModal, setAddScreenModal] = useState(false);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
+  const [previewDoc, setPreviewDoc] = useState(false);
+  const [selectDoc, setSelectDoc] = useState(null);
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [FolderDisable, setFolderDisable] = useState(false);
@@ -608,6 +611,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const debouncedOnChange = debounce(handleSearchAsset, 1000);
 
+  const HandleClose = () => {
+    setPreviewDoc(false)
+  }
+
   return (
     <>
       {showImageAssetModal && (
@@ -860,8 +867,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             )}
                             {item.assetType === "DOC" && (
                               <a
-                                href={item.assetFolderPath}
-                                target="_blank"
+                                className="cursor-pointer"
+                                onClick={() => { setPreviewDoc(true); setSelectDoc(item) }}
+                                // href={item.assetFolderPath}
+                                // target="_blank"
                                 rel="noopener noreferrer"
                               >
                                 {item.assetName}
@@ -1168,6 +1177,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
       </div>
+      {previewDoc && (
+        <PreviewDoc HandleClose={HandleClose} fileType={selectDoc?.fileExtention} assetFolderPath={selectDoc?.assetFolderPath} />
+      )}
 
       <Footer />
     </>

@@ -46,6 +46,7 @@ import {
 import { debounce } from "lodash";
 import { connection } from "../../SignalR";
 import { handleGetStorageDetails } from "../../Redux/SettingSlice";
+import PreviewDoc from "./PreviewDoc";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -70,7 +71,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [FolderDisable, setFolderDisable] = useState(false);
   const [searchAsset, setSearchAsset] = useState("");
   const [selectdata, setSelectData] = useState({});
-
+  const [previewDoc, setPreviewDoc] = useState(false);
+  const [selectDoc, setSelectDoc] = useState(null);
   const actionBoxRef = useRef(null);
   const addScreenRef = useRef(null);
   const { token } = useSelector((state) => state.root.auth);
@@ -584,6 +586,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const debouncedOnChange = debounce(handleSearchAsset, 1000);
 
+  const HandleClose = () => {
+    setPreviewDoc(false)
+  }
+
   return (
     <>
       {showImageAssetModal && (
@@ -625,8 +631,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                 <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
                 New Folder
               </button>
-             {/* <Link> */}
-             <button onClick={() => openFileUpload()} className=" dashboard-btn lg:mt-0 md:mt-0 sm:mt-3 flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              {/* <Link> */}
+              <button onClick={() => openFileUpload()} className=" dashboard-btn lg:mt-0 md:mt-0 sm:mt-3 flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
                 Upload
               </button>
@@ -890,7 +896,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 )}
 
                                 {item.assetType === "DOC" && (
-                                  <div className="items-center flex justify-center">
+                                  <div className="items-center flex justify-center cursor-pointer"
+                                    onClick={() => { setPreviewDoc(true); setSelectDoc(item) }}
+                                  >
                                     <HiDocumentDuplicate className=" text-primary text-4xl mt-10 " />
                                   </div>
                                 )}
@@ -1160,6 +1168,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
 
       <Footer />
+
+      {previewDoc && (
+        <PreviewDoc HandleClose={HandleClose} fileType={selectDoc?.fileExtention} assetFolderPath={selectDoc?.assetFolderPath} />
+      )}
     </>
   );
 };
