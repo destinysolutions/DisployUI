@@ -51,7 +51,7 @@ import TextScrollDetailById from "../Components/Apps/TextScrollDetailById";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "../Components/ErrorFallback";
 import GridAssets from "../Components/Assests/GridAssets";
-import SettingApproval from "../Components/Settings/SettingApproval";
+// import SettingApproval from "../Components/Settings/SettingApproval";
 import FinalReport from "../Components/Reports/FinalReport";
 
 

@@ -195,7 +195,7 @@ export const openPriviewModel = createAsyncThunk("data/openPriviewModel", async 
       return {
         status: true,
         message: response.data.message,
-        data: response.data.data,
+        data: response.data.myComposition,
       };
     } else {
       return { status: false, message: "Failed to delete data" };

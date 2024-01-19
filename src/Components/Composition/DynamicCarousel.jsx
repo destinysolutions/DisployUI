@@ -5,6 +5,7 @@ const Carousel = ({ items, compositonData, from }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    console.log("items",items);
     const slideCount = items.length;
     let interval;
     if (from === "screen") {
