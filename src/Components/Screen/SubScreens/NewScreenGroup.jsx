@@ -12,7 +12,7 @@ import { IoMdRefresh } from "react-icons/io";
 import PropTypes from "prop-types";
 import Footer from "../../Footer";
 import { connection } from "../../../SignalR";
-import { AiOutlineCloudUpload, AiOutlinePlusCircle } from "react-icons/ai";
+import { AiOutlineCloudUpload, AiOutlinePlusCircle, AiOutlineSearch } from "react-icons/ai";
 import { Tooltip } from "@material-tailwind/react";
 import ScreenGroupModal from "./ScreenGroupModal";
 import ShowAssetModal from "./model/ShowGroupAssetModal";
@@ -465,8 +465,16 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleOpenPreview = (item) => {
     setIsPreviewOpen(true);
+    setLoadFirst(true)
     dispatch(openPriviewModel(item.screenGroupID))
-    setPreviewData(item)
+    .then((item) =>{
+      setPreviewData(item.payload.data)
+
+    })
+    // if (store.status === "priview") {
+    //   console.log("store.data",store.data);
+    //   setPreviewData(store.data)
+    // }
   };
 
   const handleClosePreview = () => {
@@ -474,9 +482,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     setLoadFirst(true)
   };
 
-  if (store.status === "priview") {
-    console.log("----------- store priview -",store.data);
-  }
 
   return (
     <>
@@ -493,7 +498,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
               </h1>
             </div>
             <div className="flex items-center sm:mt-3 flex-wrap gap-1">
-
               <button
                 data-tip data-for="Refresh Screen"
                 type="button"
@@ -556,6 +560,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
             </div>
           </div>
+
 
           {paginatedData && paginatedData.length > 0 ? paginatedData.map((item, i) => {
             const isAccordionOpen = openAccordionIndex === i;
