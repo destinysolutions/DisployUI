@@ -118,48 +118,45 @@ export const FORGOTPASSWORD = `${baseUrl}api/UserMaster/ForgotPassword`;
 
 export const CHNAGE_PASSWORD = `${baseUrl}api/UserMaster/ResetPassword?`;
 export const UPDATE_PASSWORD = `${baseUrl}api/UserMaster/UpdatePassword?`;
+export const GET_USER_BY_USERROLE = `${baseUrl}api/OrganizationUsersRole/GetUserbyUserRole`;
 
 // Weather App Api
-export const WEATHER_APP = `${baseUrl}api/WeatherApp/AddWeatherApp`
-export const GET_All_WEATHER = `${baseUrl}api/WeatherApp/GetWeatherApp`
-export const GET_WEATHER_BY_ID = `${baseUrl}api/WeatherApp/GetWeatherApp?`
-export const WEATHER_ASSIGN_SECREEN = `${baseUrl}api/WeatherApp/AssignWeatherToScreen?`
-export const WEATHER_ADD_TAG = `${baseUrl}api/WeatherApp/AddWeatherTags?`
+export const WEATHER_APP = `${baseUrl}api/WeatherApp/AddWeatherApp`;
+export const GET_All_WEATHER = `${baseUrl}api/WeatherApp/GetWeatherApp`;
+export const GET_WEATHER_BY_ID = `${baseUrl}api/WeatherApp/GetWeatherApp?`;
+export const WEATHER_ASSIGN_SECREEN = `${baseUrl}api/WeatherApp/AssignWeatherToScreen?`;
+export const WEATHER_ADD_TAG = `${baseUrl}api/WeatherApp/AddWeatherTags?`;
 export const USER_ROLE_GET = `${baseUrl}api/OrganizationUsersRole/ListOfModule`;
 export const USER_ROLE_COMBINE = `${baseUrl}api/OrganizationUsersRole/GetUserRolesCombine`;
 
-export const SCREEN_DELETE_ALL = `${baseUrl}api/NewScreen/DeleteAllScreenByIds`
-
+export const SCREEN_DELETE_ALL = `${baseUrl}api/NewScreen/DeleteAllScreenByIds`;
 
 // Group Screen
-export const GET_GROUP_SCREEN = `${baseUrl}api/GroupScreen/GetAllGroupData`
-export const ADD_GROUP_SCREEN = `${baseUrl}api/GroupScreen/AddGroupScreen`
-export const DELETE_SINGLE_GROUP_SCREEN = `${baseUrl}api/GroupScreen/DeleteGroupByID`
-export const DELETE_GROUP_SCREEN_ALL = `${baseUrl}api/GroupScreen/DeleteAllGroupScreen`
-export const GROUP_IN_SCREEN_DELETE_ALL = `${baseUrl}api/GroupScreen/DeleteScreenByID`
-export const GROUP_IN_SCREEN_ASSETS_UPDATE_ALL = `${baseUrl}api/GroupScreen/UpdateGroupMedia`
-export const PRIVIEW_GROUP_SCREEN = `${baseUrl}api/GroupScreen/GetGroupPreview`
+export const GET_GROUP_SCREEN = `${baseUrl}api/GroupScreen/GetAllGroupData`;
+export const ADD_GROUP_SCREEN = `${baseUrl}api/GroupScreen/AddGroupScreen`;
+export const DELETE_SINGLE_GROUP_SCREEN = `${baseUrl}api/GroupScreen/DeleteGroupByID`;
+export const DELETE_GROUP_SCREEN_ALL = `${baseUrl}api/GroupScreen/DeleteAllGroupScreen`;
+export const GROUP_IN_SCREEN_DELETE_ALL = `${baseUrl}api/GroupScreen/DeleteScreenByID`;
+export const GROUP_IN_SCREEN_ASSETS_UPDATE_ALL = `${baseUrl}api/GroupScreen/UpdateGroupMedia`;
+export const PRIVIEW_GROUP_SCREEN = `${baseUrl}api/GroupScreen/GetGroupPreview`;
 
 // screen Marge
-export const GET_MARGE_SCREEN = `${baseUrl}api/MergeScreen/GetAllMergeScreen`
-export const ADD_MERGE_SCREEN = `${baseUrl}api/MergeScreen/AddMergeScreen`
-export const DELETE_MERGE_SCREEN_ALL = `${baseUrl}api/MergeScreen/DeleteAllMergeScreen`
+export const GET_MARGE_SCREEN = `${baseUrl}api/MergeScreen/GetAllMergeScreen`;
+export const ADD_MERGE_SCREEN = `${baseUrl}api/MergeScreen/AddMergeScreen`;
+export const DELETE_MERGE_SCREEN_ALL = `${baseUrl}api/MergeScreen/DeleteAllMergeScreen`;
 
-
-
-export const SCREEN_DEACTIVATE_ACTIVATE  =  `${baseUrl}api/NewScreen/EnableScreen`
+export const SCREEN_DEACTIVATE_ACTIVATE = `${baseUrl}api/NewScreen/EnableScreen`;
 
 // sidebar
-export const GET_SIDEBAR_MENU = `${baseUrl}api/OrganizationUsersRole/SideBarMenu`
+export const GET_SIDEBAR_MENU = `${baseUrl}api/OrganizationUsersRole/SideBarMenu`;
 
 // reports
-export const AUDITREPORT = `${baseUrl}api/Report/GetAuditLogsReport`
-export const UPTIMEREPORT = `${baseUrl}api/Report/GetUptimeReport`
-export const SALESREPORT = `${baseUrl}api/Report/GetSalesReport`
-export const CANCELREPORT = `${baseUrl}api/Report/GetCancelReport`
-export const MEDIAREPORT = `${baseUrl}api/Report/GetAssetReport`
-export const BILLINGREPORT = `${baseUrl}api/Report/GetBillingReport`
+export const AUDITREPORT = `${baseUrl}api/Report/GetAuditLogsReport`;
+export const UPTIMEREPORT = `${baseUrl}api/Report/GetUptimeReport`;
+export const SALESREPORT = `${baseUrl}api/Report/GetSalesReport`;
+export const CANCELREPORT = `${baseUrl}api/Report/GetCancelReport`;
+export const MEDIAREPORT = `${baseUrl}api/Report/GetAssetReport`;
+export const BILLINGREPORT = `${baseUrl}api/Report/GetBillingReport`;
 
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115
-

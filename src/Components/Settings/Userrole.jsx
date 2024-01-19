@@ -5,13 +5,16 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { getUserRoleData } from "../../Redux/UserRoleSlice";
+import { getUserRoleData, roleBaseUserFind } from "../../Redux/UserRoleSlice";
 import { BiEdit } from "react-icons/bi";
-import { BsEyeFill } from "react-icons/bs";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import { RiUser3Fill } from "react-icons/ri";
 
 const Userrole = ({ searchValue }) => {
   const store = useSelector((state) => state.root.userRole);
+  const { token, user } = useSelector((state) => state.root.auth);
+  const authToken = `Bearer ${token}`;
+
   const [showuserroleModal, setshowuserroleModal] = useState(false);
   const [userRoleData, setUserRoleData] = useState([]);
   const [filteruserRoleData, setFilterUserRoleData] = useState([]);
@@ -19,10 +22,6 @@ const Userrole = ({ searchValue }) => {
   const [userRoleID, setUserRoleID] = useState("");
   const [userData, setUserData] = useState([]);
   const [selectedRoleIDs, setSelectedRoleIDs] = useState([]);
-
-  const modalRef = useRef(null);
-  const { token, user } = useSelector((state) => state.root.auth);
-  const authToken = `Bearer ${token}`;
   const [moduleTitle, setModuleTitle] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(6);
@@ -34,6 +33,9 @@ const Userrole = ({ searchValue }) => {
   const [showDynamicComponent, setShowDynamicComponent] = useState(false);
   const [firstLoad, setLoadFirst] = useState(true);
   const [showUsers, setShowUsers] = useState(false);
+
+  const modalRef = useRef(null);
+  const showUsersRef = useRef(null);
   const dispatch = useDispatch();
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -163,6 +165,10 @@ const Userrole = ({ searchValue }) => {
         console.log(error);
       });
   };
+  const handleRoleBasedUserGet = (userRoleID) => {
+    setShowUsers(true);
+    dispatch(roleBaseUserFind(userRoleID));
+  };
 
   useEffect(() => {
     if (firstLoad) {
@@ -170,13 +176,14 @@ const Userrole = ({ searchValue }) => {
       setLoadFirst(false);
     }
   }, [firstLoad, store]);
-  console.log(store.data, "store.data");
 
   const handleSaveUserRole = () => {
     if (!roleName) {
       toast.error("Role name is required");
       return;
     }
+
+    let isAtLeastOneCheckboxChecked = false;
 
     let data = JSON.stringify({
       orgUserRoleID: userRoleID || 0,
@@ -185,28 +192,54 @@ const Userrole = ({ searchValue }) => {
       userID: 0,
       mode: "Save",
       userCount: 0,
-      useraccess: moduleTitle.map((title) => {
-        const moduleId = title.moduleID;
-        const moduleName = `Module${moduleId}`;
+      useraccess: moduleTitle
+        .map((title) => {
+          const moduleId = title.moduleID;
+          const moduleName = `Module${moduleId}`;
 
-        // Customize the structure based on your needs
-        return {
-          moduleID: moduleId,
-          isView: selectedCheckboxes[moduleId]?.[moduleName]?.View || false,
-          isSave:
-            selectedCheckboxes[moduleId]?.[moduleName]?.CreateEdit || false,
-          isDelete: selectedCheckboxes[moduleId]?.[moduleName]?.Delete || false,
-          isApprove:
-            selectedCheckboxes[moduleId]?.[moduleName]?.Approval || false,
-          noofApproval: selectedLevel[moduleId],
-          listApproverDetails: Array.from({ length: 5 }, (_, index) => ({
-            appoverId: 0,
-            userId: selectedRoleIDs[moduleId]?.[index] || 0,
-            levelNo: index + 1,
-          })),
-        };
-      }),
+          const isView =
+            selectedCheckboxes[moduleId]?.[moduleName]?.View || false;
+          const isSave =
+            selectedCheckboxes[moduleId]?.[moduleName]?.CreateEdit || false;
+          const isDelete =
+            selectedCheckboxes[moduleId]?.[moduleName]?.Delete || false;
+          const isApprove =
+            selectedCheckboxes[moduleId]?.[moduleName]?.Approval || false;
+
+          // Check if at least one checkbox is checked for each module
+          if (isApprove || isView || isSave || isDelete) {
+            isAtLeastOneCheckboxChecked = true;
+          }
+
+          // Check if only the "Approval" checkbox is checked
+          if (isApprove && !(isView || isSave || isDelete)) {
+            isAtLeastOneCheckboxChecked = false;
+            return null;
+          }
+
+          return {
+            moduleID: moduleId,
+            isView: isView,
+            isSave: isSave,
+            isDelete: isDelete,
+            isApprove: isApprove,
+            noofApproval: selectedLevel[moduleId],
+            listApproverDetails: Array.from({ length: 5 }, (_, index) => ({
+              appoverId: 0,
+              userId: selectedRoleIDs[moduleId]?.[index] || 0,
+              levelNo: index + 1,
+            })),
+          };
+        })
+        .filter(Boolean), // Remove null values
+
+      // Save data only if the validation passes
     });
+
+    if (!isAtLeastOneCheckboxChecked) {
+      toast.error("Please select at least one checkbox for each module");
+      return; // Don't proceed with saving
+    }
 
     toast.loading("saving..");
     let config = {
@@ -359,9 +392,28 @@ const Userrole = ({ searchValue }) => {
       document.removeEventListener("click", handleClickOutside, true);
     };
   }, [handleClickOutside]);
-
   function handleClickOutside() {
     setshowuserroleModal(false);
+  }
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        showUsersRef.current &&
+        !showUsersRef.current.contains(event.target)
+      ) {
+        setShowUsers(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside, true);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, []);
+
+  function handleClickOutside() {
+    setShowUsers(false);
   }
 
   const DynamicDesignComponent = ({
@@ -489,10 +541,107 @@ const Userrole = ({ searchValue }) => {
 
                         <td
                           className="text-center"
-                          onClick={() => setShowUsers(true)}
+                          onClick={() => {
+                            handleRoleBasedUserGet(item.orgUserRoleID);
+                          }}
                         >
                           <button>{item.userCount}</button>
                         </td>
+                        {showUsers && (
+                          <div>
+                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                              <div
+                                ref={showUsersRef}
+                                className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                              >
+                                <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                                  <div className="relative w-full cursor-pointer z-40 rounded-full">
+                                    <button
+                                      className="text-xl absolute -right-3 -top-4 bg-black text-white rounded-full"
+                                      onClick={() => {
+                                        setShowUsers(false);
+                                      }}
+                                    >
+                                      <AiOutlineCloseCircle className="text-3xl" />
+                                    </button>
+                                  </div>
+                                  <div className="schedual-table bg-white rounded-xl shadow p-3">
+                                    <table className="w-full" cellPadding={20}>
+                                      <thead>
+                                        <tr className="items-center  table-head-bg">
+                                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                            UserName
+                                          </th>
+                                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                            Role
+                                          </th>
+                                          <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                            Status
+                                          </th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {store?.getUserData?.map(
+                                          (item, index) => (
+                                            <tr
+                                              key={index}
+                                              className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                            >
+                                              <td className="text-[#5E5E5E] text-center flex">
+                                                {item?.profilePhoto ? (
+                                                  <img
+                                                    className="w-10 h-10 rounded-full"
+                                                    src={item?.profilePhoto}
+                                                    alt="Jese image"
+                                                  />
+                                                ) : (
+                                                  <RiUser3Fill className="w-10 h-10" />
+                                                )}
+                                                <div className="ps-3 flex text-center">
+                                                  <div className="font-normal text-gray-500 mt-2">
+                                                    {item.firstName +
+                                                      " " +
+                                                      item.lastName}
+                                                  </div>
+                                                </div>
+                                              </td>
+                                              <td className="text-[#5E5E5E] text-center">
+                                                {item?.userRoleName}
+                                              </td>
+                                              <td className="text-[#5E5E5E] text-center">
+                                                {item.isActive == 1 ? (
+                                                  <span
+                                                    style={{
+                                                      backgroundColor:
+                                                        "#cee9d6",
+                                                    }}
+                                                    className=" text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                                  >
+                                                    Active
+                                                  </span>
+                                                ) : (
+                                                  <span
+                                                    style={{
+                                                      backgroundColor:
+                                                        "#d1d5db",
+                                                    }}
+                                                    className=" text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                                  >
+                                                    Inactive
+                                                  </span>
+                                                )}
+                                              </td>
+                                            </tr>
+                                          )
+                                        )}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                         <td className="text-center">
                           <button
                             onClick={() => {
@@ -540,78 +689,7 @@ const Userrole = ({ searchValue }) => {
               </tbody>
             </table>
           </div>
-          {/* {showUsers && (
-            <>
-              <div>
-                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                  <div
-                    // ref={selectScreenRef}
-                    className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
-                  >
-                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                      <div className="z-50 w-[30px] h-[30px] text-white bg-black rounded-full top-0 right-0 cursor-pointer ">
-                        <button
-                          className="p-1 text-xl"
-                          onClick={() => {
-                            setShowUsers(false);
-                          }}
-                        >
-                          <AiOutlineCloseCircle className="text-3xl" />
-                        </button>
-                      </div>
-                      <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3">
-                        <table className="w-full" cellPadding={20}>
-                          <thead>
-                            <tr className="items-center  table-head-bg">
-                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                Screen
-                              </th>
-                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                Status
-                              </th>
-                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                Google Location
-                              </th>
-                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                Associated Schedule
-                              </th>
-                              <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                Tags
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {userData.map((screen) => (
-                              <tr
-                                key={screen.screenID}
-                                className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                              >
-                                <td className="text-center">
-                                  <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
-                                    Live
-                                  </button>
-                                </td>
-                                <td className="text-center break-words">
-                                  {screen.googleLocation}
-                                </td>
 
-                                <td className="text-center break-words">
-                                  Schedule Name Till 28 June 2023
-                                </td>
-                                <td className="text-center break-words">
-                                  {screen.tags}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </>
-          )} */}
           <div className="flex justify-end mb-5 mt-2">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
