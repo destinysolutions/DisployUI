@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { ADD_GROUP_SCREEN, DELETE_GROUP_SCREEN_ALL, DELETE_SINGLE_GROUP_SCREEN, GET_GROUP_SCREEN, GET_MARGE_SCREEN, GROUP_IN_SCREEN_DELETE_ALL, UPDATE_NEW_SCREEN } from "../Pages/Api";
+import { ADD_GROUP_SCREEN, ADD_MERGE_SCREEN, DELETE_GROUP_SCREEN_ALL, DELETE_MERGE_SCREEN_ALL, DELETE_SINGLE_GROUP_SCREEN, GET_GROUP_SCREEN, GET_MARGE_SCREEN, GROUP_IN_SCREEN_DELETE_ALL, UPDATE_NEW_SCREEN } from "../Pages/Api";
 
 const initialState = {
   data: [],
@@ -46,10 +46,10 @@ export const getMargeData = createAsyncThunk("data/fetchApiData", async (payload
 );
 
 // Save ScreenGroup 
-export const saveGroupData = createAsyncThunk("data/save", async (payload,thunkAPI) => {
+export const saveMergeData = createAsyncThunk("data/save", async (payload,thunkAPI) => {
   try {
     const token = thunkAPI.getState().root.auth.token;
-    const response = await axios.post(ADD_GROUP_SCREEN, payload,{headers: {Authorization: `Bearer ${token}`}});
+    const response = await axios.post(ADD_MERGE_SCREEN, payload,{headers: {Authorization: `Bearer ${token}`}});
     if (response.data.status) {
       return {
         status: true,
@@ -68,8 +68,8 @@ export const saveGroupData = createAsyncThunk("data/save", async (payload,thunkA
 export const screenGroupDelete = createAsyncThunk("data/screenGroupDelete", async (payload, thunkAPI) => {
   try {
     const token = thunkAPI.getState().root.auth.token;
-    const queryParams = new URLSearchParams({ ScreenGroupID: payload }).toString();
-    const response = await axios.delete(`${DELETE_SINGLE_GROUP_SCREEN}?${queryParams}`,{headers: { Authorization: `Bearer ${token}` }});
+    const queryParams = new URLSearchParams({ MergeScreenIds: payload }).toString();
+    const response = await axios.delete(`${DELETE_MERGE_SCREEN_ALL}?${queryParams}`,{headers: { Authorization: `Bearer ${token}` }});
 
     if (response.data.status) {
       return {
@@ -86,11 +86,11 @@ export const screenGroupDelete = createAsyncThunk("data/screenGroupDelete", asyn
 });
 
 // ScreenGroup Deleted singl
-export const screenGroupDeleteAll = createAsyncThunk("data/screenGroupDeleteAll", async (payload, thunkAPI) => {
+export const screenMergeDeleteAll = createAsyncThunk("data/screenMergeDeleteAll", async (payload, thunkAPI) => {
   try {
     const token = thunkAPI.getState().root.auth.token;
-    const queryParams = new URLSearchParams({ ScreenGroupIds: payload }).toString();
-    const response = await axios.delete(`${DELETE_GROUP_SCREEN_ALL}?${queryParams}`,{headers: { Authorization: `Bearer ${token}` }});
+    const queryParams = new URLSearchParams({ MergeScreenIds: payload }).toString();
+    const response = await axios.delete(`${DELETE_MERGE_SCREEN_ALL}?${queryParams}`,{headers: { Authorization: `Bearer ${token}` }});
 
     if (response.data.status) {
       return {
@@ -202,14 +202,14 @@ const screenGroupSlice = createSlice({
         state.error = action.error.message;
       })
 
-      .addCase(saveGroupData.pending, (state) => {      // Save ScreenGroup
+      .addCase(saveMergeData.pending, (state) => {      // Save ScreenGroup
         state.status = "loading";
       })
-      .addCase(saveGroupData.fulfilled, (state, action) => {    // Save ScreenGroup
+      .addCase(saveMergeData.fulfilled, (state, action) => {    // Save ScreenGroup
         state.status = "succeeded";
         state.message = action.payload.message;
       })
-      .addCase(saveGroupData.rejected, (state, action) => {     // Save ScreenGroup
+      .addCase(saveMergeData.rejected, (state, action) => {     // Save ScreenGroup
         state.status = "failed";
         state.message = action.error.message || "Failed to save data";
       })
@@ -238,14 +238,14 @@ const screenGroupSlice = createSlice({
         state.error = action.error.message || "Failed to update data";
       })
 
-      .addCase(screenGroupDeleteAll.pending, (state) => {      // screenGroupDeleteAll
+      .addCase(screenMergeDeleteAll.pending, (state) => {      // screenMergeDeleteAll
         state.status = "loading";
       })
-      .addCase(screenGroupDeleteAll.fulfilled, (state, action) => {    // screenGroupDeleteAll
+      .addCase(screenMergeDeleteAll.fulfilled, (state, action) => {    // screenMergeDeleteAll
         state.status = "succeeded";
         state.message = action.payload.message;
       })
-      .addCase(screenGroupDeleteAll.rejected, (state, action) => {     // screenGroupDeleteAll
+      .addCase(screenMergeDeleteAll.rejected, (state, action) => {     // screenMergeDeleteAll
         state.status = "failed";
         state.error = action.error.message || "Failed to delete data";
       })

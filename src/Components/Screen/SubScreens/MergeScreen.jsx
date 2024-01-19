@@ -13,11 +13,9 @@ import PropTypes from "prop-types";
 import Footer from "../../Footer";
 import { connection } from "../../../SignalR";
 import { AiOutlineCloudUpload, AiOutlinePlusCircle } from "react-icons/ai";
-import { Tooltip } from "@material-tailwind/react";
 import ScreenGroupModal from "./ScreenGroupModal";
 import ShowAssetModal from "./model/ShowGroupAssetModal";
 import { useDispatch, useSelector } from "react-redux";
-// import { handleGetScreen } from "../../../Redux/Screenslice";
 import { handleGetAllAssets } from "../../../Redux/Assetslice";
 import { handleGetAllSchedule } from "../../../Redux/ScheduleSlice";
 import { handleGetCompositions } from "../../../Redux/CompositionSlice";
@@ -26,15 +24,14 @@ import {
   handleGetYoutubeData,
 } from "../../../Redux/AppsSlice";
 import { BiEdit, BiSave } from "react-icons/bi";
-import { addTagsAndUpdate, getGroupData, groupInScreenDelete, resetStatus, saveGroupData, screenGroupDelete, screenGroupDeleteAll, updateGroupData } from "../../../Redux/ScreenGroupSlice";
 import toast, { CheckmarkIcon } from "react-hot-toast";
 import Swal from "sweetalert2";
 import { IoClose } from "react-icons/io5";
 import AddOrEditTagPopup from "../../AddOrEditTagPopup";
 import PreviewModel from "./model/previewModel";
 import { useNavigate } from "react-router-dom";
-import { getMargeData } from "../../../Redux/ScreenMergeSlice";
-
+import { getMargeData, addTagsAndUpdate, resetStatus, screenGroupDelete, saveMergeData, screenMergeDeleteAll } from "../../../Redux/ScreenMergeSlice";
+import ReactTooltip from 'react-tooltip';
 
 const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const history = useNavigate();
@@ -61,6 +58,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const [editIndex, setEditIndex] = useState(-1); // Initially no index is being edited
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]); // Multipal check
+  console.log('selectedItems', selectedItems)
   const [editGroupID, setEditGroupID] = useState()
   const [getGroup, setGetGroup] = useState()   // used to singl group in all screenId get and handl save asstes
 
@@ -204,10 +202,10 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
 
-    if (selectedItems.length === store.data?.length) {
+    if (selectedItems?.length === store.data?.length) {
       setSelectedItems([]);
     } else {
-      const allIds = store.data?.map((item) => item.screenGroupID);
+      const allIds = store.data?.map((item) => item?.mergeScreenId);
       setSelectedItems(allIds);
     }
   };
@@ -226,40 +224,27 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const handleAssetUpdate = () => {
   };
 
-  const editGroupName = (index) => {     // GroupNameUpdate
+  const editMergeScreenName = (index) => {     // mergeNameUpdate
     setEditIndex(index);
-    setNewGroupName(store.data[index].screenGroupName);
-    setEditGroupID(store.data[index].screenGroupID)
+    setNewGroupName(store.data[index].screeName);
+    setEditGroupID(store.data[index].mergeScreenId)
   }
 
   const updateGroupName = async (index) => {    // GroupNameUpdate
     const payload = {
-      screenGroupID: editGroupID,
-      screenGroupName: newGroupName
+      mergeScreenId: editGroupID,
+      screeName: newGroupName
     }
-    await dispatch(saveGroupData(payload))
+    await dispatch(saveMergeData(payload))
     setEditIndex(-1)
   }
 
   const newAddMergeScreen = (item) => {
-    if (item) {
-      setLabel("Update")
-      setEditSelectedScreen(item)
-    } else {
-      setLabel("Save")
-      history("/add-mergescreen");
-    }
+    setLabel("Save")
+    history("/add-mergescreen");
     setIsModalOpen(true)
   }
 
-  // New add groupScreen
-  const handleSaveNew = async (payload) => {
-    await dispatch(saveGroupData(payload))
-  };
-
-  const updateScreen = async (payload) => {
-    await dispatch(saveGroupData(payload))
-  }
 
   const handleDeleteGroup = (item) => {
     Swal.fire({
@@ -272,7 +257,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(screenGroupDelete(item.screenGroupID))
+        dispatch(screenGroupDelete(item.mergeScreenId))
         setSelectedItems([]);
         setSelectAll(false)
         callSignalR()
@@ -280,7 +265,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     })
   };
 
-  const handleDeleteGroupAll = () => {
+  const handleDeleteMergeAll = () => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -291,17 +276,13 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(screenGroupDeleteAll(selectedItems))
+        dispatch(screenMergeDeleteAll(selectedItems))
         setSelectedItems([]);
         setSelectAll(false)
         callSignalR()
       }
     })
   };
-
-  const deleteGroupInScreen = (payload) => {
-    dispatch(groupInScreenDelete(payload))
-  }
 
   const handleTagsUpdate = (tags) => {
     const {
@@ -324,7 +305,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     } = tagUpdateScreeen;
 
     let data = {
-      screenID: tagUpdateScreeen?.screenID,
+      screenID: tagUpdateScreeen.screenId,
       otp,
       googleLocation,
       timeZone,
@@ -368,7 +349,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     setIsPreviewOpen(false);
   };
 
-  console.log("marge screen ",store.data)
+  // console.log("marge screen ", store.data)
 
   return (
     <>
@@ -385,74 +366,60 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
               </h1>
             </div>
             <div className="flex items-center sm:mt-3 flex-wrap gap-1">
-              <Tooltip
-                content="Refresh Screen"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
+              <button
+              data-tip data-for="Refresh Screen"
+                type="button"
+                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                onClick={() => handleRefres()}
               >
-                <button
-                  type="button"
-                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                  onClick={() => handleRefres()}
-                >
-                  <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
-                </button>
-              </Tooltip>
-              <Tooltip
-                content="Screen Group"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
-              >
-                <button
-                  type="button"
-                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                  onClick={() => newAddMergeScreen()}
-                >
-                  <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
-                </button>
-              </Tooltip>
+                <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
+                <ReactTooltip id="Refresh Screen" place="left" type="warning" effect="float">
+                    <span>Refresh Screen</span>
+                  </ReactTooltip>
+              </button>
 
-              <Tooltip
-                content="Select All ScreenGroup"
-                placement="bottom-end"
-                className="bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
+              <button
+              data-tip data-for="New MergeScreen"
+                type="button"
+                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                onClick={() => newAddMergeScreen()}
               >
-                <button
-                  type="button"
-                  className="flex align-middle border-white text-white items-center"
-                >
-                  <input type="checkbox" className="w-6 h-5" checked={selectAll} onChange={handleSelectAll} />
-                </button>
-              </Tooltip>
+                <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
+                <ReactTooltip id="New MergeScreen" place="left" type="warning" effect="float">
+                    <span>New MergeScreen</span>
+                  </ReactTooltip>
+              </button>
+
+              {store.data?.length > 0 && (
+                <div>
+                  <button
+                    data-tip data-for="Select All"
+                    type="button"
+                    className="flex align-middle border-white text-white items-center"
+                  >
+                    <input type="checkbox" className="w-6 h-5" checked={selectAll} onChange={handleSelectAll} readOnly />
+                  </button>
+
+                  <ReactTooltip id="Select All" place="left" type="warning" effect="float">
+                    <span>Select All</span>
+                  </ReactTooltip>
+
+                </div>
+              )}
+
               {selectedItems.length > 0 && (
-                <Tooltip
-                  content="All Delete"
-                  placement="bottom-end"
-                  className="bg-SlateBlue text-white z-10 ml-5"
-                  animate={{
-                    mount: { scale: 1, y: 0 },
-                    unmount: { scale: 1, y: 10 },
-                  }}
-                >
-                  <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                <div>
+                  <button data-tip data-for="All Delete" className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
                     <RiDeleteBin5Line
                       className="text-3xl p-1 hover:text-white"
-                      onClick={() => handleDeleteGroupAll()}
+                      onClick={() => handleDeleteMergeAll()}
                     />
                   </button>
-                </Tooltip>
+
+                  <ReactTooltip id="All Delete" place="left" type="warning" effect="float">
+                    <span>Delete</span>
+                  </ReactTooltip>
+                </div>
               )}
 
             </div>
@@ -483,7 +450,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                     ) : (
                       <>
                         <h1 className="text-lg capitalize">{item.screeName}</h1>
-                        <BiEdit className="cursor-pointer text-xl text-[#0000FF]" onClick={() => editGroupName(i)} />
+                        <BiEdit className="cursor-pointer text-xl text-[#0000FF]" onClick={() => editMergeScreenName(i)} />
                       </>
                     )}
                   </div>
@@ -492,90 +459,52 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                     <div className=" flex items-center">
                       {isAccordionOpen && (
                         <>
-                          <Tooltip
-                            content="Add Screen"
-                            placement="bottom-end"
-                            className=" bg-SlateBlue text-white z-10 ml-5"
-                            animate={{
-                              mount: { scale: 1, y: 0 },
-                              unmount: { scale: 1, y: 10 },
-                            }}
-                          >
-                            <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() => newAddMergeScreen(item)}>
-                              <b>+</b>
-                            </button>
-                          </Tooltip>
+                          <button data-tip data-for="Preview" className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() => handleOpenPreview(item)}>
+                            Preview
+                            <ReactTooltip id="Preview" place="left" type="warning" effect="float">
+                                <span>Preview</span>
+                              </ReactTooltip>
+                          </button>
 
-                          <Tooltip
-                            content="Preview"
-                            placement="bottom-end"
-                            className=" bg-SlateBlue text-white z-10 ml-5"
-                            animate={{
-                              mount: { scale: 1, y: 0 },
-                              unmount: { scale: 1, y: 10 },
-                            }}
+                          <button
+                            data-tip data-for="Upload"
+                            className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                            onClick={() => { setShowAssetModal(true); setGetGroup(item) }}
                           >
-                            <button className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() =>handleOpenPreview(item)}>
-                              Preview
-                            </button>
-                          </Tooltip>
+                            <TbUpload className="text-3xl p-1 hover:text-white" />
+                            <ReactTooltip id="Upload" place="left" type="warning" effect="float">
+                                <span>Upload</span>
+                              </ReactTooltip>
+                          </button>
+                        
 
-                          <Tooltip
-                            content="Upload"
-                            placement="bottom-end"
-                            className=" bg-SlateBlue text-white z-10 ml-5"
-                            animate={{
-                              mount: { scale: 1, y: 0 },
-                              unmount: { scale: 1, y: 10 },
-                            }}
-                          >
-                            <button
-                              className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                              onClick={() => { setShowAssetModal(true); setGetGroup(item) }}
-                            >
-                              <TbUpload className="text-3xl p-1 hover:text-white" />
+                          {!selectedItems?.length && (
+                            <button data-tip data-for="All Delete" className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                              <RiDeleteBin5Line
+                                className="text-3xl p-1 hover:text-white"
+                                onClick={() => handleDeleteGroup(item)}
+                              />
+                              <ReactTooltip id="All Delete" place="left" type="warning" effect="float">
+                                <span>Delete</span>
+                              </ReactTooltip>
                             </button>
-                          </Tooltip>
-                          <Tooltip
-                            content="Delete"
-                            placement="bottom-end"
-                            className=" bg-SlateBlue text-white z-10 ml-5"
-                            animate={{
-                              mount: { scale: 1, y: 0 },
-                              unmount: { scale: 1, y: 10 },
-                            }}
-                          >
-                            {!selectedItems?.length && (
-                              <button className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
-                                <RiDeleteBin5Line
-                                  className="text-3xl p-1 hover:text-white"
-                                  onClick={() => handleDeleteGroup(item)}
-                                />
-                              </button>
-                            )}
-                          </Tooltip>
+                          )}
                         </>
                       )}
 
                       {selectAll ? (<CheckmarkIcon className="w-5 h-5" />) : (
-                        <Tooltip
-                        content="Select Group"
-                        placement="bottom-end"
-                        className=" bg-SlateBlue text-white z-10 ml-5"
-                        animate={{
-                          mount: { scale: 1, y: 0 },
-                          unmount: { scale: 1, y: 10 },
-                        }}
-                      >
-                        <button>
+                        <div>
                           <input
                             type="checkbox"
+                            data-tip data-for="Select"
                             className=" mx-1 w-6 h-5 mt-2"
-                            checked={selectedItems.includes(item.screenGroupID)}
-                            onClick={() => handleCheckboxChange(item.screenGroupID)}
+                            checked={selectedItems.includes(item?.mergeScreenId)}
+                            onChange={() => handleCheckboxChange(item?.mergeScreenId)}
                           />
-                        </button>
-                        </Tooltip>
+                          <ReactTooltip id="Select" place="left" type="warning" effect="float">
+                            <span>Select</span>
+                          </ReactTooltip>
+                        </div>
                       )}
 
                       <button>
@@ -589,6 +518,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                           </div>
                         )}
                       </button>
+
                     </div>
                   </div>
                 </div>
@@ -631,15 +561,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                               Tags
                             </button>
                           </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
-                              Action
-                            </button>
-                          </th>
                         </tr>
                       </thead>
                       <tbody>
-                        {console.log("item",item)}
                         {isAccordionOpen && item && item.mergeSubScreenDeatils?.length > 0 && item.mergeSubScreenDeatils.map((screen, index) => {
                           return (
                             <tr
@@ -665,7 +589,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                               </td>
                               <td className="p-2 text-center">
                                 <button
-                                style={{width:"max-content"}}
+                                  style={{ width: "max-content" }}
                                   className="flex items-centerborder-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500"
                                 >
                                   {screen.assetName}
@@ -675,6 +599,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                               <td className="break-words	w-[150px] p-2 text-center">
                                 {screen.scheduleName}
                               </td>
+                              {console.log("screen", screen)}
                               <td
                                 title={screen?.tags && screen?.tags}
                                 className="mx-auto  p-2 text-center">
@@ -717,11 +642,6 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                     setTagUpdateScreeen={setTagUpdateScreeen}
                                   />
                                 )}
-                              </td>
-                              <td className="p-2 justify-center flex ">
-                                <div className="cursor-pointer text-xl flex gap-3 text-right">
-                                  <MdDeleteForever className="text-[#EE4B2B]" onClick={() => deleteGroupInScreen({ ScreenGroupListID: screen.screenGroupListID })} />
-                                </div>
                               </td>
                             </tr>
                           );
@@ -814,7 +734,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {isPreviewOpen && <PreviewModel open={isPreviewOpen} onClose={handleClosePreview} previewData={previewData} />} 
+      {isPreviewOpen && <PreviewModel open={isPreviewOpen} onClose={handleClosePreview} previewData={previewData} />}
 
       <Footer />
     </>
