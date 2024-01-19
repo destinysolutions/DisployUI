@@ -1955,7 +1955,7 @@ const Users = ({ searchValue }) => {
                               className="border-b border-b-[#E4E6FF] p-4 mb-4 rounded-lg bg-white shadow-md"
                               key={index}
                             >
-                              <th className="text-[#5E5E5E] text-center flex">
+                              <td className="text-[#5E5E5E] text-center flex">
                                 {item?.profilePhoto ? (
                                   <img
                                     className="w-10 h-10 rounded-full"
@@ -1970,7 +1970,7 @@ const Users = ({ searchValue }) => {
                                     {item.firstName + " " + item.lastName}
                                   </div>
                                 </div>
-                              </th>
+                              </td>
 
                               <td className="text-[#5E5E5E] text-center">
                                 {item?.userRoleName}

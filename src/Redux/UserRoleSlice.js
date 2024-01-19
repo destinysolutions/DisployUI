@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { USER_ROLE_COMBINE } from "../Pages/Api";
+import { GET_USER_BY_USERROLE, USER_ROLE_COMBINE } from "../Pages/Api";
 
 const initialState = {
   data: [],
@@ -9,6 +9,7 @@ const initialState = {
   success: null,
   message: null,
   type: null,
+  getUserData: [],
 };
 
 export const getUserRoleData = createAsyncThunk(
@@ -28,6 +29,34 @@ export const getUserRoleData = createAsyncThunk(
   }
 );
 
+export const roleBaseUserFind = createAsyncThunk(
+  "data/roleBaseUserFind",
+  async (payload, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().root.auth.token;
+      const queryParams = new URLSearchParams({
+        UserRoleID: payload,
+      }).toString();
+      const response = await axios.get(
+        `${GET_USER_BY_USERROLE}?${queryParams}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.data.status) {
+        return {
+          status: true,
+          message: response.data.message,
+          data: response.data.data,
+        };
+      } else {
+        return { status: false, message: "Failed to data" };
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
 const userRoleSlice = createSlice({
   name: "userRole",
   initialState,
@@ -42,16 +71,24 @@ const userRoleSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getUserRoleData.pending, (state) => {
-        // getScreenGroup
         state.status = null;
       })
       .addCase(getUserRoleData.fulfilled, (state, action) => {
-        // getScreenGroup
         state.status = null;
         state.data = action.payload?.data;
       })
       .addCase(getUserRoleData.rejected, (state, action) => {
-        // getScreenGroup
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(roleBaseUserFind.pending, (state) => {
+        state.status = null;
+      })
+      .addCase(roleBaseUserFind.fulfilled, (state, action) => {
+        state.status = null;
+        state.getUserData = action.payload?.data;
+      })
+      .addCase(roleBaseUserFind.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });

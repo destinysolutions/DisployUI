@@ -41,13 +41,11 @@ const Sidebar = ({ sidebarOpen }) => {
 
   const [menuData, setMenuData] = useState([]);
 
-
   const store = useSelector((state) => state.root.sidebarData);
 
   useEffect(() => {
-    dispatch(getMenuAll())
+    dispatch(getMenuAll());
   }, []);
-
 
   useEffect(() => {
     if (store.data.menu) {
@@ -59,10 +57,12 @@ const Sidebar = ({ sidebarOpen }) => {
           icon: <img src={item.icon} alt={item.alt} className="w-6" />,
           subMenus: item.submenu
             ? item.submenu.map((submenu) => ({
-              title: submenu.pageName,
-              path: submenu.path,
-              icon: <img src={submenu.icon} alt={submenu.alt} className="w-6" />,
-            }))
+                title: submenu.pageName,
+                path: submenu.path,
+                icon: (
+                  <img src={submenu.icon} alt={submenu.alt} className="w-6" />
+                ),
+              }))
             : null,
         }))
         .sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
@@ -101,8 +101,6 @@ const Sidebar = ({ sidebarOpen }) => {
       setMenuData(formattedMenuData);
     }
   }, [store.data]);
-
-
 
   // console.log("store ------------------- ", store.data.menu, { menuData });
 
@@ -189,16 +187,14 @@ const Sidebar = ({ sidebarOpen }) => {
       title: "Reports",
       cName: "nav-text link-items",
       path: "/reports",
-      icon: (
-        <img src={reportIcon} alt="Reports" className="w-6" />
-      ),
+      icon: <img src={reportIcon} alt="Reports" className="w-6" />,
     },
-    {
-      title: "Approval",
-      cName: "nav-text link-items",
-      path: "/approval",
-      icon: <img src={approvalIcon} alt="Approval" className="w-6" />
-    },
+    // {
+    //   title: "Approval",
+    //   cName: "nav-text link-items",
+    //   path: "/approval",
+    //   icon: <img src={approvalIcon} alt="Approval" className="w-6" />
+    // },
     // {
     //   title: "Social Media Tools",
     //   cName: "nav-text link-items",
@@ -314,7 +310,10 @@ const Sidebar = ({ sidebarOpen }) => {
                   const submenuIsOpen = submenuStates[item.title] || false;
                   const isActive = window.location.pathname === item.path; // Check if the item is active
                   return (
-                    <li key={index} className={`${item.cName} ${isActive ? 'active' : ''}`}>
+                    <li
+                      key={index}
+                      className={`${item.cName} ${isActive ? "active" : ""}`}
+                    >
                       <div className="flex items-center">
                         <Link to={item.path}>
                           <div>{item.icon}</div>
@@ -324,8 +323,9 @@ const Sidebar = ({ sidebarOpen }) => {
                         {item.subMenus && (
                           <div className="ml-5 absolute right-0">
                             <FiIcons.FiChevronDown
-                              className={`${submenuIsOpen ? "transform rotate-180" : ""
-                                } transition-transform duration-300 text-white `}
+                              className={`${
+                                submenuIsOpen ? "transform rotate-180" : ""
+                              } transition-transform duration-300 text-white `}
                               onClick={(e) => {
                                 e.preventDefault();
                                 updateSubmenuState(item.title, !submenuIsOpen);
@@ -365,7 +365,10 @@ const Sidebar = ({ sidebarOpen }) => {
                 {MenuIcons.map((item, MIindex) => {
                   const isActive = window.location.pathname === item.path; // Check if the item is active
                   return (
-                    <li key={MIindex} className={`${item.cName} ${isActive ? 'active' : ''}`}>
+                    <li
+                      key={MIindex}
+                      className={`${item.cName} ${isActive ? "active" : ""}`}
+                    >
                       <div
                         className="flex"
                         onClick={() => {
@@ -390,8 +393,9 @@ const Sidebar = ({ sidebarOpen }) => {
         <div className="menu-bars self-center z-[9999] min-h-[60px] max-h-[60px] flex items-center">
           <HiOutlineMenuAlt2
             onClick={handleSidebarToggle}
-            className={` text-SlateBlue text-3xl fixed ${mobileSidebar && "hidden"} ${mobileSidebar ? "ml-0" : "ml-5"
-              }`}
+            className={` text-SlateBlue text-3xl fixed ${
+              mobileSidebar && "hidden"
+            } ${mobileSidebar ? "ml-0" : "ml-5"}`}
           />
         </div>
       )}
@@ -426,8 +430,9 @@ const Sidebar = ({ sidebarOpen }) => {
                       {item.subMenus && (
                         <div className="ml-5 absolute right-0">
                           <FiIcons.FiChevronDown
-                            className={`${activeSubmenu ? "transform rotate-180" : ""
-                              } transition-transform duration-300 text-white 
+                            className={`${
+                              activeSubmenu ? "transform rotate-180" : ""
+                            } transition-transform duration-300 text-white 
                           `}
                             onClick={() => setActiveSubmenu(!activeSubmenu)}
                           />

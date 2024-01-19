@@ -8,6 +8,7 @@ import { useState } from "react";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import SaveAssignScreenModal from "./SaveAssignScreenModal";
 import Footer from "../Footer";
+import dragon from "../../images/ScreenImg/dragon.svg";
 
 const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectScreenModal, setSelectScreenModal] = useState(false);
@@ -17,12 +18,12 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
       </div>
-      <div className="pt-16 px-5 page-contain">
+      <div className="pt-24 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
           <div className="lg:flex lg:justify-between sm:block  items-center">
             <div className="flex items-center">
               <h1 className="not-italic font-medium lg:text-2xl md:text-2xl sm:text-xl text-[#001737] lg:mb-0 md:mb-0 sm:mb-4 ">
-                weather schedule
+                Weather Schedule
               </h1>
             </div>
           </div>
@@ -121,7 +122,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
               <div className="lg:col-span-6 md:col-span-12 sm:col-span-12 xs:col-span-12 shadow-md bg-white rounded-lg flex items-center">
                 <div>
-                  <img src="../../../ScreenImg/dragon.svg" className="w-full" />
+                  <img src={dragon} className="w-full" />
                 </div>
               </div>
             </div>
