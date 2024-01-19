@@ -31,6 +31,7 @@ import moment from "moment";
 import ScreenAssignModal from "../ScreenAssignModal";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { connection } from "../../SignalR";
+import PreviewDoc from "./PreviewDoc";
 const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   NewFolderDialog.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -58,7 +59,8 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   const [editMode, setEditMode] = useState(null);
   const [FolderDisable, setFolderDisable] = useState(false);
   const [selectdata, setSelectData] = useState({});
-
+  const [previewDoc, setPreviewDoc] = useState(false);
+  const [selectDoc, setSelectDoc] = useState(null);
   const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
@@ -469,6 +471,10 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
       });
   };
 
+  const HandleClose = () => {
+    setPreviewDoc(false)
+  }
+
   return (
     <>
       {showImageAssetModal && (
@@ -826,8 +832,9 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                           )}
                           {item.assetType === "DOC" && (
                             <a
-                              href={item.assetFolderPath}
-                              target="_blank"
+                              className="cursor-pointer"
+                              onClick={() => { setPreviewDoc(true); setSelectDoc(item) }}
+                              // href={item.assetFolderPath}
                               rel="noopener noreferrer"
                             >
                               {item.assetName}
@@ -909,6 +916,9 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
           )}
         </div>
       </div>
+      {previewDoc && (
+        <PreviewDoc HandleClose={HandleClose} fileType={selectDoc?.fileExtention} assetFolderPath={selectDoc?.assetFolderPath} />
+      )}
     </>
   );
 };
