@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../../../Styles/sidebar.css";
 import "../../../Styles/screen.css";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
@@ -31,10 +31,12 @@ import toast, { CheckmarkIcon } from "react-hot-toast";
 import Swal from "sweetalert2";
 import { IoClose } from "react-icons/io5";
 import AddOrEditTagPopup from "../../AddOrEditTagPopup";
-import { UPDATE_NEW_SCREEN } from "../../../Pages/Api";
+import { SELECT_BY_LIST, UPDATE_NEW_SCREEN } from "../../../Pages/Api";
 import { handleChangeScreens } from "../../../Redux/Screenslice";
 import PreviewModel from "./model/previewModel";
 import ReactTooltip from 'react-tooltip';
+import PreviewComposition from "../../Composition/PreviewComposition";
+import axios from "axios";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
@@ -48,6 +50,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
+  const modalRef = useRef(null);
 
   const [loadFirst, setLoadFirst] = useState(true);
 
@@ -84,6 +87,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   //PreView model
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState();
+  const [loading, setLoading] = useState(false);
+  const [layotuDetails, setLayotuDetails] = useState(null);
 
 
   // pagination
@@ -405,7 +410,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       screenName: null,
       operation: "Update",
     };
-
     dispatch(addTagsAndUpdate(data))
 
   };
@@ -420,7 +424,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       AssetType: '',
       FilePath: '',
     };
-
     if (selectedAsset.assetID) {
       payload.MediaID = selectedAsset.assetID;
       payload.AssetName = selectedAsset.assetName;
@@ -428,15 +431,14 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       payload.FilePath = selectedAsset.assetFolderPath;
       payload.MediaDetailID = 1;
     }
-
     if (selectedComposition.compositionID) {
+      console.log("selectedComposition",selectedComposition);
       payload.AssetName = selectedComposition.compositionName
       payload.MediaID = selectedComposition.compositionID;
-      payload.AssetType = '';
-      payload.FilePath = '';
+      payload.AssetType = "composition";
+      payload.FilePath = 'composition';
       payload.MediaDetailID = 3;
     }
-
     if (selectedTextScroll.textScroll_Id) {
       payload.AssetName = selectedTextScroll.instanceName
       payload.MediaID = selectedTextScroll.textScroll_Id;
@@ -444,7 +446,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       payload.FilePath = '';
       payload.MediaDetailID = 4;
     }
-
     if (selectedYoutube.compositionID) {
       payload.AssetName = selectedYoutube.instanceName
       payload.MediaID = selectedYoutube.compositionID;
@@ -452,25 +453,63 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       payload.FilePath = '';
       payload.MediaDetailID = 3;
     }
-
     if (selectedYoutube.youtubeId) {
       payload.MediaID = selectedYoutube.instanceName;
       payload.AssetType = '';
       payload.FilePath = '';
       payload.MediaDetailID = 5;
     }
-
     dispatch(groupAssetsInUpdateScreen(payload))
   }
 
+  const handleFetchLayoutById = (id) => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${SELECT_BY_LIST}?LayoutID=${id}`,
+      headers: { Authorization: authToken },
+      data: "",
+    };
+    axios
+      .request(config)
+      .then((response) => {
+        if (response?.data?.status == 200) {
+          setLayotuDetails(response.data?.data[0]);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const handleOpenPreview = (item) => {
-    setIsPreviewOpen(true);
+    setLoading(true)
     setLoadFirst(true)
     dispatch(openPriviewModel(item.screenGroupID))
-    .then((item) =>{
-      setPreviewData(item.payload.data)
+      .then((item) => {
+        handleFetchLayoutById(item.payload.data?.[0]?.layoutID);
+        let obj = {};
+        for (const [
+          key,
+          value,
+        ] of item.payload.data?.[0]?.compositionPossition.entries()) {
+          const arr = value?.schedules.map((item) => {
+            return {
+              ...item,
+              width: value?.width,
+              height: value?.height,
+              top: value?.top,
+              left: value?.left,
+            };
+          });
+          obj[key + 1] = [...arr];
+        }
+        const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
+        setPreviewData(newdd)
+      })
+    setIsPreviewOpen(true);
+    setLoading(false)
 
-    })
     // if (store.status === "priview") {
     //   console.log("store.data",store.data);
     //   setPreviewData(store.data)
@@ -480,6 +519,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const handleClosePreview = () => {
     setIsPreviewOpen(false);
     setLoadFirst(true)
+    setLayotuDetails(null)
+    setPreviewData()
   };
 
 
@@ -892,8 +933,15 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {isPreviewOpen && <PreviewModel open={isPreviewOpen} onClose={handleClosePreview} previewData={previewData} />}
-
+      {isPreviewOpen && (
+        <PreviewComposition
+          modalRef={modalRef}
+          closeModal={handleClosePreview}
+          loading={loading}
+          layotuDetails={layotuDetails}
+          previewModalData={previewData}
+          modalVisible={isPreviewOpen} />
+      )}
       <Footer />
     </>
   );
