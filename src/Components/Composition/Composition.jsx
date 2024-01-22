@@ -41,6 +41,7 @@ import {
   handleGetCompositions,
   resetStatus,
 } from "../../Redux/CompositionSlice";
+import PreviewComposition from "./PreviewComposition";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -920,46 +921,46 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               {(composition?.tags === "" ||
                                 composition?.tags === null) && (
-                                <span>
-                                  <AiOutlinePlusCircle
-                                    size={30}
-                                    className="mx-auto cursor-pointer"
-                                    onClick={() => {
-                                      setShowTagModal(true);
-                                      composition?.tags === "" ||
-                                      composition?.tags === null
-                                        ? setTags([])
-                                        : setTags(
+                                  <span>
+                                    <AiOutlinePlusCircle
+                                      size={30}
+                                      className="mx-auto cursor-pointer"
+                                      onClick={() => {
+                                        setShowTagModal(true);
+                                        composition?.tags === "" ||
+                                          composition?.tags === null
+                                          ? setTags([])
+                                          : setTags(
                                             composition?.tags?.split(",")
                                           );
-                                      handleFetchCompositionById(
-                                        composition?.compositionID,
-                                        "tags"
-                                      );
-                                    }}
-                                  />
-                                </span>
-                              )}
+                                        handleFetchCompositionById(
+                                          composition?.compositionID,
+                                          "tags"
+                                        );
+                                      }}
+                                    />
+                                  </span>
+                                )}
                               {composition?.tags !== null
                                 ? composition?.tags
-                                    .split(",")
-                                    .slice(
-                                      0,
-                                      composition?.tags.split(",").length > 2
-                                        ? 3
-                                        : composition?.tags.split(",").length
-                                    )
-                                    .map((text) => {
-                                      if (text.toString().length > 10) {
-                                        return text
-                                          .split("")
-                                          .slice(0, 10)
-                                          .concat("...")
-                                          .join("");
-                                      }
-                                      return text;
-                                    })
-                                    .join(",")
+                                  .split(",")
+                                  .slice(
+                                    0,
+                                    composition?.tags.split(",").length > 2
+                                      ? 3
+                                      : composition?.tags.split(",").length
+                                  )
+                                  .map((text) => {
+                                    if (text.toString().length > 10) {
+                                      return text
+                                        .split("")
+                                        .slice(0, 10)
+                                        .concat("...")
+                                        .join("");
+                                    }
+                                    return text;
+                                  })
+                                  .join(",")
                                 : ""}
                               {composition?.tags !== "" &&
                                 composition?.tags !== null && (
@@ -967,11 +968,11 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     onClick={() => {
                                       setShowTagModal(true);
                                       composition?.tags === "" ||
-                                      composition?.tags === null
+                                        composition?.tags === null
                                         ? setTags([])
                                         : setTags(
-                                            composition?.tags?.split(",")
-                                          );
+                                          composition?.tags?.split(",")
+                                        );
                                       handleFetchCompositionById(
                                         composition?.compositionID,
                                         "tags"
@@ -1199,46 +1200,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      <PreviewModal show={modalVisible} onClose={closeModal}>
-        <div
-          className={`fixed left-1/2 -translate-x-1/2 ${
-            screenType === "portrait"
-              ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
-              : "min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]"
-          }  `}
-          ref={modalRef}
-        >
-          <div style={{ padding: "15px", backgroundColor: "white" }}>
-            <RxCrossCircled
-              className="fixed z-50 text-4xl p-1 m-2 rounded-full top-[-27px] right-[-23px] cursor-pointer bg-black text-white"
-              onClick={closeModal}
-            />
-
-            {!loading &&
-              layotuDetails?.lstLayloutModelList.length > 0 &&
-              layotuDetails?.lstLayloutModelList?.map((obj, index) => (
-                <div
-                  key={index}
-                  style={{
-                    position: "fixed",
-                    left: obj.leftside + "%",
-                    top: obj.topside + "%",
-                    width: obj?.width + "%",
-                    height: obj?.height + "%",
-                    // backgroundColor: obj.fill,
-                  }}
-                >
-                  {modalVisible && (
-                    <Carousel
-                      items={previewModalData[index][index + 1]}
-                      composition={obj}
-                    />
-                  )}
-                </div>
-              ))}
-          </div>
-        </div>
-      </PreviewModal>
+      {modalVisible && (
+        <PreviewComposition modalRef={modalRef} closeModal={closeModal} loading={loading} layotuDetails={layotuDetails} previewModalData={previewModalData} modalVisible={modalVisible}/>
+      )}
 
       <Footer />
     </>
