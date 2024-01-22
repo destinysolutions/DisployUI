@@ -18,7 +18,7 @@ const Preview = ({
     const handleModalClose = () => {
         onClose();
     };
-    console.log("previewData", previewData)
+
     return (
         <>
             <Modal
@@ -30,84 +30,35 @@ const Preview = ({
                 {/* <h3 className="text-xl font-semibold bg-white dark:text-white m-5 capitalize">{previewData.screenGroupName}</h3> */}
                 <hr className="m-2 h-10" />
                 <div className="w-full p-4 text-center bg-white rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700 h-[300px]">
-
                     <div className="w-full h-full pb-5 mx-auto">
-                        <div className="relative z-0 mx-auto rounded-lg p-4 h-full w-full ">
-                            {previewData && previewData.compositionPossition?.length > 0 && previewData.compositionPossition.map((data) => {
-                                return (
-                                    <>
-                                        dfdfdd
-                                    </>
-                                )
-                            })}
-                        </div>
-
-
-                        {/* {loading ? (
-                  <div className="text-center font-semibold text-2xl">
-                    Loading...
-                  </div>
-                ) : (
-                  compositionData.length > 0 &&
-                  !loading && (
-                    <div className="relative z-0 mx-auto rounded-lg p-4 h-full w-full ">
-                      {!fetchLayoutLoading &&
-                        !loading &&
-                        layotuDetails !== null &&
-                        layotuDetails?.lstLayloutModelList.length > 0 &&
-                        layotuDetails?.lstLayloutModelList?.map(
-                          (data, index) => {
+                        {previewData && previewData.map((noofBox) => {
                             return (
-                              <div
-                                key={index}
-                                className="absolute"
-                                style={{
-                                  left: data.leftside + "%",
-                                  top: data.topside + "%",
-                                  width: data?.width + "%",
-                                  height: data?.height + "%",
-                                  backgroundColor: data.fill,
-                                }}
-                              >
-                                <Carousel
-                                  from="screen"
-                                  items={compositionData[index][index + 1]}
-                                />
-                              </div>
-                            );
-                          }
-                        )}
-                    </div>
-                    // null
-                  )
-                )}
-                {!loading &&
-                  compositionData.length === 0 &&
-                  playerData !== null &&
-                  playerData !== undefined &&
-                  (Object.values(playerData).includes("Video") ||
-                    Object.values(playerData).includes("OnlineVideo")) && (
-                    <ReactPlayer
-                      url={playerData?.fileType}
-                      className="w-full relative z-20 videoinner"
-                      controls={true}
-                      playing={true}
-                      loop={true}
-                    />
-                  )}
+                                <>
+                                    {noofBox.noofBox > 0 && noofBox.compositionPossition.map((comp, index) => (
+                                        <div key={index}>
+                                            
+                                            {/* {comp.schedules.map((schedule, i) => (
+                                                <div key={i}>
+                                                    {schedule.mediaType === 'Video' ? (
+                                                        schedule.durationInSecond >= 10 ? (
+                                                            <video controls className="w-full h-auto" style={{ maxWidth: "100%", height: "250px" }}>
+                                                                <source src={schedule.fileType} type="video/mp4" />
+                                                                Your browser does not support the video tag.
+                                                            </video>
+                                                        ) : (
+                                                            <p>This video is less than 10 seconds.</p>
+                                                        )
+                                                    ) : (
+                                                        <img src={schedule.fileType} alt={`Image ${i}`} />
+                                                    )}
+                                                </div>
+                                            ))} */}
+                                        </div>
+                                    ))}
+                                </>
+                            )
+                        })}
 
-                {!loading &&
-                  compositionData.length === 0 &&
-                  playerData !== null &&
-                  playerData !== undefined &&
-                  (Object.values(playerData).includes("OnlineImage") ||
-                    Object.values(playerData).includes("Image")) && (
-                    <img
-                      src={playerData?.fileType}
-                      alt="Media"
-                      className="w-full h-full mx-auto object-fill"
-                    />
-                  )} */}
                     </div>
 
 
