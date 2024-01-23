@@ -545,14 +545,14 @@ const EventEditor = ({
                 />
               </div>
               <div className="overflow-auto">
-                <div className="rounded-sm bg-white shadow-2xl md:pb-1">
+                <div className="overflow-x-scroll sc-scrollbar rounded-lg bg-white shadow-2xl md:pb-1">
                   <div className="max-w-full overflow-auto max-h-[1340px]">
                     <table
-                      className="w-full lg:table-fixed md:table-fixed sm:table-auto xs:table-auto text-sm break-words schedualtime-table"
+                      className="screen-table w-full lg:table-fixed md:table-fixed sm:table-auto xs:table-auto text-sm break-words schedualtime-table"
                       cellPadding={10}
                     >
                       <thead className="sticky z-20">
-                        <tr className="bg-lightgray text-left mb-5">
+                        <tr className="table-head-bg text-left mb-5">
                           <th className="min-w-[220px] py-4 px-4 font-semibold text-black md:pl-10">
                             Assets
                           </th>
@@ -581,13 +581,13 @@ const EventEditor = ({
                               <tr
                                 key={index}
                                 className={`${
-                                  selectedAsset === item ? "bg-[#f3c953]" : ""
-                                } border-b border-[#eee] mt-5`}
+                                  selectedAsset === item ? "" : ""
+                                } mt-5`}
                                 onClick={() => {
                                   handleAssetAdd(item);
                                 }}
                               >
-                                <td className="border-b border-[#eee]">
+                                <td className="">
                                   {item.assetType === "OnlineImage" && (
                                     <div className="imagebox relative z-0">
                                       <img
@@ -642,7 +642,7 @@ const EventEditor = ({
                                     </a>
                                   )}
                                 </td>
-                                <td className="border-b border-[#eee]">
+                                <td className="">
                                   <h5
                                     className="font-medium text-black cursor-pointer"
                                     onClick={() => {
@@ -653,24 +653,24 @@ const EventEditor = ({
                                     {item.instanceName && item?.instanceName}
                                   </h5>
                                 </td>
-                                <td className="border-b border-[#eee]">
+                                <td className="">
                                   <p className="text-black font-medium">
                                     {moment(item.createdDate).format(
                                       "DD-MM-YYYY HH:mm"
                                     )}
                                   </p>
                                 </td>
-                                <td className="border-b border-[#eee]">
+                                <td className="">
                                   <p className="text-black font-medium">
                                     Schedule Name Till 28 June 2023
                                   </p>
                                 </td>
-                                <td className="border-b border-[#eee]">
+                                <td className="">
                                   <p className="text-black font-medium">
                                     {item.resolutions}
                                   </p>
                                 </td>
-                                <td className="border-b border-[#eee]">
+                                <td className="">
                                   <p className="text-black font-medium">
                                     Tags, Tags
                                   </p>

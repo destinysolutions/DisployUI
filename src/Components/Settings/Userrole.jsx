@@ -482,7 +482,7 @@ const Userrole = ({ searchValue }) => {
           <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
             <table className="min-w-full leading-normal" cellPadding={20}>
               <thead>
-                <tr className="border-b border-b-[#E4E6FF] bg-[#e6e6e6]">
+                <tr className="table-head-bg ">
                   <th></th>
                   <th className="text-[#5A5881] text-base font-semibold">
                     <span className="flex items-center justify-left">
@@ -625,7 +625,7 @@ const Userrole = ({ searchValue }) => {
                                                       backgroundColor:
                                                         "#d1d5db",
                                                     }}
-                                                    className=" text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                                    className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm"
                                                   >
                                                     Inactive
                                                   </span>
@@ -648,7 +648,7 @@ const Userrole = ({ searchValue }) => {
                               handleSelectByID(item.orgUserRoleID);
                               setshowuserroleModal(true);
                             }}
-                            className="cursor-pointer text-xl text-[#0000FF]"
+                            className="cursor-pointer cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                           >
                             <BiEdit />
                           </button>
@@ -765,204 +765,209 @@ const Userrole = ({ searchValue }) => {
                       </>
                     )}
                     <div className="col-span-12">
-                      <table
-                        className="w-full"
-                        cellPadding={10}
-                        cellSpacing={10}
-                      >
-                        <thead>
-                          <tr className="bg-lightgray">
-                            {!showDynamicComponent ? (
-                              <>
-                                <th></th>
-                                <th>View</th>
-                                <th>Create & Edit</th>
-                                <th>Delete</th>
-                              </>
-                            ) : (
-                              <>
-                                <th></th>
-                                <th>Set Approval</th>
-                                <th>Level Of Approval</th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                              </>
-                            )}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {moduleTitle.map((title) => {
-                            const moduleName = `Module${title.moduleID}`;
-                            return (
-                              title.isForApproval === true && (
-                                <tr
-                                  className="border-b border-lightgray rounded-md"
-                                  key={title.moduleID}
-                                >
-                                  <td>{title.pageName}</td>
-                                  {!showDynamicComponent && (
-                                    <>
-                                      <td className="text-center">
-                                        <div>
+                      <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+                        <table
+                          className="screen-table w-full"
+                          cellPadding={10}
+                          cellSpacing={10}
+                        >
+                          <thead>
+                            <tr className="table-head-bg">
+                              {!showDynamicComponent ? (
+                                <>
+                                  <th></th>
+                                  <th>View</th>
+                                  <th>Create & Edit</th>
+                                  <th>Delete</th>
+                                </>
+                              ) : (
+                                <>
+                                  <th></th>
+                                  <th>Set Approval</th>
+                                  <th>Level Of Approval</th>
+                                  <th></th>
+                                  <th></th>
+                                  <th></th>
+                                  <th></th>
+                                  <th></th>
+                                </>
+                              )}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {moduleTitle.map((title) => {
+                              const moduleName = `Module${title.moduleID}`;
+                              return (
+                                title.isForApproval === true && (
+                                  <tr
+                                    className="border-b border-lightgray rounded-md"
+                                    key={title.moduleID}
+                                  >
+                                    <td>{title.pageName}</td>
+                                    {!showDynamicComponent && (
+                                      <>
+                                        <td className="text-center">
+                                          <div>
+                                            <input
+                                              type="checkbox"
+                                              checked={
+                                                selectedCheckboxes[
+                                                  title.moduleID
+                                                ]?.[moduleName]?.View || false
+                                              }
+                                              onChange={() =>
+                                                handleCheckboxChange(
+                                                  title.moduleID,
+                                                  moduleName,
+                                                  "View"
+                                                )
+                                              }
+                                            />
+                                          </div>
+                                        </td>
+                                        <td className="text-center">
+                                          <div>
+                                            <input
+                                              type="checkbox"
+                                              checked={
+                                                selectedCheckboxes[
+                                                  title.moduleID
+                                                ]?.[moduleName]?.CreateEdit ||
+                                                false
+                                              }
+                                              onChange={() =>
+                                                handleCheckboxChange(
+                                                  title.moduleID,
+                                                  moduleName,
+                                                  "CreateEdit"
+                                                )
+                                              }
+                                            />
+                                          </div>
+                                        </td>
+                                        <td className="text-center">
+                                          <div>
+                                            <input
+                                              type="checkbox"
+                                              checked={
+                                                selectedCheckboxes[
+                                                  title.moduleID
+                                                ]?.[moduleName]?.Delete || false
+                                              }
+                                              onChange={() =>
+                                                handleCheckboxChange(
+                                                  title.moduleID,
+                                                  moduleName,
+                                                  "Delete"
+                                                )
+                                              }
+                                            />
+                                          </div>
+                                        </td>
+                                      </>
+                                    )}
+                                    {showDynamicComponent && (
+                                      <>
+                                        <td className="text-center">
                                           <input
                                             type="checkbox"
                                             checked={
                                               selectedCheckboxes[
                                                 title.moduleID
-                                              ]?.[moduleName]?.View || false
+                                              ]?.[moduleName]?.Approval || false
                                             }
-                                            onChange={() =>
-                                              handleCheckboxChange(
-                                                title.moduleID,
-                                                moduleName,
-                                                "View"
-                                              )
-                                            }
-                                          />
-                                        </div>
-                                      </td>
-                                      <td className="text-center">
-                                        <div>
-                                          <input
-                                            type="checkbox"
-                                            checked={
-                                              selectedCheckboxes[
+                                            onChange={() => {
+                                              handleSetApprovalChange(
                                                 title.moduleID
-                                              ]?.[moduleName]?.CreateEdit ||
-                                              false
-                                            }
-                                            onChange={() =>
+                                              );
                                               handleCheckboxChange(
                                                 title.moduleID,
                                                 moduleName,
-                                                "CreateEdit"
-                                              )
-                                            }
+                                                "Approval"
+                                              );
+                                            }}
                                           />
-                                        </div>
-                                      </td>
-                                      <td className="text-center">
-                                        <div>
-                                          <input
-                                            type="checkbox"
-                                            checked={
-                                              selectedCheckboxes[
-                                                title.moduleID
-                                              ]?.[moduleName]?.Delete || false
+                                        </td>
+                                        <td className="text-center">
+                                          <select
+                                            className="border border-primary rounded-lg px-4 py-1"
+                                            disabled={
+                                              !levelOfApproval[title.moduleID]
                                             }
-                                            onChange={() =>
-                                              handleCheckboxChange(
-                                                title.moduleID,
-                                                moduleName,
-                                                "Delete"
-                                              )
+                                            value={
+                                              selectedLevel[title.moduleID] ||
+                                              ""
                                             }
-                                          />
-                                        </div>
-                                      </td>
-                                    </>
-                                  )}
-                                  {showDynamicComponent && (
-                                    <>
-                                      <td className="text-center">
-                                        <input
-                                          type="checkbox"
-                                          checked={
-                                            selectedCheckboxes[
-                                              title.moduleID
-                                            ]?.[moduleName]?.Approval || false
-                                          }
-                                          onChange={() => {
-                                            handleSetApprovalChange(
-                                              title.moduleID
-                                            );
-                                            handleCheckboxChange(
-                                              title.moduleID,
-                                              moduleName,
-                                              "Approval"
-                                            );
-                                          }}
-                                        />
-                                      </td>
-                                      <td className="text-center">
-                                        <select
-                                          className="border border-primary rounded-lg px-4 py-1"
-                                          disabled={
-                                            !levelOfApproval[title.moduleID]
-                                          }
-                                          value={
-                                            selectedLevel[title.moduleID] || ""
-                                          }
-                                          onChange={(e) => {
-                                            const moduleId = title.moduleID;
-                                            const level = parseInt(
-                                              e.target.value,
-                                              10
-                                            );
-                                            setSelectedLevel(
-                                              (prevSelectedLevel) => ({
-                                                ...prevSelectedLevel,
-                                                [moduleId]: level,
-                                              })
-                                            );
-                                          }}
-                                        >
-                                          <option
-                                            value=""
-                                            label="-- Select --"
-                                            disabled
-                                          ></option>
-                                          <option
-                                            value="1"
-                                            disabled={store?.data?.length < 1}
+                                            onChange={(e) => {
+                                              const moduleId = title.moduleID;
+                                              const level = parseInt(
+                                                e.target.value,
+                                                10
+                                              );
+                                              setSelectedLevel(
+                                                (prevSelectedLevel) => ({
+                                                  ...prevSelectedLevel,
+                                                  [moduleId]: level,
+                                                })
+                                              );
+                                            }}
                                           >
-                                            1
-                                          </option>
-                                          <option
-                                            value="2"
-                                            disabled={store?.data?.length < 2}
-                                          >
-                                            2
-                                          </option>
-                                          <option
-                                            value="3"
-                                            disabled={store?.data?.length < 3}
-                                          >
-                                            3
-                                          </option>
-                                          <option
-                                            value="4"
-                                            disabled={store?.data?.length < 4}
-                                          >
-                                            4
-                                          </option>
-                                          <option
-                                            value="5"
-                                            disabled={store?.data?.length < 5}
-                                          >
-                                            5
-                                          </option>
-                                        </select>
-                                      </td>
+                                            <option
+                                              value=""
+                                              label="-- Select --"
+                                              disabled
+                                            ></option>
+                                            <option
+                                              value="1"
+                                              disabled={store?.data?.length < 1}
+                                            >
+                                              1
+                                            </option>
+                                            <option
+                                              value="2"
+                                              disabled={store?.data?.length < 2}
+                                            >
+                                              2
+                                            </option>
+                                            <option
+                                              value="3"
+                                              disabled={store?.data?.length < 3}
+                                            >
+                                              3
+                                            </option>
+                                            <option
+                                              value="4"
+                                              disabled={store?.data?.length < 4}
+                                            >
+                                              4
+                                            </option>
+                                            <option
+                                              value="5"
+                                              disabled={store?.data?.length < 5}
+                                            >
+                                              5
+                                            </option>
+                                          </select>
+                                        </td>
 
-                                      <DynamicDesignComponent
-                                        moduleID={title.moduleID}
-                                        length={selectedLevel?.[title.moduleID]}
-                                        selectedRoleIDs={selectedRoleIDs}
-                                        handleRoleChange={handleRoleChange}
-                                        userRoleData={userRoleData}
-                                      />
-                                    </>
-                                  )}
-                                </tr>
-                              )
-                            );
-                          })}
-                        </tbody>
-                      </table>
+                                        <DynamicDesignComponent
+                                          moduleID={title.moduleID}
+                                          length={
+                                            selectedLevel?.[title.moduleID]
+                                          }
+                                          selectedRoleIDs={selectedRoleIDs}
+                                          handleRoleChange={handleRoleChange}
+                                          userRoleData={userRoleData}
+                                        />
+                                      </>
+                                    )}
+                                  </tr>
+                                )
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                     <div className="col-span-12 text-center">
                       <button

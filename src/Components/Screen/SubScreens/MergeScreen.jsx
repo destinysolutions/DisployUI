@@ -30,9 +30,16 @@ import { IoClose } from "react-icons/io5";
 import AddOrEditTagPopup from "../../AddOrEditTagPopup";
 import PreviewModel from "./model/previewModel";
 import { useNavigate } from "react-router-dom";
-import { getMargeData, addTagsAndUpdate, resetStatus, screenGroupDelete, saveMergeData, screenMergeDeleteAll } from "../../../Redux/ScreenMergeSlice";
-import ReactTooltip from 'react-tooltip';
-
+import {
+  getMargeData,
+  addTagsAndUpdate,
+  resetStatus,
+  screenGroupDelete,
+  saveMergeData,
+  screenMergeDeleteAll,
+} from "../../../Redux/ScreenMergeSlice";
+import ReactTooltip from "react-tooltip";
+import axios from "axios";
 const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const history = useNavigate();
 
@@ -52,20 +59,21 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openAccordionIndex, setOpenAccordionIndex] = useState(null);
 
-
   // GroupNameUpdate
-  const [newGroupName, setNewGroupName] = useState('');
+  const [newGroupName, setNewGroupName] = useState("");
   const [editIndex, setEditIndex] = useState(-1); // Initially no index is being edited
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]); // Multipal check
-  console.log('selectedItems', selectedItems)
-  const [editGroupID, setEditGroupID] = useState()
-  const [getGroup, setGetGroup] = useState()   // used to singl group in all screenId get and handl save asstes
+  console.log("selectedItems", selectedItems);
+  const [editGroupID, setEditGroupID] = useState();
+  const [getGroup, setGetGroup] = useState(); // used to singl group in all screenId get and handl save asstes
 
   //   Model
-  const [label, setLabel] = useState('');
+  const [label, setLabel] = useState("");
   const [showAssetModal, setShowAssetModal] = useState(false);
-  const [selectedComposition, setSelectedComposition] = useState({ compositionName: "", });
+  const [selectedComposition, setSelectedComposition] = useState({
+    compositionName: "",
+  });
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   // const [screenCheckboxes, setScreenCheckboxes] = useState({});
   const [selectedTextScroll, setSelectedTextScroll] = useState();
@@ -74,7 +82,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedYoutube, setSelectedYoutube] = useState();
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
 
-  const [editSelectedScreen, setEditSelectedScreen] = useState('');
+  const [editSelectedScreen, setEditSelectedScreen] = useState("");
 
   const [showTagModal, setShowTagModal] = useState(false);
   const [tags, setTags] = useState([]);
@@ -83,7 +91,6 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   //PreView model
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState();
-
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -112,28 +119,32 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     }
 
     if (store && store.status === "failed") {
-      toast.error(store.error)
+      toast.error(store.error);
     }
 
-
     if (store && store.status === "succeeded") {
-      toast.success(store.message)
-      setLoadFirst(true)
+      toast.success(store.message);
+      setLoadFirst(true);
     }
 
     if (store && store.status) {
-      dispatch(resetStatus())
+      dispatch(resetStatus());
     }
-
   }, [dispatch, loadFirst, store]);
 
-  const totalPages = Math.ceil((Array.isArray(store?.data) ? store.data.length : 0) / itemsPerPage);
-  const paginatedData = Array.isArray(store?.data) ? store.data?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : [];
+  const totalPages = Math.ceil(
+    (Array.isArray(store?.data) ? store.data.length : 0) / itemsPerPage
+  );
+  const paginatedData = Array.isArray(store?.data)
+    ? store.data?.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      )
+    : [];
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-
 
   const callSignalR = () => {
     if (connection.state === "Disconnected") {
@@ -174,11 +185,11 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
           console.error("Error invoking SignalR method:", error);
         });
     }
-  }
+  };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setLoadFirst(true)
+    setLoadFirst(true);
   };
 
   const handleAccordionClick = (index) => {
@@ -186,7 +197,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleRefres = () => {
-    callSignalR()
+    callSignalR();
   };
 
   // Multipal check
@@ -221,30 +232,30 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  const handleAssetUpdate = () => {
-  };
+  const handleAssetUpdate = () => {};
 
-  const editMergeScreenName = (index) => {     // mergeNameUpdate
+  const editMergeScreenName = (index) => {
+    // mergeNameUpdate
     setEditIndex(index);
     setNewGroupName(store.data[index].screeName);
-    setEditGroupID(store.data[index].mergeScreenId)
-  }
+    setEditGroupID(store.data[index].mergeScreenId);
+  };
 
-  const updateGroupName = async (index) => {    // GroupNameUpdate
+  const updateGroupName = async (index) => {
+    // GroupNameUpdate
     const payload = {
       mergeScreenId: editGroupID,
-      screeName: newGroupName
-    }
-    await dispatch(saveMergeData(payload))
-    setEditIndex(-1)
-  }
+      screeName: newGroupName,
+    };
+    await dispatch(saveMergeData(payload));
+    setEditIndex(-1);
+  };
 
   const newAddMergeScreen = (item) => {
-    setLabel("Save")
+    setLabel("Save");
     history("/add-mergescreen");
-    setIsModalOpen(true)
-  }
-
+    setIsModalOpen(true);
+  };
 
   const handleDeleteGroup = (item) => {
     Swal.fire({
@@ -257,12 +268,12 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(screenGroupDelete(item.mergeScreenId))
+        dispatch(screenGroupDelete(item.mergeScreenId));
         setSelectedItems([]);
-        setSelectAll(false)
-        callSignalR()
+        setSelectAll(false);
+        callSignalR();
       }
-    })
+    });
   };
 
   const handleDeleteMergeAll = () => {
@@ -276,12 +287,12 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(screenMergeDeleteAll(selectedItems))
+        dispatch(screenMergeDeleteAll(selectedItems));
         setSelectedItems([]);
-        setSelectAll(false)
-        callSignalR()
+        setSelectAll(false);
+        callSignalR();
       }
-    })
+    });
   };
 
   const handleTagsUpdate = (tags) => {
@@ -327,22 +338,22 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       operation: "Update",
     };
 
-    dispatch(addTagsAndUpdate(data))
-
+    dispatch(addTagsAndUpdate(data));
   };
-
 
   const handleSave = () => {
     const payload = {
-      screenID: getGroup.screenGroupLists.map((item) => item.screenID).join(','),
-      assetID: selectedAsset.assetID
-    }
-    console.log("---------------------------------", selectedAsset, payload)
-  }
+      screenID: getGroup.screenGroupLists
+        .map((item) => item.screenID)
+        .join(","),
+      assetID: selectedAsset.assetID,
+    };
+    console.log("---------------------------------", selectedAsset, payload);
+  };
 
   const handleOpenPreview = (item) => {
     setIsPreviewOpen(true);
-    setPreviewData(item)
+    setPreviewData(item);
   };
 
   const handleClosePreview = () => {
@@ -367,298 +378,418 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             <div className="flex items-center sm:mt-3 flex-wrap gap-1">
               <button
-              data-tip data-for="Refresh Screen"
+                data-tip
+                data-for="Refresh Screen"
                 type="button"
                 className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                 onClick={() => handleRefres()}
               >
                 <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
-                <ReactTooltip id="Refresh Screen" place="left" type="warning" effect="float">
-                    <span>Refresh Screen</span>
-                  </ReactTooltip>
+                <ReactTooltip
+                  id="Refresh Screen"
+                  place="left"
+                  type="warning"
+                  effect="float"
+                >
+                  <span>Refresh Screen</span>
+                </ReactTooltip>
               </button>
 
               <button
-              data-tip data-for="New MergeScreen"
+                data-tip
+                data-for="New MergeScreen"
                 type="button"
                 className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                 onClick={() => newAddMergeScreen()}
               >
                 <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
-                <ReactTooltip id="New MergeScreen" place="left" type="warning" effect="float">
-                    <span>New MergeScreen</span>
-                  </ReactTooltip>
+                <ReactTooltip
+                  id="New MergeScreen"
+                  place="left"
+                  type="warning"
+                  effect="float"
+                >
+                  <span>New MergeScreen</span>
+                </ReactTooltip>
               </button>
 
               {store.data?.length > 0 && (
                 <div>
                   <button
-                    data-tip data-for="Select All"
+                    data-tip
+                    data-for="Select All"
                     type="button"
                     className="flex align-middle border-white text-white items-center"
                   >
-                    <input type="checkbox" className="w-6 h-5" checked={selectAll} onChange={handleSelectAll} readOnly />
+                    <input
+                      type="checkbox"
+                      className="w-6 h-5"
+                      checked={selectAll}
+                      onChange={handleSelectAll}
+                      readOnly
+                    />
                   </button>
 
-                  <ReactTooltip id="Select All" place="left" type="warning" effect="float">
+                  <ReactTooltip
+                    id="Select All"
+                    place="left"
+                    type="warning"
+                    effect="float"
+                  >
                     <span>Select All</span>
                   </ReactTooltip>
-
                 </div>
               )}
 
               {selectedItems.length > 0 && (
                 <div>
-                  <button data-tip data-for="All Delete" className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                  <button
+                    data-tip
+                    data-for="All Delete"
+                    className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                  >
                     <RiDeleteBin5Line
                       className="text-3xl p-1 hover:text-white"
                       onClick={() => handleDeleteMergeAll()}
                     />
                   </button>
 
-                  <ReactTooltip id="All Delete" place="left" type="warning" effect="float">
+                  <ReactTooltip
+                    id="All Delete"
+                    place="left"
+                    type="warning"
+                    effect="float"
+                  >
                     <span>Delete</span>
                   </ReactTooltip>
                 </div>
               )}
-
             </div>
           </div>
 
-          {paginatedData && paginatedData.length > 0 ? paginatedData.map((item, i) => {
-            const isAccordionOpen = openAccordionIndex === i;
-            return (
-              <div key={i} className="accordions mt-5">
-                <div
-                  className="section shadow-md p-5 bg-white  lg:flex md:flex  sm:block items-center justify-between" >
-
-                  <div className="flex gap-2 items-center">
-                    {editIndex === i ? (
-                      <>
-                        <input
-                          type="text"
-                          name="name"
-                          className="formInput block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          value={newGroupName}
-                          onChange={(e) => setNewGroupName(e.target.value)}
-                        />
-                        <div>
-                          <BiSave className="cursor-pointer text-xl text-[#0000FF]" onClick={() => updateGroupName(i)} />
-                          <IoClose className="cursor-pointer text-xl text-[#FF0000]" onClick={() => { setEditIndex(-1); setNewGroupName("") }} />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <h1 className="text-lg capitalize">{item.screeName}</h1>
-                        <BiEdit className="cursor-pointer text-xl text-[#0000FF]" onClick={() => editMergeScreenName(i)} />
-                      </>
-                    )}
-                  </div>
-
-                  <div className="flex items-center">
-                    <div className=" flex items-center">
-                      {isAccordionOpen && (
+          {paginatedData && paginatedData.length > 0 ? (
+            paginatedData.map((item, i) => {
+              const isAccordionOpen = openAccordionIndex === i;
+              return (
+                <div key={i} className="accordions mt-5">
+                  <div className="section shadow-md p-5 bg-white  lg:flex md:flex  sm:block items-center justify-between">
+                    <div className="flex gap-2 items-center">
+                      {editIndex === i ? (
                         <>
-                          <button data-tip data-for="Preview" className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() => handleOpenPreview(item)}>
-                            Preview
-                            <ReactTooltip id="Preview" place="left" type="warning" effect="float">
-                                <span>Preview</span>
-                              </ReactTooltip>
-                          </button>
-
-                          <button
-                            data-tip data-for="Upload"
-                            className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                            onClick={() => { setShowAssetModal(true); setGetGroup(item) }}
-                          >
-                            <TbUpload className="text-3xl p-1 hover:text-white" />
-                            <ReactTooltip id="Upload" place="left" type="warning" effect="float">
-                                <span>Upload</span>
-                              </ReactTooltip>
-                          </button>
-                        
-
-                          {!selectedItems?.length && (
-                            <button data-tip data-for="All Delete" className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
-                              <RiDeleteBin5Line
-                                className="text-3xl p-1 hover:text-white"
-                                onClick={() => handleDeleteGroup(item)}
-                              />
-                              <ReactTooltip id="All Delete" place="left" type="warning" effect="float">
-                                <span>Delete</span>
-                              </ReactTooltip>
-                            </button>
-                          )}
+                          <input
+                            type="text"
+                            name="name"
+                            className="formInput block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            value={newGroupName}
+                            onChange={(e) => setNewGroupName(e.target.value)}
+                          />
+                          <div>
+                            <BiSave
+                              className="cursor-pointer text-xl text-[#0000FF]"
+                              onClick={() => updateGroupName(i)}
+                            />
+                            <IoClose
+                              className="cursor-pointer text-xl text-[#FF0000]"
+                              onClick={() => {
+                                setEditIndex(-1);
+                                setNewGroupName("");
+                              }}
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <h1 className="text-lg capitalize">
+                            {item.screeName}
+                          </h1>
+                          <MdOutlineModeEdit
+                            className="cursor-pointer text-xl text-[#0000FF]"
+                            onClick={() => editMergeScreenName(i)}
+                          />
                         </>
                       )}
+                    </div>
 
-                      {selectAll ? (<CheckmarkIcon className="w-5 h-5" />) : (
-                        <div>
-                          <input
-                            type="checkbox"
-                            data-tip data-for="Select"
-                            className=" mx-1 w-6 h-5 mt-2"
-                            checked={selectedItems.includes(item?.mergeScreenId)}
-                            onChange={() => handleCheckboxChange(item?.mergeScreenId)}
-                          />
-                          <ReactTooltip id="Select" place="left" type="warning" effect="float">
-                            <span>Select</span>
-                          </ReactTooltip>
-                        </div>
-                      )}
+                    <div className="flex items-center">
+                      <div className=" flex items-center">
+                        {isAccordionOpen && (
+                          <>
+                            <button
+                              data-tip
+                              data-for="Preview"
+                              className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white"
+                              onClick={() => handleOpenPreview(item)}
+                            >
+                              Preview
+                              <ReactTooltip
+                                id="Preview"
+                                place="left"
+                                type="warning"
+                                effect="float"
+                              >
+                                <span>Preview</span>
+                              </ReactTooltip>
+                            </button>
 
-                      <button>
-                        {isAccordionOpen ? (
-                          <div onClick={() => handleAccordionClick(i)}>
-                            <IoIosArrowDropup className="text-3xl" />
-                          </div>
+                            <button
+                              data-tip
+                              data-for="Upload"
+                              className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                              onClick={() => {
+                                setShowAssetModal(true);
+                                setGetGroup(item);
+                              }}
+                            >
+                              <TbUpload className="text-3xl p-1 hover:text-white" />
+                              <ReactTooltip
+                                id="Upload"
+                                place="left"
+                                type="warning"
+                                effect="float"
+                              >
+                                <span>Upload</span>
+                              </ReactTooltip>
+                            </button>
+
+                            {!selectedItems?.length && (
+                              <button
+                                data-tip
+                                data-for="All Delete"
+                                className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                              >
+                                <RiDeleteBin5Line
+                                  className="text-3xl p-1 hover:text-white"
+                                  onClick={() => handleDeleteGroup(item)}
+                                />
+                                <ReactTooltip
+                                  id="All Delete"
+                                  place="left"
+                                  type="warning"
+                                  effect="float"
+                                >
+                                  <span>Delete</span>
+                                </ReactTooltip>
+                              </button>
+                            )}
+                          </>
+                        )}
+
+                        {selectAll ? (
+                          <CheckmarkIcon className="w-5 h-5" />
                         ) : (
-                          <div onClick={() => handleAccordionClick(i)}>
-                            <IoIosArrowDropdown className="text-3xl" />
+                          <div>
+                            <input
+                              type="checkbox"
+                              data-tip
+                              data-for="Select"
+                              className=" mx-1 w-6 h-5 mt-2"
+                              checked={selectedItems.includes(
+                                item?.mergeScreenId
+                              )}
+                              onChange={() =>
+                                handleCheckboxChange(item?.mergeScreenId)
+                              }
+                            />
+                            <ReactTooltip
+                              id="Select"
+                              place="left"
+                              type="warning"
+                              effect="float"
+                            >
+                              <span>Select</span>
+                            </ReactTooltip>
                           </div>
                         )}
-                      </button>
 
+                        <button>
+                          {isAccordionOpen ? (
+                            <div onClick={() => handleAccordionClick(i)}>
+                              <IoIosArrowDropup className="text-3xl" />
+                            </div>
+                          ) : (
+                            <div onClick={() => handleAccordionClick(i)}>
+                              <IoIosArrowDropdown className="text-3xl" />
+                            </div>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {isAccordionOpen && (
-                  <div className=" relative shadow-md ">
-                    <table
-                      className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
-                      cellPadding={20}
-                    >
-                      <thead>
-                        <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className="flex items-center justify-center px-6 py-2">
-                              Screen
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" flex items-center justify-center mx-auto px-6 py-2">
-                              Status
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" flex items-center justify-center mx-auto px-6 py-2">
-                              Last Seen
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" flex items-center justify-center mx-auto px-6 py-2">
-                              Now Playing
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" px-6 py-2 flex items-center justify-center mx-auto">
-                              Current Schedule
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
-                              Tags
-                            </button>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {isAccordionOpen && item && item.mergeSubScreenDeatils?.length > 0 && item.mergeSubScreenDeatils.map((screen, index) => {
-                          return (
-                            <tr
-                              key={index}
-                              className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
-                            >
-                              <td className="flex items-center">
-                                {screen.screenName}
-                              </td>
-                              <td className="p-2 text-center">
-                                {screen.screenStatus === 1 ? (
-                                  <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
-                                    Live
-                                  </button>
-                                ) : (
-                                  <button className="bg-[#FF0000] rounded-full px-6 py-1 text-white">
-                                    Off
-                                  </button>
-                                )}
-                              </td>
-                              <td className="p-2 text-center">
-                                {screen.last_seen}
-                              </td>
-                              <td className="p-2 text-center">
-                                <button
-                                  style={{ width: "max-content" }}
-                                  className="flex items-centerborder-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500"
+                  {isAccordionOpen && (
+                    <div className=" relative shadow-md rounded-lg overflow-x-scroll sc-scrollbar ">
+                      <table
+                        className="screen-table w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
+                        cellPadding={20}
+                      >
+                        <thead>
+                          <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className="flex items-center justify-center px-6 py-2">
+                                Screen
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                                Status
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                                Last Seen
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                                Now Playing
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" px-6 py-2 flex items-center justify-center mx-auto">
+                                Current Schedule
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
+                                Tags
+                              </button>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {isAccordionOpen &&
+                            item &&
+                            item.mergeSubScreenDeatils?.length > 0 &&
+                            item.mergeSubScreenDeatils.map((screen, index) => {
+                              return (
+                                <tr
+                                  key={index}
+                                  className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
                                 >
-                                  {screen.assetName}
-                                  <AiOutlineCloudUpload className="ml-2 text-lg" />
-                                </button>
-                              </td>
-                              <td className="break-words	w-[150px] p-2 text-center">
-                                {screen.scheduleName}
-                              </td>
-                              {console.log("screen", screen)}
-                              <td
-                                title={screen?.tags && screen?.tags}
-                                className="mx-auto  p-2 text-center">
-                                {(screen?.tags === "" || screen?.tags === null) && (
-                                  <span>
-                                    <AiOutlinePlusCircle
-                                      size={30}
-                                      className="mx-auto cursor-pointer"
-                                      onClick={() => {
-                                        setShowTagModal(true);
-                                        screen.tags === "" || screen?.tags === null
-                                          ? setTags([])
-                                          : setTags(screen?.tags?.split(","));
-                                        setTagUpdateScreeen(screen);
-                                      }}
-                                    />
-                                  </span>
-                                )}
-                                {screen?.tags !== null ? screen.tags.split(",").slice(0, screen.tags.split(",").length > 2 ? 3 : screen.tags.split(",").length)
-                                  .map((text) => {
-                                    if (text.toString().length > 10) {
-                                      return text.split("").slice(0, 10).concat("...").join("");
-                                    } return text;
-                                  }).join(",") : ""}
-                                {screen?.tags !== "" && screen?.tags !== null && (
-                                  <AiOutlinePlusCircle
-                                    onClick={() => { setShowTagModal(true); screen.tags === "" || screen?.tags === null ? setTags([]) : setTags(screen?.tags?.split(",")); setTagUpdateScreeen(screen); }}
-                                    className="mx-auto  w-5 h-5 cursor-pointer "
-                                  />
-                                )}
+                                  <td className="flex items-center">
+                                    {screen.screenName}
+                                  </td>
+                                  <td className="p-2 text-center">
+                                    {screen.screenStatus === 1 ? (
+                                      <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
+                                        Live
+                                      </button>
+                                    ) : (
+                                      <button className="bg-[#FF0000] rounded-full px-6 py-1 text-white">
+                                        Off
+                                      </button>
+                                    )}
+                                  </td>
+                                  <td className="p-2 text-center">
+                                    {screen.last_seen}
+                                  </td>
+                                  <td className="p-2 text-center">
+                                    <button
+                                      style={{ width: "max-content" }}
+                                      className="flex items-centerborder-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500"
+                                    >
+                                      {screen.assetName}
+                                      <AiOutlineCloudUpload className="ml-2 text-lg" />
+                                    </button>
+                                  </td>
+                                  <td className="break-words	w-[150px] p-2 text-center">
+                                    {screen.scheduleName}
+                                  </td>
+                                  {console.log("screen", screen)}
+                                  <td
+                                    title={screen?.tags && screen?.tags}
+                                    className="mx-auto  p-2 text-center"
+                                  >
+                                    {(screen?.tags === "" ||
+                                      screen?.tags === null) && (
+                                      <span>
+                                        <AiOutlinePlusCircle
+                                          size={30}
+                                          className="mx-auto cursor-pointer"
+                                          onClick={() => {
+                                            setShowTagModal(true);
+                                            screen.tags === "" ||
+                                            screen?.tags === null
+                                              ? setTags([])
+                                              : setTags(
+                                                  screen?.tags?.split(",")
+                                                );
+                                            setTagUpdateScreeen(screen);
+                                          }}
+                                        />
+                                      </span>
+                                    )}
+                                    {screen?.tags !== null
+                                      ? screen.tags
+                                          .split(",")
+                                          .slice(
+                                            0,
+                                            screen.tags.split(",").length > 2
+                                              ? 3
+                                              : screen.tags.split(",").length
+                                          )
+                                          .map((text) => {
+                                            if (text.toString().length > 10) {
+                                              return text
+                                                .split("")
+                                                .slice(0, 10)
+                                                .concat("...")
+                                                .join("");
+                                            }
+                                            return text;
+                                          })
+                                          .join(",")
+                                      : ""}
+                                    {screen?.tags !== "" &&
+                                      screen?.tags !== null && (
+                                        <AiOutlinePlusCircle
+                                          onClick={() => {
+                                            setShowTagModal(true);
+                                            screen.tags === "" ||
+                                            screen?.tags === null
+                                              ? setTags([])
+                                              : setTags(
+                                                  screen?.tags?.split(",")
+                                                );
+                                            setTagUpdateScreeen(screen);
+                                          }}
+                                          className="mx-auto  w-5 h-5 cursor-pointer "
+                                        />
+                                      )}
 
-                                {/* add or edit tag modal */}
-                                {showTagModal && (
-                                  <AddOrEditTagPopup
-                                    setShowTagModal={setShowTagModal}
-                                    tags={tags}
-                                    setTags={setTags}
-                                    handleTagsUpdate={handleTagsUpdate}
-                                    from="screen"
-                                    setTagUpdateScreeen={setTagUpdateScreeen}
-                                  />
-                                )}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                                    {/* add or edit tag modal */}
+                                    {showTagModal && (
+                                      <AddOrEditTagPopup
+                                        setShowTagModal={setShowTagModal}
+                                        tags={tags}
+                                        setTags={setTags}
+                                        handleTagsUpdate={handleTagsUpdate}
+                                        from="screen"
+                                        setTagUpdateScreeen={
+                                          setTagUpdateScreeen
+                                        }
+                                      />
+                                    )}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          ) : (
+            <>
+              <div className="flex text-center m-5 justify-center">
+                <span className="text-2xl hover:bg-gray-400 text-gray-800 mt-20 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
+                  Data not found!
+                </span>
               </div>
-            );
-          }) : <>
-            <div className="flex text-center m-5 justify-center">
-              <span className="text-2xl hover:bg-gray-400 text-gray-800 mt-20 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
-                Data not found!
-              </span>
-            </div>
-          </>}
+            </>
+          )}
         </div>
         {/* end  pagination */}
         {paginatedData && paginatedData.length > 0 && (
@@ -734,7 +865,13 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {isPreviewOpen && <PreviewModel open={isPreviewOpen} onClose={handleClosePreview} previewData={previewData} />}
+      {isPreviewOpen && (
+        <PreviewModel
+          open={isPreviewOpen}
+          onClose={handleClosePreview}
+          previewData={previewData}
+        />
+      )}
 
       <Footer />
     </>

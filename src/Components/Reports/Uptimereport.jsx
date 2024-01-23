@@ -6,8 +6,13 @@ import { LuDownload } from "react-icons/lu";
 import { CiFilter } from "react-icons/ci";
 import { Link } from "react-router-dom";
 
-const Uptimereport = ({ allReportData, debouncedOnChange, exportDataToCSV, loading, sidebarOpen }) => {
-
+const Uptimereport = ({
+  allReportData,
+  debouncedOnChange,
+  exportDataToCSV,
+  loading,
+  sidebarOpen,
+}) => {
   return (
     <>
       <div className="pt-16 px-5 page-contain">
@@ -46,25 +51,34 @@ const Uptimereport = ({ allReportData, debouncedOnChange, exportDataToCSV, loadi
               </div>
 
               <div className="ml-2">
-                <button className="border rounded-full  hover:shadow-xl hover:bg-SlateBlue border-primary "
-                  onClick={() => exportDataToCSV()}>
+                <button
+                  className="border rounded-full  hover:shadow-xl hover:bg-SlateBlue border-primary "
+                  onClick={() => exportDataToCSV()}
+                >
                   <LuDownload className="p-2 text-4xl text-primary hover:text-white " />
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="sectiondetails mt-5 bg-white p-5 rounded-md drop-shadow-sm overflow-x-auto">
-            <table className="w-full text-[#5E5E5E]" cellPadding={20}>
+          <div className="sectiondetails mt-5 bg-white p-5 rounded-md drop-shadow-sm overflow-x-scroll sc-scrollbar rounded-lg">
+            <table
+              className="screen-table w-full text-[#5E5E5E]"
+              cellPadding={20}
+            >
               <thead>
-                <tr className="bg-lightgray rounded-md">
+                <tr className="table-head-bg rounded-md">
                   <th className="flex items-center font-medium p-3">
                     Screen Name
                     <CiFilter className="text-sm text-primary ml-2" />
                   </th>
                   <th className=" font-medium text-left p-3">Total Up-time</th>
-                  <th className=" font-medium text-center p-3">Total Offline Time</th>
-                  <th className=" font-medium text-center p-3">Daily Avg Up-time</th>
+                  <th className=" font-medium text-center p-3">
+                    Total Offline Time
+                  </th>
+                  <th className=" font-medium text-center p-3">
+                    Daily Avg Up-time
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -94,10 +108,14 @@ const Uptimereport = ({ allReportData, debouncedOnChange, exportDataToCSV, loadi
                     </td>
                   </tr>
                 )}
-                {allReportData?.SearchData?.length > 0 && !loading && (
-                  allReportData?.SearchData?.map((item,index) => {
+                {allReportData?.SearchData?.length > 0 &&
+                  !loading &&
+                  allReportData?.SearchData?.map((item, index) => {
                     return (
-                      <tr className=" align-middle border-b border-[#E4E6FF]" key={index}>
+                      <tr
+                        className=" align-middle border-b border-[#E4E6FF]"
+                        key={index}
+                      >
                         <td>
                           <p>{item?.screenName}</p>
                         </td>
@@ -117,9 +135,8 @@ const Uptimereport = ({ allReportData, debouncedOnChange, exportDataToCSV, loadi
                           </span>
                         </td>
                       </tr>
-                    )
-                  })
-                )}
+                    );
+                  })}
                 {allReportData?.SearchData?.length === 0 && !loading && (
                   <tr>
                     <td
