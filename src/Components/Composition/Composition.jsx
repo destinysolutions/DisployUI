@@ -29,7 +29,11 @@ import toast, { CheckmarkIcon } from "react-hot-toast";
 import PreviewModal from "./PreviewModel";
 import { RxCrossCircled } from "react-icons/rx";
 import Carousel from "./DynamicCarousel";
-import { MdOutlineGroups, MdOutlineModeEdit } from "react-icons/md";
+import {
+  MdOutlineGroups,
+  MdOutlineModeEdit,
+  MdOutlineResetTv,
+} from "react-icons/md";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import ScreenAssignModal from "../ScreenAssignModal";
@@ -42,6 +46,9 @@ import {
   resetStatus,
 } from "../../Redux/CompositionSlice";
 import PreviewComposition from "./PreviewComposition";
+import { BiEdit } from "react-icons/bi";
+import { BsEyeFill } from "react-icons/bs";
+import { Tooltip } from "@material-tailwind/react";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -793,13 +800,13 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="rounded-xl mt-5 mb-6  overflow-x-auto shadow-md sm:rounded-lg">
+          <div className="rounded-xl mt-5 mb-6  overflow-x-auto shadow-md sm:rounded-lg overflow-x-scroll sc-scrollbar">
             <table
-              className="w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
+              className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
               cellPadding={20}
             >
               <thead>
-                <tr className="items-center border-b border-b-[#E4E6FF]  bg-[#e6e6e6]">
+                <tr className="items-center table-head-bg">
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
                     Composition Name
                     <svg
@@ -921,46 +928,46 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               {(composition?.tags === "" ||
                                 composition?.tags === null) && (
-                                  <span>
-                                    <AiOutlinePlusCircle
-                                      size={30}
-                                      className="mx-auto cursor-pointer"
-                                      onClick={() => {
-                                        setShowTagModal(true);
-                                        composition?.tags === "" ||
-                                          composition?.tags === null
-                                          ? setTags([])
-                                          : setTags(
+                                <span>
+                                  <AiOutlinePlusCircle
+                                    size={30}
+                                    className="mx-auto cursor-pointer"
+                                    onClick={() => {
+                                      setShowTagModal(true);
+                                      composition?.tags === "" ||
+                                      composition?.tags === null
+                                        ? setTags([])
+                                        : setTags(
                                             composition?.tags?.split(",")
                                           );
-                                        handleFetchCompositionById(
-                                          composition?.compositionID,
-                                          "tags"
-                                        );
-                                      }}
-                                    />
-                                  </span>
-                                )}
+                                      handleFetchCompositionById(
+                                        composition?.compositionID,
+                                        "tags"
+                                      );
+                                    }}
+                                  />
+                                </span>
+                              )}
                               {composition?.tags !== null
                                 ? composition?.tags
-                                  .split(",")
-                                  .slice(
-                                    0,
-                                    composition?.tags.split(",").length > 2
-                                      ? 3
-                                      : composition?.tags.split(",").length
-                                  )
-                                  .map((text) => {
-                                    if (text.toString().length > 10) {
-                                      return text
-                                        .split("")
-                                        .slice(0, 10)
-                                        .concat("...")
-                                        .join("");
-                                    }
-                                    return text;
-                                  })
-                                  .join(",")
+                                    .split(",")
+                                    .slice(
+                                      0,
+                                      composition?.tags.split(",").length > 2
+                                        ? 3
+                                        : composition?.tags.split(",").length
+                                    )
+                                    .map((text) => {
+                                      if (text.toString().length > 10) {
+                                        return text
+                                          .split("")
+                                          .slice(0, 10)
+                                          .concat("...")
+                                          .join("");
+                                      }
+                                      return text;
+                                    })
+                                    .join(",")
                                 : ""}
                               {composition?.tags !== "" &&
                                 composition?.tags !== null && (
@@ -968,11 +975,11 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     onClick={() => {
                                       setShowTagModal(true);
                                       composition?.tags === "" ||
-                                        composition?.tags === null
+                                      composition?.tags === null
                                         ? setTags([])
                                         : setTags(
-                                          composition?.tags?.split(",")
-                                        );
+                                            composition?.tags?.split(",")
+                                          );
                                       handleFetchCompositionById(
                                         composition?.compositionID,
                                         "tags"
@@ -997,82 +1004,82 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                 />
                               )}
                             </td>
-
-                            <td className="text-center relative">
-                              <div className="">
-                                <button
-                                  className="ml-3 "
-                                  onClick={() => {
-                                    onClickMoreComposition(
-                                      composition.compositionID
-                                    );
-                                  }}
-                                >
-                                  <HiDotsVertical />
-                                </button>
-                                {/* action popup start */}
-                                {showActionBox[composition.compositionID] && (
-                                  <div
-                                    ref={showActionModalRef}
-                                    className="scheduleAction z-20"
+                            <td className="text-center">
+                              <div className="flex justify-center gap-2 items-center">
+                                <div className="relative">
+                                  <Tooltip
+                                    content="Edit"
+                                    placement="bottom-end"
+                                    className=" bg-primary text-white z-10 ml-5"
+                                    animate={{
+                                      mount: { scale: 1, y: 0 },
+                                      unmount: { scale: 1, y: 10 },
+                                    }}
                                   >
-                                    <div className="my-1">
-                                      <button
-                                        onClick={() =>
-                                          navigation(
-                                            `/editcomposition/${composition?.compositionID}/${composition?.layoutID}`
-                                          )
-                                        }
-                                      >
-                                        Edit
-                                      </button>
-                                    </div>
-                                    <div className=" mb-1">
-                                      <button
-                                        onClick={() => {
-                                          handleFetchCompositionById(
-                                            composition?.compositionID
-                                          );
-                                          handleFetchLayoutById(
-                                            composition?.layoutID
-                                          );
-                                        }}
-                                      >
-                                        Preview
-                                      </button>
-                                    </div>
-                                    {/* <div className=" mb-1">
-                                <button>Duplicate</button>
-                              </div> */}
-                                    <div className=" mb-1">
-                                      <button
-                                        onClick={() => {
-                                          setAddScreenModal(true);
-                                          setSelectData(composition);
-                                          setScreenSelected(
-                                            composition?.screenNames?.split(",")
-                                          );
-                                          setScreenMacids(composition?.maciDs);
-                                        }}
-                                      >
-                                        Set to Screens
-                                      </button>
-                                    </div>
-                                    <div className="mb-1 border border-[#F2F0F9]"></div>
-                                    <div className=" mb-1 text-[#D30000]">
-                                      <button
-                                        onClick={() =>
-                                          handelDeleteComposition(
-                                            composition.compositionID,
-                                            composition?.maciDs
-                                          )
-                                        }
-                                      >
-                                        Delete
-                                      </button>
-                                    </div>
-                                  </div>
-                                )}
+                                    <button
+                                      type="button"
+                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                      onClick={() =>
+                                        navigation(
+                                          `/editcomposition/${composition?.compositionID}/${composition?.layoutID}`
+                                        )
+                                      }
+                                    >
+                                      <BiEdit />
+                                    </button>
+                                  </Tooltip>
+                                </div>
+                                <div className="relative">
+                                  <Tooltip
+                                    content="View"
+                                    placement="bottom-end"
+                                    className=" bg-primary text-white z-10 mx-auto"
+                                    animate={{
+                                      mount: { scale: 1, y: 0 },
+                                      unmount: { scale: 1, y: 10 },
+                                    }}
+                                  >
+                                    <button
+                                      onClick={() => {
+                                        handleFetchCompositionById(
+                                          composition?.compositionID
+                                        );
+                                        handleFetchLayoutById(
+                                          composition?.layoutID
+                                        );
+                                      }}
+                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-3"
+                                    >
+                                      <BsEyeFill />
+                                    </button>
+                                  </Tooltip>
+                                </div>
+                                <div className="relative">
+                                  <Tooltip
+                                    content="Set To Screen"
+                                    placement="bottom-end"
+                                    className=" bg-primary text-white z-10 ml-5"
+                                    animate={{
+                                      mount: { scale: 1, y: 0 },
+                                      unmount: { scale: 1, y: 10 },
+                                    }}
+                                  >
+                                    <button
+                                      type="button"
+                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                      onClick={() => {
+                                        setAddScreenModal(true);
+                                        setSelectData(composition);
+                                        setScreenSelected(
+                                          composition?.screenNames?.split(",")
+                                        );
+                                        setScreenMacids(composition?.maciDs);
+                                      }}
+                                    >
+                                      <MdOutlineResetTv />
+                                    </button>
+                                  </Tooltip>
+                                </div>
                               </div>
                             </td>
                           </tr>
@@ -1201,7 +1208,14 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       )}
 
       {modalVisible && (
-        <PreviewComposition modalRef={modalRef} closeModal={closeModal} loading={loading} layotuDetails={layotuDetails} previewModalData={previewModalData} modalVisible={modalVisible}/>
+        <PreviewComposition
+          modalRef={modalRef}
+          closeModal={closeModal}
+          loading={loading}
+          layotuDetails={layotuDetails}
+          previewModalData={previewModalData}
+          modalVisible={modalVisible}
+        />
       )}
 
       <Footer />
