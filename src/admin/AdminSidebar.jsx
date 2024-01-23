@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import { FaUserTimes } from "react-icons/fa";
 import { FaUserAlt, FaUserCheck, FaUsers } from "react-icons/fa";
 import { SlOrganization } from "react-icons/sl";
-import logo from "../images/DisployImg/logo.svg";
+import logo from "../images/DisployImg/White-Logo2.png";
 
 const AdminSidebar = ({ sidebarOpen }) => {
   AdminSidebar.propTypes = {

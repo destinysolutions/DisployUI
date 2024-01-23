@@ -13,9 +13,9 @@ import RevenueTable from "../RevenueTable";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import mapImg from "../../../images/DisployImg/mapImg.png";
 import flagUmg from "../../../images/DisployImg/flag.png";
-import Grafana from "../../../images/AppsImg/app1.png";
-import Slack from "../../../images/AppsImg/app2.png";
-import Tableau from "../../../images/AppsImg/app3.png";
+import youtube from "../../../images/AppsImg/youtube.svg";
+import weather from "../../../images/AppsImg/weather.svg";
+import textscroll from "../../../images/AppsImg/text-scroll-icon.svg";
 import More from "../../../images/AppsImg/app4.png";
 
 //for sales revenue chart options
@@ -454,31 +454,31 @@ const Business = () => {
           <div className="lg:col-span-3 md:col-span-6 sm:col-span-12 ">
             <div className="shadow-md  bg-white rounded-lg text-center py-10">
               <img
-                src={Grafana}
+                src={youtube}
                 alt="Logo"
                 className="cursor-pointer mx-auto h-16 w-16"
               />
-              <h4 className="text-size-md font-semibold py-5">Grafana</h4>
+              <h4 className="text-size-md font-semibold py-5">Youtube</h4>
             </div>
           </div>
           <div className="lg:col-span-3 md:col-span-6 sm:col-span-12">
             <div className="shadow-md  bg-white rounded-lg text-center py-10">
               <img
-                src={Slack}
+                src={weather}
                 alt="Logo"
                 className="cursor-pointer mx-auto h-16 w-16 "
               />
-              <h4 className="text-size-md font-semibold py-5">Slack</h4>
+              <h4 className="text-size-md font-semibold py-5">Weather</h4>
             </div>
           </div>
           <div className="lg:col-span-3 md:col-span-6 sm:col-span-12">
             <div className="shadow-md  bg-white rounded-lg text-center py-10">
               <img
-                src={Tableau}
+                src={textscroll}
                 alt="Logo"
                 className="cursor-pointer mx-auto h-[64px] w-[64px]"
               />
-              <h4 className="text-size-md font-semibold py-5">Tableau</h4>
+              <h4 className="text-size-md font-semibold py-5">Text-Scroll</h4>
             </div>
           </div>
           <div className="lg:col-span-3 md:col-span-6 sm:col-span-12">

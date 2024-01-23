@@ -11,7 +11,6 @@ import { useNavigate } from "react-router-dom";
 import Footer from "../Footer";
 import ReportDialog from "./ReportDialog";
 
-
 const Report = ({ sidebarOpen, setSidebarOpen }) => {
   Report.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -106,7 +105,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </div>
             </div>
-            <div
+            {/* <div
               className="lg:col-span-4 md:col-span-4 sm:col-span-6 xs:col-span-12 text-center drop-shadow-md flex flex-col bg-white rounded-xl p-5 lg:h-56 md:h-72 h-56"
               onClick={() => handleReportClick("salesreport")}
             >
@@ -165,7 +164,7 @@ const Report = ({ sidebarOpen, setSidebarOpen }) => {
                   </p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
