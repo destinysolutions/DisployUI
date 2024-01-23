@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
-// import Dashboard from "../Components/Dashboard/Dashboard";
 import Screens from "../Components/Screen/Screens";
 import NewScreenGroup from "../Components/Screen/SubScreens/NewScreenGroup";
 import Screensplayer from "../Components/Screen/SubScreens/Screensplayer";
@@ -31,35 +30,29 @@ import NewFolderDialog from "../Components/Assests/NewFolderDialog ";
 import LoginContainer from "./AuthRoutes";
 import UserProfile from "../Pages/Profile/UserProfile";
 import AdminContainer from "./AdminRoutes";
-
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Youtube from "../Components/Apps/Youtube";
 import YoutubeDetail from "../Components/Apps/YoutubeDetail";
 import Weather from "../Components/Apps/Weather";
 import TextScroll from "../Components/Apps/TextScroll";
 import TextScrollDetail from "../Components/Apps/TextScrollDetail";
 import WeatherDetail from "../Components/Apps/WeatherDetail";
-
 import Loading from "../Components/Loading";
 import AddComposition from "../Components/Composition/AddComposition";
 import Composition from "../Components/Composition/Composition";
 import SelectedLayout from "../Components/Composition/SelectedLayout";
-import { auth } from "../FireBase/firebase";
 import EditSelectedLayout from "../Components/Composition/EditSelectedLayout";
 import YoutubeDetailByID from "../Components/Apps/YoutubeDetailByID";
 import TextScrollDetailById from "../Components/Apps/TextScrollDetailById";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "../Components/ErrorFallback";
 import GridAssets from "../Components/Assests/GridAssets";
-// import SettingApproval from "../Components/Settings/SettingApproval";
 import FinalReport from "../Components/Reports/FinalReport";
-
+import UserDashboard from "../Components/Dashboard/UserDashboard";
 
 const Routing = () => {
-  //for screen resize sidebar open close
   const { user, token } = useSelector((state) => state.root.auth);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  // const [isAuthicate, setisAuthicate] = useState(false);
   const accessDetails = localStorage.getItem("role_access");
   const handleResize = useCallback(() => {
     if (window.innerWidth < 780) {
@@ -86,27 +79,6 @@ const Routing = () => {
     };
   }, [handleResize]);
 
-  // useEffect(() => {
-  //   const ubsubscribe = () => {
-  //     auth.onAuthStateChanged((user) => {
-  //       if (user) {
-  //         if (user.emailVerified) {
-  //           setisAuthicate(true);
-  //           localStorage.setItem("user", JSON.stringify(user));
-  //         } else {
-  //           setisAuthicate(false);
-  //           localStorage.setItem("user", null);
-  //         }
-  //       } else {
-  //         setisAuthicate(false);
-  //         localStorage.setItem("user", null);
-  //       }
-  //     });
-  //   };
-  //   return ubsubscribe();
-  // }, []);
-
-  const dispatch = useDispatch();
   if (!accessDetails)
     return (
       <LoginContainer
@@ -133,15 +105,15 @@ const Routing = () => {
           <Routes>
             <Route path="/" element={<Navigate to="/screens" />} />
             <Route path="/register" element={<Navigate to="/screens" />} />
-            {/* <Route
-              path="/dashboard"
+            <Route
+              path="/userdashboard"
               element={
-                <Dashboard
+                <UserDashboard
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />
               }
-            /> */}
+            />
 
             <Route
               path="/screens"

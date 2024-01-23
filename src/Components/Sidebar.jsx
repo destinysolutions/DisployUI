@@ -9,23 +9,22 @@ import * as AiIcons from "react-icons/ai";
 import ScreenOTPModal from "./Screen/ScreenOTPModal";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 import toast from "react-hot-toast";
-import { auth } from "../FireBase/firebase";
 import screenIcon from "../images/MenuIcons/screens_icon.svg";
 import settingIcon from "../images/MenuIcons/setting_icon.svg";
 import trashIcon from "../images/MenuIcons/Trash_icon.svg";
 import logoutIcon from "../images/MenuIcons/logout_icon.svg";
 import assetsIcon from "../images/MenuIcons/assets_icon.svg";
 import appsIcon from "../images/MenuIcons/apps_icon.svg";
-import approvalIcon from "../images/MenuIcons/approval_icon.svg";
 import compositionIcon from "../images/MenuIcons/playlist_icon.svg";
 import scheduleIcon from "../images/MenuIcons/schedule_icon.svg";
 import reportIcon from "../images/MenuIcons/reports_icon.svg";
-import logo from "../images/DisployImg/logo.svg";
+import logo from "../images/DisployImg/White-Logo2.png";
 import { useDispatch } from "react-redux";
 import { handleLogout } from "../Redux/Authslice";
 import merge_screen from "../images/MenuIcons/merge_screen.svg";
 import { useSelector } from "react-redux";
 import { getMenuAll } from "../Redux/SidebarSlice";
+import dashboardIcon from "../images/MenuIcons/dashboard_icon.svg";
 
 const Sidebar = ({ sidebarOpen }) => {
   Sidebar.propTypes = {
@@ -106,18 +105,14 @@ const Sidebar = ({ sidebarOpen }) => {
 
   // menu list
   const Menus = [
-    // {
-    //   title: "Dashboard",
-    //   cName: "nav-text link-items",
-    //   path: "/dashboard",
-    //   icon: (
-    //     <img
-    //       src="/MenuIcons/dashboard_icon.svg"
-    //       alt="Dashboard"
-    //       className="fill-white w-6"
-    //     />
-    //   ),
-    // },
+    {
+      title: "Dashboard",
+      cName: "nav-text link-items",
+      path: "/userdashboard",
+      icon: (
+        <img src={dashboardIcon} alt="Dashboard" className="fill-white w-6" />
+      ),
+    },
     {
       title: "Screens",
       cName: "nav-text link-items",
@@ -183,12 +178,12 @@ const Sidebar = ({ sidebarOpen }) => {
       icon: <img src={appsIcon} alt="Apps" className="w-6" />,
     },
 
-    {
-      title: "Reports",
-      cName: "nav-text link-items",
-      path: "/reports",
-      icon: <img src={reportIcon} alt="Reports" className="w-6" />,
-    },
+    // {
+    //   title: "Reports",
+    //   cName: "nav-text link-items",
+    //   path: "/reports",
+    //   icon: <img src={reportIcon} alt="Reports" className="w-6" />,
+    // },
     // {
     //   title: "Approval",
     //   cName: "nav-text link-items",

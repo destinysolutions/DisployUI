@@ -1,41 +1,28 @@
 import { useEffect, useRef, useState } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-import { RiDeleteBin5Line, RiDeleteBinLine } from "react-icons/ri";
+import { RiDeleteBinLine } from "react-icons/ri";
 import {
   AiOutlineCloseCircle,
   AiOutlinePlusCircle,
   AiOutlineSearch,
 } from "react-icons/ai";
 import "../../Styles/playlist.css";
-import { HiDotsVertical, HiOutlineLocationMarker } from "react-icons/hi";
 import Footer from "../Footer";
 import { useNavigate } from "react-router-dom";
 import {
   ADDPLAYLIST,
   COMPOSITION_BY_ID,
   DELETE_ALL_COMPOSITIONS,
-  DELETE_COMPOSITION,
-  DELETE_COMPOSITION_BY_ID,
   GET_ALL_COMPOSITIONS,
   SELECT_BY_LIST,
-  SELECT_BY_USER_SCREENDETAIL,
-  SIGNAL_R,
 } from "../../Pages/Api";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import moment from "moment";
 import toast, { CheckmarkIcon } from "react-hot-toast";
-import PreviewModal from "./PreviewModel";
-import { RxCrossCircled } from "react-icons/rx";
-import Carousel from "./DynamicCarousel";
-import {
-  MdOutlineGroups,
-  MdOutlineModeEdit,
-  MdOutlineResetTv,
-} from "react-icons/md";
+import { MdOutlineModeEdit, MdOutlineResetTv, MdPreview } from "react-icons/md";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import ScreenAssignModal from "../ScreenAssignModal";
 import { connection } from "../../SignalR";
 import Swal from "sweetalert2";
@@ -46,67 +33,47 @@ import {
   resetStatus,
 } from "../../Redux/CompositionSlice";
 import PreviewComposition from "./PreviewComposition";
-import { BiEdit } from "react-icons/bi";
-import { BsEyeFill } from "react-icons/bs";
 import { Tooltip } from "@material-tailwind/react";
+import { BiEdit } from "react-icons/bi";
+import AddOrEditTagPopup from "../AddOrEditTagPopup";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
   const { successMessage, error, type } = useSelector(
     (state) => state.root.composition
   );
-
   const authToken = `Bearer ${token}`;
-
   const navigation = useNavigate();
 
-  const [showActionBox, setShowActionBox] = useState(false);
   const [compositionData, setCompositionData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [compositionByIdLoading, setCompositionByIdLoading] = useState(false);
   const [previewModalData, setPreviewModalData] = useState([]);
   const [layotuDetails, setLayotuDetails] = useState(null);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [addScreenModal, setAddScreenModal] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
-  const selectedScreenIdsString = Array.isArray(selectedScreens)
-    ? selectedScreens.join(",")
-    : "";
   const [compositionId, setCompositionId] = useState("");
   const [searchComposition, setSearchComposition] = useState("");
-  const [compostionAllData, setCompostionAllData] = useState([]);
   const [filteredCompositionData, setFilteredCompositionData] = useState([]);
   const [tags, setTags] = useState([]);
   const [showTagModal, setShowTagModal] = useState(false);
-  const [screenType, setScreenType] = useState("");
   const [updateTagComposition, setUpdateTagComposition] = useState(null);
   const [screenSelected, setScreenSelected] = useState([]);
-  const [screenMacids, setScreenMacids] = useState(null);
   const [selectdata, setSelectData] = useState({});
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortedField, setSortedField] = useState(null);
+
   const modalRef = useRef(null);
   const addScreenRef = useRef(null);
   const selectScreenRef = useRef(null);
-  const showActionModalRef = useRef(null);
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
-
-  const [selectedItems, setSelectedItems] = useState([]); // Multipal check
-
-  //   Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // Adjust items per page as needed
-  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
-  const [sortedField, setSortedField] = useState(null);
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = compositionData?.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
 
   // Filter data based on search term
   const filteredData = compositionData.filter((item) =>
@@ -168,7 +135,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response?.data?.status == 200) {
           setCompositionData(response.data.data);
-          setCompostionAllData(response.data.data);
           setLoading(false);
         }
       })
@@ -176,92 +142,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
         setLoading(false);
       });
-  };
-
-  const onClickMoreComposition = (compositionID) => {
-    setCompositionId(compositionID);
-    setShowActionBox((prevState) => {
-      const updatedState = Object.keys(prevState).reduce((acc, key) => {
-        acc[key] = key === compositionID ? !prevState[key] : false;
-        return acc;
-      }, {});
-      return { ...updatedState, [compositionID]: !prevState[compositionID] };
-    });
-  };
-
-  const handelDeleteComposition = (com_id, maciDs) => {
-    if (!window.confirm("Are you sure?")) return;
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `${DELETE_COMPOSITION_BY_ID}?ID=${com_id}`,
-      headers: {
-        Authorization: authToken,
-      },
-    };
-    toast.loading("Deleting...");
-    axios
-      .request(config)
-      .then((response) => {
-        // console.log(JSON.stringify(response.data));
-        if (response.data.status == 200) {
-          if (connection.state == "Disconnected") {
-            connection
-              .start()
-              .then((res) => {
-                console.log("signal connected");
-              })
-              .then(() => {
-                connection
-                  .invoke("ScreenConnected", maciDs.replace(/^\s+/g, ""))
-                  .then(() => {
-                    console.log("SignalR method invoked after screen update");
-                  })
-                  .catch((error) => {
-                    console.error("Error invoking SignalR method:", error);
-                  });
-              });
-          } else {
-            connection
-              .invoke("ScreenConnected", maciDs.replace(/^\s+/g, ""))
-              .then(() => {
-                console.log("SignalR method invoked after screen update");
-              })
-              .catch((error) => {
-                console.error("Error invoking SignalR method:", error);
-              });
-          }
-          setSelectScreenModal(false);
-          setAddScreenModal(false);
-        }
-        const newArr = compositionData.filter(
-          (item) => item?.compositionID !== com_id
-        );
-        setCompositionData(newArr);
-        toast.remove();
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.remove();
-      });
-  };
-
-  const handleSelectComposition = (compositionID) => {
-    setCompositionData((prevCompositionData) => {
-      const updatedComposition = prevCompositionData.map((composition) =>
-        composition.compositionID === compositionID
-          ? { ...composition, isChecked: !composition.isChecked }
-          : composition
-      );
-
-      // Check if all checkboxes are checked or not
-      const allChecked = updatedComposition.every(
-        (composition) => composition.isChecked
-      );
-      setSelectAll(allChecked);
-
-      return updatedComposition;
-    });
   };
 
   const handleSelectAll = () => {
@@ -285,70 +165,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       setSelectedItems([...selectedItems, compositionID]);
     }
   };
-
-  // const handleDeleteAllCompositions = () => {
-  //   if (!window.confirm("Are you sure?")) return;
-  //   let config = {
-  //     method: "get",
-  //     maxBodyLength: Infinity,
-  //     url: DELETE_ALL_COMPOSITIONS,
-  //     headers: {
-  //       Authorization: authToken,
-  //     },
-  //   };
-
-  //   axios
-  //     .request(config)
-  //     .then((response) => {
-  //       if (response.data.status == 200) {
-  //         if (connection.state == "Disconnected") {
-  //           connection
-  //             .start()
-  //             .then((res) => {
-  //               console.log("signal connected");
-  //             })
-  //             .then(() => {
-  //               connection
-  //                 .invoke(
-  //                   "ScreenConnected",
-  //                   compositionData
-  //                     ?.map((item) => item?.maciDs)
-  //                     .join(",")
-  //                     .replace(/^\s+/g, "")
-  //                 )
-  //                 .then(() => {
-  //                   console.log("SignalR method invoked after screen update");
-  //                 })
-  //                 .catch((error) => {
-  //                   console.error("Error invoking SignalR method:", error);
-  //                 });
-  //             });
-  //         } else {
-  //           connection
-  //             .invoke(
-  //               "ScreenConnected",
-  //               compositionData
-  //                 ?.map((item) => item?.maciDs)
-  //                 .join(",")
-  //                 .replace(/^\s+/g, "")
-  //             )
-  //             .then(() => {
-  //               console.log("SignalR method invoked after screen update");
-  //             })
-  //             .catch((error) => {
-  //               console.error("Error invoking SignalR method:", error);
-  //             });
-  //         }
-  //         setSelectScreenModal(false);
-  //         setAddScreenModal(false);
-  //       }
-  //       console.log(JSON.stringify(response.data));
-  //       loadComposition();
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
 
   const handleDeleteAllCompositions = () => {
     let config = {
@@ -439,7 +255,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         });
     } else {
       toast.loading("Fetching...");
-      setCompositionByIdLoading(true);
       axios
         .request(config)
         .then((response) => {
@@ -458,11 +273,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
             openModal();
           }
           toast.remove();
-          setCompositionByIdLoading(false);
         })
         .catch((error) => {
           toast.remove();
-          setCompositionByIdLoading(false);
+
           console.log(error);
         });
     }
@@ -538,7 +352,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response?.data?.status == 200) {
           setLayotuDetails(response.data?.data[0]);
-          setScreenType(response?.data?.data[0]?.screenType);
         }
       })
       .catch((error) => {
@@ -553,10 +366,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         idS += `${key},`;
       }
     }
-    // if (idS === "") {
-    //   toast.remove();
-    //   return toast.error("Please Select Screen.");
-    // }
 
     let config = {
       method: "get",
@@ -616,7 +425,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
           }
           setSelectScreenModal(false);
           setAddScreenModal(false);
-          setShowActionBox(false);
           loadComposition();
           toast.remove();
         }
@@ -718,25 +526,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectScreenModal(false);
   }
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        showActionModalRef.current &&
-        !showActionModalRef.current.contains(event?.target)
-      ) {
-        setShowActionBox(false);
-      }
-    };
-    document.addEventListener("click", handleClickOutside, true);
-    return () => {
-      document.removeEventListener("click", handleClickOutside, true);
-    };
-  }, [handleClickOutside]);
-
-  function handleClickOutside() {
-    setShowActionBox(false);
-  }
-
   return (
     <>
       <div className="flex bg-white border-b border-gray">
@@ -800,13 +589,13 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="rounded-xl mt-5 mb-6  overflow-x-auto shadow-md sm:rounded-lg overflow-x-scroll sc-scrollbar">
+          <div className="rounded-xl mt-5 mb-6  overflow-x-scroll sc-scrollbar shadow-md sm:rounded-lg">
             <table
-              className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
+              className="w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
               cellPadding={20}
             >
               <thead>
-                <tr className="items-center table-head-bg">
+                <tr className="items-center border-b border-b-[#E4E6FF]  bg-[#e6e6e6]">
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
                     Composition Name
                     <svg
@@ -882,7 +671,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   <>
                     {compositionData &&
                       sortedAndPaginatedData.length > 0 &&
-                      sortedAndPaginatedData.map((composition, index) => {
+                      sortedAndPaginatedData.map((composition) => {
                         return (
                           <tr
                             className="border-b border-b-[#E4E6FF] "
@@ -1004,6 +793,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                 />
                               )}
                             </td>
+
                             <td className="text-center">
                               <div className="flex justify-center gap-2 items-center">
                                 <div className="relative">
@@ -1031,7 +821,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                 </div>
                                 <div className="relative">
                                   <Tooltip
-                                    content="View"
+                                    content="Preview"
                                     placement="bottom-end"
                                     className=" bg-primary text-white z-10 mx-auto"
                                     animate={{
@@ -1050,7 +840,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                       }}
                                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-3"
                                     >
-                                      <BsEyeFill />
+                                      <MdPreview />
                                     </button>
                                   </Tooltip>
                                 </div>
@@ -1073,7 +863,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                         setScreenSelected(
                                           composition?.screenNames?.split(",")
                                         );
-                                        setScreenMacids(composition?.maciDs);
+                                        setCompositionId(
+                                          composition?.compositionID
+                                        );
                                       }}
                                     >
                                       <MdOutlineResetTv />
@@ -1114,7 +906,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               </svg>
               Previous
             </button>
-            {/* <span>{`Page ${currentPage} of ${totalPages}`}</span> */}
+
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}

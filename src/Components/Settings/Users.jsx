@@ -8,28 +8,21 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import {
   CHNAGE_PASSWORD,
-  GET_ALL_COUNTRY,
   GET_SELECT_BY_STATE,
-  USER_UPDATE_PASSWORD,
+  SELECT_BY_USER_SCREENDETAIL,
 } from "../../Pages/Api";
 import { RiUser3Fill } from "react-icons/ri";
 import { IoIosArrowRoundBack, IoMdNotificationsOutline } from "react-icons/io";
 import { MdDeleteForever, MdLockOutline } from "react-icons/md";
 import { IoIosLink } from "react-icons/io";
 import toast from "react-hot-toast";
-import {
-  BsEye,
-  BsEyeFill,
-  BsFillEyeFill,
-  BsFillEyeSlashFill,
-} from "react-icons/bs";
+import { BsEyeFill, BsFillEyeFill, BsFillEyeSlashFill } from "react-icons/bs";
 import {
   handleGetCountries,
   handleUserDelete,
   resetStatus,
   handleAddNewUser,
 } from "../../Redux/SettingUserSlice";
-import user_pic from "../../images/Settings/3user-img.png";
 import link_icon from "../../images/Settings/link-icon.svg";
 import deleteImg from "../../images/Settings/delete.svg";
 import google_logo from "../../images/Settings/Google__G__Logo.svg";
@@ -38,29 +31,27 @@ import facebook from "../../images/Settings/facebook-logo.svg";
 import twitter from "../../images/Settings/twitter-logo.svg";
 import dribble from "../../images/Settings/dribbble-logo.svg";
 import Swal from "sweetalert2";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
-import { FiPauseCircle } from "react-icons/fi";
 
 const Users = ({ searchValue }) => {
   const [loadFist, setLoadFist] = useState(true);
-
+  const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [showuserModal, setshowuserModal] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [userRoleData, setUserRoleData] = useState([]);
   const [selectRoleID, setSelectRoleID] = useState("");
-  const [countries, setCountries] = useState([]);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [isActive, setIsActive] = useState(0);
+  const [screenIds, setScreenIds] = useState("");
   const [countryID, setCountryID] = useState(0);
   const [company, setCompany] = useState("");
   const [userData, setUserData] = useState([]);
   const [showActionBox, setShowActionBox] = useState(false);
-  const [deletePopup, setdeletePopup] = useState(false);
   const [userID, setUserID] = useState();
   const [UserMasterID, setUserMasterID] = useState();
   const [showUserProfile, setShowUserProfile] = useState(false);
@@ -73,27 +64,29 @@ const Users = ({ searchValue }) => {
   const [zipCode, setZipCode] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [states, setStates] = useState([]);
-
-  // Error
+  const [screenData, setScreenData] = useState([]);
   const [passowrdErrors, setErrorsPassword] = useState("");
   const [emailErrors, setErrorsEmail] = useState("");
   const [errorsFirstName, setErrorsFirstName] = useState("");
   const [errorsLastName, setErrorsLastName] = useState("");
   const [errorsRole, setErrorsRole] = useState("");
-
-  const { token } = useSelector((state) => state.root.auth);
-  const { Countries } = useSelector((s) => s.root.settingUser);
-  const store = useSelector((state) => state.root.settingUser);
-  const authToken = `Bearer ${token}`;
-
   const [currentPasswordShow, setCurrentPassword] = useState(false);
   const [newPasswordShow, setNewPassword] = useState(false);
   const [confirmPasswordShow, setConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedScreens, setSelectedScreens] = useState([]);
+  const [screenCheckboxes, setScreenCheckboxes] = useState({});
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+
+  const { token, user } = useSelector((state) => state.root.auth);
+  const { Countries } = useSelector((s) => s.root.settingUser);
+  const store = useSelector((state) => state.root.settingUser);
+  const authToken = `Bearer ${token}`;
 
   const hiddenFileInput = useRef(null);
   const modalRef = useRef(null);
   const actionPopupRef = useRef(null);
+  const selectScreenRef = useRef(null);
 
   const dispatch = useDispatch();
 
@@ -104,7 +97,6 @@ const Users = ({ searchValue }) => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = userData.slice(indexOfFirstItem, indexOfLastItem);
 
   // Filter data based on search term
   const filteredData = userData.filter((item) =>
@@ -161,15 +153,6 @@ const Users = ({ searchValue }) => {
       setSortOrder("asc");
       setSortedField(field);
     }
-  };
-
-  const handleActionClick = (rowId) => {
-    if (!showActionBox) {
-      setUserID(rowId);
-    } else {
-      setUserID();
-    }
-    setShowActionBox(!showActionBox);
   };
 
   useEffect(() => {
@@ -279,6 +262,7 @@ const Users = ({ searchValue }) => {
     data.append("languageId", 0);
     data.append("timeZoneId", 0);
     data.append("currencyId", 0);
+    data.append("ScreenAssignUser", selectedScreens.join(","));
     data.append("IsFromUserMaster", 1);
     data.append("operation", "Save");
 
@@ -330,8 +314,6 @@ const Users = ({ searchValue }) => {
     data.append("orgUserSpecificID", userID);
     data.append("firstName", firstName);
     data.append("lastName", lastName);
-    // data.append("password", password);
-    // data.append("email", email);
     data.append("phone", phone);
     data.append("isActive", isActive);
     data.append("orgUserID", 0);
@@ -360,7 +342,7 @@ const Users = ({ searchValue }) => {
 
     axios
       .request(config)
-      .then((response) => {
+      .then(() => {
         setshowuserModal(false);
         selectUserById(userID);
         handleGetOrgUsers();
@@ -473,6 +455,7 @@ const Users = ({ searchValue }) => {
           setSelectedState(fetchedData.stateId);
           setSelectRoleID(fetchedData.userRole);
           setIsActive(fetchedData.isActive);
+          setScreenIds(fetchedData.ScreenIds);
         }
         toast.remove();
       })
@@ -481,7 +464,7 @@ const Users = ({ searchValue }) => {
         toast.remove();
       });
   };
-
+  console.log(screenIds, "ScreenIds");
   const handleCancelPopup = () => {
     setLabelTitle("Add New User");
     setUserID();
@@ -553,6 +536,33 @@ const Users = ({ searchValue }) => {
     setShowActionBox(false);
   }
 
+  useEffect(() => {
+    const handleClickOutsideSelectScreenModal = (event) => {
+      if (
+        selectScreenRef.current &&
+        !selectScreenRef.current.contains(event?.target)
+      ) {
+        setSelectScreenModal(false);
+      }
+    };
+    document.addEventListener(
+      "click",
+      handleClickOutsideSelectScreenModal,
+      true
+    );
+    return () => {
+      document.removeEventListener(
+        "click",
+        handleClickOutsideSelectScreenModal,
+        true
+      );
+    };
+  }, [handleClickOutsideSelectScreenModal]);
+
+  function handleClickOutsideSelectScreenModal() {
+    setSelectScreenModal(false);
+  }
+
   const formik = useFormik({
     initialValues: {
       currentPassword: "",
@@ -597,6 +607,83 @@ const Users = ({ searchValue }) => {
       }
     },
   });
+
+  useEffect(() => {
+    if (user?.userID) {
+      setLoading(true);
+      axios
+        .get(`${SELECT_BY_USER_SCREENDETAIL}?ID=${user?.userID}`, {
+          headers: {
+            Authorization: authToken,
+          },
+        })
+        .then((response) => {
+          const fetchedData = response.data.data;
+          setScreenData(fetchedData);
+          setLoading(false);
+          const initialCheckboxes = {};
+          if (Array.isArray(fetchedData)) {
+            fetchedData.forEach((screen) => {
+              initialCheckboxes[screen.screenID] = selectedScreens?.includes(
+                screen.screenID
+              )
+                ? true
+                : false;
+            });
+            setScreenCheckboxes(initialCheckboxes);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
+    }
+  }, []);
+  const handleScreenCheckboxChange = (screenID) => {
+    const updatedCheckboxes = { ...screenCheckboxes };
+    updatedCheckboxes[screenID] = !updatedCheckboxes[screenID];
+    setScreenCheckboxes(updatedCheckboxes);
+
+    // Create a copy of the selected screens array
+    const updatedSelectedScreens = [...selectedScreens];
+
+    // If the screenID is already in the array, remove it; otherwise, add it
+    if (updatedSelectedScreens.includes(screenID)) {
+      const index = updatedSelectedScreens.indexOf(screenID);
+      updatedSelectedScreens.splice(index, 1);
+    } else {
+      updatedSelectedScreens.push(screenID);
+    }
+
+    // Update the selected screens state
+    setSelectedScreens(updatedSelectedScreens);
+
+    // Check if any individual screen checkbox is unchecked
+    const allChecked = Object.values(updatedCheckboxes).every(
+      (isChecked) => isChecked
+    );
+
+    setSelectAllChecked(allChecked);
+  };
+
+  const handleSelectAllCheckboxChange = (e) => {
+    const checked = e.target.checked;
+    setSelectAllChecked(checked);
+    // Set the state of all individual screen checkboxes
+    const updatedCheckboxes = {};
+    for (const screenID in screenCheckboxes) {
+      updatedCheckboxes[screenID] = checked;
+    }
+    setScreenCheckboxes(updatedCheckboxes);
+    // Update the selected screens state based on whether "All Select" is checked
+    if (checked) {
+      const allScreenIds = screenData.map((screen) => screen.screenID);
+
+      setSelectedScreens(allScreenIds);
+    } else {
+      setSelectedScreens([]);
+    }
+  };
 
   return (
     <>
@@ -807,7 +894,198 @@ const Users = ({ searchValue }) => {
                     </div>
                   </div>
 
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
+                  <div className="lg:col-span-4 md:col-span-4 sm:col-span-12 xs:col-span-12">
+                    <div className="mt-3 flex items-center">
+                      <input
+                        className="border border-primary mr-3 rounded h-6 w-6"
+                        type="checkbox"
+                        checked={isActive === 1}
+                        onChange={(e) => setIsActive(e.target.checked ? 1 : 0)}
+                      />{" "}
+                      <label>isActive</label>
+                    </div>
+                  </div>
+                  <div className="lg:col-span-4 md:col-span-4 sm:col-span-12 xs:col-span-12">
+                    <button
+                      onClick={() => setSelectScreenModal(true)}
+                      className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3 "
+                    >
+                      Screen Access
+                    </button>
+                  </div>
+                  {selectScreenModal && (
+                    <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                      <div
+                        ref={selectScreenRef}
+                        className="w-auto my-6 mx-auto lg:max-w-2xl md:max-w-sm sm:max-w-xs"
+                      >
+                        <div className="border-0 rounded-lg min-w-[20vw] overflow-y-auto shadow-lg relative flex flex-col bg-white outline-none focus:outline-none min-h-[350px] max-h-[550px]">
+                          <div className="flex sticky top-0 bg-white z-10 items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
+                            <div className="flex items-center">
+                              <div className=" mt-1.5">
+                                <input
+                                  type="checkbox"
+                                  className="w-5 h-5"
+                                  onChange={handleSelectAllCheckboxChange}
+                                  checked={
+                                    selectAllChecked ||
+                                    (Object.values(screenCheckboxes)?.length >
+                                      0 &&
+                                      Object.values(screenCheckboxes).every(
+                                        (e) => {
+                                          return e == true;
+                                        }
+                                      ))
+                                  }
+                                />
+                              </div>
+                              <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium ml-3">
+                                All Select
+                              </h3>
+                            </div>
+                            <button
+                              className="p-1 text-xl"
+                              onClick={() => {
+                                setSelectScreenModal(false);
+                              }}
+                            >
+                              <AiOutlineCloseCircle className="text-3xl" />
+                            </button>
+                          </div>
+                          <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
+                            <table className="w-full" cellPadding={20}>
+                              <thead>
+                                <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                                  <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
+                                    Screen
+                                  </th>
+                                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                    Status
+                                  </th>
+                                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                    Google Location
+                                  </th>
+                                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                    Associated Schedule
+                                  </th>
+                                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                    Tags
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {loading ? (
+                                  <tr>
+                                    <td
+                                      colSpan={6}
+                                      className="text-center font-semibold text-lg"
+                                    >
+                                      Loading...
+                                    </td>
+                                  </tr>
+                                ) : !loading && screenData?.length > 0 ? (
+                                  screenData.map((screen) => (
+                                    <tr
+                                      key={screen.screenID}
+                                      className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                    >
+                                      <td className="flex items-center">
+                                        <input
+                                          type="checkbox"
+                                          className="mr-3"
+                                          onChange={() =>
+                                            handleScreenCheckboxChange(
+                                              screen.screenID
+                                            )
+                                          }
+                                          checked={
+                                            screenCheckboxes[screen.screenID]
+                                          }
+                                        />
+
+                                        {screen.screenName}
+                                      </td>
+
+                                      <td className="text-center">
+                                        <span
+                                          id={`changetvstatus${screen.screenID}`}
+                                          className={`rounded-full px-6 py-2 text-white text-center ${
+                                            screen.screenStatus == 1
+                                              ? "bg-[#3AB700]"
+                                              : "bg-[#FF0000]"
+                                          }`}
+                                        >
+                                          {screen.screenStatus == 1
+                                            ? "Live"
+                                            : "offline"}
+                                        </span>
+                                        {/* <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
+                                        Live
+                                      </button> */}
+                                      </td>
+                                      <td className="text-center break-words">
+                                        {screen.googleLocation}
+                                      </td>
+
+                                      <td className="text-center break-words">
+                                        Schedule Name Till 28 June 2023
+                                      </td>
+                                      <td className="text-center break-words">
+                                        {screen?.tags !== null
+                                          ? screen?.tags
+                                              .split(",")
+                                              .slice(
+                                                0,
+                                                screen?.tags.split(",").length >
+                                                  2
+                                                  ? 3
+                                                  : screen?.tags.split(",")
+                                                      .length
+                                              )
+                                              .map((text) => {
+                                                if (
+                                                  text.toString().length > 10
+                                                ) {
+                                                  return text
+                                                    .split("")
+                                                    .slice(0, 10)
+                                                    .concat("...")
+                                                    .join("");
+                                                }
+                                                return text;
+                                              })
+                                              .join(",")
+                                          : ""}
+                                      </td>
+                                    </tr>
+                                  ))
+                                ) : (
+                                  <tr>
+                                    <td colSpan={6}>
+                                      <p className="text-center p-2">
+                                        No Screen available.
+                                      </p>
+                                    </td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
+                          <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
+                            <button
+                              className={`border-2 border-primary px-5 py-2 rounded-full ml-3 `}
+                              onClick={() => {
+                                setSelectScreenModal(false);
+                              }}
+                            >
+                              Save
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div className="lg:col-span-4 md:col-span-4 sm:col-span-12 xs:col-span-12">
                     <div className="flex items-center">
                       <div className="layout-img me-5">
                         {file ? (
@@ -847,17 +1125,6 @@ const Users = ({ searchValue }) => {
                     </div>
                   </div>
 
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12">
-                    <div className="mt-3 flex items-center">
-                      <label>isActive :</label>
-                      <input
-                        className="border border-primary ml-8 rounded h-6 w-6"
-                        type="checkbox"
-                        checked={isActive === 1}
-                        onChange={(e) => setIsActive(e.target.checked ? 1 : 0)}
-                      />
-                    </div>
-                  </div>
                   <div className="col-span-12 text-center">
                     <button
                       className="bg-white text-primary text-base px-6 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white mr-2"
@@ -872,6 +1139,7 @@ const Users = ({ searchValue }) => {
                       <button
                         onClick={() => {
                           handleAddUser();
+                          setSelectedScreens([]);
                         }}
                         className="bg-white text-primary text-base px-8 py-3 border border-primary  shadow-md rounded-full hover:bg-primary hover:text-white"
                       >
@@ -894,6 +1162,7 @@ const Users = ({ searchValue }) => {
           </div>
         </div>
       )}
+
       {showUserProfile ? (
         <>
           <div className="lg:p-4 md:p-4 sm:p-2 xs:p-2 ">
@@ -1228,318 +1497,332 @@ const Users = ({ searchValue }) => {
                       </p>
 
                       <div className="w-full my-6">
-                        <table className="min-w-full leading-normal border border-[#E4E6FF] bg-white mb-8">
-                          <thead>
-                            <tr className="border-b border-b-[#E4E6FF]">
-                              <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
-                                Type
-                              </th>
-                              <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
-                                Send alerts
-                              </th>
-                              <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
-                                Email
-                              </th>
-                              <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
-                                Phone
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td className="px-5 py-3 bg-white text-sm">
-                                <div className="flex items-center">
-                                  <div className="ml-3">
-                                    <p className="text-gray-900 whitespace-no-wrap">
-                                      Screen Offline
-                                    </p>
+                        <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+                          <table className="screen-table min-w-full leading-normal border border-[#E4E6FF] bg-white mb-8">
+                            <thead>
+                              <tr className="table-head-bg rounded-lg">
+                                <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                                  Type
+                                </th>
+                                <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                                  Send alerts
+                                </th>
+                                <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                                  Email
+                                </th>
+                                <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                                  Phone
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr className="border-b border-b-[#E4E6FF] bg-white">
+                                <td className="px-5 py-3 bg-white text-sm">
+                                  <div className="flex items-center">
+                                    <div className="ml-3">
+                                      <p className="text-gray-900 whitespace-no-wrap">
+                                        Screen Offline
+                                      </p>
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <div className="relative ">
-                                  <select
-                                    className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
-                                    name="whatever"
-                                    id="frm-whatever"
-                                  >
-                                    <option value="">Select </option>
-                                    <option value="1">Item 1</option>
-                                    <option value="2">Item 2</option>
-                                    <option value="3">Item 3</option>
-                                  </select>
-                                  <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
-                                    <svg
-                                      className="h-4 w-4"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 20 20"
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <div className="relative ">
+                                    <select
+                                      className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                      name="whatever"
+                                      id="frm-whatever"
                                     >
-                                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                    </svg>
+                                      <option value="">Select </option>
+                                      <option value="1">Item 1</option>
+                                      <option value="2">Item 2</option>
+                                      <option value="3">Item 3</option>
+                                    </select>
+                                    <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                      <svg
+                                        className="h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                      >
+                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                      </svg>
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <label className="checkbox" for="offline1">
-                                  <span className="checkbox__label"></span>
-                                  <input type="checkbox" id="offline1" />
-                                  <div className="checkbox__indicator"></div>
-                                </label>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <label className="checkbox" for="offline2">
-                                  <span className="checkbox__label"></span>
-                                  <input type="checkbox" id="offline2" />
-                                  <div className="checkbox__indicator"></div>
-                                </label>
-                              </td>
-                            </tr>
-                            <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td className="px-5 py-3 bg-white text-sm">
-                                <div className="flex items-center">
-                                  <div className="ml-3">
-                                    <p className="text-gray-900 whitespace-no-wrap">
-                                      Purchased Plan
-                                    </p>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label className="checkbox" for="offline1">
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="offline1" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label className="checkbox" for="offline2">
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="offline2" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                              </tr>
+                              <tr className="border-b border-b-[#E4E6FF] bg-white">
+                                <td className="px-5 py-3 bg-white text-sm">
+                                  <div className="flex items-center">
+                                    <div className="ml-3">
+                                      <p className="text-gray-900 whitespace-no-wrap">
+                                        Purchased Plan
+                                      </p>
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <div className="relative ">
-                                  <select
-                                    className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
-                                    name="whatever"
-                                    id="frm-whatever"
-                                  >
-                                    <option value="">Instant </option>
-                                    <option value="1">Item 1</option>
-                                    <option value="2">Item 2</option>
-                                    <option value="3">Item 3</option>
-                                  </select>
-                                  <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
-                                    <svg
-                                      className="h-4 w-4"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 20 20"
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <div className="relative ">
+                                    <select
+                                      className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                      name="whatever"
+                                      id="frm-whatever"
                                     >
-                                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                    </svg>
+                                      <option value="">Instant </option>
+                                      <option value="1">Item 1</option>
+                                      <option value="2">Item 2</option>
+                                      <option value="3">Item 3</option>
+                                    </select>
+                                    <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                      <svg
+                                        className="h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                      >
+                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                      </svg>
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <label
-                                  className="checkbox"
-                                  for="purchased-plan1"
-                                >
-                                  <span className="checkbox__label"></span>
-                                  <input type="checkbox" id="purchased-plan1" />
-                                  <div className="checkbox__indicator"></div>
-                                </label>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <label
-                                  className="checkbox"
-                                  for="purchased-plan2"
-                                >
-                                  <span className="checkbox__label"></span>
-                                  <input type="checkbox" id="purchased-plan2" />
-                                  <div className="checkbox__indicator"></div>
-                                </label>
-                              </td>
-                            </tr>
-                            <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td className="px-5 py-3 bg-white text-sm">
-                                <div className="flex items-center">
-                                  <div className="ml-3">
-                                    <p className="text-gray-900 whitespace-no-wrap">
-                                      Added Users
-                                    </p>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <div className="relative ">
-                                  <select
-                                    className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
-                                    name="whatever"
-                                    id="frm-whatever"
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    for="purchased-plan1"
                                   >
-                                    <option value="">15 Minute </option>
-                                    <option value="1">20 Minute</option>
-                                    <option value="2">25 Minute</option>
-                                    <option value="3">30 Minute</option>
-                                  </select>
-                                  <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
-                                    <svg
-                                      className="h-4 w-4"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 20 20"
-                                    >
-                                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                    </svg>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <label className="checkbox" for="added-users1">
-                                  <span className="checkbox__label"></span>
-                                  <input type="checkbox" id="added-users1" />
-                                  <div className="checkbox__indicator"></div>
-                                </label>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <label className="checkbox" for="added-users2">
-                                  <span className="checkbox__label"></span>
-                                  <input type="checkbox" id="added-users2" />
-                                  <div className="checkbox__indicator"></div>
-                                </label>
-                              </td>
-                            </tr>
-                            <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td className="px-5 py-3 bg-white text-sm">
-                                <div className="flex items-center">
-                                  <div className="ml-3">
-                                    <p className="text-gray-900 whitespace-no-wrap">
-                                      Changing Details
-                                    </p>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <div className="relative ">
-                                  <input
-                                    type="text"
-                                    className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
-                                    placeholder="Enter time (Minute)"
-                                  />
-                                </div>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <label
-                                  className="checkbox"
-                                  for="changing-details1"
-                                >
-                                  <span className="checkbox__label"></span>
-                                  <input
-                                    type="checkbox"
-                                    id="changing-details1"
-                                  />
-                                  <div className="checkbox__indicator"></div>
-                                </label>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <label
-                                  className="checkbox"
-                                  for="changing-details2"
-                                >
-                                  <span className="checkbox__label"></span>
-                                  <input
-                                    type="checkbox"
-                                    id="changing-details2"
-                                  />
-                                  <div className="checkbox__indicator"></div>
-                                </label>
-                              </td>
-                            </tr>
-                            <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td className="px-5 py-3 bg-white text-sm">
-                                <div className="flex items-center">
-                                  <div className="ml-3">
-                                    <p className="text-gray-900 whitespace-no-wrap">
-                                      Playlist
-                                    </p>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <div className="relative ">
-                                  <select
-                                    className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
-                                    name="whatever"
-                                    id="frm-whatever"
+                                    <span className="checkbox__label"></span>
+                                    <input
+                                      type="checkbox"
+                                      id="purchased-plan1"
+                                    />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    for="purchased-plan2"
                                   >
-                                    <option value="">Select </option>
-                                    <option value="1">Playlist 1</option>
-                                    <option value="2">Playlist 2</option>
-                                    <option value="3">Playlist 3</option>
-                                  </select>
-                                  <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
-                                    <svg
-                                      className="h-4 w-4"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 20 20"
+                                    <span className="checkbox__label"></span>
+                                    <input
+                                      type="checkbox"
+                                      id="purchased-plan2"
+                                    />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                              </tr>
+                              <tr className="border-b border-b-[#E4E6FF] bg-white">
+                                <td className="px-5 py-3 bg-white text-sm">
+                                  <div className="flex items-center">
+                                    <div className="ml-3">
+                                      <p className="text-gray-900 whitespace-no-wrap">
+                                        Added Users
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <div className="relative ">
+                                    <select
+                                      className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                      name="whatever"
+                                      id="frm-whatever"
                                     >
-                                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                    </svg>
+                                      <option value="">15 Minute </option>
+                                      <option value="1">20 Minute</option>
+                                      <option value="2">25 Minute</option>
+                                      <option value="3">30 Minute</option>
+                                    </select>
+                                    <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                      <svg
+                                        className="h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                      >
+                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                      </svg>
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <label className="checkbox" for="Playlist1">
-                                  <span className="checkbox__label"></span>
-                                  <input type="checkbox" id="Playlist1" />
-                                  <div className="checkbox__indicator"></div>
-                                </label>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <label className="checkbox" for="Playlist2">
-                                  <span className="checkbox__label"></span>
-                                  <input type="checkbox" id="Playlist2" />
-                                  <div className="checkbox__indicator"></div>
-                                </label>
-                              </td>
-                            </tr>
-                            <tr className="border-b border-b-[#E4E6FF] bg-white">
-                              <td className="px-5 py-3 bg-white text-sm">
-                                <div className="flex items-center">
-                                  <div className="ml-3">
-                                    <p className="text-gray-900 whitespace-no-wrap">
-                                      Assets
-                                    </p>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <div className="relative ">
-                                  <select
-                                    className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
-                                    name="whatever"
-                                    id="frm-whatever"
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    for="added-users1"
                                   >
-                                    <option value="">Select </option>
-                                    <option value="1">Assets 1</option>
-                                    <option value="2">Assets 2</option>
-                                    <option value="3">Assets 3</option>
-                                  </select>
-                                  <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
-                                    <svg
-                                      className="h-4 w-4"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      viewBox="0 0 20 20"
-                                    >
-                                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                    </svg>
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="added-users1" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    for="added-users2"
+                                  >
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="added-users2" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                              </tr>
+                              <tr className="border-b border-b-[#E4E6FF] bg-white">
+                                <td className="px-5 py-3 bg-white text-sm">
+                                  <div className="flex items-center">
+                                    <div className="ml-3">
+                                      <p className="text-gray-900 whitespace-no-wrap">
+                                        Changing Details
+                                      </p>
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <label className="checkbox" for="Assets1">
-                                  <span className="checkbox__label"></span>
-                                  <input type="checkbox" id="Assets1" />
-                                  <div className="checkbox__indicator"></div>
-                                </label>
-                              </td>
-                              <td className="px-5 py-3 text-sm">
-                                <label className="checkbox" for="Assets2">
-                                  <span className="checkbox__label"></span>
-                                  <input type="checkbox" id="Assets2" />
-                                  <div className="checkbox__indicator"></div>
-                                </label>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <div className="relative ">
+                                    <input
+                                      type="text"
+                                      className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                      placeholder="Enter time (Minute)"
+                                    />
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    for="changing-details1"
+                                  >
+                                    <span className="checkbox__label"></span>
+                                    <input
+                                      type="checkbox"
+                                      id="changing-details1"
+                                    />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label
+                                    className="checkbox"
+                                    for="changing-details2"
+                                  >
+                                    <span className="checkbox__label"></span>
+                                    <input
+                                      type="checkbox"
+                                      id="changing-details2"
+                                    />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                              </tr>
+                              <tr className="border-b border-b-[#E4E6FF] bg-white">
+                                <td className="px-5 py-3 bg-white text-sm">
+                                  <div className="flex items-center">
+                                    <div className="ml-3">
+                                      <p className="text-gray-900 whitespace-no-wrap">
+                                        Playlist
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <div className="relative ">
+                                    <select
+                                      className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                      name="whatever"
+                                      id="frm-whatever"
+                                    >
+                                      <option value="">Select </option>
+                                      <option value="1">Playlist 1</option>
+                                      <option value="2">Playlist 2</option>
+                                      <option value="3">Playlist 3</option>
+                                    </select>
+                                    <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                      <svg
+                                        className="h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                      >
+                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label className="checkbox" for="Playlist1">
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="Playlist1" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label className="checkbox" for="Playlist2">
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="Playlist2" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                              </tr>
+                              <tr className="border-b border-b-[#E4E6FF] bg-white">
+                                <td className="px-5 py-3 bg-white text-sm">
+                                  <div className="flex items-center">
+                                    <div className="ml-3">
+                                      <p className="text-gray-900 whitespace-no-wrap">
+                                        Assets
+                                      </p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <div className="relative ">
+                                    <select
+                                      className="appearance-none w-full py-1 px-2 border border-[#E4E6FF] rounded-md bg-white"
+                                      name="whatever"
+                                      id="frm-whatever"
+                                    >
+                                      <option value="">Select </option>
+                                      <option value="1">Assets 1</option>
+                                      <option value="2">Assets 2</option>
+                                      <option value="3">Assets 3</option>
+                                    </select>
+                                    <div className="pointer-events-none absolute right-0 top-0 bottom-0 flex items-center px-2 text-gray-700 ">
+                                      <svg
+                                        className="h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                      >
+                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                      </svg>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label className="checkbox" for="Assets1">
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="Assets1" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                                <td className="px-5 py-3 text-sm">
+                                  <label className="checkbox" for="Assets2">
+                                    <span className="checkbox__label"></span>
+                                    <input type="checkbox" id="Assets2" />
+                                    <div className="checkbox__indicator"></div>
+                                  </label>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
                         <div className="buttonWrapper flex justify-center  w-full">
                           <button
                             type="submit"
@@ -1880,7 +2163,7 @@ const Users = ({ searchValue }) => {
                   </tr>
                 </tbody>
               </table>
-              <div className="px-5 py-5 bg-white flex flex-col xs:flex-row items-center xs:justify-between          ">
+              <div className="px-5 py-5 bg-white flex flex-col xs:flex-row items-center xs:justify-between">
                 <span className="text-xs xs:text-sm text-gray-900">
                   Showing 1 to 4 of 50 Entries
                 </span>
@@ -1905,15 +2188,18 @@ const Users = ({ searchValue }) => {
                 onClick={() => setshowuserModal(true)}
               >
                 <BiUserPlus className="text-2xl mr-1" />
-                Add New Users
+                Add New User
               </button>
             </div>
             <div className="clear-both overflow-x-auto">
               <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
-                <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-                  <table className="min-w-full leading-normal" cellPadding={20}>
+                <div className="inline-block min-w-full shadow rounded-lg overflow-x-scroll sc-scrollbar">
+                  <table
+                    className="screen-table min-w-full leading-normal"
+                    cellPadding={20}
+                  >
                     <thead>
-                      <tr className="border-b border-b-[#E4E6FF] bg-[#e6e6e6]">
+                      <tr className="table-head-bg">
                         <th className="text-[#5A5881] text-base font-semibold">
                           <span className="flex items-center justify-left">
                             UserName
@@ -1933,6 +2219,11 @@ const Users = ({ searchValue }) => {
                           <span className="flex items-center justify-center">
                             Roles
                           </span>
+                        </th>
+                        <th className="text-[#5A5881] text-base font-semibold">
+                          <div className="flex items-center justify-center">
+                            Screen Access
+                          </div>
                         </th>
                         <th className="text-[#5A5881] text-base font-semibold">
                           <div className="flex items-center justify-center">
@@ -1976,25 +2267,22 @@ const Users = ({ searchValue }) => {
                                 {item?.userRoleName}
                               </td>
                               <td className="text-[#5E5E5E] text-center">
+                                {item?.count}
+                              </td>
+                              <td className="text-[#5E5E5E] text-center">
                                 {item.isActive == 1 ? (
-                                  <span
-                                    style={{ backgroundColor: "#cee9d6" }}
-                                    className=" text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                  >
+                                  <span className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
                                     Active
                                   </span>
                                 ) : (
-                                  <span
-                                    style={{ backgroundColor: "#d1d5db" }}
-                                    className=" text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                  >
+                                  <span className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm">
                                     Inactive
                                   </span>
                                 )}
                               </td>
                               <td className="text-center">
                                 <div className="flex justify-center gap-4">
-                                  <div className="cursor-pointer text-[#0000FF] text-xl">
+                                  <div className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                     <BsEyeFill
                                       onClick={() => {
                                         setUserID(item.orgUserSpecificID);
@@ -2004,7 +2292,7 @@ const Users = ({ searchValue }) => {
                                       }}
                                     />
                                   </div>
-                                  <div className="cursor-pointer text-xl text-[#0000FF]">
+                                  <div className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                     <BiEdit
                                       onClick={() => {
                                         setUserID(item.orgUserSpecificID);
@@ -2014,7 +2302,7 @@ const Users = ({ searchValue }) => {
                                       }}
                                     />
                                   </div>
-                                  <div className="cursor-pointer text-xl text-[#EE4B2B]">
+                                  <div className="cursor-pointer text-xl flex gap-3 text-right rounded-full px-2 py-2 text-white text-center bg-[#FF0000]">
                                     <MdDeleteForever
                                       onClick={() =>
                                         handleDeleteUser(item.orgUserSpecificID)
