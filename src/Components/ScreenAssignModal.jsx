@@ -280,112 +280,114 @@ const ScreenAssignModal = ({
               <AiOutlineCloseCircle className="text-3xl" />
             </button>
           </div>
-          <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
-            <table className="w-full" cellPadding={20}>
-              <thead>
-                <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                  <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
-                    Screen
-                  </th>
-                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                    Status
-                  </th>
-                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                    Google Location
-                  </th>
-                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                    Associated Schedule
-                  </th>
-                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                    Tags
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <td
-                      colSpan={6}
-                      className="text-center font-semibold text-lg"
-                    >
-                      Loading...
-                    </td>
+          <div className="schedual-table bg-white rounded-xl mt-2 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
+            <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+              <table className="screen-table w-full" cellPadding={20}>
+                <thead>
+                  <tr className="items-center table-head-bg">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
+                      Screen
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Status
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Google Location
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Associated Schedule
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Tags
+                    </th>
                   </tr>
-                ) : !loading && screenData?.length > 0 ? (
-                  screenData.map((screen) => (
-                    <tr
-                      key={screen.screenID}
-                      className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                    >
-                      <td className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="mr-3"
-                          onChange={() =>
-                            handleScreenCheckboxChange(screen.screenID)
-                          }
-                          checked={screenCheckboxes[screen.screenID]}
-                        />
-
-                        {screen.screenName}
-                      </td>
-
-                      <td className="text-center">
-                        <span
-                          id={`changetvstatus${screen.screenID}`}
-                          className={`rounded-full px-6 py-2 text-white text-center ${
-                            screen.screenStatus == 1
-                              ? "bg-[#3AB700]"
-                              : "bg-[#FF0000]"
-                          }`}
-                        >
-                          {screen.screenStatus == 1 ? "Live" : "offline"}
-                        </span>
-                        {/* <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
-                          Live
-                        </button> */}
-                      </td>
-                      <td className="text-center break-words">
-                        {screen.googleLocation}
-                      </td>
-
-                      <td className="text-center break-words">
-                        Schedule Name Till 28 June 2023
-                      </td>
-                      <td className="text-center break-words">
-                        {screen?.tags !== null
-                          ? screen?.tags
-                              .split(",")
-                              .slice(
-                                0,
-                                screen?.tags.split(",").length > 2
-                                  ? 3
-                                  : screen?.tags.split(",").length
-                              )
-                              .map((text) => {
-                                if (text.toString().length > 10) {
-                                  return text
-                                    .split("")
-                                    .slice(0, 10)
-                                    .concat("...")
-                                    .join("");
-                                }
-                                return text;
-                              })
-                              .join(",")
-                          : ""}
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="text-center font-semibold text-lg"
+                      >
+                        Loading...
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={6}>
-                      <p className="text-center p-2">No Screen available.</p>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  ) : !loading && screenData?.length > 0 ? (
+                    screenData.map((screen) => (
+                      <tr
+                        key={screen.screenID}
+                        className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                      >
+                        <td className="flex items-center">
+                          <input
+                            type="checkbox"
+                            className="mr-3"
+                            onChange={() =>
+                              handleScreenCheckboxChange(screen.screenID)
+                            }
+                            checked={screenCheckboxes[screen.screenID]}
+                          />
+
+                          {screen.screenName}
+                        </td>
+
+                        <td className="text-center">
+                          <span
+                            id={`changetvstatus${screen.screenID}`}
+                            className={`rounded-full px-6 py-2 text-white text-center ${
+                              screen.screenStatus == 1
+                                ? "bg-[#3AB700]"
+                                : "bg-[#FF0000]"
+                            }`}
+                          >
+                            {screen.screenStatus == 1 ? "Live" : "offline"}
+                          </span>
+                          {/* <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
+                          Live
+                        </button> */}
+                        </td>
+                        <td className="text-center break-words">
+                          {screen.googleLocation}
+                        </td>
+
+                        <td className="text-center break-words">
+                          Schedule Name Till 28 June 2023
+                        </td>
+                        <td className="text-center break-words">
+                          {screen?.tags !== null
+                            ? screen?.tags
+                                .split(",")
+                                .slice(
+                                  0,
+                                  screen?.tags.split(",").length > 2
+                                    ? 3
+                                    : screen?.tags.split(",").length
+                                )
+                                .map((text) => {
+                                  if (text.toString().length > 10) {
+                                    return text
+                                      .split("")
+                                      .slice(0, 10)
+                                      .concat("...")
+                                      .join("");
+                                  }
+                                  return text;
+                                })
+                                .join(",")
+                            : ""}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6}>
+                        <p className="text-center p-2">No Screen available.</p>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
           <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
             <button

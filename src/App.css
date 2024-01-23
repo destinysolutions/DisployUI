@@ -912,9 +912,11 @@ button.daysbtn {
 }
 
 .table-head-bg {
-  background: #e6e6e6;
+  background: #000000;
 }
-
+.table-head-bg th {
+  color: #fff;
+}
 @media (max-width: 1244px) {
   button.daysbtn {
     width: 35px;
@@ -953,7 +955,7 @@ button.daysbtn {
 .composition-table tr:nth-child(even),
 .selectedlayout-table tr:nth-child(even),
 .addmedia-table tr:nth-child(even) {
-  background: #ebebeb;
+  background: #ffffff;
 }
 .screen-table tr,
 .newscreengroup-table tr,
@@ -972,6 +974,10 @@ button.daysbtn {
 .screen-table tr td,
 .addmedia-table tr td {
   font-size: 13px;
+}
+.screen-table tr td,
+.screen-table tbody tr {
+  background: #fff;
 }
 .imagebox.relative.p-3 img {
   /* min-height: 250px;
@@ -1008,13 +1014,15 @@ button.daysbtn {
 }
 
 .videoTab {
-  @apply  min-w-[8rem] relative z-0 max-w-[8rem] h-20 !important;
+  @apply min-w-[8rem] relative z-0 max-w-[8rem] h-20 !important;
 }
-.sc-dmlpXa.qDYwR{
-  min-height : 500px
+.sc-dmlpXa.qDYwR {
+  min-height: 500px;
 }
 
-.screen-table th{width: 200px;}
+.screen-table th {
+  width: 200px;
+}
 .sc-scrollbar::-webkit-scrollbar {
   height: 3px;
   background-color: white;
@@ -1028,7 +1036,6 @@ button.daysbtn {
 .sc-scrollbar::-webkit-scrollbar-button {
   display: none;
 }
-
 
 .hoverToltip:hover .hover-text {
   display: inline; /* Display the text on hover */

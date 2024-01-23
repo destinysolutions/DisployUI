@@ -64,10 +64,13 @@ const Storagelimit = () => {
         </h1>
       </div>
       <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
-        <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-          <table className="min-w-full leading-normal" cellPadding={20}>
+        <div className="inline-block min-w-full shadow rounded-lg overflow-x-scroll sc-scrollbar">
+          <table
+            className="screen-table min-w-full leading-normal"
+            cellPadding={20}
+          >
             <thead>
-              <tr className="border-b border-b-[#E4E6FF] bg-[#EFF3FF]">
+              <tr className="table-head-bg">
                 <th className="text-[#5A5881] text-base font-semibold">
                   <span className="flex items-center justify-center">
                     Total Space

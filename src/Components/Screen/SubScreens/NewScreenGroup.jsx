@@ -12,7 +12,11 @@ import { IoMdRefresh } from "react-icons/io";
 import PropTypes from "prop-types";
 import Footer from "../../Footer";
 import { connection } from "../../../SignalR";
-import { AiOutlineCloudUpload, AiOutlinePlusCircle, AiOutlineSearch } from "react-icons/ai";
+import {
+  AiOutlineCloudUpload,
+  AiOutlinePlusCircle,
+  AiOutlineSearch,
+} from "react-icons/ai";
 import { Tooltip } from "@material-tailwind/react";
 import ScreenGroupModal from "./ScreenGroupModal";
 import ShowAssetModal from "./model/ShowGroupAssetModal";
@@ -26,7 +30,18 @@ import {
   handleGetYoutubeData,
 } from "../../../Redux/AppsSlice";
 import { BiEdit, BiSave } from "react-icons/bi";
-import { addTagsAndUpdate, getGroupData, groupAssetsInUpdateScreen, groupInScreenDelete, openPriviewModel, resetStatus, saveGroupData, screenGroupDelete, screenGroupDeleteAll, updateGroupData } from "../../../Redux/ScreenGroupSlice";
+import {
+  addTagsAndUpdate,
+  getGroupData,
+  groupAssetsInUpdateScreen,
+  groupInScreenDelete,
+  openPriviewModel,
+  resetStatus,
+  saveGroupData,
+  screenGroupDelete,
+  screenGroupDeleteAll,
+  updateGroupData,
+} from "../../../Redux/ScreenGroupSlice";
 import toast, { CheckmarkIcon } from "react-hot-toast";
 import Swal from "sweetalert2";
 import { IoClose } from "react-icons/io5";
@@ -34,12 +49,11 @@ import AddOrEditTagPopup from "../../AddOrEditTagPopup";
 import { SELECT_BY_LIST, UPDATE_NEW_SCREEN } from "../../../Pages/Api";
 import { handleChangeScreens } from "../../../Redux/Screenslice";
 import PreviewModel from "./model/previewModel";
-import ReactTooltip from 'react-tooltip';
+import ReactTooltip from "react-tooltip";
 import PreviewComposition from "../../Composition/PreviewComposition";
 import axios from "axios";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
-
   const { user, token } = useSelector((state) => state.root.auth);
   const store = useSelector((state) => state.root.screenGroup);
   const authToken = `Bearer ${token}`;
@@ -57,19 +71,20 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [openAccordionIndex, setOpenAccordionIndex] = useState(null);
 
-
   // GroupNameUpdate
-  const [newGroupName, setNewGroupName] = useState('');
+  const [newGroupName, setNewGroupName] = useState("");
   const [editIndex, setEditIndex] = useState(-1); // Initially no index is being edited
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]); // Multipal check
-  const [editGroupID, setEditGroupID] = useState()
-  const [getGroup, setGetGroup] = useState()   // used to singl group in all screenId get and handl save asstes
+  const [editGroupID, setEditGroupID] = useState();
+  const [getGroup, setGetGroup] = useState(); // used to singl group in all screenId get and handl save asstes
 
   //   Model
-  const [label, setLabel] = useState('');
+  const [label, setLabel] = useState("");
   const [showAssetModal, setShowAssetModal] = useState(false);
-  const [selectedComposition, setSelectedComposition] = useState({ compositionName: "", });
+  const [selectedComposition, setSelectedComposition] = useState({
+    compositionName: "",
+  });
   const [popupActiveTab, setPopupActiveTab] = useState(1);
   // const [screenCheckboxes, setScreenCheckboxes] = useState({});
   const [selectedTextScroll, setSelectedTextScroll] = useState();
@@ -78,7 +93,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectedYoutube, setSelectedYoutube] = useState();
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
 
-  const [editSelectedScreen, setEditSelectedScreen] = useState('');
+  const [editSelectedScreen, setEditSelectedScreen] = useState("");
 
   const [showTagModal, setShowTagModal] = useState(false);
   const [tags, setTags] = useState([]);
@@ -89,7 +104,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [previewData, setPreviewData] = useState();
   const [loading, setLoading] = useState(false);
   const [layotuDetails, setLayotuDetails] = useState(null);
-
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -118,28 +132,32 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     }
 
     if (store && store.status === "failed") {
-      toast.error(store.error)
+      toast.error(store.error);
     }
 
-
     if (store && store.status === "succeeded") {
-      toast.success(store.message)
-      setLoadFirst(true)
+      toast.success(store.message);
+      setLoadFirst(true);
     }
 
     if (store && store.status) {
-      dispatch(resetStatus())
+      dispatch(resetStatus());
     }
-
   }, [dispatch, loadFirst, store]);
 
-  const totalPages = Math.ceil((Array.isArray(store?.data) ? store.data.length : 0) / itemsPerPage);
-  const paginatedData = Array.isArray(store?.data) ? store.data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) : [];
+  const totalPages = Math.ceil(
+    (Array.isArray(store?.data) ? store.data.length : 0) / itemsPerPage
+  );
+  const paginatedData = Array.isArray(store?.data)
+    ? store.data.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      )
+    : [];
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-
 
   const callSignalR = () => {
     if (connection.state === "Disconnected") {
@@ -180,11 +198,11 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           console.error("Error invoking SignalR method:", error);
         });
     }
-  }
+  };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setLoadFirst(true)
+    setLoadFirst(true);
   };
 
   const handleAccordionClick = (index) => {
@@ -192,7 +210,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleRefres = () => {
-    callSignalR()
+    callSignalR();
   };
 
   // Multipal check
@@ -291,40 +309,42 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     // }
   };
 
-  const editGroupName = (index) => {     // GroupNameUpdate
+  const editGroupName = (index) => {
+    // GroupNameUpdate
     setEditIndex(index);
     setNewGroupName(store.data[index].screenGroupName);
-    setEditGroupID(store.data[index].screenGroupID)
-  }
+    setEditGroupID(store.data[index].screenGroupID);
+  };
 
-  const updateGroupName = async (index) => {    // GroupNameUpdate
+  const updateGroupName = async (index) => {
+    // GroupNameUpdate
     const payload = {
       screenGroupID: editGroupID,
-      screenGroupName: newGroupName
-    }
-    await dispatch(saveGroupData(payload))
-    setEditIndex(-1)
-  }
+      screenGroupName: newGroupName,
+    };
+    await dispatch(saveGroupData(payload));
+    setEditIndex(-1);
+  };
 
   const newAddGroup = (item) => {
     if (item) {
-      setLabel("Update")
-      setEditSelectedScreen(item)
+      setLabel("Update");
+      setEditSelectedScreen(item);
     } else {
-      setLabel("Save")
-      setEditSelectedScreen()
+      setLabel("Save");
+      setEditSelectedScreen();
     }
-    setIsModalOpen(true)
-  }
+    setIsModalOpen(true);
+  };
 
   // New add groupScreen
   const handleSaveNew = async (payload) => {
-    await dispatch(saveGroupData(payload))
+    await dispatch(saveGroupData(payload));
   };
 
   const updateScreen = async (payload) => {
-    await dispatch(saveGroupData(payload))
-  }
+    await dispatch(saveGroupData(payload));
+  };
 
   const handleDeleteGroup = (item) => {
     Swal.fire({
@@ -337,12 +357,12 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(screenGroupDelete(item.screenGroupID))
+        dispatch(screenGroupDelete(item.screenGroupID));
         setSelectedItems([]);
-        setSelectAll(false)
-        callSignalR()
+        setSelectAll(false);
+        callSignalR();
       }
-    })
+    });
   };
 
   const handleDeleteGroupAll = () => {
@@ -356,17 +376,17 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(screenGroupDeleteAll(selectedItems))
+        dispatch(screenGroupDeleteAll(selectedItems));
         setSelectedItems([]);
-        setSelectAll(false)
-        callSignalR()
+        setSelectAll(false);
+        callSignalR();
       }
-    })
+    });
   };
 
   const deleteGroupInScreen = (payload) => {
-    dispatch(groupInScreenDelete(payload))
-  }
+    dispatch(groupInScreenDelete(payload));
+  };
 
   const handleTagsUpdate = (tags) => {
     const {
@@ -410,19 +430,17 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       screenName: null,
       operation: "Update",
     };
-    dispatch(addTagsAndUpdate(data))
-
+    dispatch(addTagsAndUpdate(data));
   };
-
 
   const handleSave = () => {
     const payload = {
       GroupID: getGroup.screenGroupID,
-      MediaID: '',
-      MediaDetailID: '',
-      AssetName: '',
-      AssetType: '',
-      FilePath: '',
+      MediaID: "",
+      MediaDetailID: "",
+      AssetName: "",
+      AssetType: "",
+      FilePath: "",
     };
     if (selectedAsset.assetID) {
       payload.MediaID = selectedAsset.assetID;
@@ -432,35 +450,35 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       payload.MediaDetailID = 1;
     }
     if (selectedComposition.compositionID) {
-      console.log("selectedComposition",selectedComposition);
-      payload.AssetName = selectedComposition.compositionName
+      console.log("selectedComposition", selectedComposition);
+      payload.AssetName = selectedComposition.compositionName;
       payload.MediaID = selectedComposition.compositionID;
       payload.AssetType = "composition";
-      payload.FilePath = 'composition';
+      payload.FilePath = "composition";
       payload.MediaDetailID = 3;
     }
     if (selectedTextScroll.textScroll_Id) {
-      payload.AssetName = selectedTextScroll.instanceName
+      payload.AssetName = selectedTextScroll.instanceName;
       payload.MediaID = selectedTextScroll.textScroll_Id;
-      payload.AssetType = '';
-      payload.FilePath = '';
+      payload.AssetType = "";
+      payload.FilePath = "";
       payload.MediaDetailID = 4;
     }
     if (selectedYoutube.compositionID) {
-      payload.AssetName = selectedYoutube.instanceName
+      payload.AssetName = selectedYoutube.instanceName;
       payload.MediaID = selectedYoutube.compositionID;
-      payload.AssetType = '';
-      payload.FilePath = '';
+      payload.AssetType = "";
+      payload.FilePath = "";
       payload.MediaDetailID = 3;
     }
     if (selectedYoutube.youtubeId) {
       payload.MediaID = selectedYoutube.instanceName;
-      payload.AssetType = '';
-      payload.FilePath = '';
+      payload.AssetType = "";
+      payload.FilePath = "";
       payload.MediaDetailID = 5;
     }
-    dispatch(groupAssetsInUpdateScreen(payload))
-  }
+    dispatch(groupAssetsInUpdateScreen(payload));
+  };
 
   const handleFetchLayoutById = (id) => {
     let config = {
@@ -483,32 +501,31 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleOpenPreview = (item) => {
-    setLoading(true)
-    setLoadFirst(true)
-    dispatch(openPriviewModel(item.screenGroupID))
-      .then((item) => {
-        handleFetchLayoutById(item.payload.data?.[0]?.layoutID);
-        let obj = {};
-        for (const [
-          key,
-          value,
-        ] of item.payload.data?.[0]?.compositionPossition.entries()) {
-          const arr = value?.schedules.map((item) => {
-            return {
-              ...item,
-              width: value?.width,
-              height: value?.height,
-              top: value?.top,
-              left: value?.left,
-            };
-          });
-          obj[key + 1] = [...arr];
-        }
-        const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
-        setPreviewData(newdd)
-      })
+    setLoading(true);
+    setLoadFirst(true);
+    dispatch(openPriviewModel(item.screenGroupID)).then((item) => {
+      handleFetchLayoutById(item.payload.data?.[0]?.layoutID);
+      let obj = {};
+      for (const [
+        key,
+        value,
+      ] of item.payload.data?.[0]?.compositionPossition.entries()) {
+        const arr = value?.schedules.map((item) => {
+          return {
+            ...item,
+            width: value?.width,
+            height: value?.height,
+            top: value?.top,
+            left: value?.left,
+          };
+        });
+        obj[key + 1] = [...arr];
+      }
+      const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
+      setPreviewData(newdd);
+    });
     setIsPreviewOpen(true);
-    setLoading(false)
+    setLoading(false);
 
     // if (store.status === "priview") {
     //   console.log("store.data",store.data);
@@ -518,11 +535,10 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleClosePreview = () => {
     setIsPreviewOpen(false);
-    setLoadFirst(true)
-    setLayotuDetails(null)
-    setPreviewData()
+    setLoadFirst(true);
+    setLayotuDetails(null);
+    setPreviewData();
   };
-
 
   return (
     <>
@@ -540,320 +556,464 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
             <div className="flex items-center sm:mt-3 flex-wrap gap-1">
               <button
-                data-tip data-for="Refresh Screen"
+                data-tip
+                data-for="Refresh Screen"
                 type="button"
                 className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                 onClick={() => handleRefres()}
               >
                 <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
-                <ReactTooltip id="Refresh Screen" place="left" type="warning" effect="float">
+                <ReactTooltip
+                  id="Refresh Screen"
+                  place="left"
+                  type="warning"
+                  effect="float"
+                >
                   <span>Refresh Screen</span>
                 </ReactTooltip>
               </button>
 
               <button
-                data-tip data-for="Screen Group"
+                data-tip
+                data-for="Screen Group"
                 type="button"
                 className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                 onClick={() => newAddGroup()}
               >
                 <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
-                <ReactTooltip id="Screen Group" place="left" type="warning" effect="float">
+                <ReactTooltip
+                  id="Screen Group"
+                  place="left"
+                  type="warning"
+                  effect="float"
+                >
                   <span>Screen Group</span>
                 </ReactTooltip>
               </button>
 
               {isModalOpen && (
-                <ScreenGroupModal isOpen={isModalOpen} onClose={closeModal} handleSaveNew={handleSaveNew} updateScreen={updateScreen} editSelectedScreen={editSelectedScreen} label={label} />
+                <ScreenGroupModal
+                  isOpen={isModalOpen}
+                  onClose={closeModal}
+                  handleSaveNew={handleSaveNew}
+                  updateScreen={updateScreen}
+                  editSelectedScreen={editSelectedScreen}
+                  label={label}
+                />
               )}
 
               {store.data?.length > 0 && (
                 <div>
                   <button
-                    data-tip data-for="Select All"
+                    data-tip
+                    data-for="Select All"
                     type="button"
                     className="flex align-middle border-white text-white items-center"
                   >
-                    <input type="checkbox" className="w-6 h-5" checked={selectAll} onChange={handleSelectAll} readOnly />
+                    <input
+                      type="checkbox"
+                      className="w-6 h-5"
+                      checked={selectAll}
+                      onChange={handleSelectAll}
+                      readOnly
+                    />
                   </button>
 
-                  <ReactTooltip id="Select All" place="left" type="warning" effect="float">
+                  <ReactTooltip
+                    id="Select All"
+                    place="left"
+                    type="warning"
+                    effect="float"
+                  >
                     <span>Select All</span>
                   </ReactTooltip>
-
                 </div>
               )}
 
               {selectedItems.length > 0 && (
                 <div>
-                  <button data-tip data-for="All Delete" className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
+                  <button
+                    data-tip
+                    data-for="All Delete"
+                    className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                  >
                     <RiDeleteBin5Line
                       className="text-3xl p-1 hover:text-white"
                       onClick={() => handleDeleteGroupAll()}
                     />
                   </button>
 
-                  <ReactTooltip id="All Delete" place="left" type="warning" effect="float">
+                  <ReactTooltip
+                    id="All Delete"
+                    place="left"
+                    type="warning"
+                    effect="float"
+                  >
                     <span>Delete</span>
                   </ReactTooltip>
                 </div>
               )}
-
             </div>
           </div>
 
-
-          {paginatedData && paginatedData.length > 0 ? paginatedData.map((item, i) => {
-            const isAccordionOpen = openAccordionIndex === i;
-            return (
-              <div key={i} className="accordions mt-5">
-                <div
-                  className="section shadow-md p-5 bg-white  lg:flex md:flex  sm:block items-center justify-between" >
-                  <div className="flex gap-2 items-center">
-                    {editIndex === i ? (
-                      <>
-                        <input
-                          type="text"
-                          name="name"
-                          className="formInput block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          value={newGroupName}
-                          onChange={(e) => setNewGroupName(e.target.value)}
-                        />
-                        <div>
-                          <BiSave className="cursor-pointer text-xl text-[#0000FF]" onClick={() => updateGroupName(i)} />
-                          <IoClose className="cursor-pointer text-xl text-[#FF0000]" onClick={() => { setEditIndex(-1); setNewGroupName("") }} />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <h1 className="text-lg capitalize">{item.screenGroupName}</h1>
-                        <BiEdit className="cursor-pointer text-xl text-[#0000FF]" onClick={() => editGroupName(i)} />
-                      </>
-                    )}
-                  </div>
-
-                  <div className="flex items-center">
-                    <div className=" flex items-center">
-                      {isAccordionOpen && (
+          {paginatedData && paginatedData.length > 0 ? (
+            paginatedData.map((item, i) => {
+              const isAccordionOpen = openAccordionIndex === i;
+              return (
+                <div key={i} className="accordions mt-5">
+                  <div className="section shadow-md p-5 bg-white  lg:flex md:flex  sm:block items-center justify-between">
+                    <div className="flex gap-2 items-center">
+                      {editIndex === i ? (
                         <>
-                          <button data-tip data-for="Add Screen" className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() => newAddGroup(item)}>
-                            Add <b>+</b>
-                            <ReactTooltip id="Add Screen" place="left" type="warning" effect="float">
-                              <span>Add Screen</span>
-                            </ReactTooltip>
-                          </button>
-
-
-                          {!item.isPreview &&
-                            <button data-tip data-for="Preview" className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white" onClick={() => handleOpenPreview(item)}>
-                              Preview
-                              <ReactTooltip id="Preview" place="left" type="warning" effect="float">
-                                <span>Preview</span>
-                              </ReactTooltip>
-                            </button>
-                          }
-
-                          <button
-                            data-tip data-for="Upload"
-                            className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                            onClick={() => { setShowAssetModal(true); setGetGroup(item) }}
-                          >
-                            <TbUpload className="text-3xl p-1 hover:text-white" />
-                            <ReactTooltip id="Upload" place="left" type="warning" effect="float">
-                              <span>Upload</span>
-                            </ReactTooltip>
-                          </button>
-
-                          {!selectedItems?.length && (
-                            <button data-tip data-for="All Delete" className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg">
-                              <RiDeleteBin5Line
-                                className="text-3xl p-1 hover:text-white"
-                                onClick={() => handleDeleteGroup(item)}
-                              />
-                              <ReactTooltip id="All Delete" place="left" type="warning" effect="float">
-                                <span>Delete</span>
-                              </ReactTooltip>
-                            </button>
-                          )}
-
+                          <input
+                            type="text"
+                            name="name"
+                            className="formInput block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            value={newGroupName}
+                            onChange={(e) => setNewGroupName(e.target.value)}
+                          />
+                          <div>
+                            <BiSave
+                              className="cursor-pointer text-xl text-[#0000FF]"
+                              onClick={() => updateGroupName(i)}
+                            />
+                            <IoClose
+                              className="cursor-pointer text-xl text-[#FF0000]"
+                              onClick={() => {
+                                setEditIndex(-1);
+                                setNewGroupName("");
+                              }}
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <h1 className="text-lg capitalize">
+                            {item.screenGroupName}
+                          </h1>
+                          <MdOutlineModeEdit
+                            className="cursor-pointer text-xl text-[#0000FF]"
+                            onClick={() => editGroupName(i)}
+                          />
                         </>
                       )}
+                    </div>
 
-                      {selectAll ? (<CheckmarkIcon className="w-5 h-5" />) : (
-                        <div>
-                          <input
-                            type="checkbox"
-                            data-tip data-for="Select"
-                            className=" mx-1 w-6 h-5 mt-2"
-                            checked={selectedItems.includes(item?.mergeScreenId)}
-                            onChange={() => handleCheckboxChange(item?.mergeScreenId)}
-                          />
-                          <ReactTooltip id="Select" place="left" type="warning" effect="float">
-                            <span>Select</span>
-                          </ReactTooltip>
-                        </div>
-                      )}
+                    <div className="flex items-center">
+                      <div className=" flex items-center">
+                        {isAccordionOpen && (
+                          <>
+                            <button
+                              data-tip
+                              data-for="Add Screen"
+                              className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white"
+                              onClick={() => newAddGroup(item)}
+                            >
+                              Add <b>+</b>
+                              <ReactTooltip
+                                id="Add Screen"
+                                place="left"
+                                type="warning"
+                                effect="float"
+                              >
+                                <span>Add Screen</span>
+                              </ReactTooltip>
+                            </button>
 
-                      <button>
-                        {isAccordionOpen ? (
-                          <div onClick={() => handleAccordionClick(i)}>
-                            <IoIosArrowDropup className="text-3xl" />
-                          </div>
+                            {!item.isPreview && (
+                              <button
+                                data-tip
+                                data-for="Preview"
+                                className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white"
+                                onClick={() => handleOpenPreview(item)}
+                              >
+                                Preview
+                                <ReactTooltip
+                                  id="Preview"
+                                  place="left"
+                                  type="warning"
+                                  effect="float"
+                                >
+                                  <span>Preview</span>
+                                </ReactTooltip>
+                              </button>
+                            )}
+
+                            <button
+                              data-tip
+                              data-for="Upload"
+                              className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                              onClick={() => {
+                                setShowAssetModal(true);
+                                setGetGroup(item);
+                              }}
+                            >
+                              <TbUpload className="text-3xl p-1 hover:text-white" />
+                              <ReactTooltip
+                                id="Upload"
+                                place="left"
+                                type="warning"
+                                effect="float"
+                              >
+                                <span>Upload</span>
+                              </ReactTooltip>
+                            </button>
+
+                            {!selectedItems?.length && (
+                              <button
+                                data-tip
+                                data-for="All Delete"
+                                className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                              >
+                                <RiDeleteBin5Line
+                                  className="text-3xl p-1 hover:text-white"
+                                  onClick={() => handleDeleteGroup(item)}
+                                />
+                                <ReactTooltip
+                                  id="All Delete"
+                                  place="left"
+                                  type="warning"
+                                  effect="float"
+                                >
+                                  <span>Delete</span>
+                                </ReactTooltip>
+                              </button>
+                            )}
+                          </>
+                        )}
+
+                        {selectAll ? (
+                          <CheckmarkIcon className="w-5 h-5" />
                         ) : (
-                          <div onClick={() => handleAccordionClick(i)}>
-                            <IoIosArrowDropdown className="text-3xl" />
+                          <div>
+                            <input
+                              type="checkbox"
+                              data-tip
+                              data-for="Select"
+                              className=" mx-1 w-6 h-5 mt-2"
+                              checked={selectedItems.includes(
+                                item?.mergeScreenId
+                              )}
+                              onChange={() =>
+                                handleCheckboxChange(item?.mergeScreenId)
+                              }
+                            />
+                            <ReactTooltip
+                              id="Select"
+                              place="left"
+                              type="warning"
+                              effect="float"
+                            >
+                              <span>Select</span>
+                            </ReactTooltip>
                           </div>
                         )}
-                      </button>
+
+                        <button>
+                          {isAccordionOpen ? (
+                            <div onClick={() => handleAccordionClick(i)}>
+                              <IoIosArrowDropup className="text-3xl" />
+                            </div>
+                          ) : (
+                            <div onClick={() => handleAccordionClick(i)}>
+                              <IoIosArrowDropdown className="text-3xl" />
+                            </div>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {isAccordionOpen && (
-                  <div className=" relative shadow-md ">
-                    <table
-                      className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
-                      cellPadding={20}
-                    >
-                      <thead>
-                        <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className="flex items-center justify-center px-6 py-2">
-                              Screen
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" flex items-center justify-center mx-auto px-6 py-2">
-                              Status
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" flex items-center justify-center mx-auto px-6 py-2">
-                              Last Seen
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" flex items-center justify-center mx-auto px-6 py-2">
-                              Now Playing
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" px-6 py-2 flex items-center justify-center mx-auto">
-                              Current Schedule
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
-                              Tags
-                            </button>
-                          </th>
-                          <th className="text-[#444] text-sm font-semibold p-2">
-                            <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
-                              Action
-                            </button>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {isAccordionOpen && item && item.screenGroupLists?.length > 0 && item.screenGroupLists.map((screen, index) => {
-                          return (
-                            <tr
-                              key={index}
-                              className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
-                            >
-                              <td className="flex items-center">
-                                {screen.screenName}
-                              </td>
-                              <td className="p-2 text-center">
-                                {screen.screenStatus === 1 ? (
-                                  <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
-                                    Live
-                                  </button>
-                                ) : (
-                                  <button className="bg-[#FF0000] rounded-full px-6 py-1 text-white">
-                                    Off
-                                  </button>
-                                )}
-                              </td>
-                              <td className="p-2 text-center">
-                                {screen.last_seen}
-                              </td>
-                              <td className="p-2 text-center">
-                                <button
-                                  style={{ width: "max-content" }}
-                                  className="flex items-centerborder-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500"
+                  {isAccordionOpen && (
+                    <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+                      <table
+                        className="screen-table  w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
+                        cellPadding={20}
+                      >
+                        <thead>
+                          <tr className="items-center table-head-bg text-left">
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className="flex items-center justify-center px-6 py-2">
+                                Screen
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                                Status
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                                Last Seen
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                                Now Playing
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" px-6 py-2 flex items-center justify-center mx-auto">
+                                Current Schedule
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
+                                Tags
+                              </button>
+                            </th>
+                            <th className="text-[#444] text-sm font-semibold p-2">
+                              <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
+                                Action
+                              </button>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {isAccordionOpen &&
+                            item &&
+                            item.screenGroupLists?.length > 0 &&
+                            item.screenGroupLists.map((screen, index) => {
+                              return (
+                                <tr
+                                  key={index}
+                                  className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
                                 >
-                                  {screen.assetName}
-                                  <AiOutlineCloudUpload className="ml-2 text-lg" />
-                                </button>
-                              </td>
-                              <td className="break-words	w-[150px] p-2 text-center">
-                                {screen.scheduleName}
-                              </td>
-                              <td
-                                title={screen?.tags && screen?.tags}
-                                className="mx-auto  p-2 text-center">
-                                {(screen?.tags === "" || screen?.tags === null) && (
-                                  <span>
-                                    <AiOutlinePlusCircle
-                                      size={30}
-                                      className="mx-auto cursor-pointer"
-                                      onClick={() => {
-                                        setShowTagModal(true);
-                                        screen.tags === "" || screen?.tags === null
-                                          ? setTags([])
-                                          : setTags(screen?.tags?.split(","));
-                                        setTagUpdateScreeen(screen);
-                                      }}
-                                    />
-                                  </span>
-                                )}
-                                {screen?.tags !== null ? screen.tags.split(",").slice(0, screen.tags.split(",").length > 2 ? 3 : screen.tags.split(",").length)
-                                  .map((text) => {
-                                    if (text.toString().length > 10) {
-                                      return text.split("").slice(0, 10).concat("...").join("");
-                                    } return text;
-                                  }).join(",") : ""}
-                                {screen?.tags !== "" && screen?.tags !== null && (
-                                  <AiOutlinePlusCircle
-                                    onClick={() => { setShowTagModal(true); screen.tags === "" || screen?.tags === null ? setTags([]) : setTags(screen?.tags?.split(",")); setTagUpdateScreeen(screen); }}
-                                    className="mx-auto  w-5 h-5 cursor-pointer "
-                                  />
-                                )}
+                                  <td className="flex items-center">
+                                    {screen.screenName}
+                                  </td>
+                                  <td className="p-2 text-center">
+                                    {screen.screenStatus === 1 ? (
+                                      <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
+                                        Live
+                                      </button>
+                                    ) : (
+                                      <button className="bg-[#FF0000] rounded-full px-6 py-1 text-white">
+                                        Off
+                                      </button>
+                                    )}
+                                  </td>
+                                  <td className="p-2 text-center">
+                                    {screen.last_seen}
+                                  </td>
+                                  <td className="p-2 text-center">
+                                    <button
+                                      style={{ width: "max-content" }}
+                                      className="flex items-centerborder-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500"
+                                    >
+                                      {screen.assetName}
+                                      <AiOutlineCloudUpload className="ml-2 text-lg" />
+                                    </button>
+                                  </td>
+                                  <td className="break-words	w-[150px] p-2 text-center">
+                                    {screen.scheduleName}
+                                  </td>
+                                  <td
+                                    title={screen?.tags && screen?.tags}
+                                    className="mx-auto  p-2 text-center"
+                                  >
+                                    {(screen?.tags === "" ||
+                                      screen?.tags === null) && (
+                                      <span>
+                                        <AiOutlinePlusCircle
+                                          size={30}
+                                          className="mx-auto cursor-pointer"
+                                          onClick={() => {
+                                            setShowTagModal(true);
+                                            screen.tags === "" ||
+                                            screen?.tags === null
+                                              ? setTags([])
+                                              : setTags(
+                                                  screen?.tags?.split(",")
+                                                );
+                                            setTagUpdateScreeen(screen);
+                                          }}
+                                        />
+                                      </span>
+                                    )}
+                                    {screen?.tags !== null
+                                      ? screen.tags
+                                          .split(",")
+                                          .slice(
+                                            0,
+                                            screen.tags.split(",").length > 2
+                                              ? 3
+                                              : screen.tags.split(",").length
+                                          )
+                                          .map((text) => {
+                                            if (text.toString().length > 10) {
+                                              return text
+                                                .split("")
+                                                .slice(0, 10)
+                                                .concat("...")
+                                                .join("");
+                                            }
+                                            return text;
+                                          })
+                                          .join(",")
+                                      : ""}
+                                    {screen?.tags !== "" &&
+                                      screen?.tags !== null && (
+                                        <AiOutlinePlusCircle
+                                          onClick={() => {
+                                            setShowTagModal(true);
+                                            screen.tags === "" ||
+                                            screen?.tags === null
+                                              ? setTags([])
+                                              : setTags(
+                                                  screen?.tags?.split(",")
+                                                );
+                                            setTagUpdateScreeen(screen);
+                                          }}
+                                          className="mx-auto  w-5 h-5 cursor-pointer "
+                                        />
+                                      )}
 
-                                {/* add or edit tag modal */}
-                                {showTagModal && (
-                                  <AddOrEditTagPopup
-                                    setShowTagModal={setShowTagModal}
-                                    tags={tags}
-                                    setTags={setTags}
-                                    handleTagsUpdate={handleTagsUpdate}
-                                    from="screen"
-                                    setTagUpdateScreeen={setTagUpdateScreeen}
-                                  />
-                                )}
-                              </td>
-                              <td className="p-2 justify-center flex ">
-                                <div className="cursor-pointer text-xl flex gap-3 text-right">
-                                  <MdDeleteForever className="text-[#EE4B2B]" onClick={() => deleteGroupInScreen({ ScreenGroupListID: screen.screenGroupListID })} />
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                                    {/* add or edit tag modal */}
+                                    {showTagModal && (
+                                      <AddOrEditTagPopup
+                                        setShowTagModal={setShowTagModal}
+                                        tags={tags}
+                                        setTags={setTags}
+                                        handleTagsUpdate={handleTagsUpdate}
+                                        from="screen"
+                                        setTagUpdateScreeen={
+                                          setTagUpdateScreeen
+                                        }
+                                      />
+                                    )}
+                                  </td>
+                                  <td className="p-2 justify-center flex ">
+                                    <div className="cursor-pointer text-xl flex gap-3 text-right rounded-full px-2 py-2 text-white text-center bg-[#FF0000]">
+                                      <MdDeleteForever
+                                        onClick={() =>
+                                          deleteGroupInScreen({
+                                            ScreenGroupListID:
+                                              screen.screenGroupListID,
+                                          })
+                                        }
+                                      />
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          ) : (
+            <>
+              <div className="flex text-center m-5 justify-center">
+                <span className="text-2xl hover:bg-gray-400 text-gray-800 mt-20 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
+                  Data not found!
+                </span>
               </div>
-            );
-          }) : <>
-            <div className="flex text-center m-5 justify-center">
-              <span className="text-2xl hover:bg-gray-400 text-gray-800 mt-20 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
-                Data not found!
-              </span>
-            </div>
-          </>}
+            </>
+          )}
         </div>
         {/* end  pagination */}
         {paginatedData && paginatedData.length > 0 && (
@@ -913,14 +1073,10 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
         <ShowAssetModal
           handleAssetAdd={handleAssetAdd}
           handleAssetUpdate={handleAssetUpdate} // function
-          setSelectedComposition={
-            setSelectedComposition
-          }
+          setSelectedComposition={setSelectedComposition}
           handleAppsAdd={handleAppsAdd}
           popupActiveTab={popupActiveTab}
-          setAssetPreviewPopup={
-            setAssetPreviewPopup
-          }
+          setAssetPreviewPopup={setAssetPreviewPopup}
           setPopupActiveTab={setPopupActiveTab}
           setShowAssetModal={setShowAssetModal}
           assetPreviewPopup={assetPreviewPopup}
@@ -940,7 +1096,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           loading={loading}
           layotuDetails={layotuDetails}
           previewModalData={previewData}
-          modalVisible={isPreviewOpen} />
+          modalVisible={isPreviewOpen}
+        />
       )}
       <Footer />
     </>

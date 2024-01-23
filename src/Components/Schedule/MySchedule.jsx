@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-import { BiAddToQueue } from "react-icons/bi";
+import { BiAddToQueue, BiEdit } from "react-icons/bi";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { HiDotsVertical } from "react-icons/hi";
@@ -26,7 +26,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { MdOutlineModeEdit } from "react-icons/md";
+import { MdOutlineModeEdit, MdOutlineResetTv } from "react-icons/md";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import toast, { CheckmarkIcon } from "react-hot-toast";
 import ScreenAssignModal from "../ScreenAssignModal";
@@ -39,6 +39,7 @@ import {
 import { connection } from "../../SignalR";
 import Swal from "sweetalert2";
 import { TiWeatherSunny } from "react-icons/ti";
+import { Tooltip } from "@material-tailwind/react";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   //for action popup
@@ -550,13 +551,13 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
-          <div className="schedual-tabl rounded-xl mt-5 overflow-x-auto shadow-md sm:rounded-lg">
+          <div className="schedual-tabl mt-5 overflow-x-scroll sc-scrollbar shadow-md rounded-lg">
             <table
-              className="w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
+              className="screen-table w-full bg-white lg:table-fixed md:table-auto sm:table-auto xs:table-auto"
               cellPadding={20}
             >
               <thead>
-                <tr className="items-center border-b border-b-[#E4E6FF] bg-[#e6e6e6]">
+                <tr className="items-center table-head-bg">
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
                     Schedule Name
                     <svg
@@ -743,7 +744,46 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             </td>
 
                             <td className="text-center relative">
-                              <div className="relative">
+                              <div className="flex justify-center gap-2 items-center">
+                                <div className="relative">
+                                  <Tooltip
+                                    content="Edit Schedule"
+                                    placement="bottom-end"
+                                    className=" bg-primary text-white z-10 ml-5"
+                                    animate={{
+                                      mount: { scale: 1, y: 0 },
+                                      unmount: { scale: 1, y: 10 },
+                                    }}
+                                  >
+                                    <button
+                                      type="button"
+                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    >
+                                      <BiEdit />
+                                    </button>
+                                  </Tooltip>
+                                </div>
+                                <div className="relative mx-3">
+                                  <Tooltip
+                                    content="Add Screens"
+                                    placement="bottom-end"
+                                    className=" bg-primary text-white z-10 ml-5"
+                                    animate={{
+                                      mount: { scale: 1, y: 0 },
+                                      unmount: { scale: 1, y: 10 },
+                                    }}
+                                  >
+                                    <button
+                                      type="button"
+                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    >
+                                      <MdOutlineResetTv />
+                                    </button>
+                                  </Tooltip>
+                                </div>
+                              </div>
+
+                              {/* <div className="relative">
                                 <button
                                   className="ml-3 relative"
                                   onClick={() => {
@@ -794,7 +834,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                     </div>
                                   </div>
                                 )}
-                              </div>
+                              </div> */}
                             </td>
                           </tr>
                         );
