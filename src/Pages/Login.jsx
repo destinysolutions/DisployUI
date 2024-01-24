@@ -91,10 +91,11 @@ const Login = () => {
         toast.error("Please check & accept the terms and conditions.");
         return; // Exit the submission process if checkbox is not checked
       }
-
+      
       let data = JSON.stringify({
         emailID: values.emailID,
         password: values.password,
+        SystemTimeZone:new Date().toLocaleDateString(undefined, {day:'2-digit',timeZoneName: 'long' }).substring(4)
       });
 
       let config = {
