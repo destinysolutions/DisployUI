@@ -216,7 +216,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const handleDrop = (event, folderId) => {
     const itemId = event.dataTransfer.getData("text/plain");
     let asset_type = selectedItems.assetType == "Folder" ? "Folder" : "Image";
-    if (Number(itemId) !== folderId || (Number(itemId) === folderId && asset_type !== "Folder")) {
+    if (
+      Number(itemId) !== folderId ||
+      (Number(itemId) === folderId && asset_type !== "Folder")
+    ) {
       moveDataToFolder(itemId, folderId, asset_type);
     }
   };
@@ -412,7 +415,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       formData.append("UserID", "0");
       formData.append("AssetType", "Image");
       formData.append("IsDeleteFromALL", checkImage.data);
-      formData.append("DeleteDate", new Date().toISOString().split('T')[0]);
+      formData.append("DeleteDate", new Date().toISOString().split("T")[0]);
 
       const config2 = {
         method: "post",
@@ -574,13 +577,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       if (res?.payload?.data?.usedInPercentage >= 100) {
         // Storage limit reached, maximum 3GB allowed.
         Swal.fire({
-          icon: 'error',
-          title: 'Storage Limit Reached',
-          text: 'Maximum 3GB allowed. Please free up space before uploading more files.',
+          icon: "error",
+          title: "Storage Limit Reached",
+          text: "Maximum 3GB allowed. Please free up space before uploading more files.",
         });
         return;
       } else {
-        navigate('/FileUpload');
+        navigate("/FileUpload");
       }
     });
   };
@@ -588,8 +591,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const debouncedOnChange = debounce(handleSearchAsset, 1000);
 
   const HandleClose = () => {
-    setPreviewDoc(false)
-  }
+    setPreviewDoc(false);
+  };
 
   return (
     <>
@@ -633,7 +636,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                 New Folder
               </button>
               {/* <Link> */}
-              <button onClick={() => openFileUpload()} className=" dashboard-btn lg:mt-0 md:mt-0 sm:mt-3 flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+              <button
+                onClick={() => openFileUpload()}
+                className=" dashboard-btn lg:mt-0 md:mt-0 sm:mt-3 flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+              >
                 <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
                 Upload
               </button>
@@ -724,10 +730,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
             >
               <div className="page-content grid  gap-8 mb-5 assets-section ">
                 <div className="relative list-none assetsbox ">
-                  <div className="relative shadow-md sm:rounded-lg p-4">
+                  <div className="relative shadow-md sm:rounded-lg p-4 overflow-x-scroll sc-scrollbar">
                     <table
                       cellPadding={20}
-                      className="w-full text-sm lg:table-auto text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                      className="screen-table w-full text-sm lg:table-auto text-left rtl:text-right text-gray-500 dark:text-gray-400"
                     >
                       <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr className="items-center border-b border-b-[#E4E6FF] bg-gray-50 table-head-bg">
@@ -897,8 +903,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 )}
 
                                 {item.assetType === "DOC" && (
-                                  <div className="items-center flex justify-center cursor-pointer"
-                                    onClick={() => { setPreviewDoc(true); setSelectDoc(item) }}
+                                  <div
+                                    className="items-center flex justify-center cursor-pointer"
+                                    onClick={() => {
+                                      setPreviewDoc(true);
+                                      setSelectDoc(item);
+                                    }}
                                   >
                                     <HiDocumentDuplicate className=" text-primary text-4xl mt-10 " />
                                   </div>
@@ -987,7 +997,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                               <div className="move-to-dropdown">
                                                 <ul className="space-y-3">
                                                   {folderElements &&
-                                                    folderElements?.length > 0 ? (
+                                                  folderElements?.length > 0 ? (
                                                     folderElements?.map(
                                                       (folder) => {
                                                         return (
@@ -1171,7 +1181,11 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       <Footer />
 
       {previewDoc && (
-        <PreviewDoc HandleClose={HandleClose} fileType={selectDoc?.fileExtention} assetFolderPath={selectDoc?.assetFolderPath} />
+        <PreviewDoc
+          HandleClose={HandleClose}
+          fileType={selectDoc?.fileExtention}
+          assetFolderPath={selectDoc?.assetFolderPath}
+        />
       )}
     </>
   );

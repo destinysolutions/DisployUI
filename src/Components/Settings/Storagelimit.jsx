@@ -64,7 +64,7 @@ const Storagelimit = () => {
         </h1>
       </div>
       <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
-        <div className="inline-block min-w-full shadow rounded-lg overflow-x-scroll sc-scrollbar">
+        <div className="inline-block min-w-full rounded-lg overflow-x-scroll sc-scrollbar">
           <table
             className="screen-table min-w-full leading-normal"
             cellPadding={20}

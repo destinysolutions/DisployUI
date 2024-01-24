@@ -1020,9 +1020,10 @@ button.daysbtn {
   min-height: 500px;
 }
 
-.screen-table th {
-  width: 200px;
+.screen-table .screen-table-th th {
+  min-width: 200px;
 }
+
 .sc-scrollbar::-webkit-scrollbar {
   height: 3px;
   background-color: white;
@@ -1039,4 +1040,16 @@ button.daysbtn {
 
 .hoverToltip:hover .hover-text {
   display: inline; /* Display the text on hover */
+}
+
+@media only screen and (max-width: 768px) {
+  .min-w-90vw {
+    min-width: 90vw;
+    max-width: 90vw;
+  }
+
+  .min-w-80vw {
+    min-width: 80vw;
+    max-width: 80vw;
+  }
 }
