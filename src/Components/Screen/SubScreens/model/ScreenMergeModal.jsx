@@ -73,7 +73,9 @@ const ScreenGroupModal = ({
     const getName = paginatedData.find((item) =>  item.screenID === selectedItems )
     const payLoad = {
       screenID: selectedItems,
-      screenName : getName.screenName
+      screenName : getName.screenName,
+      screenStatus:getName.screenStatus,
+      tags:getName.tags,
     };
     await handleSaveNew(payLoad)
     setSelectedItems()

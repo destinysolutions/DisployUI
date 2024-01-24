@@ -216,7 +216,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const handleDrop = (event, folderId) => {
     const itemId = event.dataTransfer.getData("text/plain");
     let asset_type = selectedItems.assetType == "Folder" ? "Folder" : "Image";
-    if (Number(itemId) !== folderId) {
+    if (Number(itemId) !== folderId || (Number(itemId) === folderId && asset_type !== "Folder")) {
       moveDataToFolder(itemId, folderId, asset_type);
     }
   };
@@ -412,6 +412,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       formData.append("UserID", "0");
       formData.append("AssetType", "Image");
       formData.append("IsDeleteFromALL", checkImage.data);
+      formData.append("DeleteDate", new Date().toISOString().split('T')[0]);
 
       const config2 = {
         method: "post",

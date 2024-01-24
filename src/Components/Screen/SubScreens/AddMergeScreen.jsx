@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../../Sidebar";
 import Navbar from "../../Navbar";
 import { MdArrowBackIosNew, MdOutlineAddToQueue } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Select from 'react-select'
 import ShowAssetModal from "./model/ShowMergeAssetModal";
 import { AiOutlineCloudUpload } from "react-icons/ai";
@@ -13,6 +13,7 @@ import { SELECT_BY_USER_SCREENDETAIL } from "../../../Pages/Api";
 import { useSelector } from "react-redux";
 import { SelectByUserScreen } from "../../../Redux/ScreenGroupSlice";
 import toast from "react-hot-toast";
+import { saveMergeData } from "../../../Redux/ScreenMergeSlice";
 
 
 const selectRow = [
@@ -44,19 +45,17 @@ const selectColumn = [
 
 const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     const dispatch = useDispatch();
+    const navigation = useNavigate();
 
     const { token, user } = useSelector((state) => state.root.auth);
     const authToken = `Bearer ${token}`;
     const store = useSelector((state) => state.root.screenGroup.data);
-
-
     const [loadFirst, setLoadFirst] = useState(true);
-
+    const [name, setName] = useState("")
     const [showAssetModal, setShowAssetModal] = useState(false);
     const [assetPreview, setAssetPreview] = useState("");
     const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
     const [popupActiveTab, setPopupActiveTab] = useState(1);
-
     const [selectedComposition, setSelectedComposition] = useState({ compositionName: "", });
     const [selectedAsset, setSelectedAsset] = useState({ assetName: "" });
     const [selectedYoutube, setSelectedYoutube] = useState();
@@ -66,12 +65,15 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     const [selectedColumn, setSelectedColumn] = useState(selectColumn[0]);
 
     const [buttonTexts, setButtonTexts] = useState([]);
-    const [DataRowAndCol, setDataRowAndCol] = useState([]); 
+    const [DataRowAndCol, setDataRowAndCol] = useState({});
     const [selectedButton, setSelectedButton] = useState({ row: null, col: null });
-
+    const [nameError, setNameError] = useState(false)
+    const [assetError, setAssetError] = useState(false)
+    const [screenError, setScreenError] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [label, setLabel] = useState('');
-
+    const allScreen = selectedRow?.value * selectedColumn?.value;
+    const objectLength = Object.keys(DataRowAndCol).length;
     useEffect(() => {
         let config = {
             method: "get",
@@ -111,6 +113,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
 
 
     const handleSave = () => {
+        setAssetError(false)
         console.log("selectedAsset ", selectedAsset);
     }
 
@@ -145,18 +148,75 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
         closeModal();
     };
 
+    useEffect(() => {
+        if (allScreen === objectLength) {
+            setScreenError(false);
+        }
+    }, [DataRowAndCol])
+
     const handleDisplayButtonClick = (row, col) => {
         setLabel('Save');
         setIsModalOpen(true);
         setSelectedButton({ row, col });
     };
 
+    function transformScreenObject(screen, user) {
+        return Object.keys(screen).map((key) => {
+            const { row, col, screenId, screenName, screenStatus, tags } = screen[key];
+
+            return {
+                mergeSubScreenDeatilsId: 0,
+                screenId: screenId,
+                positionX: col, // Assuming col is 1-indexed
+                positionY: row, // Assuming row is 1-indexed
+                userID: user?.userID || 0, // Fallback to 0 if user or user.userID is undefined
+                mode: "SaveMergeScreen",
+                mergeScreenId: 0,
+                screenName: screenName,
+                screenStatus: screenStatus,
+                scheduleName: "string", // Replace with the actual value you want
+                assetName: selectedAsset?.assetName, // Replace with the actual value you want
+                tags: tags, // Replace with the actual value you want
+                assetURL: selectedAsset?.assetFolderPath, // Replace with the actual value you want
+                assetType: selectedAsset?.assetType, // Replace with the actual value you want
+            };
+        });
+    }
+
+
     const saveMergeScreen = () => {
-        const payload = {
-            assetName : '',
-            array : DataRowAndCol
+        let hasError = false;
+        if (name === "") {
+            setNameError(true);
+            hasError = true;
         }
-        console.log("buttonTexts  ----- ", DataRowAndCol);
+        if (selectedAsset?.assetName === "") {
+            setAssetError(true);
+            hasError = true;
+        }
+        if (allScreen !== objectLength) {
+            setScreenError(true);
+            hasError = true;
+        }
+        if (hasError) {
+            return;
+        }
+        const payload = {
+            "mergeScreenId": 0,
+            "screeName": name,
+            "mediaId": selectedAsset?.assetID,
+            "userID": user?.userID,
+            "mediaDetailId": 0,
+            "noofScreens": allScreen,
+            "updatedDate": "2024-01-23T13:27:46.404Z",
+            "mergeSubScreenDeatils": transformScreenObject(DataRowAndCol, user)
+        }
+        dispatch(saveMergeData({ payload }))
+        navigation("/mergescreen")
+    }
+
+    const onMergeClose = () => {
+        navigation("/mergescreen")
     }
 
     return (
@@ -192,10 +252,15 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                                 Enter Merge ScreenName
                                             </label>
                                             <input
+                                                value={name}
+                                                onChange={(e) => { setName(e.target.value); setNameError(false) }}
                                                 type="text"
                                                 placeholder="ScreenName"
                                                 className="border border-[#5E5E5E] rounded-lg px-2 py-2 search-user w-full"
                                             />
+                                            {nameError && (
+                                                <span className="error px-2">Screen Name Is Required.</span>
+                                            )}
                                         </div>
 
                                         <div className="mt-5">
@@ -210,6 +275,9 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                                 assetName
                                                 <AiOutlineCloudUpload className="ml-2 text-lg" />
                                             </button>
+                                            {assetError && (
+                                                <span className="error px-2">Asset Is Required.</span>
+                                            )}
                                         </div>
 
                                         <div class="grid grid-cols-2 gap-4 mt-5">
@@ -253,7 +321,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                                 data-modal-hide="static-modal"
                                                 type="button"
                                                 className="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
-                                            // onClick={onClose}
+                                                onClick={onMergeClose}
                                             >
                                                 Cancel
                                             </button>
@@ -289,13 +357,16 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                                                     backgroundColor: selectedButton.row === row && selectedButton.col === col ? '#FFD700' : '#f0f8ff',
                                                                 }}
                                                             >
-                                                                {buttonTexts[`${row}-${col}`] || `Row ${row}, Col ${col}`} 
+                                                                {buttonTexts[`${row}-${col}`] || `Row ${row}, Col ${col}`}
                                                             </div>
                                                         ))}
                                                     </div>
                                                 ))}
                                             </tbody>
                                         </table>
+                                        {screenError && (
+                                            <span className="error px-2">This Is Required.</span>
+                                        )}
                                     </div>
                                 </div>
 

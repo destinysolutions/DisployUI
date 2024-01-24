@@ -49,7 +49,7 @@ export const getMargeData = createAsyncThunk("data/fetchApiData", async (payload
 export const saveMergeData = createAsyncThunk("data/save", async (payload,thunkAPI) => {
   try {
     const token = thunkAPI.getState().root.auth.token;
-    const response = await axios.post(ADD_MERGE_SCREEN, payload,{headers: {Authorization: `Bearer ${token}`}});
+    const response = await axios.post(ADD_MERGE_SCREEN, payload?.payload,{headers: {Authorization: `Bearer ${token}`}});
     if (response.data.status) {
       return {
         status: true,

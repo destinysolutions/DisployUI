@@ -550,7 +550,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
         setCompositionData(newdd);
         setAllCompositionData(newdd);
         setPlayerData(null);
-        setSelectedDefaultAsset("");
+        // setSelectedDefaultAsset("");
         // setSelectedAsset("");
         // setSelectedComposition("");
         // setSelectedApps("");
@@ -593,19 +593,19 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-      ? 4
-      : selectedYoutube?.youtubeId !== null &&
-        selectedYoutube?.youtubeId !== undefined
-      ? 5
-      : selectedComposition?.compositionID !== null &&
-        selectedComposition?.compositionID !== undefined
-      ? 3
-      : selectedSchedule?.scheduleId !== null &&
-        selectedSchedule?.scheduleId !== undefined
-      ? 2
-      : selectedDefaultAsset
-      ? 0
-      : 0;
+        ? 4
+        : selectedYoutube?.youtubeId !== null &&
+          selectedYoutube?.youtubeId !== undefined
+          ? 5
+          : selectedComposition?.compositionID !== null &&
+            selectedComposition?.compositionID !== undefined
+            ? 3
+            : selectedSchedule?.scheduleId !== null &&
+              selectedSchedule?.scheduleId !== undefined
+              ? 2
+              : selectedDefaultAsset
+                ? 0
+                : 0;
     let moduleID =
       selectedAsset?.assetID ||
       selectedSchedule?.scheduleId ||
@@ -880,14 +880,14 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-      ? 4
-      : selectedYoutube?.youtubeId !== null &&
-        selectedYoutube?.youtubeId !== undefined
-      ? 5
-      : selectedComposition?.compositionID !== null &&
-        selectedComposition?.compositionID !== undefined
-      ? 3
-      : 0;
+        ? 4
+        : selectedYoutube?.youtubeId !== null &&
+          selectedYoutube?.youtubeId !== undefined
+          ? 5
+          : selectedComposition?.compositionID !== null &&
+            selectedComposition?.compositionID !== undefined
+            ? 3
+            : 0;
 
     let mediaName =
       selectedAsset?.assetName ||
@@ -1346,12 +1346,11 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                 key={composition.compositionID}
                                               >
                                                 <tr
-                                                  className={`${
-                                                    selectedComposition?.compositionName ===
+                                                  className={`${selectedComposition?.compositionName ===
                                                     composition?.compositionName
-                                                      ? "bg-[#f3c953]"
-                                                      : ""
-                                                  } border-b border-[#eee] `}
+                                                    ? "bg-[#f3c953]"
+                                                    : ""
+                                                    } border-b border-[#eee] `}
                                                   onClick={() => {
                                                     handleCompositionsAdd(
                                                       composition
@@ -1377,7 +1376,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                                     {moment
                                                       .utc(
                                                         composition.duration *
-                                                          1000
+                                                        1000
                                                       )
                                                       .format("hh:mm:ss")}
                                                   </td>
@@ -1480,11 +1479,10 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             <td className="text-left">
                               <span
                                 id={`changetvstatus${screen.screenID}`}
-                                className={`rounded-full px-6 py-2 text-white text-center ${
-                                  screen.screenStatus == 1
-                                    ? "bg-[#3AB700]"
-                                    : "bg-[#FF0000]"
-                                }`}
+                                className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                  ? "bg-[#3AB700]"
+                                  : "bg-[#FF0000]"
+                                  }`}
                               >
                                 {screen.screenStatus == 1 ? "Live" : "offline"}
                                 {/* {TvStatus} */}
@@ -1561,27 +1559,27 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                               <p className="lg:text-base md:text-base sm:text-sm xs:text-sm text-[#515151]">
                                 {screen && screen?.tags !== null
                                   ? screen &&
-                                    screen?.tags
-                                      .split(",")
-                                      .slice(
-                                        0,
-                                        screen &&
-                                          screen?.tags.split(",").length > 2
-                                          ? 3
-                                          : screen &&
-                                              screen?.tags.split(",").length
-                                      )
-                                      .map((text) => {
-                                        if (text.toString().length > 10) {
-                                          return text
-                                            .split("")
-                                            .slice(0, 10)
-                                            .concat("...")
-                                            .join("");
-                                        }
-                                        return text;
-                                      })
-                                      .join(",")
+                                  screen?.tags
+                                    .split(",")
+                                    .slice(
+                                      0,
+                                      screen &&
+                                        screen?.tags.split(",").length > 2
+                                        ? 3
+                                        : screen &&
+                                        screen?.tags.split(",").length
+                                    )
+                                    .map((text) => {
+                                      if (text.toString().length > 10) {
+                                        return text
+                                          .split("")
+                                          .slice(0, 10)
+                                          .concat("...")
+                                          .join("");
+                                      }
+                                      return text;
+                                    })
+                                    .join(",")
                                   : ""}
                               </p>
                             </td>
@@ -1745,46 +1743,46 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                             screenData[0]?.tags === "") ||
                             (screenData.length > 0 &&
                               screenData[0]?.tags === null)) && (
-                            <span>
-                              <AiOutlinePlusCircle
-                                size={30}
-                                className="mx-auto cursor-pointer"
-                                onClick={() => {
-                                  setShowTagModal(true);
-                                  screenData[0].tags === "" ||
-                                  screenData[0]?.tags === null
-                                    ? setTags([])
-                                    : setTags(screenData[0]?.tags?.split(","));
-                                  setTagUpdateScreeen(screenData[0]);
-                                }}
-                              />
-                            </span>
-                          )}
+                              <span>
+                                <AiOutlinePlusCircle
+                                  size={30}
+                                  className="mx-auto cursor-pointer"
+                                  onClick={() => {
+                                    setShowTagModal(true);
+                                    screenData[0].tags === "" ||
+                                      screenData[0]?.tags === null
+                                      ? setTags([])
+                                      : setTags(screenData[0]?.tags?.split(","));
+                                    setTagUpdateScreeen(screenData[0]);
+                                  }}
+                                />
+                              </span>
+                            )}
 
                           {screenData?.length > 0 &&
-                          screenData[0]?.tags !== null
+                            screenData[0]?.tags !== null
                             ? screenData.length > 0 &&
-                              screenData[0]?.tags
-                                .split(",")
-                                .slice(
-                                  0,
-                                  screenData.length > 0 &&
-                                    screenData[0]?.tags.split(",").length > 2
-                                    ? 3
-                                    : screenData.length > 0 &&
-                                        screenData[0]?.tags.split(",").length
-                                )
-                                .map((text) => {
-                                  if (text.toString().length > 10) {
-                                    return text
-                                      .split("")
-                                      .slice(0, 10)
-                                      .concat("...")
-                                      .join("");
-                                  }
-                                  return text;
-                                })
-                                .join(",")
+                            screenData[0]?.tags
+                              .split(",")
+                              .slice(
+                                0,
+                                screenData.length > 0 &&
+                                  screenData[0]?.tags.split(",").length > 2
+                                  ? 3
+                                  : screenData.length > 0 &&
+                                  screenData[0]?.tags.split(",").length
+                              )
+                              .map((text) => {
+                                if (text.toString().length > 10) {
+                                  return text
+                                    .split("")
+                                    .slice(0, 10)
+                                    .concat("...")
+                                    .join("");
+                                }
+                                return text;
+                              })
+                              .join(",")
                             : ""}
                           {screenData.length > 0 &&
                             screenData[0]?.tags !== "" &&
@@ -1795,13 +1793,13 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                                   setShowTagModal(true);
                                   (screenData.length > 0 &&
                                     screenData[0].tags === "") ||
-                                  (screenData.length > 0 &&
-                                    screenData[0]?.tags === null)
+                                    (screenData.length > 0 &&
+                                      screenData[0]?.tags === null)
                                     ? setTags([])
                                     : setTags(
-                                        screenData.length > 0 &&
-                                          screenData[0]?.tags?.split(",")
-                                      );
+                                      screenData.length > 0 &&
+                                      screenData[0]?.tags?.split(",")
+                                    );
                                   setTagUpdateScreeen(
                                     screenData.length > 0 && screenData[0]
                                   );
@@ -1844,7 +1842,7 @@ const Screensplayer = ({ sidebarOpen, setSidebarOpen }) => {
                         </td>
                         <td
                           className="flex items-center gap-3"
-                          // onClick={() => setShowAssetModal(true)}
+                        // onClick={() => setShowAssetModal(true)}
                         >
                           <label
                             onClick={() => {

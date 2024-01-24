@@ -32,7 +32,8 @@ import {
   signInWithPopup,
   signInWithRedirect,
 } from "firebase/auth";
-import logo from "../images/DisployImg/logo.svg";
+// import logo from "../images/DisployImg/logo.svg";
+import logo from "../images/DisployImg/White-Logo2.png";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
@@ -352,7 +353,7 @@ const Login = () => {
         <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center loginbg  lg:px-6 md:px-6 sm:px-2 xs:px-2 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-2  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
             <div className="flex items-center pb-5">
-              <img className="w-fit h-fit" alt="logo" src={logo} />
+              <img className="w-48 h-14" alt="logo" src={logo} />
             </div>
             <div className="w-full border-[#ffffff6e] border rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
               <div className="lg:p-6 md:p-6  sm:px-4 xs:p-2 py-6">

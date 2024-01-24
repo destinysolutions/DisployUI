@@ -276,19 +276,19 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         ? 1
         : selectedTextScroll?.textScroll_Id !== null &&
           selectedTextScroll?.textScroll_Id !== undefined
-        ? 4
-        : selectedYoutube?.youtubeId !== null &&
-          selectedYoutube?.youtubeId !== undefined
-        ? 5
-        : selectedComposition?.compositionID !== null &&
-          selectedComposition?.compositionID !== undefined
-        ? 3
-        : selectedSchedule?.scheduleId !== null &&
-          selectedSchedule?.scheduleId !== undefined
-        ? 2
-        : selectedDefaultAsset
-        ? 0
-        : 0;
+          ? 4
+          : selectedYoutube?.youtubeId !== null &&
+            selectedYoutube?.youtubeId !== undefined
+            ? 5
+            : selectedComposition?.compositionID !== null &&
+              selectedComposition?.compositionID !== undefined
+              ? 3
+              : selectedSchedule?.scheduleId !== null &&
+                selectedSchedule?.scheduleId !== undefined
+                ? 2
+                : selectedDefaultAsset
+                  ? 0
+                  : 0;
 
       let getScreenID = otpData.map((item) => item.ScreenID);
       let screen_id = getScreenID[0];
@@ -308,6 +308,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         screenName: screenName,
         mediaDetailID: moduleID || 0,
         operation: "Update",
+        UpdatedDate: new Date().toISOString().split('T')[0]
       });
       // return console.log(data);
       toast.loading("Saving...");
@@ -620,14 +621,14 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-      ? 4
-      : selectedYoutube?.youtubeId !== null &&
-        selectedYoutube?.youtubeId !== undefined
-      ? 5
-      : selectedComposition?.compositionID !== null &&
-        selectedComposition?.compositionID !== undefined
-      ? 3
-      : 0;
+        ? 4
+        : selectedYoutube?.youtubeId !== null &&
+          selectedYoutube?.youtubeId !== undefined
+          ? 5
+          : selectedComposition?.compositionID !== null &&
+            selectedComposition?.compositionID !== undefined
+            ? 3
+            : 0;
 
     let mediaName =
       selectedAsset?.assetName ||
@@ -900,7 +901,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       </td>
                       <td
                         className="flex items-center gap-3"
-                        // onClick={() => setShowAssetModal(true)}
+                      // onClick={() => setShowAssetModal(true)}
                       >
                         <label
                           onClick={() => {
@@ -979,20 +980,20 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                       selectedComposition ||
                       selectedTextScroll ||
                       selectedYoutube) && (
-                      <tr>
-                        <td>
-                          <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
-                            select type:
-                          </label>
-                        </td>
-                        <td className="border border-[#D5E3FF] rounded-lg">
-                          {selectedAsset?.assetName ||
-                            selectedComposition?.compositionName ||
-                            selectedTextScroll?.instanceName ||
-                            selectedYoutube?.youtubeId}
-                        </td>
-                      </tr>
-                    )}
+                        <tr>
+                          <td>
+                            <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
+                              select type:
+                            </label>
+                          </td>
+                          <td className="border border-[#D5E3FF] rounded-lg">
+                            {selectedAsset?.assetName ||
+                              selectedComposition?.compositionName ||
+                              selectedTextScroll?.instanceName ||
+                              selectedYoutube?.youtubeId}
+                          </td>
+                        </tr>
+                      )}
 
                     {selectedScreenTypeOption === "1" && (
                       <tr className={`display-none`}>
@@ -1426,12 +1427,11 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                         }
                                                       >
                                                         <tr
-                                                          className={`${
-                                                            selectedComposition?.compositionName ===
-                                                            composition?.compositionName
+                                                          className={`${selectedComposition?.compositionName ===
+                                                              composition?.compositionName
                                                               ? "bg-[#f3c953]"
                                                               : ""
-                                                          } border-b border-[#eee] `}
+                                                            } border-b border-[#eee] `}
                                                           onClick={() => {
                                                             handleCompositionsAdd(
                                                               composition
@@ -1459,7 +1459,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                             {moment
                                                               .utc(
                                                                 composition.duration *
-                                                                  1000
+                                                                1000
                                                               )
                                                               .format(
                                                                 "hh:mm:ss"
@@ -1512,9 +1512,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 className="px-2 py-2 border border-[#D5E3FF] bg-white rounded w-full focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                                 value={
                                   selectedTextScroll !== "" ||
-                                  selectedYoutube !== ""
+                                    selectedYoutube !== ""
                                     ? selectedTextScroll?.instanceName ||
-                                      selectedYoutube?.instanceName
+                                    selectedYoutube?.instanceName
                                     : ""
                                 }
                                 placeholder="Set Apps"
@@ -1628,14 +1628,13 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                     (instance, index) => (
                                                       <tbody key={index}>
                                                         <tr
-                                                          className={`${
-                                                            selectedTextScroll ===
+                                                          className={`${selectedTextScroll ===
                                                               instance ||
-                                                            selectedYoutube ===
+                                                              selectedYoutube ===
                                                               instance
                                                               ? "bg-[#f3c953]"
                                                               : ""
-                                                          } border-b border-[#eee] `}
+                                                            } border-b border-[#eee] `}
                                                           onClick={() => {
                                                             handleAppsAdd(
                                                               instance
@@ -1745,23 +1744,23 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           <p>
                             {ScreenTags !== null
                               ? ScreenTags.split(",")
-                                  .slice(
-                                    0,
-                                    ScreenTags.split(",").length > 2
-                                      ? 3
-                                      : ScreenTags.split(",").length
-                                  )
-                                  .map((text) => {
-                                    if (text.toString().length > 10) {
-                                      return text
-                                        .split("")
-                                        .slice(0, 10)
-                                        .concat("...")
-                                        .join("");
-                                    }
-                                    return text;
-                                  })
-                                  .join(",")
+                                .slice(
+                                  0,
+                                  ScreenTags.split(",").length > 2
+                                    ? 3
+                                    : ScreenTags.split(",").length
+                                )
+                                .map((text) => {
+                                  if (text.toString().length > 10) {
+                                    return text
+                                      .split("")
+                                      .slice(0, 10)
+                                      .concat("...")
+                                      .join("");
+                                  }
+                                  return text;
+                                })
+                                .join(",")
                               : ""}
                           </p>
 

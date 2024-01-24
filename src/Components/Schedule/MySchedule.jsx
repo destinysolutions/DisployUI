@@ -3,7 +3,7 @@ import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { BiAddToQueue, BiEdit } from "react-icons/bi";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { HiDotsVertical } from "react-icons/hi";
 import { useState } from "react";
 import "../../Styles/schedule.css";
@@ -42,6 +42,7 @@ import { TiWeatherSunny } from "react-icons/ti";
 import { Tooltip } from "@material-tailwind/react";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
+  const navigate = useNavigate();
   //for action popup
   const [showActionBox, setShowActionBox] = useState(false);
   const [addScreenModal, setAddScreenModal] = useState(false);
@@ -95,15 +96,15 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(schedules)
     ? schedules.filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            value &&
-            value
-              .toString()
-              .toLowerCase()
-              .includes(searchSchedule.toLowerCase())
-        )
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value
+            .toString()
+            .toLowerCase()
+            .includes(searchSchedule.toLowerCase())
       )
+    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -590,7 +591,6 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     Tags
                   </th>
                   <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                    {" "}
                     Action{" "}
                   </th>
                 </tr>
@@ -689,31 +689,31 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               {(schedule?.tags === "" ||
                                 schedule?.tags === null) && (
-                                <span>
-                                  <AiOutlinePlusCircle
-                                    size={30}
-                                    className="mx-auto cursor-pointer"
-                                    onClick={() => {
-                                      setShowTagModal(true);
-                                      schedule.tags === "" ||
-                                      schedule?.tags === null
-                                        ? setTags([])
-                                        : setTags(schedule?.tags?.split(","));
-                                      setUpdateTagSchedule(schedule);
-                                    }}
-                                  />
-                                </span>
-                              )}
+                                  <span>
+                                    <AiOutlinePlusCircle
+                                      size={30}
+                                      className="mx-auto cursor-pointer"
+                                      onClick={() => {
+                                        setShowTagModal(true);
+                                        schedule.tags === "" ||
+                                          schedule?.tags === null
+                                          ? setTags([])
+                                          : setTags(schedule?.tags?.split(","));
+                                        setUpdateTagSchedule(schedule);
+                                      }}
+                                    />
+                                  </span>
+                                )}
                               {schedule.tags !== null
                                 ? schedule.tags
-                                    .split(",")
-                                    .slice(
-                                      0,
-                                      schedule.tags.split(",").length > 2
-                                        ? 3
-                                        : schedule.tags.split(",").length
-                                    )
-                                    .join(",")
+                                  .split(",")
+                                  .slice(
+                                    0,
+                                    schedule.tags.split(",").length > 2
+                                      ? 3
+                                      : schedule.tags.split(",").length
+                                  )
+                                  .join(",")
                                 : ""}
                               {schedule?.tags !== "" &&
                                 schedule?.tags !== null && (
@@ -721,7 +721,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                     onClick={() => {
                                       setShowTagModal(true);
                                       schedule.tags === "" ||
-                                      schedule?.tags === null
+                                        schedule?.tags === null
                                         ? setTags([])
                                         : setTags(schedule?.tags?.split(","));
                                       setUpdateTagSchedule(schedule);
@@ -758,6 +758,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                     <button
                                       type="button"
                                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                      onClick={() => navigate(`/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`)}
                                     >
                                       <BiEdit />
                                     </button>
@@ -776,6 +777,13 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                     <button
                                       type="button"
                                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                      onClick={() => {
+                                        setAddScreenModal(true);
+                                        setScreenSelected(
+                                          schedule?.screenAssigned?.split(",")
+                                        );
+                                        setSelectData(schedule);
+                                      }}
                                     >
                                       <MdOutlineResetTv />
                                     </button>

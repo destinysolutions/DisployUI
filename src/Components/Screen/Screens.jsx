@@ -85,6 +85,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [currScheduleCheckboxClick, setCurrScheduleCheckboxClick] =
     useState(true);
   const [tagsCheckboxClick, setTagsCheckboxClick] = useState(true);
+  const [groupCheckboxClick, setGroupCheckboxClick] = useState(true);
 
   const [locContentVisible, setLocContentVisible] = useState(true);
   const [screenContentVisible, setScreenContentVisible] = useState(true);
@@ -95,29 +96,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [currScheduleContentVisible, setCurrScheduleContentVisible] =
     useState(true);
   const [tagsContentVisible, setTagsContentVisible] = useState(true);
+  const [groupContentVisible, setGroupContentVisible] = useState(true);
+
   const [showActionBox, setShowActionBox] = useState(false);
   const [isEditingScreen, setIsEditingScreen] = useState(false);
   const [assetScreenID, setAssetScreenID] = useState(null);
   const [scheduleScreenID, setScheduleScreenID] = useState();
-
-  useEffect(() => {
-    setLocContentVisible(locCheckboxClick);
-    setScreenContentVisible(screenCheckboxClick);
-    setStatusContentVisible(statusCheckboxClick);
-    setLastSeenContentVisible(lastSeenCheckboxClick);
-    setNowPlayingContentVisible(nowPlayingCheckboxClick);
-    setCurrScheduleContentVisible(currScheduleCheckboxClick);
-    setTagsContentVisible(tagsCheckboxClick);
-  }, [
-    locCheckboxClick,
-    screenCheckboxClick,
-    statusCheckboxClick,
-    lastSeenCheckboxClick,
-    nowPlayingCheckboxClick,
-    currScheduleCheckboxClick,
-    tagsCheckboxClick,
-  ]);
-
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
 
   const [editedScreenName, setEditedScreenName] = useState("");
@@ -233,12 +217,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(screens)
     ? screens?.filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            value &&
-            value.toString().toLowerCase().includes(searchScreen.toLowerCase())
-        )
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value.toString().toLowerCase().includes(searchScreen.toLowerCase())
       )
+    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -261,6 +245,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  console.log('sortedAndPaginatedData', sortedAndPaginatedData)
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -482,14 +467,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-      ? 4
-      : selectedYoutube?.youtubeId !== null &&
-        selectedYoutube?.youtubeId !== undefined
-      ? 5
-      : selectedComposition?.compositionID !== null &&
-        selectedComposition?.compositionID !== undefined
-      ? 3
-      : 0;
+        ? 4
+        : selectedYoutube?.youtubeId !== null &&
+          selectedYoutube?.youtubeId !== undefined
+          ? 5
+          : selectedComposition?.compositionID !== null &&
+            selectedComposition?.compositionID !== undefined
+            ? 3
+            : 0;
 
     let mediaName =
       selectedAsset?.assetName ||
@@ -762,7 +747,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleToggleActivation = async (value) => {
     const allScreenMacids = screens.map((i) => i?.macid).join(",");
-    const payload = { ScreenId: value.screenID, IsActive: "" };
+    const payload = { ScreenIds: value.screenID, IsActive: "" };
 
     if (value.isActive === true) {
       payload.IsActive = false;
@@ -800,6 +785,18 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         });
     }
   };
+
+  const handleUpdateMenu = () => {
+    setLocContentVisible(locCheckboxClick);
+    setScreenContentVisible(screenCheckboxClick);
+    setStatusContentVisible(statusCheckboxClick);
+    setLastSeenContentVisible(lastSeenCheckboxClick);
+    setNowPlayingContentVisible(nowPlayingCheckboxClick);
+    setCurrScheduleContentVisible(currScheduleCheckboxClick);
+    setTagsContentVisible(tagsCheckboxClick);
+    setGroupContentVisible(groupCheckboxClick)
+    setMoreModal(false)
+  }
 
   return (
     <>
@@ -984,6 +981,39 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         />
                         Screen
                       </li>
+                      <li className="flex text-sm items-center mt-2 ">
+                        <input
+                          type="checkbox"
+                          className="mr-2 text-lg"
+                          checked={locCheckboxClick}
+                          onChange={() =>
+                            setLocCheckboxClick(!locCheckboxClick)
+                          }
+                        />
+                        Google Location
+                      </li>
+                      <li className="flex text-sm items-center mt-2">
+                        <input
+                          type="checkbox"
+                          className="mr-2 text-lg"
+                          checked={statusCheckboxClick}
+                          onChange={() =>
+                            setStatusCheckboxClick(!statusCheckboxClick)
+                          }
+                        />
+                        Status
+                      </li>
+                      <li className="flex text-sm items-center mt-2">
+                        <input
+                          type="checkbox"
+                          className="mr-2 text-lg"
+                          checked={lastSeenCheckboxClick}
+                          onChange={() =>
+                            setLastSeenCheckboxClick(!lastSeenCheckboxClick)
+                          }
+                        />
+                        Last Seen
+                      </li>
                       <li className="flex text-sm items-center mt-2">
                         <input
                           type="checkbox"
@@ -1012,17 +1042,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         <input
                           type="checkbox"
                           className="mr-2 text-lg"
-                          checked={locCheckboxClick}
-                          onChange={() =>
-                            setLocCheckboxClick(!locCheckboxClick)
-                          }
-                        />
-                        Google Location
-                      </li>
-                      <li className="flex text-sm items-center mt-2 ">
-                        <input
-                          type="checkbox"
-                          className="mr-2 text-lg"
                           checked={tagsCheckboxClick}
                           onChange={() =>
                             setTagsCheckboxClick(!tagsCheckboxClick)
@@ -1030,10 +1049,21 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         />
                         Tags
                       </li>
+                      <li className="flex text-sm items-center mt-2 ">
+                        <input
+                          type="checkbox"
+                          className="mr-2 text-lg"
+                          checked={groupCheckboxClick}
+                          onChange={() =>
+                            setGroupCheckboxClick(!groupCheckboxClick)
+                          }
+                        />
+                        Group Apply
+                      </li>
                       <li className="flex text-sm justify-end mt-2 ">
                         <button
                           className="bg-lightgray text-primary px-4 py-2 rounded-full"
-                          onClick={() => setMoreModal(false)}
+                          onClick={() => { handleUpdateMenu() }}
                         >
                           Update
                         </button>
@@ -1122,16 +1152,46 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         Tags
                       </th>
                     )}
-                    <th className="text-[#5A5881] text-base font-semibold  text-center">
-                      Group Apply
-                    </th>
+                    {groupContentVisible && (
+                      <th className="text-[#5A5881] text-base font-semibold  text-center">
+                        Group Apply
+                      </th>
+                    )}
                     <th className="text-[#5A5881] text-base font-semibold  text-center">
                       Action
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {screens && sortedAndPaginatedData?.length === 0 ? (
+                  {loading && (
+                    <tr>
+                      <td colSpan={9}>
+                        <div className="flex text-center m-5 justify-center">
+                          <svg
+                            aria-hidden="true"
+                            role="status"
+                            className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                            viewBox="0 0 100 101"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                              fill="currentColor"
+                            />
+                            <path
+                              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                              fill="#1C64F2"
+                            />
+                          </svg>
+                          <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2 px dark:bg-green-900 dark:text-green-300">
+                            Loading...
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  {!loading && screens && sortedAndPaginatedData?.length === 0 && (
                     <tr>
                       <td colSpan={6}>
                         <div className="flex text-center m-5 justify-center">
@@ -1141,7 +1201,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       </td>
                     </tr>
-                  ) : (
+                  )} {!loading && screens && sortedAndPaginatedData?.length !== 0 && (
                     <>
                       {screens &&
                         sortedAndPaginatedData?.length > 0 &&
@@ -1168,7 +1228,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                       />
                                     )}
                                     {isEditingScreen &&
-                                    editingScreenID === screen.screenID ? (
+                                      editingScreenID === screen.screenID ? (
                                       <div className="flex items-center gap-2">
                                         <input
                                           type="text"
@@ -1198,7 +1258,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         >
                                           {screen?.screenName?.length > 10
                                             ? screen?.screenName.slice(0, 10) +
-                                              "..."
+                                            "..."
                                             : screen.screenName}
                                         </Link>
                                         <button
@@ -1227,11 +1287,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 <td className="text-center">
                                   <span
                                     id={`changetvstatus${screen.screenID}`}
-                                    className={`rounded-full px-6 py-2 text-white text-center ${
-                                      screen.screenStatus == 1
-                                        ? "bg-[#3AB700]"
-                                        : "bg-[#FF0000]"
-                                    }`}
+                                    className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                      ? "bg-[#3AB700]"
+                                      : "bg-[#FF0000]"
+                                      }`}
                                   >
                                     {screen.screenStatus == 1
                                       ? "Live"
@@ -1241,7 +1300,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                               )}
 
                               {lastSeenContentVisible && (
-                                <td className="p-2 text-center break-words"></td>
+                                <td className="p-2 text-center break-words">{moment(screen?.updatedDate).format("LLL")}</td>
                               )}
 
                               {nowPlayingContentVisible && (
@@ -1286,8 +1345,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                   ) : (
                                     `${screen.scheduleName} Till
                               ${moment(screen.endDate).format(
-                                "YYYY-MM-DD hh:mm"
-                              )}`
+                                      "YYYY-MM-DD hh:mm"
+                                    )}`
                                   )}
 
                                   {showScheduleModal && (
@@ -1462,42 +1521,42 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 >
                                   {(screen?.tags === "" ||
                                     screen?.tags === null) && (
-                                    <span>
-                                      <AiOutlinePlusCircle
-                                        size={30}
-                                        className="mx-auto cursor-pointer"
-                                        onClick={() => {
-                                          setShowTagModal(true);
-                                          screen.tags === "" ||
-                                          screen?.tags === null
-                                            ? setTags([])
-                                            : setTags(screen?.tags?.split(","));
-                                          setTagUpdateScreeen(screen);
-                                        }}
-                                      />
-                                    </span>
-                                  )}
+                                      <span>
+                                        <AiOutlinePlusCircle
+                                          size={30}
+                                          className="mx-auto cursor-pointer"
+                                          onClick={() => {
+                                            setShowTagModal(true);
+                                            screen.tags === "" ||
+                                              screen?.tags === null
+                                              ? setTags([])
+                                              : setTags(screen?.tags?.split(","));
+                                            setTagUpdateScreeen(screen);
+                                          }}
+                                        />
+                                      </span>
+                                    )}
 
                                   {screen?.tags !== null
                                     ? screen.tags
-                                        .split(",")
-                                        .slice(
-                                          0,
-                                          screen.tags.split(",").length > 2
-                                            ? 3
-                                            : screen.tags.split(",").length
-                                        )
-                                        .map((text) => {
-                                          if (text.toString().length > 10) {
-                                            return text
-                                              .split("")
-                                              .slice(0, 10)
-                                              .concat("...")
-                                              .join("");
-                                          }
-                                          return text;
-                                        })
-                                        .join(",")
+                                      .split(",")
+                                      .slice(
+                                        0,
+                                        screen.tags.split(",").length > 2
+                                          ? 3
+                                          : screen.tags.split(",").length
+                                      )
+                                      .map((text) => {
+                                        if (text.toString().length > 10) {
+                                          return text
+                                            .split("")
+                                            .slice(0, 10)
+                                            .concat("...")
+                                            .join("");
+                                        }
+                                        return text;
+                                      })
+                                      .join(",")
                                     : ""}
                                   {screen?.tags !== "" &&
                                     screen?.tags !== null && (
@@ -1505,7 +1564,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         onClick={() => {
                                           setShowTagModal(true);
                                           screen.tags === "" ||
-                                          screen?.tags === null
+                                            screen?.tags === null
                                             ? setTags([])
                                             : setTags(screen?.tags?.split(","));
                                           setTagUpdateScreeen(screen);
@@ -1527,24 +1586,25 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                   )}
                                 </td>
                               )}
-
-                              <td className="p-2 text-center  break-words">
-                                {screen.isContainGroup === 1 && (
-                                  <Tooltip
-                                    content={screen.groupName}
-                                    placement="bottom-end"
-                                    className=" bg-SlateBlue text-white z-10 ml-5"
-                                    animate={{
-                                      mount: { scale: 1, y: 0 },
-                                      unmount: { scale: 1, y: 10 },
-                                    }}
-                                  >
-                                    <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                      <HiUserGroup />
-                                    </button>
-                                  </Tooltip>
-                                )}
-                              </td>
+                              {groupContentVisible && (
+                                <td className="p-2 text-center  break-words">
+                                  {screen.isContainGroup === 1 && (
+                                    <Tooltip
+                                      content={screen.groupName}
+                                      placement="bottom-end"
+                                      className=" bg-SlateBlue text-white z-10 ml-5"
+                                      animate={{
+                                        mount: { scale: 1, y: 0 },
+                                        unmount: { scale: 1, y: 10 },
+                                      }}
+                                    >
+                                      <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                        <HiUserGroup />
+                                      </button>
+                                    </Tooltip>
+                                  )}
+                                </td>
+                              )}
 
                               <td className="text-center">
                                 <div className="flex justify-center gap-2 items-center">
