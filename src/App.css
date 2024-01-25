@@ -1048,7 +1048,7 @@ button.daysbtn {
 
 
 .screen-table .screen-table-th th {
-  min-width: 200px;
+  width: 200px;
 }
 @media only screen and (max-width: 768px) {
   .min-w-90vw {

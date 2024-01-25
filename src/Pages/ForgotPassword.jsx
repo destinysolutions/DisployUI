@@ -31,7 +31,7 @@ const ForgotPassword = () => {
   });
 
   const validationSchema2 = Yup.object().shape({
-    currentPassword: Yup.string().required("Current Password is required"),
+    currentPassword: Yup.string().required("Temporary Password is required"),
     newPassword: Yup.string()
       .min(8, "Password must be at least 8 characters long")
       .matches(
