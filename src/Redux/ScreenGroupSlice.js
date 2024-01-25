@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { ADD_GROUP_SCREEN, DELETE_GROUP_SCREEN_ALL, DELETE_SINGLE_GROUP_SCREEN, GET_GROUP_SCREEN, GROUP_IN_SCREEN_ASSETS_UPDATE_ALL, GROUP_IN_SCREEN_DELETE_ALL, PRIVIEW_GROUP_SCREEN, UPDATE_NEW_SCREEN } from "../Pages/Api";
+import { ADD_GROUP_SCREEN, DELETE_GROUP_SCREEN_ALL, DELETE_SINGLE_GROUP_SCREEN, GET_GROUP_SCREEN, GROUP_IN_SCREEN_ASSETS_UPDATE_ALL, GROUP_IN_SCREEN_DELETE_ALL, PRIVIEW_GROUP_SCREEN, UPDATE_GROUP_NAME, UPDATE_NEW_SCREEN } from "../Pages/Api";
 
 const initialState = {
   data: [],
+  screenData : [],
   status: "idle",
   error: null,
   success: null,
@@ -109,8 +110,10 @@ export const screenGroupDeleteAll = createAsyncThunk("data/screenGroupDeleteAll"
 // update group name
 export const updateGroupData = createAsyncThunk("data/updateGroupData", async (payload,thunkAPI) => {
   try {
+
     const token = thunkAPI.getState().root.auth.token;
-    const response = await axios.post(ADD_GROUP_SCREEN, payload,{headers: {Authorization: `Bearer ${token}`}});
+    const queryParams = new URLSearchParams(payload).toString();
+    const response = await axios.get(`${UPDATE_GROUP_NAME}?${queryParams}`,{headers: { Authorization: `Bearer ${token}` }});
     if (response.data.status) {
       return {
         status: true,
@@ -224,7 +227,7 @@ const screenGroupSlice = createSlice({
       })
       .addCase(SelectByUserScreen.fulfilled, (state, action) => {    // SelectByUserScreen
         state.status = null;
-        state.data = action.payload?.data;
+        state.screenData = action.payload?.data;
       })
       .addCase(SelectByUserScreen.rejected, (state, action) => {  // SelectByUserScreen
         state.status = "failed";

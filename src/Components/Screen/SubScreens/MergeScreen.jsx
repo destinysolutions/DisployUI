@@ -38,6 +38,7 @@ import {
   saveMergeData,
   screenMergeDeleteAll,
   groupAssetsInUpdateScreen,
+  updateMergeData,
 } from "../../../Redux/ScreenMergeSlice";
 import ReactTooltip from "react-tooltip";
 import axios from "axios";
@@ -248,7 +249,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       mergeScreenId: editGroupID,
       screeName: newGroupName,
     };
-    await dispatch(saveMergeData(payload));
+    await dispatch(updateMergeData(payload));
     setEditIndex(-1);
   };
 
@@ -344,14 +345,13 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleSave = () => {
     const payload = {
-      mergeScreenId : getGroup.mergeScreenId,
+      MergeScreenId : getGroup.mergeScreenId,
       MediaID : selectedAsset.assetID,
       AssetName : selectedAsset.assetName,
       AssetType : selectedAsset.assetType,
       FilePath : selectedAsset.assetFolderPath,
       MediaDetailID : 1,
     };
-
     dispatch(groupAssetsInUpdateScreen(payload));
   };
 
@@ -364,7 +364,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     setIsPreviewOpen(false);
   };
 
-  // console.log("marge screen ", store.data)
+
 
   return (
     <>

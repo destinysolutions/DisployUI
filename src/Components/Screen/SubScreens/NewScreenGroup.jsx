@@ -250,20 +250,18 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
  
   };
 
-  const editGroupName = (index) => {
-    // GroupNameUpdate
+  const editGroupName = (index) => {   // GroupNameUpdate
     setEditIndex(index);
     setNewGroupName(store?.data[index].screenGroupName);
     setEditGroupID(store?.data[index].screenGroupID);
   };
 
-  const updateGroupName = async (index) => {
-    // GroupNameUpdate
+  const updateGroupName = async (index) => {      // GroupNameUpdate
     const payload = {
-      screenGroupID: editGroupID,
-      screenGroupName: newGroupName,
+      ScreenGroupID: editGroupID,
+      ScreenGroupName: newGroupName,
     };
-    await dispatch(saveGroupData(payload));
+    await dispatch(updateGroupData(payload));
     setEditIndex(-1);
   };
 

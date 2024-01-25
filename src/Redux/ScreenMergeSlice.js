@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { ADD_GROUP_SCREEN, ADD_MERGE_SCREEN, ASSETS_UPLOAD_IN_SCREEN, DELETE_GROUP_SCREEN_ALL, DELETE_MERGE_SCREEN_ALL, DELETE_SINGLE_GROUP_SCREEN, GET_GROUP_SCREEN, GET_MARGE_SCREEN, GROUP_IN_SCREEN_DELETE_ALL, UPDATE_NEW_SCREEN } from "../Pages/Api";
+import { ADD_MERGE_SCREEN, ASSETS_UPLOAD_IN_SCREEN,  DELETE_MERGE_SCREEN_ALL, GET_MARGE_SCREEN, GROUP_IN_SCREEN_DELETE_ALL, UPDATE_MERGE_NAME, UPDATE_NEW_SCREEN } from "../Pages/Api";
 
 const initialState = {
   data: [],
@@ -107,10 +107,11 @@ export const screenMergeDeleteAll = createAsyncThunk("data/screenMergeDeleteAll"
 });
 
 // update group name
-export const updateGroupData = createAsyncThunk("data/updateGroupData", async (payload,thunkAPI) => {
+export const updateMergeData = createAsyncThunk("data/updateMergeData", async (payload,thunkAPI) => {
   try {
     const token = thunkAPI.getState().root.auth.token;
-    const response = await axios.post(ADD_GROUP_SCREEN, payload,{headers: {Authorization: `Bearer ${token}`}});
+    const queryParams = new URLSearchParams(payload).toString();
+    const response = await axios.get(`${UPDATE_MERGE_NAME}?${queryParams}`,{headers: { Authorization: `Bearer ${token}` }});
     if (response.data.status) {
       return {
         status: true,
@@ -168,6 +169,7 @@ export const addTagsAndUpdate = createAsyncThunk("data/AddTagsAndUpdate", async 
 // Merge in screen Deleted 
 export const groupAssetsInUpdateScreen = createAsyncThunk("data/groupAssetsInUpdateScreen", async (payload, thunkAPI) => {
   try {
+  
     const token = thunkAPI.getState().root.auth.token;
     const queryParams = new URLSearchParams(payload).toString();
     const response = await axios.put(`${ASSETS_UPLOAD_IN_SCREEN}?${queryParams}`, null, { headers: { Authorization: `Bearer ${token}` } });
@@ -247,14 +249,14 @@ const screenGroupSlice = createSlice({
         state.error = action.error.message || "Failed to delete data";
       })
 
-      .addCase(updateGroupData.pending, (state) => {      // updateGroupData
+      .addCase(updateMergeData.pending, (state) => {      // updateMergeData
         state.status = "loading";
       })
-      .addCase(updateGroupData.fulfilled, (state, action) => {    // updateGroupData
+      .addCase(updateMergeData.fulfilled, (state, action) => {    // updateMergeData
         state.status = "succeeded";
         state.message = action.payload.message;
       })
-      .addCase(updateGroupData.rejected, (state, action) => {     // updateGroupData
+      .addCase(updateMergeData.rejected, (state, action) => {     // updateMergeData
         state.status = "failed";
         state.error = action.error.message || "Failed to update data";
       })

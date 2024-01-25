@@ -139,12 +139,15 @@ export const DELETE_GROUP_SCREEN_ALL = `${baseUrl}api/GroupScreen/DeleteAllGroup
 export const GROUP_IN_SCREEN_DELETE_ALL = `${baseUrl}api/GroupScreen/DeleteScreenByID`;
 export const GROUP_IN_SCREEN_ASSETS_UPDATE_ALL = `${baseUrl}api/GroupScreen/UpdateGroupMedia`;
 export const PRIVIEW_GROUP_SCREEN = `${baseUrl}api/GroupScreen/GetGroupPreview`;
+export const UPDATE_GROUP_NAME = `${baseUrl}api/GroupScreen/UpdateGroupScreen`;
+
 
 // screen Marge
 export const GET_MARGE_SCREEN = `${baseUrl}api/MergeScreen/GetAllMergeScreen`;
 export const ADD_MERGE_SCREEN = `${baseUrl}api/MergeScreen/AddMergeScreen`;
 export const DELETE_MERGE_SCREEN_ALL = `${baseUrl}api/MergeScreen/DeleteAllMergeScreen`;
-export const ASSETS_UPLOAD_IN_SCREEN = `${baseUrl}api/MergeScreen/assetsUploadInScreen`;
+export const ASSETS_UPLOAD_IN_SCREEN = `${baseUrl}api/MergeScreen/UpdateMergeScreenMedia`;
+export const UPDATE_MERGE_NAME = `${baseUrl}api/MergeScreen/UpdateMergeScreen`;
 
 export const SCREEN_DEACTIVATE_ACTIVATE = `${baseUrl}api/NewScreen/EnableScreen`;
 

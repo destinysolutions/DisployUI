@@ -19,7 +19,7 @@ const ScreenGroupModal = ({
   isOpen,
 }) => {
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.root.screenGroup.data);
+  const store = useSelector((state) => state.root.screenGroup.screenData);
 
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
