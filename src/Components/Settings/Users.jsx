@@ -51,7 +51,6 @@ const Users = ({ searchValue }) => {
   const [countryID, setCountryID] = useState(0);
   const [company, setCompany] = useState("");
   const [userData, setUserData] = useState([]);
-  const [showActionBox, setShowActionBox] = useState(false);
   const [userID, setUserID] = useState();
   const [UserMasterID, setUserMasterID] = useState();
   const [showUserProfile, setShowUserProfile] = useState(false);
@@ -77,6 +76,11 @@ const Users = ({ searchValue }) => {
   const [selectedScreens, setSelectedScreens] = useState([]);
   const [screenCheckboxes, setScreenCheckboxes] = useState({});
   const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [editProfile, setEditProfile] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(6); // Adjust items per page as needed
+  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const [sortedField, setSortedField] = useState(null);
 
   const { token, user } = useSelector((state) => state.root.auth);
   const { Countries } = useSelector((s) => s.root.settingUser);
@@ -85,18 +89,11 @@ const Users = ({ searchValue }) => {
 
   const hiddenFileInput = useRef(null);
   const modalRef = useRef(null);
-  const actionPopupRef = useRef(null);
   const selectScreenRef = useRef(null);
 
   const dispatch = useDispatch();
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(6); // Adjust items per page as needed
-  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
-  const [sortedField, setSortedField] = useState(null);
-
   const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
   // Filter data based on search term
   const filteredData = userData.filter((item) =>
@@ -322,7 +319,8 @@ const Users = ({ searchValue }) => {
     data.append("StateId", selectedState ? selectedState : 0);
     data.append("company", company);
     data.append("ZipCode", zipCode ? zipCode : 0);
-    data.append("File", file);
+    data.append("File", file ? file : fileEdit);
+    data.append("ScreenAssignUser", selectedScreens.join(","));
     data.append("languageId", 0);
     data.append("timeZoneId", 0);
     data.append("currencyId", 0);
@@ -346,6 +344,7 @@ const Users = ({ searchValue }) => {
         setshowuserModal(false);
         selectUserById(userID);
         handleGetOrgUsers();
+        handleCancelPopup();
       })
       .catch((error) => {
         console.log(error);
@@ -353,7 +352,7 @@ const Users = ({ searchValue }) => {
   };
 
   const handleGetOrgUsers = () => {
-    setLoading(true)
+    setLoading(true);
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -367,8 +366,7 @@ const Users = ({ searchValue }) => {
       .request(config)
       .then((response) => {
         setUserData(response.data.data);
-        setLoading(false)
-
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -458,7 +456,19 @@ const Users = ({ searchValue }) => {
           setSelectedState(fetchedData.stateId);
           setSelectRoleID(fetchedData.userRole);
           setIsActive(fetchedData.isActive);
-          setScreenIds(fetchedData.ScreenIds);
+          setZipCode(fetchedData.zipCode);
+          setEditProfile(1);
+          const screenIdsArray = fetchedData.screenIds
+            .split(",")
+            .map((id) => parseInt(id.trim()));
+
+          const updatedCheckboxes = {};
+          screenIdsArray.forEach((screenID) => {
+            updatedCheckboxes[screenID] = true;
+          });
+
+          setScreenCheckboxes(updatedCheckboxes);
+          setSelectedScreens(screenIdsArray);
         }
         toast.remove();
       })
@@ -475,7 +485,7 @@ const Users = ({ searchValue }) => {
     setFirstName("");
     setLastName("");
     setPassword("");
-    setFileEdit();
+    setFileEdit(null);
     setFile(null);
     setIsImageUploaded(false);
     setPhone("");
@@ -489,15 +499,24 @@ const Users = ({ searchValue }) => {
     setLabelTitle("Add New User");
     setLoadFist(true);
     getUsers();
+    setSelectedScreens([]);
+    setScreenCheckboxes({});
+    setEditProfile();
   };
 
+  // const handleFileChange = (e) => {
+  //   setFileEdit();
+  //   const selectedFile = e.target.files[0];
+  //   setFile(selectedFile);
+  //   setIsImageUploaded(true);
+  // };
   const handleFileChange = (e) => {
-    setFileEdit();
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
+    setFileEdit(null);
+    setEditProfile();
     setIsImageUploaded(true);
   };
-
   const handleClick = (e) => {
     hiddenFileInput.current.click();
   };
@@ -518,25 +537,6 @@ const Users = ({ searchValue }) => {
   function handleClickOutside() {
     setshowuserModal(false);
     handleCancelPopup();
-  }
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        actionPopupRef.current &&
-        !actionPopupRef.current.contains(event?.target)
-      ) {
-        setShowActionBox(false);
-      }
-    };
-    document.addEventListener("click", handleClickOutside, true);
-    return () => {
-      document.removeEventListener("click", handleClickOutside, true);
-    };
-  }, [handleClickOutside]);
-
-  function handleClickOutside() {
-    setShowActionBox(false);
   }
 
   useEffect(() => {
@@ -642,50 +642,34 @@ const Users = ({ searchValue }) => {
         });
     }
   }, []);
+
   const handleScreenCheckboxChange = (screenID) => {
     const updatedCheckboxes = { ...screenCheckboxes };
     updatedCheckboxes[screenID] = !updatedCheckboxes[screenID];
     setScreenCheckboxes(updatedCheckboxes);
 
-    // Create a copy of the selected screens array
-    const updatedSelectedScreens = [...selectedScreens];
-
-    // If the screenID is already in the array, remove it; otherwise, add it
-    if (updatedSelectedScreens.includes(screenID)) {
-      const index = updatedSelectedScreens.indexOf(screenID);
-      updatedSelectedScreens.splice(index, 1);
-    } else {
-      updatedSelectedScreens.push(screenID);
-    }
-
-    // Update the selected screens state
+    const updatedSelectedScreens = Object.keys(updatedCheckboxes).filter(
+      (id) => updatedCheckboxes[id]
+    );
     setSelectedScreens(updatedSelectedScreens);
 
-    // Check if any individual screen checkbox is unchecked
-    const allChecked = Object.values(updatedCheckboxes).every(
-      (isChecked) => isChecked
-    );
-
+    const allChecked = updatedSelectedScreens.length === screenData.length;
     setSelectAllChecked(allChecked);
   };
 
   const handleSelectAllCheckboxChange = (e) => {
     const checked = e.target.checked;
     setSelectAllChecked(checked);
-    // Set the state of all individual screen checkboxes
-    const updatedCheckboxes = {};
-    for (const screenID in screenCheckboxes) {
-      updatedCheckboxes[screenID] = checked;
-    }
-    setScreenCheckboxes(updatedCheckboxes);
-    // Update the selected screens state based on whether "All Select" is checked
-    if (checked) {
-      const allScreenIds = screenData.map((screen) => screen.screenID);
 
-      setSelectedScreens(allScreenIds);
-    } else {
-      setSelectedScreens([]);
-    }
+    const updatedCheckboxes = {};
+    screenData.forEach((screen) => {
+      updatedCheckboxes[screen.screenID] = checked;
+    });
+
+    setScreenCheckboxes(updatedCheckboxes);
+    setSelectedScreens(
+      checked ? screenData.map((screen) => screen.screenID) : []
+    );
   };
 
   return (
@@ -823,7 +807,7 @@ const Users = ({ searchValue }) => {
                     <div className="relative">
                       <label className="formLabel">Zip Code</label>
                       <input
-                        type="text"
+                        type="number"
                         placeholder="Enter zip code"
                         name="zipcode"
                         className="formInput"
@@ -1003,6 +987,8 @@ const Users = ({ searchValue }) => {
                                           }
                                           checked={
                                             screenCheckboxes[screen.screenID]
+                                            // ||
+                                            // screenIds.includes(screen.screenID)
                                           }
                                         />
 
@@ -1012,10 +998,11 @@ const Users = ({ searchValue }) => {
                                       <td className="text-center">
                                         <span
                                           id={`changetvstatus${screen.screenID}`}
-                                          className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                            ? "bg-[#3AB700]"
-                                            : "bg-[#FF0000]"
-                                            }`}
+                                          className={`rounded-full px-6 py-2 text-white text-center ${
+                                            screen.screenStatus == 1
+                                              ? "bg-[#3AB700]"
+                                              : "bg-[#FF0000]"
+                                          }`}
                                         >
                                           {screen.screenStatus == 1
                                             ? "Live"
@@ -1035,28 +1022,28 @@ const Users = ({ searchValue }) => {
                                       <td className="text-center break-words">
                                         {screen?.tags !== null
                                           ? screen?.tags
-                                            .split(",")
-                                            .slice(
-                                              0,
-                                              screen?.tags.split(",").length >
-                                                2
-                                                ? 3
-                                                : screen?.tags.split(",")
-                                                  .length
-                                            )
-                                            .map((text) => {
-                                              if (
-                                                text.toString().length > 10
-                                              ) {
-                                                return text
-                                                  .split("")
-                                                  .slice(0, 10)
-                                                  .concat("...")
-                                                  .join("");
-                                              }
-                                              return text;
-                                            })
-                                            .join(",")
+                                              .split(",")
+                                              .slice(
+                                                0,
+                                                screen?.tags.split(",").length >
+                                                  2
+                                                  ? 3
+                                                  : screen?.tags.split(",")
+                                                      .length
+                                              )
+                                              .map((text) => {
+                                                if (
+                                                  text.toString().length > 10
+                                                ) {
+                                                  return text
+                                                    .split("")
+                                                    .slice(0, 10)
+                                                    .concat("...")
+                                                    .join("");
+                                                }
+                                                return text;
+                                              })
+                                              .join(",")
                                           : ""}
                                       </td>
                                     </tr>
@@ -1090,15 +1077,14 @@ const Users = ({ searchValue }) => {
                   <div className="lg:col-span-4 md:col-span-4 sm:col-span-12 xs:col-span-12">
                     <div className="flex items-center">
                       <div className="layout-img me-5">
-                        {file ? (
+                        {file && editProfile !== 1 ? (
                           <img
                             src={URL.createObjectURL(file)}
                             alt="Uploaded"
                             className="w-10 rounded-lg"
                           />
                         ) : null}
-
-                        {fileEdit && userID ? (
+                        {editProfile === 1 ? (
                           <img
                             src={fileEdit}
                             alt="Uploaded"
@@ -1292,12 +1278,19 @@ const Users = ({ searchValue }) => {
                       </div>
 
                       {/* Country   */}
-                      {/*<div className="font-semibold">
+                      <div className="font-semibold">
                         <span>Country : </span>
                       </div>
                       <div className="col-span-2 capitalize">
                         <span> {userDetailData.countryName}</span>
-                          </div>*/}
+                      </div>
+
+                      <div className="font-semibold">
+                        <span>State : </span>
+                      </div>
+                      <div className="col-span-2 capitalize">
+                        <span> {userDetailData.stateName}</span>
+                      </div>
                     </div>
 
                     <div className="flex justify-center w-full mt-10">
@@ -1331,7 +1324,7 @@ const Users = ({ searchValue }) => {
                         Security
                       </button>
                     </li>
-                    <li>
+                    {/* <li>
                       <button
                         className={`inline-flex items-center
                           ${activeTab === 2 ? "tabactivebtn" : "tabbtn "}
@@ -1352,7 +1345,7 @@ const Users = ({ searchValue }) => {
                         <IoIosLink className="text-primary text-lg mr-1" />
                         Connections
                       </button>
-                    </li>
+                    </li> */}
                   </ul>
                   <div className={activeTab === 1 ? "" : "hidden"}>
                     <div className="user-pro-details security-tab">
@@ -1401,7 +1394,7 @@ const Users = ({ searchValue }) => {
                             </div>
                           </div>
                           {formik.touched.currentPassword &&
-                            formik.errors.currentPassword ? (
+                          formik.errors.currentPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.currentPassword}
                             </div>
@@ -1437,7 +1430,7 @@ const Users = ({ searchValue }) => {
                             </div>
                           </div>
                           {formik.touched.newPassword &&
-                            formik.errors.newPassword ? (
+                          formik.errors.newPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.newPassword}
                             </div>
@@ -1473,7 +1466,7 @@ const Users = ({ searchValue }) => {
                             </div>
                           </div>
                           {formik.touched.confirmPassword &&
-                            formik.errors.confirmPassword ? (
+                          formik.errors.confirmPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.confirmPassword}
                             </div>
@@ -1500,7 +1493,7 @@ const Users = ({ searchValue }) => {
 
                       <div className="w-full my-6">
                         <div className="overflow-x-scroll sc-scrollbar rounded-lg">
-                          <table className="screen-table min-w-full leading-normal border border-[#E4E6FF] bg-white mb-8">
+                          <table className="screen-table min-w-full leading-normal bg-white mb-8">
                             <thead>
                               <tr className="table-head-bg rounded-lg">
                                 <th className="px-5 py-4 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
@@ -2017,10 +2010,10 @@ const Users = ({ searchValue }) => {
           </div>
           <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full">
             <h3 className="user-name my-4">Selected Screens</h3>
-            <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-              <table className="min-w-full leading-normal">
+            <div className="inline-block min-w-full shadow rounded-lg overflow-x-scroll sc-scrollbar">
+              <table className="screen-table min-w-full leading-normal">
                 <thead>
-                  <tr className=" bg-[#EFF3FF] border-b border-b-[#E4E6FF]">
+                  <tr className="table-head-bg">
                     <th className="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
                       Screen Name
                     </th>
@@ -2195,7 +2188,7 @@ const Users = ({ searchValue }) => {
             </div>
             <div className="clear-both overflow-x-auto">
               <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
-                <div className="inline-block min-w-full shadow rounded-lg overflow-x-scroll sc-scrollbar">
+                <div className="inline-block min-w-full rounded-lg overflow-x-scroll sc-scrollbar">
                   <table
                     className="screen-table min-w-full leading-normal"
                     cellPadding={20}
@@ -2269,7 +2262,9 @@ const Users = ({ searchValue }) => {
                           </td>
                         </tr>
                       )}
-                      {!loading && userData && sortedAndPaginatedData.length > 0 && (
+                      {!loading &&
+                        userData &&
+                        sortedAndPaginatedData.length > 0 &&
                         sortedAndPaginatedData.map((item, index) => {
                           return (
                             <tr
@@ -2312,48 +2307,56 @@ const Users = ({ searchValue }) => {
                               </td>
                               <td className="text-center">
                                 <div className="flex justify-center gap-4">
-                                  <div className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                  <div
+                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     onClick={() => {
                                       setUserID(item.orgUserSpecificID);
                                       selectUserById(item.orgUserSpecificID);
                                       setUserMasterID(item.userMasterID);
                                       setShowUserProfile(true);
-                                    }}>
+                                    }}
+                                  >
                                     <BsEyeFill />
                                   </div>
-                                  <div className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                  <div
+                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     onClick={() => {
                                       setUserID(item.orgUserSpecificID);
                                       selectUserById(item.orgUserSpecificID);
                                       setUserMasterID(item.userMasterID);
                                       setshowuserModal(true);
-                                    }}>
+                                    }}
+                                  >
                                     <BiEdit />
                                   </div>
-                                  <div className="cursor-pointer text-xl flex gap-3 rounded-full px-2 py-2 text-white text-center bg-[#FF0000]"
+                                  <div
+                                    className="cursor-pointer text-xl flex gap-3 rounded-full px-2 py-2 text-white text-center bg-[#FF0000]"
                                     onClick={() =>
                                       handleDeleteUser(item.orgUserSpecificID)
-                                    }>
+                                    }
+                                  >
                                     <MdDeleteForever />
                                   </div>
                                 </div>
                               </td>
                             </tr>
                           );
-                        })
-                      )} {!loading && userData && sortedAndPaginatedData.length === 0 && (
-                        <>
-                          <tr>
-                            <td colSpan={4}>
-                              <div className="flex text-center justify-center">
-                                <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
-                                  No user Found
-                                </span>
-                              </div>
-                            </td>
-                          </tr>
-                        </>
-                      )}
+                        })}{" "}
+                      {!loading &&
+                        userData &&
+                        sortedAndPaginatedData.length === 0 && (
+                          <>
+                            <tr>
+                              <td colSpan={4}>
+                                <div className="flex text-center justify-center">
+                                  <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
+                                    No user Found
+                                  </span>
+                                </div>
+                              </td>
+                            </tr>
+                          </>
+                        )}
                     </tbody>
                   </table>
                 </div>

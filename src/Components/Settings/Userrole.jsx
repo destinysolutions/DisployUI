@@ -56,7 +56,7 @@ const Userrole = ({ searchValue }) => {
   };
 
   const sortedAndPaginatedData = sortData(
-    userRoleData,
+    filteruserRoleData?.length > 0 ? filteruserRoleData : userRoleData,
     sortedField,
     sortOrder
   ).slice(indexOfFirstItem, indexOfLastItem);
@@ -493,7 +493,7 @@ const Userrole = ({ searchValue }) => {
                         xmlns="http://www.w3.org/2000/svg"
                         fill="currentColor"
                         viewBox="0 0 24 24"
-                        onClick={() => handleSort("firstName")}
+                        onClick={() => handleSort("orgUserRole")}
                       >
                         <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
                       </svg>
@@ -508,7 +508,7 @@ const Userrole = ({ searchValue }) => {
                 </tr>
               </thead>
               <tbody>
-                {userRoleData && sortedAndPaginatedData.length > 0 ? (
+                {filteruserRoleData && sortedAndPaginatedData.length > 0 ? (
                   sortedAndPaginatedData.map((item, index) => {
                     return (
                       <tr className="border-b border-b-[#E4E6FF]" key={index}>
@@ -549,7 +549,7 @@ const Userrole = ({ searchValue }) => {
                         </td>
                         {showUsers && (
                           <div>
-                            <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                            <div className="bg-black bg-opacity-20 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                               <div
                                 ref={showUsersRef}
                                 className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
@@ -648,7 +648,7 @@ const Userrole = ({ searchValue }) => {
                               handleSelectByID(item.orgUserRoleID);
                               setshowuserroleModal(true);
                             }}
-                            className="cursor-pointer cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                           >
                             <BiEdit />
                           </button>
