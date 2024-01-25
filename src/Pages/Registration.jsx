@@ -4,17 +4,17 @@ import {
   BsFillEyeSlashFill,
   BsFillInfoCircleFill,
 } from "react-icons/bs";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import {BsMicrosoft} from "react-icons/bs";
 // import {BsApple} from "react-icons/bs";
 // import {BsGoogle} from "react-icons/bs";
 // import {FaFacebookF} from "react-icons/fa";
-import {useState} from "react";
+import { useState } from "react";
 import axios from "axios";
-import {useFormik} from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
-import {AiOutlineClose} from "react-icons/ai";
-import {ADD_REGISTER_URL} from "./Api";
+import { AiOutlineClose } from "react-icons/ai";
+import { ADD_REGISTER_URL } from "./Api";
 import video from "../images/DisployImg/iStock-1137481126.mp4";
 import {
   appleProvider,
@@ -23,8 +23,8 @@ import {
   microsoftProvider,
 } from "../FireBase/firebase";
 import toast from "react-hot-toast";
-import {useDispatch} from "react-redux";
-import {handleLoginWithGoogle, handleRegisterUser} from "../Redux/Authslice";
+import { useDispatch } from "react-redux";
+import { handleLoginWithGoogle, handleRegisterUser } from "../Redux/Authslice";
 // import logo from "../images/DisployImg/logo.svg";
 import logo from "../images/DisployImg/White-Logo2.png";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -206,14 +206,18 @@ const Registration = () => {
         data: formData,
       };
 
-      const response = dispatch(handleRegisterUser({config}));
+      const response = dispatch(handleRegisterUser({ config }));
       if (response) {
         response
-          .then(() => {
-            window.localStorage.setItem("timer", JSON.stringify(18_00));
-            toast.success("Registration successfully.");
-            navigate("/screens");
-            setLoading(false);
+          .then((res) => {
+            if (res?.error?.message !== "Rejected") {
+              window.localStorage.setItem("timer", JSON.stringify(18_00));
+              toast.success("Registration successfully.");
+              navigate("/");
+              setLoading(false);
+            } else {
+              setLoading(false);
+            }
           })
           .catch((error) => {
             console.log(error);
@@ -225,7 +229,7 @@ const Registration = () => {
     },
   });
 
-  const {setFieldValue, values, getFieldProps} = formik;
+  const { setFieldValue, values, getFieldProps } = formik;
 
   const SignInWithGoogle = async (data) => {
     //  return console.log(data);
@@ -248,7 +252,7 @@ const Registration = () => {
 
     // setTimeout(async () => {
     try {
-      const response = await dispatch(handleLoginWithGoogle({config}));
+      const response = await dispatch(handleLoginWithGoogle({ config }));
       if (!response) return;
       response
         .then(() => {
@@ -287,7 +291,7 @@ const Registration = () => {
         })
         .then(() => {
           navigate("/", {
-            state: {message: "Registration successfull !!"},
+            state: { message: "Registration successfull !!" },
           });
         })
         .catch((error) => {
@@ -357,7 +361,7 @@ const Registration = () => {
         <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center loginbg  lg:px-6 md:px-6 sm:px-2 xs:px-2 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-2  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
             <div className="flex items-center pb-5">
-              <img className="w-48 h-14" alt="logo" src={logo} />
+              <img className="w-52 h-14" alt="logo" src={logo} />
             </div>
             <div className="w-full border-[#ffffff6e] border rounded-lg shadow-md md:mt-0  xl:p-0 lg:min-w-[600px] md:min-w-[600px] sm:min-w-auto xs:min-w-auto">
               <div className="p-3 sm:px-8 py-1">

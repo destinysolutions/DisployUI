@@ -450,7 +450,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     formData.append("FolderID", "0");
     formData.append("UserID", "0");
     formData.append("AssetType", "Image");
-
+    formData.append("DeleteDate", new Date().toISOString().split('T')[0]);
     axios
       .post(ALL_FILES_UPLOAD, formData, {
         headers: {

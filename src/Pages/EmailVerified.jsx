@@ -15,7 +15,7 @@ const ForgotPassword = () => {
   const [getEmail, setEmail] = useState("");
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string().required("Emial is required"),
+    email: Yup.string().required("Email is required"),
   });
 
   const checkEmail = async (item, callback) => {
@@ -96,13 +96,13 @@ const ForgotPassword = () => {
                         onBlur={formikVerifyEmail.handleBlur}
                         value={formikVerifyEmail.values.email}
                       />
+                      </div>
                       {formikVerifyEmail.touched.email &&
                       formikVerifyEmail.errors.email ? (
-                        <div className="text-red-500 error">
+                        <div className="text-red-500 error mt-1" style={{marginTop:"5px"}}>
                           {formikVerifyEmail.errors.email}
                         </div>
                       ) : null}
-                    </div>
                     <button
                       type="submit"
                       className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"

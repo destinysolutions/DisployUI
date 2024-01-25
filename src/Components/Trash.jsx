@@ -41,7 +41,8 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   const store = useSelector((state) => state.root.trashData);
 
   const [selectAll, setSelectAll] = useState(false);
-
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [selectcheck, setSelectCheck] = useState(false);
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // Adjust items per page as needed
@@ -79,7 +80,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
+  
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -141,7 +142,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   // };
 
   const handleSelectAllChange = () => {
-    setSelectAll(!selectAll);
+    setSelectAllChecked(!selectAllChecked);
 
     if (selectedItems.length === sortedAndPaginatedData?.length) {
       setSelectedItems([]);
@@ -220,6 +221,8 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
 
   // // Multipal check
   const handleCheckboxChange = (item) => {
+    setSelectAllChecked(false);
+    setSelectCheck(true)
     const isItemSelected = selectedItems.some(
       (selectedItem) =>
         selectedItem.assetID === item.assetID &&
@@ -238,6 +241,15 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
       setSelectedItems((prevSelected) => [...prevSelected, item]);
     }
   };
+
+
+  useEffect(() => {
+    if (selectcheck) {
+      if (selectedItems?.length === sortedAndPaginatedData?.length) {
+        setSelectAllChecked(true);
+      }
+    }
+  }, [selectcheck, selectedItems])
 
   const handleRestore = (id, type) => {
     try {
@@ -296,7 +308,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
               <input
                 type="checkbox"
                 className="w-8 h-8"
-                checked={selectAll}
+                checked={selectAllChecked}
                 onChange={handleSelectAllChange}
               />
             </div>
@@ -480,26 +492,24 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                             <button
                               type="button"
                               className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-3"
+                              onClick={() =>
+                                handleDeletePermanently(
+                                  item.assetID,
+                                  item.assetType
+                                )
+                              }
                             >
-                              <MdDeleteForever
-                                onClick={() =>
-                                  handleDeletePermanently(
-                                    item.assetID,
-                                    item.assetType
-                                  )
-                                }
-                              />
+                              <MdDeleteForever />
                             </button>
 
                             <button
                               type="button"
                               className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                              onClick={() =>
+                                handleRestore(item.assetID, item.assetType)
+                              }
                             >
-                              <MdRestore
-                                onClick={() =>
-                                  handleRestore(item.assetID, item.assetType)
-                                }
-                              />
+                              <MdRestore />
                             </button>
                           </div>
                         </td>

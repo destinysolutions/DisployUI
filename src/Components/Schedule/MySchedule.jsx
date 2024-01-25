@@ -71,7 +71,8 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const showActionModalRef = useRef(null);
 
   const [selectedItems, setSelectedItems] = useState([]); // Multipal check
-
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [selectcheck, setSelectCheck] = useState(false);
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // Adjust items per page as needed
@@ -96,15 +97,15 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(schedules)
     ? schedules.filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            value &&
-            value
-              .toString()
-              .toLowerCase()
-              .includes(searchSchedule.toLowerCase())
-        )
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value
+            .toString()
+            .toLowerCase()
+            .includes(searchSchedule.toLowerCase())
       )
+    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -144,8 +145,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   // Pagination End
 
   const handleSelectAll = () => {
-    setSelectAll(!selectAll);
-
+    setSelectAllChecked(!selectAllChecked);
     if (selectedItems.length === schedules.length) {
       setSelectedItems([]);
     } else {
@@ -155,12 +155,22 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleCheckboxChange = (scheduleId) => {
+    setSelectAllChecked(false);
+    setSelectCheck(true)
     if (selectedItems.includes(scheduleId)) {
       setSelectedItems(selectedItems.filter((id) => id !== scheduleId));
     } else {
       setSelectedItems([...selectedItems, scheduleId]);
     }
   };
+
+  useEffect(() => {
+    if (selectcheck) {
+      if (selectedItems?.length === schedules?.length) {
+        setSelectAllChecked(true);
+      }
+    }
+  }, [selectcheck, selectedItems])
 
   const handleScheduleItemClick = (scheduleId) => {
     setScheduleId(scheduleId);
@@ -225,7 +235,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(handleDeleteScheduleAll({ config }));
-        setSelectAll(false);
+        setSelectAllChecked(false);
         setSelectedItems([]);
         dispatch(handleGetAllSchedule({ token }));
       }
@@ -505,12 +515,12 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   onChange={handleSearchSchedule}
                 />
               </div>
-              <Link to="/weatherschedule">
+             {/* <Link to="/weatherschedule">
                 <button className="ml-2 flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary   hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                   <TiWeatherSunny className="text-lg mr-1" />
                   Weather Schedule
                 </button>
-              </Link>
+              </Link>*/}
               <Link to="/addschedule">
                 <button className="sm:ml-2 xs:ml-1  flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary   hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                   <BiAddToQueue className="text-lg mr-1" />
@@ -523,13 +533,13 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
               <button
                 className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 onClick={handelDeleteAllSchedule}
-                style={{ display: selectAll ? "block" : "none" }}
+                style={{ display: selectAllChecked ? "block" : "none" }}
               >
                 <RiDeleteBin5Line className="text-lg" />
               </button>
 
               {/* multipal remove */}
-              {selectedItems.length !== 0 && !selectAll && (
+              {selectedItems.length !== 0 && !selectAllChecked && (
                 <button
                   className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                   onClick={handelDeleteAllSchedule}
@@ -545,7 +555,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 <input
                   type="checkbox"
                   className="w-7 h-6"
-                  checked={selectAll}
+                  checked={selectAllChecked}
                   onChange={handleSelectAll}
                 />
               </button>
@@ -691,31 +701,31 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                               >
                                 {(schedule?.tags === "" ||
                                   schedule?.tags === null) && (
-                                  <span>
-                                    <AiOutlinePlusCircle
-                                      size={30}
-                                      className="mx-auto cursor-pointer"
-                                      onClick={() => {
-                                        setShowTagModal(true);
-                                        schedule.tags === "" ||
-                                        schedule?.tags === null
-                                          ? setTags([])
-                                          : setTags(schedule?.tags?.split(","));
-                                        setUpdateTagSchedule(schedule);
-                                      }}
-                                    />
-                                  </span>
-                                )}
+                                    <span>
+                                      <AiOutlinePlusCircle
+                                        size={30}
+                                        className="mx-auto cursor-pointer"
+                                        onClick={() => {
+                                          setShowTagModal(true);
+                                          schedule.tags === "" ||
+                                            schedule?.tags === null
+                                            ? setTags([])
+                                            : setTags(schedule?.tags?.split(","));
+                                          setUpdateTagSchedule(schedule);
+                                        }}
+                                      />
+                                    </span>
+                                  )}
                                 {schedule.tags !== null
                                   ? schedule.tags
-                                      .split(",")
-                                      .slice(
-                                        0,
-                                        schedule.tags.split(",").length > 2
-                                          ? 3
-                                          : schedule.tags.split(",").length
-                                      )
-                                      .join(",")
+                                    .split(",")
+                                    .slice(
+                                      0,
+                                      schedule.tags.split(",").length > 2
+                                        ? 3
+                                        : schedule.tags.split(",").length
+                                    )
+                                    .join(",")
                                   : ""}
                                 {schedule?.tags !== "" &&
                                   schedule?.tags !== null && (
@@ -723,7 +733,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                       onClick={() => {
                                         setShowTagModal(true);
                                         schedule.tags === "" ||
-                                        schedule?.tags === null
+                                          schedule?.tags === null
                                           ? setTags([])
                                           : setTags(schedule?.tags?.split(","));
                                         setUpdateTagSchedule(schedule);
@@ -784,6 +794,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         type="button"
                                         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                         onClick={() => {
+                                          setScheduleId(schedule.scheduleId);
                                           setAddScreenModal(true);
                                           setScreenSelected(
                                             schedule?.screenAssigned?.split(",")

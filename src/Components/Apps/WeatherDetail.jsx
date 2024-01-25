@@ -57,6 +57,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
     { id: 3, location: "", weatherData: null, mainData: null },
   ]);
   const [showPopup, setShowPopup] = useState(false);
+  const [errorList, setErrorList] = useState([]);
   const [playlistDeleteModal, setPlaylistDeleteModal] = useState(false);
   const [language, setLanguage] = useState("English");
   const [isMuted, setIsMuted] = useState(false);
@@ -127,6 +128,11 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
         });
     }
   }, [id]);
+  useEffect(() => {
+    const filteredLocations = locations?.filter(item => item?.location === "") || [];
+    setErrorList(filteredLocations);
+  }, [locations]);
+  
 
   useEffect(() => {
     if (isMuted && navigator.geolocation) {
@@ -380,6 +386,10 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const debouncedOnChange = debounce(handleLocationChange, 1000);
 
   const handleSave = () => {
+    if(locations?.length === errorList?.length){
+      toast.error("Please Enter any Location.");
+      return
+    }
     let data = new FormData();
     data.append("WeatherAppId", id ? id : "0");
     data.append("Name", instanceName);
@@ -532,9 +542,8 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 onChange={handleMuteChange}
                               />
                               <div
-                                className={`w-11 h-6 ${
-                                  isMuted ? "bg-SlateBlue" : "bg-lightgray"
-                                } rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all `}
+                                className={`w-11 h-6 ${isMuted ? "bg-SlateBlue" : "bg-lightgray"
+                                  } rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all `}
                               ></div>
                             </label>
                           </div>
@@ -598,7 +607,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           )} */}
                           </div>
                         ))}
-                      {!isMuted && (
+                      {/* {!isMuted && (
                         <div className="mb-3 relative inline-flex items-center w-full">
                           <label
                             htmlFor="message"
@@ -617,7 +626,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                             <option value="Portrait">Portrait</option>
                           </select>
                         </div>
-                      )}
+                     )}*/}
 
                       <div className="mb-3 relative inline-flex items-center w-full">
                         <label
@@ -690,14 +699,13 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                 )}
 
                 <div
-                  className={`${
-                    selectedPreview
+                  className={`${selectedPreview
                       ? "lg:col-span-12 md:col-span-12"
                       : "lg:col-span-6 md:col-span-6"
-                  } sm:col-span-10`}
+                    } sm:col-span-10`}
                 >
                   <div className="shadow-md bg-white rounded-lg p-5 h-fit">
-                    {selectedPreview && (
+                    {/*{selectedPreview && (
                       <div className="m-2 flex justify-end h-full w-full">
                         <select
                           id="layout"
@@ -710,7 +718,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           <option value="Portrait">Portrait</option>
                         </select>
                       </div>
-                    )}
+                    )}*/}
                     <div
                       className="w-full flex items-center justify-center"
                       style={{
@@ -729,21 +737,19 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className="overflow-x-auto bg-blue border-white rounded-lg relative p-5">
                           <div className="lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full mx-auto bg-teal border-width-10px border-black">
                             <div
-                              className={`flex ${
-                                selectedLayout === "Landscape"
+                              className={`flex ${selectedLayout === "Landscape"
                                   ? "flex-row"
                                   : "flex-col"
-                              } text-[#ffffff]`}
+                                } text-[#ffffff]`}
                             >
                               {locations?.map((item, index) => {
                                 if (item?.weatherData !== null) {
                                   return (
                                     <div
-                                      className={`w-full flex flex-col ${
-                                        selectedLayout === "Landscape"
+                                      className={`w-full flex flex-col ${selectedLayout === "Landscape"
                                           ? " border-r-2 "
                                           : " border-b-2 "
-                                      }last:border-none`}
+                                        }last:border-none`}
                                       key={index}
                                     >
                                       <div className="bg-teal-lighter flex-1 flex flex-col">
@@ -792,18 +798,18 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                               }
                                               <span className="text-lg leading-3 ml-1 mt-2">
                                                 {selectedTemperature ===
-                                                "Fahrenheit"
+                                                  "Fahrenheit"
                                                   ? "°F"
                                                   : selectedTemperature ===
                                                     "Kelvin"
-                                                  ? "K"
-                                                  : selectedTemperature ===
-                                                    "Rankine"
-                                                  ? "°R"
-                                                  : selectedTemperature ===
-                                                    "Reaumur"
-                                                  ? "°Re"
-                                                  : "°C"}
+                                                    ? "K"
+                                                    : selectedTemperature ===
+                                                      "Rankine"
+                                                      ? "°R"
+                                                      : selectedTemperature ===
+                                                        "Reaumur"
+                                                        ? "°Re"
+                                                        : "°C"}
                                               </span>
                                             </h4>
                                             <p className="flex items-start justify-end">
@@ -813,18 +819,18 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                   ?.feels_like
                                               }
                                               {selectedTemperature ===
-                                              "Fahrenheit"
+                                                "Fahrenheit"
                                                 ? "°F"
                                                 : selectedTemperature ===
                                                   "Kelvin"
-                                                ? "K"
-                                                : selectedTemperature ===
-                                                  "Rankine"
-                                                ? "°R"
-                                                : selectedTemperature ===
-                                                  "Reaumur"
-                                                ? "°Re"
-                                                : "°C"}
+                                                  ? "K"
+                                                  : selectedTemperature ===
+                                                    "Rankine"
+                                                    ? "°R"
+                                                    : selectedTemperature ===
+                                                      "Reaumur"
+                                                      ? "°Re"
+                                                      : "°C"}
                                             </p>
                                           </div>
                                         </div>

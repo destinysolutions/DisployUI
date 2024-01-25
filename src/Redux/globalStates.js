@@ -70,7 +70,7 @@ const globalStates = createSlice({
     handleNavigateFromCompositionChannel: (state, { payload }) => {
       state.navigateFromComposition = false;
       navigateFromCompositionChannel.onmessage = (event) => {
-        window.location.reload();
+        // window.location.reload();
         navigateFromCompositionChannel.close();
       };
     },

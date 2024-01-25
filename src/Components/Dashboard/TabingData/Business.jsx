@@ -19,6 +19,8 @@ import textscroll from "../../../images/AppsImg/text-scroll-icon.svg";
 import More from "../../../images/AppsImg/app4.png";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { handleGetAllApps } from "../../../Redux/AppsSlice";
 
 //for sales revenue chart options
 const SalesOptions = {
@@ -158,6 +160,8 @@ var StoreOptions = {
 };
 
 const Business = () => {
+  const dispatch = useDispatch();
+  const { token } = useSelector((s) => s.root.auth);
   const { allApps } = useSelector((state) => state.root.apps);
   //for map store icon
   const center = [20.5937, 78.9629];
@@ -170,6 +174,10 @@ const Business = () => {
   const [selectedStateName, setSelectedStateName] = useState("");
   const [showStore, setShowStore] = useState(false);
   const [showCitydw, setShowCityDw] = useState(false);
+
+  useEffect(() => {
+    dispatch(handleGetAllApps({ token }));
+  }, []);
 
   // Fetch country data from the API
   useEffect(() => {
@@ -232,7 +240,7 @@ const Business = () => {
             center={center}
             zoom={4}
             maxZoom={18}
-            style={{ width: "100%", height: "560px" }}
+            style={{ width: "100%", height: "560px", zIndex: 0 }}
           >
             <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
 
@@ -454,7 +462,7 @@ const Business = () => {
       {/* app store start*/}
       <div className="mt-5 mb-5">
         <div className="grid grid-cols-12 gap-4">
-          {allApps?.loading ? (
+          {allApps?.loading && (
             <div className="text-center col-span-full font-semibold text-xl">
               <>
                 <div>
@@ -481,12 +489,14 @@ const Business = () => {
                 </div>
               </>
             </div>
-          ) : allApps?.data.length === 0 && !allApps?.loading ? (
+          )}
+          {allApps?.data.length === 0 && !allApps?.loading && (
             <div className="w-full text-center font-semibold text-xl col-span-full">
               No Apps here.
             </div>
-          ) : (
-            allApps?.data.map(
+          )}
+          {!allApps?.loading && allApps?.data.length > 0 && (
+            allApps?.data?.slice(0, 3)?.map(
               (app) =>
                 app.appType == "Apps" && (
                   <div className="lg:col-span-3 md:col-span-6 sm:col-span-12 " key={app.app_Id}>
@@ -504,19 +514,21 @@ const Business = () => {
                       </div>
                     </Link>
                   </div>
-                )
-            )
-          )}
-          {/* <div className="lg:col-span-3 md:col-span-6 sm:col-span-12">
-            <div className="shadow-md  bg-white rounded-lg text-center py-10">
-              <img
-                src={More}
-                alt="Logo"
-                className="cursor-pointer mx-auto h-16 w-16"
-              />
-              <h4 className="text-size-md font-semibold py-5">And many more</h4>
+                ))
+          )
+          }
+          {!allApps?.loading && allApps?.data.length > 0 && (
+            <div className="lg:col-span-3 md:col-span-6 sm:col-span-12">
+              <div className="shadow-md  bg-white rounded-lg text-center py-10">
+                <img
+                  src={More}
+                  alt="Logo"
+                  className="cursor-pointer mx-auto h-16 w-16"
+                />
+                <h4 className="text-size-md font-semibold py-5">And many more</h4>
+              </div>
             </div>
-          </div>*/}
+          )}
         </div>
       </div>
       {/* app store end*/}

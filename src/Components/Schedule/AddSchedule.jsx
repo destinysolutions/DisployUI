@@ -270,6 +270,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         setSelectScreenModal(false);
+        navigate("/myschedule")
         if (connection.state == "Disconnected") {
           connection
             .start()
@@ -912,7 +913,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
               className="mb-3 border-2 border-lightgray bg-SlateBlue text-white hover:bg-primary hover:text-white   px-4 py-2 rounded-full ml-3"
               onClick={() => setSelectScreenModal(true)}
             >
-              Assign screen
+              Save & Assign screen
             </button>
             {selectScreenModal && (
               <ScreenAssignModal

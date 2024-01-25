@@ -280,7 +280,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         onClick={() => setShowAssetModal(true)}
                         className="flex items-centerborder-gray bg-white  border rounded-lg lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500"
                       >
-                        assetName
+                        {selectedAsset.assetName ? selectedAsset.assetName : 'assetName' }
                         <AiOutlineCloudUpload className="ml-2 text-lg" />
                       </button>
                       {assetError && (

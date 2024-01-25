@@ -12,7 +12,7 @@ export const handleRegisterUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (error?.response) {
-        toast.error(error?.response?.data?.message);
+        toast.error(error?.response?.data);
         return rejectWithValue(error?.response?.data);
       }
     }
@@ -157,7 +157,7 @@ const Authslice = createSlice({
     });
     builder.addCase(handleRegisterUser.fulfilled, (state, { payload }) => {
       state.loading = false;
-      state.user = payload;
+      state.user = null;
       state.error = null;
       state.token = payload?.data?.token;
     });

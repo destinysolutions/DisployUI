@@ -63,6 +63,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenSelected, setScreenSelected] = useState([]);
   const [selectdata, setSelectData] = useState({});
   const [selectedItems, setSelectedItems] = useState([]);
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [selectcheck, setSelectCheck] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [sortOrder, setSortOrder] = useState("asc");
@@ -145,8 +147,8 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleSelectAll = () => {
-    setSelectAll(!selectAll);
-
+    setSelectAllChecked(!selectAllChecked);
+    
     if (selectedItems.length === compositionData.length) {
       setSelectedItems([]);
     } else {
@@ -159,12 +161,22 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
   // Multipal check
   const handleCheckboxChange = (compositionID) => {
+    setSelectAllChecked(false);
+    setSelectCheck(true)
     if (selectedItems.includes(compositionID)) {
       setSelectedItems(selectedItems.filter((id) => id !== compositionID));
     } else {
       setSelectedItems([...selectedItems, compositionID]);
     }
   };
+
+  useEffect(() => {
+    if (selectcheck) {
+      if (selectedItems?.length === compositionData?.length) {
+        setSelectAllChecked(true);
+      }
+    }
+  }, [selectcheck, selectedItems])
 
   const handleDeleteAllCompositions = () => {
     let config = {
@@ -185,7 +197,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(handleDeleteAll({ config }));
-        setSelectAll(false);
+        setSelectAllChecked(false);
         setSelectedItems([]);
         dispatch(handleGetCompositions({ token }));
       }
@@ -563,13 +575,13 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   <button
                     onClick={handleDeleteAllCompositions}
                     className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                    style={{ display: selectAll ? "block" : "none" }}
+                    style={{ display: selectAllChecked ? "block" : "none" }}
                   >
                     <RiDeleteBinLine />
                   </button>
 
                   {/* multipal remove */}
-                  {selectedItems.length !== 0 && !selectAll && (
+                  {selectedItems.length !== 0 && !selectAllChecked && (
                     <button
                       className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                       onClick={handleDeleteAllCompositions}
@@ -582,7 +594,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                     <input
                       type="checkbox"
                       className="w-7 h-6"
-                      checked={selectAll}
+                      checked={selectAllChecked}
                       onChange={() => handleSelectAll()}
                     />
                   </button>
@@ -682,9 +694,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               <td className="text-[#5E5E5E] text-center">
                                 <div className="flex gap-1">
-                                  {selectAll ? (
-                                    <CheckmarkIcon className="w-5 h-5" />
-                                  ) : (
+                                  
                                     <input
                                       type="checkbox"
                                       checked={selectedItems.includes(
@@ -696,7 +706,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                         )
                                       }
                                     />
-                                  )}
                                   {composition?.compositionName}
                                 </div>
                               </td>

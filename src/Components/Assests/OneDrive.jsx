@@ -101,7 +101,6 @@ const OneDrive = ({ setFile }) => {
 
     try {
       const authToken = await getToken();
-      debugger;
       const queryString = new URLSearchParams({
         filePicker: JSON.stringify(params),
         locale: "en-us",

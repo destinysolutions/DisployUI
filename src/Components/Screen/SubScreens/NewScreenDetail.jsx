@@ -460,7 +460,9 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   useEffect(() => {
-    handleFetchAssestFiles();
+    if(showAssetModal){
+      handleFetchAssestFiles();
+    }
   }, [showAssetModal]);
 
   // close modal assets
@@ -782,6 +784,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           className=" appearance-none border border-[#D5E3FF] rounded w-full py-2 px-3"
                           type="text"
                           placeholder="Screen Name"
+                          value={screenName}
                           onChange={(e) => {
                             setScreenName(e.target.value);
                             setScreenNameError("");

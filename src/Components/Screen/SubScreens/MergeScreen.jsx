@@ -41,6 +41,7 @@ import {
 } from "../../../Redux/ScreenMergeSlice";
 import ReactTooltip from "react-tooltip";
 import axios from "axios";
+import moment from "moment";
 const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const history = useNavigate();
 
@@ -696,7 +697,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                     )}
                                   </td>
                                   <td className="p-2 text-center">
-                                    {screen.last_seen}
+                                  {moment(screen?.updatedDate).format("LLL")}
                                   </td>
                                   <td className="p-2 text-center">
                                     <button className="flex items-centerborder-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500">

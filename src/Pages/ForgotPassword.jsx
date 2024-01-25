@@ -27,7 +27,7 @@ const ForgotPassword = () => {
   const [currentPasswordShow, setCurrentPassword] = useState(false);
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string().required("Emial is required"),
+    email: Yup.string().required("Email is required"),
   });
 
   const validationSchema2 = Yup.object().shape({
@@ -56,7 +56,13 @@ const ForgotPassword = () => {
         maxBodyLength: Infinity,
       };
       const userExists = await axios.request(config);
-      callback(userExists.data); // Invoke the callback with the data
+      console.log('userExists', userExists)
+      if(userExists?.data?.status === false){
+        toast.dismiss();
+        toast.error(userExists?.data?.message)
+      }else{
+        callback(userExists.data); // Invoke the callback with the data
+      }
     } catch (error) {
       toast.error(error.message);
       setShowPassword(false);
@@ -98,30 +104,34 @@ const ForgotPassword = () => {
 
 
   const formikChangePassword = useFormik({
-    initialValues: { newPassword: "", confirmPassword: "",currentPassword:'' },
+    initialValues: { newPassword: "", confirmPassword: "", currentPassword: '' },
     validationSchema: validationSchema2,
     onSubmit: async (values) => {
       try {
         // Find the user by UserId
-        toast.loading("Updeting....")
+        toast.loading("Updating....")
         const payload = {
           UserID: userID,
           Email: getEmail,
           OTP: values.currentPassword,
           Password: values.newPassword,
         };
-       console.log("payload",payload);
+        console.log("payload", payload);
         const config = {
-          method: "post", 
-          url: UPDATE_PASSWORD, 
-          params: payload ,
+          method: "post",
+          url: UPDATE_PASSWORD,
+          params: payload,
           maxBodyLength: Infinity,
         };
         const response = await axios.request(config);
-        if (response.data.status) {
+        console.log('response', response)
+        if (response.data.status === true) {
           toast.dismiss()
           toast.success(response.data.message);
           navigate('/')
+        } else {
+          toast.dismiss()
+          toast.error(response.data.message);
         }
 
       } catch (error) {
@@ -164,13 +174,13 @@ const ForgotPassword = () => {
                         onBlur={formikVerifyEmail.handleBlur}
                         value={formikVerifyEmail.values.email}
                       />
-                      {formikVerifyEmail.touched.email &&
-                      formikVerifyEmail.errors.email ? (
-                        <div className="text-red-500 error">
-                          {formikVerifyEmail.errors.email}
-                        </div>
-                      ) : null}
                     </div>
+                    {formikVerifyEmail.touched.email &&
+                      formikVerifyEmail.errors.email ? (
+                      <div className="text-red-500 error mt-1" style={{ marginTop: "5px" }}>
+                        {formikVerifyEmail.errors.email}
+                      </div>
+                    ) : null}
                     <button
                       type="submit"
                       className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
@@ -236,13 +246,13 @@ const ForgotPassword = () => {
                           />
                         )}
                       </div>
-                      {formikChangePassword.touched.currentPassword &&
-                      formikChangePassword.errors.currentPassword ? (
-                        <div className="text-red-500 error">
-                          {formikChangePassword.errors.currentPassword}
-                        </div>
-                      ) : null}
                     </div>
+                    {formikChangePassword.touched.currentPassword &&
+                      formikChangePassword.errors.currentPassword ? (
+                      <div className="text-red-500 error mt-1" style={{ marginTop: "5px" }}>
+                        {formikChangePassword.errors.currentPassword}
+                      </div>
+                    ) : null}
 
                     <div className="relative">
                       <input
@@ -266,13 +276,13 @@ const ForgotPassword = () => {
                           />
                         )}
                       </div>
-                      {formikChangePassword.touched.newPassword &&
-                      formikChangePassword.errors.newPassword ? (
-                        <div className="error">
-                          {formikChangePassword.errors.newPassword}
-                        </div>
-                      ) : null}
                     </div>
+                    {formikChangePassword.touched.newPassword &&
+                      formikChangePassword.errors.newPassword ? (
+                      <div className="error" style={{ marginTop: "5px" }}>
+                        {formikChangePassword.errors.newPassword}
+                      </div>
+                    ) : null}
                     <div className="relative">
                       <input
                         type={confirmPasswordShow ? "text" : "password"}
@@ -300,13 +310,13 @@ const ForgotPassword = () => {
                           />
                         )}
                       </div>
-                      {formikChangePassword.touched.confirmPassword &&
-                      formikChangePassword.errors.confirmPassword ? (
-                        <div className="text-red-500 error">
-                          {formikChangePassword.errors.confirmPassword}
-                        </div>
-                      ) : null}
                     </div>
+                    {formikChangePassword.touched.confirmPassword &&
+                      formikChangePassword.errors.confirmPassword ? (
+                      <div className="text-red-500 error mt-1" style={{ marginTop: "5px" }}>
+                        {formikChangePassword.errors.confirmPassword}
+                      </div>
+                    ) : null}
                     <button
                       type="submit"
                       className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"

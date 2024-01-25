@@ -499,7 +499,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               </div>
               <div className="mt-6">
-                <div className="grid grid-cols-12 gap-4">
+                <div className="grid grid-cols-12 gap-4 h-[380px]">
                   <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 xs:col-span-12 shadow-md bg-white rounded-lg p-5  items-center">
                     <div className=" ">
                       <table
@@ -616,9 +616,6 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                             : undefined, // Provide the URL to the subtitle file if subtitles are enabled
                         }}
                       />
-                    </div>
-                    <div className="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-10">
-                      <img src={Img} />
                     </div>
                   </div>
 
