@@ -33,6 +33,7 @@ const Userrole = ({ searchValue }) => {
   const [showDynamicComponent, setShowDynamicComponent] = useState(false);
   const [firstLoad, setLoadFirst] = useState(true);
   const [showUsers, setShowUsers] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const modalRef = useRef(null);
   const showUsersRef = useRef(null);
@@ -581,58 +582,80 @@ const Userrole = ({ searchValue }) => {
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        {store?.getUserData?.map(
-                                          (item, index) => (
-                                            <tr
-                                              key={index}
-                                              className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                        {loading ? (
+                                          <tr>
+                                            <td
+                                              colSpan={6}
+                                              className="text-center font-semibold text-lg"
                                             >
-                                              <td className="text-[#5E5E5E] text-center flex">
-                                                {item?.profilePhoto ? (
-                                                  <img
-                                                    className="w-10 h-10 rounded-full"
-                                                    src={item?.profilePhoto}
-                                                    alt="Jese image"
-                                                  />
-                                                ) : (
-                                                  <RiUser3Fill className="w-10 h-10" />
-                                                )}
-                                                <div className="ps-3 flex text-center">
-                                                  <div className="font-normal text-gray-500 mt-2">
-                                                    {item.firstName +
-                                                      " " +
-                                                      item.lastName}
+                                              Loading...
+                                            </td>
+                                          </tr>
+                                        ) : !loading &&
+                                          store?.getUserData?.length > 0 ? (
+                                          store?.getUserData?.map(
+                                            (item, index) => (
+                                              // {store?.getUserData?.map(
+                                              // (item, index) => (
+                                              <tr
+                                                key={index}
+                                                className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                              >
+                                                <td className="text-[#5E5E5E] text-center flex">
+                                                  {item?.profilePhoto ? (
+                                                    <img
+                                                      className="w-10 h-10 rounded-full"
+                                                      src={item?.profilePhoto}
+                                                      alt="Jese image"
+                                                    />
+                                                  ) : (
+                                                    <RiUser3Fill className="w-10 h-10" />
+                                                  )}
+                                                  <div className="ps-3 flex text-center">
+                                                    <div className="font-normal text-gray-500 mt-2">
+                                                      {item.firstName +
+                                                        " " +
+                                                        item.lastName}
+                                                    </div>
                                                   </div>
-                                                </div>
-                                              </td>
-                                              <td className="text-[#5E5E5E] text-center">
-                                                {item?.userRoleName}
-                                              </td>
-                                              <td className="text-[#5E5E5E] text-center">
-                                                {item.isActive == 1 ? (
-                                                  <span
-                                                    style={{
-                                                      backgroundColor:
-                                                        "#cee9d6",
-                                                    }}
-                                                    className=" text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                                  >
-                                                    Active
-                                                  </span>
-                                                ) : (
-                                                  <span
-                                                    style={{
-                                                      backgroundColor:
-                                                        "#d1d5db",
-                                                    }}
-                                                    className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm"
-                                                  >
-                                                    Inactive
-                                                  </span>
-                                                )}
-                                              </td>
-                                            </tr>
+                                                </td>
+                                                <td className="text-[#5E5E5E] text-center">
+                                                  {item?.userRoleName}
+                                                </td>
+                                                <td className="text-[#5E5E5E] text-center">
+                                                  {item.isActive == 1 ? (
+                                                    <span
+                                                      style={{
+                                                        backgroundColor:
+                                                          "#cee9d6",
+                                                      }}
+                                                      className=" text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                                    >
+                                                      Active
+                                                    </span>
+                                                  ) : (
+                                                    <span
+                                                      style={{
+                                                        backgroundColor:
+                                                          "#d1d5db",
+                                                      }}
+                                                      className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm"
+                                                    >
+                                                      Inactive
+                                                    </span>
+                                                  )}
+                                                </td>
+                                              </tr>
+                                            )
                                           )
+                                        ) : (
+                                          <tr>
+                                            <td colSpan={6}>
+                                              <p className="text-center p-2">
+                                                No Users available.
+                                              </p>
+                                            </td>
+                                          </tr>
                                         )}
                                       </tbody>
                                     </table>
