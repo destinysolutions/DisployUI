@@ -24,6 +24,9 @@ input[type="number"] {
 .hide_scrollbar::-webkit-scrollbar {
   display: none;
 }
+button {
+  word-break: break-all;
+}
 
 /* --------------------------login & register css----------------------------------- */
 .main {
@@ -974,15 +977,13 @@ button.daysbtn {
 .composition-table tr td,
 .selectedlayout-table tr td,
 .screen-table tr td,
-.screen-tables tr td
-.addmedia-table tr td {
+.screen-tables tr td .addmedia-table tr td {
   font-size: 13px;
 }
 .screen-table tr td,
 .screen-table tbody tr {
   background: #fff;
 }
-
 
 .imagebox.relative.p-3 img {
   /* min-height: 250px;
@@ -1046,8 +1047,8 @@ button.daysbtn {
   display: inline; /* Display the text on hover */
 }
 
-
-.screen-table .screen-table-th th {
+.screen-table .screen-table-th th,
+.table-head-bg th {
   width: 200px;
 }
 @media only screen and (max-width: 768px) {
