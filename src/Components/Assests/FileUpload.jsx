@@ -144,7 +144,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     try {
       // Initialize an overall progress variable
       let overallProgress = 0;
-
+      let arr = []
       // Create an array to hold all the promises for image uploads
       const uploadPromises = selectedImages.map(async (image, index) => {
         const CategorieType = getContentType(image.file.type);
@@ -158,7 +158,6 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         formData.append("FolderID", "0");
 
         const response = dispatch(handleGetStorageDetails({ token }));
-        console.log("response -- ", response);
         response.then(async (res) => {
           if (res?.payload?.data?.usedInPercentage == 100) {
             // setUploadInProgress(false);
@@ -192,15 +191,14 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                   setUploadProgress(updatedProgress);
                 },
               });
-
+              arr.push(response)
               // if (response.status === 200) {
               //   toast.success(`File ${image.name} uploaded successfully.`);
               // } else {
               //   toast.error(`Upload failed for file ${image.name}`);
               // }
-
               if (
-                selectedImages?.length - 1 === index &&
+                selectedImages?.length === arr?.length &&
                 response.status === 200
               ) {
                 toast.success(`File uploaded successfully.`);
@@ -242,11 +240,11 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         mime.startsWith("text/") ||
         mime === "application/msword" ||
         mime ===
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
         mime ===
-          "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
         mime ===
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     ) {
       return "DOC";
     } else {

@@ -23,6 +23,7 @@ const ShowAppsModal = ({ setShowAppModal }) => {
       if (appName === "Youtube") {
         window.open("/youtubedetail", "_blank");
         //   return navigate("/youtubedetail");
+        setShowAppModal(false)
         return;
       } else if (appName == "Weather") {
         window.open("/weatherdetail", "_blank");
@@ -32,6 +33,7 @@ const ShowAppsModal = ({ setShowAppModal }) => {
       } else if (appName == "text-scroll") {
         window.open("/textscrolldetail", "_blank");
         //   navigate("/textscrolldetail");
+        setShowAppModal(false)
         return;
       }
     }, 500);

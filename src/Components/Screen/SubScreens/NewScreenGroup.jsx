@@ -155,7 +155,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       currentPage * itemsPerPage
     )
     : [];
-
+    
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -247,7 +247,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleAssetUpdate = () => {
- 
+
   };
 
   const editGroupName = (index) => {   // GroupNameUpdate
@@ -323,8 +323,16 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     });
   };
 
-  const deleteGroupInScreen = (payload) => {
-    dispatch(groupInScreenDelete(payload));
+  const deleteGroupInScreen = (screen, item) => {
+    if (item?.screenGroupLists?.length > 1) {
+      let payload = {
+        ScreenGroupListID:
+          screen.screenGroupListID,
+      }
+      dispatch(groupInScreenDelete(payload));
+    } else {
+      toast.error("Can't Delete This Screen. You Need To Delete Group.")
+    }
   };
 
   const handleTagsUpdate = (tags) => {
@@ -420,6 +428,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleFetchLayoutById = (id) => {
+    setLoading(true)
+    setIsPreviewOpen(true);
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -432,9 +442,11 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response?.data?.status == 200) {
           setLayotuDetails(response.data?.data[0]);
+          setLoading(false)
         }
       })
       .catch((error) => {
+        setLoading(false)
         console.log(error);
       });
   };
@@ -463,7 +475,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
       setPreviewData(newdd);
     });
-    setIsPreviewOpen(true);
     setLoading(false);
 
   };
@@ -839,7 +850,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                     )}
                                   </td>
                                   <td className="p-2 text-center">
-                                  {moment(screen?.updatedDate).format("LLL")}
+                                    {moment(screen?.updatedDate).format("LLL")}
                                   </td>
                                   <td className="p-2 text-center">
                                     <button className="flex items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500">
@@ -929,10 +940,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                     <div className="cursor-pointer text-xl flex gap-3 text-right rounded-full px-2 py-2 text-white text-center bg-[#FF0000]">
                                       <MdDeleteForever
                                         onClick={() =>
-                                          deleteGroupInScreen({
-                                            ScreenGroupListID:
-                                              screen.screenGroupListID,
-                                          })
+                                          deleteGroupInScreen(screen, item)
                                         }
                                       />
                                     </div>
