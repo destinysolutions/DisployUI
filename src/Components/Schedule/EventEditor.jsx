@@ -533,7 +533,7 @@ const EventEditor = ({
 
           <div className="grid grid-cols-12 relative">
             <div className="lg:col-span-9 md:col-span-8 sm:col-span-12 xs:col-span-12 rounded-lg">
-              <div className="my-2 relative ">
+              <div className="my-4 relative ">
                 <AiOutlineSearch className="absolute top-[13px] left-[12px] z-10 text-gray" />
                 <input
                   type="text"
@@ -548,7 +548,7 @@ const EventEditor = ({
                 <div className="overflow-x-scroll sc-scrollbar rounded-lg bg-white shadow-2xl md:pb-1">
                   <div className="max-w-full overflow-auto max-h-[1340px]">
                     <table
-                      className="screen-table w-full lg:table-fixed md:table-fixed sm:table-auto xs:table-auto text-sm break-words schedualtime-table"
+                      className="w-full lg:table-fixed md:table-fixed sm:table-auto xs:table-auto text-sm break-words "
                       cellPadding={10}
                     >
                       <thead className="sticky z-20">
@@ -562,15 +562,15 @@ const EventEditor = ({
                           <th className="min-w-[150px] py-4 px-4 font-semibold text-black">
                             Date Added
                           </th>
-                          <th className="min-w-[120px] py-4 px-4 font-semibold text-black">
+                          {/* <th className="min-w-[120px] py-4 px-4 font-semibold text-black">
                             Associated Schedule
-                          </th>
+                          </th> */}
                           <th className="py-4 px-4 font-semibold text-black">
                             Resolution
                           </th>
-                          <th className="py-4 px-4 font-semibold text-black">
+                          {/* <th className="py-4 px-4 font-semibold text-black">
                             Tags
-                          </th>
+                          </th> */}
                         </tr>
                       </thead>
                       <tbody>
@@ -581,8 +581,8 @@ const EventEditor = ({
                               <tr
                                 key={index}
                                 className={`${
-                                  selectedAsset === item ? "" : ""
-                                } mt-5`}
+                                  selectedAsset === item ? "bg-[#f3c953]" : ""
+                                } border-b border-[#eee] mt-5`}
                                 onClick={() => {
                                   handleAssetAdd(item);
                                 }}
@@ -660,21 +660,21 @@ const EventEditor = ({
                                     )}
                                   </p>
                                 </td>
-                                <td className="">
+                                {/* <td className="">
                                   <p className="text-black font-medium">
                                     Schedule Name Till 28 June 2023
                                   </p>
-                                </td>
+                                </td> */}
                                 <td className="">
                                   <p className="text-black font-medium">
                                     {item.resolutions}
                                   </p>
                                 </td>
-                                <td className="">
+                                {/* <td className="">
                                   <p className="text-black font-medium">
                                     Tags, Tags
                                   </p>
-                                </td>
+                                </td> */}
                               </tr>
                             ))
                         ) : searchAsset !== "" ? (
@@ -833,7 +833,7 @@ const EventEditor = ({
               </div>
             </div>
 
-            <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-0 md:mt-0">
+            <div className="md:ml-5 sm:ml-0 xs:ml-0 rounded-lg lg:col-span-3 md:col-span-4 sm:col-span-12 xs:col-span-12 xs:mt-9 sm:mt-9 lg:mt-4 md:mt-4">
               <div className="bg-white shadow-2xl">
                 <div className="p-3">
                   <div>
