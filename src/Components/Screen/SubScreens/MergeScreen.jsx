@@ -475,7 +475,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
               const isAccordionOpen = openAccordionIndex === i;
               return (
                 <div key={i} className="accordions mt-5">
-                  <div className="section shadow-md p-5 bg-white  lg:flex md:flex  sm:block items-center justify-between">
+                  <div className="section shadow-md p-5 bg-slate-200 rounded-2xl lg:flex md:flex  sm:block items-center justify-between">
                     <div className="flex gap-2 items-center">
                       {editIndex === i ? (
                         <>
@@ -520,7 +520,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                             <button
                               data-tip
                               data-for="Preview"
-                              className="bg-lightgray py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary hover:text-white"
+                              className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
                               onClick={() => handleOpenPreview(item)}
                             >
                               Preview
@@ -632,13 +632,13 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
 
                   {isAccordionOpen && (
-                    <div className=" relative shadow-md rounded-lg overflow-x-scroll sc-scrollbar ">
+                    <div className="overflow-x-scroll sc-scrollbar  pt-4">
                       <table
                         className="screen-table w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
                         cellPadding={20}
                       >
                         <thead>
-                          <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg text-left">
+                          <tr className="items-center table-head-bg screen-table-th text-left">
                             <th className="text-[#444] text-sm font-semibold p-2">
                               <button className="flex items-center justify-center px-6 py-2">
                                 Screen
@@ -699,12 +699,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                     {screen.last_seen}
                                   </td>
                                   <td className="p-2 text-center">
-                                    <button
-                                      style={{ width: "max-content" }}
-                                      className="flex items-centerborder-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500"
-                                    >
+                                    <button className="flex items-centerborder-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500">
                                       {screen.assetName}
-                                      <AiOutlineCloudUpload className="ml-2 text-lg" />
+                                      <AiOutlineCloudUpload className="ml-2 text-3xl" />
                                     </button>
                                   </td>
                                   <td className="break-words	w-[150px] p-2 text-center">

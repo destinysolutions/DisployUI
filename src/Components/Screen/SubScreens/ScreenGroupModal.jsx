@@ -9,7 +9,7 @@ const ScreenGroupModal = ({
   onClose,
   handleSaveNew,
   editSelectedScreen,
-  updateScreen
+  updateScreen,
 }) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.root.screenGroup.data);
@@ -30,7 +30,6 @@ const ScreenGroupModal = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5); // Adjust items per page as needed
 
-
   useEffect(() => {
     // const query = { ID : user.userID, sort: sortOrder, col: sortColumn };
     let config = {
@@ -46,17 +45,17 @@ const ScreenGroupModal = ({
       dispatch(SelectByUserScreen({ config }));
       setLoadFirst(false);
     }
-
   }, [dispatch, loadFirst, store]);
 
-
   const totalPages = Math.ceil(store.data?.length / itemsPerPage);
-  const paginatedData = store.data?.slice((currentPage - 1) * itemsPerPage,currentPage * itemsPerPage);
+  const paginatedData = store.data?.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-
 
   const handleScreenGroupNameChange = (e) => {
     const value = e.target.value;
@@ -108,15 +107,15 @@ const ScreenGroupModal = ({
         mode: "Save",
         screenID: itemID,
       })),
-      userID: 0
+      userID: 0,
     };
 
     if (editSelectedScreen && editSelectedScreen.screenGroupID) {
-      payLoad.screenGroupID = editSelectedScreen.screenGroupID
-      await updateScreen(payLoad)
+      payLoad.screenGroupID = editSelectedScreen.screenGroupID;
+      await updateScreen(payLoad);
     } else {
-      payLoad.screenGroupID = 0
-      await handleSaveNew(payLoad)
+      payLoad.screenGroupID = 0;
+      await handleSaveNew(payLoad);
     }
     onClose();
   };
@@ -135,18 +134,21 @@ const ScreenGroupModal = ({
     };
   }, []);
 
-
   useEffect(() => {
     if (editSelectedScreen) {
-      setScreenGroupName(editSelectedScreen.screenGroupName || '');
-      const selectedScreenIDs = editSelectedScreen.screenGroupLists?.map(group => group.screenID);
-      const selectedScreens = store?.data?.filter(screen => selectedScreenIDs.includes(screen.screenID));
-      const selectedItemsIDs = selectedScreens?.map(screen => screen.screenID);
+      setScreenGroupName(editSelectedScreen.screenGroupName || "");
+      const selectedScreenIDs = editSelectedScreen.screenGroupLists?.map(
+        (group) => group.screenID
+      );
+      const selectedScreens = store?.data?.filter((screen) =>
+        selectedScreenIDs.includes(screen.screenID)
+      );
+      const selectedItemsIDs = selectedScreens?.map(
+        (screen) => screen.screenID
+      );
       setSelectedItems(selectedItemsIDs || []);
     }
   }, [editSelectedScreen, store]);
-  
-
 
   return (
     <div>
@@ -195,30 +197,38 @@ const ScreenGroupModal = ({
               )}
             </div>
 
-            <div className="schedual-table bg-white rounded-xl mt-5">
-              <div className="relative overflow-x-auto">
+            <div className="schedual-table bg-white rounded-xl mt-5 px-3">
+              <div className="relative overflow-x-auto sc-scrollbar rounded-lg">
                 <table
-                  className="min-w-full leading-normal text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
+                  className="screen-table min-w-full leading-normal text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
                   cellPadding={20}
                 >
                   <thead className="text-xs text-gray-700  bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg ">
-                      <th scope="col" className="text-[#5A5881] text-sm font-semibold p-2">
+                      <th
+                        scope="col"
+                        className="text-[#5A5881] text-sm font-semibold p-2"
+                      >
                         <div className="flex items-center justify-center">
                           Screen
                         </div>
                       </th>
-                      <th scope="col" className="text-[#5A5881] text-sm font-semibold p-2">
-                        <div className="flex items-center">
-                          Status
-                        </div>
+                      <th
+                        scope="col"
+                        className="text-[#5A5881] text-sm font-semibold p-2"
+                      >
+                        <div className="flex items-center">Status</div>
                       </th>
-                      <th scope="col" className="text-[#5A5881] text-sm font-semibold p-2">
-                        <div className="flex items-center">
-                          Google Location
-                        </div>
+                      <th
+                        scope="col"
+                        className="text-[#5A5881] text-sm font-semibold p-2"
+                      >
+                        <div className="flex items-center">Google Location</div>
                       </th>
-                      <th scope="col" className="text-[#5A5881] text-sm font-semibold p-2">
+                      <th
+                        scope="col"
+                        className="text-[#5A5881] text-sm font-semibold p-2"
+                      >
                         <div className="flex items-center">
                           Associated Schedule
                         </div>
@@ -237,7 +247,9 @@ const ScreenGroupModal = ({
                               type="checkbox"
                               className="mr-3"
                               checked={selectedItems.includes(screen.screenID)}
-                              onChange={() => handleCheckboxChange(screen.screenID)}
+                              onChange={() =>
+                                handleCheckboxChange(screen.screenID)
+                              }
                             />
                             {screen.screenName}
                           </td>
@@ -257,19 +269,19 @@ const ScreenGroupModal = ({
                     ) : (
                       <tr>
                         <td colSpan="4" className="text-center">
-                          {store && store.data?.length === 0
-                            ? "No data found"
-                            : <>
+                          {store && store.data?.length === 0 ? (
+                            "No data found"
+                          ) : (
+                            <>
                               <span className="text-sm  hover:bg-gray-400 text-gray-800 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
                                 Data not found
                               </span>
                             </>
-                          }
+                          )}
                         </td>
                       </tr>
                     )}
                   </tbody>
-
                 </table>
 
                 <div className="flex justify-end m-5">
@@ -319,7 +331,6 @@ const ScreenGroupModal = ({
                     </svg>
                   </button>
                 </div>
-
 
                 {/* Modal footer */}
                 <div className="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600 justify-start">

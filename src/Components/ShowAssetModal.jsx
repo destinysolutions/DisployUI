@@ -335,7 +335,7 @@ const ShowAssetModal = ({
 
   return (
     <>
-      <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] h-auto top-12 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
+      <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] min-w-90vw h-auto top-12 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
         <div
           className={`${
             showAppModal ? "hidden" : ""
@@ -361,7 +361,7 @@ const ShowAssetModal = ({
           } relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
         >
           <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
-            <div className="flex-initial">
+            <div className="flex-initial mb-5">
               {type !== "merged_screens" && (
                 <>
                   <nav
@@ -450,10 +450,10 @@ const ShowAssetModal = ({
               )}
             </div>
 
-            <div className="lg:p-10 md:p-10 sm:p-10 xs:mt-3 sm:mt-3 drop-shadow-2xl bg-white rounded-3xl flex-1">
+            <div className="lg:p-5 drop-shadow-2xl bg-white rounded-3xl flex-1">
               <div className={popupActiveTab !== 1 && "hidden"}>
-                <div className="flex flex-wrap w-full items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
-                  <div className="mb-5 relative ">
+                <div className="flex flex-wrap w-full items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center mb-3">
+                  <div className="mb-3 relative ">
                     <AiOutlineSearch className="absolute top-2 left-3 w-5 h-5 z-10 text-gray" />
                     <input
                       type="text"
@@ -473,16 +473,16 @@ const ShowAssetModal = ({
                     </button>
                   </Link>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[50vh] max-h-[50vh] object-cover w-full addmedia-table">
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
                       borderCollapse: "separate",
                       borderSpacing: " 0 10px",
                     }}
-                    className="w-full"
+                    className="screen-table w-full"
                   >
                     <thead className="sticky top-0">
-                      <tr className="bg-lightgray">
+                      <tr className="table-head-bg">
                         <th className="p-3 w-80 text-left">Media Name</th>
                         <th>Date Added</th>
                         <th className="p-3">Size</th>
@@ -645,7 +645,7 @@ const ShowAssetModal = ({
                     </button>
                   </Link>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
                       borderCollapse: "separate",
@@ -654,7 +654,7 @@ const ShowAssetModal = ({
                     className="w-full"
                   >
                     <thead className="sticky top-0">
-                      <tr className="bg-lightgray">
+                      <tr className="table-head-bg">
                         <th className="p-3 w-80 text-left">Composition Name</th>
                         <th>Date Added</th>
                         <th className="p-3">Resolution</th>
@@ -743,7 +743,7 @@ const ShowAssetModal = ({
                     Add New App
                   </button>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
                       borderCollapse: "separate",
@@ -752,7 +752,7 @@ const ShowAssetModal = ({
                     className="w-full"
                   >
                     <thead className="sticky top-0">
-                      <tr className="bg-lightgray">
+                      <tr className="table-head-bg">
                         <th className="p-3 w-80 text-left">Instance Name</th>
                         <th>App Type</th>
                         {/*<th className="p-3">Resolution</th>

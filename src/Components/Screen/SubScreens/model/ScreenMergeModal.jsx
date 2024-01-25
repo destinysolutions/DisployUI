@@ -6,8 +6,8 @@ import { SELECT_BY_USER_SCREENDETAIL } from "../../../../Pages/Api";
 import Modal from "react-responsive-modal";
 
 const modalStyle = {
-  width: '80%', // You can adjust the width based on your preference
-  height: '600px', // Set the fixed height here
+  width: "80%", // You can adjust the width based on your preference
+  height: "600px", // Set the fixed height here
 };
 
 const ScreenGroupModal = ({
@@ -16,7 +16,7 @@ const ScreenGroupModal = ({
   handleSaveNew,
   editSelectedScreen,
   updateScreen,
-  isOpen
+  isOpen,
 }) => {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.root.screenGroup.data);
@@ -30,7 +30,6 @@ const ScreenGroupModal = ({
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5); // Adjust items per page as needed
-
 
   useEffect(() => {
     let config = {
@@ -46,17 +45,17 @@ const ScreenGroupModal = ({
       dispatch(SelectByUserScreen({ config }));
       setLoadFirst(false);
     }
-
   }, [dispatch, loadFirst, store]);
 
-
   const totalPages = Math.ceil(store.data?.length / itemsPerPage);
-  const paginatedData = store.data?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const paginatedData = store.data?.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-
 
   const handleCheckboxChange = (screenID) => {
     if (selectedItems === screenID) {
@@ -66,22 +65,20 @@ const ScreenGroupModal = ({
     }
   };
 
-
-
   const handleSaveScreen = async () => {
-
-    const getName = paginatedData.find((item) =>  item.screenID === selectedItems )
+    const getName = paginatedData.find(
+      (item) => item.screenID === selectedItems
+    );
     const payLoad = {
       screenID: selectedItems,
-      screenName : getName.screenName,
-      screenStatus:getName.screenStatus,
-      tags:getName.tags,
+      screenName: getName.screenName,
+      screenStatus: getName.screenStatus,
+      tags: getName.tags,
     };
-    await handleSaveNew(payLoad)
-    setSelectedItems()
+    await handleSaveNew(payLoad);
+    setSelectedItems();
     onClose();
   };
-
 
   return (
     <div>
@@ -91,8 +88,13 @@ const ScreenGroupModal = ({
         center
         styles={{ modal: modalStyle }}
       >
+        <div class="flex items-center justify-between w-full bg-white sticky p-2">
+          <h3 className="text-left font-semibold text-2xl sticky top-0 bg-white w-full">
+            Select Screens{" "}
+          </h3>
+        </div>
 
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg screen-section mt-10">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg screen-section mt-5">
           <div className="overflow-x-scroll sc-scrollbar">
             <table
               className="screen-table min-w-full leading-normal text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
@@ -100,22 +102,34 @@ const ScreenGroupModal = ({
             >
               <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg ">
-                  <th scope="col" className="text-[#5A5881] text-sm font-semibold p-2">
+                  <th
+                    scope="col"
+                    className="text-[#5A5881] text-sm font-semibold p-2"
+                  >
                     <div className="flex items-center justify-center">
                       Screen
                     </div>
                   </th>
-                  <th scope="col" className="text-[#5A5881] text-sm font-semibold p-2">
+                  <th
+                    scope="col"
+                    className="text-[#5A5881] text-sm font-semibold p-2"
+                  >
                     <div className="flex items-center justify-center">
                       Status
                     </div>
                   </th>
-                  <th scope="col" className="text-[#5A5881] text-sm font-semibold p-2">
+                  <th
+                    scope="col"
+                    className="text-[#5A5881] text-sm font-semibold p-2"
+                  >
                     <div className="flex items-center justify-center">
                       Google Location
                     </div>
                   </th>
-                  <th scope="col" className="text-[#5A5881] text-sm font-semibold p-2">
+                  <th
+                    scope="col"
+                    className="text-[#5A5881] text-sm font-semibold p-2"
+                  >
                     <div className="flex items-center justify-center">
                       Associated Schedule
                     </div>
@@ -130,12 +144,14 @@ const ScreenGroupModal = ({
                       className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2 "
                     >
                       <td className="items-center">
-                        <div className="flex items-center justify-center">
+                        <div className="flex items-center justify-items-start">
                           <input
                             type="checkbox"
                             className="mr-3"
                             checked={selectedItems === screen.screenID}
-                            onChange={() => handleCheckboxChange(screen.screenID)}
+                            onChange={() =>
+                              handleCheckboxChange(screen.screenID)
+                            }
                           />
                           {screen.screenName}
                         </div>
@@ -144,10 +160,12 @@ const ScreenGroupModal = ({
                         <div className="flex items-center justify-center">
                           <span
                             id={`changetvstatus${screen.screenID}`}
-                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                              ? "bg-[#3AB700]"
-                              : "bg-[#FF0000]"
-                              }`}>
+                            className={`rounded-full px-6 py-2 text-white text-center ${
+                              screen.screenStatus == 1
+                                ? "bg-[#3AB700]"
+                                : "bg-[#FF0000]"
+                            }`}
+                          >
                             {screen.screenStatus == 1 ? "Live" : "offline"}
                           </span>
                         </div>
@@ -167,19 +185,19 @@ const ScreenGroupModal = ({
                 ) : (
                   <tr>
                     <td colSpan="4" className="text-center">
-                      {store && store.data?.length === 0
-                        ? "No data found"
-                        : <>
+                      {store && store.data?.length === 0 ? (
+                        "No data found"
+                      ) : (
+                        <>
                           <span className="text-sm  hover:bg-gray-400 text-gray-800 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
                             Data not found
                           </span>
                         </>
-                      }
+                      )}
                     </td>
                   </tr>
                 )}
               </tbody>
-
             </table>
 
             <div className="flex justify-end m-5">
@@ -251,8 +269,6 @@ const ScreenGroupModal = ({
             </div>
           </div>
         </div>
-
-
       </Modal>
     </div>
   );

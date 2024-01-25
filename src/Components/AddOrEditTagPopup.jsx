@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineCloseCircle } from "react-icons/ai";
 
 const AddOrEditTagPopup = ({
   setShowTagModal,
@@ -110,16 +110,14 @@ const AddOrEditTagPopup = ({
         onClick={() => handleClickOutside(false)}
         className="inset-0 fixed z-30 bg-black/20"
       ></div>
-      <div className=" bg-white z-40 space-y-3 overflow-y-scroll hide_scrollbar fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2  max-h-[50vh] max-w-[50vw] min-h-[50vh] min-w-[50vw] p-5 rounded-lg">
+      <div className=" bg-white z-40 space-y-3 overflow-y-scroll hide_scrollbar fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 min-w-80vw max-h-[50vh] max-w-[50vw] min-h-[50vh] min-w-[50vw] p-5 rounded-lg">
         <div className="flex items-center justify-between w-full bg-white sticky -top-6 p-2">
           <h3 className="text-left font-semibold text-3xl sticky top-0 bg-white w-full">
             Add Tags
           </h3>
-          <AiOutlineClose
-            size={30}
-            className=" cursor-pointer  bg-black text-white rounded-full w-6 h-6 -right-0 -top-0"
-            onClick={() => handleClickOutside(false)}
-          />
+          <button onClick={() => handleClickOutside(false)}>
+            <AiOutlineCloseCircle className="text-2xl" />
+          </button>
         </div>
         <div className="flex items-center gap-3 flwro w-full h-full flex-wrap overflow-y-scroll hide_scrollbar">
           <ul className="flex items-center gap-3 flex-wrap flex-initial h-full overflow-y-scroll hide_scrollbar">
