@@ -92,7 +92,7 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
       formData.append("FolderID", "0");
       formData.append(
         "Resolutions",
-        `${image.webformatHeight}*${image.webformatWidth}`
+        `${image.webformatHeight}x${image.webformatWidth}`
       );
       formData.append("AssetName", image.tags);
 
