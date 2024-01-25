@@ -323,8 +323,15 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     });
   };
 
-  const deleteGroupInScreen = (payload) => {
-    dispatch(groupInScreenDelete(payload));
+  const deleteGroupInScreen = (screen, item) => {
+    if (item?.screenGroupLists?.length > 1) {
+      let payload = {
+        ScreenGroupListID: screen.screenGroupListID,
+      };
+      dispatch(groupInScreenDelete(payload));
+    } else {
+      toast.error("Can't Delete This Screen. You Need To Delete Group.");
+    }
   };
 
   const handleTagsUpdate = (tags) => {
@@ -420,6 +427,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleFetchLayoutById = (id) => {
+    setLoading(true);
+    setIsPreviewOpen(true);
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -432,9 +441,11 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response?.data?.status == 200) {
           setLayotuDetails(response.data?.data[0]);
+          setLoading(false);
         }
       })
       .catch((error) => {
+        setLoading(false);
         console.log(error);
       });
   };
@@ -463,7 +474,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       const newdd = Object.entries(obj).map(([k, i]) => ({ [k]: i }));
       setPreviewData(newdd);
     });
-    setIsPreviewOpen(true);
     setLoading(false);
   };
 

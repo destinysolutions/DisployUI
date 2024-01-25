@@ -4,6 +4,7 @@ import { AiOutlineCloseCircle } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { SELECT_BY_USER_SCREENDETAIL } from "../../../Pages/Api";
 import { handleGetAllAssets } from "../../../Redux/Assetslice";
+import moment from "moment";
 
 const ScreenAssignModal = ({
   setAddScreenModal,
@@ -245,7 +246,8 @@ const ScreenAssignModal = ({
                       </td>
 
                       <td className="text-center break-words">
-                        Schedule Name Till 28 June 2023
+                        {screen.scheduleName} Till
+                        {moment(screen.endDate).format("YYYY-MM-DD hh:mm")}`
                       </td>
                       <td className="text-center break-words">{screen.tags}</td>
                     </tr>

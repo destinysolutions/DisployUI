@@ -403,10 +403,10 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                             ))}
                           </tbody>
                         </table>
+                        </div>
                         {screenError && (
                           <span className="error px-2">This Is Required.</span>
                         )}
-                      </div>
                     </div>
                   </div>
                 </div>

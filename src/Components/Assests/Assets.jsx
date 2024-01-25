@@ -59,7 +59,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   // move to data in folder
-
+  
   const [isMoveToOpen, setIsMoveToOpen] = useState(false);
   const [asstab, setTogglebtn] = useState(1);
   const [hoveredTabIcon, setHoveredTabIcon] = useState(null);
@@ -371,6 +371,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
   const deleteFolder = async (folderID) => {
     try {
+      setLoadFist(true); // Trigger your action on cancel
       const dataPayload = { folderID: folderID, operation: "Delete" };
       const checkImage = await checkFolder(folderID);
       const config2 = {
@@ -744,7 +745,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   "page-content grid lg:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-8 mb-5 assets-section"
                 }
               >
-                {store && store.data && store.data.length > 0 ? (
+                {!loadFist && store && store.data && store.data.length > 0 ? (
                   store.data.map((item, index) => (
                     <div key={index} className="relative list-none assetsbox">
                       <li
@@ -1076,9 +1077,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   ))
                 ) : (
                   <div className="text-center font-semibold text-2xl col-span-full">
-                    {store?.data?.length === 0 ? (
+                    {!loadFist && store?.data?.length === 0 && (
                       <> Data not Found! </>
-                    ) : (
+                    )}
+                    {loadFist && (
                       <>
                         <div className="flex text-center m-5 justify-center">
                           <svg
