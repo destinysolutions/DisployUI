@@ -33,6 +33,7 @@ import dribble from "../../images/Settings/dribbble-logo.svg";
 import Swal from "sweetalert2";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import moment from "moment";
 
 const Users = ({ searchValue }) => {
   const [loadFist, setLoadFist] = useState(true);
@@ -81,6 +82,8 @@ const Users = ({ searchValue }) => {
   const [itemsPerPage] = useState(6); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
+  const [screenAccessModal, setScreenAccessModal] = useState(false);
+  const [userScreenData, setUserScreenData] = useState([]);
 
   const { token, user } = useSelector((state) => state.root.auth);
   const { Countries } = useSelector((s) => s.root.settingUser);
@@ -90,10 +93,9 @@ const Users = ({ searchValue }) => {
   const hiddenFileInput = useRef(null);
   const modalRef = useRef(null);
   const selectScreenRef = useRef(null);
+  const screenAccessModalRef = useRef(null);
 
   const dispatch = useDispatch();
-
-  const indexOfLastItem = currentPage * itemsPerPage;
 
   // Filter data based on search term
   const filteredData = userData.filter((item) =>
@@ -199,6 +201,27 @@ const Users = ({ searchValue }) => {
       });
   };
 
+  const getUsersScreens = (orgUserSpecificID) => {
+    console.log(orgUserSpecificID, "orgUserSpecificID");
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `https://disployapi.thedestinysolutions.com/api/UserMaster/GetUsetScreenDetails?OrgUserSpecificID=${orgUserSpecificID}`,
+      headers: {
+        Authorization: authToken,
+      },
+    };
+
+    axios
+      .request(config)
+      .then((response) => {
+        console.log(response.data, "syhdhsdu");
+        setUserScreenData(response?.data?.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   const handleAddUser = () => {
     // Clear previous validation errors
     setErrorsFirstName("");
@@ -262,6 +285,7 @@ const Users = ({ searchValue }) => {
     data.append("ScreenAssignUser", selectedScreens.join(","));
     data.append("IsFromUserMaster", 1);
     data.append("operation", "Save");
+    data.append("company", company);
 
     let config = {
       method: "post",
@@ -477,7 +501,7 @@ const Users = ({ searchValue }) => {
         toast.remove();
       });
   };
-  console.log(screenIds, "ScreenIds");
+
   const handleCancelPopup = () => {
     setLabelTitle("Add New User");
     setUserID();
@@ -504,12 +528,6 @@ const Users = ({ searchValue }) => {
     setEditProfile();
   };
 
-  // const handleFileChange = (e) => {
-  //   setFileEdit();
-  //   const selectedFile = e.target.files[0];
-  //   setFile(selectedFile);
-  //   setIsImageUploaded(true);
-  // };
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
@@ -564,6 +582,25 @@ const Users = ({ searchValue }) => {
 
   function handleClickOutsideSelectScreenModal() {
     setSelectScreenModal(false);
+  }
+
+  useEffect(() => {
+    const handleClickOutsideScreen = (event) => {
+      if (
+        screenAccessModalRef.current &&
+        !screenAccessModalRef.current.contains(event?.target)
+      ) {
+        setScreenAccessModal(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutsideScreen, true);
+    return () => {
+      document.removeEventListener("click", handleClickOutsideScreen, true);
+    };
+  }, [handleClickOutsideScreen]);
+
+  function handleClickOutsideScreen() {
+    setScreenAccessModal(false);
   }
 
   const formik = useFormik({
@@ -888,7 +925,7 @@ const Users = ({ searchValue }) => {
                         type="checkbox"
                         checked={isActive === 1}
                         onChange={(e) => setIsActive(e.target.checked ? 1 : 0)}
-                      />{" "}
+                      />
                       <label>isActive</label>
                     </div>
                   </div>
@@ -1017,7 +1054,10 @@ const Users = ({ searchValue }) => {
                                       </td>
 
                                       <td className="text-center break-words">
-                                        Schedule Name Till 28 June 2023
+                                        {screen.scheduleName} Till
+                                        {moment(screen.endDate).format(
+                                          "YYYY-MM-DD hh:mm"
+                                        )}
                                       </td>
                                       <td className="text-center break-words">
                                         {screen?.tags !== null
@@ -1084,7 +1124,7 @@ const Users = ({ searchValue }) => {
                             className="w-10 rounded-lg"
                           />
                         ) : null}
-                        {editProfile === 1 ? (
+                        {editProfile === 1 && fileEdit !== null ? (
                           <img
                             src={fileEdit}
                             alt="Uploaded"
@@ -1158,6 +1198,7 @@ const Users = ({ searchValue }) => {
               onClick={() => {
                 setShowUserProfile(false);
                 setLoadFist(true);
+                setUserScreenData([]);
               }}
               className="font-medium flex cursor-pointer w-fit items-center lg:text-2xl md:text-2xl sm:text-xl mb-5"
             >
@@ -1169,7 +1210,7 @@ const Users = ({ searchValue }) => {
                 <div className="card-shadow pt-6 text-[#5E5E5E]">
                   <div className="user-details text-center border-b border-b-[#E4E6FF]">
                     <span className="user-img flex justify-center mb-3">
-                      {userDetailData.profilePhoto ? (
+                      {userDetailData.profilePhoto !== null ? (
                         <img
                           src={userDetailData?.profilePhoto}
                           className="w-30 h-25 mb-3 rounded shadow-lg"
@@ -1208,7 +1249,6 @@ const Users = ({ searchValue }) => {
                       </div>
                       <div className="col-span-2 capitalize">
                         <span>
-                          {" "}
                           {userDetailData.firstName} {userDetailData.lastName}
                         </span>
                       </div>
@@ -1274,7 +1314,11 @@ const Users = ({ searchValue }) => {
                         <span>Language : </span>
                       </div>
                       <div className="col-span-2 capitalize">
-                        <span>English</span>
+                        <span>
+                          {userDetailData?.languageName
+                            ? userDetailData?.languageName
+                            : "English"}
+                        </span>
                       </div>
 
                       {/* Country   */}
@@ -2011,166 +2055,92 @@ const Users = ({ searchValue }) => {
           <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full">
             <h3 className="user-name my-4">Selected Screens</h3>
             <div className="inline-block min-w-full shadow rounded-lg overflow-x-scroll sc-scrollbar">
-              <table className="screen-table min-w-full leading-normal">
+              <table className="w-full" cellPadding={20}>
                 <thead>
-                  <tr className="table-head-bg">
-                    <th className="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
-                      Screen Name
+                  <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
+                      Screen
                     </th>
-                    <th className="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
-                      Google Location
-                    </th>
-                    <th className="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
-                      Associated Schedule
-                    </th>
-
-                    <th className="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       Status
                     </th>
-                    <th className="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
-                      Tags
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Associated Schedule
                     </th>
-                    <th className="px-3 py-6 text-left text-md font-semibold text-gray-600 uppercase tracking-wider">
-                      Group
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Tags
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b border-b-[#E4E6FF]">
-                    <td className="p-3 bg-white text-sm">
-                      <label className="checkbox" for="screen1">
-                        <span className="checkbox__label">Harry McCall</span>
-                        <input type="checkbox" id="screen1" />
-                        <div className="checkbox__indicator"></div>
-                      </label>
-                    </td>
-                    <td className="p-3 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        132, My Street, Kingston, New York 12401.
-                      </p>
-                    </td>
-                    <td className="p-3 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        Schedule Name Till 28 June 2023
-                      </p>
-                    </td>
-                    <td className="p-3 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        <span className="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
-                          Live
-                        </span>
-                      </p>
-                    </td>
-                    <td className="p-3 bg-white text-sm">Add Tags</td>
-                    <td className="px-3 py-6 bg-white text-sm flex ">
-                      Group Name
-                    </td>
-                  </tr>
-                  <tr className="border-b border-b-[#E4E6FF]">
-                    <td className="p-3 bg-white text-sm">
-                      <label className="checkbox" for="screen2">
-                        <span className="checkbox__label">Harry McCall</span>
-                        <input type="checkbox" id="screen2" />
-                        <div className="checkbox__indicator"></div>
-                      </label>
-                    </td>
-                    <td className="p-3 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        132, My Street, Kingston, New York 12401.
-                      </p>
-                    </td>
-                    <td className="p-3 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        Schedule Name Till 28 June 2023
-                      </p>
-                    </td>
-                    <td className="p-3 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        <span className="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
-                          Live
-                        </span>
-                      </p>
-                    </td>
-                    <td className="p-3 bg-white text-sm">Add Tags</td>
-                    <td className="px-3 py-6 bg-white text-sm flex ">
-                      Group Name
-                    </td>
-                  </tr>
-                  <tr className="border-b border-b-[#E4E6FF]">
-                    <td className="p-3 bg-white text-sm">
-                      <label className="checkbox" for="screen3">
-                        <span className="checkbox__label">Harry McCall</span>
-                        <input type="checkbox" id="screen3" />
-                        <div className="checkbox__indicator"></div>
-                      </label>
-                    </td>
-                    <td className="p-3 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        132, My Street, Kingston, New York 12401.
-                      </p>
-                    </td>
-                    <td className="p-3 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        Schedule Name Till 28 June 2023
-                      </p>
-                    </td>
-                    <td className="p-3 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        <span className="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
-                          Live
-                        </span>
-                      </p>
-                    </td>
-                    <td className="p-3 bg-white text-sm">Add Tags</td>
-                    <td className="px-3 py-6 bg-white text-sm flex ">
-                      Group Name
-                    </td>
-                  </tr>
-                  <tr className="border-b border-b-[#E4E6FF]">
-                    <td className="p-3 bg-white text-sm">
-                      <label className="checkbox" for="screen4">
-                        <span className="checkbox__label">Harry McCall</span>
-                        <input type="checkbox" id="screen4" />
-                        <div className="checkbox__indicator"></div>
-                      </label>
-                    </td>
-                    <td className="p-3 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        132, My Street, Kingston, New York 12401.
-                      </p>
-                    </td>
-                    <td className="p-3 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        Schedule Name Till 28 June 2023
-                      </p>
-                    </td>
-                    <td className="p-3 bg-white text-sm">
-                      <p className="text-gray-900 whitespace-no-wrap">
-                        <span className="bg-green-200 px-3 py-1 font-semibold text-green-900 leading-tight">
-                          Live
-                        </span>
-                      </p>
-                    </td>
-                    <td className="p-3 bg-white text-sm">Add Tags</td>
-                    <td className="px-3 py-6 bg-white text-sm flex ">
-                      Group Name
-                    </td>
-                  </tr>
+                  {loading ? (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="text-center font-semibold text-lg"
+                      >
+                        Loading...
+                      </td>
+                    </tr>
+                  ) : !loading && userScreenData?.length > 0 ? (
+                    userScreenData.map((screen) => (
+                      <tr
+                        key={screen.screenID}
+                        className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                      >
+                        <td className="text-center">{screen.screenName}</td>
+
+                        <td className="text-center">
+                          <span
+                            id={`changetvstatus${screen.screenID}`}
+                            className={`rounded-full px-6 py-2 text-white text-center ${
+                              screen.screenStatus == 1
+                                ? "bg-[#3AB700]"
+                                : "bg-[#FF0000]"
+                            }`}
+                          >
+                            {screen.screenStatus == 1 ? "Live" : "offline"}
+                          </span>
+                        </td>
+
+                        <td className="text-center break-words">
+                          {screen.scheduleName} Till
+                          {moment(screen.endDate).format("YYYY-MM-DD hh:mm")}
+                        </td>
+                        <td className="text-center break-words">
+                          {screen?.tags !== null
+                            ? screen?.tags
+                                .split(",")
+                                .slice(
+                                  0,
+                                  screen?.tags.split(",").length > 2
+                                    ? 3
+                                    : screen?.tags.split(",").length
+                                )
+                                .map((text) => {
+                                  if (text.toString().length > 10) {
+                                    return text
+                                      .split("")
+                                      .slice(0, 10)
+                                      .concat("...")
+                                      .join("");
+                                  }
+                                  return text;
+                                })
+                                .join(",")
+                            : ""}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={6}>
+                        <p className="text-center p-2">No Screen available.</p>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
-              <div className="px-5 py-5 bg-white flex flex-col xs:flex-row items-center xs:justify-between">
-                <span className="text-xs xs:text-sm text-gray-900">
-                  Showing 1 to 4 of 50 Entries
-                </span>
-                <div className="inline-flex mt-2 xs:mt-0">
-                  <button className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-l">
-                    Prev
-                  </button>
-                  <button className="text-sm bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-r">
-                    Next
-                  </button>
-                </div>
-              </div>
             </div>
           </div>
         </>
@@ -2272,7 +2242,7 @@ const Users = ({ searchValue }) => {
                               key={index}
                             >
                               <td className="text-[#5E5E5E] text-center flex">
-                                {item?.profilePhoto ? (
+                                {item?.profilePhoto !== null ? (
                                   <img
                                     className="w-10 h-10 rounded-full"
                                     src={item?.profilePhoto}
@@ -2292,7 +2262,14 @@ const Users = ({ searchValue }) => {
                                 {item?.userRoleName}
                               </td>
                               <td className="text-[#5E5E5E] text-center">
-                                {item?.count}
+                                <button
+                                  onClick={() => {
+                                    setScreenAccessModal(true);
+                                    getUsersScreens(item?.orgUserSpecificID);
+                                  }}
+                                >
+                                  {item?.count}
+                                </button>
                               </td>
                               <td className="text-[#5E5E5E] text-center">
                                 {item.isActive == 1 ? (
@@ -2314,6 +2291,7 @@ const Users = ({ searchValue }) => {
                                       selectUserById(item.orgUserSpecificID);
                                       setUserMasterID(item.userMasterID);
                                       setShowUserProfile(true);
+                                      getUsersScreens(item.orgUserSpecificID);
                                     }}
                                   >
                                     <BsEyeFill />
@@ -2341,7 +2319,7 @@ const Users = ({ searchValue }) => {
                               </td>
                             </tr>
                           );
-                        })}{" "}
+                        })}
                       {!loading &&
                         userData &&
                         sortedAndPaginatedData.length === 0 && (
@@ -2360,7 +2338,123 @@ const Users = ({ searchValue }) => {
                     </tbody>
                   </table>
                 </div>
+                {screenAccessModal && (
+                  <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                    <div
+                      ref={screenAccessModalRef}
+                      className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                    >
+                      <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+                        <div className="relative w-full cursor-pointer z-40 rounded-full">
+                          <button
+                            className="text-xl absolute -right-3 -top-4 bg-black text-white rounded-full"
+                            onClick={() => {
+                              setScreenAccessModal(false);
+                            }}
+                          >
+                            <AiOutlineCloseCircle className="text-3xl" />
+                          </button>
+                        </div>
+                        <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
+                          <table className="w-full" cellPadding={20}>
+                            <thead>
+                              <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                                <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
+                                  Screen
+                                </th>
+                                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                  Status
+                                </th>
+                                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                  Associated Schedule
+                                </th>
+                                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                  Tags
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {loading ? (
+                                <tr>
+                                  <td
+                                    colSpan={6}
+                                    className="text-center font-semibold text-lg"
+                                  >
+                                    Loading...
+                                  </td>
+                                </tr>
+                              ) : !loading && userScreenData?.length > 0 ? (
+                                userScreenData.map((screen) => (
+                                  <tr
+                                    key={screen.screenID}
+                                    className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                  >
+                                    <td className="text-center">
+                                      {screen.screenName}
+                                    </td>
 
+                                    <td className="text-center">
+                                      <span
+                                        id={`changetvstatus${screen.screenID}`}
+                                        className={`rounded-full px-6 py-2 text-white text-center ${
+                                          screen.screenStatus == 1
+                                            ? "bg-[#3AB700]"
+                                            : "bg-[#FF0000]"
+                                        }`}
+                                      >
+                                        {screen.screenStatus == 1
+                                          ? "Live"
+                                          : "offline"}
+                                      </span>
+                                    </td>
+
+                                    <td className="text-center break-words">
+                                      {screen.scheduleName} Till
+                                      {moment(screen.endDate).format(
+                                        "YYYY-MM-DD hh:mm"
+                                      )}
+                                    </td>
+                                    <td className="text-center break-words">
+                                      {screen?.tags !== null
+                                        ? screen?.tags
+                                            .split(",")
+                                            .slice(
+                                              0,
+                                              screen?.tags.split(",").length > 2
+                                                ? 3
+                                                : screen?.tags.split(",").length
+                                            )
+                                            .map((text) => {
+                                              if (text.toString().length > 10) {
+                                                return text
+                                                  .split("")
+                                                  .slice(0, 10)
+                                                  .concat("...")
+                                                  .join("");
+                                              }
+                                              return text;
+                                            })
+                                            .join(",")
+                                        : ""}
+                                    </td>
+                                  </tr>
+                                ))
+                              ) : (
+                                <tr>
+                                  <td colSpan={6}>
+                                    <p className="text-center p-2">
+                                      No Screen available.
+                                    </p>
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div className="flex justify-end mt-2">
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
