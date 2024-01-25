@@ -47,7 +47,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
 
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
-  const store = useSelector((state) => state.root.screenGroup.data);
+  const store = useSelector((state) => state.root.screenGroup.screenData);
   const [loadFirst, setLoadFirst] = useState(true);
   const [name, setName] = useState("");
   const [showAssetModal, setShowAssetModal] = useState(false);
@@ -77,6 +77,8 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const [label, setLabel] = useState("");
   const allScreen = selectedRow?.value * selectedColumn?.value;
   const objectLength = Object.keys(DataRowAndCol).length;
+
+
   useEffect(() => {
     let config = {
       method: "get",
