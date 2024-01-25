@@ -105,14 +105,14 @@ const Sidebar = ({ sidebarOpen }) => {
 
   // menu list
   const Menus = [
-    {
-      title: "Dashboard",
-      cName: "nav-text link-items",
-      path: "/userdashboard",
-      icon: (
-        <img src={dashboardIcon} alt="Dashboard" className="fill-white w-6" />
-      ),
-    },
+    // {
+    //   title: "Dashboard",
+    //   cName: "nav-text link-items",
+    //   path: "/userdashboard",
+    //   icon: (
+    //     <img src={dashboardIcon} alt="Dashboard" className="fill-white w-6" />
+    //   ),
+    // },
     {
       title: "Screens",
       cName: "nav-text link-items",
