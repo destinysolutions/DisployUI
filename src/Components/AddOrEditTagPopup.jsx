@@ -123,7 +123,7 @@ const AddOrEditTagPopup = ({
         </div>
         <div className="flex items-center gap-3 flwro w-full h-full flex-wrap overflow-y-scroll hide_scrollbar">
           <ul className="flex items-center gap-3 flex-wrap flex-initial h-full overflow-y-scroll hide_scrollbar">
-            {tags.length > 0 &&
+            {tags?.length > 0 &&
               tags.map((tag, index) => (
                 <li
                   key={index}

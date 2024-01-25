@@ -144,6 +144,7 @@ export const PRIVIEW_GROUP_SCREEN = `${baseUrl}api/GroupScreen/GetGroupPreview`;
 export const GET_MARGE_SCREEN = `${baseUrl}api/MergeScreen/GetAllMergeScreen`;
 export const ADD_MERGE_SCREEN = `${baseUrl}api/MergeScreen/AddMergeScreen`;
 export const DELETE_MERGE_SCREEN_ALL = `${baseUrl}api/MergeScreen/DeleteAllMergeScreen`;
+export const ASSETS_UPLOAD_IN_SCREEN = `${baseUrl}api/MergeScreen/assetsUploadInScreen`;
 
 export const SCREEN_DEACTIVATE_ACTIVATE = `${baseUrl}api/NewScreen/EnableScreen`;
 

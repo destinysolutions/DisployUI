@@ -74,6 +74,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     const [label, setLabel] = useState('');
     const allScreen = selectedRow?.value * selectedColumn?.value;
     const objectLength = Object.keys(DataRowAndCol).length;
+  
     useEffect(() => {
         let config = {
             method: "get",
@@ -120,7 +121,6 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     const handleSaveNew = async (payload) => {
         const { row, col } = selectedButton;
         const buttonText = `Row ${row}, Col ${col} - ${payload.screenName}`;
-
         // Check if a button already exists in the selected row and column for the current screen
         const existingButtonInRowAndCol = Object.values(DataRowAndCol).find(button =>
             button.row === row && button.col === col
@@ -272,7 +272,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                                 onClick={() => setShowAssetModal(true)}
                                                 className="flex items-centerborder-gray bg-white  border rounded-lg lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500"
                                             >
-                                                assetName
+                                                {selectedAsset?.assetName ? selectedAsset?.assetName : 'assetName' }
                                                 <AiOutlineCloudUpload className="ml-2 text-lg" />
                                             </button>
                                             {assetError && (

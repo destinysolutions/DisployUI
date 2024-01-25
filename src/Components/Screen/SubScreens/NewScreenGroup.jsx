@@ -52,6 +52,7 @@ import PreviewModel from "./model/previewModel";
 import ReactTooltip from "react-tooltip";
 import PreviewComposition from "../../Composition/PreviewComposition";
 import axios from "axios";
+import moment from "moment";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const { user, token } = useSelector((state) => state.root.auth);
@@ -146,13 +147,13 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   }, [dispatch, loadFirst, store]);
 
   const totalPages = Math.ceil(
-    (Array.isArray(store?.data) ? store.data.length : 0) / itemsPerPage
+    (Array.isArray(store?.data) ? store?.data.length : 0) / itemsPerPage
   );
   const paginatedData = Array.isArray(store?.data)
-    ? store.data.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-      )
+    ? store?.data.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    )
     : [];
 
   const handlePageChange = (pageNumber) => {
@@ -170,7 +171,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           connection
             .invoke(
               "ScreenConnected",
-              store.data
+              store?.data
                 ?.map((item) => item?.maciDs)
                 .join(",")
                 .replace(/^\s+/g, "")
@@ -186,7 +187,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       connection
         .invoke(
           "ScreenConnected",
-          store.data
+          store?.data
             ?.map((item) => item?.maciDs)
             .join(",")
             .replace(/^\s+/g, "")
@@ -226,10 +227,10 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
 
-    if (selectedItems.length === store.data?.length) {
+    if (selectedItems.length === store?.data?.length) {
       setSelectedItems([]);
     } else {
-      const allIds = store.data?.map((item) => item.screenGroupID);
+      const allIds = store?.data?.map((item) => item.screenGroupID);
       setSelectedItems(allIds);
     }
   };
@@ -246,74 +247,14 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleAssetUpdate = () => {
-    // const screenToUpdate = screens.find((screen) => screen.screenID === assetScreenID);
-    // let moduleID =
-    //   selectedAsset?.assetID ||
-    //   selectedComposition?.compositionID ||
-    //   selectedYoutube?.youtubeId ||
-    //   selectedTextScroll?.textScroll_Id;
-    // // return console.log(moduleID, selectedComposition);
-    // let mediaType = selectedAsset?.assetID
-    //   ? 1
-    //   : selectedTextScroll?.textScroll_Id !== null &&
-    //     selectedTextScroll?.textScroll_Id !== undefined
-    //   ? 4
-    //   : selectedYoutube?.youtubeId !== null &&
-    //     selectedYoutube?.youtubeId !== undefined
-    //   ? 5
-    //   : selectedComposition?.compositionID !== null &&
-    //     selectedComposition?.compositionID !== undefined
-    //   ? 3
-    //   : 0;
-    // let mediaName =
-    //   selectedAsset?.assetName ||
-    //   selectedComposition?.compositionName ||
-    //   selectedYoutube?.instanceName ||
-    //   selectedTextScroll?.instanceName;
-    // if (screenToUpdate) {
-    //   let data = {
-    //     ...screenToUpdate,
-    //     screenID: assetScreenID,
-    //     mediaType: mediaType,
-    //     mediaDetailID: moduleID,
-    //     operation: "Update",
-    //   };
-    //   toast.loading("Updating...");
-    //   const response = dispatch(
-    //     handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
-    //   );
-    //   if (!response) return;
-    //   response
-    //     .then((response) => {
-    //       toast.remove();
-    //       toast.success("Media Updated.");
-    //       if (connection) {
-    //         connection
-    //           .invoke("ScreenConnected")
-    //           .then(() => {
-    //             console.log("SignalR method invoked after Asset update");
-    //           })
-    //           .catch((error) => {
-    //             console.error("Error invoking SignalR method:", error);
-    //           });
-    //       }
-    //       setIsEditingScreen(false);
-    //     })
-    //     .catch((error) => {
-    //       toast.remove();
-    //       console.log(error);
-    //     });
-    // } else {
-    //   toast.remove();
-    //   console.error("Asset not found for update");
-    // }
+ 
   };
 
   const editGroupName = (index) => {
     // GroupNameUpdate
     setEditIndex(index);
-    setNewGroupName(store.data[index].screenGroupName);
-    setEditGroupID(store.data[index].screenGroupID);
+    setNewGroupName(store?.data[index].screenGroupName);
+    setEditGroupID(store?.data[index].screenGroupID);
   };
 
   const updateGroupName = async (index) => {
@@ -527,10 +468,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     setIsPreviewOpen(true);
     setLoading(false);
 
-    // if (store.status === "priview") {
-    //   console.log("store.data",store.data);
-    //   setPreviewData(store.data)
-    // }
   };
 
   const handleClosePreview = () => {
@@ -602,7 +539,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                 />
               )}
 
-              {store.data?.length > 0 && (
+              {store?.data?.length > 0 && (
                 <div>
                   <button
                     data-tip
@@ -720,7 +657,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                               </ReactTooltip>
                             </button>
 
-                            {!item.isPreview && (
+                            {item.isPreview && (
                               <button
                                 data-tip
                                 data-for="Preview"
@@ -781,9 +718,19 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                             )}
                           </>
                         )}
-
                         {selectAll ? (
-                          <CheckmarkIcon className="w-5 h-5" />
+                          <input
+                            type="checkbox"
+                            data-tip
+                            data-for="Select"
+                            className=" mx-1 w-6 h-5 mt-2"
+                            checked={selectedItems.includes(
+                              item?.screenGroupID
+                            )}
+                            onChange={() =>
+                              handleCheckboxChange(item?.screenGroupID)
+                            }
+                          />
                         ) : (
                           <div>
                             <input
@@ -792,10 +739,10 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                               data-for="Select"
                               className=" mx-1 w-6 h-5 mt-2"
                               checked={selectedItems.includes(
-                                item?.mergeScreenId
+                                item?.screenGroupID
                               )}
                               onChange={() =>
-                                handleCheckboxChange(item?.mergeScreenId)
+                                handleCheckboxChange(item?.screenGroupID)
                               }
                             />
                             <ReactTooltip
@@ -894,7 +841,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                     )}
                                   </td>
                                   <td className="p-2 text-center">
-                                    {screen.last_seen}
+                                  {moment(screen?.updatedDate).format("LLL")}
                                   </td>
                                   <td className="p-2 text-center">
                                     <button
@@ -914,43 +861,43 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                   >
                                     {(screen?.tags === "" ||
                                       screen?.tags === null) && (
-                                      <span>
-                                        <AiOutlinePlusCircle
-                                          size={30}
-                                          className="mx-auto cursor-pointer"
-                                          onClick={() => {
-                                            setShowTagModal(true);
-                                            screen.tags === "" ||
-                                            screen?.tags === null
-                                              ? setTags([])
-                                              : setTags(
+                                        <span>
+                                          <AiOutlinePlusCircle
+                                            size={30}
+                                            className="mx-auto cursor-pointer"
+                                            onClick={() => {
+                                              setShowTagModal(true);
+                                              screen.tags === "" ||
+                                                screen?.tags === null
+                                                ? setTags([])
+                                                : setTags(
                                                   screen?.tags?.split(",")
                                                 );
-                                            setTagUpdateScreeen(screen);
-                                          }}
-                                        />
-                                      </span>
-                                    )}
+                                              setTagUpdateScreeen(screen);
+                                            }}
+                                          />
+                                        </span>
+                                      )}
                                     {screen?.tags !== null
                                       ? screen.tags
-                                          .split(",")
-                                          .slice(
-                                            0,
-                                            screen.tags.split(",").length > 2
-                                              ? 3
-                                              : screen.tags.split(",").length
-                                          )
-                                          .map((text) => {
-                                            if (text.toString().length > 10) {
-                                              return text
-                                                .split("")
-                                                .slice(0, 10)
-                                                .concat("...")
-                                                .join("");
-                                            }
-                                            return text;
-                                          })
-                                          .join(",")
+                                        .split(",")
+                                        .slice(
+                                          0,
+                                          screen.tags.split(",").length > 2
+                                            ? 3
+                                            : screen.tags.split(",").length
+                                        )
+                                        .map((text) => {
+                                          if (text.toString().length > 10) {
+                                            return text
+                                              .split("")
+                                              .slice(0, 10)
+                                              .concat("...")
+                                              .join("");
+                                          }
+                                          return text;
+                                        })
+                                        .join(",")
                                       : ""}
                                     {screen?.tags !== "" &&
                                       screen?.tags !== null && (
@@ -958,11 +905,11 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                           onClick={() => {
                                             setShowTagModal(true);
                                             screen.tags === "" ||
-                                            screen?.tags === null
+                                              screen?.tags === null
                                               ? setTags([])
                                               : setTags(
-                                                  screen?.tags?.split(",")
-                                                );
+                                                screen?.tags?.split(",")
+                                              );
                                             setTagUpdateScreeen(screen);
                                           }}
                                           className="mx-auto  w-5 h-5 cursor-pointer "
