@@ -151,9 +151,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   );
   const paginatedData = Array.isArray(store?.data)
     ? store?.data.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    )
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      )
     : [];
 
   const handlePageChange = (pageNumber) => {
@@ -246,17 +246,17 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  const handleAssetUpdate = () => {
- 
-  };
+  const handleAssetUpdate = () => {};
 
-  const editGroupName = (index) => {   // GroupNameUpdate
+  const editGroupName = (index) => {
+    // GroupNameUpdate
     setEditIndex(index);
     setNewGroupName(store?.data[index].screenGroupName);
     setEditGroupID(store?.data[index].screenGroupID);
   };
 
-  const updateGroupName = async (index) => {      // GroupNameUpdate
+  const updateGroupName = async (index) => {
+    // GroupNameUpdate
     const payload = {
       ScreenGroupID: editGroupID,
       ScreenGroupName: newGroupName,
@@ -465,7 +465,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     });
     setIsPreviewOpen(true);
     setLoading(false);
-
   };
 
   const handleClosePreview = () => {
@@ -483,7 +482,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <div className="pt-16 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-
           <div className="justify-between lg:flex md:flex items-center sm:block">
             <div className="section-title">
               <h1 className="not-italic font-medium text-2xl text-[#001737]">
@@ -593,72 +591,74 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
 
           <div className="mt-5 shadow-md p-5 bg-white rounded-lg">
-
-          {paginatedData && paginatedData.length > 0 ? (
-            paginatedData.map((item, i) => {
-              const isAccordionOpen = openAccordionIndex === i;
-              return (
-                <div key={i} className="accordions shadow-md p-5 bg-slate-200 rounded-lg mb-4">
-                  <div className="section lg:flex md:flex  sm:block items-center justify-between ">
-                    <div className="flex gap-2 items-center">
-                      {editIndex === i ? (
-                        <>
-                          <input
-                            type="text"
-                            name="name"
-                            className="formInput block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            value={newGroupName}
-                            onChange={(e) => setNewGroupName(e.target.value)}
-                          />
-                          <div>
-                            <BiSave
-                              className="cursor-pointer text-xl text-[#0000FF]"
-                              onClick={() => updateGroupName(i)}
-                            />
-                            <IoClose
-                              className="cursor-pointer text-xl text-[#FF0000]"
-                              onClick={() => {
-                                setEditIndex(-1);
-                                setNewGroupName("");
-                              }}
-                            />
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <h1 className="text-lg capitalize">
-                            {item.screenGroupName}
-                          </h1>
-                          <MdOutlineModeEdit
-                            className="cursor-pointer text-xl text-[#0000FF]"
-                            onClick={() => editGroupName(i)}
-                          />
-                        </>
-                      )}
-                    </div>
-
-                    <div className="flex items-center">
-                      <div className=" flex items-center">
-                        {isAccordionOpen && (
+            {paginatedData && paginatedData.length > 0 ? (
+              paginatedData.map((item, i) => {
+                const isAccordionOpen = openAccordionIndex === i;
+                return (
+                  <div
+                    key={i}
+                    className="accordions shadow-md p-5 bg-slate-200 rounded-lg mb-4"
+                  >
+                    <div className="section lg:flex md:flex  sm:block items-center justify-between ">
+                      <div className="flex gap-2 items-center">
+                        {editIndex === i ? (
                           <>
-                            <button
-                              data-tip
-                              data-for="Add Screen"
-                              className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
-                              onClick={() => newAddGroup(item)}
-                            >
-                              Add <b>+</b>
-                              <ReactTooltip
-                                id="Add Screen"
-                                place="left"
-                                type="warning"
-                                effect="float"
-                              >
-                                <span>Add Screen</span>
-                              </ReactTooltip>
-                            </button>
+                            <input
+                              type="text"
+                              name="name"
+                              className="formInput block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              value={newGroupName}
+                              onChange={(e) => setNewGroupName(e.target.value)}
+                            />
+                            <div>
+                              <BiSave
+                                className="cursor-pointer text-xl text-[#0000FF]"
+                                onClick={() => updateGroupName(i)}
+                              />
+                              <IoClose
+                                className="cursor-pointer text-xl text-[#FF0000]"
+                                onClick={() => {
+                                  setEditIndex(-1);
+                                  setNewGroupName("");
+                                }}
+                              />
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <h1 className="text-lg capitalize">
+                              {item.screenGroupName}
+                            </h1>
+                            <MdOutlineModeEdit
+                              className="cursor-pointer text-xl text-[#0000FF]"
+                              onClick={() => editGroupName(i)}
+                            />
+                          </>
+                        )}
+                      </div>
 
-                            {/* {item.isPreview && ( */}
+                      <div className="flex items-center">
+                        <div className=" flex items-center">
+                          {isAccordionOpen && (
+                            <>
+                              <button
+                                data-tip
+                                data-for="Add Screen"
+                                className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
+                                onClick={() => newAddGroup(item)}
+                              >
+                                Add <b>+</b>
+                                <ReactTooltip
+                                  id="Add Screen"
+                                  place="left"
+                                  type="warning"
+                                  effect="float"
+                                >
+                                  <span>Add Screen</span>
+                                </ReactTooltip>
+                              </button>
+
+                              {/* {item.isPreview && ( */}
                               <button
                                 data-tip
                                 data-for="Preview"
@@ -675,65 +675,51 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                   <span>Preview</span>
                                 </ReactTooltip>
                               </button>
-                            {/* )} */}
+                              {/* )} */}
 
-                            <button
-                              data-tip
-                              data-for="Upload"
-                              className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                              onClick={() => {
-                                setShowAssetModal(true);
-                                setGetGroup(item);
-                              }}
-                            >
-                              <TbUpload className="text-3xl p-1 hover:text-white" />
-                              <ReactTooltip
-                                id="Upload"
-                                place="left"
-                                type="warning"
-                                effect="float"
-                              >
-                                <span>Upload</span>
-                              </ReactTooltip>
-                            </button>
-
-                            {!selectedItems?.length && (
                               <button
                                 data-tip
-                                data-for="All Delete"
-                                className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                                data-for="Upload"
+                                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                                onClick={() => {
+                                  setShowAssetModal(true);
+                                  setGetGroup(item);
+                                }}
                               >
-                                <RiDeleteBin5Line
-                                  className="text-3xl p-1 hover:text-white"
-                                  onClick={() => handleDeleteGroup(item)}
-                                />
+                                <TbUpload className="text-3xl p-1 hover:text-white" />
                                 <ReactTooltip
-                                  id="All Delete"
+                                  id="Upload"
                                   place="left"
                                   type="warning"
                                   effect="float"
                                 >
-                                  <span>Delete</span>
+                                  <span>Upload</span>
                                 </ReactTooltip>
                               </button>
-                            )}
-                          </>
-                        )}
-                        {selectAll ? (
-                          <input
-                            type="checkbox"
-                            data-tip
-                            data-for="Select"
-                            className=" mx-1 w-6 h-5 mt-2"
-                            checked={selectedItems.includes(
-                              item?.screenGroupID
-                            )}
-                            onChange={() =>
-                              handleCheckboxChange(item?.screenGroupID)
-                            }
-                          />
-                        ) : (
-                          <div>
+
+                              {!selectedItems?.length && (
+                                <button
+                                  data-tip
+                                  data-for="All Delete"
+                                  className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                                >
+                                  <RiDeleteBin5Line
+                                    className="text-3xl p-1 hover:text-white"
+                                    onClick={() => handleDeleteGroup(item)}
+                                  />
+                                  <ReactTooltip
+                                    id="All Delete"
+                                    place="left"
+                                    type="warning"
+                                    effect="float"
+                                  >
+                                    <span>Delete</span>
+                                  </ReactTooltip>
+                                </button>
+                              )}
+                            </>
+                          )}
+                          {selectAll ? (
                             <input
                               type="checkbox"
                               data-tip
@@ -746,119 +732,135 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                 handleCheckboxChange(item?.screenGroupID)
                               }
                             />
-                            <ReactTooltip
-                              id="Select"
-                              place="left"
-                              type="warning"
-                              effect="float"
-                            >
-                              <span>Select</span>
-                            </ReactTooltip>
-                          </div>
-                        )}
-
-                        <button>
-                          {isAccordionOpen ? (
-                            <div onClick={() => handleAccordionClick(i)}>
-                              <IoIosArrowDropup className="text-3xl" />
-                            </div>
                           ) : (
-                            <div onClick={() => handleAccordionClick(i)}>
-                              <IoIosArrowDropdown className="text-3xl" />
+                            <div>
+                              <input
+                                type="checkbox"
+                                data-tip
+                                data-for="Select"
+                                className=" mx-1 w-6 h-5 mt-2"
+                                checked={selectedItems.includes(
+                                  item?.screenGroupID
+                                )}
+                                onChange={() =>
+                                  handleCheckboxChange(item?.screenGroupID)
+                                }
+                              />
+                              <ReactTooltip
+                                id="Select"
+                                place="left"
+                                type="warning"
+                                effect="float"
+                              >
+                                <span>Select</span>
+                              </ReactTooltip>
                             </div>
                           )}
-                        </button>
+
+                          <button>
+                            {isAccordionOpen ? (
+                              <div onClick={() => handleAccordionClick(i)}>
+                                <IoIosArrowDropup className="text-3xl" />
+                              </div>
+                            ) : (
+                              <div onClick={() => handleAccordionClick(i)}>
+                                <IoIosArrowDropdown className="text-3xl" />
+                              </div>
+                            )}
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {isAccordionOpen && (
-                    <div className="overflow-x-scroll sc-scrollbar  pt-4">
-                      <table
-                        className="screen-table border border-lightgray w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
-                        cellPadding={20}
-                      >
-                        <thead>
-                          <tr className="items-center table-head-bg screen-table-th text-left rounded-lg">
-                            <th className="text-[#444] text-sm font-semibold p-2">
-                              <button className="flex items-center justify-center px-6 py-2">
-                                Screen
-                              </button>
-                            </th>
-                            <th className="text-[#444] text-sm font-semibold p-2">
-                              <button className=" flex items-center justify-center mx-auto px-6 py-2">
-                                Status
-                              </button>
-                            </th>
-                            <th className="text-[#444] text-sm font-semibold p-2">
-                              <button className=" flex items-center justify-center mx-auto px-6 py-2">
-                                Last Seen
-                              </button>
-                            </th>
-                            <th className="text-[#444] text-sm font-semibold p-2">
-                              <button className=" flex items-center justify-center mx-auto px-6 py-2">
-                                Now Playing
-                              </button>
-                            </th>
-                            <th className="text-[#444] text-sm font-semibold p-2">
-                              <button className=" px-6 py-2 flex items-center justify-center mx-auto">
-                                Current Schedule
-                              </button>
-                            </th>
-                            <th className="text-[#444] text-sm font-semibold p-2">
-                              <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
-                                Tags
-                              </button>
-                            </th>
-                            <th className="text-[#444] text-sm font-semibold p-2">
-                              <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
-                                Action
-                              </button>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {isAccordionOpen &&
-                            item &&
-                            item.screenGroupLists?.length > 0 &&
-                            item.screenGroupLists.map((screen, index) => {
-                              return (
-                                <tr
-                                  key={index}
-                                  className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
-                                >
-                                  <td className="flex items-center">
-                                    {screen.screenName}
-                                  </td>
-                                  <td className="p-2 text-center">
-                                    {screen.screenStatus === 1 ? (
-                                      <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
-                                        Live
-                                      </button>
-                                    ) : (
-                                      <button className="bg-[#FF0000] rounded-full px-6 py-1 text-white">
-                                        Off
-                                      </button>
-                                    )}
-                                  </td>
-                                  <td className="p-2 text-center">
-                                  {moment(screen?.updatedDate).format("LLL")}
-                                  </td>
-                                  <td className="p-2 text-center">
-                                    <button className="flex items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500">
-                                      {screen.assetName}
-                                      <AiOutlineCloudUpload className="ml-2 text-3xl" />
-                                    </button>
-                                  </td>
-                                  <td className="break-words	w-[150px] p-2 text-center">
-                                    {screen.scheduleName}
-                                  </td>
-                                  <td
-                                    title={screen?.tags && screen?.tags}
-                                    className="mx-auto  p-2 text-center"
+                    {isAccordionOpen && (
+                      <div className="overflow-x-scroll sc-scrollbar  pt-4">
+                        <table
+                          className="screen-table border border-lightgray w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
+                          cellPadding={20}
+                        >
+                          <thead>
+                            <tr className="items-center table-head-bg screen-table-th text-left rounded-lg">
+                              <th className="text-[#444] text-sm font-semibold p-2">
+                                <button className="flex items-center justify-center px-6 py-2">
+                                  Screen
+                                </button>
+                              </th>
+                              <th className="text-[#444] text-sm font-semibold p-2">
+                                <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                                  Status
+                                </button>
+                              </th>
+                              <th className="text-[#444] text-sm font-semibold p-2">
+                                <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                                  Last Seen
+                                </button>
+                              </th>
+                              <th className="text-[#444] text-sm font-semibold p-2">
+                                <button className=" flex items-center justify-center mx-auto px-6 py-2">
+                                  Now Playing
+                                </button>
+                              </th>
+                              <th className="text-[#444] text-sm font-semibold p-2">
+                                <button className=" px-6 py-2 flex items-center justify-center mx-auto">
+                                  Current Schedule
+                                </button>
+                              </th>
+                              <th className="text-[#444] text-sm font-semibold p-2">
+                                <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
+                                  Tags
+                                </button>
+                              </th>
+                              <th className="text-[#444] text-sm font-semibold p-2">
+                                <button className=" px-6 py-2 flex  items-center justify-center mx-auto">
+                                  Action
+                                </button>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {isAccordionOpen &&
+                              item &&
+                              item.screenGroupLists?.length > 0 &&
+                              item.screenGroupLists.map((screen, index) => {
+                                return (
+                                  <tr
+                                    key={index}
+                                    className=" mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
                                   >
-                                    {(screen?.tags === "" ||
-                                      screen?.tags === null) && (
+                                    <td className="flex items-center">
+                                      {screen.screenName}
+                                    </td>
+                                    <td className="p-2 text-center">
+                                      {screen.screenStatus === 1 ? (
+                                        <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
+                                          Live
+                                        </button>
+                                      ) : (
+                                        <button className="bg-[#FF0000] rounded-full px-6 py-1 text-white">
+                                          Off
+                                        </button>
+                                      )}
+                                    </td>
+                                    <td className="p-2 text-center">
+                                      {moment(screen?.updatedDate).format(
+                                        "LLL"
+                                      )}
+                                    </td>
+                                    <td className="p-2 text-center">
+                                      <button className="flex items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500">
+                                        {screen.assetName}
+                                        <AiOutlineCloudUpload className="ml-2 text-3xl" />
+                                      </button>
+                                    </td>
+                                    <td className="break-words	w-[150px] p-2 text-center">
+                                      {screen.scheduleName}
+                                    </td>
+                                    <td
+                                      title={screen?.tags && screen?.tags}
+                                      className="mx-auto  p-2 text-center"
+                                    >
+                                      {(screen?.tags === "" ||
+                                        screen?.tags === null) && (
                                         <span>
                                           <AiOutlinePlusCircle
                                             size={30}
@@ -866,152 +868,152 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                             onClick={() => {
                                               setShowTagModal(true);
                                               screen.tags === "" ||
-                                                screen?.tags === null
+                                              screen?.tags === null
                                                 ? setTags([])
                                                 : setTags(
-                                                  screen?.tags?.split(",")
-                                                );
+                                                    screen?.tags?.split(",")
+                                                  );
                                               setTagUpdateScreeen(screen);
                                             }}
                                           />
                                         </span>
                                       )}
-                                    {screen?.tags !== null
-                                      ? screen.tags
-                                        .split(",")
-                                        .slice(
-                                          0,
-                                          screen.tags.split(",").length > 2
-                                            ? 3
-                                            : screen.tags.split(",").length
-                                        )
-                                        .map((text) => {
-                                          if (text.toString().length > 10) {
-                                            return text
-                                              .split("")
-                                              .slice(0, 10)
-                                              .concat("...")
-                                              .join("");
-                                          }
-                                          return text;
-                                        })
-                                        .join(",")
-                                      : ""}
-                                    {screen?.tags !== "" &&
-                                      screen?.tags !== null && (
-                                        <AiOutlinePlusCircle
-                                          onClick={() => {
-                                            setShowTagModal(true);
-                                            screen.tags === "" ||
+                                      {screen?.tags !== null
+                                        ? screen.tags
+                                            .split(",")
+                                            .slice(
+                                              0,
+                                              screen.tags.split(",").length > 2
+                                                ? 3
+                                                : screen.tags.split(",").length
+                                            )
+                                            .map((text) => {
+                                              if (text.toString().length > 10) {
+                                                return text
+                                                  .split("")
+                                                  .slice(0, 10)
+                                                  .concat("...")
+                                                  .join("");
+                                              }
+                                              return text;
+                                            })
+                                            .join(",")
+                                        : ""}
+                                      {screen?.tags !== "" &&
+                                        screen?.tags !== null && (
+                                          <AiOutlinePlusCircle
+                                            onClick={() => {
+                                              setShowTagModal(true);
+                                              screen.tags === "" ||
                                               screen?.tags === null
-                                              ? setTags([])
-                                              : setTags(
-                                                screen?.tags?.split(",")
-                                              );
-                                            setTagUpdateScreeen(screen);
-                                          }}
-                                          className="mx-auto  w-5 h-5 cursor-pointer "
+                                                ? setTags([])
+                                                : setTags(
+                                                    screen?.tags?.split(",")
+                                                  );
+                                              setTagUpdateScreeen(screen);
+                                            }}
+                                            className="mx-auto  w-5 h-5 cursor-pointer "
+                                          />
+                                        )}
+
+                                      {/* add or edit tag modal */}
+                                      {showTagModal && (
+                                        <AddOrEditTagPopup
+                                          setShowTagModal={setShowTagModal}
+                                          tags={tags}
+                                          setTags={setTags}
+                                          handleTagsUpdate={handleTagsUpdate}
+                                          from="screen"
+                                          setTagUpdateScreeen={
+                                            setTagUpdateScreeen
+                                          }
                                         />
                                       )}
-
-                                    {/* add or edit tag modal */}
-                                    {showTagModal && (
-                                      <AddOrEditTagPopup
-                                        setShowTagModal={setShowTagModal}
-                                        tags={tags}
-                                        setTags={setTags}
-                                        handleTagsUpdate={handleTagsUpdate}
-                                        from="screen"
-                                        setTagUpdateScreeen={
-                                          setTagUpdateScreeen
-                                        }
-                                      />
-                                    )}
-                                  </td>
-                                  <td className="p-2 justify-center flex ">
-                                    <div className="cursor-pointer text-xl flex gap-3 text-right rounded-full px-2 py-2 text-white text-center bg-[#FF0000]">
-                                      <MdDeleteForever
-                                        onClick={() =>
-                                          deleteGroupInScreen({
-                                            ScreenGroupListID:
-                                              screen.screenGroupListID,
-                                          })
-                                        }
-                                      />
-                                    </div>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
+                                    </td>
+                                    <td className="p-2 justify-center flex ">
+                                      <div className="cursor-pointer text-xl flex gap-3 text-right rounded-full px-2 py-2 text-white text-center bg-[#FF0000]">
+                                        <MdDeleteForever
+                                          onClick={() =>
+                                            deleteGroupInScreen({
+                                              ScreenGroupListID:
+                                                screen.screenGroupListID,
+                                            })
+                                          }
+                                        />
+                                      </div>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            ) : (
+              <>
+                <div className="flex text-center m-5 justify-center">
+                  <span className="text-2xl hover:bg-gray-400 text-gray-800 mt-20 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
+                    Data not found!
+                  </span>
                 </div>
-              );
-            })
-          ) : (
-            <>
-              <div className="flex text-center m-5 justify-center">
-                <span className="text-2xl hover:bg-gray-400 text-gray-800 mt-20 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
-                  Data not found!
-                </span>
+              </>
+            )}
+
+            {/* end  pagination */}
+            {paginatedData && paginatedData.length > 0 && (
+              <div className="flex justify-end mt-5">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                >
+                  <svg
+                    className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 10"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 5H1m0 0 4 4M1 5l4-4"
+                    />
+                  </svg>
+                  Previous
+                </button>
+
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                >
+                  Next
+                  <svg
+                    className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 10"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M1 5h12m0 0L9 1m4 4L9 9"
+                    />
+                  </svg>
+                </button>
               </div>
-            </>
-          )}
-
-        {/* end  pagination */}
-        {paginatedData && paginatedData.length > 0 && (
-          <div className="flex justify-end mt-5">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >
-              <svg
-                className="w-3.5 h-3.5 me-2 rtl:rotate-180"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 14 10"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M13 5H1m0 0 4 4M1 5l4-4"
-                />
-              </svg>
-              Previous
-            </button>
-
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >
-              Next
-              <svg
-                className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 14 10"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M1 5h12m0 0L9 1m4 4L9 9"
-                />
-              </svg>
-            </button>
+            )}
+            {/* end  pagination */}
           </div>
-        )}
-        {/* end  pagination */}
-        </div>
         </div>
       </div>
 

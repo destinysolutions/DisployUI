@@ -97,15 +97,15 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(schedules)
     ? schedules.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value &&
-          value
-            .toString()
-            .toLowerCase()
-            .includes(searchSchedule.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            value &&
+            value
+              .toString()
+              .toLowerCase()
+              .includes(searchSchedule.toLowerCase())
+        )
       )
-    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -156,7 +156,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleCheckboxChange = (scheduleId) => {
     setSelectAllChecked(false);
-    setSelectCheck(true)
+    setSelectCheck(true);
     if (selectedItems.includes(scheduleId)) {
       setSelectedItems(selectedItems.filter((id) => id !== scheduleId));
     } else {
@@ -170,7 +170,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         setSelectAllChecked(true);
       }
     }
-  }, [selectcheck, selectedItems])
+  }, [selectcheck, selectedItems]);
 
   const handleScheduleItemClick = (scheduleId) => {
     setScheduleId(scheduleId);
@@ -515,7 +515,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   onChange={handleSearchSchedule}
                 />
               </div>
-             {/* <Link to="/weatherschedule">
+              {/* <Link to="/weatherschedule">
                 <button className="ml-2 flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary   hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                   <TiWeatherSunny className="text-lg mr-1" />
                   Weather Schedule
@@ -701,31 +701,31 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                               >
                                 {(schedule?.tags === "" ||
                                   schedule?.tags === null) && (
-                                    <span>
-                                      <AiOutlinePlusCircle
-                                        size={30}
-                                        className="mx-auto cursor-pointer"
-                                        onClick={() => {
-                                          setShowTagModal(true);
-                                          schedule.tags === "" ||
-                                            schedule?.tags === null
-                                            ? setTags([])
-                                            : setTags(schedule?.tags?.split(","));
-                                          setUpdateTagSchedule(schedule);
-                                        }}
-                                      />
-                                    </span>
-                                  )}
+                                  <span>
+                                    <AiOutlinePlusCircle
+                                      size={30}
+                                      className="mx-auto cursor-pointer"
+                                      onClick={() => {
+                                        setShowTagModal(true);
+                                        schedule.tags === "" ||
+                                        schedule?.tags === null
+                                          ? setTags([])
+                                          : setTags(schedule?.tags?.split(","));
+                                        setUpdateTagSchedule(schedule);
+                                      }}
+                                    />
+                                  </span>
+                                )}
                                 {schedule.tags !== null
                                   ? schedule.tags
-                                    .split(",")
-                                    .slice(
-                                      0,
-                                      schedule.tags.split(",").length > 2
-                                        ? 3
-                                        : schedule.tags.split(",").length
-                                    )
-                                    .join(",")
+                                      .split(",")
+                                      .slice(
+                                        0,
+                                        schedule.tags.split(",").length > 2
+                                          ? 3
+                                          : schedule.tags.split(",").length
+                                      )
+                                      .join(",")
                                   : ""}
                                 {schedule?.tags !== "" &&
                                   schedule?.tags !== null && (
@@ -733,7 +733,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                       onClick={() => {
                                         setShowTagModal(true);
                                         schedule.tags === "" ||
-                                          schedule?.tags === null
+                                        schedule?.tags === null
                                           ? setTags([])
                                           : setTags(schedule?.tags?.split(","));
                                         setUpdateTagSchedule(schedule);

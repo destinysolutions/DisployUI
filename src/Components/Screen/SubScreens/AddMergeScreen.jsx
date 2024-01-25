@@ -78,7 +78,6 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const allScreen = selectedRow?.value * selectedColumn?.value;
   const objectLength = Object.keys(DataRowAndCol).length;
 
-
   useEffect(() => {
     let config = {
       method: "get",
@@ -282,7 +281,9 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                         onClick={() => setShowAssetModal(true)}
                         className="flex items-centerborder-gray bg-white  border rounded-lg lg:px-3 sm:px-1 xs:px-1 py-2 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500"
                       >
-                        {selectedAsset.assetName ? selectedAsset.assetName : 'assetName' }
+                        {selectedAsset.assetName
+                          ? selectedAsset.assetName
+                          : "assetName"}
                         <AiOutlineCloudUpload className="ml-2 text-lg" />
                       </button>
                       {assetError && (
@@ -347,7 +348,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 </div>
                 <div className="flex justify-center">
-                  <div className="p-4 bg-white shadow h-full w-full ">
+                  <div className="p-4 bg-white shadow max-h-96 w-full ">
                     <div className="col-span-1 bg-green-500 screen-section">
                       <div className="p-4 bg-white border-gray-200 shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700 h-100 overflow-auto max-h-96">
                         <h1 className="not-italic font-medium text-2xl text-[#001737]">
