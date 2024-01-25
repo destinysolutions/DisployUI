@@ -108,7 +108,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage] = useState(10); // Adjust items per page as needed
 
   useEffect(() => {
     if (loadFirst) {
@@ -494,6 +494,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <div className="pt-16 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
+
           <div className="justify-between lg:flex md:flex items-center sm:block">
             <div className="section-title">
               <h1 className="not-italic font-medium text-2xl text-[#001737]">
@@ -602,12 +603,14 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
+          <div className="mt-5 shadow-md p-5 bg-white rounded-lg">
+
           {paginatedData && paginatedData.length > 0 ? (
             paginatedData.map((item, i) => {
               const isAccordionOpen = openAccordionIndex === i;
               return (
-                <div key={i} className="accordions mt-5">
-                  <div className="section shadow-md p-5 bg-slate-200 rounded-2xl lg:flex md:flex  sm:block items-center justify-between">
+                <div key={i} className="accordions shadow-md p-5 bg-slate-200 rounded-lg mb-4">
+                  <div className="section lg:flex md:flex  sm:block items-center justify-between ">
                     <div className="flex gap-2 items-center">
                       {editIndex === i ? (
                         <>
@@ -666,7 +669,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                               </ReactTooltip>
                             </button>
 
-                            {item.isPreview && (
+                            {/* {item.isPreview && ( */}
                               <button
                                 data-tip
                                 data-for="Preview"
@@ -683,7 +686,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                   <span>Preview</span>
                                 </ReactTooltip>
                               </button>
-                            )}
+                            {/* )} */}
 
                             <button
                               data-tip
@@ -783,7 +786,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                   {isAccordionOpen && (
                     <div className="overflow-x-scroll sc-scrollbar  pt-4">
                       <table
-                        className="screen-table  w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
+                        className="screen-table border border-lightgray w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 lg:table-fixed"
                         cellPadding={20}
                       >
                         <thead>
@@ -964,10 +967,10 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
             </>
           )}
-        </div>
+
         {/* end  pagination */}
         {paginatedData && paginatedData.length > 0 && (
-          <div className="flex justify-end m-5">
+          <div className="flex justify-end mt-5">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
@@ -1016,6 +1019,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         )}
         {/* end  pagination */}
+        </div>
+        </div>
       </div>
 
       {/* Model */}

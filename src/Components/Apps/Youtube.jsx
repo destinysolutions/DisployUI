@@ -478,10 +478,10 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                   )}
                   <button
                     onClick={handelDeleteAllInstance}
-                    className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full px-1 text-2xl  hover:text-white hover:border-SlateBlue hover:bg-SlateBlue hover:shadow-lg hover:shadow-primary-500/50"
+                    className="w-8 h-8 ml-1 border-primary items-center border-2 rounded-full px-1 text-2xl  hover:text-white hover:border-SlateBlue hover:bg-SlateBlue hover:shadow-lg hover:shadow-primary-500/50"
                     style={{ display: selectAll ? "block" : "none" }}
                   >
-                    <RiDeleteBinLine />
+                    <RiDeleteBinLine className="text-xl" />
                   </button>
                   {Array.isArray(youtubeData) && youtubeData.length > 0 && (
                     <button className="sm:ml-2 xs:ml-1 mt-1">
@@ -501,11 +501,11 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                     Loading...
                   </div>
                 ) : Array.isArray(youtubeData) && youtubeData.length > 0 ? (
-                  <div className=" grid grid-cols-10 gap-4 mt-5">
+                  <div className=" grid grid-cols-12 gap-4 mt-5">
                     {youtubeData.map((item) => (
                       <div
                         key={item.youtubeId}
-                        className="lg:col-span-2 md:col-span-5 sm:col-span-10"
+                        className="xl:col-span-2 lg:col-span-3 md:col-span-4 sm:col-span-12"
                       >
                         <div className="shadow-md bg-[#EFF3FF] rounded-lg">
                           <div className="relative flex justify-between">

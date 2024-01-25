@@ -96,7 +96,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5); // Adjust items per page as needed
+  const [itemsPerPage] = useState(10); // Adjust items per page as needed
 
   useEffect(() => {
     if (loadFirst) {
@@ -471,12 +471,13 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
             </div>
           </div>
 
+          <div className="mt-5 shadow-md p-5 bg-white rounded-lg">
           {paginatedData && paginatedData.length > 0 ? (
             paginatedData.map((item, i) => {
               const isAccordionOpen = openAccordionIndex === i;
               return (
-                <div key={i} className="accordions mt-5">
-                  <div className="section shadow-md p-5 bg-slate-200 rounded-2xl lg:flex md:flex  sm:block items-center justify-between">
+                <div key={i} className="accordions shadow-md p-5 bg-slate-200 rounded-lg mb-4">
+                  <div className="section lg:flex md:flex  sm:block items-center justify-between">
                     <div className="flex gap-2 items-center">
                       {editIndex === i ? (
                         <>
@@ -794,17 +795,19 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
             })
           ) : (
             <>
-              <div className="flex text-center m-5 justify-center">
+              <div className="flex text-center justify-center">
                 <span className="text-2xl hover:bg-gray-400 text-gray-800 mt-20 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
                   Data not found!
                 </span>
               </div>
             </>
           )}
-        </div>
+
+
+
         {/* end  pagination */}
         {paginatedData && paginatedData.length > 0 && (
-          <div className="flex justify-end m-5">
+          <div className="flex justify-end">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
@@ -853,6 +856,11 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         )}
         {/* end  pagination */}
+          </div>
+
+          
+        </div>
+
       </div>
 
       {/* Model */}
