@@ -16,6 +16,7 @@ import PropTypes from "prop-types";
 import { MdArrowBackIosNew } from "react-icons/md";
 import {
   ALL_FILES_UPLOAD,
+  ASSIGN_ASSET_TO_SCREEN,
   CREATE_NEW_FOLDER,
   GET_ALL_FILES,
   MOVE_TO_FOLDER,
@@ -82,7 +83,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/AssetMaster/AssignAssetToScreen?AssetId=${screenAssetID}&ScreenID=${idS}`,
+      url: `${ASSIGN_ASSET_TO_SCREEN}?AssetId=${screenAssetID}&ScreenID=${idS}`,
       headers: {
         Authorization: authToken,
       },
@@ -450,7 +451,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
     formData.append("FolderID", "0");
     formData.append("UserID", "0");
     formData.append("AssetType", "Image");
-    formData.append("DeleteDate", new Date().toISOString().split('T')[0]);
+    formData.append("DeleteDate", new Date().toISOString().split("T")[0]);
     axios
       .post(ALL_FILES_UPLOAD, formData, {
         headers: {
@@ -472,8 +473,8 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const HandleClose = () => {
-    setPreviewDoc(false)
-  }
+    setPreviewDoc(false);
+  };
 
   return (
     <>
@@ -833,7 +834,10 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
                           {item.assetType === "DOC" && (
                             <a
                               className="cursor-pointer"
-                              onClick={() => { setPreviewDoc(true); setSelectDoc(item) }}
+                              onClick={() => {
+                                setPreviewDoc(true);
+                                setSelectDoc(item);
+                              }}
                               // href={item.assetFolderPath}
                               rel="noopener noreferrer"
                             >
@@ -917,7 +921,11 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
       {previewDoc && (
-        <PreviewDoc HandleClose={HandleClose} fileType={selectDoc?.fileExtention} assetFolderPath={selectDoc?.assetFolderPath} />
+        <PreviewDoc
+          HandleClose={HandleClose}
+          fileType={selectDoc?.fileExtention}
+          assetFolderPath={selectDoc?.assetFolderPath}
+        />
       )}
     </>
   );

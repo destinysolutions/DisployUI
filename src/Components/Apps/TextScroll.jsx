@@ -1,37 +1,40 @@
-import React, {useEffect, useRef} from "react";
+import React, { useEffect, useRef } from "react";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-import {TbAppsFilled, TbSolarPanel} from "react-icons/tb";
-import {Link, useNavigate} from "react-router-dom";
-import {BsInfoLg} from "react-icons/bs";
-import {RiDeleteBin5Line, RiDeleteBinLine} from "react-icons/ri";
+import { TbAppsFilled, TbSolarPanel } from "react-icons/tb";
+import { Link, useNavigate } from "react-router-dom";
+import { BsInfoLg } from "react-icons/bs";
+import { RiDeleteBin5Line, RiDeleteBinLine } from "react-icons/ri";
 import axios from "axios";
 import {
+  ADD_TEXTSCROLL_TAGS,
+  ASSIGN_TEXTSCROLL_TO_SCREEN,
   DELETE_ALL_TEXT_SCROLL,
   GET_ALL_TEXT_SCROLL_INSTANCE,
   SCROLL_ADD_TEXT,
+  SELECT_BY_TEXTSCROLL_ID,
   SIGNAL_R,
 } from "../../Pages/Api";
-import {useState} from "react";
+import { useState } from "react";
 import {
   MdArrowBackIosNew,
   MdOutlineEdit,
   MdOutlineModeEdit,
 } from "react-icons/md";
-import {FiUpload} from "react-icons/fi";
-import {BiDotsHorizontalRounded} from "react-icons/bi";
-import {useSelector} from "react-redux";
+import { FiUpload } from "react-icons/fi";
+import { BiDotsHorizontalRounded } from "react-icons/bi";
+import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import {AiOutlineCloseCircle} from "react-icons/ai";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 import ScreenAssignModal from "../ScreenAssignModal";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import ReactPlayer from "react-player";
 import textScrollLogo from "../../images/AppsImg/text-scroll-icon.svg";
-import {HiBackward} from "react-icons/hi2";
-import {connection} from "../../SignalR";
+import { HiBackward } from "react-icons/hi2";
+import { connection } from "../../SignalR";
 
-const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
-  const {token} = useSelector((state) => state.root.auth);
+const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
+  const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [instanceData, setInstanceData] = useState([]);
@@ -72,7 +75,7 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AssignTextScrollToScreen?TextScrollId=${textScrollId}&ScreenID=${idS}`,
+      url: `${ASSIGN_TEXTSCROLL_TO_SCREEN}?TextScrollId=${textScrollId}&ScreenID=${idS}`,
       headers: {
         Authorization: authToken,
         "Content-Type": "application/json",
@@ -216,7 +219,7 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
       method: "get",
       maxBodyLength: Infinity,
       url: DELETE_ALL_TEXT_SCROLL,
-      headers: {Authorization: authToken},
+      headers: { Authorization: authToken },
     };
 
     axios
@@ -246,7 +249,7 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddTextScrollTags?TextScrollId=${
+      url: `${ADD_TEXTSCROLL_TAGS}?TextScrollId=${
         updateTextscrollTag?.textScroll_Id
       }&Tags=${tags.length === 0 ? "" : tags}`,
       headers: {
@@ -262,7 +265,7 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
         if (response?.data?.status == 200) {
           const updatedData = instanceData.map((item) => {
             if (item?.textScroll_Id === updateTextscrollTag?.textScroll_Id) {
-              return {...item, tags: tags};
+              return { ...item, tags: tags };
             } else {
               return item;
             }
@@ -278,7 +281,7 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
   const handleFetchTextscrollById = (id, showpopup) => {
     let config = {
       method: "get",
-      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/SelectByTextScrollId?ID=${id}`,
+      url: `${SELECT_BY_TEXTSCROLL_ID}?ID=${id}`,
       headers: {
         Authorization: authToken,
       },
@@ -389,8 +392,9 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
                   </button> */}
                   <button
                     onClick={handelDeleteAllInstance}
-                    style={{display: selectAll ? "block" : "none"}}
-                    className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full px-1 text-2xl  hover:text-white hover:border-SlateBlue hover:bg-SlateBlue hover:shadow-lg hover:shadow-primary-500/50">
+                    style={{ display: selectAll ? "block" : "none" }}
+                    className="w-8 h-8 ml-2 border-primary items-center border-2 rounded-full px-1 text-2xl  hover:text-white hover:border-SlateBlue hover:bg-SlateBlue hover:shadow-lg hover:shadow-primary-500/50"
+                  >
                     <RiDeleteBinLine className="text-xl" />
                   </button>
                   {instanceData.length > 0 && (
@@ -414,12 +418,13 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
                   {instanceData.map((instance) => (
                     <div
                       className="xl:col-span-2 lg:col-span-3 md:col-span-4 sm:col-span-12"
-                      key={instance.textScroll_Id}>
+                      key={instance.textScroll_Id}
+                    >
                       <div className="shadow-md bg-[#EFF3FF] rounded-lg">
                         <div className="relative flex justify-between">
                           <button className="float-right p-2">
                             <input
-                              style={{display: selectAll ? "block" : "none"}}
+                              style={{ display: selectAll ? "block" : "none" }}
                               className="h-5 w-5"
                               type="checkbox"
                               checked={instance.isChecked || false}
@@ -446,7 +451,8 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
                                         `/textscrolldetail/${instance?.textScroll_Id}`
                                       );
                                     }}
-                                    className="flex text-sm items-center cursor-pointer">
+                                    className="flex text-sm items-center cursor-pointer"
+                                  >
                                     <MdOutlineEdit className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
                                     Edit
                                   </li>
@@ -459,7 +465,8 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
                                       // );
                                       setAddScreenModal(true);
                                       setSelectData(instance);
-                                    }}>
+                                    }}
+                                  >
                                     <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
                                     Set to Screen
                                   </li>
@@ -475,7 +482,8 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
                                         instance.textScroll_Id,
                                         instance?.maciDs
                                       )
-                                    }>
+                                    }
+                                  >
                                     <RiDeleteBin5Line className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
                                     Delete
                                   </li>
@@ -492,7 +500,8 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
                                 instance?.textScroll_Id,
                                 true
                               )
-                            }>
+                            }
+                          >
                             <img
                               // src="../../../AppsImg/text-scroll-icon.svg"
                               src={textScrollLogo}
@@ -513,7 +522,8 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
                               setShowTagModal(true);
                               setUpdateTextscrollTag(instance);
                             }}
-                            className="text-sm font-normal cursor-pointer">
+                            className="text-sm font-normal cursor-pointer"
+                          >
                             Add tags +
                           </h4>{" "}
                           {/* {instance?.tags ? (
@@ -587,7 +597,8 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
                           <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
                             <div
                               ref={appDropdownRef}
-                              className="w-[600px] my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+                              className="w-[600px] my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+                            >
                               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                                 <div className="flex items-center justify-between p-5 border-b border-[#A7AFB7]  rounded-t">
                                   <div className="flex items-center">
@@ -605,7 +616,8 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
                                   </div>
                                   <button
                                     className="p-1 text-3xl"
-                                    onClick={() => setInstanceView(false)}>
+                                    onClick={() => setInstanceView(false)}
+                                  >
                                     <AiOutlineCloseCircle />
                                   </button>
                                 </div>
@@ -613,7 +625,8 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
                                   <marquee
                                     direction={
                                       scrollType == 1 ? "right" : "left"
-                                    }>
+                                    }
+                                  >
                                     {textScrollData}
                                   </marquee>
                                 </div>
@@ -653,7 +666,8 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
         <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
           <div
             ref={addScreenRef}
-            className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
+            className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs"
+          >
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
               <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
                 <div className="flex items-center">
@@ -663,7 +677,8 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
                 </div>
                 <button
                   className="p-1 text-xl ml-8"
-                  onClick={() => setAddScreenModal(false)}>
+                  onClick={() => setAddScreenModal(false)}
+                >
                   <AiOutlineCloseCircle className="text-2xl" />
                 </button>
               </div>
@@ -686,13 +701,15 @@ const TextScroll = ({sidebarOpen, setSidebarOpen}) => {
                     }
                     setSelectScreenModal(true);
                     setAddScreenModal(false);
-                  }}>
+                  }}
+                >
                   OK
                 </button>
 
                 <button
                   className="bg-primary text-white px-4 py-2 rounded-full ml-3"
-                  onClick={() => setAddScreenModal(false)}>
+                  onClick={() => setAddScreenModal(false)}
+                >
                   Cancel
                 </button>
               </div>

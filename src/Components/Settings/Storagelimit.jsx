@@ -6,6 +6,7 @@ import { GrAddCircle } from "react-icons/gr";
 import { FaCodePullRequest } from "react-icons/fa6";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { ADD_STORAGE } from "../../Pages/Api";
 
 const Storagelimit = () => {
   const { token, user } = useSelector((state) => state.root.auth);
@@ -35,7 +36,7 @@ const Storagelimit = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/Storage/AddStorage",
+      url: `${ADD_STORAGE}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken,

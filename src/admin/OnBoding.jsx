@@ -15,6 +15,8 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import {
   ADD_ORGANIZATION_MASTER,
   GET_ALL_ORGANIZATION_MASTER,
+  GET_ALL_STORAGE,
+  INCREASE_STORAGE,
 } from "./AdminAPI";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
@@ -23,6 +25,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
   const [userData, setUserData] = useState([]);
   const [originalUserData, setOriginalUserData] = useState([]);
   const [showRequestModal, setShowRequestModal] = useState(false);
+  const [currentOrganizationID, setCurrentOrganizationID] = useState("");
   const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
@@ -64,7 +67,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/Storage/GetAllStorage",
+      url: GET_ALL_STORAGE,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken,
@@ -105,7 +108,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
         let config = {
           method: "post",
           maxBodyLength: Infinity,
-          url: `https://disployapi.thedestinysolutions.com/api/Storage/IncreaseStorage?OrganizationId=${organizationID}`,
+          url: `${INCREASE_STORAGE}?OrganizationId=${organizationID}`,
           headers: {
             Authorization: authToken,
           },
@@ -124,7 +127,10 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
       }
     });
   };
-
+  const handleViewRequest = (organizationID) => {
+    setCurrentOrganizationID(organizationID);
+    setShowRequestModal(true);
+  };
   const columns = [
     {
       name: "First Name",
@@ -175,13 +181,13 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
           {row.isIncreaseRequest === true && (
             <button
               style={{ color: "red" }}
-              onClick={() => setShowRequestModal(true)}
+              onClick={() => handleViewRequest(row.organizationID)}
               className="flex items-center"
             >
               {!showRequestModal && "View Request"}
             </button>
           )}
-          {showRequestModal && (
+          {showRequestModal && row.organizationID === currentOrganizationID && (
             <div>
               <span className="flex justify-center">
                 {!row.increaseSize == 0 && `${row.increaseSize} GB`}

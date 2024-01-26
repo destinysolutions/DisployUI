@@ -11,6 +11,8 @@ import Footer from "../Footer";
 import { useEffect } from "react";
 import axios from "axios";
 import {
+  ADD_YOUTUBE_TAGS,
+  ASSIGN_YOUTUBE_TO_SCREEN,
   GET_ALL_YOUTUBEDATA,
   GET_YOUTUBEDATA_BY_ID,
   SIGNAL_R,
@@ -82,7 +84,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AssignYoutubeToScreen?YoutubeId=${instanceID}&ScreenID=${idS}`,
+      url: `${ASSIGN_YOUTUBE_TO_SCREEN}?YoutubeId=${instanceID}&ScreenID=${idS}`,
       headers: {
         Authorization: authToken,
       },
@@ -285,9 +287,9 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/YoutubeApp/AddYoutubeTags?YoutubeId=${
-        updateTagYoutube?.youtubeId
-      }&Tags=${tags.length === 0 ? "" : tags}`,
+      url: `${ADD_YOUTUBE_TAGS}?YoutubeId=${updateTagYoutube?.youtubeId}&Tags=${
+        tags.length === 0 ? "" : tags
+      }`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken,

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const baseUrl = "https://disployapi.thedestinysolutions.com/";
+export const baseUrl = "https://disployapi.thedestinysolutions.com/api/";
 
 export const postUrl = axios.create({
   baseURL: "https://disployapi.thedestinysolutions.com/api/",
@@ -17,150 +17,137 @@ export const getUrl = axios.create({
   method: "get",
 });
 
-export const LOGIN_URL = `${baseUrl}api/Register/Login`;
-export const UPDATE_USER = `${baseUrl}api/UserMaster/AddOrgUserMaster`;
-export const ADD_REGISTER_URL = `${baseUrl}api/UserMaster/AddOrganizationSignups`;
-export const All_REGISTER_URL = `${baseUrl}api/Register/GetAllRegister`;
-export const GET_ALL_CURRENCIES = `${baseUrl}api/Register/GetAllCurrency`;
-export const GET_ALL_LANGUAGES = `${baseUrl}api/Register/GetAllLanguage`;
-export const SELECT_BY_ID_USERDETAIL = `${baseUrl}api/Register/SelectByID`;
-export const ALL_SCREEN_URL = `${baseUrl}api/Screen/GetAllScreen`;
-export const ALL_MAPSTORE_GET = `${baseUrl}api/Cascading/SelectByStore`;
-export const GET_ALL_COUNTRY = `${baseUrl}api/Cascading/GetAllCountry`;
-export const GET_SELECT_BY_STATE = `${baseUrl}api/Cascading/SelectByState`;
-export const GET_SELECT_BY_CITY = `${baseUrl}api/Cascading/SelectByCity`;
-export const DELETE_USER = `${baseUrl}api/Register/DeleteUser`;
-export const SCREEN_GROUP = `${baseUrl}api/GroupScreen/AddGroupScreen`;
-export const SELECT_ALL_SCREENGROUP = `${baseUrl}api/GroupScreen/SelectAll`;
-export const UPDATE_NEW_SCREEN = `${baseUrl}api/NewScreen/UpdateNewScreen`;
-export const GET_SCREEN_TYPE = `${baseUrl}api/NewScreen/GetAllScreenType`;
-export const SELECT_BY_USER_SCREENDETAIL = `${baseUrl}api/NewScreen/SelectByUserScreen`;
-export const SELECT_BY_SCREENID_SCREENDETAIL = `${baseUrl}api/NewScreen/SelectByScreen`;
-export const GET_ALL_SCREEN_RESOLUTION = `${baseUrl}api/NewScreen/GetAllScreenResolution`;
-export const GET_ALL_SCREEN_ORIENTATION = `${baseUrl}api/NewScreen/GetAllScreenOrientation`;
-export const GET_SCREEN_TIMEZONE = `${baseUrl}api/NewScreen/GetAllTimeZone`;
-export const GET_SCEDULE_TIMEZONE =
-  "https://disployapi.thedestinysolutions.com​/api/EventMaster/GetAllTimeZone";
-export const GET_TIMEZONE = `${baseUrl}api/EventMaster/GetAllTimeZone`;
-
-export const GET_ALL_FILES = `${baseUrl}api/AssetMaster/GetAll`;
-export const ALL_FILES_UPLOAD = `${baseUrl}api/AssetMaster/AssetUpload`;
-
-export const GOOGLE_DRIVE = `${baseUrl}api/GoogleDrive/GoogleDrive`;
-export const OTP_VERIFY = `${baseUrl}api/NewScreen/NewScreenVerify`;
-export const GET_ALL_EVENTS = `${baseUrl}api/EventMaster/GetAllEvent`;
-export const ADD_EVENT = `${baseUrl}api/EventMaster/AddEvent`;
-export const GET_ALL_SCHEDULE = `${baseUrl}api/ScheduleMaster/GetAllSchedule`;
-export const ADD_SCHEDULE = `${baseUrl}api/ScheduleMaster/AddSchedule`;
-export const DELETE_SCHEDULE = `${baseUrl}api/ScheduleMaster/DeleteSchedule`;
-
-export const UPDATE_SCREEN_ASSIGN = `${baseUrl}api/ScheduleMaster/UpdateAssignScreen`;
-
-export const SCHEDULE_EVENT_SELECT_BY_ID = `${baseUrl}api/EventMaster/SelectByID`;
-export const SCHEDULE_SELECT_BY_ID = `${baseUrl}api/ScheduleMaster/SelectByID`;
-export const UPDATED_SCHEDULE_DATA = `${baseUrl}api/EventMaster/SelectAllGetScheduleList`;
-export const UPDATE_TIMEZONE = `${baseUrl}api/ScheduleMaster/UpdateTimeZone`;
-export const SIGNAL_R = `${baseUrl}chatHub`;
-
-export const GET_ALL_TRASHDATA = `${baseUrl}api/Trash/GetAllTrash`;
-export const ADD_TRASH = `${baseUrl}api/Trash/AddTrash`;
-export const SINGL_DELETED_TRASH = `${baseUrl}api/Trash/singlDeletedTrash`;
-export const All_DELETED_TRASH = `${baseUrl}api/Trash/AllDeletedTrash`;
-export const RESTORE_TRASH = `${baseUrl}api/Trash/restoreTrash`;
-
-export const CREATE_NEW_FOLDER = `${baseUrl}api/AssetMaster/FolderMaster`;
-
-export const GET_ALL_NEW_FOLDER = `${baseUrl}api/ImageVideoDoc/GetAllFolder`;
-export const MOVE_TO_FOLDER = `${baseUrl}api/AssetMaster/Move`;
-
-export const FetchdataFormFolder = `${baseUrl}api/ImageVideoDoc/SelectByFolder`;
-
-export const DeleteAllData = `${baseUrl}api/ImageVideoDoc/DeleteAll`;
-
-export const GET_ALL_APPS = `${baseUrl}api/YoutubeApp/GetAllApps`;
-
-export const YOUTUBE_INSTANCE_ADD_URL = `${baseUrl}api/YoutubeApp/AddYoutubeApp`;
-
-export const GET_ALL_YOUTUBEDATA = `${baseUrl}api/YoutubeApp/GetAllYoutubeApp`;
-
-export const GET_YOUTUBEDATA_BY_ID = `${baseUrl}api/YoutubeApp/SelectByYouTubeId`;
-
-export const YOUTUBEDATA_ALL_DELETE = `${baseUrl}api/YoutubeApp/DeleteAllYoutubeApp`;
-
-export const SELECT_BY_LIST = `${baseUrl}api/LayoutMaster/SelectByList`;
-
-export const UPDATE_TRIAL_DAY = `${baseUrl}api/Register/UpdateTrialDay`;
-
-export const SCROLL_TYPE_OPTION = `${baseUrl}api/YoutubeApp/AllScrollType`;
-
-export const SCROLL_ADD_TEXT = `${baseUrl}api/YoutubeApp/AddTextScroll`;
-
-export const SCROLLDATA_BY_ID = `${baseUrl}api/YoutubeApp/SelectByTextScrollId`;
-
-export const GET_ALL_TEXT_SCROLL_INSTANCE = `${baseUrl}api/YoutubeApp/GetAlltextScroll`;
-export const DELETE_ALL_TEXT_SCROLL = `${baseUrl}api/YoutubeApp/DeleteAllTextScroll`;
-export const SELECT_BY_ASSET_ID = `${baseUrl}api/AssetMaster/SelectByAssetID`;
-export const ADDPLAYLIST = `${baseUrl}api/CompositionMaster/AddCompositionMaster`;
-export const ADDSUBPLAYLIST = `${baseUrl}api/CompositionMaster/AddSubCompositionMaster`;
-export const GET_ALL_COMPOSITIONS = `${baseUrl}api/CompositionMaster/GetAllCompositionMaster`;
-
-export const DELETE_COMPOSITION_BY_ID = `${baseUrl}api/CompositionMaster/DeleteCompositionByID`;
-export const DELETE_ALL_COMPOSITIONS = `${baseUrl}api/CompositionMaster/DeleteAllComposition`;
-export const DELETE_COMPOSITION = `${baseUrl}api/CompositionMaster/DeleteComposition`;
-export const GET_ALL_TAGS = `${baseUrl}api/CompositionMaster/GetAllTag`;
-export const GET_CURRENT_ASSET = `${baseUrl}api/EventMaster/GetCurrentAsset`;
-
-export const COMPOSITION_BY_ID = `${baseUrl}api/CompositionMaster/SelectCompositionByID`;
-
-export const SCREEN_PREVIEW = `${baseUrl}api/NewScreen/GetRegisterOtp`;
-
-export const FORGOTPASSWORD = `${baseUrl}api/UserMaster/ForgotPassword`;
-
-export const CHNAGE_PASSWORD = `${baseUrl}api/UserMaster/ResetPassword?`;
-export const UPDATE_PASSWORD = `${baseUrl}api/UserMaster/UpdatePassword?`;
-export const GET_USER_BY_USERROLE = `${baseUrl}api/OrganizationUsersRole/GetUserbyUserRole`;
+export const LOGIN_URL = `${baseUrl}Register/Login`;
+export const UPDATE_USER = `${baseUrl}UserMaster/AddOrgUserMaster`;
+export const ADD_REGISTER_URL = `${baseUrl}UserMaster/AddOrganizationSignups`;
+export const All_REGISTER_URL = `${baseUrl}Register/GetAllRegister`;
+export const GET_ALL_CURRENCIES = `${baseUrl}Register/GetAllCurrency`;
+export const GET_ALL_LANGUAGES = `${baseUrl}Register/GetAllLanguage`;
+export const SELECT_BY_ID_USERDETAIL = `${baseUrl}Register/SelectByID`;
+export const ALL_SCREEN_URL = `${baseUrl}Screen/GetAllScreen`;
+export const ALL_MAPSTORE_GET = `${baseUrl}Cascading/SelectByStore`;
+export const GET_ALL_COUNTRY = `${baseUrl}Cascading/GetAllCountry`;
+export const GET_SELECT_BY_STATE = `${baseUrl}Cascading/SelectByState`;
+export const GET_SELECT_BY_CITY = `${baseUrl}Cascading/SelectByCity`;
+export const DELETE_USER = `${baseUrl}Register/DeleteUser`;
+export const SCREEN_GROUP = `${baseUrl}GroupScreen/AddGroupScreen`;
+export const SELECT_ALL_SCREENGROUP = `${baseUrl}GroupScreen/SelectAll`;
+export const UPDATE_NEW_SCREEN = `${baseUrl}NewScreen/UpdateNewScreen`;
+export const GET_SCREEN_TYPE = `${baseUrl}NewScreen/GetAllScreenType`;
+export const SELECT_BY_USER_SCREENDETAIL = `${baseUrl}NewScreen/SelectByUserScreen`;
+export const SELECT_BY_SCREENID_SCREENDETAIL = `${baseUrl}NewScreen/SelectByScreen`;
+export const GET_ALL_SCREEN_RESOLUTION = `${baseUrl}NewScreen/GetAllScreenResolution`;
+export const GET_ALL_SCREEN_ORIENTATION = `${baseUrl}NewScreen/GetAllScreenOrientation`;
+export const GET_SCREEN_TIMEZONE = `${baseUrl}NewScreen/GetAllTimeZone`;
+export const GET_SCEDULE_TIMEZONE = `${baseUrl}EventMaster/GetAllTimeZone`;
+export const GET_TIMEZONE = `${baseUrl}EventMaster/GetAllTimeZone`;
+export const GET_ALL_FILES = `${baseUrl}AssetMaster/GetAll`;
+export const ALL_FILES_UPLOAD = `${baseUrl}AssetMaster/AssetUpload`;
+export const GOOGLE_DRIVE = `${baseUrl}GoogleDrive/GoogleDrive`;
+export const OTP_VERIFY = `${baseUrl}NewScreen/NewScreenVerify`;
+export const GET_ALL_EVENTS = `${baseUrl}EventMaster/GetAllEvent`;
+export const ADD_EVENT = `${baseUrl}EventMaster/AddEvent`;
+export const GET_ALL_SCHEDULE = `${baseUrl}ScheduleMaster/GetAllSchedule`;
+export const ADD_SCHEDULE = `${baseUrl}ScheduleMaster/AddSchedule`;
+export const DELETE_SCHEDULE = `${baseUrl}ScheduleMaster/DeleteSchedule`;
+export const UPDATE_SCREEN_ASSIGN = `${baseUrl}ScheduleMaster/UpdateAssignScreen`;
+export const SCHEDULE_EVENT_SELECT_BY_ID = `${baseUrl}EventMaster/SelectByID`;
+export const SCHEDULE_SELECT_BY_ID = `${baseUrl}ScheduleMaster/SelectByID`;
+export const UPDATED_SCHEDULE_DATA = `${baseUrl}EventMaster/SelectAllGetScheduleList`;
+export const UPDATE_TIMEZONE = `${baseUrl}ScheduleMaster/UpdateTimeZone`;
+export const SIGNAL_R = `https://disployapi.thedestinysolutions.com/chatHub`;
+export const GET_ALL_TRASHDATA = `${baseUrl}Trash/GetAllTrash`;
+export const ADD_TRASH = `${baseUrl}Trash/AddTrash`;
+export const SINGL_DELETED_TRASH = `${baseUrl}Trash/singlDeletedTrash`;
+export const All_DELETED_TRASH = `${baseUrl}Trash/AllDeletedTrash`;
+export const RESTORE_TRASH = `${baseUrl}Trash/restoreTrash`;
+export const CREATE_NEW_FOLDER = `${baseUrl}AssetMaster/FolderMaster`;
+export const GET_ALL_NEW_FOLDER = `${baseUrl}ImageVideoDoc/GetAllFolder`;
+export const MOVE_TO_FOLDER = `${baseUrl}AssetMaster/Move`;
+export const FetchdataFormFolder = `${baseUrl}ImageVideoDoc/SelectByFolder`;
+export const DeleteAllData = `${baseUrl}ImageVideoDoc/DeleteAll`;
+export const GET_ALL_APPS = `${baseUrl}YoutubeApp/GetAllApps`;
+export const YOUTUBE_INSTANCE_ADD_URL = `${baseUrl}YoutubeApp/AddYoutubeApp`;
+export const GET_ALL_YOUTUBEDATA = `${baseUrl}YoutubeApp/GetAllYoutubeApp`;
+export const GET_YOUTUBEDATA_BY_ID = `${baseUrl}YoutubeApp/SelectByYouTubeId`;
+export const YOUTUBEDATA_ALL_DELETE = `${baseUrl}YoutubeApp/DeleteAllYoutubeApp`;
+export const SELECT_BY_LIST = `${baseUrl}LayoutMaster/SelectByList`;
+export const UPDATE_TRIAL_DAY = `${baseUrl}Register/UpdateTrialDay`;
+export const SCROLL_TYPE_OPTION = `${baseUrl}YoutubeApp/AllScrollType`;
+export const SCROLL_ADD_TEXT = `${baseUrl}YoutubeApp/AddTextScroll`;
+export const SCROLLDATA_BY_ID = `${baseUrl}YoutubeApp/SelectByTextScrollId`;
+export const GET_ALL_TEXT_SCROLL_INSTANCE = `${baseUrl}YoutubeApp/GetAlltextScroll`;
+export const DELETE_ALL_TEXT_SCROLL = `${baseUrl}YoutubeApp/DeleteAllTextScroll`;
+export const SELECT_BY_ASSET_ID = `${baseUrl}AssetMaster/SelectByAssetID`;
+export const ADDPLAYLIST = `${baseUrl}CompositionMaster/AddCompositionMaster`;
+export const ADDSUBPLAYLIST = `${baseUrl}CompositionMaster/AddSubCompositionMaster`;
+export const GET_ALL_COMPOSITIONS = `${baseUrl}CompositionMaster/GetAllCompositionMaster`;
+export const DELETE_COMPOSITION_BY_ID = `${baseUrl}CompositionMaster/DeleteCompositionByID`;
+export const DELETE_ALL_COMPOSITIONS = `${baseUrl}CompositionMaster/DeleteAllComposition`;
+export const DELETE_COMPOSITION = `${baseUrl}CompositionMaster/DeleteComposition`;
+export const GET_ALL_TAGS = `${baseUrl}CompositionMaster/GetAllTag`;
+export const GET_CURRENT_ASSET = `${baseUrl}EventMaster/GetCurrentAsset`;
+export const COMPOSITION_BY_ID = `${baseUrl}CompositionMaster/SelectCompositionByID`;
+export const SCREEN_PREVIEW = `${baseUrl}NewScreen/GetRegisterOtp`;
+export const FORGOTPASSWORD = `${baseUrl}UserMaster/ForgotPassword`;
+export const CHNAGE_PASSWORD = `${baseUrl}UserMaster/ResetPassword?`;
+export const UPDATE_PASSWORD = `${baseUrl}UserMaster/UpdatePassword?`;
+export const GET_USER_BY_USERROLE = `${baseUrl}OrganizationUsersRole/GetUserbyUserRole`;
+export const ASSIGN_TEXTSCROLL_TO_SCREEN = `${baseUrl}YoutubeApp/AssignTextScrollToScreen`;
+export const ADD_TEXTSCROLL_TAGS = `${baseUrl}YoutubeApp/AddTextScrollTags`;
+export const SELECT_BY_TEXTSCROLL_ID = `${baseUrl}YoutubeApp/SelectByTextScrollId`;
+export const ASSIGN_YOUTUBE_TO_SCREEN = `${baseUrl}YoutubeApp/AssignYoutubeToScreen`;
+export const ADD_YOUTUBE_TAGS = `${baseUrl}YoutubeApp/AddYoutubeTags`;
+export const ASSIGN_ASSET_TO_SCREEN = `${baseUrl}AssetMaster/AssignAssetToScreen`;
+export const GET_ASSET_DETAILS = `${baseUrl}AssetMaster/GetAssetDetails`;
+export const DELETE_ALL_ASSET = `${baseUrl}AssetMaster/DeleteAllAsset`;
+export const ASSIGN_COMPOSITION_TO_SCREEN = `${baseUrl}CompositionMaster/AssignCompoitiontoScreen`;
+export const GET_DEFAULT_ASSET = `${baseUrl}UserMaster/GetDefaultAsset`;
+export const SAVE_DEFAULT_ASSET = `${baseUrl}UserMaster/SaveDefaultAsset`;
+export const ADD_STORAGE = `${baseUrl}Storage/AddStorage`;
+export const ADD_UPDATE_ORGANIZATION_USER_ROLE = `${baseUrl}OrganizationUsersRole/AddUpdateOrganizationUsersRole`;
+export const GET_ORG_USERS = `${baseUrl}UserMaster/GetOrgUsers`;
+export const GET_USER_SCREEN_DETAILS = `${baseUrl}UserMaster/GetUsetScreenDetails`;
+export const DELETE_ORG_USER = `${baseUrl}UserMaster/DeleteOrgUser`;
 
 // Weather App Api
-export const WEATHER_APP = `${baseUrl}api/WeatherApp/AddWeatherApp`;
-export const GET_All_WEATHER = `${baseUrl}api/WeatherApp/GetWeatherApp`;
-export const GET_WEATHER_BY_ID = `${baseUrl}api/WeatherApp/GetWeatherApp?`;
-export const WEATHER_ASSIGN_SECREEN = `${baseUrl}api/WeatherApp/AssignWeatherToScreen?`;
-export const WEATHER_ADD_TAG = `${baseUrl}api/WeatherApp/AddWeatherTags?`;
-export const USER_ROLE_GET = `${baseUrl}api/OrganizationUsersRole/ListOfModule`;
-export const USER_ROLE_COMBINE = `${baseUrl}api/OrganizationUsersRole/GetUserRolesCombine`;
-
-export const SCREEN_DELETE_ALL = `${baseUrl}api/NewScreen/DeleteAllScreenByIds`;
+export const WEATHER_APP = `${baseUrl}WeatherApp/AddWeatherApp`;
+export const GET_All_WEATHER = `${baseUrl}WeatherApp/GetWeatherApp`;
+export const GET_WEATHER_BY_ID = `${baseUrl}WeatherApp/GetWeatherApp?`;
+export const WEATHER_ASSIGN_SECREEN = `${baseUrl}WeatherApp/AssignWeatherToScreen?`;
+export const WEATHER_ADD_TAG = `${baseUrl}WeatherApp/AddWeatherTags?`;
+export const USER_ROLE_GET = `${baseUrl}OrganizationUsersRole/ListOfModule`;
+export const USER_ROLE_COMBINE = `${baseUrl}OrganizationUsersRole/GetUserRolesCombine`;
+export const SCREEN_DELETE_ALL = `${baseUrl}NewScreen/DeleteAllScreenByIds`;
 
 // Group Screen
-export const GET_GROUP_SCREEN = `${baseUrl}api/GroupScreen/GetAllGroupData`;
-export const ADD_GROUP_SCREEN = `${baseUrl}api/GroupScreen/AddGroupScreen`;
-export const DELETE_SINGLE_GROUP_SCREEN = `${baseUrl}api/GroupScreen/DeleteGroupByID`;
-export const DELETE_GROUP_SCREEN_ALL = `${baseUrl}api/GroupScreen/DeleteAllGroupScreen`;
-export const GROUP_IN_SCREEN_DELETE_ALL = `${baseUrl}api/GroupScreen/DeleteScreenByID`;
-export const GROUP_IN_SCREEN_ASSETS_UPDATE_ALL = `${baseUrl}api/GroupScreen/UpdateGroupMedia`;
-export const PRIVIEW_GROUP_SCREEN = `${baseUrl}api/GroupScreen/GetGroupPreview`;
-export const UPDATE_GROUP_NAME = `${baseUrl}api/GroupScreen/UpdateGroupScreen`;
-
+export const GET_GROUP_SCREEN = `${baseUrl}GroupScreen/GetAllGroupData`;
+export const ADD_GROUP_SCREEN = `${baseUrl}GroupScreen/AddGroupScreen`;
+export const DELETE_SINGLE_GROUP_SCREEN = `${baseUrl}GroupScreen/DeleteGroupByID`;
+export const DELETE_GROUP_SCREEN_ALL = `${baseUrl}GroupScreen/DeleteAllGroupScreen`;
+export const GROUP_IN_SCREEN_DELETE_ALL = `${baseUrl}GroupScreen/DeleteScreenByID`;
+export const GROUP_IN_SCREEN_ASSETS_UPDATE_ALL = `${baseUrl}GroupScreen/UpdateGroupMedia`;
+export const PRIVIEW_GROUP_SCREEN = `${baseUrl}GroupScreen/GetGroupPreview`;
+export const UPDATE_GROUP_NAME = `${baseUrl}GroupScreen/UpdateGroupScreen`;
 
 // screen Marge
-export const GET_MARGE_SCREEN = `${baseUrl}api/MergeScreen/GetAllMergeScreen`;
-export const ADD_MERGE_SCREEN = `${baseUrl}api/MergeScreen/AddMergeScreen`;
-export const DELETE_MERGE_SCREEN_ALL = `${baseUrl}api/MergeScreen/DeleteAllMergeScreen`;
-export const ASSETS_UPLOAD_IN_SCREEN = `${baseUrl}api/MergeScreen/UpdateMergeScreenMedia`;
-export const UPDATE_MERGE_NAME = `${baseUrl}api/MergeScreen/UpdateMergeScreen`;
-
-export const SCREEN_DEACTIVATE_ACTIVATE = `${baseUrl}api/NewScreen/EnableScreen`;
+export const GET_MARGE_SCREEN = `${baseUrl}MergeScreen/GetAllMergeScreen`;
+export const ADD_MERGE_SCREEN = `${baseUrl}MergeScreen/AddMergeScreen`;
+export const DELETE_MERGE_SCREEN_ALL = `${baseUrl}MergeScreen/DeleteAllMergeScreen`;
+export const ASSETS_UPLOAD_IN_SCREEN = `${baseUrl}MergeScreen/UpdateMergeScreenMedia`;
+export const UPDATE_MERGE_NAME = `${baseUrl}MergeScreen/UpdateMergeScreen`;
+export const SCREEN_DEACTIVATE_ACTIVATE = `${baseUrl}NewScreen/EnableScreen`;
 
 // sidebar
-export const GET_SIDEBAR_MENU = `${baseUrl}api/OrganizationUsersRole/SideBarMenu`;
+export const GET_SIDEBAR_MENU = `${baseUrl}OrganizationUsersRole/SideBarMenu`;
 
 // reports
-export const AUDITREPORT = `${baseUrl}api/Report/GetAuditLogsReport`;
-export const UPTIMEREPORT = `${baseUrl}api/Report/GetUptimeReport`;
-export const SALESREPORT = `${baseUrl}api/Report/GetSalesReport`;
-export const CANCELREPORT = `${baseUrl}api/Report/GetCancelReport`;
-export const MEDIAREPORT = `${baseUrl}api/Report/GetAssetReport`;
-export const BILLINGREPORT = `${baseUrl}api/Report/GetBillingReport`;
+export const AUDITREPORT = `${baseUrl}Report/GetAuditLogsReport`;
+export const UPTIMEREPORT = `${baseUrl}Report/GetUptimeReport`;
+export const SALESREPORT = `${baseUrl}Report/GetSalesReport`;
+export const CANCELREPORT = `${baseUrl}Report/GetCancelReport`;
+export const MEDIAREPORT = `${baseUrl}Report/GetAssetReport`;
+export const BILLINGREPORT = `${baseUrl}Report/GetBillingReport`;
 
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115

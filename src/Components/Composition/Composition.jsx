@@ -12,6 +12,7 @@ import Footer from "../Footer";
 import { useNavigate } from "react-router-dom";
 import {
   ADDPLAYLIST,
+  ASSIGN_COMPOSITION_TO_SCREEN,
   COMPOSITION_BY_ID,
   DELETE_ALL_COMPOSITIONS,
   GET_ALL_COMPOSITIONS,
@@ -382,7 +383,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/CompositionMaster/AssignCompoitiontoScreen?CompositionID=${compositionId}&ScreenID=${idS}`,
+      url: `${ASSIGN_COMPOSITION_TO_SCREEN}?CompositionID=${compositionId}&ScreenID=${idS}`,
       headers: {
         Authorization: authToken,
         "Content-Type": "application/json",

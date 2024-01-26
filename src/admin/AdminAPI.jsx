@@ -14,3 +14,7 @@ export const ADD_USER_MASTER =
   "https://disployapi.thedestinysolutions.com/api/UserMaster/AddUserMaster";
 export const GET_ALL_USER_MASTER =
   "https://disployapi.thedestinysolutions.com/api/UserMaster/GetAllUserMaster";
+export const GET_ALL_STORAGE =
+  "https://disployapi.thedestinysolutions.com/api/Storage/GetAllStorage";
+export const INCREASE_STORAGE =
+  "https://disployapi.thedestinysolutions.com/api/Storage/IncreaseStorage";

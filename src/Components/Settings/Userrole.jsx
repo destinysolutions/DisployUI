@@ -9,6 +9,11 @@ import { getUserRoleData, roleBaseUserFind } from "../../Redux/UserRoleSlice";
 import { BiEdit } from "react-icons/bi";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { RiUser3Fill } from "react-icons/ri";
+import {
+  ADD_UPDATE_ORGANIZATION_USER_ROLE,
+  GET_ORG_USERS,
+  USER_ROLE_GET,
+} from "../../Pages/Api";
 
 const Userrole = ({ searchValue }) => {
   const store = useSelector((state) => state.root.userRole);
@@ -79,7 +84,7 @@ const Userrole = ({ searchValue }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/OrganizationUsersRole/ListOfModule",
+      url: `${USER_ROLE_GET}`,
       headers: {
         Authorization: authToken,
       },
@@ -147,7 +152,7 @@ const Userrole = ({ searchValue }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/OrganizationUsersRole/AddUpdateOrganizationUsersRole",
+      url: `${ADD_UPDATE_ORGANIZATION_USER_ROLE}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken,
@@ -169,9 +174,9 @@ const Userrole = ({ searchValue }) => {
   const handleRoleBasedUserGet = (userRoleID) => {
     setShowUsers(true);
     dispatch(roleBaseUserFind(userRoleID))?.then((res) => {
-      setUserList(res?.payload?.data)
-      setLoading(false)
-    })
+      setUserList(res?.payload?.data);
+      setLoading(false);
+    });
   };
 
   useEffect(() => {
@@ -249,7 +254,7 @@ const Userrole = ({ searchValue }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/OrganizationUsersRole/AddUpdateOrganizationUsersRole",
+      url: `${ADD_UPDATE_ORGANIZATION_USER_ROLE}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken,
@@ -282,7 +287,7 @@ const Userrole = ({ searchValue }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/OrganizationUsersRole/AddUpdateOrganizationUsersRole",
+      url: `${ADD_UPDATE_ORGANIZATION_USER_ROLE}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken,
@@ -350,7 +355,7 @@ const Userrole = ({ searchValue }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/UserMaster/GetOrgUsers",
+      url: `${GET_ORG_USERS}`,
       headers: {
         Authorization: authToken,
       },
@@ -708,75 +713,80 @@ const Userrole = ({ searchValue }) => {
                             {moduleTitle.map((title) => {
                               const moduleName = `Module${title.moduleID}`;
                               return (
-                                title.isForApproval === true && (
-                                  <tr
-                                    className="border-b border-lightgray rounded-md"
-                                    key={title.moduleID}
-                                  >
-                                    <td>{title.pageName}</td>
-                                    {!showDynamicComponent && (
-                                      <>
-                                        <td className="text-center">
-                                          <div>
-                                            <input
-                                              type="checkbox"
-                                              checked={
-                                                selectedCheckboxes[
-                                                  title.moduleID
-                                                ]?.[moduleName]?.View || false
-                                              }
-                                              onChange={() =>
-                                                handleCheckboxChange(
-                                                  title.moduleID,
-                                                  moduleName,
-                                                  "View"
-                                                )
-                                              }
-                                            />
-                                          </div>
-                                        </td>
-                                        <td className="text-center">
-                                          <div>
-                                            <input
-                                              type="checkbox"
-                                              checked={
-                                                selectedCheckboxes[
-                                                  title.moduleID
-                                                ]?.[moduleName]?.CreateEdit ||
-                                                false
-                                              }
-                                              onChange={() =>
-                                                handleCheckboxChange(
-                                                  title.moduleID,
-                                                  moduleName,
-                                                  "CreateEdit"
-                                                )
-                                              }
-                                            />
-                                          </div>
-                                        </td>
-                                        <td className="text-center">
-                                          <div>
-                                            <input
-                                              type="checkbox"
-                                              checked={
-                                                selectedCheckboxes[
-                                                  title.moduleID
-                                                ]?.[moduleName]?.Delete || false
-                                              }
-                                              onChange={() =>
-                                                handleCheckboxChange(
-                                                  title.moduleID,
-                                                  moduleName,
-                                                  "Delete"
-                                                )
-                                              }
-                                            />
-                                          </div>
-                                        </td>
-                                      </>
+                                // title.isForApproval === true && (
+                                <tr
+                                  className="border-b border-lightgray rounded-md"
+                                  key={title.moduleID}
+                                >
+                                  {showDynamicComponent &&
+                                    title.isForApproval === true && (
+                                      <td>{title.pageName}</td>
                                     )}
-                                    {showDynamicComponent && (
+                                  {!showDynamicComponent && (
+                                    <>
+                                      <td>{title.pageName}</td>
+                                      <td className="text-center">
+                                        <div>
+                                          <input
+                                            type="checkbox"
+                                            checked={
+                                              selectedCheckboxes[
+                                                title.moduleID
+                                              ]?.[moduleName]?.View || false
+                                            }
+                                            onChange={() =>
+                                              handleCheckboxChange(
+                                                title.moduleID,
+                                                moduleName,
+                                                "View"
+                                              )
+                                            }
+                                          />
+                                        </div>
+                                      </td>
+                                      <td className="text-center">
+                                        <div>
+                                          <input
+                                            type="checkbox"
+                                            checked={
+                                              selectedCheckboxes[
+                                                title.moduleID
+                                              ]?.[moduleName]?.CreateEdit ||
+                                              false
+                                            }
+                                            onChange={() =>
+                                              handleCheckboxChange(
+                                                title.moduleID,
+                                                moduleName,
+                                                "CreateEdit"
+                                              )
+                                            }
+                                          />
+                                        </div>
+                                      </td>
+                                      <td className="text-center">
+                                        <div>
+                                          <input
+                                            type="checkbox"
+                                            checked={
+                                              selectedCheckboxes[
+                                                title.moduleID
+                                              ]?.[moduleName]?.Delete || false
+                                            }
+                                            onChange={() =>
+                                              handleCheckboxChange(
+                                                title.moduleID,
+                                                moduleName,
+                                                "Delete"
+                                              )
+                                            }
+                                          />
+                                        </div>
+                                      </td>
+                                    </>
+                                  )}
+                                  {title.isForApproval === true &&
+                                    showDynamicComponent && (
                                       <>
                                         <td className="text-center">
                                           <input
@@ -871,9 +881,9 @@ const Userrole = ({ searchValue }) => {
                                         />
                                       </>
                                     )}
-                                  </tr>
-                                )
+                                </tr>
                               );
+                              // );
                             })}
                           </tbody>
                         </table>
@@ -986,63 +996,56 @@ const Userrole = ({ searchValue }) => {
                         </tr>
                       )}
                       {!loading &&
-                        userList?.length > 0 && (
-                          store?.getUserData?.map(
-                            (item, index) => (
-                              // {store?.getUserData?.map(
-                              // (item, index) => (
-                              <tr
-                                key={index}
-                                className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                              >
-                                <td className="text-[#5E5E5E] text-center flex">
-                                  {item?.profilePhoto ? (
-                                    <img
-                                      className="w-10 h-10 rounded-full"
-                                      src={item?.profilePhoto}
-                                      alt="Jese image"
-                                    />
-                                  ) : (
-                                    <RiUser3Fill className="w-10 h-10" />
-                                  )}
-                                  <div className="ps-3 flex text-center">
-                                    <div className="font-normal text-gray-500 mt-2">
-                                      {item.firstName +
-                                        " " +
-                                        item.lastName}
-                                    </div>
-                                  </div>
-                                </td>
-                                <td className="text-[#5E5E5E] text-center">
-                                  {item?.userRoleName}
-                                </td>
-                                <td className="text-[#5E5E5E] text-center">
-                                  {item.isActive == 1 ? (
-                                    <span
-                                      style={{
-                                        backgroundColor:
-                                          "#cee9d6",
-                                      }}
-                                      className=" text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
-                                    >
-                                      Active
-                                    </span>
-                                  ) : (
-                                    <span
-                                      style={{
-                                        backgroundColor:
-                                          "#d1d5db",
-                                      }}
-                                      className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm"
-                                    >
-                                      Inactive
-                                    </span>
-                                  )}
-                                </td>
-                              </tr>
-                            )
-                          )
-                        )}
+                        userList?.length > 0 &&
+                        store?.getUserData?.map((item, index) => (
+                          // {store?.getUserData?.map(
+                          // (item, index) => (
+                          <tr
+                            key={index}
+                            className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                          >
+                            <td className="text-[#5E5E5E] text-center flex">
+                              {item?.profilePhoto ? (
+                                <img
+                                  className="w-10 h-10 rounded-full"
+                                  src={item?.profilePhoto}
+                                  alt="Jese image"
+                                />
+                              ) : (
+                                <RiUser3Fill className="w-10 h-10" />
+                              )}
+                              <div className="ps-3 flex text-center">
+                                <div className="font-normal text-gray-500 mt-2">
+                                  {item.firstName + " " + item.lastName}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="text-[#5E5E5E] text-center">
+                              {item?.userRoleName}
+                            </td>
+                            <td className="text-[#5E5E5E] text-center">
+                              {item.isActive == 1 ? (
+                                <span
+                                  style={{
+                                    backgroundColor: "#cee9d6",
+                                  }}
+                                  className=" text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                >
+                                  Active
+                                </span>
+                              ) : (
+                                <span
+                                  style={{
+                                    backgroundColor: "#d1d5db",
+                                  }}
+                                  className="bg-[#FF0000] rounded-full px-6 py-1 text-white hover:bg-primary text-sm"
+                                >
+                                  Inactive
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
                       {!loading && userList?.length === 0 && (
                         <tr>
                           <td colSpan={6}>

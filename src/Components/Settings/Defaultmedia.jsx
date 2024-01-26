@@ -6,7 +6,12 @@ import {
   AiOutlineCloudUpload,
   AiOutlineSearch,
 } from "react-icons/ai";
-import { GET_ALL_COMPOSITIONS, GET_ALL_FILES } from "../../Pages/Api";
+import {
+  GET_ALL_COMPOSITIONS,
+  GET_ALL_FILES,
+  GET_DEFAULT_ASSET,
+  SAVE_DEFAULT_ASSET,
+} from "../../Pages/Api";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import axios from "axios";
@@ -46,7 +51,7 @@ const Defaultmedia = () => {
   const [assetPreview, setAssetPreview] = useState("");
 
   const modalRef = useRef(null);
-  
+
   const AssetModelOpen = () => {
     axios
       .get(GET_ALL_FILES, { headers: { Authorization: authToken } })
@@ -68,7 +73,7 @@ const Defaultmedia = () => {
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
 
   const handleAssetAdd = (asset) => {
     setSelectedAsset(asset);
@@ -110,7 +115,7 @@ const Defaultmedia = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/UserMaster/GetDefaultAsset",
+      url: `${GET_DEFAULT_ASSET}`,
       headers: {
         Authorization: authToken,
       },
@@ -161,7 +166,7 @@ const Defaultmedia = () => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/UserMaster/SaveDefaultAsset?AssetID=${selectedAsset.assetID}`,
+      url: `${SAVE_DEFAULT_ASSET}?AssetID=${selectedAsset.assetID}`,
       headers: {
         Authorization: authToken,
       },
@@ -284,6 +289,22 @@ const Defaultmedia = () => {
     }
   };
 
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const isClosed = localStorage.getItem("isWindowClosed");
+      if (isClosed === "true") {
+        AssetModelOpen();
+        localStorage.setItem("isWindowClosed", "false");
+        // window.location.reload();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
   return (
     <div>
       <div className="Tabbutton">
@@ -327,12 +348,11 @@ const Defaultmedia = () => {
               </label>
               <button
                 onClick={(e) => {
-                  AssetModelOpen()
+                  AssetModelOpen();
                   setSelectedAsset({
                     ...selectedAsset,
                     assetName: e.target.value,
                   });
-
                 }}
                 className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm line-clamp-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
               >
@@ -375,15 +395,17 @@ const Defaultmedia = () => {
                         >
                           <button
                             type="button"
-                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 1 ? "active" : ""
-                              }`}
+                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                              popupActiveTab === 1 ? "active" : ""
+                            }`}
                             onClick={() => setPopupActiveTab(1)}
                           >
                             <span
-                              className={`p-1 rounded ${popupActiveTab === 1
-                                ? "bg-primary text-white"
-                                : "bg-lightgray"
-                                } `}
+                              className={`p-1 rounded ${
+                                popupActiveTab === 1
+                                  ? "bg-primary text-white"
+                                  : "bg-lightgray"
+                              } `}
                             >
                               <IoBarChartSharp size={15} />
                             </span>
@@ -471,7 +493,8 @@ const Defaultmedia = () => {
                                 window.open(
                                   window.location.origin.concat("/fileupload")
                                 );
-                                setShowAssetModal(false);
+                                localStorage.setItem("isWindowClosed", "false");
+                                // setShowAssetModal(false);
                                 setSearchAssest("");
                               }}
                             >
@@ -500,11 +523,12 @@ const Defaultmedia = () => {
                                 filteredData.map((asset) => (
                                   <tbody key={asset.assetID}>
                                     <tr
-                                      className={`${selectedAsset?.assetID ===
+                                      className={`${
+                                        selectedAsset?.assetID ===
                                         asset?.assetID
-                                        ? "bg-[#f3c953]"
-                                        : ""
-                                        } border-b border-[#eee] `}
+                                          ? "bg-[#f3c953]"
+                                          : ""
+                                      } border-b border-[#eee] `}
                                       onClick={() => {
                                         handleAssetAdd(asset);
                                         setAssetPreviewPopup(true);
@@ -547,31 +571,31 @@ const Defaultmedia = () => {
                                     <>
                                       {assetPreview.assetType ===
                                         "OnlineImage" && (
-                                          <div className="imagebox p-3">
-                                            <img
-                                              src={assetPreview.assetFolderPath}
-                                              alt={assetPreview.assetName}
-                                              className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                            />
-                                          </div>
-                                        )}
+                                        <div className="imagebox p-3">
+                                          <img
+                                            src={assetPreview.assetFolderPath}
+                                            alt={assetPreview.assetName}
+                                            className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                                          />
+                                        </div>
+                                      )}
 
                                       {assetPreview.assetType ===
                                         "OnlineVideo" && (
-                                          <div className="relative videobox">
-                                            <video
-                                              controls
-                                              className="w-full rounded-2xl h-full"
-                                            >
-                                              <source
-                                                src={assetPreview.assetFolderPath}
-                                                type="video/mp4"
-                                              />
-                                              Your browser does not support the
-                                              video tag.
-                                            </video>
-                                          </div>
-                                        )}
+                                        <div className="relative videobox">
+                                          <video
+                                            controls
+                                            className="w-full rounded-2xl h-full"
+                                          >
+                                            <source
+                                              src={assetPreview.assetFolderPath}
+                                              type="video/mp4"
+                                            />
+                                            Your browser does not support the
+                                            video tag.
+                                          </video>
+                                        </div>
+                                      )}
                                       {assetPreview.assetType === "Image" && (
                                         <img
                                           src={assetPreview.assetFolderPath}
@@ -649,65 +673,67 @@ const Defaultmedia = () => {
                               </thead>
                               {filteredData.length === 0
                                 ? compositionData.map((composition) => (
-                                  <tbody key={composition.compositionID}>
-                                    <tr
-                                      className={`${selectedComposition === composition
-                                        ? "bg-[#f3c953]"
-                                        : ""
+                                    <tbody key={composition.compositionID}>
+                                      <tr
+                                        className={`${
+                                          selectedComposition === composition
+                                            ? "bg-[#f3c953]"
+                                            : ""
                                         } border-b border-[#eee] `}
-                                      onClick={() => {
-                                        handleCompositionsAdd(composition);
-                                      }}
-                                    >
-                                      <td className="p-3 text-left">
-                                        {composition.compositionName}
-                                      </td>
-                                      <td className="p-3">
-                                        {moment(composition.dateAdded).format(
-                                          "YYYY-MM-DD hh:mm"
-                                        )}
-                                      </td>
-                                      <td className="p-3">
-                                        {composition.resolution}
-                                      </td>
-                                      <td className="p-3">
-                                        {moment
-                                          .utc(composition.duration * 1000)
-                                          .format("hh:mm:ss")}
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                ))
+                                        onClick={() => {
+                                          handleCompositionsAdd(composition);
+                                        }}
+                                      >
+                                        <td className="p-3 text-left">
+                                          {composition.compositionName}
+                                        </td>
+                                        <td className="p-3">
+                                          {moment(composition.dateAdded).format(
+                                            "YYYY-MM-DD hh:mm"
+                                          )}
+                                        </td>
+                                        <td className="p-3">
+                                          {composition.resolution}
+                                        </td>
+                                        <td className="p-3">
+                                          {moment
+                                            .utc(composition.duration * 1000)
+                                            .format("hh:mm:ss")}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  ))
                                 : filteredData.map((composition) => (
-                                  <tbody key={composition.compositionID}>
-                                    <tr
-                                      className={`${selectedComposition === composition
-                                        ? "bg-[#f3c953]"
-                                        : ""
+                                    <tbody key={composition.compositionID}>
+                                      <tr
+                                        className={`${
+                                          selectedComposition === composition
+                                            ? "bg-[#f3c953]"
+                                            : ""
                                         } border-b border-[#eee] `}
-                                      onClick={() => {
-                                        handleCompositionsAdd(composition);
-                                      }}
-                                    >
-                                      <td className="p-3 text-left">
-                                        {composition.compositionName}
-                                      </td>
-                                      <td className="p-3">
-                                        {moment(composition.dateAdded).format(
-                                          "YYYY-MM-DD hh:mm"
-                                        )}
-                                      </td>
-                                      <td className="p-3">
-                                        {composition.resolution}
-                                      </td>
-                                      <td className="p-3">
-                                        {moment
-                                          .utc(composition.duration * 1000)
-                                          .format("hh:mm:ss")}
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                ))}
+                                        onClick={() => {
+                                          handleCompositionsAdd(composition);
+                                        }}
+                                      >
+                                        <td className="p-3 text-left">
+                                          {composition.compositionName}
+                                        </td>
+                                        <td className="p-3">
+                                          {moment(composition.dateAdded).format(
+                                            "YYYY-MM-DD hh:mm"
+                                          )}
+                                        </td>
+                                        <td className="p-3">
+                                          {composition.resolution}
+                                        </td>
+                                        <td className="p-3">
+                                          {moment
+                                            .utc(composition.duration * 1000)
+                                            .format("hh:mm:ss")}
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  ))}
                             </table>
                           </div>
                         </div>

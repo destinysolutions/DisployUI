@@ -3,16 +3,14 @@ import React, { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import {
-  AiOutlineCloseCircle,
-  AiOutlineSearch,
-} from "react-icons/ai";
+import { AiOutlineCloseCircle, AiOutlineSearch } from "react-icons/ai";
 import { IoBarChartSharp } from "react-icons/io5";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import ShowAppsModal from "../../../ShowAppsModal";
 import { useDispatch } from "react-redux";
 import { handleGetAllAssetsTypeBase } from "../../../../Redux/Assetslice";
+import { GET_ASSET_DETAILS } from "../../../../Pages/Api";
 
 const ShowAssetModal = ({
   setShowAssetModal,
@@ -27,8 +25,6 @@ const ShowAssetModal = ({
   type,
   handleSave,
 }) => {
-
-
   const dispatch = useDispatch();
 
   const { user, token } = useSelector((state) => state.root.auth);
@@ -38,7 +34,6 @@ const ShowAssetModal = ({
   const store = useSelector((s) => s.root.asset);
   const [searchAssest, setSearchAssest] = useState("");
   const [filteredAssets, setFilteredAssets] = useState([]);
-
 
   const modalRef = useRef(null);
 
@@ -86,24 +81,22 @@ const ShowAssetModal = ({
     };
   }, []);
 
-
   useEffect(() => {
     const query = `ScreenType=ALL`;
 
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/AssetMaster/GetAssetDetails?${query}`,
+      url: `${GET_ASSET_DETAILS}?${query}`,
       headers: { "Content-Type": "application/json", Authorization: authToken },
       data: query,
     };
 
     if (loadFist) {
-      dispatch(handleGetAllAssetsTypeBase({ config }))
-      setLoadFist(false)
+      dispatch(handleGetAllAssetsTypeBase({ config }));
+      setLoadFist(false);
     }
-
-  }, [loadFist,store]);
+  }, [loadFist, store]);
 
   useEffect(() => {
     const filteredAssets = store.data?.filter(
@@ -114,13 +107,13 @@ const ShowAssetModal = ({
     setFilteredAssets(filteredAssets);
   }, [searchAssest, store]);
 
-
   return (
     <>
       <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] h-auto top-12 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
         <div
-          className={`${showAppModal ? "hidden" : ""
-            } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
+          className={`${
+            showAppModal ? "hidden" : ""
+          } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
         >
           <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
             Set Content to Add Media
@@ -134,8 +127,9 @@ const ShowAssetModal = ({
         </div>
         <div
           onClick={() => assetPreviewPopup && setAssetPreviewPopup(false)}
-          className={`${showAppModal ? "hidden" : ""
-            } relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
+          className={`${
+            showAppModal ? "hidden" : ""
+          } relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
         >
           <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
             <div className="flex-initial">
@@ -149,15 +143,17 @@ const ShowAssetModal = ({
                   >
                     <button
                       type="button"
-                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 1 ? "active" : ""
-                        }`}
+                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
+                        popupActiveTab === 1 ? "active" : ""
+                      }`}
                       onClick={() => setPopupActiveTab(1)}
                     >
                       <span
-                        className={`p-1 rounded ${popupActiveTab === 1
-                          ? "bg-primary text-white"
-                          : "bg-lightgray"
-                          } `}
+                        className={`p-1 rounded ${
+                          popupActiveTab === 1
+                            ? "bg-primary text-white"
+                            : "bg-lightgray"
+                        } `}
                       >
                         <IoBarChartSharp size={15} />
                       </span>
@@ -190,7 +186,8 @@ const ShowAssetModal = ({
                 <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover w-full addmedia-table">
                   <table
                     style={{
-                      borderCollapse: "separate", borderSpacing: " 0 10px",
+                      borderCollapse: "separate",
+                      borderSpacing: " 0 10px",
                     }}
                     className="w-full"
                   >
@@ -203,30 +200,38 @@ const ShowAssetModal = ({
                       </tr>
                     </thead>
 
-                    {store && filteredAssets?.map((asset) => {
-                      return (
-                        <>
-                          <tbody key={asset.assetID}>
-                            <tr
-                              className={`${selectedAsset === asset ||
-                                selectedAsset === asset?.assetName
-                                ? "bg-[#f3c953]"
-                                : ""
+                    {store &&
+                      filteredAssets?.map((asset) => {
+                        return (
+                          <>
+                            <tbody key={asset.assetID}>
+                              <tr
+                                className={`${
+                                  selectedAsset === asset ||
+                                  selectedAsset === asset?.assetName
+                                    ? "bg-[#f3c953]"
+                                    : ""
                                 } border-b border-[#eee] text-center cursor-pointer hover:bg-black hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
-                              onClick={() => {
-                                handleAssetAdd(asset);
-                                setAssetPreviewPopup(true);
-                              }}
-                            >
-                              <td className="p-3 text-left">{asset.assetName}</td>
-                              <td className="p-3">{moment(asset.createdDate).format("YYYY-MM-DD hh:mm")}</td>
-                              <td className="p-3">{asset.fileSize}</td>
-                              <td className="p-3">{asset.assetType}</td>
-                            </tr>
-                          </tbody>
-                        </>
-                      )
-                    })}
+                                onClick={() => {
+                                  handleAssetAdd(asset);
+                                  setAssetPreviewPopup(true);
+                                }}
+                              >
+                                <td className="p-3 text-left">
+                                  {asset.assetName}
+                                </td>
+                                <td className="p-3">
+                                  {moment(asset.createdDate).format(
+                                    "YYYY-MM-DD hh:mm"
+                                  )}
+                                </td>
+                                <td className="p-3">{asset.fileSize}</td>
+                                <td className="p-3">{asset.assetType}</td>
+                              </tr>
+                            </tbody>
+                          </>
+                        );
+                      })}
                   </table>
 
                   {assetPreviewPopup && (
@@ -303,14 +308,14 @@ const ShowAssetModal = ({
                   )}
                 </div>
               </div>
-
             </div>
           </div>
         </div>
 
         <div
-          className={`${showAppModal ? "hidden" : ""
-            } flex justify-between items-center p-5`}
+          className={`${
+            showAppModal ? "hidden" : ""
+          } flex justify-between items-center p-5`}
         >
           <p className="text-black">Content will always be playing Confirm</p>
           <button
