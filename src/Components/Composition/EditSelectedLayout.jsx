@@ -647,6 +647,22 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
     event.preventDefault();
   };
 
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const isClosed = localStorage.getItem('isWindowClosed');
+      if (isClosed === 'true') {
+        handleFetchAllData();
+        localStorage.setItem('isWindowClosed', 'false');
+        // window.location.reload();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
   return (
     <>
       {showAppModal && <ShowAppsModal setShowAppModal={setShowAppModal} />}
@@ -660,8 +676,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
             <div
               ref={modalRef}
               className={`fixed  border left-1/2 -translate-x-1/2 ${screenType === "portrait"
-                  ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
-                  : "min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]"
+                ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
+                : "min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]"
                 }  `}
             >
               <RxCrossCircled
@@ -771,8 +787,11 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
               </div>
               <div className="text-center">
                 {activeTab === "asset" ? (
-                  <Link to="/FileUpload" target="_blank">
-                    <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                  <Link to="/FileUpload" target="_blank" >
+                    <button className="border-white bg-SlateBlue text-white border-2 rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                      onClick={() => {
+                        localStorage.setItem('isWindowClosed', 'false');
+                      }}>
                       New Assets Upload
                     </button>
                   </Link>
@@ -898,8 +917,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
               <div className="flex flex-wrap border-b border-b-[#E4E6FF] pb-5 w-full">
                 <div
                   className={`layout-img me-5 ${compositonData?.screenType === "portrait"
-                      ? "w-24 h-36"
-                      : "w-36 h-24"
+                    ? "w-24 h-36"
+                    : "w-36 h-24"
                     } bg-[#D5E3FF] relative`}
                 >
                   {!loading &&
@@ -930,8 +949,8 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       .map((item, index) => (
                         <button
                           className={`px-5 ${currentSection == index + 1
-                              ? "bg-primary"
-                              : "bg-white"
+                            ? "bg-primary"
+                            : "bg-white"
                             } ${currentSection == index + 1
                               ? "text-white"
                               : "text-primary"

@@ -274,14 +274,14 @@ const EventEditor = ({
       UpdateALL: updateAllValue
         ? updateAllValue
         : selectedRepeatDay.length > 0
-        ? 1
-        : 0,
+          ? 1
+          : 0,
     };
     let updateAllValueFlag = updateAllValue
       ? updateAllValue
       : repeatDayValue !== null
-      ? 1
-      : 0;
+        ? 1
+        : 0;
     if (areSpecificDaysSelected || selectAllDays) {
       eventData.repeatDay = repeatDayValue;
     }
@@ -313,6 +313,8 @@ const EventEditor = ({
           setShowRepeatSettings(false)
         );
       }
+      setSelectedAsset(null);
+      setTitle("");
       onClose();
       setSelectedRepeatDay("");
       setSelectedDays([]);
@@ -499,7 +501,7 @@ const EventEditor = ({
         setEditedEndTime(moment(selectedSlot.end).format("HH:mm"));
       }
     }
-  }, [isOpen, selectedEvent, selectedSlot, allAssets]);
+  }, [isOpen, selectedEvent, selectedSlot]);
 
   // for clear selectedDays
   useEffect(() => {
@@ -580,9 +582,8 @@ const EventEditor = ({
                             .map((item, index) => (
                               <tr
                                 key={index}
-                                className={`${
-                                  selectedAsset === item ? "bg-[#f3c953]" : ""
-                                } border-b border-[#eee] mt-5`}
+                                className={`${selectedAsset === item ? "bg-[#f3c953]" : ""
+                                  } border-b border-[#eee] mt-5`}
                                 onClick={() => {
                                   handleAssetAdd(item);
                                 }}
@@ -607,15 +608,15 @@ const EventEditor = ({
                                   )}
                                   {(item.assetType === "Video" ||
                                     item.assetType === "OnlineVideo") && (
-                                    <div className="max-w-[10vw] min-w-[10vw] min-h-[10vh] max-h-[10vh]">
-                                      <ReactPlayer
-                                        url={item?.assetFolderPath}
-                                        className="rounded-2xl videoTab "
-                                        controls={false}
-                                        playing={true}
-                                      />
-                                    </div>
-                                  )}
+                                      <div className="max-w-[10vw] min-w-[10vw] min-h-[10vh] max-h-[10vh]">
+                                        <ReactPlayer
+                                          url={item?.assetFolderPath}
+                                          className="rounded-2xl videoTab "
+                                          controls={false}
+                                          playing={true}
+                                        />
+                                      </div>
+                                    )}
 
                                   {item.text && (
                                     <div className="w-full h-full ">
@@ -680,7 +681,7 @@ const EventEditor = ({
                         ) : searchAsset !== "" ? (
                           <tr>
                             <td
-                              colSpan={6}
+                              colSpan={4}
                               className="text-center text-xl font-semibold h-60"
                             >
                               <p>No assets found related "{searchAsset}"</p>
@@ -728,56 +729,56 @@ const EventEditor = ({
                                         <>
                                           {assetPreview?.assetType ===
                                             "OnlineImage" && (
-                                            <div className="imagebox relative z-0 w-full h-full">
-                                              <img
-                                                src={
-                                                  assetPreview.assetFolderPath
-                                                }
-                                                alt={assetPreview.assetName}
-                                                className="imagebox relative h-full w-full"
-                                              />
-                                            </div>
-                                          )}
-                                          {assetPreview?.assetType ===
-                                            "OnlineVideo" && (
-                                            <div className="imagebox z-0 relative h-full">
-                                              <video
-                                                controls
-                                                autoPlay={true}
-                                                className="h-full w-full"
-                                              >
-                                                <source
+                                              <div className="imagebox relative z-0 w-full h-full">
+                                                <img
                                                   src={
                                                     assetPreview.assetFolderPath
                                                   }
-                                                  type="video/mp4"
+                                                  alt={assetPreview.assetName}
+                                                  className="imagebox relative h-full w-full"
                                                 />
-                                                Your browser does not support
-                                                the video tag.
-                                              </video>
-                                            </div>
-                                          )}
+                                              </div>
+                                            )}
+                                          {assetPreview?.assetType ===
+                                            "OnlineVideo" && (
+                                              <div className="imagebox z-0 relative h-full">
+                                                <video
+                                                  controls
+                                                  autoPlay={true}
+                                                  className="h-full w-full"
+                                                >
+                                                  <source
+                                                    src={
+                                                      assetPreview.assetFolderPath
+                                                    }
+                                                    type="video/mp4"
+                                                  />
+                                                  Your browser does not support
+                                                  the video tag.
+                                                </video>
+                                              </div>
+                                            )}
                                           {assetPreview?.assetType ===
                                             "Image" && (
-                                            <img
-                                              src={assetPreview.assetFolderPath}
-                                              alt={assetPreview.assetName}
-                                              className="imagebox relative h-full w-full"
-                                            />
-                                          )}
+                                              <img
+                                                src={assetPreview.assetFolderPath}
+                                                alt={assetPreview.assetName}
+                                                className="imagebox relative h-full w-full"
+                                              />
+                                            )}
                                           {assetPreview?.assetType ===
                                             "Video" && (
-                                            <div className="relative videobox w-full z-0">
-                                              <ReactPlayer
-                                                url={
-                                                  assetPreview?.assetFolderPath
-                                                }
-                                                className="w-[90%] relative z-20 h-[90%] videoinner object-fill"
-                                                controls={true}
-                                                playing={true}
-                                              />
-                                            </div>
-                                          )}
+                                              <div className="relative videobox w-full z-0">
+                                                <ReactPlayer
+                                                  url={
+                                                    assetPreview?.assetFolderPath
+                                                  }
+                                                  className="w-[90%] relative z-20 h-[90%] videoinner object-fill"
+                                                  controls={true}
+                                                  playing={true}
+                                                />
+                                              </div>
+                                            )}
                                           {assetPreview?.youTubeURL && (
                                             <div className="relative videobox w-full">
                                               <ReactPlayer
@@ -805,18 +806,18 @@ const EventEditor = ({
                                           )}
                                           {assetPreview?.assetType ===
                                             "DOC" && (
-                                            <div className="h-full flex text-white items-center justify-evenly">
-                                              <a
-                                                href={
-                                                  assetPreview.assetFolderPath
-                                                }
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                              >
-                                                {assetPreview.assetName}
-                                              </a>
-                                            </div>
-                                          )}
+                                              <div className="h-full flex text-white items-center justify-evenly">
+                                                <a
+                                                  href={
+                                                    assetPreview.assetFolderPath
+                                                  }
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                >
+                                                  {assetPreview.assetName}
+                                                </a>
+                                              </div>
+                                            )}
                                         </>
                                       )}
                                     </div>
@@ -998,10 +999,9 @@ const EventEditor = ({
                         <div>
                           {buttons.map((label, index) => (
                             <button
-                              className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${
-                                selectedDays[index] &&
+                              className={`border border-primary px-3 py-1 mr-2 mt-3 rounded-full ${selectedDays[index] &&
                                 "bg-SlateBlue border-white"
-                              } 
+                                } 
                                 `}
                               key={index}
                               onClick={() => handleDayButtonClick(index, label)}
@@ -1109,6 +1109,8 @@ const EventEditor = ({
                     onClose();
                     setSelectedDays([]);
                     setSearchAsset("");
+                    setSelectedAsset(null);
+                    setTitle("");
                     setAllAssets([...assets]);
                     setShowRepeatSettings(false);
                   }}

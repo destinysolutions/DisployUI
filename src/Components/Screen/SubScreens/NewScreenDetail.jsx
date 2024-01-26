@@ -123,13 +123,13 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   // console.log(otpData);
 
-  useEffect(() => {
-    // get youtube data
-    dispatch(handleGetYoutubeData({ token }));
+  // useEffect(() => {
+  //   // get youtube data
+  //   dispatch(handleGetYoutubeData({ token }));
 
-    //get text scroll data
-    dispatch(handleGetTextScrollData({ token }));
-  }, []);
+  //   //get text scroll data
+  //   dispatch(handleGetTextScrollData({ token }));
+  // }, []);
 
   useEffect(() => {
     setAppDatas(allAppsData);

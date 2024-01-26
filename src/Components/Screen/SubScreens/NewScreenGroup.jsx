@@ -151,9 +151,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   );
   const paginatedData = Array.isArray(store?.data)
     ? store?.data.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-      )
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    )
     : [];
 
   const handlePageChange = (pageNumber) => {
@@ -871,43 +871,43 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                     >
                                       {(screen?.tags === "" ||
                                         screen?.tags === null) && (
-                                        <span>
-                                          <AiOutlinePlusCircle
-                                            size={30}
-                                            className="mx-auto cursor-pointer"
-                                            onClick={() => {
-                                              setShowTagModal(true);
-                                              screen.tags === "" ||
-                                              screen?.tags === null
-                                                ? setTags([])
-                                                : setTags(
+                                          <span>
+                                            <AiOutlinePlusCircle
+                                              size={30}
+                                              className="mx-auto cursor-pointer"
+                                              onClick={() => {
+                                                setShowTagModal(true);
+                                                screen.tags === "" ||
+                                                  screen?.tags === null
+                                                  ? setTags([])
+                                                  : setTags(
                                                     screen?.tags?.split(",")
                                                   );
-                                              setTagUpdateScreeen(screen);
-                                            }}
-                                          />
-                                        </span>
-                                      )}
+                                                setTagUpdateScreeen(screen);
+                                              }}
+                                            />
+                                          </span>
+                                        )}
                                       {screen?.tags !== null
                                         ? screen.tags
-                                            .split(",")
-                                            .slice(
-                                              0,
-                                              screen.tags.split(",").length > 2
-                                                ? 3
-                                                : screen.tags.split(",").length
-                                            )
-                                            .map((text) => {
-                                              if (text.toString().length > 10) {
-                                                return text
-                                                  .split("")
-                                                  .slice(0, 10)
-                                                  .concat("...")
-                                                  .join("");
-                                              }
-                                              return text;
-                                            })
-                                            .join(",")
+                                          .split(",")
+                                          .slice(
+                                            0,
+                                            screen.tags.split(",").length > 2
+                                              ? 3
+                                              : screen.tags.split(",").length
+                                          )
+                                          .map((text) => {
+                                            if (text.toString().length > 10) {
+                                              return text
+                                                .split("")
+                                                .slice(0, 10)
+                                                .concat("...")
+                                                .join("");
+                                            }
+                                            return text;
+                                          })
+                                          .join(",")
                                         : ""}
                                       {screen?.tags !== "" &&
                                         screen?.tags !== null && (
@@ -915,11 +915,11 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                             onClick={() => {
                                               setShowTagModal(true);
                                               screen.tags === "" ||
-                                              screen?.tags === null
+                                                screen?.tags === null
                                                 ? setTags([])
                                                 : setTags(
-                                                    screen?.tags?.split(",")
-                                                  );
+                                                  screen?.tags?.split(",")
+                                                );
                                               setTagUpdateScreeen(screen);
                                             }}
                                             className="mx-auto  w-5 h-5 cursor-pointer "
@@ -944,10 +944,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                       <div className="cursor-pointer text-xl flex gap-3 text-right rounded-full px-2 py-2 text-white text-center bg-[#FF0000]">
                                         <MdDeleteForever
                                           onClick={() =>
-                                            deleteGroupInScreen({
-                                              ScreenGroupListID:
-                                                screen.screenGroupListID,
-                                            })
+                                            deleteGroupInScreen(screen, item)
                                           }
                                         />
                                       </div>

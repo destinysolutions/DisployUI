@@ -126,6 +126,7 @@ const YoutubeDetail = ({ sidebarOpen, setSidebarOpen }) => {
         if (window.history.length === 1) {
           dispatch(handleNavigateFromComposition());
           dispatch(handleChangeNavigateFromComposition(false));
+          localStorage.setItem('isWindowClosed', 'true');
           window.close();
         } else {
           history("/youtube");

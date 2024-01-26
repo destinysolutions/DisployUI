@@ -105,9 +105,9 @@ const AppsSlice = createSlice({
       handleGetYoutubeData.fulfilled,
       (state, { payload, meta }) => {
         state.youtube.loading = false;
-        state.youtube.youtubeData = payload?.data ?? [];
+        state.youtube.youtubeData = payload?.data ? payload?.data : [];
         state.allAppsData =
-        payload?.data.length > 0
+          payload?.data.length > 0
             ? [...state.allAppsData, ...payload?.data]
             : [];
         state.error = null;
@@ -131,9 +131,9 @@ const AppsSlice = createSlice({
       handleGetTextScrollData.fulfilled,
       (state, { payload, meta }) => {
         state.textScroll.loading = false;
-        state.textScroll.textScrollData = payload?.data ?? [];
+        state.textScroll.textScrollData = payload?.data ? payload?.data : [];
         state.allAppsData =
-        payload?.data.length > 0
+          payload?.data.length > 0
             ? [...state.allAppsData, ...payload?.data]
             : [];
         state.error = null;
@@ -166,6 +166,6 @@ const AppsSlice = createSlice({
   },
 });
 
-export const {} = AppsSlice.actions;
+export const { } = AppsSlice.actions;
 
 export default AppsSlice.reducer;

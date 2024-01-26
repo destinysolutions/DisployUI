@@ -146,6 +146,7 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
                   navigate(-1);
                 } else {
                   dispatch(handleNavigateFromComposition());
+                  localStorage.setItem('isWindowClosed', 'true');
                   window.close();
                 }
               }

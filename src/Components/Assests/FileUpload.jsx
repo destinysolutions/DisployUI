@@ -204,6 +204,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 toast.success(`File uploaded successfully.`);
                 if (window.history.length == 1) {
                   dispatch(handleNavigateFromComposition());
+                  localStorage.setItem('isWindowClosed', 'true');
                   window.close();
                 } else {
                   navigate(-1);

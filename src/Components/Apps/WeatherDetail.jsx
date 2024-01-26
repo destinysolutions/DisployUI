@@ -423,6 +423,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response.data.status === 200) {
           if (window.history.length === 1) {
+            localStorage.setItem('isWindowClosed', 'true');
             window.close();
           } else {
             history("/weather");

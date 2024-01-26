@@ -126,6 +126,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
                   navigate(-1);
                 } else {
                   dispatch(handleNavigateFromComposition());
+                  localStorage.setItem('isWindowClosed', 'true');
                   window.close();
                 }
               }

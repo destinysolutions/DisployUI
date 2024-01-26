@@ -128,6 +128,7 @@ const Pixabay = ({ closeModal, pixabayModalRef }) => {
                   navigate(-1);
                 } else {
                   dispatch(handleNavigateFromComposition());
+                  localStorage.setItem('isWindowClosed', 'true');
                   window.close();
                 }
               }

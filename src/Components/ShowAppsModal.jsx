@@ -20,24 +20,27 @@ const ShowAppsModal = ({ setShowAppModal }) => {
   function linkForApps(appName) {
     dispatch(handleChangeNavigateFromComposition(true));
     setTimeout(() => {
-      if (appName === "Youtube") {
-        window.open("/youtubedetail", "_blank");
-        //   return navigate("/youtubedetail");
-        setShowAppModal(false)
-        return;
-      } else if (appName == "Weather") {
-        window.open("/weatherdetail", "_blank");
-        //   return navigate("/weatherdetail");
-        setShowAppModal(false);
-        return;
-      } else if (appName == "text-scroll") {
-        window.open("/textscrolldetail", "_blank");
-        //   navigate("/textscrolldetail");
-        setShowAppModal(false)
-        return;
+      let url = "";
+  
+      switch (appName) {
+        case "Youtube":
+          url = "/youtubedetail";
+          break;
+        case "Weather":
+          url = "/weatherdetail";
+          break;
+        case "text-scroll":
+          url = "/textscrolldetail";
+          break;
+        default:
+          return;
       }
+  
+      window.open(url, "_blank");
+      localStorage.setItem('isWindowClosed', 'false');
+      setShowAppModal(false);
     }, 500);
-  }
+  }  
 
   return (
     <>
