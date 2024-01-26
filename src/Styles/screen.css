@@ -72,7 +72,32 @@ img.cursor-pointer.assestPopup {
   background: #fff !important;
   padding: 0;
 }
-
+.react-responsive-modal-modal {
+  max-width: 70vw;
+  min-width: 70vw;
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+  background: #ffffff;
+  box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.25);
+  margin: 1.2rem;
+  padding: 1rem;
+  position: relative;
+  overflow-y: auto;
+  border-radius: 10px;
+}
+.react-responsive-modal-closeButton {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background-color: white;
+  display: flex;
+  border-radius: 30px;
+  border: solid 2px #000;
+}
 @media (max-width: 767px) {
   .sm\:mt-3 {
     margin-top: 0.75rem !important;
@@ -89,6 +114,10 @@ img.cursor-pointer.assestPopup {
 
   .sm\:p-3 {
     padding: 0.75rem !important;
+  }
+  .react-responsive-modal-modal {
+    max-width: 90vw;
+    min-width: 90vw;
   }
 }
 
@@ -503,10 +532,10 @@ button.daysbtn {
 .assetstable table tr:nth-child(even),
 .schedual-table table tr:nth-child(even),
 .AddMedia-table tbody:nth-child(even),
-.set-schedule-table   tr:nth-child(even),
+.set-schedule-table tr:nth-child(even),
 .composition-table tr:nth-child(even),
 .selectedlayout-table tr:nth-child(even),
-.addmedia-table tr:nth-child(even){
+.addmedia-table tr:nth-child(even) {
   background: #ebebeb;
 }
 .screen-table tr,
@@ -515,17 +544,17 @@ button.daysbtn {
 .assetstable table tr,
 .schedual-table table tr,
 .AddMedia-table tbody,
-.set-schedule-table  tr,
+.set-schedule-table tr,
 .composition-table tr,
 .selectedlayout-table tr,
-.addmedia-table tr{
+.addmedia-table tr {
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 .composition-table tr td,
 .selectedlayout-table tr td,
 .screen-table tr td,
-.addmedia-table tr td{
-  font-size:13px;
+.addmedia-table tr td {
+  font-size: 13px;
 }
 .imagebox.relative.p-3 img {
   /* min-height: 250px;
@@ -534,20 +563,19 @@ button.daysbtn {
 .relative.searchbox input {
   border: 1px solid #ccc;
 }
-.relative.searchbox input::placeholder{
-  color:#444 !important;
+.relative.searchbox input::placeholder {
+  color: #444 !important;
   font-size: 14px !important;
 }
-@media(max-width:1366px){
-  .Set-Schedule-popup{
-    min-height:350px;
-    max-height:350px;
+@media (max-width: 1366px) {
+  .Set-Schedule-popup {
+    min-height: 350px;
+    max-height: 350px;
     overflow-y: scroll;
   }
 }
-@media(max-width:1244px){
-  .screen-section{
+@media (max-width: 1244px) {
+  .screen-section {
     overflow-x: auto;
   }
-  
 }

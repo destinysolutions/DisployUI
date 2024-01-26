@@ -146,7 +146,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const selectedScreenIdsString = Array.isArray(selectedCheckboxIDs)
     ? selectedCheckboxIDs.join(",")
     : "";
-    const [selectcheck, setSelectCheck] = useState(false);
+  const [selectcheck, setSelectCheck] = useState(false);
 
   //   Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -274,7 +274,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   //  multipal select
   const handleScreenCheckboxChange = (screenID) => {
     setSelectAllChecked(false);
-    setSelectCheck(true)
+    setSelectCheck(true);
     if (selectedItems.includes(screenID)) {
       setSelectedItems(selectedItems.filter((id) => id !== screenID));
     } else {
@@ -288,7 +288,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         setSelectAllChecked(true);
       }
     }
-  }, [selectcheck, selectedItems])
+  }, [selectcheck, selectedItems]);
 
   // all select
   const handleSelectAllCheckboxChange = (e) => {
@@ -1227,18 +1227,18 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 {screenContentVisible && (
                                   <td className="">
                                     <div className="flex">
-                                    <input
-                                          type="checkbox"
-                                          className="mr-3"
-                                          onChange={() =>
-                                            handleScreenCheckboxChange(
-                                              screen.screenID
-                                            )
-                                          }
-                                          checked={selectedItems.includes(
+                                      <input
+                                        type="checkbox"
+                                        className="mr-3"
+                                        onChange={() =>
+                                          handleScreenCheckboxChange(
                                             screen.screenID
-                                          )}
-                                        />
+                                          )
+                                        }
+                                        checked={selectedItems.includes(
+                                          screen.screenID
+                                        )}
+                                      />
                                       {isEditingScreen &&
                                       editingScreenID === screen.screenID ? (
                                         <div className="flex items-center gap-2">

@@ -148,7 +148,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleSelectAll = () => {
     setSelectAllChecked(!selectAllChecked);
-    
+
     if (selectedItems.length === compositionData.length) {
       setSelectedItems([]);
     } else {
@@ -162,7 +162,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   // Multipal check
   const handleCheckboxChange = (compositionID) => {
     setSelectAllChecked(false);
-    setSelectCheck(true)
+    setSelectCheck(true);
     if (selectedItems.includes(compositionID)) {
       setSelectedItems(selectedItems.filter((id) => id !== compositionID));
     } else {
@@ -176,7 +176,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         setSelectAllChecked(true);
       }
     }
-  }, [selectcheck, selectedItems])
+  }, [selectcheck, selectedItems]);
 
   const handleDeleteAllCompositions = () => {
     let config = {
@@ -646,7 +646,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={7}>
+                      <td colSpan={8}>
                         <div className="flex text-center m-5 justify-center">
                           <svg
                             aria-hidden="true"
@@ -674,7 +674,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   ) : compositionData &&
                     sortedAndPaginatedData?.length === 0 ? (
                     <tr>
-                      <td colSpan={7}>
+                      <td colSpan={6}>
                         <div className="flex text-center m-5 justify-center">
                           <span className="text-4xl text-gray-800 font-semibold py-2 px-4 rounded-full text-red-800 me-2 dark:bg-red-900 dark:text-red-300">
                             Data Not Found
@@ -694,18 +694,17 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               <td className="text-[#5E5E5E] text-center">
                                 <div className="flex gap-1">
-                                  
-                                    <input
-                                      type="checkbox"
-                                      checked={selectedItems.includes(
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedItems.includes(
+                                      composition?.compositionID
+                                    )}
+                                    onChange={() =>
+                                      handleCheckboxChange(
                                         composition?.compositionID
-                                      )}
-                                      onChange={() =>
-                                        handleCheckboxChange(
-                                          composition?.compositionID
-                                        )
-                                      }
-                                    />
+                                      )
+                                    }
+                                  />
                                   {composition?.compositionName}
                                 </div>
                               </td>
