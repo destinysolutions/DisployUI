@@ -7,9 +7,14 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import {
+  ADD_UPDATE_ORGANIZATION_USER_ROLE,
   CHNAGE_PASSWORD,
+  DELETE_ORG_USER,
+  GET_ORG_USERS,
   GET_SELECT_BY_STATE,
+  GET_USER_SCREEN_DETAILS,
   SELECT_BY_USER_SCREENDETAIL,
+  UPDATE_USER,
 } from "../../Pages/Api";
 import { RiUser3Fill } from "react-icons/ri";
 import { IoIosArrowRoundBack, IoMdNotificationsOutline } from "react-icons/io";
@@ -189,7 +194,7 @@ const Users = ({ searchValue }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/OrganizationUsersRole/AddUpdateOrganizationUsersRole",
+      url: `${ADD_UPDATE_ORGANIZATION_USER_ROLE}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken,
@@ -212,7 +217,7 @@ const Users = ({ searchValue }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/UserMaster/GetUsetScreenDetails?OrgUserSpecificID=${orgUserSpecificID}`,
+      url: `${GET_USER_SCREEN_DETAILS}?OrgUserSpecificID=${orgUserSpecificID}`,
       headers: {
         Authorization: authToken,
       },
@@ -292,7 +297,7 @@ const Users = ({ searchValue }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/UserMaster/AddOrgUserMaster",
+      url: `${UPDATE_USER}`,
       headers: {
         "Content-Type": "multipart/form-data;",
         Authorization: authToken,
@@ -345,7 +350,7 @@ const Users = ({ searchValue }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/UserMaster/AddOrgUserMaster",
+      url: `${UPDATE_USER}`,
       headers: {
         "Content-Type": "multipart/form-data;",
         Authorization: authToken,
@@ -371,7 +376,7 @@ const Users = ({ searchValue }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: "https://disployapi.thedestinysolutions.com/api/UserMaster/GetOrgUsers",
+      url:`${GET_ORG_USERS}`,
       headers: {
         Authorization: authToken,
       },
@@ -412,7 +417,7 @@ const Users = ({ searchValue }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/UserMaster/DeleteOrgUser?OrgUserSpecificID=${orgUserSpecificID}`,
+      url: `${DELETE_ORG_USER}?OrgUserSpecificID=${orgUserSpecificID}`,
       headers: {
         "Content-Type": "application/json",
         Authorization: authToken,
@@ -448,7 +453,7 @@ const Users = ({ searchValue }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/UserMaster/GetOrgUsers?OrgUserSpecificID=${OrgUserSpecificID}`,
+      url: `${GET_ORG_USERS}?OrgUserSpecificID=${OrgUserSpecificID}`,
       headers: {
         Authorization: authToken,
       },
@@ -608,7 +613,7 @@ const Users = ({ searchValue }) => {
       acceptTerms: false,
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values,{ setSubmitting }) => {
       try {
         const payload = {
           userID: UserMasterID,
@@ -633,13 +638,14 @@ const Users = ({ searchValue }) => {
 
         const response = await axios.request(config);
         if (response.status) {
-          formik.resetForm();
-          toast.success("Password Update");
+          formik.resetForm()
+          toast.success(response.message);
         }
       } catch (error) {
         console.error("Error updating password:", error.message);
         toast.error("Error updating password. Please try again.");
       } finally {
+        setSubmitting(false); 
         console.log("------------- YES --------------- Password Update ");
       }
     },
@@ -847,7 +853,12 @@ const Users = ({ searchValue }) => {
                         name="zipcode"
                         className="formInput"
                         value={zipCode}
-                        onChange={(e) => setZipCode(e.target.value)}
+                        maxLength="10"
+                        onChange={(e) => {
+                          if (e.target.value.length <= 10) {
+                            setZipCode(e.target.value);
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -1516,9 +1527,9 @@ const Users = ({ searchValue }) => {
                           <div className="md:w-full flex pt-7">
                             <button
                               className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3"
-                              disabled={loading}
+                              disabled={!formik.isValid || formik.isSubmitting}
                             >
-                              {loading ? "Saving..." : "Save Changes"}
+                              Save Changes
                             </button>
                           </div>
                         </form>
