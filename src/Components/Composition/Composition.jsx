@@ -676,7 +676,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                     <tr>
                       <td colSpan={6}>
                         <div className="flex text-center m-5 justify-center">
-                          <span className="text-4xl text-gray-800 font-semibold py-2 px-4 rounded-full text-red-800 me-2 dark:bg-red-900 dark:text-red-300">
+                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
                             Data Not Found
                           </span>
                         </div>

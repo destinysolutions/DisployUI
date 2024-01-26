@@ -97,15 +97,15 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(schedules)
     ? schedules.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value &&
-          value
-            .toString()
-            .toLowerCase()
-            .includes(searchSchedule.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            value &&
+            value
+              .toString()
+              .toLowerCase()
+              .includes(searchSchedule.toLowerCase())
+        )
       )
-    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -637,7 +637,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                     <tr>
                       <td colSpan={8}>
                         <div className="flex text-center m-5 justify-center">
-                          <span className="text-4xl text-gray-800 font-semibold py-2 px-4 rounded-full text-red-800  me-2  dark:bg-red-900 dark:text-red-300">
+                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
                             Data Not Found
                           </span>
                         </div>
@@ -701,31 +701,31 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                               >
                                 {(schedule?.tags === "" ||
                                   schedule?.tags === null) && (
-                                    <span>
-                                      <AiOutlinePlusCircle
-                                        size={30}
-                                        className="mx-auto cursor-pointer"
-                                        onClick={() => {
-                                          setShowTagModal(true);
-                                          schedule.tags === "" ||
-                                            schedule?.tags === null
-                                            ? setTags([])
-                                            : setTags(schedule?.tags?.split(","));
-                                          setUpdateTagSchedule(schedule);
-                                        }}
-                                      />
-                                    </span>
-                                  )}
+                                  <span>
+                                    <AiOutlinePlusCircle
+                                      size={30}
+                                      className="mx-auto cursor-pointer"
+                                      onClick={() => {
+                                        setShowTagModal(true);
+                                        schedule.tags === "" ||
+                                        schedule?.tags === null
+                                          ? setTags([])
+                                          : setTags(schedule?.tags?.split(","));
+                                        setUpdateTagSchedule(schedule);
+                                      }}
+                                    />
+                                  </span>
+                                )}
                                 {schedule.tags !== null
                                   ? schedule.tags
-                                    .split(",")
-                                    .slice(
-                                      0,
-                                      schedule.tags.split(",").length > 2
-                                        ? 3
-                                        : schedule.tags.split(",").length
-                                    )
-                                    .join(",")
+                                      .split(",")
+                                      .slice(
+                                        0,
+                                        schedule.tags.split(",").length > 2
+                                          ? 3
+                                          : schedule.tags.split(",").length
+                                      )
+                                      .join(",")
                                   : ""}
                                 {schedule?.tags !== "" &&
                                   schedule?.tags !== null && (
@@ -733,7 +733,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                       onClick={() => {
                                         setShowTagModal(true);
                                         schedule.tags === "" ||
-                                          schedule?.tags === null
+                                        schedule?.tags === null
                                           ? setTags([])
                                           : setTags(schedule?.tags?.split(","));
                                         setUpdateTagSchedule(schedule);

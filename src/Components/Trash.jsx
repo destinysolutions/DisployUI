@@ -80,7 +80,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -222,7 +222,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   // // Multipal check
   const handleCheckboxChange = (item) => {
     setSelectAllChecked(false);
-    setSelectCheck(true)
+    setSelectCheck(true);
     const isItemSelected = selectedItems.some(
       (selectedItem) =>
         selectedItem.assetID === item.assetID &&
@@ -242,14 +242,13 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
-
   useEffect(() => {
     if (selectcheck) {
       if (selectedItems?.length === sortedAndPaginatedData?.length) {
         setSelectAllChecked(true);
       }
     }
-  }, [selectcheck, selectedItems])
+  }, [selectcheck, selectedItems]);
 
   const handleRestore = (id, type) => {
     try {
@@ -399,7 +398,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                     <tr>
                       <td colSpan={6}>
                         <div className="flex text-center m-5 justify-center">
-                          <span className="text-2xl text-gray-800 font-semibold py-2 px-4 rounded-full text-red-800 me-2  dark:bg-red-900 dark:text-red-300">
+                          <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                             Data Not Found
                           </span>
                         </div>

@@ -669,23 +669,23 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                               </button>
 
                               {item.isPreview && (
-                              <button
-                                data-tip
-                                data-for="Preview"
-                                className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
-                                onClick={() => handleOpenPreview(item)}
-                              >
-                                Preview
-                                <ReactTooltip
-                                  id="Preview"
-                                  place="left"
-                                  type="warning"
-                                  effect="float"
+                                <button
+                                  data-tip
+                                  data-for="Preview"
+                                  className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
+                                  onClick={() => handleOpenPreview(item)}
                                 >
-                                  <span>Preview</span>
-                                </ReactTooltip>
-                              </button>
-                              )} 
+                                  Preview
+                                  <ReactTooltip
+                                    id="Preview"
+                                    place="left"
+                                    type="warning"
+                                    effect="float"
+                                  >
+                                    <span>Preview</span>
+                                  </ReactTooltip>
+                                </button>
+                              )}
 
                               <button
                                 data-tip
@@ -965,8 +965,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
             ) : (
               <>
                 <div className="flex text-center m-5 justify-center">
-                  <span className="text-2xl hover:bg-gray-400 text-gray-800 mt-20 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
-                    Data not found!
+                  <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
+                    Data Not Found
                   </span>
                 </div>
               </>

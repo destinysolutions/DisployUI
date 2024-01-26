@@ -213,12 +213,11 @@ const ScreenGroupModal = ({
                         scope="col"
                         className="text-[#5A5881] text-sm font-semibold p-2"
                       >
-                        <div className="text-center">
-                          Screen
-                        </div>
+                        <div className="text-center">Screen</div>
                       </th>
 
-                      <th scope="col"
+                      <th
+                        scope="col"
                         className="text-[#5A5881] text-sm font-semibold p-2"
                       >
                         <div className="text-center">Google Location</div>
@@ -261,15 +260,17 @@ const ScreenGroupModal = ({
                         >
                           <td>
                             <div className="text-center">
-                            <input
-                              type="checkbox"
-                              className="mr-3"
-                              checked={selectedItems.includes(screen.screenID)}
-                              onChange={() =>
-                                handleCheckboxChange(screen.screenID)
-                              }
-                            />
-                            {screen.screenName}
+                              <input
+                                type="checkbox"
+                                className="mr-3"
+                                checked={selectedItems.includes(
+                                  screen.screenID
+                                )}
+                                onChange={() =>
+                                  handleCheckboxChange(screen.screenID)
+                                }
+                              />
+                              {screen.screenName}
                             </div>
                           </td>
 
@@ -280,14 +281,13 @@ const ScreenGroupModal = ({
                           <td className="text-center">
                             <span
                               id={`changetvstatus${screen.screenID}`}
-                              className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                ? "bg-[#3AB700]"
-                                : "bg-[#FF0000]"
-                                }`}
+                              className={`rounded-full px-6 py-2 text-white text-center ${
+                                screen.screenStatus == 1
+                                  ? "bg-[#3AB700]"
+                                  : "bg-[#FF0000]"
+                              }`}
                             >
-                              {screen.screenStatus == 1
-                                ? "Live"
-                                : "offline"}
+                              {screen.screenStatus == 1 ? "Live" : "offline"}
                             </span>
                           </td>
 
@@ -299,16 +299,15 @@ const ScreenGroupModal = ({
                             className="text-center "
                             style={{ wordBreak: "break-all" }}
                           >
-                            <div className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-aut hover:shadow-primary-500/50"                                    >
-                              <p className="line-clamp-3">
-                                {screen.assetName}
-                              </p>
+                            <div className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-aut hover:shadow-primary-500/50">
+                              <p className="line-clamp-3">{screen.assetName}</p>
                               <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
                             </div>
                           </td>
 
                           <td className="text-center break-words">
-                            {screen.scheduleName} Till {moment(screen.endDate).format("YYYY-MM-DD hh:mm")}
+                            {screen.scheduleName} Till{" "}
+                            {moment(screen.endDate).format("YYYY-MM-DD hh:mm")}
                           </td>
 
                           <td className="text-center break-words">
@@ -322,7 +321,7 @@ const ScreenGroupModal = ({
                                 data-for="show in screen"
                                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                               >
-                                 <HiUserGroup />
+                                <HiUserGroup />
                                 <ReactTooltip
                                   id="show in screen"
                                   place="bottom"
@@ -342,11 +341,9 @@ const ScreenGroupModal = ({
                           {store && store.data?.length === 0 ? (
                             "No data found"
                           ) : (
-                            <>
-                              <span className="text-sm  hover:bg-gray-400 text-gray-800 font-semibold rounded-full text-green-800 me-2 px-2.5 py-0.5 dark:bg-green-900 dark:text-green-300">
-                                Data not found
-                              </span>
-                            </>
+                            <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
+                              Data Not Found
+                            </span>
                           )}
                         </td>
                       </tr>
@@ -422,9 +419,7 @@ const ScreenGroupModal = ({
                   Cancel
                 </button>
               </div>
-
             </div>
-
           </div>
         </div>
       </div>
