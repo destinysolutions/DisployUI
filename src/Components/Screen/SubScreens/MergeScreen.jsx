@@ -411,7 +411,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                   type="warning"
                   effect="float"
                 >
-                  <span>New MergeScreen</span>
+                  <span>Add New MergeScreen</span>
                 </ReactTooltip>
               </button>
 

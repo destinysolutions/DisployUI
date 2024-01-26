@@ -519,19 +519,19 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
               <button
                 data-tip
-                data-for="Screen Group"
+                data-for="Add New Group"
                 type="button"
                 className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
                 onClick={() => newAddGroup()}
               >
                 <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
                 <ReactTooltip
-                  id="Screen Group"
+                  id="Add New Group"
                   place="left"
                   type="warning"
                   effect="float"
                 >
-                  <span>Screen Group</span>
+                  <span>Add New Group</span>
                 </ReactTooltip>
               </button>
 
@@ -668,7 +668,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                 </ReactTooltip>
                               </button>
 
-                              {/* {item.isPreview && ( */}
+                              {item.isPreview && (
                               <button
                                 data-tip
                                 data-for="Preview"
@@ -685,7 +685,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                   <span>Preview</span>
                                 </ReactTooltip>
                               </button>
-                              {/* )} */}
+                              )} 
 
                               <button
                                 data-tip

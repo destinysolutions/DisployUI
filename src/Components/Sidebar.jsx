@@ -51,24 +51,24 @@ const Sidebar = ({ sidebarOpen }) => {
       const formattedMenuData = store.data.menu
         .map((item) => ({
           title: item.pageName,
-          cName: "nav-text link-items", // You may need to adjust this based on your styles
+          cName: "nav-text link-items",
           path: item.path,
           icon: <img src={item.icon} alt={item.alt} className="w-6" />,
           subMenus: item.submenu
             ? item.submenu.map((submenu) => ({
                 title: submenu.pageName,
                 path: submenu.path,
-                icon: (
-                  <img src={submenu.icon} alt={submenu.alt} className="w-6" />
-                ),
+                icon: <img src={submenu.icon} alt={submenu.alt} className="w-6" />,
               }))
             : null,
+          sortBy: item.sortBy || 0, // Assuming sortBy is a numeric property
+          isActive: false, // You may want to set this property as well
         }))
-        .sort((a, b) => a.title.localeCompare(b.title)); // Sort by title
-
+        .sort((a, b) => a.sortBy - b.sortBy || a.title.localeCompare(b.title)); // Sort by sortBy, then by title
+  
       const currentPath = window.location.pathname;
       let foundActive = false;
-
+  
       const updateIsActive = (menuItems) => {
         menuItems.forEach((menuItem) => {
           if (menuItem.path === currentPath) {
@@ -82,9 +82,9 @@ const Sidebar = ({ sidebarOpen }) => {
           }
         });
       };
-
+  
       updateIsActive(formattedMenuData);
-
+  
       // If no active item is found, reset all isActive properties to false
       if (!foundActive) {
         formattedMenuData.forEach((menuItem) => {
@@ -96,10 +96,11 @@ const Sidebar = ({ sidebarOpen }) => {
           }
         });
       }
-
+  
       setMenuData(formattedMenuData);
     }
   }, [store.data]);
+  
 
   // console.log("store ------------------- ", store.data.menu, { menuData });
 
