@@ -82,7 +82,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
       formData.append("AssetType", "OnlineImage");
       formData.append("UserID", "0");
       formData.append("AssetName", image.alt_description);
-      formData.append("Resolutions", `${image.height}*${image.width}`);
+      formData.append("Resolutions", `${image.height}x${image.width}`);
       formData.append("IsActive", "true");
       formData.append("IsDelete", "false");
       formData.append("FolderID", "0");

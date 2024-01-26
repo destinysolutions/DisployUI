@@ -553,13 +553,13 @@ const EventEditor = ({
                     >
                       <thead className="sticky z-20">
                         <tr className="table-head-bg text-left mb-5">
-                          <th className="min-w-[220px] py-4 px-4 font-semibold text-black md:pl-10">
+                          <th className="py-4 px-4 font-semibold text-black md:pl-10">
                             Assets
                           </th>
-                          <th className="min-w-[220px] py-4 px-4 font-semibold text-black">
+                          <th className="py-4 px-4 font-semibold text-black">
                             Assets Name
                           </th>
-                          <th className="min-w-[150px] py-4 px-4 font-semibold text-black">
+                          <th className="py-4 px-4 font-semibold text-black">
                             Date Added
                           </th>
                           {/* <th className="min-w-[120px] py-4 px-4 font-semibold text-black">
@@ -689,7 +689,7 @@ const EventEditor = ({
                         ) : (
                           <tr>
                             <td
-                              colSpan={7}
+                              colSpan={4}
                               className="text-center font-semibold h-60"
                             >
                               <p>No assets here, please upload some assets.</p>

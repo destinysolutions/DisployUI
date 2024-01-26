@@ -97,15 +97,15 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(schedules)
     ? schedules.filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            value &&
-            value
-              .toString()
-              .toLowerCase()
-              .includes(searchSchedule.toLowerCase())
-        )
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value
+            .toString()
+            .toLowerCase()
+            .includes(searchSchedule.toLowerCase())
       )
+    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -165,7 +165,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   useEffect(() => {
-    if (selectcheck) {
+    if (selectcheck && schedules?.length > 0) {
       if (selectedItems?.length === schedules?.length) {
         setSelectAllChecked(true);
       }
@@ -701,31 +701,31 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                               >
                                 {(schedule?.tags === "" ||
                                   schedule?.tags === null) && (
-                                  <span>
-                                    <AiOutlinePlusCircle
-                                      size={30}
-                                      className="mx-auto cursor-pointer"
-                                      onClick={() => {
-                                        setShowTagModal(true);
-                                        schedule.tags === "" ||
-                                        schedule?.tags === null
-                                          ? setTags([])
-                                          : setTags(schedule?.tags?.split(","));
-                                        setUpdateTagSchedule(schedule);
-                                      }}
-                                    />
-                                  </span>
-                                )}
+                                    <span>
+                                      <AiOutlinePlusCircle
+                                        size={30}
+                                        className="mx-auto cursor-pointer"
+                                        onClick={() => {
+                                          setShowTagModal(true);
+                                          schedule.tags === "" ||
+                                            schedule?.tags === null
+                                            ? setTags([])
+                                            : setTags(schedule?.tags?.split(","));
+                                          setUpdateTagSchedule(schedule);
+                                        }}
+                                      />
+                                    </span>
+                                  )}
                                 {schedule.tags !== null
                                   ? schedule.tags
-                                      .split(",")
-                                      .slice(
-                                        0,
-                                        schedule.tags.split(",").length > 2
-                                          ? 3
-                                          : schedule.tags.split(",").length
-                                      )
-                                      .join(",")
+                                    .split(",")
+                                    .slice(
+                                      0,
+                                      schedule.tags.split(",").length > 2
+                                        ? 3
+                                        : schedule.tags.split(",").length
+                                    )
+                                    .join(",")
                                   : ""}
                                 {schedule?.tags !== "" &&
                                   schedule?.tags !== null && (
@@ -733,7 +733,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                       onClick={() => {
                                         setShowTagModal(true);
                                         schedule.tags === "" ||
-                                        schedule?.tags === null
+                                          schedule?.tags === null
                                           ? setTags([])
                                           : setTags(schedule?.tags?.split(","));
                                         setUpdateTagSchedule(schedule);

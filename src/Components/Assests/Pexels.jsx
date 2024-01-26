@@ -112,7 +112,7 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
       formData.append("IsDelete", "false");
       formData.append("FolderID", "0");
       formData.append("AssetName", image.alt);
-      formData.append("Resolutions", `${image.height}*${image.width}`);
+      formData.append("Resolutions", `${image.height}x${image.width}`);
 
       const response = dispatch(handleGetStorageDetails({ token }));
 
@@ -196,7 +196,7 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
       formData.append("FolderID", "0");
       formData.append(
         "Resolutions",
-        `${video.video_files[0].height}*${video.video_files[0].width}`
+        `${video.video_files[0].height}x${video.video_files[0].width}`
       );
       formData.append("Durations", video.duration);
       formData.append("AssetName", name);
