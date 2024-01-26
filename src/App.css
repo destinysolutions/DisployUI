@@ -1047,7 +1047,10 @@ button.daysbtn {
 .hoverToltip:hover .hover-text {
   display: inline; /* Display the text on hover */
 }
-
+table.screen-table {
+  overflow: hidden;
+  border-radius: 10px 10px 0px 0px;
+}
 @media only screen and (max-width: 768px) {
   .min-w-90vw {
     min-width: 90vw;
