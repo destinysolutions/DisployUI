@@ -84,7 +84,13 @@ const Users = ({ searchValue }) => {
   const [sortedField, setSortedField] = useState(null);
   const [screenAccessModal, setScreenAccessModal] = useState(false);
   const [userScreenData, setUserScreenData] = useState([]);
-
+  const [errors, setErrors] = useState({
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    role: ''
+  });
   const { token, user } = useSelector((state) => state.root.auth);
   const { Countries } = useSelector((s) => s.root.settingUser);
   const store = useSelector((state) => state.root.settingUser);
@@ -215,13 +221,38 @@ const Users = ({ searchValue }) => {
     axios
       .request(config)
       .then((response) => {
-        console.log(response.data, "syhdhsdu");
         setUserScreenData(response?.data?.data);
       })
       .catch((error) => {
         console.log(error);
       });
   };
+
+
+  const validateForm = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    let newErrors = {};
+  
+    if (labelTitle !== "Update User") {
+      newErrors.email = !emailRegex.test(email) ? 'Not a valid email' : '';
+      newErrors.password = !password ? 'Password is required' : '';
+    }
+  
+    newErrors.firstName = !firstName ? 'First Name is required' : '';
+    newErrors.lastName = !lastName ? 'Last Name is required' : '';
+    newErrors.role = !selectRoleID ? 'Please select a role' : '';
+  
+    // Update errors state
+    setErrors(newErrors);
+  
+    // Check if any errors exist
+    const hasError = Object.values(newErrors).some(error => error !== '');
+  
+    return hasError;
+  };
+  
+
+
   const handleAddUser = () => {
     // Clear previous validation errors
     setErrorsFirstName("");
@@ -231,39 +262,10 @@ const Users = ({ searchValue }) => {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     let data = new FormData();
+    const hasError = validateForm();
 
-    if (!password) {
-      setErrorsPassword("Password is required");
-      return;
-    }
-
-    // Check validation for firstName
-    if (!firstName) {
-      setErrorsFirstName("First Name is required");
-      return;
-    }
-
-    // Check validation for lastName
-    if (!lastName) {
-      setErrorsLastName("Last Name is required");
-      return;
-    }
-
-    // Check validation for password
-    if (!password) {
-      setErrorsPassword("Password is required");
-      return;
-    }
-
-    // Check validation for email format
-    if (!emailRegex.test(email)) {
-      setErrorsEmail("Not a valid email");
-      return;
-    }
-
-    // Check validation for role
-    if (!selectRoleID) {
-      setErrorsRole("Please select a role");
+    // If there are errors, prevent form submission
+    if (hasError) {
       return;
     }
 
@@ -313,21 +315,10 @@ const Users = ({ searchValue }) => {
     setErrorsLastName("");
     setErrorsRole("");
 
-    // Check validation for firstName
-    if (!firstName) {
-      setErrorsFirstName("First Name is required");
-      return;
-    }
+    const hasError = validateForm();
 
-    // Check validation for lastName
-    if (!lastName) {
-      setErrorsLastName("Last Name is required");
-      return;
-    }
-
-    // Check validation for role
-    if (!selectRoleID) {
-      setErrorsRole("Please select a role");
+    // If there are errors, prevent form submission
+    if (hasError) {
       return;
     }
 
@@ -365,10 +356,10 @@ const Users = ({ searchValue }) => {
     axios
       .request(config)
       .then(() => {
-        setshowuserModal(false);
         selectUserById(userID);
         handleGetOrgUsers();
         handleCancelPopup();
+        setshowuserModal(false);
       })
       .catch((error) => {
         console.log(error);
@@ -504,7 +495,13 @@ const Users = ({ searchValue }) => {
 
   const handleCancelPopup = () => {
     setLabelTitle("Add New User");
-    setUserID();
+    setErrors({
+      email: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      role: ''
+    })
     setshowuserModal(false);
     setFirstName("");
     setLastName("");
@@ -521,7 +518,7 @@ const Users = ({ searchValue }) => {
     setSelectRoleID("");
     setIsActive(0);
     setLabelTitle("Add New User");
-    setLoadFist(true);
+    // setLoadFist(true);
     getUsers();
     setSelectedScreens([]);
     setScreenCheckboxes({});
@@ -738,8 +735,8 @@ const Users = ({ searchValue }) => {
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                       />
-                      {errorsFirstName && (
-                        <p className="error">{errorsFirstName}</p>
+                      {errors?.firstName && (
+                        <p className="error">{errors?.firstName}</p>
                       )}
                     </div>
                   </div>
@@ -754,8 +751,8 @@ const Users = ({ searchValue }) => {
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                       />
-                      {errorsLastName && (
-                        <p className="error">{errorsLastName}</p>
+                      {errors?.lastName && (
+                        <p className="error">{errors?.lastName}</p>
                       )}
                     </div>
                   </div>
@@ -773,9 +770,9 @@ const Users = ({ searchValue }) => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                           />
-                          {emailErrors ? (
-                            <p className="error">{emailErrors}</p>
-                          ) : null}
+                          {errors?.email && (
+                            <p className="error">{errors?.email}</p>
+                          )}
                         </div>
                       </div>
 
@@ -790,9 +787,7 @@ const Users = ({ searchValue }) => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                           />
-                          {passowrdErrors ? (
-                            <p className="error">{passowrdErrors}</p>
-                          ) : null}
+
                           <div className="icon">
                             {showPassword ? (
                               <BsFillEyeFill
@@ -805,6 +800,9 @@ const Users = ({ searchValue }) => {
                             )}
                           </div>
                         </div>
+                        {errors?.password && (
+                          <p className="error">{errors?.password}</p>
+                        )}
                       </div>
                     </>
                   )}
@@ -914,7 +912,7 @@ const Users = ({ searchValue }) => {
                           <div>Data not here.</div>
                         )}
                       </select>
-                      {errorsRole && <p className="error">{errorsRole}</p>}
+                      {errors?.role && <p className="error">{errors?.role}</p>}
                     </div>
                   </div>
 
@@ -1035,11 +1033,10 @@ const Users = ({ searchValue }) => {
                                       <td className="text-center">
                                         <span
                                           id={`changetvstatus${screen.screenID}`}
-                                          className={`rounded-full px-6 py-2 text-white text-center ${
-                                            screen.screenStatus == 1
-                                              ? "bg-[#3AB700]"
-                                              : "bg-[#FF0000]"
-                                          }`}
+                                          className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                            ? "bg-[#3AB700]"
+                                            : "bg-[#FF0000]"
+                                            }`}
                                         >
                                           {screen.screenStatus == 1
                                             ? "Live"
@@ -1062,28 +1059,28 @@ const Users = ({ searchValue }) => {
                                       <td className="text-center break-words">
                                         {screen?.tags !== null
                                           ? screen?.tags
-                                              .split(",")
-                                              .slice(
-                                                0,
-                                                screen?.tags.split(",").length >
-                                                  2
-                                                  ? 3
-                                                  : screen?.tags.split(",")
-                                                      .length
-                                              )
-                                              .map((text) => {
-                                                if (
-                                                  text.toString().length > 10
-                                                ) {
-                                                  return text
-                                                    .split("")
-                                                    .slice(0, 10)
-                                                    .concat("...")
-                                                    .join("");
-                                                }
-                                                return text;
-                                              })
-                                              .join(",")
+                                            .split(",")
+                                            .slice(
+                                              0,
+                                              screen?.tags.split(",").length >
+                                                2
+                                                ? 3
+                                                : screen?.tags.split(",")
+                                                  .length
+                                            )
+                                            .map((text) => {
+                                              if (
+                                                text.toString().length > 10
+                                              ) {
+                                                return text
+                                                  .split("")
+                                                  .slice(0, 10)
+                                                  .concat("...")
+                                                  .join("");
+                                              }
+                                              return text;
+                                            })
+                                            .join(",")
                                           : ""}
                                       </td>
                                     </tr>
@@ -1199,6 +1196,7 @@ const Users = ({ searchValue }) => {
                 setShowUserProfile(false);
                 setLoadFist(true);
                 setUserScreenData([]);
+                setUserID()
               }}
               className="font-medium flex cursor-pointer w-fit items-center lg:text-2xl md:text-2xl sm:text-xl mb-5"
             >
@@ -1340,8 +1338,8 @@ const Users = ({ searchValue }) => {
                     <div className="flex justify-center w-full mt-10">
                       <button
                         onClick={() => {
-                          setshowuserModal(true);
                           selectUserById(userDetailData.orgUserSpecificID);
+                          setshowuserModal(true);
                         }}
                         className="me-3 hover:bg-white hover:text-primary text-base px-8 py-2 border border-primary  shadow-md rounded-full bg-primary text-white "
                       >
@@ -1438,7 +1436,7 @@ const Users = ({ searchValue }) => {
                             </div>
                           </div>
                           {formik.touched.currentPassword &&
-                          formik.errors.currentPassword ? (
+                            formik.errors.currentPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.currentPassword}
                             </div>
@@ -1474,7 +1472,7 @@ const Users = ({ searchValue }) => {
                             </div>
                           </div>
                           {formik.touched.newPassword &&
-                          formik.errors.newPassword ? (
+                            formik.errors.newPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.newPassword}
                             </div>
@@ -1510,7 +1508,7 @@ const Users = ({ searchValue }) => {
                             </div>
                           </div>
                           {formik.touched.confirmPassword &&
-                          formik.errors.confirmPassword ? (
+                            formik.errors.confirmPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.confirmPassword}
                             </div>
@@ -2093,11 +2091,10 @@ const Users = ({ searchValue }) => {
                         <td className="text-center">
                           <span
                             id={`changetvstatus${screen.screenID}`}
-                            className={`rounded-full px-6 py-2 text-white text-center ${
-                              screen.screenStatus == 1
-                                ? "bg-[#3AB700]"
-                                : "bg-[#FF0000]"
-                            }`}
+                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                              ? "bg-[#3AB700]"
+                              : "bg-[#FF0000]"
+                              }`}
                           >
                             {screen.screenStatus == 1 ? "Live" : "offline"}
                           </span>
@@ -2110,24 +2107,24 @@ const Users = ({ searchValue }) => {
                         <td className="text-center break-words">
                           {screen?.tags !== null
                             ? screen?.tags
-                                .split(",")
-                                .slice(
-                                  0,
-                                  screen?.tags.split(",").length > 2
-                                    ? 3
-                                    : screen?.tags.split(",").length
-                                )
-                                .map((text) => {
-                                  if (text.toString().length > 10) {
-                                    return text
-                                      .split("")
-                                      .slice(0, 10)
-                                      .concat("...")
-                                      .join("");
-                                  }
-                                  return text;
-                                })
-                                .join(",")
+                              .split(",")
+                              .slice(
+                                0,
+                                screen?.tags.split(",").length > 2
+                                  ? 3
+                                  : screen?.tags.split(",").length
+                              )
+                              .map((text) => {
+                                if (text.toString().length > 10) {
+                                  return text
+                                    .split("")
+                                    .slice(0, 10)
+                                    .concat("...")
+                                    .join("");
+                                }
+                                return text;
+                              })
+                              .join(",")
                             : ""}
                         </td>
                       </tr>
@@ -2150,7 +2147,24 @@ const Users = ({ searchValue }) => {
             <div>
               <button
                 className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                onClick={() => setshowuserModal(true)}
+                onClick={() => {
+                  setUserDetailData([]);
+                  setFirstName("");
+                  setLastName("");
+                  setPassword("");
+                  setFileEdit(null);
+                  setIsImageUploaded(false);
+                  setPhone("");
+                  setEmail("");
+                  setCompany("");
+                  setCountryID(0);
+                  setSelectedState("");
+                  setSelectRoleID("");
+                  setIsActive(0);
+                  setZipCode("");
+                  setEditProfile();
+                  setshowuserModal(true)
+                }}
               >
                 <BiUserPlus className="text-2xl mr-1" />
                 Add New User
@@ -2325,7 +2339,7 @@ const Users = ({ searchValue }) => {
                         sortedAndPaginatedData.length === 0 && (
                           <>
                             <tr>
-                              <td colSpan={4}>
+                              <td colSpan={5}>
                                 <div className="flex text-center justify-center">
                                   <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
                                     No user Found
@@ -2396,11 +2410,10 @@ const Users = ({ searchValue }) => {
                                     <td className="text-center">
                                       <span
                                         id={`changetvstatus${screen.screenID}`}
-                                        className={`rounded-full px-6 py-2 text-white text-center ${
-                                          screen.screenStatus == 1
-                                            ? "bg-[#3AB700]"
-                                            : "bg-[#FF0000]"
-                                        }`}
+                                        className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                          ? "bg-[#3AB700]"
+                                          : "bg-[#FF0000]"
+                                          }`}
                                       >
                                         {screen.screenStatus == 1
                                           ? "Live"
@@ -2417,24 +2430,24 @@ const Users = ({ searchValue }) => {
                                     <td className="text-center break-words">
                                       {screen?.tags !== null
                                         ? screen?.tags
-                                            .split(",")
-                                            .slice(
-                                              0,
-                                              screen?.tags.split(",").length > 2
-                                                ? 3
-                                                : screen?.tags.split(",").length
-                                            )
-                                            .map((text) => {
-                                              if (text.toString().length > 10) {
-                                                return text
-                                                  .split("")
-                                                  .slice(0, 10)
-                                                  .concat("...")
-                                                  .join("");
-                                              }
-                                              return text;
-                                            })
-                                            .join(",")
+                                          .split(",")
+                                          .slice(
+                                            0,
+                                            screen?.tags.split(",").length > 2
+                                              ? 3
+                                              : screen?.tags.split(",").length
+                                          )
+                                          .map((text) => {
+                                            if (text.toString().length > 10) {
+                                              return text
+                                                .split("")
+                                                .slice(0, 10)
+                                                .concat("...")
+                                                .join("");
+                                            }
+                                            return text;
+                                          })
+                                          .join(",")
                                         : ""}
                                     </td>
                                   </tr>

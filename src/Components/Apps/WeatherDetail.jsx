@@ -384,11 +384,10 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   }, [selectedTemperature]);
 
   const debouncedOnChange = debounce(handleLocationChange, 1000);
-console.log('locations', locations)
-console.log('errorList', errorList)
+
   const handleSave = () => {
     if(locations?.length === errorList?.length){
-      toast.error("Please Enter any Location.");
+      toast.error("Please fill all the details.");
       return
     }
     let data = new FormData();
@@ -494,6 +493,10 @@ console.log('errorList', errorList)
                 <button
                   className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-2 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                   onClick={() => {
+                    if(locations?.length === errorList?.length){
+                      toast.error("Please Enter any Location")
+                      return;
+                    }
                     setSelectedPreview(!selectedPreview);
                     setSelectedLayout("Landscape");
                   }}
