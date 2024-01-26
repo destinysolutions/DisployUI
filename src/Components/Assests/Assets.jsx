@@ -23,10 +23,12 @@ import Footer from "../Footer";
 import { HiOutlineVideoCamera } from "react-icons/hi2";
 import { RiGalleryFill } from "react-icons/ri";
 import { HiDocumentDuplicate } from "react-icons/hi";
-
 import {
   ALL_FILES_UPLOAD,
+  ASSIGN_ASSET_TO_SCREEN,
   CREATE_NEW_FOLDER,
+  DELETE_ALL_ASSET,
+  GET_ASSET_DETAILS,
   MOVE_TO_FOLDER,
   SELECT_BY_ASSET_ID,
 } from "../../Pages/Api";
@@ -100,7 +102,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/AssetMaster/AssignAssetToScreen?AssetId=${screenAssetID}&ScreenID=${idS}`,
+      url: `${ASSIGN_ASSET_TO_SCREEN}?AssetId=${screenAssetID}&ScreenID=${idS}`,
       headers: {
         Authorization: authToken,
       },
@@ -173,10 +175,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const handleKeyDown = (e, folderID) => {
     if (e.key === "Enter") {
       saveFolderName(folderID, folderName.trim());
+      setLoadFist(true);
     } else if (e.key === "Escape") {
       setEditMode(null);
     }
-    setLoadFist(true);
   };
 
   const updateFolderNameInAPI = async (folderID, newName) => {
@@ -284,7 +286,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     let config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/AssetMaster/GetAssetDetails?${query}`,
+      url: `${GET_ASSET_DETAILS}?${query}`,
       headers: { "Content-Type": "application/json", Authorization: authToken },
       data: query,
     };
@@ -515,7 +517,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
     const config = {
       method: "get",
       maxBodyLength: Infinity,
-      url: `https://disployapi.thedestinysolutions.com/api/AssetMaster/DeleteAllAsset?IsDeleteFromAll=true&AssetType=${activeTab}`,
+      url: `${DELETE_ALL_ASSET}?IsDeleteFromAll=true&AssetType=${activeTab}`,
       headers: { Authorization: authToken },
     };
 
@@ -772,19 +774,21 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               onClick={() => navigateToFolder(item.assetID)}
                             />
                             {editMode === item.assetID ? (
-                              <input
-                                type="text"
-                                value={folderName}
-                                className="w-full"
-                                onChange={(e) => setFolderName(e.target.value)}
-                                onBlur={() => {
-                                  setEditMode(null);
-                                }}
-                                onKeyDown={(e) =>
-                                  handleKeyDown(e, item.assetID, index)
-                                }
-                                autoFocus
-                              />
+                             <input
+                             type="text"
+                             value={folderName}
+                             className="w-full"
+                             onChange={(e) =>
+                               setFolderName(e.target.value)
+                             }
+                             onBlur={() => {
+                               setEditMode(null);
+                             }}
+                             onKeyDown={(e) =>
+                               handleKeyDown(e, item.assetID, index)
+                             }
+                             autoFocus
+                           />
                             ) : (
                               <>
                                 <span
@@ -1086,7 +1090,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                 ) : (
                   <div className="text-center font-semibold text-2xl col-span-full">
                     {!loadFist && store?.data?.length === 0 && (
-                      <> Data not Found! </>
+                      <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
+                      Data Not Found
+                    </span>
                     )}
                     {loadFist && (
                       <>
