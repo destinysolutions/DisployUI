@@ -270,6 +270,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         setSelectScreenModal(false);
+        saveEditedSchedule();
         navigate("/myschedule")
         if (connection.state == "Disconnected") {
           connection

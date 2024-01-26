@@ -6,6 +6,7 @@ import { SELECT_BY_USER_SCREENDETAIL, SIGNAL_R } from "../Pages/Api";
 import { handleGetScreen } from "../Redux/Screenslice";
 import { connection } from "../SignalR";
 import toast from "react-hot-toast";
+import moment from "moment";
 
 const ScreenAssignModal = ({
   setAddScreenModal,
@@ -351,7 +352,8 @@ const ScreenAssignModal = ({
                         </td>
 
                         <td className="text-center break-words">
-                          Schedule Name Till 28 June 2023
+                          {screen.scheduleName} Till
+                          {moment(screen.endDate).format("YYYY-MM-DD hh:mm")}
                         </td>
                         <td className="text-center break-words">
                           {screen?.tags !== null

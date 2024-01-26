@@ -1,4 +1,5 @@
 import { FilePicker } from "@apideck/file-picker";
+import "@apideck/file-picker/dist/styles.css";
 import { jwtDecode } from "jwt-decode";
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
@@ -89,6 +90,7 @@ const OtherOptionsForAssets = ({ handleSelect }) => {
       {tokenLoading ? (
         <div>...</div>
       ) : (
+        <div>
         <FilePicker
           onSelect={handleOnchangeFile}
           trigger={<button>More options</button>}
@@ -101,6 +103,7 @@ const OtherOptionsForAssets = ({ handleSelect }) => {
           subTitle={tokenLoading ? "Loading..." : ""}
           ref={popUpRef}
         />
+        </div>
       )}
     </div>
   );

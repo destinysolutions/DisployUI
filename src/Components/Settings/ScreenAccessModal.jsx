@@ -263,7 +263,8 @@ const ScreenAccessModal = ({
                       </td>
 
                       <td className="text-center break-words">
-                        Schedule Name Till 28 June 2023
+                        {screen.scheduleName} Till
+                        {moment(screen.endDate).format("YYYY-MM-DD hh:mm")}
                       </td>
                       <td className="text-center break-words">
                         {screen?.tags !== null

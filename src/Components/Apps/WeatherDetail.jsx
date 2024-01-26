@@ -129,7 +129,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [id]);
   useEffect(() => {
-    const filteredLocations = locations?.filter(item => item?.location === "") || [];
+    const filteredLocations = locations?.filter(item => (item?.location === "" || item?.location === null)) || [];
     setErrorList(filteredLocations);
   }, [locations]);
   
@@ -384,7 +384,8 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   }, [selectedTemperature]);
 
   const debouncedOnChange = debounce(handleLocationChange, 1000);
-
+console.log('locations', locations)
+console.log('errorList', errorList)
   const handleSave = () => {
     if(locations?.length === errorList?.length){
       toast.error("Please Enter any Location.");
