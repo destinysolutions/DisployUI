@@ -109,7 +109,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  const handleAssetUpdate = () => {};
+  const handleAssetUpdate = () => { };
 
   const handleSave = () => {
     setAssetError(false);
@@ -209,6 +209,9 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
       mergeScreenId: 0,
       screeName: name,
       mediaId: selectedAsset?.assetID,
+      AssetName: selectedAsset?.assetName,
+      AssetType: selectedAsset?.assetType,
+      AssetURL: selectedAsset?.assetFolderPath,
       userID: user?.userID,
       mediaDetailId: 0,
       noofScreens: allScreen,
@@ -371,12 +374,11 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                 ).map((col) => (
                                   <div
                                     key={col}
-                                    className={`shadow btn-display rounded-lg text-black ${
-                                      selectedButton.row === row &&
-                                      selectedButton.col === col
+                                    className={`shadow btn-display rounded-lg text-black ${selectedButton.row === row &&
+                                        selectedButton.col === col
                                         ? "selected"
                                         : ""
-                                    }`}
+                                      }`}
                                     onClick={() =>
                                       handleDisplayButtonClick(row, col)
                                     }
@@ -390,7 +392,7 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                       textAlign: "center",
                                       backgroundColor:
                                         selectedButton.row === row &&
-                                        selectedButton.col === col
+                                          selectedButton.col === col
                                           ? "#FFD700"
                                           : "#f0f8ff",
                                     }}
@@ -403,10 +405,10 @@ const AddMergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                             ))}
                           </tbody>
                         </table>
-                        </div>
-                        {screenError && (
-                          <span className="error px-2">This Is Required.</span>
-                        )}
+                      </div>
+                      {screenError && (
+                        <span className="error px-2">This Is Required.</span>
+                      )}
                     </div>
                   </div>
                 </div>

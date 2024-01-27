@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import ShowAppsModal from "../../../ShowAppsModal";
 import { useDispatch } from "react-redux";
-import { handleGetAllAssetsTypeBase } from "../../../../Redux/Assetslice";
+import { handleGetAllAssets, handleGetAllAssetsTypeBase } from "../../../../Redux/Assetslice";
 import { GET_ASSET_DETAILS } from "../../../../Pages/Api";
 
 const ShowAssetModal = ({
@@ -107,13 +107,29 @@ const ShowAssetModal = ({
     setFilteredAssets(filteredAssets);
   }, [searchAssest, store]);
 
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const isClosed = localStorage.getItem("isWindowClosed");
+      if (isClosed === "true") {
+        dispatch(handleGetAllAssets({ token }));
+        localStorage.setItem("isWindowClosed", "false");
+        // window.location.reload();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
   return (
     <>
       <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] h-auto top-12 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
         <div
-          className={`${
-            showAppModal ? "hidden" : ""
-          } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
+          className={`${showAppModal ? "hidden" : ""
+            } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
         >
           <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
             Set Content to Add Media
@@ -127,9 +143,8 @@ const ShowAssetModal = ({
         </div>
         <div
           onClick={() => assetPreviewPopup && setAssetPreviewPopup(false)}
-          className={`${
-            showAppModal ? "hidden" : ""
-          } relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
+          className={`${showAppModal ? "hidden" : ""
+            } relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
         >
           <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
             <div className="flex-initial">
@@ -143,17 +158,15 @@ const ShowAssetModal = ({
                   >
                     <button
                       type="button"
-                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                        popupActiveTab === 1 ? "active" : ""
-                      }`}
+                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 1 ? "active" : ""
+                        }`}
                       onClick={() => setPopupActiveTab(1)}
                     >
                       <span
-                        className={`p-1 rounded ${
-                          popupActiveTab === 1
+                        className={`p-1 rounded ${popupActiveTab === 1
                             ? "bg-primary text-white"
                             : "bg-lightgray"
-                        } `}
+                          } `}
                       >
                         <IoBarChartSharp size={15} />
                       </span>
@@ -178,7 +191,10 @@ const ShowAssetModal = ({
                     />
                   </div>
                   <Link to="/fileupload" target="_blank">
-                    <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                    <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                      onClick={() => {
+                        localStorage.setItem("isWindowClosed", "false");
+                      }}>
                       Upload
                     </button>
                   </Link>
@@ -206,12 +222,11 @@ const ShowAssetModal = ({
                           <>
                             <tbody key={asset.assetID}>
                               <tr
-                                className={`${
-                                  selectedAsset === asset ||
-                                  selectedAsset === asset?.assetName
+                                className={`${selectedAsset === asset ||
+                                    selectedAsset === asset?.assetName
                                     ? "bg-[#f3c953]"
                                     : ""
-                                } border-b border-[#eee] text-center cursor-pointer hover:bg-black hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
+                                  } border-b border-[#eee] text-center cursor-pointer hover:bg-black hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50`}
                                 onClick={() => {
                                   handleAssetAdd(asset);
                                   setAssetPreviewPopup(true);
@@ -313,9 +328,8 @@ const ShowAssetModal = ({
         </div>
 
         <div
-          className={`${
-            showAppModal ? "hidden" : ""
-          } flex justify-between items-center p-5`}
+          className={`${showAppModal ? "hidden" : ""
+            } flex justify-between items-center p-5`}
         >
           <p className="text-black">Content will always be playing Confirm</p>
           <button

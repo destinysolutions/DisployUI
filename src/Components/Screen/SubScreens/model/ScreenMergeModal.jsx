@@ -7,6 +7,7 @@ import Modal from "react-responsive-modal";
 import ReactTooltip from "react-tooltip";
 import { HiUserGroup } from "react-icons/hi2";
 import moment from "moment";
+import toast from "react-hot-toast";
 
 const modalStyle = {
   width: "80%", // You can adjust the width based on your preference
@@ -69,6 +70,10 @@ const ScreenGroupModal = ({
   };
 
   const handleSaveScreen = async () => {
+    if(selectedItems === null){
+      toast.error("Please Select Screen");
+      return;
+    }
     const getName = paginatedData.find(
       (item) => item.screenID === selectedItems
     );
@@ -89,7 +94,7 @@ const ScreenGroupModal = ({
         open={isOpen}
         onClose={onClose}
         center
-        styles={{ modal: modalStyle }}
+        // styles={{ modal: modalStyle }}
       >
         <div class="flex items-center justify-between w-full bg-white sticky p-2">
           <h3 className="text-left font-semibold text-2xl sticky top-0 bg-white w-full">
@@ -97,7 +102,7 @@ const ScreenGroupModal = ({
           </h3>
         </div>
 
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg screen-section mt-5">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg screen-section">
           <div className="schedual-table bg-white rounded-xl mt-5 px-3">
             <div className="relative overflow-x-auto sc-scrollbar rounded-lg">
               <table
@@ -153,6 +158,9 @@ const ScreenGroupModal = ({
                     paginatedData?.map((screen) => (
                       <tr
                         key={screen.screenID}
+                        onClick={() =>
+                          handleCheckboxChange(screen.screenID)
+                        }
                         className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm   px-5 py-2"
                       >
                         <td className="">
@@ -237,7 +245,7 @@ const ScreenGroupModal = ({
                           "No data found"
                         ) : (
                           <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
-                            Data Not Found
+                            No Data Available
                           </span>
                         )}
                       </td>

@@ -638,7 +638,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       <td colSpan={8}>
                         <div className="flex text-center m-5 justify-center">
                           <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
-                            Data Not Found
+                            No Data Available
                           </span>
                         </div>
                       </td>

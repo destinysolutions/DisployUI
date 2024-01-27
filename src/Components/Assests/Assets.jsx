@@ -1091,7 +1091,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   <div className="text-center font-semibold text-2xl col-span-full">
                     {!loadFist && store?.data?.length === 0 && (
                       <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
-                      Data Not Found
+                      No Data Available
                     </span>
                     )}
                     {loadFist && (

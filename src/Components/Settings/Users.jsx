@@ -213,7 +213,6 @@ const Users = ({ searchValue }) => {
   };
 
   const getUsersScreens = (orgUserSpecificID) => {
-    console.log(orgUserSpecificID, "orgUserSpecificID");
     let config = {
       method: "get",
       maxBodyLength: Infinity,
@@ -621,25 +620,20 @@ const Users = ({ searchValue }) => {
           newPassword: values.newPassword,
           confirmPassword: values.confirmPassword,
         };
-
         const config = {
           method: "post", // Change method to 'put' for changing the password
-          url: CHNAGE_PASSWORD, // Assuming CHNAGE_PASSWORD is your API endpoint
+          url: `${CHNAGE_PASSWORD}userID=${payload.userID}&OldPassowrd=${payload.currentPassword}&NewPassword=${payload.newPassword}`, // Assuming CHNAGE_PASSWORD is your API endpoint
           headers: {
             Authorization: authToken,
           },
-          params: {
-            userID: payload.userID,
-            OldPassowrd: payload.currentPassword, // Note: Typo in OldPassword corrected
-            NewPassword: payload.newPassword,
-          },
           maxBodyLength: Infinity,
         };
-
         const response = await axios.request(config);
-        if (response.status) {
+        if (response?.data?.status === true) {
           formik.resetForm()
-          toast.success(response.message);
+          toast.success(response?.data?.message);
+        }else{
+          toast.error(response?.data?.message)
         }
       } catch (error) {
         console.error("Error updating password:", error.message);
@@ -1464,7 +1458,7 @@ const Users = ({ searchValue }) => {
                               className=" border text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
-                              value={formik.values.password}
+                              value={formik.values.newPassword}
                             />
                             <div className="icon mt-3">
                               {newPasswordShow ? (
@@ -1500,7 +1494,7 @@ const Users = ({ searchValue }) => {
                               className=" border  text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
-                              value={formik.values.password}
+                              value={formik.values.confirmPassword}
                             />
                             <div className="icon mt-3">
                               {confirmPasswordShow ? (
@@ -2353,7 +2347,7 @@ const Users = ({ searchValue }) => {
                               <td colSpan={5}>
                                 <div className="flex text-center justify-center">
                                   <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800 me-2 dark:bg-green-900 dark:text-green-300">
-                                    No user Found
+                                    No Data Available
                                   </span>
                                 </div>
                               </td>

@@ -1075,7 +1075,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             {/* <div className="text-center font-semibold text-2xl col-span-full p-5 "> */}
                             {store?.data?.length === 0 ? (
                               <div className="text-center"><span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
-                              Data Not Found
+                              No Data Available
                             </span></div>
                             ) : (
                               <>

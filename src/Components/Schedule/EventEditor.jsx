@@ -13,6 +13,9 @@ import toast from "react-hot-toast";
 import ReactPlayer from "react-player";
 import { Link } from "react-router-dom";
 import { debounce } from "lodash";
+import { handleGetAllAssets } from "../../Redux/Assetslice";
+import { handleGetTextScrollData, handleGetYoutubeData } from "../../Redux/AppsSlice";
+import { useDispatch } from "react-redux";
 const EventEditor = ({
   isOpen,
   onClose,
@@ -24,6 +27,7 @@ const EventEditor = ({
   myEvents,
   setAllAssets,
 }) => {
+  const dispatch = useDispatch();
   const [title, setTitle] = useState("");
   const [selectedColor, setSelectedColor] = useState("#4A90E2");
   const [editedStartDate, setEditedStartDate] = useState("");
@@ -514,6 +518,25 @@ const EventEditor = ({
     };
   }, []);
 
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const isClosed = localStorage.getItem("isWindowClosed");
+      if (isClosed === "true") {
+        dispatch(handleGetAllAssets({ token }));
+        dispatch(handleGetYoutubeData({ token }));
+        dispatch(handleGetTextScrollData({ token }));
+        localStorage.setItem("isWindowClosed", "false");
+        // window.location.reload();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+
   return (
     <>
       <ReactModal
@@ -700,7 +723,12 @@ const EventEditor = ({
                                 target="_blank"
                                 className="border-2 mt-4 border-lightgray hover:bg-primary hover:text-white bg-SlateBlue  px-6 py-2 rounded-full ml-3"
                               >
-                                Upload asset
+                                <button type="button"
+                                  onClick={() => {
+                                    localStorage.setItem("isWindowClosed", "false");
+                                  }}>
+                                  Upload asset
+                                </button>
                               </Link>
                             </td>
                           </tr>

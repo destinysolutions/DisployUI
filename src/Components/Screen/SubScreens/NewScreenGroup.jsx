@@ -93,13 +93,13 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [assetPreview, setAssetPreview] = useState("");
   const [selectedYoutube, setSelectedYoutube] = useState();
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
-
+  const [allGroupScreen, setAllGroupScreen] = useState([])
   const [editSelectedScreen, setEditSelectedScreen] = useState("");
 
   const [showTagModal, setShowTagModal] = useState(false);
   const [tags, setTags] = useState([]);
   const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
-
+  const [loader, setLoader] = useState(false)
   //PreView model
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState();
@@ -112,23 +112,27 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     if (loadFirst) {
+      setLoader(true)
       // get all screen group
-      dispatch(getGroupData());
+      dispatch(getGroupData()).then((res) => {
+        setAllGroupScreen(res?.payload?.data)
+        setLoader(false)
+      });
 
-      // load composition
-      dispatch(handleGetCompositions({ token }));
+      // // load composition
+      // dispatch(handleGetCompositions({ token }));
 
-      // get all assets files
-      dispatch(handleGetAllAssets({ token }));
+      // // get all assets files
+      // dispatch(handleGetAllAssets({ token }));
 
-      // get all schedule
-      dispatch(handleGetAllSchedule({ token }));
+      // // get all schedule
+      // dispatch(handleGetAllSchedule({ token }));
 
-      // get youtube data
-      dispatch(handleGetYoutubeData({ token }));
+      // // get youtube data
+      // dispatch(handleGetYoutubeData({ token }));
 
-      //get text scroll data
-      dispatch(handleGetTextScrollData({ token }));
+      // //get text scroll data
+      // dispatch(handleGetTextScrollData({ token }));
       setLoadFirst(false);
     }
 
@@ -149,8 +153,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const totalPages = Math.ceil(
     (Array.isArray(store?.data) ? store?.data.length : 0) / itemsPerPage
   );
-  const paginatedData = Array.isArray(store?.data)
-    ? store?.data.slice(
+  const paginatedData = allGroupScreen
+    ? allGroupScreen.slice(
       (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage
     )
@@ -246,7 +250,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  const handleAssetUpdate = () => {};
+  const handleAssetUpdate = () => { };
 
   const editGroupName = (index) => {
     // GroupNameUpdate
@@ -396,7 +400,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       payload.MediaDetailID = 1;
     }
     if (selectedComposition.compositionID) {
-      console.log("selectedComposition", selectedComposition);
       payload.AssetName = selectedComposition.compositionName;
       payload.MediaID = selectedComposition.compositionID;
       payload.AssetType = "composition";
@@ -406,25 +409,18 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     if (selectedTextScroll.textScroll_Id) {
       payload.AssetName = selectedTextScroll.instanceName;
       payload.MediaID = selectedTextScroll.textScroll_Id;
-      payload.AssetType = "";
-      payload.FilePath = "";
       payload.MediaDetailID = 4;
     }
-    if (selectedYoutube.compositionID) {
+    if (selectedYoutube.compositionID || selectedYoutube.youtubeId) {
       payload.AssetName = selectedYoutube.instanceName;
-      payload.MediaID = selectedYoutube.compositionID;
-      payload.AssetType = "";
-      payload.FilePath = "";
-      payload.MediaDetailID = 3;
+      payload.MediaID = selectedYoutube.compositionID || selectedYoutube.youtubeId;
+      payload.FilePath = selectedYoutube.compositionID ? "composition" : selectedYoutube.youTubeURL;
+      payload.MediaDetailID = selectedYoutube.compositionID ? 3 : 5;
     }
-    if (selectedYoutube.youtubeId) {
-      payload.MediaID = selectedYoutube.instanceName;
-      payload.AssetType = "";
-      payload.FilePath = "";
-      payload.MediaDetailID = 5;
-    }
+
     dispatch(groupAssetsInUpdateScreen(payload));
   };
+
 
   const handleFetchLayoutById = (id) => {
     setLoading(true);
@@ -601,7 +597,31 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
 
           <div className="mt-5 shadow-md p-5 bg-white rounded-lg">
-            {paginatedData && paginatedData.length > 0 ? (
+            {loader && (
+              <div className="flex text-center m-5 justify-center">
+                <svg
+                  aria-hidden="true"
+                  role="status"
+                  className="inline w-10 h-10 me-3 text-gray-200 animate-spin dark:text-gray-600"
+                  viewBox="0 0 100 101"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                    fill="#1C64F2"
+                  />
+                </svg>
+                <span className="text-2xl  hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-full text-green-800  me-2  dark:bg-green-900 dark:text-green-300">
+                  Loading...
+                </span>
+              </div>
+            )}
+            {!loader && paginatedData.length > 0 && (
               paginatedData.map((item, i) => {
                 const isAccordionOpen = openAccordionIndex === i;
                 return (
@@ -959,11 +979,12 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                   </div>
                 );
               })
-            ) : (
+            )} 
+            {!loader && paginatedData?.length === 0 && (
               <>
                 <div className="flex text-center m-5 justify-center">
                   <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
-                    Data Not Found
+                    No Data Available
                   </span>
                 </div>
               </>

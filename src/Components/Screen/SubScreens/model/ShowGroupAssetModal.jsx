@@ -13,6 +13,11 @@ import { RiPlayListFill } from "react-icons/ri";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import ShowAppsModal from "../../../ShowAppsModal";
+import { handleGetAllAssets } from "../../../../Redux/Assetslice";
+import { handleGetTextScrollData, handleGetYoutubeData } from "../../../../Redux/AppsSlice";
+import { useDispatch } from "react-redux";
+import { handleGetCompositions } from "../../../../Redux/CompositionSlice";
+import { handleGetAllSchedule } from "../../../../Redux/ScheduleSlice";
 
 const ShowAssetModal = ({
   setShowAssetModal,
@@ -34,6 +39,7 @@ const ShowAssetModal = ({
 }) => {
   const { user, token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
+  const dispatch = useDispatch();
 
   const [filteredData, setFilteredData] = useState([]);
   const [searchAssest, setSearchAssest] = useState("");
@@ -42,9 +48,27 @@ const ShowAssetModal = ({
 
   const { assets } = useSelector((s) => s.root.asset);
   const { compositions } = useSelector((s) => s.root.composition);
-  const { allAppsData } = useSelector((s) => s.root.apps);
+  const { youtube,textScroll} = useSelector((s) => s.root.apps);
+  const allAppsData = [...youtube?.youtubeData,...textScroll?.textScrollData];
 
   const modalRef = useRef(null);
+
+  useEffect(() => {
+    // load composition
+     dispatch(handleGetCompositions({ token }));
+
+     // get all assets files
+     dispatch(handleGetAllAssets({ token }));
+
+     // get all schedule
+     dispatch(handleGetAllSchedule({ token }));
+
+     // get youtube data
+     dispatch(handleGetYoutubeData({ token }));
+
+     //get text scroll data
+     dispatch(handleGetTextScrollData({ token }));
+ }, [])
 
   const handleOnConfirm = async () => {
     await handleSave();
@@ -149,12 +173,31 @@ const ShowAssetModal = ({
     };
   }, []);
 
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const isClosed = localStorage.getItem("isWindowClosed");
+      if (isClosed === "true") {
+        dispatch(handleGetCompositions({ token }));
+        dispatch(handleGetAllAssets({ token }));
+        dispatch(handleGetYoutubeData({ token }));
+        dispatch(handleGetTextScrollData({ token }));
+        localStorage.setItem("isWindowClosed", "false");
+        // window.location.reload();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
   return (
     <>
       <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] h-auto top-12 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
-        <div 
-        className={`${showAppModal ? "hidden" : ""
-          } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
+        <div
+          className={`${showAppModal ? "hidden" : ""
+            } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
         >
           <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
             Set Content to Add Media
@@ -168,9 +211,8 @@ const ShowAssetModal = ({
         </div>
         <div
           onClick={() => assetPreviewPopup && setAssetPreviewPopup(false)}
-          className={`${
-            showAppModal ? "hidden" : ""
-          } relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
+          className={`${showAppModal ? "hidden" : ""
+            } relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
         >
           <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
             <div className="flex-initial">
@@ -250,7 +292,10 @@ const ShowAssetModal = ({
                     />
                   </div>
                   <Link to="/fileupload" target="_blank">
-                    <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                    <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm   hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                      onClick={() => {
+                        localStorage.setItem("isWindowClosed", "false");
+                      }}>
                       Upload
                     </button>
                   </Link>
@@ -422,7 +467,10 @@ const ShowAssetModal = ({
                     />
                   </div>
                   <Link to="/addcomposition" target="_blank">
-                    <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                    <button className="flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-4 sm:py-2 text-sm hover:text-white hover:bg-primary border-2 border-white hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white"
+                    onClick={() => {
+                      localStorage.setItem("isWindowClosed", "false");
+                    }}>
                       Add New Composition
                     </button>
                   </Link>
