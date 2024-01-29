@@ -97,15 +97,15 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(schedules)
     ? schedules.filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            value &&
-            value
-              .toString()
-              .toLowerCase()
-              .includes(searchSchedule.toLowerCase())
-        )
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value
+            .toString()
+            .toLowerCase()
+            .includes(searchSchedule.toLowerCase())
       )
+    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -509,7 +509,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 </span>
                 <input
                   type="text"
-                  placeholder="Search schedule"
+                  placeholder="Search Schedule"
                   className="border border-primary rounded-full pl-10 py-1.5 search-user"
                   value={searchSchedule}
                   onChange={handleSearchSchedule}
@@ -673,51 +673,52 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                   {schedule.scheduleName}
                                 </div>
                               </td>
-                              <td className="text-center">
+                              <td className="text-center text-[#5E5E5E]">
                                 {schedule.timeZoneName}
                               </td>
-                              <td className="text-center">
+                              <td className="text-center text-[#5E5E5E]">
                                 {moment(schedule.createdDate).format(
                                   "YYYY-MM-DD hh:mm"
                                 )}
                               </td>
-                              <td className="text-center">
+                              <td className="text-center text-[#5E5E5E]">
                                 {moment(schedule.startDate).format(
                                   "YYYY-MM-DD hh:mm"
                                 )}
                               </td>
-                              <td className="text-center">
+                              <td className="text-center text-[#5E5E5E]">
                                 {moment(schedule.endDate).format(
                                   "YYYY-MM-DD hh:mm"
                                 )}
                               </td>
-                              <td className="text-center">
+                              <td className="text-center text-[#5E5E5E]">
                                 {schedule.screenAssigned}
                               </td>
 
                               <td
                                 title={schedule?.tags && schedule?.tags}
-                                className="text-center flex items-center justify-center gap-2 w-full flex-wrap"
+                                className="text-center text-[#5E5E5E]"
                               >
-                                {(schedule?.tags === "" ||
-                                  schedule?.tags === null) && (
-                                  <span>
-                                    <AiOutlinePlusCircle
-                                      size={30}
-                                      className="mx-auto cursor-pointer"
-                                      onClick={() => {
-                                        setShowTagModal(true);
-                                        schedule.tags === "" ||
-                                        schedule?.tags === null
-                                          ? setTags([])
-                                          : setTags(schedule?.tags?.split(","));
-                                        setUpdateTagSchedule(schedule);
-                                      }}
-                                    />
-                                  </span>
-                                )}
-                                {schedule.tags !== null
-                                  ? schedule.tags
+                                <div className="flex items-center justify-center gap-2 w-full flex-wrap">
+                                  {(schedule?.tags === "" ||
+                                    schedule?.tags === null) && (
+                                      <span>
+                                        <AiOutlinePlusCircle
+                                          size={30}
+                                          className="mx-auto cursor-pointer"
+                                          onClick={() => {
+                                            setShowTagModal(true);
+                                            schedule.tags === "" ||
+                                              schedule?.tags === null
+                                              ? setTags([])
+                                              : setTags(schedule?.tags?.split(","));
+                                            setUpdateTagSchedule(schedule);
+                                          }}
+                                        />
+                                      </span>
+                                    )}
+                                  {schedule.tags !== null
+                                    ? schedule.tags
                                       .split(",")
                                       .slice(
                                         0,
@@ -725,34 +726,45 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                           ? 3
                                           : schedule.tags.split(",").length
                                       )
+                                      .map((text) => {
+                                        if (text.toString().length > 10) {
+                                          return text
+                                            .split("")
+                                            .slice(0, 10)
+                                            .concat("...")
+                                            .join("");
+                                        }
+                                        return text;
+                                      })
                                       .join(",")
-                                  : ""}
-                                {schedule?.tags !== "" &&
-                                  schedule?.tags !== null && (
-                                    <MdOutlineModeEdit
-                                      onClick={() => {
-                                        setShowTagModal(true);
-                                        schedule.tags === "" ||
-                                        schedule?.tags === null
-                                          ? setTags([])
-                                          : setTags(schedule?.tags?.split(","));
-                                        setUpdateTagSchedule(schedule);
-                                      }}
-                                      className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
+                                    : ""}
+                                  {schedule?.tags !== "" &&
+                                    schedule?.tags !== null && (
+                                      <AiOutlinePlusCircle
+                                        onClick={() => {
+                                          setShowTagModal(true);
+                                          schedule.tags === "" ||
+                                            schedule?.tags === null
+                                            ? setTags([])
+                                            : setTags(schedule?.tags?.split(","));
+                                          setUpdateTagSchedule(schedule);
+                                        }}
+                                        className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
+                                      />
+                                    )}
+                                  {showTagModal && (
+                                    <AddOrEditTagPopup
+                                      setShowTagModal={setShowTagModal}
+                                      tags={tags}
+                                      setTags={setTags}
+                                      handleUpadteScheduleTags={
+                                        handleUpadteScheduleTags
+                                      }
+                                      from="schedule"
+                                      setUpdateTagSchedule={setUpdateTagSchedule}
                                     />
                                   )}
-                                {showTagModal && (
-                                  <AddOrEditTagPopup
-                                    setShowTagModal={setShowTagModal}
-                                    tags={tags}
-                                    setTags={setTags}
-                                    handleUpadteScheduleTags={
-                                      handleUpadteScheduleTags
-                                    }
-                                    from="schedule"
-                                    setUpdateTagSchedule={setUpdateTagSchedule}
-                                  />
-                                )}
+                                </div>
                               </td>
 
                               <td className="text-center relative">
@@ -761,7 +773,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                     <Tooltip
                                       content="Edit Schedule"
                                       placement="bottom-end"
-                                      className=" bg-primary text-white z-10 ml-5"
+                                      className=" bg-SlateBlue text-white z-10 ml-5"
                                       animate={{
                                         mount: { scale: 1, y: 0 },
                                         unmount: { scale: 1, y: 10 },
@@ -784,7 +796,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                     <Tooltip
                                       content="Add Screens"
                                       placement="bottom-end"
-                                      className=" bg-primary text-white z-10 ml-5"
+                                      className=" bg-SlateBlue text-white z-10 ml-5"
                                       animate={{
                                         mount: { scale: 1, y: 0 },
                                         unmount: { scale: 1, y: 10 },

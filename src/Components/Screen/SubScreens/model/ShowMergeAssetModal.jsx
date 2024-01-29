@@ -184,7 +184,7 @@ const ShowAssetModal = ({
                     <AiOutlineSearch className="absolute top-2 left-2 w-5 h-5 z-10 text-gray" />
                     <input
                       type="text"
-                      placeholder="Search assest"
+                      placeholder="Search Assest"
                       className="border border-primary rounded-full pl-8 py-2 search-user"
                       value={searchAssest}
                       onChange={handleSearchAssest}
@@ -199,16 +199,16 @@ const ShowAssetModal = ({
                     </button>
                   </Link>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover w-full addmedia-table">
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover w-full addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
-                      borderCollapse: "separate",
+                      borderCollapse: "collapse",
                       borderSpacing: " 0 10px",
                     }}
                     className="w-full"
                   >
                     <thead className="sticky top-0">
-                      <tr className="bg-lightgray">
+                      <tr className="table-head-bg">
                         <th className="p-3 w-80 text-left">Media Name</th>
                         <th>Date Added</th>
                         <th className="p-3">Size</th>

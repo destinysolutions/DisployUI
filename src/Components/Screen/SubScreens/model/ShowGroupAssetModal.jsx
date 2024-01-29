@@ -45,6 +45,8 @@ const ShowAssetModal = ({
   const [searchAssest, setSearchAssest] = useState("");
   const [searchComposition, setSearchComposition] = useState("");
   const [showAppModal, setShowAppModal] = useState(false);
+  const [searchApps, setSearchApps] = useState("");
+  const [appsData, setAppsData] = useState([]);
 
   const { assets } = useSelector((s) => s.root.asset);
   const { compositions } = useSelector((s) => s.root.composition);
@@ -68,6 +70,7 @@ const ShowAssetModal = ({
 
      //get text scroll data
      dispatch(handleGetTextScrollData({ token }));
+     setAppsData(allAppsData);
  }, [])
 
   const handleOnConfirm = async () => {
@@ -192,9 +195,39 @@ const ShowAssetModal = ({
     };
   }, []);
 
+  const handleAppsSearch = (event) => {
+    setSearchApps(event.target.value);
+    const searchQuery = event.target.value.toLowerCase();
+    if (searchQuery === "") {
+      setAppsData(allAppsData);
+    } else {
+      const filteredScreen = allAppsData.filter((entry) =>
+        Object.values(entry).some((val) => {
+          if (typeof val === "string") {
+            const keyWords = searchQuery.split(" ");
+            for (let i = 0; i < keyWords.length; i++) {
+              return (
+                // val.toLocaleLowerCase().startsWith(keyWords[i]) ||
+                // val.toLocaleLowerCase().endsWith(keyWords[i]) ||
+                // val.toLocaleLowerCase().includes(keyWords[i]) ||
+                // val.toLocaleLowerCase().includes(searchQuery)
+                entry?.instanceName.toLocaleLowerCase().includes(searchQuery)
+              );
+            }
+          }
+        })
+      );
+      if (filteredScreen?.length > 0) {
+        setAppsData(filteredScreen);
+      } else {
+        setAppsData([]);
+      }
+    }
+  };
+
   return (
     <>
-      <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] h-auto top-12 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
+      <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] h-auto lg:top-1/4 top-16 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
         <div
           className={`${showAppModal ? "hidden" : ""
             } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
@@ -285,7 +318,7 @@ const ShowAssetModal = ({
                     <AiOutlineSearch className="absolute top-2 left-2 w-5 h-5 z-10 text-gray" />
                     <input
                       type="text"
-                      placeholder="Search assest"
+                      placeholder="Search Assest"
                       className="border border-primary rounded-full pl-8 py-2 search-user"
                       value={searchAssest}
                       onChange={(e) => handleSearchAssest(e, "asset")}
@@ -300,16 +333,16 @@ const ShowAssetModal = ({
                     </button>
                   </Link>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover w-full addmedia-table">
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover sc-scrollbar rounded-lg w-full addmedia-table">
                   <table
                     style={{
-                      borderCollapse: "separate",
+                      borderCollapse: "collapse",
                       borderSpacing: " 0 10px",
                     }}
                     className="w-full"
                   >
                     <thead className="sticky top-0">
-                      <tr className="bg-lightgray">
+                      <tr className="table-head-bg">
                         <th className="p-3 w-80 text-left">Media Name</th>
                         <th>Date Added</th>
                         <th className="p-3">Size</th>
@@ -475,16 +508,16 @@ const ShowAssetModal = ({
                     </button>
                   </Link>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
-                      borderCollapse: "separate",
+                      borderCollapse: "collapse",
                       borderSpacing: " 0 10px",
                     }}
                     className="w-full"
                   >
                     <thead className="sticky top-0">
-                      <tr className="bg-lightgray">
+                      <tr className="table-head-bg">
                         <th className="p-3 w-80 text-left">Composition Name</th>
                         <th>Date Added</th>
                         <th className="p-3">Resolution</th>
@@ -556,6 +589,16 @@ const ShowAssetModal = ({
 
               <div className={popupActiveTab !== 3 && "hidden"}>
                 <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
+                <div className="mb-5 relative">
+                    <AiOutlineSearch className="absolute top-2 left-3 w-6 h-5 z-10 text-gray" />
+                    <input
+                      type="text"
+                      placeholder="Search Apps"
+                      className="border border-primary rounded-full pl-9 py-2 search-user w-56"
+                      value={searchApps}
+                      onChange={(e) => handleAppsSearch(e)}
+                    />
+                  </div>
                   <button
                     onClick={() => {
                       setShowAppModal(true);
@@ -564,22 +607,22 @@ const ShowAssetModal = ({
                     Add New App
                   </button>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table">
+                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
-                      borderCollapse: "separate",
+                      borderCollapse: "collapse",
                       borderSpacing: " 0 10px",
                     }}
                     className="w-full"
                   >
                     <thead className="sticky top-0">
-                      <tr className="bg-lightgray">
+                      <tr className="table-head-bg">
                         <th className="p-3 w-80 text-left">Instance Name</th>
                         <th>App Type</th>
                       </tr>
                     </thead>
 
-                    {allAppsData.map((instance, index) => (
+                    {appsData?.length > 0 ? (appsData.map((instance, index) => (
                       <tbody key={index}>
                         <tr
                           className={`${selectedTextScroll === instance ||
@@ -603,7 +646,16 @@ const ShowAssetModal = ({
                           </td>
                         </tr>
                       </tbody>
-                    ))}
+                    ))):(
+                      <tr>
+                      <td
+                        className="font-semibold text-center bg-white text-lg"
+                        colSpan={4}
+                      >
+                        No search result found.
+                      </td>
+                    </tr>
+                    )}
                   </table>
                 </div>
               </div>

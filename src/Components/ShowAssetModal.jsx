@@ -64,8 +64,8 @@ const ShowAssetModal = ({
 
   const { assets } = useSelector((s) => s.root.asset);
   const { compositions } = useSelector((s) => s.root.composition);
-  const { youtube,textScroll} = useSelector((s) => s.root.apps);
-  const allAppsData = [...youtube?.youtubeData,...textScroll?.textScrollData];
+  const { youtube, textScroll } = useSelector((s) => s.root.apps);
+  const allAppsData = [...youtube?.youtubeData, ...textScroll?.textScrollData];
   const modalRef = useRef(null);
 
   const fetchData = () => {
@@ -364,7 +364,7 @@ const ShowAssetModal = ({
 
   return (
     <>
-      <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] min-w-90vw h-auto top-12 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
+      <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] min-w-90vw h-auto lg:top-1/4 md:top-16 top-16 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
         <div
           className={`${showAppModal ? "hidden" : ""
             } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
@@ -478,7 +478,7 @@ const ShowAssetModal = ({
                     <AiOutlineSearch className="absolute top-2 left-3 w-5 h-5 z-10 text-gray" />
                     <input
                       type="text"
-                      placeholder="Search asset"
+                      placeholder="Search Asset"
                       className="border border-primary rounded-full pl-9 py-2 search-user w-56"
                       value={searchAssest}
                       // onChange={(e) => handleSearchAssest(e, "asset")}
@@ -498,13 +498,13 @@ const ShowAssetModal = ({
                     </button>
                   </Link>
                 </div>
-                <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
+                <div className="table-container md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
-                      borderCollapse: "separate",
+                      borderCollapse: "collapse",
                       borderSpacing: " 0 10px",
                     }}
-                    className="screen-table w-full"
+                    className="w-full"
                   >
                     <thead className="sticky top-0">
                       <tr className="table-head-bg">
@@ -514,34 +514,35 @@ const ShowAssetModal = ({
                         <th className="p-3">Type</th>
                       </tr>
                     </thead>
-                    {loading && (
-                      <tr>
-                        <td
-                          className="font-semibold text-center bg-white text-lg"
-                          colSpan={4}
-                        >
-                          Loading...
-                        </td>
-                      </tr>
-                    )}
-                    {!loading && assetData && assetData.length === 0 ? (
-                      <tr>
-                        <td
-                          className="font-semibold text-center bg-white text-lg"
-                          colSpan={4}
-                        >
-                          No assets here.
-                        </td>
-                      </tr>
-                    ) : (
-                      assetData.length > 0 &&
-                      assetData
-                        .filter((asset) => {
-                          return asset.assetType !== "Folder";
-                        })
-                        .map((asset) => (
-                          <tbody key={asset.assetID}>
+                    <tbody>
+                      {loading && (
+                        <tr>
+                          <td
+                            className="font-semibold text-center bg-white text-lg"
+                            colSpan={4}
+                          >
+                            Loading...
+                          </td>
+                        </tr>
+                      )}
+                      {!loading && assetData && assetData.length === 0 ? (
+                        <tr>
+                          <td
+                            className="font-semibold text-center bg-white text-lg"
+                            colSpan={4}
+                          >
+                            No assets here.
+                          </td>
+                        </tr>
+                      ) : (
+                        assetData.length > 0 &&
+                        assetData
+                          .filter((asset) => {
+                            return asset.assetType !== "Folder";
+                          })
+                          .map((asset) => (
                             <tr
+                              key={asset.assetID}
                               className={`${selectedAsset?.assetID === asset?.assetID ||
                                 selectedAsset === asset?.assetName
                                 ? "bg-[#f3c953]"
@@ -569,9 +570,9 @@ const ShowAssetModal = ({
                                 {asset.assetType}
                               </td>
                             </tr>
-                          </tbody>
-                        ))
-                    )}
+                          ))
+                      )}
+                    </tbody>
                   </table>
                   {assetPreviewPopup && (
                     <div className="fixed left-1/2 -translate-x-1/2 w-10/12 h-10/12 bg-black z-50 inset-0">
@@ -676,7 +677,7 @@ const ShowAssetModal = ({
                 <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
-                      borderCollapse: "separate",
+                      borderCollapse: "collapse",
                       borderSpacing: " 0 10px",
                     }}
                     className="w-full"
@@ -774,7 +775,7 @@ const ShowAssetModal = ({
                 <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover addmedia-table sc-scrollbar rounded-lg">
                   <table
                     style={{
-                      borderCollapse: "separate",
+                      borderCollapse: "collapse",
                       borderSpacing: " 0 10px",
                     }}
                     className="w-full"

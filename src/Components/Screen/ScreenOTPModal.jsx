@@ -8,7 +8,9 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { GET_ALL_ORGANIZATION_MASTER } from "../../admin/AdminAPI";
 import toast from "react-hot-toast";
-import BlackLogo from "../../images/DisployImg/BlackLogo.svg";
+// import BlackLogo from "../../images/DisployImg/BlackLogo.svg";
+import BlackLogo from "../../images/DisployImg/Black-Logo2.png";
+
 import disploy_tv_img from "../../images/ScreenImg/disploy-tv-img.png";
 
 const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
@@ -159,7 +161,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
               <> */}
             <div className="relative lg:p-5 md:p-5 sm:p-3 xs:p-2 flex-auto">
               <div className="flex items-center justify-center mb-4">
-                <img src={BlackLogo} />
+                <img src={BlackLogo} className="w-52" />
               </div>
 
               <div className="flex w-7/12 mx-auto items-center justify-center relative mb-4">

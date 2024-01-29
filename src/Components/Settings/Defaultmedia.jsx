@@ -481,7 +481,7 @@ const Defaultmedia = () => {
                               <AiOutlineSearch className="absolute top-2.5 left-2 w-5 h-5 z-10 text-gray" />
                               <input
                                 type="text"
-                                placeholder="Search assest"
+                                placeholder="Search Assest"
                                 className="border border-primary rounded-full pl-8 py-2 search-user"
                                 value={searchAssest}
                                 onChange={(e) => handleSearchAssest(e, "asset")}

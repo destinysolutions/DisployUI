@@ -619,7 +619,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                     Select Files to Upload
                   </span>
                   <p className="text-sm font-normal text-center">
-                    Drop your first video, photo or document here
+                    Drop your video, photo or document here
                   </p>
                 </div>
               </div>

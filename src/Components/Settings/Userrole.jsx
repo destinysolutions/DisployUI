@@ -948,10 +948,10 @@ const Userrole = ({ searchValue }) => {
                     <AiOutlineCloseCircle className="text-3xl" />
                   </button>
                 </div>
-                <div className="schedual-table bg-white rounded-xl shadow p-3">
-                  <table className="w-full" cellPadding={20}>
+                <div className="schedual-table bg-white shadow p-3 rounded-lg">
+                  <table className="w-full p-4 rounded-lg" cellPadding={20}>
                     <thead>
-                      <tr className="items-center  table-head-bg">
+                      <tr className="items-center table-head-bg">
                         <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                           UserName
                         </th>

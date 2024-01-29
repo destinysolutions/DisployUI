@@ -559,7 +559,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                 </span>
                 <input
                   type="text"
-                  placeholder="Search composition"
+                  placeholder="Search Composition"
                   className="border border-primary rounded-full pl-10 py-2 search-user"
                   value={searchComposition}
                   onChange={handleSearchComposition}
@@ -725,32 +725,33 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                               </td>
                               <td
                                 title={composition?.tags && composition?.tags}
-                                className="text-center flex items-center justify-center w-full flex-wrap gap-2"
+                                className="text-center text-[#5E5E5E]"
                               >
-                                {(composition?.tags === "" ||
-                                  composition?.tags === null) && (
-                                  <span>
-                                    <AiOutlinePlusCircle
-                                      size={30}
-                                      className="mx-auto cursor-pointer"
-                                      onClick={() => {
-                                        setShowTagModal(true);
-                                        composition?.tags === "" ||
-                                        composition?.tags === null
-                                          ? setTags([])
-                                          : setTags(
-                                              composition?.tags?.split(",")
+                                <div className="flex items-center justify-center w-full flex-wrap gap-2 text-[#5E5E5E]">
+                                  {(composition?.tags === "" ||
+                                    composition?.tags === null) && (
+                                      <span>
+                                        <AiOutlinePlusCircle
+                                          size={30}
+                                          className="mx-auto cursor-pointer"
+                                          onClick={() => {
+                                            setShowTagModal(true);
+                                            composition?.tags === "" ||
+                                              composition?.tags === null
+                                              ? setTags([])
+                                              : setTags(
+                                                composition?.tags?.split(",")
+                                              );
+                                            handleFetchCompositionById(
+                                              composition?.compositionID,
+                                              "tags"
                                             );
-                                        handleFetchCompositionById(
-                                          composition?.compositionID,
-                                          "tags"
-                                        );
-                                      }}
-                                    />
-                                  </span>
-                                )}
-                                {composition?.tags !== null
-                                  ? composition?.tags
+                                          }}
+                                        />
+                                      </span>
+                                    )}
+                                  {composition?.tags !== null
+                                    ? composition?.tags
                                       .split(",")
                                       .slice(
                                         0,
@@ -769,41 +770,42 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                         return text;
                                       })
                                       .join(",")
-                                  : ""}
-                                {composition?.tags !== "" &&
-                                  composition?.tags !== null && (
-                                    <MdOutlineModeEdit
-                                      onClick={() => {
-                                        setShowTagModal(true);
-                                        composition?.tags === "" ||
-                                        composition?.tags === null
-                                          ? setTags([])
-                                          : setTags(
+                                    : ""}
+                                  {composition?.tags !== "" &&
+                                    composition?.tags !== null && (
+                                      <AiOutlinePlusCircle
+                                        onClick={() => {
+                                          setShowTagModal(true);
+                                          composition?.tags === "" ||
+                                            composition?.tags === null
+                                            ? setTags([])
+                                            : setTags(
                                               composition?.tags?.split(",")
                                             );
-                                        handleFetchCompositionById(
-                                          composition?.compositionID,
-                                          "tags"
-                                        );
-                                      }}
-                                      className="w-5 h-5 cursor-pointer"
+                                          handleFetchCompositionById(
+                                            composition?.compositionID,
+                                            "tags"
+                                          );
+                                        }}
+                                        className="w-5 h-5 cursor-pointer"
+                                      />
+                                    )}
+                                  {/* add or edit tag modal */}
+                                  {showTagModal && (
+                                    <AddOrEditTagPopup
+                                      setShowTagModal={setShowTagModal}
+                                      tags={tags}
+                                      setTags={setTags}
+                                      handleUpdateTagsOfComposition={
+                                        handleUpdateTagsOfComposition
+                                      }
+                                      from="composition"
+                                      setUpdateTagComposition={
+                                        setUpdateTagComposition
+                                      }
                                     />
                                   )}
-                                {/* add or edit tag modal */}
-                                {showTagModal && (
-                                  <AddOrEditTagPopup
-                                    setShowTagModal={setShowTagModal}
-                                    tags={tags}
-                                    setTags={setTags}
-                                    handleUpdateTagsOfComposition={
-                                      handleUpdateTagsOfComposition
-                                    }
-                                    from="composition"
-                                    setUpdateTagComposition={
-                                      setUpdateTagComposition
-                                    }
-                                  />
-                                )}
+                                </div>
                               </td>
 
                               <td className="text-center">
@@ -812,7 +814,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     <Tooltip
                                       content="Edit"
                                       placement="bottom-end"
-                                      className=" bg-primary text-white z-10 ml-5"
+                                      className=" bg-SlateBlue text-white z-10 ml-5"
                                       animate={{
                                         mount: { scale: 1, y: 0 },
                                         unmount: { scale: 1, y: 10 },
@@ -835,7 +837,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     <Tooltip
                                       content="Preview"
                                       placement="bottom-end"
-                                      className=" bg-primary text-white z-10 mx-auto"
+                                      className=" bg-SlateBlue text-white z-10 mx-auto"
                                       animate={{
                                         mount: { scale: 1, y: 0 },
                                         unmount: { scale: 1, y: 10 },
@@ -860,7 +862,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                     <Tooltip
                                       content="Set To Screen"
                                       placement="bottom-end"
-                                      className=" bg-primary text-white z-10 ml-5"
+                                      className=" bg-SlateBlue text-white z-10 ml-5"
                                       animate={{
                                         mount: { scale: 1, y: 0 },
                                         unmount: { scale: 1, y: 10 },
