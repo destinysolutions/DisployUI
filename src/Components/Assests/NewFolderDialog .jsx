@@ -33,6 +33,7 @@ import ScreenAssignModal from "../ScreenAssignModal";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { connection } from "../../SignalR";
 import PreviewDoc from "./PreviewDoc";
+import { socket } from "../../App";
 const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
   NewFolderDialog.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
@@ -93,6 +94,12 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
+          const Params = {
+            id: socket.id,
+            connection: socket.connected,
+            macId:  macids,
+          };
+          socket.emit("ScreenConnected", Params);
           if (connection.state == "Disconnected") {
             connection
               .start()

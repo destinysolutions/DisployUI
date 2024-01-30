@@ -66,6 +66,7 @@ import Swal from "sweetalert2";
 import { addTagsAndUpdate, resetStatus } from "../../Redux/ScreenGroupSlice";
 import { BiEdit } from "react-icons/bi";
 import ReactTooltip from "react-tooltip";
+import { socket } from "../../App";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -329,6 +330,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         toast.remove();
         setLoadFist(true);
         toast.success("Screen deleted Successfully!");
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId:  allScreenMacids,
+        };
+        socket.emit("ScreenConnected", Params);
         if (connection.state == "Disconnected") {
           connection
             .start()
@@ -363,6 +370,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     if (!window.confirm("Are you sure?")) return;
     toast.loading("Deleting...");
     console.log("signal r");
+    const Params = {
+      id: socket.id,
+      connection: socket.connected,
+      macId:  MACID,
+    };
+    socket.emit("ScreenConnected", Params);
     if (connection.state == "Disconnected") {
       connection
         .start()
@@ -508,6 +521,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       response
         .then((response) => {
           toast.remove();
+          const Params = {
+            id: socket.id,
+            connection: socket.connected,
+            macId:  screenToUpdate?.macid.replace(/^\s+/g, ""),
+          };
+          socket.emit("ScreenConnected", Params);
           if (connection.state == "Disconnected") {
             connection
               .start()
@@ -586,6 +605,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           toast.remove();
           toast.success("Schedule assinged to screen.");
           setShowScheduleModal(false);
+          const Params = {
+            id: socket.id,
+            connection: socket.connected,
+            macId:  screenToUpdate?.macid.replace(/^\s+/g, ""),
+          };
+          socket.emit("ScreenConnected", Params);
           if (connection.state == "Disconnected") {
             connection
               .start()
@@ -766,7 +791,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     }
 
     dispatch(screenDeactivateActivate(payload));
-
+    const Params = {
+      id: socket.id,
+      connection: socket.connected,
+      macId:  allScreenMacids,
+    };
+    socket.emit("ScreenConnected", Params);
     if (connection.state == "Disconnected") {
       connection
         .start()

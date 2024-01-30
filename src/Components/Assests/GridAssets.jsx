@@ -49,6 +49,7 @@ import { debounce } from "lodash";
 import { connection } from "../../SignalR";
 import { handleGetStorageDetails } from "../../Redux/SettingSlice";
 import PreviewDoc from "./PreviewDoc";
+import { socket } from "../../App";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -105,6 +106,12 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
+          const Params = {
+            id: socket.id,
+            connection: socket.connected,
+            macId:  macids,
+          };
+          socket.emit("ScreenConnected", Params);
           if (connection.state == "Disconnected") {
             connection
               .start()

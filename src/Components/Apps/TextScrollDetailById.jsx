@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { MdSave } from "react-icons/md";
 import toast from "react-hot-toast";
 import { connection } from "../../SignalR";
+import { socket } from "../../App";
 
 const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -81,6 +82,12 @@ const TextScrollDetailById = ({ sidebarOpen, setSidebarOpen }) => {
       const response = await axios.request(config);
 
       if (response?.data?.status === 200) {
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId: macids,
+        };
+        socket.emit("ScreenConnected", Params);
         if (connection.state == "Disconnected") {
           connection
             .start()

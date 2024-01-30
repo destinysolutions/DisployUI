@@ -43,6 +43,7 @@ import {
 import ReactTooltip from "react-tooltip";
 import axios from "axios";
 import moment from "moment";
+import { socket } from "../../../App";
 const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   const history = useNavigate();
 
@@ -144,6 +145,15 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const callSignalR = () => {
+    const Params = {
+      id: socket.id,
+      connection: socket.connected,
+      macId:  store?.data
+      ?.map((item) => item?.maciDs)
+      .join(",")
+      .replace(/^\s+/g, ""),
+    };
+    socket.emit("ScreenConnected", Params);
     if (connection.state === "Disconnected") {
       connection
         .start()

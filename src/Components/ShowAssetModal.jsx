@@ -24,7 +24,7 @@ import ReactPlayer from "react-player";
 import ShowAppsModal from "./ShowAppsModal";
 import { handleGetTextScrollData, handleGetYoutubeData } from "../Redux/AppsSlice";
 import { useDispatch } from "react-redux";
-
+import socket from "../App"
 const ShowAssetModal = ({
   setShowAssetModal,
   handleAssetAdd,
@@ -134,7 +134,12 @@ const ShowAssetModal = ({
 
   const signalROnConfirm = () => {
     console.log("run signal r");
-
+    const Params = {
+      id: socket.id,
+      connection: socket.connected,
+      macId: setscreenMacID,
+    };
+    socket.emit("ScreenConnected", Params);
     try {
       if (connection.state == "Disconnected") {
         connection

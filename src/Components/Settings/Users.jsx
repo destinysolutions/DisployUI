@@ -2279,7 +2279,7 @@ const Users = ({ searchValue }) => {
                                       type="warning"
                                       effect="float"
                                     >
-                                      <span>View User Detail</span>
+                                      <span>View</span>
                                     </ReactTooltip>
                                   </div>
                                   <div

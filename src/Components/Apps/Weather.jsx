@@ -34,6 +34,7 @@ import moment from "moment";
 import ReactApexChart from "react-apexcharts";
 import { HiBackward } from "react-icons/hi2";
 import { connection } from "../../SignalR";
+import { socket } from "../../App";
 
 const Weather = ({ sidebarOpen, setSidebarOpen }) => {
   let api_key = "41b5176532e682fd8b4cb6a44e3bd1a4";
@@ -337,6 +338,12 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
+          const Params = {
+            id: socket.id,
+            connection: socket.connected,
+            macId: macids,
+          };
+          socket.emit("ScreenConnected", Params);
           if (connection.state == "Disconnected") {
             connection
               .start()

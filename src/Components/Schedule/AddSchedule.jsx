@@ -31,6 +31,7 @@ import {
   handleGetYoutubeData,
 } from "../../Redux/AppsSlice";
 import { connection } from "../../SignalR";
+import { socket } from "../../App";
 
 const localizer = momentLocalizer(moment);
 const DragAndDropCalendar = withDragAndDrop(Calendar);
@@ -272,6 +273,12 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         setSelectScreenModal(false);
         saveEditedSchedule();
         navigate("/myschedule")
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId: macids.replace(/^\s+/g, ""),
+        };
+        socket.emit("ScreenConnected", Params);
         if (connection.state == "Disconnected") {
           connection
             .start()
@@ -358,6 +365,12 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
           loadEventsForSchedule(scheduleIdToUse);
 
           if (myEvents[0]?.macids) {
+            const Params = {
+              id: socket.id,
+              connection: socket.connected,
+              macId: myEvents[0]?.macids.replace(/^\s+/g, ""),
+            };
+            socket.emit("ScreenConnected", Params);
             if (connection.state == "Disconnected") {
               connection
                 .start()
@@ -477,6 +490,12 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const handleEventDelete = (eventId, macids) => {
     const updatedEvents = myEvents.filter((event) => event.id !== eventId);
     setEvents(updatedEvents);
+    const Params = {
+      id: socket.id,
+      connection: socket.connected,
+      macId:  macids.replace(/^\s+/g, ""),
+    };
+    socket.emit("ScreenConnected", Params);
     if (connection.state == "Disconnected") {
       connection
         .start()

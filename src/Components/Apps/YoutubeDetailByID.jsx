@@ -30,6 +30,7 @@ import toast from "react-hot-toast";
 import Img from "../../images/Assets/img.png";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { connection } from "../../SignalR";
+import { socket } from "../../App";
 
 const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
   YoutubeDetailByID.propTypes = {
@@ -119,6 +120,12 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
     try {
       const response = await axios.request(config);
       if (response?.data?.status === 200) {
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId:  macids.replace(/^\s+/g, ""),
+        };
+        socket.emit("ScreenConnected", Params);
         // Wrap the SignalR invocation in a Promise
         if (connection.state == "Disconnected") {
           connection

@@ -7,7 +7,7 @@ import { handleGetScreen } from "../Redux/Screenslice";
 import { connection } from "../SignalR";
 import toast from "react-hot-toast";
 import moment from "moment";
-
+import socket from "../App"
 const ScreenAssignModal = ({
   setAddScreenModal,
   setSelectScreenModal,
@@ -37,6 +37,12 @@ const ScreenAssignModal = ({
 
   const signalROnSave = () => {
     toast.loading("Saving...");
+    const Params = {
+      id: socket.id,
+      connection: socket.connected,
+      macId: selectedScreenMacIdsString,
+    };
+    socket.emit("ScreenConnected", Params);
     try {
       // Invoke ScreenConnected method
       if (connection.state == "Disconnected") {

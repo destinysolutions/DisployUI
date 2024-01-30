@@ -53,6 +53,7 @@ import ReactTooltip from "react-tooltip";
 import PreviewComposition from "../../Composition/PreviewComposition";
 import axios from "axios";
 import moment from "moment";
+import { socket } from "../../../App";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const { user, token } = useSelector((state) => state.root.auth);
@@ -170,6 +171,13 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       ?.flatMap((item) => item.screenGroupLists.map((screen) => screen.macID))
       .join(",")
       .replace(/^\s+/g, "");
+
+      const Params = {
+        id: socket.id,
+        connection: socket.connected,
+        macId:  macIds,
+      };
+      socket.emit("ScreenConnected", Params);
 
     console.log("macIds:", macIds);
     if (connection.state === "Disconnected") {

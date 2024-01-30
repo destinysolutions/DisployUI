@@ -32,6 +32,7 @@ import ReactPlayer from "react-player";
 import textScrollLogo from "../../images/AppsImg/text-scroll-icon.svg";
 import { HiBackward } from "react-icons/hi2";
 import { connection } from "../../SignalR";
+import { socket } from "../../App";
 
 const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -86,6 +87,12 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
+          const Params = {
+            id: socket.id,
+            connection: socket.connected,
+            macId: macids,
+          };
+          socket.emit("ScreenConnected", Params);
           if (connection.state == "Disconnected") {
             connection
               .start()
@@ -148,6 +155,12 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId: maciDs,
+        };
+        socket.emit("ScreenConnected", Params);
         if (connection.state == "Disconnected") {
           connection
             .start()
