@@ -17,7 +17,7 @@ import { useLocation } from "react-router-dom";
 import io from "socket.io-client";
 
 // export const socket = io.connect("http://108.166.190.137:3002");
-export const socket = io.connect("https://disploysocket.thedestinysolutions.com/");
+export const socket = io.connect("https://disploysocket.thedestinysolutions.com");
 
 // export const socket = io.connect("http://localhost:3002");
 
