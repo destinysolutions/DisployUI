@@ -14,6 +14,10 @@ import {
 } from "./Redux/globalStates";
 import { connection } from "./SignalR";
 import { useLocation } from "react-router-dom";
+import io from "socket.io-client";
+
+export const socket = io.connect("http://108.166.190.137:3002/");
+// export const socket = io.connect("http://localhost:3002");
 
 const App = () => {
   const [timer, setTimer] = useState(0);
@@ -106,6 +110,21 @@ const App = () => {
       dispatch(handleGetUserDetails({ id: user?.userID, token }));
     }
   }, [user]);
+  
+  useEffect(() => {
+   socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    socket.on('ScreenConnected', (data) => {
+      console.log('Received data from server:', data);
+    });
+
+    return () => {
+      socket.disconnect();
+      console.log("Socket disconnected");
+    };
+  }, [socket]);
 
   useEffect(() => {
     if (connection.state == "Disconnected") {

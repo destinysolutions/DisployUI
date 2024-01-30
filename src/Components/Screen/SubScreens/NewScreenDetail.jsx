@@ -48,6 +48,7 @@ import { handleGetCompositions } from "../../../Redux/CompositionSlice";
 import { handleGetAllAssets } from "../../../Redux/Assetslice";
 import { handleGetAllSchedule } from "../../../Redux/ScheduleSlice";
 import { connection } from "../../../SignalR";
+import { socket } from "../../../App";
 
 const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
   NewScreenDetail.propTypes = {
@@ -232,6 +233,24 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   const signalROnConfirm = () => {
     console.log("run signal r");
+    const Params = {
+      id: socket.id,
+      connection: socket.connected,
+      macId: otpData[0]?.MACID,
+    };
+    socket.emit("ScreenConnected", Params);
+    // let config = {
+    //   method: 'put',
+    //   maxBodyLength: Infinity,
+    //   url: `https://disployapi.thedestinysolutions.com/api/NewScreen/SendTvStatus?status=${socket.connected === true ? true : false}&MacID=${otpData[0]?.MACID}`,
+    // };
+    // axios.request(config)
+    // .then((response) => {
+    //   console.log(JSON.stringify(response.data));
+    // })
+    // .catch((error) => {
+    //   console.log(error);
+    // });
 
     try {
       if (connection.state == "Disconnected") {
@@ -322,6 +341,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         },
         data: data,
       };
+
 
       axios
         .request(config)
@@ -645,6 +665,12 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       operation: "Update",
     };
     toast.loading("Updating...");
+    const Params = {
+      id: socket.id,
+      connection: socket.connected,
+      macId: otpData[0]?.MACID,
+    };
+    socket.emit("ScreenConnected", Params);
     if (connection.state == "Disconnected") {
       connection
         .start()
