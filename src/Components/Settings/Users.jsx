@@ -40,6 +40,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import moment from "moment";
 import "../../Styles/Settings.css";
+import ReactTooltip from "react-tooltip";
 
 const Users = ({ searchValue }) => {
   const [loadFist, setLoadFist] = useState(true);
@@ -2260,6 +2261,8 @@ const Users = ({ searchValue }) => {
                               <td className="text-center">
                                 <div className="flex justify-center gap-4">
                                   <div
+                                    data-tip
+                                    data-for="View"
                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     onClick={() => {
                                       setUserID(item.orgUserSpecificID);
@@ -2270,8 +2273,18 @@ const Users = ({ searchValue }) => {
                                     }}
                                   >
                                     <BsEyeFill />
+                                    <ReactTooltip
+                                      id="View"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="float"
+                                    >
+                                      <span>View User Detail</span>
+                                    </ReactTooltip>
                                   </div>
                                   <div
+                                    data-tip
+                                    data-for="Edit"
                                     className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     onClick={() => {
                                       setUserID(item.orgUserSpecificID);
@@ -2281,14 +2294,32 @@ const Users = ({ searchValue }) => {
                                     }}
                                   >
                                     <BiEdit />
+                                    <ReactTooltip
+                                      id="Edit"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="float"
+                                    >
+                                      <span>Edit</span>
+                                    </ReactTooltip>
                                   </div>
                                   <div
+                                    data-tip
+                                    data-for="Delete"
                                     className="cursor-pointer text-xl flex gap-3 rounded-full px-2 py-2 text-white text-center bg-[#FF0000]"
                                     onClick={() =>
                                       handleDeleteUser(item.orgUserSpecificID)
                                     }
                                   >
                                     <MdDeleteForever />
+                                    <ReactTooltip
+                                      id="Delete"
+                                      place="bottom"
+                                      type="warning"
+                                      effect="float"
+                                    >
+                                      <span>Delete</span>
+                                    </ReactTooltip>
                                   </div>
                                 </div>
                               </td>

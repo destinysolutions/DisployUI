@@ -14,6 +14,7 @@ import {
   GET_ORG_USERS,
   USER_ROLE_GET,
 } from "../../Pages/Api";
+import ReactTooltip from "react-tooltip";
 
 const Userrole = ({ searchValue }) => {
   const store = useSelector((state) => state.root.userRole);
@@ -560,6 +561,8 @@ const Userrole = ({ searchValue }) => {
 
                         <td className="text-center">
                           <button
+                            data-tip
+                            data-for="Edit"
                             onClick={() => {
                               handleSelectByID(item.orgUserRoleID);
                               setshowuserroleModal(true);
@@ -567,6 +570,14 @@ const Userrole = ({ searchValue }) => {
                             className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                           >
                             <BiEdit />
+                            <ReactTooltip
+                              id="Edit"
+                              place="bottom"
+                              type="warning"
+                              effect="float"
+                            >
+                              <span>Edit</span>
+                            </ReactTooltip>
                           </button>
                         </td>
                       </tr>
