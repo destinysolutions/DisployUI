@@ -39,7 +39,7 @@ import {
 import { connection } from "../../SignalR";
 import Swal from "sweetalert2";
 import { TiWeatherSunny } from "react-icons/ti";
-import { Tooltip } from "@material-tailwind/react";
+import ReactTooltip from "react-tooltip";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -97,15 +97,15 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(schedules)
     ? schedules.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value &&
-          value
-            .toString()
-            .toLowerCase()
-            .includes(searchSchedule.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            value &&
+            value
+              .toString()
+              .toLowerCase()
+              .includes(searchSchedule.toLowerCase())
+        )
       )
-    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -531,33 +531,65 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 <FiUpload className="text-lg" />
               </button> */}
               <button
+                data-tip
+                data-for="Delete"
                 className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 onClick={handelDeleteAllSchedule}
                 style={{ display: selectAllChecked ? "block" : "none" }}
               >
                 <RiDeleteBin5Line className="text-lg" />
+                <ReactTooltip
+                  id="Delete"
+                  place="bottom"
+                  type="warning"
+                  effect="float"
+                >
+                  <span>Delete</span>
+                </ReactTooltip>
               </button>
 
               {/* multipal remove */}
               {selectedItems.length !== 0 && !selectAllChecked && (
                 <button
+                  data-tip
+                  data-for="Delete"
                   className="sm:ml-2 xs:ml-1 flex align-middle bg-red text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                   onClick={handelDeleteAllSchedule}
                 >
                   <RiDeleteBin5Line className="text-lg" />
+                  <ReactTooltip
+                    id="Delete"
+                    place="bottom"
+                    type="warning"
+                    effect="float"
+                  >
+                    <span>Delete</span>
+                  </ReactTooltip>
                 </button>
               )}
 
               {/* <button className="sm:ml-2 xs:ml-1 flex align-middle  bg-SlateBlue text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <HiMagnifyingGlass className="text-lg" />
               </button> */}
-              <button className="flex align-middle   text-white items-center  rounded-full p-2 text-base">
+              <button
+                data-tip
+                data-for="Select All"
+                className="flex align-middle   text-white items-center  rounded-full p-2 text-base"
+              >
                 <input
                   type="checkbox"
                   className="w-7 h-6"
                   checked={selectAllChecked}
                   onChange={handleSelectAll}
                 />
+                <ReactTooltip
+                  id="Select All"
+                  place="bottom"
+                  type="warning"
+                  effect="float"
+                >
+                  <span>Select All</span>
+                </ReactTooltip>
               </button>
             </div>
           </div>
@@ -589,13 +621,13 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       Date Added
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                      start date
+                      Start Date
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                      End date
+                      End Date
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                      screens Assigned
+                      Screens Assigned
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       Tags
@@ -702,41 +734,43 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="flex items-center justify-center gap-2 w-full flex-wrap">
                                   {(schedule?.tags === "" ||
                                     schedule?.tags === null) && (
-                                      <span>
-                                        <AiOutlinePlusCircle
-                                          size={30}
-                                          className="mx-auto cursor-pointer"
-                                          onClick={() => {
-                                            setShowTagModal(true);
-                                            schedule.tags === "" ||
-                                              schedule?.tags === null
-                                              ? setTags([])
-                                              : setTags(schedule?.tags?.split(","));
-                                            setUpdateTagSchedule(schedule);
-                                          }}
-                                        />
-                                      </span>
-                                    )}
+                                    <span>
+                                      <AiOutlinePlusCircle
+                                        size={30}
+                                        className="mx-auto cursor-pointer"
+                                        onClick={() => {
+                                          setShowTagModal(true);
+                                          schedule.tags === "" ||
+                                          schedule?.tags === null
+                                            ? setTags([])
+                                            : setTags(
+                                                schedule?.tags?.split(",")
+                                              );
+                                          setUpdateTagSchedule(schedule);
+                                        }}
+                                      />
+                                    </span>
+                                  )}
                                   {schedule.tags !== null
                                     ? schedule.tags
-                                      .split(",")
-                                      .slice(
-                                        0,
-                                        schedule.tags.split(",").length > 2
-                                          ? 3
-                                          : schedule.tags.split(",").length
-                                      )
-                                      .map((text) => {
-                                        if (text.toString().length > 10) {
-                                          return text
-                                            .split("")
-                                            .slice(0, 10)
-                                            .concat("...")
-                                            .join("");
-                                        }
-                                        return text;
-                                      })
-                                      .join(",")
+                                        .split(",")
+                                        .slice(
+                                          0,
+                                          schedule.tags.split(",").length > 2
+                                            ? 3
+                                            : schedule.tags.split(",").length
+                                        )
+                                        .map((text) => {
+                                          if (text.toString().length > 10) {
+                                            return text
+                                              .split("")
+                                              .slice(0, 10)
+                                              .concat("...")
+                                              .join("");
+                                          }
+                                          return text;
+                                        })
+                                        .join(",")
                                     : ""}
                                   {schedule?.tags !== "" &&
                                     schedule?.tags !== null && (
@@ -744,9 +778,11 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         onClick={() => {
                                           setShowTagModal(true);
                                           schedule.tags === "" ||
-                                            schedule?.tags === null
+                                          schedule?.tags === null
                                             ? setTags([])
-                                            : setTags(schedule?.tags?.split(","));
+                                            : setTags(
+                                                schedule?.tags?.split(",")
+                                              );
                                           setUpdateTagSchedule(schedule);
                                         }}
                                         className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
@@ -761,7 +797,9 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         handleUpadteScheduleTags
                                       }
                                       from="schedule"
-                                      setUpdateTagSchedule={setUpdateTagSchedule}
+                                      setUpdateTagSchedule={
+                                        setUpdateTagSchedule
+                                      }
                                     />
                                   )}
                                 </div>
@@ -770,53 +808,53 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                               <td className="text-center relative">
                                 <div className="flex justify-center gap-2 items-center">
                                   <div className="relative">
-                                    <Tooltip
-                                      content="Edit Schedule"
-                                      placement="bottom-end"
-                                      className=" bg-SlateBlue text-white z-10 ml-5"
-                                      animate={{
-                                        mount: { scale: 1, y: 0 },
-                                        unmount: { scale: 1, y: 10 },
-                                      }}
+                                    <button
+                                      data-tip
+                                      data-for="Edit"
+                                      type="button"
+                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                      onClick={() =>
+                                        navigate(
+                                          `/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`
+                                        )
+                                      }
                                     >
-                                      <button
-                                        type="button"
-                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        onClick={() =>
-                                          navigate(
-                                            `/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`
-                                          )
-                                        }
+                                      <BiEdit />
+                                      <ReactTooltip
+                                        id="Edit"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="float"
                                       >
-                                        <BiEdit />
-                                      </button>
-                                    </Tooltip>
+                                        <span>Edit</span>
+                                      </ReactTooltip>
+                                    </button>
                                   </div>
                                   <div className="relative mx-3">
-                                    <Tooltip
-                                      content="Add Screens"
-                                      placement="bottom-end"
-                                      className=" bg-SlateBlue text-white z-10 ml-5"
-                                      animate={{
-                                        mount: { scale: 1, y: 0 },
-                                        unmount: { scale: 1, y: 10 },
+                                    <button
+                                      data-tip
+                                      data-for="Set to Screen"
+                                      type="button"
+                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                      onClick={() => {
+                                        setScheduleId(schedule.scheduleId);
+                                        setAddScreenModal(true);
+                                        setScreenSelected(
+                                          schedule?.screenAssigned?.split(",")
+                                        );
+                                        setSelectData(schedule);
                                       }}
                                     >
-                                      <button
-                                        type="button"
-                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        onClick={() => {
-                                          setScheduleId(schedule.scheduleId);
-                                          setAddScreenModal(true);
-                                          setScreenSelected(
-                                            schedule?.screenAssigned?.split(",")
-                                          );
-                                          setSelectData(schedule);
-                                        }}
+                                      <MdOutlineResetTv />
+                                      <ReactTooltip
+                                        id="Set to Screen"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="float"
                                       >
-                                        <MdOutlineResetTv />
-                                      </button>
-                                    </Tooltip>
+                                        <span>Set to Screen</span>
+                                      </ReactTooltip>
+                                    </button>
                                   </div>
                                 </div>
 

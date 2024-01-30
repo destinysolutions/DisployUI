@@ -31,7 +31,6 @@ import {
 } from "react-icons/ri";
 import { HiDotsVertical } from "react-icons/hi";
 import Footer from "../Footer";
-import { Tooltip } from "@material-tailwind/react";
 
 import {
   SCREEN_DELETE_ALL,
@@ -66,6 +65,7 @@ import { TvStatus, connection } from "../../SignalR";
 import Swal from "sweetalert2";
 import { addTagsAndUpdate, resetStatus } from "../../Redux/ScreenGroupSlice";
 import { BiEdit } from "react-icons/bi";
+import ReactTooltip from "react-tooltip";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -217,12 +217,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(screens)
     ? screens?.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value &&
-          value.toString().toLowerCase().includes(searchScreen.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            value &&
+            value.toString().toLowerCase().includes(searchScreen.toLowerCase())
+        )
       )
-    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -476,14 +476,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-        ? 4
-        : selectedYoutube?.youtubeId !== null &&
-          selectedYoutube?.youtubeId !== undefined
-          ? 5
-          : selectedComposition?.compositionID !== null &&
-            selectedComposition?.compositionID !== undefined
-            ? 3
-            : 0;
+      ? 4
+      : selectedYoutube?.youtubeId !== null &&
+        selectedYoutube?.youtubeId !== undefined
+      ? 5
+      : selectedComposition?.compositionID !== null &&
+        selectedComposition?.compositionID !== undefined
+      ? 3
+      : 0;
 
     let mediaName =
       selectedAsset?.assetName ||
@@ -705,7 +705,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
     axios
       .request(config)
-      .then((response) => { })
+      .then((response) => {})
       .catch((error) => {
         console.log(error);
       });
@@ -809,18 +809,18 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     const handleStorageChange = () => {
-      const isClosed = localStorage.getItem('isWindowClosed');
-      console.log('isClosed', isClosed)
-      if (isClosed === 'true') {
+      const isClosed = localStorage.getItem("isWindowClosed");
+      console.log("isClosed", isClosed);
+      if (isClosed === "true") {
         dispatch(handleGetAllSchedule({ token }));
-        localStorage.setItem('isWindowClosed', 'false');
+        localStorage.setItem("isWindowClosed", "false");
         // window.location.reload();
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
@@ -852,39 +852,33 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   }}
                 />
               </div>
-              {/* <Tooltip
-                content="Connect Screen"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
-              >
+              {/* 
                 <button
                   type="button"
                   className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
                 >
                   <VscVmConnect className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
-              </Tooltip> */}
-              <Tooltip
-                content="New Screen"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
+              */}
+
+              <button
+                data-tip
+                data-for="New Screen"
+                type="button"
+                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                onClick={() => setShowOTPModal(true)}
               >
-                <button
-                  type="button"
-                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                  onClick={() => setShowOTPModal(true)}
+                <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
+                <ReactTooltip
+                  id="New Screen"
+                  place="bottom"
+                  type="warning"
+                  effect="float"
                 >
-                  <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
-                </button>
-              </Tooltip>
+                  <span>New Screen</span>
+                </ReactTooltip>
+              </button>
+
               {showOTPModal ? (
                 <>
                   <ScreenOTPModal
@@ -928,14 +922,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 </div>
               )}
 
-              {/* <Tooltip
-                content="Deactivate/Activate"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
+              {/* 
               >
                 <button
                   onClick={() => handleToggleActivation()}
@@ -944,26 +931,27 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                   <RiSignalTowerLine className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
-              </Tooltip> */}
+               */}
 
-              <Tooltip
-                content="Delete"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
+              <button
+                data-tip
+                data-for="Delete"
+                type="button"
+                className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                onClick={handleDeleteAllscreen}
+                style={{ display: selectAllChecked ? "block" : "none" }}
               >
-                <button
-                  type="button"
-                  className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                  onClick={handleDeleteAllscreen}
-                  style={{ display: selectAllChecked ? "block" : "none" }}
+                <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
+                <ReactTooltip
+                  id="Delete"
+                  place="bottom"
+                  type="warning"
+                  effect="float"
                 >
-                  <RiDeleteBin5Line className="p-1 px-2 text-4xl text-white hover:text-white" />
-                </button>
-              </Tooltip>
+                  <span>Delete</span>
+                </ReactTooltip>
+              </button>
+
               {/* multipal remove */}
               {selectedItems?.length !== 0 && !selectAllChecked && (
                 <button
@@ -975,23 +963,23 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
               )}
 
               <div className="relative mt-1">
-                <Tooltip
-                  content="More"
-                  placement="bottom-end"
-                  className=" bg-SlateBlue text-white z-10 ml-5"
-                  animate={{
-                    mount: { scale: 1, y: 0 },
-                    unmount: { scale: 1, y: 10 },
-                  }}
+                <button
+                  data-tip
+                  data-for="More"
+                  type="button"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                  onClick={() => setMoreModal(!moreModal)}
                 >
-                  <button
-                    type="button"
-                    className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                    onClick={() => setMoreModal(!moreModal)}
+                  <RiArrowDownSLine className="p-1 px-2 text-4xl text-white hover:text-white" />
+                  <ReactTooltip
+                    id="More"
+                    place="bottom"
+                    type="warning"
+                    effect="float"
                   >
-                    <RiArrowDownSLine className="p-1 px-2 text-4xl text-white hover:text-white" />
-                  </button>
-                </Tooltip>
+                    <span>More</span>
+                  </ReactTooltip>
+                </button>
 
                 {moreModal && (
                   <div ref={moreModalRef} className="moredw">
@@ -1101,27 +1089,27 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 )}
               </div>
 
-              <Tooltip
-                content="Select All Screen"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
+              <button
+                data-tip
+                data-for="Select All"
+                type="button"
+                className="flex align-middle text-white items-center rounded-full p-2 text-base  "
               >
-                <button
-                  type="button"
-                  className="flex align-middle text-white items-center rounded-full p-2 text-base  "
+                <input
+                  type="checkbox"
+                  className="w-7 h-6"
+                  onChange={handleSelectAllCheckboxChange}
+                  checked={selectAllChecked}
+                />
+                <ReactTooltip
+                  id="Select All"
+                  place="bottom"
+                  type="warning"
+                  effect="float"
                 >
-                  <input
-                    type="checkbox"
-                    className="w-7 h-6"
-                    onChange={handleSelectAllCheckboxChange}
-                    checked={selectAllChecked}
-                  />
-                </button>
-              </Tooltip>
+                  <span>Select All</span>
+                </ReactTooltip>
+              </button>
             </div>
           </div>
 
@@ -1257,7 +1245,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         )}
                                       />
                                       {isEditingScreen &&
-                                        editingScreenID === screen.screenID ? (
+                                      editingScreenID === screen.screenID ? (
                                         <div className="flex items-center gap-2">
                                           <input
                                             type="text"
@@ -1289,9 +1277,9 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                           >
                                             {screen?.screenName?.length > 10
                                               ? screen?.screenName.slice(
-                                                0,
-                                                10
-                                              ) + "..."
+                                                  0,
+                                                  10
+                                                ) + "..."
                                               : screen.screenName}
                                           </Link>
                                           <button
@@ -1322,10 +1310,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                   <td className="text-center">
                                     <span
                                       id={`changetvstatus${screen.screenID}`}
-                                      className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                        ? "bg-[#3AB700]"
-                                        : "bg-[#FF0000]"
-                                        }`}
+                                      className={`rounded-full px-6 py-2 text-white text-center ${
+                                        screen.screenStatus == 1
+                                          ? "bg-[#3AB700]"
+                                          : "bg-[#FF0000]"
+                                      }`}
                                     >
                                       {screen.screenStatus == 1
                                         ? "Live"
@@ -1382,8 +1371,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                     ) : (
                                       `${screen.scheduleName} Till
                               ${moment(screen.endDate).format(
-                                        "YYYY-MM-DD hh:mm"
-                                      )}`
+                                "YYYY-MM-DD hh:mm"
+                              )}`
                                     )}
 
                                     {showScheduleModal && (
@@ -1396,10 +1385,15 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                   to="/addschedule"
                                                   target="_blank"
                                                 >
-                                                  <button className="bg-SlateBlue text-white px-5 py-2 rounded-full ml-3"
+                                                  <button
+                                                    className="bg-SlateBlue text-white px-5 py-2 rounded-full ml-3"
                                                     onClick={() => {
-                                                      localStorage.setItem('isWindowClosed', 'false');
-                                                    }}>
+                                                      localStorage.setItem(
+                                                        "isWindowClosed",
+                                                        "false"
+                                                      );
+                                                    }}
+                                                  >
                                                     Set New Schedule
                                                   </button>
                                                 </Link>
@@ -1562,44 +1556,44 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                     <div className="p-2 text-center flex flex-wrap items-center justify-center gap-2 break-all text-[#5E5E5E]">
                                       {(screen?.tags === "" ||
                                         screen?.tags === null) && (
-                                          <span>
-                                            <AiOutlinePlusCircle
-                                              size={30}
-                                              className="mx-auto cursor-pointer"
-                                              onClick={() => {
-                                                setShowTagModal(true);
-                                                screen.tags === "" ||
-                                                  screen?.tags === null
-                                                  ? setTags([])
-                                                  : setTags(
+                                        <span>
+                                          <AiOutlinePlusCircle
+                                            size={30}
+                                            className="mx-auto cursor-pointer"
+                                            onClick={() => {
+                                              setShowTagModal(true);
+                                              screen.tags === "" ||
+                                              screen?.tags === null
+                                                ? setTags([])
+                                                : setTags(
                                                     screen?.tags?.split(",")
                                                   );
-                                                setTagUpdateScreeen(screen);
-                                              }}
-                                            />
-                                          </span>
-                                        )}
+                                              setTagUpdateScreeen(screen);
+                                            }}
+                                          />
+                                        </span>
+                                      )}
 
                                       {screen?.tags !== null
                                         ? screen.tags
-                                          .split(",")
-                                          .slice(
-                                            0,
-                                            screen.tags.split(",").length > 2
-                                              ? 3
-                                              : screen.tags.split(",").length
-                                          )
-                                          .map((text) => {
-                                            if (text.toString().length > 10) {
-                                              return text
-                                                .split("")
-                                                .slice(0, 10)
-                                                .concat("...")
-                                                .join("");
-                                            }
-                                            return text;
-                                          })
-                                          .join(",")
+                                            .split(",")
+                                            .slice(
+                                              0,
+                                              screen.tags.split(",").length > 2
+                                                ? 3
+                                                : screen.tags.split(",").length
+                                            )
+                                            .map((text) => {
+                                              if (text.toString().length > 10) {
+                                                return text
+                                                  .split("")
+                                                  .slice(0, 10)
+                                                  .concat("...")
+                                                  .join("");
+                                              }
+                                              return text;
+                                            })
+                                            .join(",")
                                         : ""}
                                       {screen?.tags !== "" &&
                                         screen?.tags !== null && (
@@ -1607,11 +1601,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                             onClick={() => {
                                               setShowTagModal(true);
                                               screen.tags === "" ||
-                                                screen?.tags === null
+                                              screen?.tags === null
                                                 ? setTags([])
                                                 : setTags(
-                                                  screen?.tags?.split(",")
-                                                );
+                                                    screen?.tags?.split(",")
+                                                  );
                                               setTagUpdateScreeen(screen);
                                             }}
                                             className="w-5 h-5 cursor-pointer"
@@ -1637,19 +1631,21 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 {groupContentVisible && (
                                   <td className="p-2 text-center  break-words">
                                     {screen.isContainGroup === 1 && (
-                                      <Tooltip
-                                        content={screen.groupName}
-                                        placement="bottom-end"
-                                        className=" bg-SlateBlue text-white z-10 ml-5"
-                                        animate={{
-                                          mount: { scale: 1, y: 0 },
-                                          unmount: { scale: 1, y: 10 },
-                                        }}
+                                      <button
+                                        data-tip
+                                        data-for={screen.groupName}
+                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                       >
-                                        <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                          <HiUserGroup />
-                                        </button>
-                                      </Tooltip>
+                                        <HiUserGroup />
+                                        <ReactTooltip
+                                          id={screen.groupName}
+                                          place="bottom"
+                                          type="warning"
+                                          effect="float"
+                                        >
+                                          <span>{screen.groupName}</span>
+                                        </ReactTooltip>
+                                      </button>
                                     )}
                                   </td>
                                 )}
@@ -1679,22 +1675,26 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                     </div> */}
 
                                     <div className="cursor-pointer text-xl">
-                                      <Tooltip
-                                        content="Edit"
-                                        placement="bottom-end"
-                                        className=" bg-SlateBlue text-white z-10 ml-5"
-                                        animate={{
-                                          mount: { scale: 1, y: 0 },
-                                          unmount: { scale: 1, y: 10 },
-                                        }}
+                                      <Link
+                                        to={`/screensplayer?screenID=${screen.screenID}`}
                                       >
-                                        <Link
-                                          to={`/screensplayer?screenID=${screen.screenID}`}
+                                        <button
+                                          data-tip
+                                          data-for="Edit"
+                                          type="button"
                                           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                         >
                                           <BiEdit />
-                                        </Link>
-                                      </Tooltip>
+                                          <ReactTooltip
+                                            id="Edit"
+                                            place="bottom"
+                                            type="warning"
+                                            effect="float"
+                                          >
+                                            <span>Edit</span>
+                                          </ReactTooltip>
+                                        </button>
+                                      </Link>
                                     </div>
                                     {/* <div className="cursor-pointer text-xl text-[#EE4B2B]">
                                     <MdDeleteForever

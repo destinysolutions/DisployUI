@@ -93,13 +93,13 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [assetPreview, setAssetPreview] = useState("");
   const [selectedYoutube, setSelectedYoutube] = useState();
   const [assetPreviewPopup, setAssetPreviewPopup] = useState(false);
-  const [allGroupScreen, setAllGroupScreen] = useState([])
+  const [allGroupScreen, setAllGroupScreen] = useState([]);
   const [editSelectedScreen, setEditSelectedScreen] = useState("");
 
   const [showTagModal, setShowTagModal] = useState(false);
   const [tags, setTags] = useState([]);
   const [tagUpdateScreeen, setTagUpdateScreeen] = useState(null);
-  const [loader, setLoader] = useState(false)
+  const [loader, setLoader] = useState(false);
   //PreView model
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState();
@@ -112,11 +112,12 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     if (loadFirst) {
-      setLoader(true)
+      setLoader(true);
       // get all screen group
       dispatch(getGroupData()).then((res) => {
-        setAllGroupScreen(res?.payload?.data)
-        setLoader(false)
+        console.log(res, "res=====");
+        setAllGroupScreen(res?.payload?.data);
+        setLoader(false);
       });
 
       // // load composition
@@ -155,9 +156,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   );
   const paginatedData = allGroupScreen
     ? allGroupScreen.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    )
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      )
     : [];
 
   const handlePageChange = (pageNumber) => {
@@ -165,6 +166,12 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const callSignalR = () => {
+    const macIds = store?.data
+      ?.flatMap((item) => item.screenGroupLists.map((screen) => screen.macID))
+      .join(",")
+      .replace(/^\s+/g, "");
+
+    console.log("macIds:", macIds);
     if (connection.state === "Disconnected") {
       connection
         .start()
@@ -175,13 +182,14 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
           connection
             .invoke(
               "ScreenConnected",
-              store?.data
-                ?.map((item) => item?.maciDs)
-                .join(",")
-                .replace(/^\s+/g, "")
+              // store?.data
+              //   ?.map((item) => item?.maciDs)
+              //   .join(",")
+              //   .replace(/^\s+/g, "")
+              macIds
             )
             .then(() => {
-              console.log("SignalR method invoked after screen update");
+              console.log("SignalR method invoked");
             })
             .catch((error) => {
               console.error("Error invoking SignalR method:", error);
@@ -191,13 +199,14 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       connection
         .invoke(
           "ScreenConnected",
-          store?.data
-            ?.map((item) => item?.maciDs)
-            .join(",")
-            .replace(/^\s+/g, "")
+          // store?.data
+          //   ?.map((item) => item?.maciDs)
+          //   .join(",")
+          //   .replace(/^\s+/g, "")
+          macIds
         )
         .then(() => {
-          console.log("SignalR method invoked after screen update");
+          console.log("SignalR method invoked");
         })
         .catch((error) => {
           console.error("Error invoking SignalR method:", error);
@@ -250,7 +259,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  const handleAssetUpdate = () => { };
+  const handleAssetUpdate = () => {};
 
   const editGroupName = (index) => {
     // GroupNameUpdate
@@ -413,14 +422,21 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     }
     if (selectedYoutube.compositionID || selectedYoutube.youtubeId) {
       payload.AssetName = selectedYoutube.instanceName;
-      payload.MediaID = selectedYoutube.compositionID || selectedYoutube.youtubeId;
-      payload.FilePath = selectedYoutube.compositionID ? "composition" : selectedYoutube.youTubeURL;
+      payload.MediaID =
+        selectedYoutube.compositionID || selectedYoutube.youtubeId;
+      payload.FilePath = selectedYoutube.compositionID
+        ? "composition"
+        : selectedYoutube.youTubeURL;
       payload.MediaDetailID = selectedYoutube.compositionID ? 3 : 5;
     }
 
-    dispatch(groupAssetsInUpdateScreen(payload));
-  };
+    const response = dispatch(groupAssetsInUpdateScreen(payload));
+    if (!response) return;
 
+    if (response) {
+      callSignalR();
+    }
+  };
 
   const handleFetchLayoutById = (id) => {
     setLoading(true);
@@ -505,7 +521,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                 <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
                 <ReactTooltip
                   id="Refresh Screen"
-                  place="left"
+                  place="bottom"
                   type="warning"
                   effect="float"
                 >
@@ -523,7 +539,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                 <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
                 <ReactTooltip
                   id="Add New Group"
-                  place="left"
+                  place="bottom"
                   type="warning"
                   effect="float"
                 >
@@ -561,7 +577,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
                   <ReactTooltip
                     id="Select All"
-                    place="left"
+                    place="bottom"
                     type="warning"
                     effect="float"
                   >
@@ -585,7 +601,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
                   <ReactTooltip
                     id="All Delete"
-                    place="left"
+                    place="bottom"
                     type="warning"
                     effect="float"
                   >
@@ -621,7 +637,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                 </span>
               </div>
             )}
-            {!loader && paginatedData.length > 0 && (
+            {!loader &&
+              paginatedData.length > 0 &&
               paginatedData.map((item, i) => {
                 const isAccordionOpen = openAccordionIndex === i;
                 return (
@@ -680,7 +697,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                 Add <b>+</b>
                                 <ReactTooltip
                                   id="Add Screen"
-                                  place="left"
+                                  place="bottom"
                                   type="warning"
                                   effect="float"
                                 >
@@ -698,7 +715,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                   Preview
                                   <ReactTooltip
                                     id="Preview"
-                                    place="left"
+                                    place="bottom"
                                     type="warning"
                                     effect="float"
                                   >
@@ -719,7 +736,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                 <TbUpload className="text-3xl p-1 hover:text-white" />
                                 <ReactTooltip
                                   id="Upload"
-                                  place="left"
+                                  place="bottom"
                                   type="warning"
                                   effect="float"
                                 >
@@ -739,7 +756,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                   />
                                   <ReactTooltip
                                     id="All Delete"
-                                    place="left"
+                                    place="bottom"
                                     type="warning"
                                     effect="float"
                                   >
@@ -778,7 +795,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                               />
                               <ReactTooltip
                                 id="Select"
-                                place="left"
+                                place="bottom"
                                 type="warning"
                                 effect="float"
                               >
@@ -891,43 +908,43 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                     >
                                       {(screen?.tags === "" ||
                                         screen?.tags === null) && (
-                                          <span>
-                                            <AiOutlinePlusCircle
-                                              size={30}
-                                              className="mx-auto cursor-pointer"
-                                              onClick={() => {
-                                                setShowTagModal(true);
-                                                screen.tags === "" ||
-                                                  screen?.tags === null
-                                                  ? setTags([])
-                                                  : setTags(
+                                        <span>
+                                          <AiOutlinePlusCircle
+                                            size={30}
+                                            className="mx-auto cursor-pointer"
+                                            onClick={() => {
+                                              setShowTagModal(true);
+                                              screen.tags === "" ||
+                                              screen?.tags === null
+                                                ? setTags([])
+                                                : setTags(
                                                     screen?.tags?.split(",")
                                                   );
-                                                setTagUpdateScreeen(screen);
-                                              }}
-                                            />
-                                          </span>
-                                        )}
+                                              setTagUpdateScreeen(screen);
+                                            }}
+                                          />
+                                        </span>
+                                      )}
                                       {screen?.tags !== null
                                         ? screen.tags
-                                          .split(",")
-                                          .slice(
-                                            0,
-                                            screen.tags.split(",").length > 2
-                                              ? 3
-                                              : screen.tags.split(",").length
-                                          )
-                                          .map((text) => {
-                                            if (text.toString().length > 10) {
-                                              return text
-                                                .split("")
-                                                .slice(0, 10)
-                                                .concat("...")
-                                                .join("");
-                                            }
-                                            return text;
-                                          })
-                                          .join(",")
+                                            .split(",")
+                                            .slice(
+                                              0,
+                                              screen.tags.split(",").length > 2
+                                                ? 3
+                                                : screen.tags.split(",").length
+                                            )
+                                            .map((text) => {
+                                              if (text.toString().length > 10) {
+                                                return text
+                                                  .split("")
+                                                  .slice(0, 10)
+                                                  .concat("...")
+                                                  .join("");
+                                              }
+                                              return text;
+                                            })
+                                            .join(",")
                                         : ""}
                                       {screen?.tags !== "" &&
                                         screen?.tags !== null && (
@@ -935,11 +952,11 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                             onClick={() => {
                                               setShowTagModal(true);
                                               screen.tags === "" ||
-                                                screen?.tags === null
+                                              screen?.tags === null
                                                 ? setTags([])
                                                 : setTags(
-                                                  screen?.tags?.split(",")
-                                                );
+                                                    screen?.tags?.split(",")
+                                                  );
                                               setTagUpdateScreeen(screen);
                                             }}
                                             className="mx-auto  w-5 h-5 cursor-pointer "
@@ -978,8 +995,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                     )}
                   </div>
                 );
-              })
-            )} 
+              })}
             {!loader && paginatedData?.length === 0 && (
               <>
                 <div className="flex text-center m-5 justify-center">

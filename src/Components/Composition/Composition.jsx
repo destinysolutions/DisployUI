@@ -34,9 +34,9 @@ import {
   resetStatus,
 } from "../../Redux/CompositionSlice";
 import PreviewComposition from "./PreviewComposition";
-import { Tooltip } from "@material-tailwind/react";
 import { BiEdit } from "react-icons/bi";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
+import ReactTooltip from "react-tooltip";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -574,30 +574,62 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
               {compositionData?.length > 0 && (
                 <>
                   <button
+                    data-tip
+                    data-for="Delete"
                     onClick={handleDeleteAllCompositions}
                     className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                     style={{ display: selectAllChecked ? "block" : "none" }}
                   >
                     <RiDeleteBinLine />
+                    <ReactTooltip
+                      id="Delete"
+                      place="bottom"
+                      type="warning"
+                      effect="float"
+                    >
+                      <span>Delete</span>
+                    </ReactTooltip>
                   </button>
 
                   {/* multipal remove */}
                   {selectedItems.length !== 0 && !selectAllChecked && (
                     <button
+                      data-tip
+                      data-for="Delete"
                       className="sm:ml-2 xs:ml-1  flex align-middle bg-red text-white items-center  rounded-full xs:px-2 xs:py-1 sm:py-2 sm:px-3 md:p-3 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                       onClick={handleDeleteAllCompositions}
                     >
                       <RiDeleteBinLine />
+                      <ReactTooltip
+                        id="Delete"
+                        place="bottom"
+                        type="warning"
+                        effect="float"
+                      >
+                        <span>Delete</span>
+                      </ReactTooltip>
                     </button>
                   )}
 
-                  <button className="sm:ml-2 xs:ml-1  flex align-middle text-white items-center  rounded-full p-2 text-base ">
+                  <button
+                    data-tip
+                    data-for="Select All"
+                    className="sm:ml-2 xs:ml-1  flex align-middle text-white items-center  rounded-full p-2 text-base "
+                  >
                     <input
                       type="checkbox"
                       className="w-7 h-6"
                       checked={selectAllChecked}
                       onChange={() => handleSelectAll()}
                     />
+                    <ReactTooltip
+                      id="Select All"
+                      place="bottom"
+                      type="warning"
+                      effect="float"
+                    >
+                      <span>Select All</span>
+                    </ReactTooltip>
                   </button>
                 </>
               )}
@@ -730,46 +762,48 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="flex items-center justify-center w-full flex-wrap gap-2 text-[#5E5E5E]">
                                   {(composition?.tags === "" ||
                                     composition?.tags === null) && (
-                                      <span>
-                                        <AiOutlinePlusCircle
-                                          size={30}
-                                          className="mx-auto cursor-pointer"
-                                          onClick={() => {
-                                            setShowTagModal(true);
-                                            composition?.tags === "" ||
-                                              composition?.tags === null
-                                              ? setTags([])
-                                              : setTags(
+                                    <span>
+                                      <AiOutlinePlusCircle
+                                        size={30}
+                                        className="mx-auto cursor-pointer"
+                                        onClick={() => {
+                                          setShowTagModal(true);
+                                          composition?.tags === "" ||
+                                          composition?.tags === null
+                                            ? setTags([])
+                                            : setTags(
                                                 composition?.tags?.split(",")
                                               );
-                                            handleFetchCompositionById(
-                                              composition?.compositionID,
-                                              "tags"
-                                            );
-                                          }}
-                                        />
-                                      </span>
-                                    )}
+                                          handleFetchCompositionById(
+                                            composition?.compositionID,
+                                            "tags"
+                                          );
+                                        }}
+                                      />
+                                    </span>
+                                  )}
                                   {composition?.tags !== null
                                     ? composition?.tags
-                                      .split(",")
-                                      .slice(
-                                        0,
-                                        composition?.tags.split(",").length > 2
-                                          ? 3
-                                          : composition?.tags.split(",").length
-                                      )
-                                      .map((text) => {
-                                        if (text.toString().length > 10) {
-                                          return text
-                                            .split("")
-                                            .slice(0, 10)
-                                            .concat("...")
-                                            .join("");
-                                        }
-                                        return text;
-                                      })
-                                      .join(",")
+                                        .split(",")
+                                        .slice(
+                                          0,
+                                          composition?.tags.split(",").length >
+                                            2
+                                            ? 3
+                                            : composition?.tags.split(",")
+                                                .length
+                                        )
+                                        .map((text) => {
+                                          if (text.toString().length > 10) {
+                                            return text
+                                              .split("")
+                                              .slice(0, 10)
+                                              .concat("...")
+                                              .join("");
+                                          }
+                                          return text;
+                                        })
+                                        .join(",")
                                     : ""}
                                   {composition?.tags !== "" &&
                                     composition?.tags !== null && (
@@ -777,11 +811,11 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                         onClick={() => {
                                           setShowTagModal(true);
                                           composition?.tags === "" ||
-                                            composition?.tags === null
+                                          composition?.tags === null
                                             ? setTags([])
                                             : setTags(
-                                              composition?.tags?.split(",")
-                                            );
+                                                composition?.tags?.split(",")
+                                              );
                                           handleFetchCompositionById(
                                             composition?.compositionID,
                                             "tags"
@@ -811,80 +845,80 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                               <td className="text-center">
                                 <div className="flex justify-center gap-2 items-center">
                                   <div className="relative">
-                                    <Tooltip
-                                      content="Edit"
-                                      placement="bottom-end"
-                                      className=" bg-SlateBlue text-white z-10 ml-5"
-                                      animate={{
-                                        mount: { scale: 1, y: 0 },
-                                        unmount: { scale: 1, y: 10 },
-                                      }}
+                                    <button
+                                      data-tip
+                                      data-for="Edit"
+                                      type="button"
+                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                      onClick={() =>
+                                        navigation(
+                                          `/editcomposition/${composition?.compositionID}/${composition?.layoutID}`
+                                        )
+                                      }
                                     >
-                                      <button
-                                        type="button"
-                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        onClick={() =>
-                                          navigation(
-                                            `/editcomposition/${composition?.compositionID}/${composition?.layoutID}`
-                                          )
-                                        }
+                                      <BiEdit />
+                                      <ReactTooltip
+                                        id="Edit"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="float"
                                       >
-                                        <BiEdit />
-                                      </button>
-                                    </Tooltip>
+                                        <span>Edit</span>
+                                      </ReactTooltip>
+                                    </button>
                                   </div>
                                   <div className="relative">
-                                    <Tooltip
-                                      content="Preview"
-                                      placement="bottom-end"
-                                      className=" bg-SlateBlue text-white z-10 mx-auto"
-                                      animate={{
-                                        mount: { scale: 1, y: 0 },
-                                        unmount: { scale: 1, y: 10 },
+                                    <button
+                                      data-tip
+                                      data-for="Preview"
+                                      onClick={() => {
+                                        handleFetchCompositionById(
+                                          composition?.compositionID
+                                        );
+                                        handleFetchLayoutById(
+                                          composition?.layoutID
+                                        );
                                       }}
+                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-3"
                                     >
-                                      <button
-                                        onClick={() => {
-                                          handleFetchCompositionById(
-                                            composition?.compositionID
-                                          );
-                                          handleFetchLayoutById(
-                                            composition?.layoutID
-                                          );
-                                        }}
-                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-3"
+                                      <MdPreview />
+                                      <ReactTooltip
+                                        id="Preview"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="float"
                                       >
-                                        <MdPreview />
-                                      </button>
-                                    </Tooltip>
+                                        <span>Preview</span>
+                                      </ReactTooltip>
+                                    </button>
                                   </div>
                                   <div className="relative">
-                                    <Tooltip
-                                      content="Set To Screen"
-                                      placement="bottom-end"
-                                      className=" bg-SlateBlue text-white z-10 ml-5"
-                                      animate={{
-                                        mount: { scale: 1, y: 0 },
-                                        unmount: { scale: 1, y: 10 },
+                                    <button
+                                      data-tip
+                                      data-for="Set to Screen"
+                                      type="button"
+                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                      onClick={() => {
+                                        setAddScreenModal(true);
+                                        setSelectData(composition);
+                                        setScreenSelected(
+                                          composition?.screenNames?.split(",")
+                                        );
+                                        setCompositionId(
+                                          composition?.compositionID
+                                        );
                                       }}
                                     >
-                                      <button
-                                        type="button"
-                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        onClick={() => {
-                                          setAddScreenModal(true);
-                                          setSelectData(composition);
-                                          setScreenSelected(
-                                            composition?.screenNames?.split(",")
-                                          );
-                                          setCompositionId(
-                                            composition?.compositionID
-                                          );
-                                        }}
+                                      <MdOutlineResetTv />
+                                      <ReactTooltip
+                                        id="Set to Screen"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="float"
                                       >
-                                        <MdOutlineResetTv />
-                                      </button>
-                                    </Tooltip>
+                                        <span>Set to Screen</span>
+                                      </ReactTooltip>
+                                    </button>
                                   </div>
                                 </div>
                               </td>

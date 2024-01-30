@@ -266,3 +266,8 @@ button.Mediatabshow.mediatabactive {
   transition: all 0.2s linear;
   transition-delay: 0.15s;
 }
+.mar-btm-15 {
+  padding-bottom: 15px;
+  margin-top: 15px;
+  margin-right: 15px;
+}

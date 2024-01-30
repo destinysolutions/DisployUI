@@ -3,10 +3,10 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import useDrivePicker from "react-google-drive-picker";
 import Googledrive from "../../images/Assets/google-drive.png";
-import { Tooltip } from "@material-tailwind/react";
 import { ALL_FILES_UPLOAD, GOOGLE_DRIVE } from "../../Pages/Api";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import ReactTooltip from "react-tooltip";
 
 const GoogleDrive = () => {
   const { user } = useSelector((state) => state.root.auth);
@@ -127,19 +127,23 @@ const GoogleDrive = () => {
   // console.log(selectedFiles, "dfsdf");
   return (
     <>
-      <Tooltip
-        content="Google Drive"
-        placement="bottom-end"
-        className=" bg-SlateBlue text-white z-10 ml-5"
-        animate={{
-          mount: { scale: 1, y: 0 },
-          unmount: { scale: 1, y: 10 },
-        }}
+      <button
+        className="fileUploadIcon"
+        onClick={handleGet}
+        data-tip
+        data-for="Google Drive"
       >
-        <button className="fileUploadIcon" onClick={handleGet}>
-          <img src={Googledrive} className="w-9" alt="Google Drive Icon" />
-        </button>
-      </Tooltip>
+        <img src={Googledrive} className="w-9" alt="Google Drive Icon" />
+        <ReactTooltip
+          id="Google Drive"
+          place="bottom"
+          type="warning"
+          effect="float"
+        >
+          <span>Google Drive</span>
+        </ReactTooltip>
+      </button>
+
       <div className="selected-photos">
         {selectedFiles.map((url, index) => (
           <div key={index}>

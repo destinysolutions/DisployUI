@@ -18,7 +18,6 @@ import { SiPexels } from "react-icons/si";
 import Camera from "./Camera";
 import VideoRecorder from "./VideoRecorder";
 import Pixabay from "./Pixabay";
-import { Tooltip } from "@material-tailwind/react";
 import cameraimg from "../../images/Assets/photography.png";
 import videoimg from "../../images/Assets/camera.png";
 import pixabayimg from "../../images/Assets/pixabay.png";
@@ -36,6 +35,7 @@ import moment from "moment";
 import { jwtDecode } from "jwt-decode";
 import { handelPostImageFromDrive } from "../../Redux/Assetslice";
 import { handleGetStorageDetails } from "../../Redux/SettingSlice";
+import ReactTooltip from "react-tooltip";
 {
   /* end of video*/
 }
@@ -144,7 +144,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
     try {
       // Initialize an overall progress variable
       let overallProgress = 0;
-      let arr = []
+      let arr = [];
       // Create an array to hold all the promises for image uploads
       const uploadPromises = selectedImages.map(async (image, index) => {
         const CategorieType = getContentType(image.file.type);
@@ -191,7 +191,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                   setUploadProgress(updatedProgress);
                 },
               });
-              arr.push(response)
+              arr.push(response);
               // if (response.status === 200) {
               //   toast.success(`File ${image.name} uploaded successfully.`);
               // } else {
@@ -204,7 +204,7 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
                 toast.success(`File uploaded successfully.`);
                 if (window.history.length == 1) {
                   dispatch(handleNavigateFromComposition());
-                  localStorage.setItem('isWindowClosed', 'true');
+                  localStorage.setItem("isWindowClosed", "true");
                   window.close();
                 } else {
                   navigate(-1);
@@ -241,11 +241,11 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         mime.startsWith("text/") ||
         mime === "application/msword" ||
         mime ===
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
         mime ===
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||
         mime ===
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
     ) {
       return "DOC";
     } else {
@@ -463,20 +463,27 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
           </div>
           <div className="flex lg:justify-between md:justify-between flex-wrap sm:justify-start xs:justify-start items-center lg:mt-7 md:mt-7 sm:mt-5 xs:mt-5 media-icon">
             {/* start Camera */}
-            <span className="fileUploadIcon" data-tip="Camera">
-              <Tooltip
-                content="Camera"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
+            <span
+              className="bg-white px-3 leading-none rounded-[45px]  fileUploadIcon"
+              data-tip="Camera"
+            >
+              <button
+                data-tip
+                data-for="Camera"
+                onClick={openCameraModal}
+                className="relative"
               >
-                <button onClick={openCameraModal} className="relative">
-                  <img src={cameraimg} className="w-9 relative" />
-                </button>
-              </Tooltip>
+                <img src={cameraimg} className="w-9 relative" />
+                <ReactTooltip
+                  id="Camera"
+                  place="bottom"
+                  type="warning"
+                  effect="float"
+                >
+                  <span>Camera</span>
+                </ReactTooltip>
+              </button>
+
               {showCamera && (
                 <Camera
                   cameraModalRef={cameraModalRef}
@@ -487,20 +494,23 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
             </span>
             {/* End Camera */}
             {/* start Video */}
-            <span className="fileUploadIcon">
-              <Tooltip
-                content="Video"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-3"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
+            <span className="bg-white  px-3 leading-none  rounded-[45px] fileUploadIcon">
+              <button
+                onClick={openVideoModal}
+                className="relative"
+                data-tip
+                data-for="Video"
               >
-                <button onClick={openVideoModal} className="relative">
-                  <img src={videoimg} className="w-9 relative" />
-                </button>
-              </Tooltip>
+                <img src={videoimg} className="w-9 relative" />
+                <ReactTooltip
+                  id="Video"
+                  place="bottom"
+                  type="warning"
+                  effect="float"
+                >
+                  <span>Video</span>
+                </ReactTooltip>
+              </button>
 
               {showVideo && (
                 <VideoRecorder
@@ -513,23 +523,24 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
             </span>
             {/* End Video*/}
             {/* start unspalsh */}
-            <span className="fileUploadIcon">
-              <Tooltip
-                content="Unsplash"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-7"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
+            <span className="bg-white  px-3 leading-none  rounded-[45px] fileUploadIcon">
+              <button
+                data-tip
+                data-for="Unsplash"
+                onClick={handleUnsplashButtonClick}
+                className="relative"
               >
-                <button
-                  onClick={handleUnsplashButtonClick}
-                  className="relative"
+                <FaUnsplash size={30} className="relative" />
+                <ReactTooltip
+                  id="Unsplash"
+                  place="bottom"
+                  type="warning"
+                  effect="float"
                 >
-                  <FaUnsplash size={30} className="relative" />
-                </button>
-              </Tooltip>
+                  <span>Unsplash</span>
+                </ReactTooltip>
+              </button>
+
               {showUnsplash && (
                 <Unsplash
                   unsplashModalRef={unsplashModalRef}
@@ -541,22 +552,23 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
             {/* end unspalsh */}
             {/* start pixels */}
             <span className="bg-white  px-3 leading-none  rounded-[45px] fileUploadIcon">
-              <Tooltip
-                content="Pexels"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
+              <button
+                data-tip
+                data-for="Pexels"
+                onClick={handlePexelsButtonClick}
+                className="relative text-[#07a081]"
               >
-                <button
-                  onClick={handlePexelsButtonClick}
-                  className="relative text-[#07a081]"
+                <SiPexels size={30} className="relative" />
+                <ReactTooltip
+                  id="Pexels"
+                  place="bottom"
+                  type="warning"
+                  effect="float"
                 >
-                  <SiPexels size={30} className="relative" />
-                </button>
-              </Tooltip>
+                  <span>Pexels</span>
+                </ReactTooltip>
+              </button>
+
               {showpexels && (
                 <Pexels
                   pexelsModalRef={pexelsModalRef}
@@ -567,22 +579,23 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
             {/* end pixels */}
             {/* start pixabay */}
             <span className="bg-white text-SlateBlue px-3 leading-none  rounded-[45px] fileUploadIcon relative">
-              <Tooltip
-                content="Pixabay"
-                placement="bottom-end"
-                className=" bg-SlateBlue text-white z-10 ml-5"
-                animate={{
-                  mount: { scale: 1, y: 0 },
-                  unmount: { scale: 1, y: 10 },
-                }}
+              <button
+                data-tip
+                data-for="Pixabay"
+                onClick={handlePexabaysButtonClick}
+                className="relative"
               >
-                <button
-                  onClick={handlePexabaysButtonClick}
-                  className="relative"
+                <img src={pixabayimg} className="relative w-9" />
+                <ReactTooltip
+                  id="Pixabay"
+                  place="bottom"
+                  type="warning"
+                  effect="float"
                 >
-                  <img src={pixabayimg} className="relative w-9" />
-                </button>
-              </Tooltip>
+                  <span>Pixabay</span>
+                </ReactTooltip>
+              </button>
+
               {showPexabay && (
                 <Pixabay
                   pixabayModalRef={pixabayModalRef}
