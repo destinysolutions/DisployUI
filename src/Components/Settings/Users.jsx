@@ -2029,6 +2029,9 @@ const Users = ({ searchValue }) => {
                       Status
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                      Google Location
+                    </th>
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       Associated Schedule
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
@@ -2066,7 +2069,9 @@ const Users = ({ searchValue }) => {
                             {screen.screenStatus == 1 ? "Live" : "offline"}
                           </span>
                         </td>
-
+                        <td className="text-center break-words">
+                          {screen.googleLocation}
+                        </td>
                         <td className="text-center break-words">
                           {screen.scheduleName} Till
                           {moment(screen.endDate).format("YYYY-MM-DD hh:mm")}
@@ -2336,6 +2341,9 @@ const Users = ({ searchValue }) => {
                                   Status
                                 </th>
                                 <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                  Google Location
+                                </th>
+                                <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                                   Associated Schedule
                                 </th>
                                 <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
@@ -2377,7 +2385,9 @@ const Users = ({ searchValue }) => {
                                           : "offline"}
                                       </span>
                                     </td>
-
+                                    <td className="text-center break-words">
+                                      {screen.googleLocation}
+                                    </td>
                                     <td className="text-center break-words">
                                       {screen.scheduleName} Till
                                       {moment(screen.endDate).format(
