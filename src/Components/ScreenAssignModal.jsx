@@ -287,7 +287,7 @@ const ScreenAssignModal = ({
                 <thead>
                   <tr className="items-center table-head-bg">
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
-                      Screen 21
+                      Screen
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       Status
