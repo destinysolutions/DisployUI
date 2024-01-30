@@ -97,18 +97,17 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // Adjust items per page as needed
-  const [mergeData, setMergeData] = useState([])
-  const [loader, setLoader] = useState(false)
+  const [mergeData, setMergeData] = useState([]);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     if (loadFirst) {
-      setLoader(true)
+      setLoader(true);
 
       // get all screen group
       dispatch(getMargeData()).then((res) => {
-        setMergeData(res?.payload?.data)
-        setLoader(false)
-
+        setMergeData(res?.payload?.data);
+        setLoader(false);
       });
 
       // get all assets files
@@ -135,9 +134,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   );
   const paginatedData = mergeData
     ? mergeData?.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-    )
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      )
     : [];
 
   const handlePageChange = (pageNumber) => {
@@ -230,7 +229,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  const handleAssetUpdate = () => { };
+  const handleAssetUpdate = () => {};
 
   const editMergeScreenName = (index) => {
     // mergeNameUpdate
@@ -385,7 +384,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                 <IoMdRefresh className="p-1 px-2 text-4xl text-white hover:text-white" />
                 <ReactTooltip
                   id="Refresh Screen"
-                  place="left"
+                  place="bottom"
                   type="warning"
                   effect="float"
                 >
@@ -403,7 +402,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                 <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
                 <ReactTooltip
                   id="New MergeScreen"
-                  place="left"
+                  place="bottom"
                   type="warning"
                   effect="float"
                 >
@@ -430,7 +429,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
 
                   <ReactTooltip
                     id="Select All"
-                    place="left"
+                    place="bottom"
                     type="warning"
                     effect="float"
                   >
@@ -454,7 +453,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
 
                   <ReactTooltip
                     id="All Delete"
-                    place="left"
+                    place="bottom"
                     type="warning"
                     effect="float"
                   >
@@ -490,7 +489,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                 </span>
               </div>
             )}
-            {!loader && paginatedData && paginatedData.length > 0 && (
+            {!loader &&
+              paginatedData &&
+              paginatedData.length > 0 &&
               paginatedData.map((item, i) => {
                 const isAccordionOpen = openAccordionIndex === i;
                 return (
@@ -549,7 +550,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                 Preview
                                 <ReactTooltip
                                   id="Preview"
-                                  place="left"
+                                  place="bottom"
                                   type="warning"
                                   effect="float"
                                 >
@@ -569,7 +570,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                 <TbUpload className="text-3xl p-1 hover:text-white" />
                                 <ReactTooltip
                                   id="Upload"
-                                  place="left"
+                                  place="bottom"
                                   type="warning"
                                   effect="float"
                                 >
@@ -589,7 +590,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                   />
                                   <ReactTooltip
                                     id="All Delete"
-                                    place="left"
+                                    place="bottom"
                                     type="warning"
                                     effect="float"
                                   >
@@ -629,7 +630,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                               />
                               <ReactTooltip
                                 id="Select"
-                                place="left"
+                                place="bottom"
                                 type="warning"
                                 effect="float"
                               >
@@ -738,47 +739,47 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                       >
                                         {(screen?.tags === "" ||
                                           screen?.tags === null) && (
-                                            <span>
-                                              <AiOutlinePlusCircle
-                                                size={30}
-                                                className="mx-auto cursor-pointer"
-                                                onClick={() => {
-                                                  setShowTagModal(true);
-                                                  screen.tags === "" ||
-                                                    screen?.tags === null
-                                                    ? setTags([])
-                                                    : setTags(
+                                          <span>
+                                            <AiOutlinePlusCircle
+                                              size={30}
+                                              className="mx-auto cursor-pointer"
+                                              onClick={() => {
+                                                setShowTagModal(true);
+                                                screen.tags === "" ||
+                                                screen?.tags === null
+                                                  ? setTags([])
+                                                  : setTags(
                                                       screen?.tags?.split(",")
                                                     );
-                                                  setTagUpdateScreeen(screen);
-                                                }}
-                                              />
-                                            </span>
-                                          )}
+                                                setTagUpdateScreeen(screen);
+                                              }}
+                                            />
+                                          </span>
+                                        )}
                                         {screen?.tags !== null
                                           ? screen.tags
-                                            ?.split(",")
-                                            .slice(
-                                              0,
-                                              screen.tags?.split(",").length >
-                                                2
-                                                ? 3
-                                                : screen.tags?.split(",")
-                                                  .length
-                                            )
-                                            .map((text) => {
-                                              if (
-                                                text.toString().length > 10
-                                              ) {
-                                                return text
-                                                  .split("")
-                                                  .slice(0, 10)
-                                                  .concat("...")
-                                                  .join("");
-                                              }
-                                              return text;
-                                            })
-                                            .join(",")
+                                              ?.split(",")
+                                              .slice(
+                                                0,
+                                                screen.tags?.split(",").length >
+                                                  2
+                                                  ? 3
+                                                  : screen.tags?.split(",")
+                                                      .length
+                                              )
+                                              .map((text) => {
+                                                if (
+                                                  text.toString().length > 10
+                                                ) {
+                                                  return text
+                                                    .split("")
+                                                    .slice(0, 10)
+                                                    .concat("...")
+                                                    .join("");
+                                                }
+                                                return text;
+                                              })
+                                              .join(",")
                                           : ""}
                                         {screen?.tags !== "" &&
                                           screen?.tags !== null && (
@@ -786,11 +787,11 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                               onClick={() => {
                                                 setShowTagModal(true);
                                                 screen.tags === "" ||
-                                                  screen?.tags === null
+                                                screen?.tags === null
                                                   ? setTags([])
                                                   : setTags(
-                                                    screen?.tags?.split(",")
-                                                  );
+                                                      screen?.tags?.split(",")
+                                                    );
                                                 setTagUpdateScreeen(screen);
                                               }}
                                               className="mx-auto  w-5 h-5 cursor-pointer "
@@ -821,17 +822,16 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                     )}
                   </div>
                 );
-              })
-            )} 
+              })}
             {!loader && paginatedData?.length === 0 && (
-                <>
-                  <div className="flex text-center m-5 justify-center">
-                    <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
-                      No Data Available
-                    </span>
-                  </div>
-                </>
-              )}
+              <>
+                <div className="flex text-center m-5 justify-center">
+                  <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
+                    No Data Available
+                  </span>
+                </div>
+              </>
+            )}
 
             {/* end  pagination */}
             {paginatedData && paginatedData.length > 0 && (

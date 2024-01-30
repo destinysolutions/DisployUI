@@ -472,7 +472,7 @@ const Userrole = ({ searchValue }) => {
         </div>
         <div className="lg:col-span-10 md:col-span-9 sm:col-span-9 xs:col-span-6">
           <button
-            className=" dashboard-btn  flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5  py-2 text-base sm:text-sm mb-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+            className="flex align-middle items-center float-right bg-SlateBlue  text-white rounded-full lg:px-6 sm:px-5  py-2 text-base sm:text-sm mb-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
             onClick={() => {
               setshowuserroleModal(true);
               setShowDynamicComponent(false);
@@ -486,29 +486,30 @@ const Userrole = ({ searchValue }) => {
         </div>
       </div>
 
-      <div className="mt-5">
-        <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
-          <div className="inline-block min-w-full shadow rounded-lg overflow-hidden">
-            <table className="min-w-full leading-normal" cellPadding={20}>
+      <div className="px-5 pb-6 mt-2">
+        <div className="rounded-xl shadow ">
+          <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
+            <table
+              className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
+              cellPadding={20}
+            >
               <thead>
-                <tr className="table-head-bg ">
+                <tr className="items-center table-head-bg">
                   <th></th>
-                  <th className="text-[#5A5881] text-base font-semibold">
-                    <span className="flex items-center justify-left">
-                      Role Name
-                      <svg
-                        className="w-3 h-3 ms-1.5 cursor-pointer"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                        onClick={() => handleSort("orgUserRole")}
-                      >
-                        <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                      </svg>
-                    </span>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
+                    Role Name
+                    <svg
+                      className="w-3 h-3 ms-1.5 cursor-pointer"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      onClick={() => handleSort("orgUserRole")}
+                    >
+                      <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                    </svg>
                   </th>
-                  <th className="text-[#5A5881] text-base font-semibold">
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     View Users
                   </th>
                   <th className="text-[#5A5881] text-base font-semibold">
@@ -605,7 +606,7 @@ const Userrole = ({ searchValue }) => {
             </table>
           </div>
 
-          <div className="flex justify-end mb-5 mt-2">
+          <div className="flex justify-end mar-btm-15">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}

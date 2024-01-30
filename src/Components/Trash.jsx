@@ -24,6 +24,7 @@ import { FiImage } from "react-icons/fi";
 import { MdDeleteForever, MdRestore } from "react-icons/md";
 import Swal from "sweetalert2";
 import { RiDeleteBin5Line } from "react-icons/ri";
+import ReactTooltip from "react-tooltip";
 
 const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   Trash.propTypes = {
@@ -295,30 +296,49 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
             <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
               Trash
             </h1>
-            <div className="m-5 flex gap-4">
+            <div className="m-5 flex gap-4 items-center">
               {selectedItems?.length > 0 && (
                 <button
+                  data-tip
+                  data-for="Delete"
                   className="p-2 rounded-full text-base bg-red sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                   onClick={handleDeleteAllPermanently}
                 >
                   <RiDeleteBin5Line className="text-lg" />
+                  <ReactTooltip
+                    id="Delete"
+                    place="bottom"
+                    type="warning"
+                    effect="float"
+                  >
+                    <span>Delete</span>
+                  </ReactTooltip>
                 </button>
               )}
               <input
+                data-tip
+                data-for="Select All"
                 type="checkbox"
-                className="w-8 h-8"
+                className="w-7 h-6"
                 checked={selectAllChecked}
                 onChange={handleSelectAllChange}
               />
+              <ReactTooltip
+                id="Select All"
+                place="bottom"
+                type="warning"
+                effect="float"
+              >
+                <span>Select All</span>
+              </ReactTooltip>
             </div>
           </div>
 
           <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
             <div>
               <h4 className="text-1xl font-bold dark:text-white m-3 text-center">
-                {" "}
                 This data is stored upto 30 days after that it will get auto
-                deleted.{" "}
+                deleted.
               </h4>
             </div>
 

@@ -39,6 +39,7 @@ import Swal from "sweetalert2";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import moment from "moment";
+import "../../Styles/Settings.css";
 
 const Users = ({ searchValue }) => {
   const [loadFist, setLoadFist] = useState(true);
@@ -53,7 +54,6 @@ const Users = ({ searchValue }) => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [isActive, setIsActive] = useState(0);
-  const [screenIds, setScreenIds] = useState("");
   const [countryID, setCountryID] = useState(0);
   const [company, setCompany] = useState("");
   const [userData, setUserData] = useState([]);
@@ -62,7 +62,6 @@ const Users = ({ searchValue }) => {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [userDetailData, setUserDetailData] = useState([]);
   const [activeTab, setActiveTab] = useState(1);
-  const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [file, setFile] = useState();
   const [fileEdit, setFileEdit] = useState("");
   const [labelTitle, setLabelTitle] = useState("Add New User");
@@ -70,11 +69,6 @@ const Users = ({ searchValue }) => {
   const [selectedState, setSelectedState] = useState("");
   const [states, setStates] = useState([]);
   const [screenData, setScreenData] = useState([]);
-  const [passowrdErrors, setErrorsPassword] = useState("");
-  const [emailErrors, setErrorsEmail] = useState("");
-  const [errorsFirstName, setErrorsFirstName] = useState("");
-  const [errorsLastName, setErrorsLastName] = useState("");
-  const [errorsRole, setErrorsRole] = useState("");
   const [currentPasswordShow, setCurrentPassword] = useState(false);
   const [newPasswordShow, setNewPassword] = useState(false);
   const [confirmPasswordShow, setConfirmPassword] = useState(false);
@@ -90,11 +84,11 @@ const Users = ({ searchValue }) => {
   const [screenAccessModal, setScreenAccessModal] = useState(false);
   const [userScreenData, setUserScreenData] = useState([]);
   const [errors, setErrors] = useState({
-    email: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-    role: ''
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+    role: "",
   });
   const { token, user } = useSelector((state) => state.root.auth);
   const { Countries } = useSelector((s) => s.root.settingUser);
@@ -232,39 +226,35 @@ const Users = ({ searchValue }) => {
       });
   };
 
-
   const validateForm = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     let newErrors = {};
-  
+
     if (labelTitle !== "Update User") {
-      newErrors.email = !emailRegex.test(email) ? 'Not a valid email' : '';
-      newErrors.password = !password ? 'Password is required' : '';
+      //newErrors.email = !emailRegex.test(email) ? "Not a valid email" || !email ? "Email is required" : "";
+      newErrors.email = !email
+        ? "Email is required"
+        : !emailRegex.test(email)
+        ? "Please Enter Valid Email"
+        : "";
+
+      newErrors.password = !password ? "Password is required" : "";
     }
-  
-    newErrors.firstName = !firstName ? 'First Name is required' : '';
-    newErrors.lastName = !lastName ? 'Last Name is required' : '';
-    newErrors.role = !selectRoleID ? 'Please select a role' : '';
-  
+
+    newErrors.firstName = !firstName ? "First Name is required" : "";
+    newErrors.lastName = !lastName ? "Last Name is required" : "";
+    newErrors.role = !selectRoleID ? "Please select a role" : "";
+
     // Update errors state
     setErrors(newErrors);
-  
+
     // Check if any errors exist
-    const hasError = Object.values(newErrors).some(error => error !== '');
-  
+    const hasError = Object.values(newErrors).some((error) => error !== "");
+
     return hasError;
   };
-  
-
 
   const handleAddUser = () => {
-    // Clear previous validation errors
-    setErrorsFirstName("");
-    setErrorsLastName("");
-    setErrorsPassword("");
-    setErrorsEmail("");
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     let data = new FormData();
     const hasError = validateForm();
 
@@ -314,11 +304,6 @@ const Users = ({ searchValue }) => {
   };
 
   const handleUpdateUser = () => {
-    // Clear previous validation errors
-    setErrorsFirstName("");
-    setErrorsLastName("");
-    setErrorsRole("");
-
     const hasError = validateForm();
 
     // If there are errors, prevent form submission
@@ -375,7 +360,7 @@ const Users = ({ searchValue }) => {
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url:`${GET_ORG_USERS}`,
+      url: `${GET_ORG_USERS}`,
       headers: {
         Authorization: authToken,
       },
@@ -467,7 +452,6 @@ const Users = ({ searchValue }) => {
           setLastName(fetchedData.lastName);
           setPassword("");
           setFileEdit(fetchedData.profilePhoto);
-          setIsImageUploaded(true);
           setPhone(fetchedData.phone);
           setEmail(fetchedData.email);
           setCompany(fetchedData.company);
@@ -500,19 +484,18 @@ const Users = ({ searchValue }) => {
   const handleCancelPopup = () => {
     setLabelTitle("Add New User");
     setErrors({
-      email: '',
-      password: '',
-      firstName: '',
-      lastName: '',
-      role: ''
-    })
+      email: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+      role: "",
+    });
     setshowuserModal(false);
     setFirstName("");
     setLastName("");
     setPassword("");
     setFileEdit(null);
     setFile(null);
-    setIsImageUploaded(false);
     setPhone("");
     setEmail("");
     setCompany("");
@@ -522,7 +505,6 @@ const Users = ({ searchValue }) => {
     setSelectRoleID("");
     setIsActive(0);
     setLabelTitle("Add New User");
-    // setLoadFist(true);
     getUsers();
     setSelectedScreens([]);
     setScreenCheckboxes({});
@@ -534,7 +516,6 @@ const Users = ({ searchValue }) => {
     setFile(selectedFile);
     setFileEdit(null);
     setEditProfile();
-    setIsImageUploaded(true);
   };
   const handleClick = (e) => {
     hiddenFileInput.current.click();
@@ -612,7 +593,7 @@ const Users = ({ searchValue }) => {
       acceptTerms: false,
     },
     validationSchema: validationSchema,
-    onSubmit: async (values,{ setSubmitting }) => {
+    onSubmit: async (values, { setSubmitting }) => {
       try {
         const payload = {
           userID: UserMasterID,
@@ -621,7 +602,7 @@ const Users = ({ searchValue }) => {
           confirmPassword: values.confirmPassword,
         };
         const config = {
-          method: "post", // Change method to 'put' for changing the password
+          method: "post",
           url: `${CHNAGE_PASSWORD}userID=${payload.userID}&OldPassowrd=${payload.currentPassword}&NewPassword=${payload.newPassword}`, // Assuming CHNAGE_PASSWORD is your API endpoint
           headers: {
             Authorization: authToken,
@@ -630,16 +611,16 @@ const Users = ({ searchValue }) => {
         };
         const response = await axios.request(config);
         if (response?.data?.status === true) {
-          formik.resetForm()
+          formik.resetForm();
           toast.success(response?.data?.message);
-        }else{
-          toast.error(response?.data?.message)
+        } else {
+          toast.error(response?.data?.message);
         }
       } catch (error) {
         console.error("Error updating password:", error.message);
         toast.error("Error updating password. Please try again.");
       } finally {
-        setSubmitting(false); 
+        setSubmitting(false);
         console.log("------------- YES --------------- Password Update ");
       }
     },
@@ -1027,8 +1008,6 @@ const Users = ({ searchValue }) => {
                                           }
                                           checked={
                                             screenCheckboxes[screen.screenID]
-                                            // ||
-                                            // screenIds.includes(screen.screenID)
                                           }
                                         />
 
@@ -1038,18 +1017,16 @@ const Users = ({ searchValue }) => {
                                       <td className="text-center">
                                         <span
                                           id={`changetvstatus${screen.screenID}`}
-                                          className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                            ? "bg-[#3AB700]"
-                                            : "bg-[#FF0000]"
-                                            }`}
+                                          className={`rounded-full px-6 py-2 text-white text-center ${
+                                            screen.screenStatus == 1
+                                              ? "bg-[#3AB700]"
+                                              : "bg-[#FF0000]"
+                                          }`}
                                         >
                                           {screen.screenStatus == 1
                                             ? "Live"
                                             : "offline"}
                                         </span>
-                                        {/* <button className="rounded-full px-6 py-1 text-white bg-[#3AB700]">
-                                        Live
-                                      </button> */}
                                       </td>
                                       <td className="text-center break-words">
                                         {screen.googleLocation}
@@ -1064,28 +1041,28 @@ const Users = ({ searchValue }) => {
                                       <td className="text-center break-words">
                                         {screen?.tags !== null
                                           ? screen?.tags
-                                            .split(",")
-                                            .slice(
-                                              0,
-                                              screen?.tags.split(",").length >
-                                                2
-                                                ? 3
-                                                : screen?.tags.split(",")
-                                                  .length
-                                            )
-                                            .map((text) => {
-                                              if (
-                                                text.toString().length > 10
-                                              ) {
-                                                return text
-                                                  .split("")
-                                                  .slice(0, 10)
-                                                  .concat("...")
-                                                  .join("");
-                                              }
-                                              return text;
-                                            })
-                                            .join(",")
+                                              .split(",")
+                                              .slice(
+                                                0,
+                                                screen?.tags.split(",").length >
+                                                  2
+                                                  ? 3
+                                                  : screen?.tags.split(",")
+                                                      .length
+                                              )
+                                              .map((text) => {
+                                                if (
+                                                  text.toString().length > 10
+                                                ) {
+                                                  return text
+                                                    .split("")
+                                                    .slice(0, 10)
+                                                    .concat("...")
+                                                    .join("");
+                                                }
+                                                return text;
+                                              })
+                                              .join(",")
                                           : ""}
                                       </td>
                                     </tr>
@@ -1201,7 +1178,7 @@ const Users = ({ searchValue }) => {
                 setShowUserProfile(false);
                 setLoadFist(true);
                 setUserScreenData([]);
-                setUserID()
+                setUserID();
               }}
               className="font-medium flex cursor-pointer w-fit items-center lg:text-2xl md:text-2xl sm:text-xl mb-5"
             >
@@ -1239,14 +1216,12 @@ const Users = ({ searchValue }) => {
                     <h3 className="user-name my-2">Details</h3>
 
                     <div className="grid grid-flow-row-dense grid-cols-3 grid-rows-3 mt-4">
-                      {/* User ID : */}
                       <div className="font-semibold">
                         <span>User ID : </span>
                       </div>
                       <div className="col-span-2">
                         <span>{userDetailData.orgUserSpecificID}</span>
                       </div>
-                      {/* User Name  */}
                       <div className="font-semibold">
                         <span>User Name : </span>
                       </div>
@@ -1255,24 +1230,18 @@ const Users = ({ searchValue }) => {
                           {userDetailData.firstName} {userDetailData.lastName}
                         </span>
                       </div>
-
-                      {/* Company Name  */}
                       <div className="font-semibold">
                         <span>Company Name : </span>
                       </div>
                       <div className="col-span-2 capitalize">
                         <span> {userDetailData.company}</span>
                       </div>
-
-                      {/* Email   */}
                       <div className="font-semibold">
                         <span>Email : </span>
                       </div>
                       <div className="col-span-2 capitalize">
                         <span> {userDetailData.email}</span>
                       </div>
-
-                      {/* Status   */}
                       <div className="font-semibold">
                         <span>Status : </span>
                       </div>
@@ -1295,24 +1264,18 @@ const Users = ({ searchValue }) => {
                           )}
                         </span>
                       </div>
-
-                      {/* Role   */}
                       <div className="font-semibold">
                         <span>Role : </span>
                       </div>
                       <div className="col-span-2 capitalize">
                         <span> {userDetailData.userRoleName}</span>
                       </div>
-
-                      {/* Contact   */}
                       <div className="font-semibold">
                         <span>Contact : </span>
                       </div>
                       <div className="col-span-2 capitalize">
                         <span> {userDetailData.phone}</span>
                       </div>
-
-                      {/* language */}
                       <div className="font-semibold">
                         <span>Language : </span>
                       </div>
@@ -1323,8 +1286,6 @@ const Users = ({ searchValue }) => {
                             : "English"}
                         </span>
                       </div>
-
-                      {/* Country   */}
                       <div className="font-semibold">
                         <span>Country : </span>
                       </div>
@@ -1441,7 +1402,7 @@ const Users = ({ searchValue }) => {
                             </div>
                           </div>
                           {formik.touched.currentPassword &&
-                            formik.errors.currentPassword ? (
+                          formik.errors.currentPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.currentPassword}
                             </div>
@@ -1477,7 +1438,7 @@ const Users = ({ searchValue }) => {
                             </div>
                           </div>
                           {formik.touched.newPassword &&
-                            formik.errors.newPassword ? (
+                          formik.errors.newPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.newPassword}
                             </div>
@@ -1513,7 +1474,7 @@ const Users = ({ searchValue }) => {
                             </div>
                           </div>
                           {formik.touched.confirmPassword &&
-                            formik.errors.confirmPassword ? (
+                          formik.errors.confirmPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.confirmPassword}
                             </div>
@@ -2096,10 +2057,11 @@ const Users = ({ searchValue }) => {
                         <td className="text-center">
                           <span
                             id={`changetvstatus${screen.screenID}`}
-                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                              ? "bg-[#3AB700]"
-                              : "bg-[#FF0000]"
-                              }`}
+                            className={`rounded-full px-6 py-2 text-white text-center ${
+                              screen.screenStatus == 1
+                                ? "bg-[#3AB700]"
+                                : "bg-[#FF0000]"
+                            }`}
                           >
                             {screen.screenStatus == 1 ? "Live" : "offline"}
                           </span>
@@ -2112,24 +2074,24 @@ const Users = ({ searchValue }) => {
                         <td className="text-center break-words">
                           {screen?.tags !== null
                             ? screen?.tags
-                              .split(",")
-                              .slice(
-                                0,
-                                screen?.tags.split(",").length > 2
-                                  ? 3
-                                  : screen?.tags.split(",").length
-                              )
-                              .map((text) => {
-                                if (text.toString().length > 10) {
-                                  return text
-                                    .split("")
-                                    .slice(0, 10)
-                                    .concat("...")
-                                    .join("");
-                                }
-                                return text;
-                              })
-                              .join(",")
+                                .split(",")
+                                .slice(
+                                  0,
+                                  screen?.tags.split(",").length > 2
+                                    ? 3
+                                    : screen?.tags.split(",").length
+                                )
+                                .map((text) => {
+                                  if (text.toString().length > 10) {
+                                    return text
+                                      .split("")
+                                      .slice(0, 10)
+                                      .concat("...")
+                                      .join("");
+                                  }
+                                  return text;
+                                })
+                                .join(",")
                             : ""}
                         </td>
                       </tr>
@@ -2151,14 +2113,13 @@ const Users = ({ searchValue }) => {
           <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
             <div>
               <button
-                className="flex align-middle border-primary items-center float-right border rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                className="flex align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 onClick={() => {
                   setUserDetailData([]);
                   setFirstName("");
                   setLastName("");
                   setPassword("");
                   setFileEdit(null);
-                  setIsImageUploaded(false);
                   setPhone("");
                   setEmail("");
                   setCompany("");
@@ -2168,56 +2129,46 @@ const Users = ({ searchValue }) => {
                   setIsActive(0);
                   setZipCode("");
                   setEditProfile();
-                  setshowuserModal(true)
+                  setshowuserModal(true);
                 }}
               >
                 <BiUserPlus className="text-2xl mr-1" />
                 Add New User
               </button>
             </div>
-            <div className="clear-both overflow-x-auto">
-              <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
-                <div className="inline-block min-w-full rounded-lg overflow-x-scroll sc-scrollbar">
+            <div className="clear-both">
+              <div className="bg-white rounded-xl mt-8 shadow screen-section ">
+                <div className="rounded-xl mt-5 overflow-x-scroll sc-scrollbar sm:rounded-lg">
                   <table
-                    className="screen-table min-w-full leading-normal"
+                    className="screen-table w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
                     cellPadding={20}
                   >
                     <thead>
-                      <tr className="table-head-bg">
-                        <th className="text-[#5A5881] text-base font-semibold">
-                          <span className="flex items-center justify-left">
-                            UserName
-                            <svg
-                              className="w-3 h-3 ms-1.5 cursor-pointer"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                              onClick={() => handleSort("firstName")}
-                            >
-                              <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
-                            </svg>
-                          </span>
+                      <tr className="items-center table-head-bg">
+                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
+                          UserName
+                          <svg
+                            className="w-3 h-3 ms-1.5 cursor-pointer"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                            onClick={() => handleSort("compositionName")}
+                          >
+                            <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
+                          </svg>
                         </th>
-                        <th className="text-[#5A5881] text-base font-semibold">
-                          <span className="flex items-center justify-center">
-                            Roles
-                          </span>
+                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                          Roles
                         </th>
-                        <th className="text-[#5A5881] text-base font-semibold">
-                          <div className="flex items-center justify-center">
-                            Screen Access
-                          </div>
+                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                          Screen Access
                         </th>
-                        <th className="text-[#5A5881] text-base font-semibold">
-                          <div className="flex items-center justify-center">
-                            Status
-                          </div>
+                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                          Status
                         </th>
-                        <th className="text-[#5A5881] text-base font-semibold">
-                          <div className="flex items-center justify-center">
-                            Action
-                          </div>
+                        <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                          Action
                         </th>
                       </tr>
                     </thead>
@@ -2257,7 +2208,7 @@ const Users = ({ searchValue }) => {
                         sortedAndPaginatedData.map((item, index) => {
                           return (
                             <tr
-                              className="border-b border-b-[#E4E6FF] p-4 mb-4 rounded-lg bg-white shadow-md"
+                              className="border-b border-b-[#E4E6FF]"
                               key={index}
                             >
                               <td className="text-[#5E5E5E] text-center flex">
@@ -2415,10 +2366,11 @@ const Users = ({ searchValue }) => {
                                     <td className="text-center">
                                       <span
                                         id={`changetvstatus${screen.screenID}`}
-                                        className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                          ? "bg-[#3AB700]"
-                                          : "bg-[#FF0000]"
-                                          }`}
+                                        className={`rounded-full px-6 py-2 text-white text-center ${
+                                          screen.screenStatus == 1
+                                            ? "bg-[#3AB700]"
+                                            : "bg-[#FF0000]"
+                                        }`}
                                       >
                                         {screen.screenStatus == 1
                                           ? "Live"
@@ -2435,24 +2387,24 @@ const Users = ({ searchValue }) => {
                                     <td className="text-center break-words">
                                       {screen?.tags !== null
                                         ? screen?.tags
-                                          .split(",")
-                                          .slice(
-                                            0,
-                                            screen?.tags.split(",").length > 2
-                                              ? 3
-                                              : screen?.tags.split(",").length
-                                          )
-                                          .map((text) => {
-                                            if (text.toString().length > 10) {
-                                              return text
-                                                .split("")
-                                                .slice(0, 10)
-                                                .concat("...")
-                                                .join("");
-                                            }
-                                            return text;
-                                          })
-                                          .join(",")
+                                            .split(",")
+                                            .slice(
+                                              0,
+                                              screen?.tags.split(",").length > 2
+                                                ? 3
+                                                : screen?.tags.split(",").length
+                                            )
+                                            .map((text) => {
+                                              if (text.toString().length > 10) {
+                                                return text
+                                                  .split("")
+                                                  .slice(0, 10)
+                                                  .concat("...")
+                                                  .join("");
+                                              }
+                                              return text;
+                                            })
+                                            .join(",")
                                         : ""}
                                     </td>
                                   </tr>
@@ -2473,7 +2425,7 @@ const Users = ({ searchValue }) => {
                     </div>
                   </div>
                 )}
-                <div className="flex justify-end mt-2">
+                <div className="flex justify-end mar-btm-15">
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}

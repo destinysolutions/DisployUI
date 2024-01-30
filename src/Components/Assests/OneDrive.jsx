@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import * as msal from "@azure/msal-browser";
-import { Tooltip } from "@material-tailwind/react";
 import Onedrive from "../../images/Assets/one-drive.png";
 import { BrowserCacheLocation, AccountInfo } from "@azure/msal-browser";
 import { useIsAuthenticated, useMsal } from "@azure/msal-react";
@@ -469,35 +468,25 @@ const OneDrive = ({ setFile }) => {
 
   return (
     <span id="original-tab-id">
-      <Tooltip
-        content="OneDrive"
-        placement="bottom-end"
-        className=" bg-SlateBlue text-white z-10 ml-6"
-        animate={{
-          mount: { scale: 1, y: 0 },
-          unmount: { scale: 1, y: 10 },
+      <FilePicker
+        onSelect={handleSelect}
+        trigger={
+          <button>
+            {/* <img src={Onedrive} className="w-9" /> */}
+            More options
+          </button>
+        }
+        token={session_token}
+        title="Choose file from options"
+        showAttribution={false}
+        onConnectionSelect={(e) => {
+          // console.log(e);
+          setSelectedService(e?.service_id);
         }}
-      >
-        <FilePicker
-          onSelect={handleSelect}
-          trigger={
-            <button>
-              {/* <img src={Onedrive} className="w-9" /> */}
-              More options
-            </button>
-          }
-          token={session_token}
-          title="Choose file from options"
-          showAttribution={false}
-          onConnectionSelect={(e) => {
-            // console.log(e);
-            setSelectedService(e?.service_id);
-          }}
-        />
-        {/* <button onClick={(e) => launchPicker(e)}>
+      />
+      {/* <button onClick={(e) => launchPicker(e)}>
           <img src={Onedrive} className="w-9" />
         </button> */}
-      </Tooltip>
     </span>
   );
 };

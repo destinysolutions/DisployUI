@@ -64,114 +64,106 @@ const Storagelimit = () => {
           Storage Limit
         </h1>
       </div>
-      <div className="lg:px-5 md:px-5 sm:px-2 xs:px-2">
-        <div className="inline-block min-w-full rounded-lg overflow-x-scroll sc-scrollbar">
-          <table
-            className="screen-table min-w-full leading-normal"
-            cellPadding={20}
-          >
-            <thead>
-              <tr className="table-head-bg">
-                <th className="text-[#5A5881] text-base font-semibold">
-                  <span className="flex items-center justify-center">
+      <div className="px-6 pb-6 mt-2 ">
+        <div className="rounded-xl shadow">
+          <div className="rounded-xl overflow-x-scroll sc-scrollbar sm:rounded-lg">
+            <table
+              className="w-full bg-white lg:table-auto md:table-auto sm:table-auto xs:table-auto"
+              cellPadding={20}
+            >
+              <thead>
+                <tr className="table-head-bg">
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Total Space
-                  </span>
-                </th>
-                <th className="text-[#5A5881] text-base font-semibold">
-                  <div className="flex items-center justify-center">
+                  </th>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Consumed Space
-                  </div>
-                </th>
-                <th className="text-[#5A5881] text-base font-semibold">
-                  <div className="flex items-center justify-center">
+                  </th>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Available Space
-                  </div>
-                </th>
-                <th className="text-[#5A5881] text-base font-semibold">
-                  <div className="flex items-center justify-center">
+                  </th>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Used in Percentage
-                  </div>
-                </th>
-                <th className="text-[#5A5881] text-base font-semibold">
-                  <div className="flex items-center justify-center">
+                  </th>
+                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                     Increase Storage
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-b-[#E4E6FF]">
-                <td className="text-[#5E5E5E] text-center">
-                  <span
-                    style={{
-                      background: "#E4E6FF",
-                      padding: "10px 15px",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    {storageDegtails?.totalStorage} GB
-                  </span>
-                </td>
-                <td className="text-[#5E5E5E] text-center">
-                  <span
-                    style={{
-                      background: "#E4E6FF",
-                      padding: "10px 15px",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    {storageDegtails?.consumedSpace} GB
-                  </span>
-                </td>
-                <td className="text-[#5E5E5E] text-center">
-                  <span
-                    style={{
-                      background: "#E4E6FF",
-                      padding: "10px 15px",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    {storageDegtails?.availableSpace} GB
-                  </span>
-                </td>
-                <td className="text-center">
-                  {storageDegtails?.usedInPercentage} %
-                </td>
-                <td className="text-center">
-                  {increaseStorage ? (
-                    <div className="flex justify-center items-center">
-                      <input
-                        type="number"
-                        className="border border-[#5E5E5E] w-12 h-8 rounded"
-                        onChange={(e) => setStorageValue(e.target.value)}
-                      />
-                      <div className="flex items-center ">
-                        <label className="ml-2 text-xl"> GB</label>
-                        <button onClick={() => handleSave()}>
-                          <FaCodePullRequest className="text-3xl ml-4 border border-[#E4E6FF] p-1 rounded bg-[#E4E6FF] text-[#5E5E5E]" />
-                        </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="text-[#5E5E5E] text-center flex justify-center">
+                    <span
+                      style={{
+                        background: "#E4E6FF",
+                        padding: "10px 15px",
+                        borderRadius: "5px",
+                      }}
+                    >
+                      {storageDegtails?.totalStorage} GB
+                    </span>
+                  </td>
+                  <td className="text-[#5E5E5E] text-center ">
+                    <span
+                      style={{
+                        background: "#E4E6FF",
+                        padding: "10px 15px",
+                        borderRadius: "5px",
+                      }}
+                    >
+                      {storageDegtails?.consumedSpace} GB
+                    </span>
+                  </td>
+                  <td className="text-[#5E5E5E] text-center flex justify-center">
+                    <span
+                      style={{
+                        background: "#E4E6FF",
+                        padding: "10px 15px",
+                        borderRadius: "5px",
+                      }}
+                    >
+                      {storageDegtails?.availableSpace} GB
+                    </span>
+                  </td>
+                  <td className="text-center">
+                    {storageDegtails?.usedInPercentage} %
+                  </td>
+                  <td className="text-center">
+                    {increaseStorage ? (
+                      <div className="flex justify-center items-center">
+                        <input
+                          type="number"
+                          className="border border-[#5E5E5E] w-12 h-8 rounded"
+                          onChange={(e) => setStorageValue(e.target.value)}
+                        />
+                        <div className="flex items-center ">
+                          <label className="ml-2 text-xl"> GB</label>
+                          <button onClick={() => handleSave()}>
+                            <FaCodePullRequest className="text-3xl ml-4 border border-[#E4E6FF] p-1 rounded bg-[#E4E6FF] text-[#5E5E5E]" />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <>
-                      {storageDegtails?.isRquested == 1 || request ? (
-                        <span className="text-[#BC7100] bg-[#FFF2DE] px-3 py-2 rounded">
-                          Pending
-                        </span>
-                      ) : (
-                        <button
-                          className="flex items-center justify-center w-full"
-                          onClick={() => setIncreaseStorage(true)}
-                        >
-                          <GrAddCircle className="text-2xl" />
-                        </button>
-                      )}
-                    </>
-                  )}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                    ) : (
+                      <>
+                        {storageDegtails?.isRquested == 1 || request ? (
+                          <span className="text-[#BC7100] bg-[#FFF2DE] px-3 py-2 rounded">
+                            Pending
+                          </span>
+                        ) : (
+                          <button
+                            className="flex items-center justify-center w-full"
+                            onClick={() => setIncreaseStorage(true)}
+                          >
+                            <GrAddCircle className="text-2xl" />
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </>

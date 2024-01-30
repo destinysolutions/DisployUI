@@ -1,15 +1,15 @@
 import React from "react";
 import DropboxChooser from "react-dropbox-chooser";
 import { AiOutlineDropbox } from "react-icons/ai";
-import { Tooltip } from "@material-tailwind/react";
 import { ALL_FILES_UPLOAD } from "../../Pages/Api";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import ReactTooltip from "react-tooltip";
 
 const DropboxUpload = () => {
   const { token } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
-  
+
   const handleSuccess = (files) => {
     files.forEach((image) => {
       const formData = new FormData();
@@ -66,22 +66,19 @@ const DropboxUpload = () => {
         ]}
         linkType="direct"
       >
-        <Tooltip
-          content="Dropbox"
-          placement="bottom-end"
-          className=" bg-SlateBlue text-white z-10 ml-3"
-          animate={{
-            mount: { scale: 1, y: 0 },
-            unmount: { scale: 1, y: 10 },
-          }}
+        <button
+          data-tip
+          data-for="Dropbox"
+          className="fileUploadIcon dropbox-button"
         >
-          <button className="fileUploadIcon dropbox-button">
-            <AiOutlineDropbox
-              size={35}
-              className="text-[#007de4] border-[#007de4]"
-            />
-          </button>
-        </Tooltip>
+          <AiOutlineDropbox
+            size={35}
+            className="text-[#007de4] border-[#007de4]"
+          />
+        </button>
+        <ReactTooltip id="Dropbox" place="bottom" type="warning" effect="float">
+          <span>Dropbox</span>
+        </ReactTooltip>
       </DropboxChooser>
     </>
   );
