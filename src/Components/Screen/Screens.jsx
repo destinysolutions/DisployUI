@@ -1339,7 +1339,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 {statusContentVisible && (
                                   <td className="text-center">
                                     <span
-                                      id={`changetvstatus${screen.screenID}`}
+                                      id={`changetvstatus${screen.macid}`}
                                       className={`rounded-full px-6 py-2 text-white text-center ${
                                         screen.screenStatus == 1
                                           ? "bg-[#3AB700]"
