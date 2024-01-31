@@ -125,7 +125,15 @@ const App = () => {
     socket.on('SendTvStatus', (data) => {
       console.log('Received TV status from server:', data);
       // Handle TV status data if needed
-  
+      var b = document.getElementById("changetvstatus" + data?.macId);
+      b.setAttribute(
+        "class",
+        "rounded-full px-6 py-2 text-white text-center " +
+          (data?.connection == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
+      );
+      b.textContent = data?.connection == true ? "Live" : "offline";
+      // TvStatus = data?.connection == true ? "Live" : "Offline";
+
       // If you want to disconnect after receiving TV status, uncomment the line below
       // socket.disconnect();
     });
