@@ -885,15 +885,18 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                       {screen.screenName}
                                     </td>
                                     <td className="p-2 text-center">
-                                      {screen.screenStatus === 1 ? (
-                                        <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
-                                          Live
-                                        </button>
-                                      ) : (
-                                        <button className="bg-[#FF0000] rounded-full px-6 py-1 text-white">
-                                          Off
-                                        </button>
-                                      )}
+                                    <span
+                                      id={`changetvstatus${screen.macid}`}
+                                      className={`rounded-full px-6 py-2 text-white text-center ${
+                                        screen.screenStatus == 1
+                                          ? "bg-[#3AB700]"
+                                          : "bg-[#FF0000]"
+                                      }`}
+                                    >
+                                      {screen.screenStatus == 1
+                                        ? "Live"
+                                        : "offline"}
+                                    </span>
                                     </td>
                                     <td className="p-2 text-center">
                                       {moment(screen?.updatedDate).format(
