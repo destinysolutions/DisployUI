@@ -112,9 +112,9 @@ const App = () => {
       dispatch(handleGetUserDetails({ id: user?.userID, token }));
     }
   }, [user]);
-  
+
   useEffect(() => {
-   socket.on('connect', () => {
+    socket.on('connect', () => {
       console.log('Connected to server');
     });
 
@@ -125,6 +125,7 @@ const App = () => {
     return () => {
       socket.disconnect();
       console.log("Socket disconnected");
+      socket.emit("OnDisconnectedAsync", socket.id);
     };
   }, [socket]);
 

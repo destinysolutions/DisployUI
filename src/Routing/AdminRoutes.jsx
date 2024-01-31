@@ -4,6 +4,7 @@ import OnBoding from "../admin/OnBoding";
 import ManageUserType from "../admin/ManageUserType";
 import User from "../admin/User";
 import Pending from "../admin/Pending";
+import Retailer from "../admin/Retailer/Retailer";
 
 const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
   return (
@@ -38,6 +39,15 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
               />
             }
           />
+          {/* <Route
+            path="/retailer"
+            element={
+              <Retailer
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          /> */}
           <Route
             path="/pending"
             element={
