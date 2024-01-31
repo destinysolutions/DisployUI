@@ -180,6 +180,7 @@ const ScreenGroupModal = ({
                         <td className="text-center break-words">
                           {screen.googleLocation}
                         </td>
+
                         <td className="text-center">
                           <span
                             id={`changetvstatus${screen.macid}`}
