@@ -154,5 +154,5 @@ export const BILLINGREPORT = `${baseUrl}Report/GetBillingReport`;
 
 // Retailar
 
-export const GETALLRETAILER = `${baseUrl}GetAllRetailer`
+export const GETALLRETAILER = `${baseUrl}UserMaster/GetAllRetailer?IsRetailer=true`
 

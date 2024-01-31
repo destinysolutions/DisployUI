@@ -116,7 +116,6 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       setLoader(true);
       // get all screen group
       dispatch(getGroupData()).then((res) => {
-        console.log(res, "res=====");
         setAllGroupScreen(res?.payload?.data);
         setLoader(false);
       });

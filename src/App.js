@@ -119,7 +119,19 @@ const App = () => {
     });
 
     socket.on('ScreenConnected', (data) => {
+      
       console.log('Received data from server:', data);
+    });
+
+    socket.on("SendTvStatus", (data) => {
+      console.log("-----------------",data);
+      // var b = document.getElementById("changetvstatus" + ScreenID);
+      // b.setAttribute(
+      //   "class",
+      //   "rounded-full px-6 py-2 text-white text-center " +
+      //     (status == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
+      // );
+      // b.textContent = status == true ? "Live" : "offline";
     });
 
     return () => {
