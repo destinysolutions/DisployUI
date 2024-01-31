@@ -114,26 +114,11 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     if (loadFirst) {
       setLoader(true);
-      // get all screen group
       dispatch(getGroupData()).then((res) => {
         setAllGroupScreen(res?.payload?.data);
         setLoader(false);
       });
 
-      // // load composition
-      // dispatch(handleGetCompositions({ token }));
-
-      // // get all assets files
-      // dispatch(handleGetAllAssets({ token }));
-
-      // // get all schedule
-      // dispatch(handleGetAllSchedule({ token }));
-
-      // // get youtube data
-      // dispatch(handleGetYoutubeData({ token }));
-
-      // //get text scroll data
-      // dispatch(handleGetTextScrollData({ token }));
       setLoadFirst(false);
     }
 
