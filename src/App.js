@@ -123,7 +123,7 @@ const App = () => {
     });
 
     socket.on('SendTvStatus', (data) => {
-      console.log('Received TV status from server:', data.online);
+      console.log('Received TV status from server:', data);
       // Handle TV status data if needed
       // var b = document.getElementById("changetvstatus" + data?.macId);
       // b.setAttribute(
