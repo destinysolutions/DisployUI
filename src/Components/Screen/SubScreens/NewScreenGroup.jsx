@@ -887,7 +887,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                     
                                     <td className="p-2 text-center">
                                     <span
-                                      id={`changetvstatus${screen.macid}`}
+                                      id={`changetvstatus${screen.MacID}`}
                                       className={`rounded-full px-6 py-2 text-white text-center ${
                                         screen.screenStatus == 1
                                           ? "bg-[#3AB700]"
