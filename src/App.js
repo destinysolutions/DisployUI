@@ -119,44 +119,21 @@ const App = () => {
     });
 
     socket.on('ScreenConnected', (data) => {
-      socket.on("SendTvStatus", (data) => {
-        console.log("-----------------ScreenConnected ",data);
-        // var b = document.getElementById("changetvstatus" + ScreenID);
-        // b.setAttribute(
-        //   "class",
-        //   "rounded-full px-6 py-2 text-white text-center " +
-        //     (status == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
-        // );
-        // b.textContent = status == true ? "Live" : "offline";
-      });
       console.log('Received data from server:', data);
     });
 
-    socket.on("SendTvStatus", (data) => {
-      console.log("-----------------",data);
-      // var b = document.getElementById("changetvstatus" + ScreenID);
-      // b.setAttribute(
-      //   "class",
-      //   "rounded-full px-6 py-2 text-white text-center " +
-      //     (status == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
-      // );
-      // b.textContent = status == true ? "Live" : "offline";
+    socket.on('SendTvStatus', (data) => {
+      console.log('Received TV status from server:', data);
+      // Handle TV status data if needed
+  
+      // If you want to disconnect after receiving TV status, uncomment the line below
+      // socket.disconnect();
     });
 
     return () => {
       socket.disconnect();
       console.log("Socket disconnected");
       socket.emit("OnDisconnectedAsync", socket.id);
-      socket.on("SendTvStatus", (data) => {
-        console.log("-----------------Socket disconnected ",data);
-        // var b = document.getElementById("changetvstatus" + ScreenID);
-        // b.setAttribute(
-        //   "class",
-        //   "rounded-full px-6 py-2 text-white text-center " +
-        //     (status == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
-        // );
-        // b.textContent = status == true ? "Live" : "offline";
-      });
     };
   }, [socket]);
 
