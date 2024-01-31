@@ -171,22 +171,22 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   // chagne live status
-  useEffect(() => {
-    // console.log("run signal r");
-    socket.on("ScreenConnected", (screenConnected) => {
-      // setScreenConnected(screenConnected);
-    });
+  // useEffect(() => {
+  //   // console.log("run signal r");
+  //   socket.on("ScreenConnected", (screenConnected) => {
+  //     // setScreenConnected(screenConnected);
+  //   });
 
-    socket.on("SendTvStatus", (UserID, ScreenID, status) => {
-      var b = document.getElementById("changetvstatus" + ScreenID);
-      b.setAttribute(
-        "class",
-        "rounded-full px-6 py-2 text-white text-center " +
-          (status == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
-      );
-      b.textContent = status == true ? "Live" : "offline";
-    });
-  }, []);
+  //   socket.on("SendTvStatus", (UserID, ScreenID, status) => {
+  //     var b = document.getElementById("changetvstatus" + ScreenID);
+  //     b.setAttribute(
+  //       "class",
+  //       "rounded-full px-6 py-2 text-white text-center " +
+  //         (status == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
+  //     );
+  //     b.textContent = status == true ? "Live" : "offline";
+  //   });
+  // }, []);
 
   useEffect(() => {
     if (loadFist) {
