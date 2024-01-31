@@ -9,6 +9,7 @@ import axios from "axios";
 import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import { ADD_REGISTER_URL, GETALLRETAILER } from "../../Pages/Api";
+import { debounce } from "lodash";
 
 const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   const [showModal, setShowModal] = useState(false);
@@ -117,16 +118,16 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   const handleChange = (e) => {
-    const searchQuery = e.target.value.toLowerCase();
-    if (searchQuery === "") {
-      setAllUserData({ ...allUserData, SearchData: allUserData?.userData });
-    } else {
-      const filterData = allUserData?.userData?.filter((item) =>
-        item?.name?.toLowerCase().includes(searchQuery)
-      );
-      setAllUserData({ ...allUserData, SearchData: filterData });
-      setCurrentPage(1);
-    }
+    // const searchQuery = e.target.value.toLowerCase();
+    // if (searchQuery === "") {
+    //   setAllUserData({ ...allUserData, SearchData: allUserData?.userData });
+    // } else {
+    //   const filterData = allUserData?.userData?.filter((item) =>
+    //     item?.name?.toLowerCase().includes(searchQuery)
+    //   );
+    //   setAllUserData({ ...allUserData, SearchData: filterData });
+    //   setCurrentPage(1);
+    // }
   };
 
   const debouncedOnChange = debounce(handleChange, 500);
