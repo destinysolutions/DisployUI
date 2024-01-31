@@ -138,6 +138,16 @@ const App = () => {
       socket.disconnect();
       console.log("Socket disconnected");
       socket.emit("OnDisconnectedAsync", socket.id);
+      socket.on("SendTvStatus", (data) => {
+        console.log("-----------------Socket disconnected ",data);
+        // var b = document.getElementById("changetvstatus" + ScreenID);
+        // b.setAttribute(
+        //   "class",
+        //   "rounded-full px-6 py-2 text-white text-center " +
+        //     (status == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
+        // );
+        // b.textContent = status == true ? "Live" : "offline";
+      });
     };
   }, [socket]);
 
