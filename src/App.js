@@ -149,6 +149,7 @@ const App = () => {
       socket.disconnect();
       console.log("Socket disconnected");
       socket.emit("OnDisconnectedAsync", socket.id);
+      socket.emit("SendTvStatus",socket.id)
     };
   }, [socket]);
 
