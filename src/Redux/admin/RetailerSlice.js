@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { ADD_REGISTER_URL, GETALLRETAILER } from "../../Pages/Api";
+import { ADD_REGISTER_URL, GETALLRETAILER, UPDATE_USER } from "../../Pages/Api";
 
 const initialState = {
     data: [],
@@ -30,6 +30,19 @@ export const getRetailerData = createAsyncThunk("data/fetchApiData", async (payl
     try {
       const token = thunkAPI.getState().root.auth.token;
       const response = await axios.post(ADD_REGISTER_URL,payload,{headers: {Authorization: `Bearer ${token}`}});      
+      return response.data;
+    } catch (error) {
+      console.log("error",error);
+      throw error;
+    }
+  }
+);
+
+  // Add Retailer
+  export const updateRetailerData = createAsyncThunk("data/update", async (payload,thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().root.auth.token;
+      const response = await axios.post(UPDATE_USER,payload,{headers: {Authorization: `Bearer ${token}`}});      
       return response.data;
     } catch (error) {
       console.log("error",error);
@@ -72,6 +85,19 @@ const RetailersSlice = createSlice({
           state.message = action.message ||  'Save data successFully';
         })
         .addCase(addRetailerData.rejected, (state, action) => {    // addRetailerData
+          state.status = "failed";
+          state.error = action.error.message;
+        })
+
+        .addCase(updateRetailerData.pending, (state) => {    // updateRetailerData
+          state.status = null;
+        })
+        .addCase(updateRetailerData.fulfilled, (state, action) => {    // updateRetailerData
+          state.status = "succeeded";
+          state.data = action.payload?.data;
+          state.message = action.message ||  'Save data successFully';
+        })
+        .addCase(updateRetailerData.rejected, (state, action) => {    // updateRetailerData
           state.status = "failed";
           state.error = action.error.message;
         })

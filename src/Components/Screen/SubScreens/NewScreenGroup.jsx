@@ -329,11 +329,45 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const deleteGroupInScreen = (screen, item) => {
+    console.log("screen",screen)
     if (item?.screenGroupLists?.length > 1) {
       let payload = {
         ScreenGroupListID: screen.screenGroupListID,
       };
       dispatch(groupInScreenDelete(payload));
+      const Params = {
+        id: socket.id,
+        connection: socket.connected,
+        macId: screen.macID,
+      };
+      socket.emit("ScreenConnected", Params);
+      if (connection.state == "Disconnected") {
+        connection
+          .start()
+          .then((res) => {
+            console.log("signal connected");
+          })
+          .then(() => {
+            connection
+              .invoke("ScreenConnected", screen.macID)
+              .then(() => {
+                console.log("SignalR method invoked after Asset update");
+              })
+              .catch((error) => {
+                console.error("Error invoking SignalR method:", error);
+              });
+          });
+      } else {
+        connection
+          .invoke("ScreenConnected", screen.macID)
+          .then(() => {
+            console.log("SignalR method invoked after Asset update");
+          })
+          .catch((error) => {
+            console.error("Error invoking SignalR method:", error);
+          });
+      }
+
     } else {
       toast.error("Can't Delete This Screen. You Need To Delete Group.");
     }
