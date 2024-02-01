@@ -247,11 +247,11 @@ const Users = ({ searchValue }) => {
     data.append("languageId", 0);
     data.append("timeZoneId", 0);
     data.append("currencyId", 0);
-    data.append("ScreenAssignUser", selectedScreens.join(","));
+    data.append("ScreenAssignUser", selectedScreens?.join(","));
     data.append("IsFromUserMaster", 1);
     data.append("operation", "Save");
     data.append("company", company);
-
+    toast.loading("User Creating..");
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -267,6 +267,7 @@ const Users = ({ searchValue }) => {
       dispatch(handleAddNewUser({ config }));
       setshowuserModal(false);
       handleCancelPopup();
+      toast.remove();
     } catch (error) {
       console.log("error", error);
     }
@@ -293,13 +294,13 @@ const Users = ({ searchValue }) => {
     data.append("company", company);
     data.append("ZipCode", zipCode ? zipCode : 0);
     data.append("File", file ? file : fileEdit);
-    data.append("ScreenAssignUser", selectedScreens.join(","));
+    data.append("ScreenAssignUser", selectedScreens?.join(","));
     data.append("languageId", 0);
     data.append("timeZoneId", 0);
     data.append("currencyId", 0);
     data.append("IsFromUserMaster", 1);
     data.append("operation", "Save");
-
+    toast.loading("User Updating..");
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -318,6 +319,8 @@ const Users = ({ searchValue }) => {
         handleGetOrgUsers();
         handleCancelPopup();
         setshowuserModal(false);
+        toast.remove();
+        getUsersScreens(userID);
       })
       .catch((error) => {
         console.log(error);
@@ -409,10 +412,13 @@ const Users = ({ searchValue }) => {
         .map((id) => parseInt(id.trim()));
 
       const updatedCheckboxes = {};
-      screenIdsArray?.forEach((screenID) => {
-        updatedCheckboxes[screenID] = true;
+      screenData?.map((item) => {
+        if (screenIdsArray?.includes(item?.screenID)) {
+          updatedCheckboxes[item?.screenID] = true;
+        } else {
+          updatedCheckboxes[item?.screenID] = false;
+        }
       });
-
       setScreenCheckboxes(updatedCheckboxes);
       setSelectedScreens(screenIdsArray);
     });
@@ -601,30 +607,48 @@ const Users = ({ searchValue }) => {
     updatedCheckboxes[screenID] = !updatedCheckboxes[screenID];
     setScreenCheckboxes(updatedCheckboxes);
 
-    const updatedSelectedScreens = Object.keys(updatedCheckboxes).filter(
-      (id) => updatedCheckboxes[id]
-    );
+    // Create a copy of the selected screens array
+    let updatedSelectedScreens = [];
+    if (selectedScreens?.length > 0) {
+      updatedSelectedScreens = [...selectedScreens];
+    }
+
+    // If the screenID is already in the array, remove it; otherwise, add it
+    if (updatedSelectedScreens?.includes(screenID)) {
+      const index = updatedSelectedScreens.indexOf(screenID);
+      updatedSelectedScreens.splice(index, 1);
+    } else {
+      updatedSelectedScreens.push(screenID);
+    }
+    // Update the selected screens state
     setSelectedScreens(updatedSelectedScreens);
 
-    const allChecked = updatedSelectedScreens.length === screenData.length;
+    // Check if any individual screen checkbox is unchecked
+    const allChecked = Object.values(updatedCheckboxes).every(
+      (isChecked) => isChecked
+    );
+
     setSelectAllChecked(allChecked);
   };
 
   const handleSelectAllCheckboxChange = (e) => {
     const checked = e.target.checked;
     setSelectAllChecked(checked);
-
+    // Set the state of all individual screen checkboxes
     const updatedCheckboxes = {};
-    screenData.forEach((screen) => {
-      updatedCheckboxes[screen.screenID] = checked;
-    });
-
+    for (const screenID in screenCheckboxes) {
+      updatedCheckboxes[screenID] = checked;
+    }
     setScreenCheckboxes(updatedCheckboxes);
-    setSelectedScreens(
-      checked ? screenData.map((screen) => screen.screenID) : []
-    );
-  };
+    // Update the selected screens state based on whether "All Select" is checked
+    if (checked) {
+      const allScreenIds = screenData.map((screen) => screen.screenID);
 
+      setSelectedScreens(allScreenIds);
+    } else {
+      setSelectedScreens([]);
+    }
+  };
   return (
     <>
       {showuserModal && (
@@ -898,124 +922,129 @@ const Users = ({ searchValue }) => {
                               <AiOutlineCloseCircle className="text-3xl" />
                             </button>
                           </div>
-                          <div className="schedual-table bg-white rounded-xl mt-8 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
-                            <table className="w-full" cellPadding={20}>
-                              <thead>
-                                <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                                  <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
-                                    Screen
-                                  </th>
-                                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                    Status
-                                  </th>
-                                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                    Google Location
-                                  </th>
-                                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                    Associated Schedule
-                                  </th>
-                                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                                    Tags
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {loading ? (
-                                  <tr>
-                                    <td
-                                      colSpan={6}
-                                      className="text-center font-semibold text-lg"
-                                    >
-                                      Loading...
-                                    </td>
+                          <div className="schedual-table bg-white rounded-xl mt-2 shadow p-3 w-full overflow-x-auto min-h-[350px] max-h-[550px]">
+                            <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+                              <table
+                                className="screen-table w-full"
+                                cellPadding={20}
+                              >
+                                <thead>
+                                  <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
+                                    <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
+                                      Screen
+                                    </th>
+                                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                      Status
+                                    </th>
+                                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                      Google Location
+                                    </th>
+                                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                      Associated Schedule
+                                    </th>
+                                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                                      Tags
+                                    </th>
                                   </tr>
-                                ) : !loading && screenData?.length > 0 ? (
-                                  screenData.map((screen) => (
-                                    <tr
-                                      key={screen.screenID}
-                                      className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
-                                    >
-                                      <td className="flex items-center">
-                                        <input
-                                          type="checkbox"
-                                          className="mr-3"
-                                          onChange={() =>
-                                            handleScreenCheckboxChange(
-                                              screen.screenID
-                                            )
-                                          }
-                                          checked={
-                                            screenCheckboxes[screen.screenID]
-                                          }
-                                        />
-
-                                        {screen.screenName}
-                                      </td>
-
-                                      <td className="text-center">
-                                        <span
-                                          id={`changetvstatus${screen.macid}`}
-                                          className={`rounded-full px-6 py-2 text-white text-center ${
-                                            screen.screenStatus == 1
-                                              ? "bg-[#3AB700]"
-                                              : "bg-[#FF0000]"
-                                          }`}
-                                        >
-                                          {screen.screenStatus == 1
-                                            ? "Live"
-                                            : "offline"}
-                                        </span>
-                                      </td>
-                                      <td className="text-center break-words">
-                                        {screen.googleLocation}
-                                      </td>
-
-                                      <td className="text-center break-words">
-                                        {screen.scheduleName} Till
-                                        {moment(screen.endDate).format(
-                                          "YYYY-MM-DD hh:mm"
-                                        )}
-                                      </td>
-                                      <td className="text-center break-words">
-                                        {screen?.tags !== null
-                                          ? screen?.tags
-                                              .split(",")
-                                              .slice(
-                                                0,
-                                                screen?.tags.split(",").length >
-                                                  2
-                                                  ? 3
-                                                  : screen?.tags.split(",")
-                                                      .length
-                                              )
-                                              .map((text) => {
-                                                if (
-                                                  text.toString().length > 10
-                                                ) {
-                                                  return text
-                                                    .split("")
-                                                    .slice(0, 10)
-                                                    .concat("...")
-                                                    .join("");
-                                                }
-                                                return text;
-                                              })
-                                              .join(",")
-                                          : ""}
+                                </thead>
+                                <tbody>
+                                  {loading ? (
+                                    <tr>
+                                      <td
+                                        colSpan={6}
+                                        className="text-center font-semibold text-lg"
+                                      >
+                                        Loading...
                                       </td>
                                     </tr>
-                                  ))
-                                ) : (
-                                  <tr>
-                                    <td colSpan={6}>
-                                      <p className="text-center p-2">
-                                        No Screen available.
-                                      </p>
-                                    </td>
-                                  </tr>
-                                )}
-                              </tbody>
-                            </table>
+                                  ) : !loading && screenData?.length > 0 ? (
+                                    screenData.map((screen) => (
+                                      <tr
+                                        key={screen.screenID}
+                                        className="mt-7 bg-white rounded-lg  font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
+                                      >
+                                        <td className="flex items-center">
+                                          <input
+                                            type="checkbox"
+                                            className="mr-3"
+                                            onChange={() =>
+                                              handleScreenCheckboxChange(
+                                                screen.screenID
+                                              )
+                                            }
+                                            checked={
+                                              screenCheckboxes[screen.screenID]
+                                            }
+                                          />
+
+                                          {screen.screenName}
+                                        </td>
+
+                                        <td className="text-center">
+                                          <span
+                                            id={`changetvstatus${screen.macid}`}
+                                            className={`rounded-full px-6 py-2 text-white text-center ${
+                                              screen.screenStatus == 1
+                                                ? "bg-[#3AB700]"
+                                                : "bg-[#FF0000]"
+                                            }`}
+                                          >
+                                            {screen.screenStatus == 1
+                                              ? "Live"
+                                              : "offline"}
+                                          </span>
+                                        </td>
+                                        <td className="text-center break-words">
+                                          {screen.googleLocation}
+                                        </td>
+
+                                        <td className="text-center break-words">
+                                          {screen.scheduleName} Till
+                                          {moment(screen.endDate).format(
+                                            "YYYY-MM-DD hh:mm"
+                                          )}
+                                        </td>
+                                        <td className="text-center break-words">
+                                          {screen?.tags !== null
+                                            ? screen?.tags
+                                                .split(",")
+                                                .slice(
+                                                  0,
+                                                  screen?.tags.split(",")
+                                                    .length > 2
+                                                    ? 3
+                                                    : screen?.tags.split(",")
+                                                        .length
+                                                )
+                                                .map((text) => {
+                                                  if (
+                                                    text.toString().length > 10
+                                                  ) {
+                                                    return text
+                                                      .split("")
+                                                      .slice(0, 10)
+                                                      .concat("...")
+                                                      .join("");
+                                                  }
+                                                  return text;
+                                                })
+                                                .join(",")
+                                            : ""}
+                                        </td>
+                                      </tr>
+                                    ))
+                                  ) : (
+                                    <tr>
+                                      <td colSpan={6}>
+                                        <p className="text-center p-2">
+                                          No Screen available.
+                                        </p>
+                                      </td>
+                                    </tr>
+                                  )}
+                                </tbody>
+                              </table>
+                            </div>
                           </div>
                           <div className="py-4 flex justify-center sticky bottom-0 z-10 bg-white">
                             <button
@@ -1135,7 +1164,7 @@ const Users = ({ searchValue }) => {
                           style={{ width: "200px", height: "185px" }}
                         />
                       ) : (
-                        <BiSolidUser className="w-20 h-20" />
+                        <BiSolidUser className="w-[200px] h-[185px]" />
                       )}
                     </span>
                     <span className="user-name text-gray-900 dark:text-white font-semibold capitalize">
@@ -1249,9 +1278,9 @@ const Users = ({ searchValue }) => {
                       >
                         Edit Profile
                       </button>
-                      <button className="hover:text-#ffbebe px-8 py-3 border border-red shadow-md rounded-full text-red-600 text-1xl font-semibold bg-[#ffbebe] ">
+                      {/* <button className="hover:text-#ffbebe px-8 py-3 border border-red shadow-md rounded-full text-red-600 text-1xl font-semibold bg-[#ffbebe] ">
                         Suspend
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 </div>
@@ -1972,7 +2001,7 @@ const Users = ({ searchValue }) => {
               <table className="w-full" cellPadding={20}>
                 <thead>
                   <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
-                    <th className="text-[#5A5881] text-base font-semibold w-fit text-left">
+                    <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
                       Screen
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">

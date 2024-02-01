@@ -496,8 +496,7 @@ const Userrole = ({ searchValue }) => {
             >
               <thead>
                 <tr className="items-center table-head-bg">
-                  <th></th>
-                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center flex items-center">
+                  <th className="text-[#5A5881] text-base font-semibold flex items-center justify-center">
                     Role Name
                     <svg
                       className="w-3 h-3 ms-1.5 cursor-pointer"
@@ -510,7 +509,7 @@ const Userrole = ({ searchValue }) => {
                       <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
                     </svg>
                   </th>
-                  <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
+                  <th className="text-[#5A5881] text-base font-semibold text-center">
                     View Users
                   </th>
                   <th className="text-[#5A5881] text-base font-semibold">
@@ -523,35 +522,12 @@ const Userrole = ({ searchValue }) => {
                   sortedAndPaginatedData.map((item, index) => {
                     return (
                       <tr className="border-b border-b-[#E4E6FF]" key={index}>
-                        <td>
-                          {item?.profilePics
-                            ?.slice(0, 3)
-                            ?.map((item, index) => {
-                              return (
-                                <span key={index}>
-                                  <img
-                                    className="w-5 h-5 rounded-full"
-                                    src={item}
-                                    alt="Not Image"
-                                  ></img>
-                                </span>
-                              );
-                            })}
-                          {item?.profilePics?.length > 2 && (
-                            <span
-                              style={{ backgroundColor: "#41479b" }}
-                              className="text-white text-xs bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold text-green-800  me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300"
-                            >
-                              3+
-                            </span>
-                          )}
-                        </td>
-                        <td className="text-[#5E5E5E] text-left flex">
+                        <td className="text-center text-[#5A5881] text-base">
                           {item.orgUserRole}
                         </td>
 
                         <td
-                          className="text-center"
+                          className="text-center text-[#5A5881] text-base"
                           onClick={() => {
                             handleRoleBasedUserGet(item.orgUserRoleID);
                           }}
@@ -559,7 +535,7 @@ const Userrole = ({ searchValue }) => {
                           <button>{item.userCount}</button>
                         </td>
 
-                        <td className="text-center">
+                        <td className="text-center text-[#5A5881] text-base">
                           <button
                             data-tip
                             data-for="Edit"
