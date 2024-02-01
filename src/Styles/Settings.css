@@ -271,3 +271,8 @@ button.Mediatabshow.mediatabactive {
   margin-top: 15px;
   margin-right: 15px;
 }
+
+.default-media {
+  width: 100% !important;
+  height: 100% !important;
+}

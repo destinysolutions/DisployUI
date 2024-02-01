@@ -129,10 +129,12 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [id]);
   useEffect(() => {
-    const filteredLocations = locations?.filter(item => (item?.location === "" || item?.location === null)) || [];
+    const filteredLocations =
+      locations?.filter(
+        (item) => item?.location === "" || item?.location === null
+      ) || [];
     setErrorList(filteredLocations);
   }, [locations]);
-  
 
   useEffect(() => {
     if (isMuted && navigator.geolocation) {
@@ -386,9 +388,9 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
   const debouncedOnChange = debounce(handleLocationChange, 1000);
 
   const handleSave = () => {
-    if(locations?.length === errorList?.length){
+    if (locations?.length === errorList?.length) {
       toast.error("Please fill all the details.");
-      return
+      return;
     }
     let data = new FormData();
     data.append("WeatherAppId", id ? id : "0");
@@ -423,7 +425,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response.data.status === 200) {
           if (window.history.length === 1) {
-            localStorage.setItem('isWindowClosed', 'true');
+            localStorage.setItem("isWindowClosed", "true");
             window.close();
           } else {
             history("/weather");
@@ -450,17 +452,17 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
 
   return (
     <>
-      <div className="flex border-b border-gray">
+      {/* <div className="flex border-b border-gray">
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
         <Navbar />
-      </div>
+      </div> */}
       {id && loadingEdit ? (
         <div className="text-center font-semibold text-2xl h-[80vh] flex items-center justify-center w-[100vw]">
           Loading...
         </div>
       ) : (
-        <div className="pt-16 px-5 page-contain">
-          <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
+        <div className="px-6 page-contain">
+          <div>
             <div className="lg:flex lg:justify-between sm:block my-4 items-center">
               <div className="flex items-center">
                 {edited ? (
@@ -494,8 +496,8 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                 <button
                   className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-2 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                   onClick={() => {
-                    if(locations?.length === errorList?.length){
-                      toast.error("Please Enter any Location")
+                    if (locations?.length === errorList?.length) {
+                      toast.error("Please Enter any Location");
                       return;
                     }
                     setSelectedPreview(!selectedPreview);
@@ -530,12 +532,12 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
             <div className="mt-5 mb-5">
               <div className="grid grid-cols-12 gap-6 mt-5">
                 {!selectedPreview && (
-                  <div className="lg:col-span-6 md:col-span-6 sm:col-span-10 ">
+                  <div className="lg:col-span-4 md:col-span-5 sm:col-span-12 ">
                     <div className="shadow-md bg-white rounded-lg p-5 h-fit">
                       <div className="mb-6 w-full">
                         <div className="relative inline-flex items-center h-full w-full justify-between">
                           <label className="w-2/5 text-lg font-semibold text-gray-900 dark:text-gray-300">
-                            Use screen location*:
+                            Use screen location :
                           </label>
                           <div className="text-right  items-end">
                             <label className="inline-flex relative items-center cursor-pointer">
@@ -547,8 +549,9 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                 onChange={handleMuteChange}
                               />
                               <div
-                                className={`w-11 h-6 ${isMuted ? "bg-SlateBlue" : "bg-lightgray"
-                                  } rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all `}
+                                className={`w-11 h-6 ${
+                                  isMuted ? "bg-SlateBlue" : "bg-lightgray"
+                                } rounded-full  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all `}
                               ></div>
                             </label>
                           </div>
@@ -704,12 +707,13 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                 )}
 
                 <div
-                  className={`${selectedPreview
+                  className={`${
+                    selectedPreview
                       ? "lg:col-span-12 md:col-span-12"
-                      : "lg:col-span-6 md:col-span-6"
-                    } sm:col-span-10`}
+                      : "lg:col-span-8 md:col-span-7"
+                  } sm:col-span-12`}
                 >
-                  <div className="shadow-md bg-white rounded-lg p-5 h-fit">
+                  <div className="shadow-md bg-white rounded-lg p-5 h-full">
                     {/*{selectedPreview && (
                       <div className="m-2 flex justify-end h-full w-full">
                         <select
@@ -742,19 +746,21 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className="overflow-x-auto bg-blue border-white rounded-lg relative p-5">
                           <div className="lg:mx-auto md:mx-auto lg:max-w-5xl md:max-w-3xl sm:max-w-xl xs:w-full mx-auto bg-teal border-width-10px border-black">
                             <div
-                              className={`flex ${selectedLayout === "Landscape"
+                              className={`flex ${
+                                selectedLayout === "Landscape"
                                   ? "flex-row"
                                   : "flex-col"
-                                } text-[#ffffff]`}
+                              } text-[#ffffff]`}
                             >
                               {locations?.map((item, index) => {
                                 if (item?.weatherData !== null) {
                                   return (
                                     <div
-                                      className={`w-full flex flex-col ${selectedLayout === "Landscape"
+                                      className={`w-full flex flex-col ${
+                                        selectedLayout === "Landscape"
                                           ? " border-r-2 "
                                           : " border-b-2 "
-                                        }last:border-none`}
+                                      }last:border-none`}
                                       key={index}
                                     >
                                       <div className="bg-teal-lighter flex-1 flex flex-col">
@@ -803,18 +809,18 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                               }
                                               <span className="text-lg leading-3 ml-1 mt-2">
                                                 {selectedTemperature ===
-                                                  "Fahrenheit"
+                                                "Fahrenheit"
                                                   ? "°F"
                                                   : selectedTemperature ===
                                                     "Kelvin"
-                                                    ? "K"
-                                                    : selectedTemperature ===
-                                                      "Rankine"
-                                                      ? "°R"
-                                                      : selectedTemperature ===
-                                                        "Reaumur"
-                                                        ? "°Re"
-                                                        : "°C"}
+                                                  ? "K"
+                                                  : selectedTemperature ===
+                                                    "Rankine"
+                                                  ? "°R"
+                                                  : selectedTemperature ===
+                                                    "Reaumur"
+                                                  ? "°Re"
+                                                  : "°C"}
                                               </span>
                                             </h4>
                                             <p className="flex items-start justify-end">
@@ -824,18 +830,18 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
                                                   ?.feels_like
                                               }
                                               {selectedTemperature ===
-                                                "Fahrenheit"
+                                              "Fahrenheit"
                                                 ? "°F"
                                                 : selectedTemperature ===
                                                   "Kelvin"
-                                                  ? "K"
-                                                  : selectedTemperature ===
-                                                    "Rankine"
-                                                    ? "°R"
-                                                    : selectedTemperature ===
-                                                      "Reaumur"
-                                                      ? "°Re"
-                                                      : "°C"}
+                                                ? "K"
+                                                : selectedTemperature ===
+                                                  "Rankine"
+                                                ? "°R"
+                                                : selectedTemperature ===
+                                                  "Reaumur"
+                                                ? "°Re"
+                                                : "°C"}
                                             </p>
                                           </div>
                                         </div>
@@ -917,7 +923,7 @@ const WeatherDetail = ({ sidebarOpen, setSidebarOpen }) => {
         <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
           <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
+              <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] rounded-t text-black">
                 <div className="flex items-center">
                   <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
                     Select Screens to Playlist Name

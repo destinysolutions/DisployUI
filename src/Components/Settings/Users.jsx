@@ -7,12 +7,9 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import {
-  ADD_UPDATE_ORGANIZATION_USER_ROLE,
   CHNAGE_PASSWORD,
   DELETE_ORG_USER,
   GET_ORG_USERS,
-  GET_SELECT_BY_STATE,
-  GET_USER_SCREEN_DETAILS,
   SELECT_BY_USER_SCREENDETAIL,
   UPDATE_USER,
 } from "../../Pages/Api";
@@ -27,6 +24,11 @@ import {
   handleUserDelete,
   resetStatus,
   handleAddNewUser,
+  userScreens,
+  getUsersRoles,
+  handleGetState,
+  getOrgUsers,
+  handleSelectUserById,
 } from "../../Redux/SettingUserSlice";
 import link_icon from "../../images/Settings/link-icon.svg";
 import deleteImg from "../../images/Settings/delete.svg";
@@ -104,14 +106,14 @@ const Users = ({ searchValue }) => {
   const dispatch = useDispatch();
 
   // Filter data based on search term
-  const filteredData = userData.filter((item) =>
+  const filteredData = userData?.filter((item) =>
     Object.values(item).some(
       (value) =>
         value &&
         value.toString().toLowerCase().includes(searchValue.toLowerCase())
     )
   );
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
 
   // Function to sort the data based on a field and order
   const sortData = (data, field, order) => {
@@ -166,14 +168,9 @@ const Users = ({ searchValue }) => {
 
   useEffect(() => {
     if (countryID) {
-      fetch(`${GET_SELECT_BY_STATE}?CountryID=${countryID}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setStates(data.data);
-        })
-        .catch((error) => {
-          console.log("Error fetching states data:", error);
-        });
+      dispatch(handleGetState(countryID))?.then((res) => {
+        setStates(res?.payload?.data);
+      });
     }
   }, [countryID]);
 
@@ -182,49 +179,20 @@ const Users = ({ searchValue }) => {
   }, []);
 
   const getUsers = () => {
-    let data = JSON.stringify({
+    let data = {
       mode: "Selectlist",
-    });
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `${ADD_UPDATE_ORGANIZATION_USER_ROLE}`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authToken,
-      },
-      data: data,
     };
-
-    axios
-      .request(config)
-      .then((response) => {
-        setUserRoleData(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    dispatch(getUsersRoles(data))?.then((res) => {
+      setUserRoleData(res?.payload?.data);
+    });
   };
 
   const getUsersScreens = (orgUserSpecificID) => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `${GET_USER_SCREEN_DETAILS}?OrgUserSpecificID=${orgUserSpecificID}`,
-      headers: {
-        Authorization: authToken,
-      },
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        setUserScreenData(response?.data?.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    setLoading(true);
+    dispatch(userScreens(orgUserSpecificID))?.then((res) => {
+      setUserScreenData(res?.payload?.data);
+      setLoading(false);
+    });
   };
 
   const validateForm = () => {
@@ -358,24 +326,10 @@ const Users = ({ searchValue }) => {
 
   const handleGetOrgUsers = () => {
     setLoading(true);
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `${GET_ORG_USERS}`,
-      headers: {
-        Authorization: authToken,
-      },
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        setUserData(response.data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    dispatch(getOrgUsers())?.then((res) => {
+      setUserData(res?.payload?.data);
+      setLoading(false);
+    });
   };
 
   useEffect(() => {
@@ -434,52 +388,34 @@ const Users = ({ searchValue }) => {
 
   const selectUserById = (OrgUserSpecificID) => {
     setLabelTitle("Update User");
-    toast.loading("Fetching Data...");
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `${GET_ORG_USERS}?OrgUserSpecificID=${OrgUserSpecificID}`,
-      headers: {
-        Authorization: authToken,
-      },
-    };
-    axios
-      .request(config)
-      .then((response) => {
-        if (response?.data?.status == 200) {
-          const fetchedData = response.data.data;
-          setUserDetailData(fetchedData);
-          setFirstName(fetchedData.firstName);
-          setLastName(fetchedData.lastName);
-          setPassword("");
-          setFileEdit(fetchedData.profilePhoto);
-          setPhone(fetchedData.phone);
-          setEmail(fetchedData.email);
-          setCompany(fetchedData.company);
-          setCountryID(fetchedData.countryID);
-          setSelectedState(fetchedData.stateId);
-          setSelectRoleID(fetchedData.userRole);
-          setIsActive(fetchedData.isActive);
-          setZipCode(fetchedData.zipCode);
-          setEditProfile(1);
-          const screenIdsArray = fetchedData.screenIds
-            .split(",")
-            .map((id) => parseInt(id.trim()));
+    dispatch(handleSelectUserById(OrgUserSpecificID))?.then((res) => {
+      const fetchedData = res?.payload?.data;
+      setUserDetailData(fetchedData);
+      setFirstName(fetchedData?.firstName);
+      setLastName(fetchedData?.lastName);
+      setPassword("");
+      setFileEdit(fetchedData?.profilePhoto);
+      setPhone(fetchedData?.phone);
+      setEmail(fetchedData?.email);
+      setCompany(fetchedData?.company);
+      setCountryID(fetchedData?.countryID);
+      setSelectedState(fetchedData?.stateId);
+      setSelectRoleID(fetchedData?.userRole);
+      setIsActive(fetchedData?.isActive);
+      setZipCode(fetchedData?.zipCode);
+      setEditProfile(1);
+      const screenIdsArray = fetchedData?.screenIds
+        ?.split(",")
+        .map((id) => parseInt(id.trim()));
 
-          const updatedCheckboxes = {};
-          screenIdsArray.forEach((screenID) => {
-            updatedCheckboxes[screenID] = true;
-          });
-
-          setScreenCheckboxes(updatedCheckboxes);
-          setSelectedScreens(screenIdsArray);
-        }
-        toast.remove();
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.remove();
+      const updatedCheckboxes = {};
+      screenIdsArray?.forEach((screenID) => {
+        updatedCheckboxes[screenID] = true;
       });
+
+      setScreenCheckboxes(updatedCheckboxes);
+      setSelectedScreens(screenIdsArray);
+    });
   };
 
   const handleCancelPopup = () => {
@@ -518,6 +454,7 @@ const Users = ({ searchValue }) => {
     setFileEdit(null);
     setEditProfile();
   };
+
   const handleClick = (e) => {
     hiddenFileInput.current.click();
   };
@@ -1191,7 +1128,7 @@ const Users = ({ searchValue }) => {
                 <div className="card-shadow pt-6 text-[#5E5E5E]">
                   <div className="user-details text-center border-b border-b-[#E4E6FF]">
                     <span className="user-img flex justify-center mb-3">
-                      {userDetailData.profilePhoto !== null ? (
+                      {userDetailData?.profilePhoto !== null ? (
                         <img
                           src={userDetailData?.profilePhoto}
                           className="w-30 h-25 mb-3 rounded shadow-lg"
@@ -1202,14 +1139,14 @@ const Users = ({ searchValue }) => {
                       )}
                     </span>
                     <span className="user-name text-gray-900 dark:text-white font-semibold capitalize">
-                      {userDetailData.firstName} {userDetailData.lastName}
+                      {userDetailData?.firstName} {userDetailData?.lastName}
                     </span>
                     <div className="user-designation my-2">
                       <span
                         style={{ backgroundColor: "#cee9d6" }}
                         className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
                       >
-                        {userDetailData.userRoleName}
+                        {userDetailData?.userRoleName}
                       </span>
                     </div>
                   </div>
@@ -1221,34 +1158,34 @@ const Users = ({ searchValue }) => {
                         <span>User ID : </span>
                       </div>
                       <div className="col-span-2">
-                        <span>{userDetailData.orgUserSpecificID}</span>
+                        <span>{userDetailData?.orgUserSpecificID}</span>
                       </div>
                       <div className="font-semibold">
                         <span>User Name : </span>
                       </div>
                       <div className="col-span-2 capitalize">
                         <span>
-                          {userDetailData.firstName} {userDetailData.lastName}
+                          {userDetailData?.firstName} {userDetailData?.lastName}
                         </span>
                       </div>
                       <div className="font-semibold">
                         <span>Company Name : </span>
                       </div>
                       <div className="col-span-2 capitalize">
-                        <span> {userDetailData.company}</span>
+                        <span> {userDetailData?.company}</span>
                       </div>
                       <div className="font-semibold">
                         <span>Email : </span>
                       </div>
                       <div className="col-span-2 capitalize">
-                        <span> {userDetailData.email}</span>
+                        <span> {userDetailData?.email}</span>
                       </div>
                       <div className="font-semibold">
                         <span>Status : </span>
                       </div>
                       <div className="col-span-2 capitalize">
                         <span>
-                          {userDetailData.isActive == 1 ? (
+                          {userDetailData?.isActive == 1 ? (
                             <span
                               style={{ backgroundColor: "#cee9d6" }}
                               className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
@@ -1269,13 +1206,13 @@ const Users = ({ searchValue }) => {
                         <span>Role : </span>
                       </div>
                       <div className="col-span-2 capitalize">
-                        <span> {userDetailData.userRoleName}</span>
+                        <span> {userDetailData?.userRoleName}</span>
                       </div>
                       <div className="font-semibold">
                         <span>Contact : </span>
                       </div>
                       <div className="col-span-2 capitalize">
-                        <span> {userDetailData.phone}</span>
+                        <span> {userDetailData?.phone}</span>
                       </div>
                       <div className="font-semibold">
                         <span>Language : </span>
@@ -1291,21 +1228,21 @@ const Users = ({ searchValue }) => {
                         <span>Country : </span>
                       </div>
                       <div className="col-span-2 capitalize">
-                        <span> {userDetailData.countryName}</span>
+                        <span> {userDetailData?.countryName}</span>
                       </div>
 
                       <div className="font-semibold">
                         <span>State : </span>
                       </div>
                       <div className="col-span-2 capitalize">
-                        <span> {userDetailData.stateName}</span>
+                        <span> {userDetailData?.stateName}</span>
                       </div>
                     </div>
 
                     <div className="flex justify-center w-full mt-10">
                       <button
                         onClick={() => {
-                          selectUserById(userDetailData.orgUserSpecificID);
+                          selectUserById(userDetailData?.orgUserSpecificID);
                           setshowuserModal(true);
                         }}
                         className="me-3 hover:bg-white hover:text-primary text-base px-8 py-2 border border-primary  shadow-md rounded-full bg-primary text-white "
@@ -1320,7 +1257,7 @@ const Users = ({ searchValue }) => {
                 </div>
               </div>
               <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                <div className="card-shadow pt-6">
+                <div className="card-shadow pt-6 h-full">
                   <ul className="flex flex-wrap gap-3 items-center xs:mt-2 sm:mt-0 md:mt-0  lg:mt-0  xs:mr-1  mr-3  ">
                     <li>
                       <button
@@ -1480,7 +1417,7 @@ const Users = ({ searchValue }) => {
                               {formik.errors.confirmPassword}
                             </div>
                           ) : null}
-                          <div className="md:w-full flex pt-7">
+                          <div className="md:w-full flex justify-center pt-7">
                             <button
                               className="px-5 bg-primary text-white rounded-full py-2 border border-primary me-3"
                               disabled={!formik.isValid || formik.isSubmitting}
@@ -1554,14 +1491,20 @@ const Users = ({ searchValue }) => {
                                   </div>
                                 </td>
                                 <td className="px-5 py-3 text-sm">
-                                  <label className="checkbox" for="offline1">
+                                  <label
+                                    className="checkbox"
+                                    htmlFor="offline1"
+                                  >
                                     <span className="checkbox__label"></span>
                                     <input type="checkbox" id="offline1" />
                                     <div className="checkbox__indicator"></div>
                                   </label>
                                 </td>
                                 <td className="px-5 py-3 text-sm">
-                                  <label className="checkbox" for="offline2">
+                                  <label
+                                    className="checkbox"
+                                    htmlFor="offline2"
+                                  >
                                     <span className="checkbox__label"></span>
                                     <input type="checkbox" id="offline2" />
                                     <div className="checkbox__indicator"></div>
@@ -1604,7 +1547,7 @@ const Users = ({ searchValue }) => {
                                 <td className="px-5 py-3 text-sm">
                                   <label
                                     className="checkbox"
-                                    for="purchased-plan1"
+                                    htmlFor="purchased-plan1"
                                   >
                                     <span className="checkbox__label"></span>
                                     <input
@@ -1617,7 +1560,7 @@ const Users = ({ searchValue }) => {
                                 <td className="px-5 py-3 text-sm">
                                   <label
                                     className="checkbox"
-                                    for="purchased-plan2"
+                                    htmlFor="purchased-plan2"
                                   >
                                     <span className="checkbox__label"></span>
                                     <input
@@ -1664,7 +1607,7 @@ const Users = ({ searchValue }) => {
                                 <td className="px-5 py-3 text-sm">
                                   <label
                                     className="checkbox"
-                                    for="added-users1"
+                                    htmlFor="added-users1"
                                   >
                                     <span className="checkbox__label"></span>
                                     <input type="checkbox" id="added-users1" />
@@ -1674,7 +1617,7 @@ const Users = ({ searchValue }) => {
                                 <td className="px-5 py-3 text-sm">
                                   <label
                                     className="checkbox"
-                                    for="added-users2"
+                                    htmlFor="added-users2"
                                   >
                                     <span className="checkbox__label"></span>
                                     <input type="checkbox" id="added-users2" />
@@ -1704,7 +1647,7 @@ const Users = ({ searchValue }) => {
                                 <td className="px-5 py-3 text-sm">
                                   <label
                                     className="checkbox"
-                                    for="changing-details1"
+                                    htmlFor="changing-details1"
                                   >
                                     <span className="checkbox__label"></span>
                                     <input
@@ -1717,7 +1660,7 @@ const Users = ({ searchValue }) => {
                                 <td className="px-5 py-3 text-sm">
                                   <label
                                     className="checkbox"
-                                    for="changing-details2"
+                                    htmlFor="changing-details2"
                                   >
                                     <span className="checkbox__label"></span>
                                     <input
@@ -1762,14 +1705,20 @@ const Users = ({ searchValue }) => {
                                   </div>
                                 </td>
                                 <td className="px-5 py-3 text-sm">
-                                  <label className="checkbox" for="Playlist1">
+                                  <label
+                                    className="checkbox"
+                                    htmlFor="Playlist1"
+                                  >
                                     <span className="checkbox__label"></span>
                                     <input type="checkbox" id="Playlist1" />
                                     <div className="checkbox__indicator"></div>
                                   </label>
                                 </td>
                                 <td className="px-5 py-3 text-sm">
-                                  <label className="checkbox" for="Playlist2">
+                                  <label
+                                    className="checkbox"
+                                    htmlFor="Playlist2"
+                                  >
                                     <span className="checkbox__label"></span>
                                     <input type="checkbox" id="Playlist2" />
                                     <div className="checkbox__indicator"></div>
@@ -1810,14 +1759,14 @@ const Users = ({ searchValue }) => {
                                   </div>
                                 </td>
                                 <td className="px-5 py-3 text-sm">
-                                  <label className="checkbox" for="Assets1">
+                                  <label className="checkbox" htmlFor="Assets1">
                                     <span className="checkbox__label"></span>
                                     <input type="checkbox" id="Assets1" />
                                     <div className="checkbox__indicator"></div>
                                   </label>
                                 </td>
                                 <td className="px-5 py-3 text-sm">
-                                  <label className="checkbox" for="Assets2">
+                                  <label className="checkbox" htmlFor="Assets2">
                                     <span className="checkbox__label"></span>
                                     <input type="checkbox" id="Assets2" />
                                     <div className="checkbox__indicator"></div>
@@ -1997,7 +1946,7 @@ const Users = ({ searchValue }) => {
                           </tbody>
                         </table>
 
-                        <div className="buttonWrapper flex justify-center  w-full">
+                        <div className="buttonWrapper flex justify-center w-full">
                           <button
                             type="submit"
                             id="submitButton"
@@ -2018,8 +1967,8 @@ const Users = ({ searchValue }) => {
             </div>
           </div>
           <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2 w-full">
-            <h3 className="user-name my-4">Selected Screens</h3>
-            <div className="inline-block min-w-full shadow rounded-lg overflow-x-scroll sc-scrollbar">
+            <h3 className="user-name mb-4">Selected Screens</h3>
+            <div className="overflow-x-scroll sc-scrollbar rounded-lg shadow">
               <table className="w-full" cellPadding={20}>
                 <thead>
                   <tr className="items-center border-b border-b-[#E4E6FF] table-head-bg">
@@ -2210,7 +2159,7 @@ const Users = ({ searchValue }) => {
                       )}
                       {!loading &&
                         userData &&
-                        sortedAndPaginatedData.length > 0 &&
+                        sortedAndPaginatedData?.length > 0 &&
                         sortedAndPaginatedData.map((item, index) => {
                           return (
                             <tr
@@ -2328,7 +2277,7 @@ const Users = ({ searchValue }) => {
                         })}
                       {!loading &&
                         userData &&
-                        sortedAndPaginatedData.length === 0 && (
+                        sortedAndPaginatedData?.length === 0 && (
                           <>
                             <tr>
                               <td colSpan={5}>

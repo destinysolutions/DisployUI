@@ -771,7 +771,7 @@ const Defaultmedia = () => {
                 Object.values(filePath).includes("OnlineVideo")) && (
                 <ReactPlayer
                   url={filePath?.assetFolderPath}
-                  className="relative z-20 min-h-80"
+                  className="relative z-20 min-h-80 default-media "
                   controls={true}
                   playing={true}
                 />
