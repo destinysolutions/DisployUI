@@ -39,7 +39,7 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
               />
             }
           />
-          {/* <Route
+          <Route
             path="/retailer"
             element={
               <Retailer
@@ -47,7 +47,7 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
                 setSidebarOpen={setSidebarOpen}
               />
             }
-          /> */}
+          />
           <Route
             path="/pending"
             element={

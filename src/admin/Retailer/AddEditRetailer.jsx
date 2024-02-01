@@ -9,6 +9,7 @@ const AddEditRetailer = ({
   formik,
   showPassword,
   setShowPassword,
+  editId
 }) => {
   return (
     <>
@@ -133,6 +134,7 @@ const AddEditRetailer = ({
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.emailID}
+                      disabled={editId}
                     />
                     {formik.errors.emailID && formik.touched.emailID && (
                       <div className="error">{formik.errors.emailID}</div>
@@ -149,6 +151,7 @@ const AddEditRetailer = ({
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.password}
+                        hidden={editId}
                       />
                       <div className="icon">
                         {showPassword ? (
