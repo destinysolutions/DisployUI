@@ -414,7 +414,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   macId: item,
                 };
                 socket.emit("ScreenConnected", Params);
-                loadComposition();
+                // loadComposition();
 
               })
             } else {
@@ -424,8 +424,14 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                 macId: macids,
               };
               socket.emit("ScreenConnected", Params);
-              loadComposition();
+              // loadComposition();
             }
+            setTimeout(() => {
+              toast.remove();
+              setSelectScreenModal(false);
+              setAddScreenModal(false);
+              loadComposition();
+            }, 2000);
             // Invoke ScreenConnected method
             if (connection.state == "Disconnected") {
               connection
@@ -438,7 +444,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                     .invoke("ScreenConnected", macids)
                     .then(() => {
                       console.log("func. invoked");
-                      loadComposition();
+                      // loadComposition();
                     })
                     .catch((err) => {
                       toast.remove();
@@ -452,7 +458,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                 .then(() => {
                   console.log("func. invoked");
                   // toast.remove();
-                  loadComposition();
+                  // loadComposition();
                 })
                 .catch((err) => {
                   toast.remove();
@@ -465,12 +471,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
             toast.error("Something went wrong, try again");
             toast.remove();
           }
-          setTimeout(() => {
-            toast.remove();
-            setSelectScreenModal(false);
-            setAddScreenModal(false);
-            loadComposition();
-          }, 1000);
           toast.remove();
         }
       })
