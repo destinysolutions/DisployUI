@@ -15,6 +15,7 @@ import TrashSlice from "./Trash";
 import SidebarSlice from "./SidebarSlice";
 import ScreenMergeSlice from "./ScreenMergeSlice";
 import UserRoleSlice from "./UserRoleSlice";
+import RetailersSlice from "./admin/RetailerSlice";
 
 // const rootPersistConfig = {
 //   key: "root",
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
   trashData: TrashSlice,
   sidebarData: SidebarSlice,
   userRole: UserRoleSlice,
+  retailerData : RetailersSlice,
 });
 
 const persisteRoot = rootReducer;

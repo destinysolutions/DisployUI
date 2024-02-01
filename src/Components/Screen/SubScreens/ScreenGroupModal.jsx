@@ -259,7 +259,7 @@ const ScreenGroupModal = ({
                           className="mt-7 bg-white rounded-lg font-normal text-[14px] text-[#5E5E5E] border-b border-lightgray shadow-sm px-5 py-2"
                         >
                           <td>
-                            <div className="text-center">
+                            <div className="text-left">
                               <input
                                 type="checkbox"
                                 className="mr-3"
@@ -280,7 +280,7 @@ const ScreenGroupModal = ({
 
                           <td className="text-center">
                             <span
-                              id={`changetvstatus${screen.screenID}`}
+                              id={`changetvstatus${screen.macid}`}
                               className={`rounded-full px-6 py-2 text-white text-center ${
                                 screen.screenStatus == 1
                                   ? "bg-[#3AB700]"

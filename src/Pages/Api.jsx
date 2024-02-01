@@ -151,3 +151,8 @@ export const BILLINGREPORT = `${baseUrl}Report/GetBillingReport`;
 
 //https://disployapi.thedestinysolutions.com
 //http://192.168.1.115
+
+// Retailar
+
+export const GETALLRETAILER = `${baseUrl}UserMaster/GetAllRetailer?IsRetailer=true`
+

@@ -40,6 +40,7 @@ import { connection } from "../../SignalR";
 import Swal from "sweetalert2";
 import { TiWeatherSunny } from "react-icons/ti";
 import ReactTooltip from "react-tooltip";
+import { socket } from "../../App";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -188,6 +189,12 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     if (deleteLoading) return;
     dispatch(handleDeleteScheduleById({ id: scheduleId, token }));
     dispatch(handleGetAllSchedule({ token }));
+    const Params = {
+      id: socket.id,
+      connection: socket.connected,
+      macId:  maciDs.replace(/^\s+/g, ""),
+    };
+    socket.emit("ScreenConnected", Params);
     if (connection.state == "Disconnected") {
       connection
         .start()
@@ -239,7 +246,15 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
         setSelectedItems([]);
         dispatch(handleGetAllSchedule({ token }));
       }
-
+      const Params = {
+        id: socket.id,
+        connection: socket.connected,
+        macId:   schedules
+        ?.map((item) => item?.maciDs)
+        .join(",")
+        .replace(/^\s+/g, ""),
+      };
+      socket.emit("ScreenConnected", Params);
       if (connection.state == "Disconnected") {
         connection
           .start()
@@ -307,6 +322,12 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
+          const Params = {
+            id: socket.id,
+            connection: socket.connected,
+            macId:  macids,
+          };
+          socket.emit("ScreenConnected", Params);
           if (connection.state == "Disconnected") {
             connection
               .start()

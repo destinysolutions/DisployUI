@@ -31,6 +31,7 @@ import toast from "react-hot-toast";
 import ReactPlayer from "react-player";
 import { connection } from "../../SignalR";
 import ShowAppsModal from "../ShowAppsModal";
+import { socket } from "../../App";
 
 const DEFAULT_IMAGE = "";
 const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
@@ -133,6 +134,12 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
     try {
       const response = await axios.request(config);
       if (response?.data?.status === 200) {
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId: compositoinDetails?.maciDs.replace(/^\s+/g, ""),
+        };
+        socket.emit("ScreenConnected", Params);
         if (connection.state == "Disconnected") {
           connection
             .start()

@@ -53,6 +53,7 @@ import ReactTooltip from "react-tooltip";
 import PreviewComposition from "../../Composition/PreviewComposition";
 import axios from "axios";
 import moment from "moment";
+import { socket } from "../../../App";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const { user, token } = useSelector((state) => state.root.auth);
@@ -113,27 +114,11 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   useEffect(() => {
     if (loadFirst) {
       setLoader(true);
-      // get all screen group
       dispatch(getGroupData()).then((res) => {
-        console.log(res, "res=====");
         setAllGroupScreen(res?.payload?.data);
         setLoader(false);
       });
 
-      // // load composition
-      // dispatch(handleGetCompositions({ token }));
-
-      // // get all assets files
-      // dispatch(handleGetAllAssets({ token }));
-
-      // // get all schedule
-      // dispatch(handleGetAllSchedule({ token }));
-
-      // // get youtube data
-      // dispatch(handleGetYoutubeData({ token }));
-
-      // //get text scroll data
-      // dispatch(handleGetTextScrollData({ token }));
       setLoadFirst(false);
     }
 
@@ -170,6 +155,13 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       ?.flatMap((item) => item.screenGroupLists.map((screen) => screen.macID))
       .join(",")
       .replace(/^\s+/g, "");
+
+      const Params = {
+        id: socket.id,
+        connection: socket.connected,
+        macId:  macIds,
+      };
+      socket.emit("ScreenConnected", Params);
 
     console.log("macIds:", macIds);
     if (connection.state === "Disconnected") {
@@ -877,16 +869,20 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                     <td className="flex items-center">
                                       {screen.screenName}
                                     </td>
+                                    
                                     <td className="p-2 text-center">
-                                      {screen.screenStatus === 1 ? (
-                                        <button className="bg-[#3AB700] rounded-full px-6 py-1 text-white hover:bg-primary">
-                                          Live
-                                        </button>
-                                      ) : (
-                                        <button className="bg-[#FF0000] rounded-full px-6 py-1 text-white">
-                                          Off
-                                        </button>
-                                      )}
+                                    <span
+                                      id={`changetvstatus${screen.MacID}`}
+                                      className={`rounded-full px-6 py-2 text-white text-center ${
+                                        screen.screenStatus == 1
+                                          ? "bg-[#3AB700]"
+                                          : "bg-[#FF0000]"
+                                      }`}
+                                    >
+                                      {screen.screenStatus == 1
+                                        ? "Live"
+                                        : "offline"}
+                                    </span>
                                     </td>
                                     <td className="p-2 text-center">
                                       {moment(screen?.updatedDate).format(

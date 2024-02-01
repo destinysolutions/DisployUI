@@ -36,6 +36,7 @@ import ScreenAssignModal from "../ScreenAssignModal";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import { HiBackward } from "react-icons/hi2";
 import { connection } from "../../SignalR";
+import { socket } from "../../App";
 
 const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   Youtube.propTypes = {
@@ -94,6 +95,12 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
       .request(config)
       .then((response) => {
         if (response.data.status == 200) {
+          const Params = {
+            id: socket.id,
+            connection: socket.connected,
+            macId: macids,
+          };
+          socket.emit("ScreenConnected", Params);
           if (connection.state == "Disconnected") {
             connection
               .start()
@@ -150,6 +157,12 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
     axios
       .request(config)
       .then((response) => {
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId: maciDs,
+        };
+        socket.emit("ScreenConnected", Params);
         if (connection.state == "Disconnected") {
           connection
             .start()

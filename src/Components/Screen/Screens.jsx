@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "../../Styles/screen.css";
 import {
-  AiOutlineAppstoreAdd,
   AiOutlineCloseCircle,
   AiOutlineCloudUpload,
   AiOutlinePlusCircle,
@@ -9,34 +8,24 @@ import {
   AiOutlineSearch,
 } from "react-icons/ai";
 import {
-  MdDeleteForever,
-  MdLiveTv,
-  MdOutlineCalendarMonth,
   MdOutlineModeEdit,
 } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { MdOutlineAddToQueue } from "react-icons/md";
-import { HiOutlineRectangleGroup, HiUserGroup } from "react-icons/hi2";
-import { VscCalendar, VscVmActive } from "react-icons/vsc";
-import { VscVmConnect } from "react-icons/vsc";
+import {HiUserGroup } from "react-icons/hi2";
 import PropTypes from "prop-types";
 import ScreenOTPModal from "./ScreenOTPModal";
-import AssetModal from "../Assests/AssetModal";
 import {
   RiArrowDownSLine,
   RiDeleteBin5Line,
-  RiSignalTowerLine,
 } from "react-icons/ri";
-import { HiDotsVertical } from "react-icons/hi";
 import Footer from "../Footer";
 
 import {
   SCREEN_DELETE_ALL,
   SCREEN_GROUP,
-  SIGNAL_R,
-  UPDATE_NEW_SCREEN,
 } from "../../Pages/Api";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -61,11 +50,12 @@ import {
   handleGetTextScrollData,
   handleGetYoutubeData,
 } from "../../Redux/AppsSlice";
-import { TvStatus, connection } from "../../SignalR";
+import { connection } from "../../SignalR";
 import Swal from "sweetalert2";
 import { addTagsAndUpdate, resetStatus } from "../../Redux/ScreenGroupSlice";
 import { BiEdit } from "react-icons/bi";
 import ReactTooltip from "react-tooltip";
+import { socket } from "../../App";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -169,23 +159,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  // chagne live status
-  // useEffect(() => {
-  //   // console.log("run signal r");
-  //   connection.on("ScreenConnected", (screenConnected) => {
-  //     setScreenConnected(screenConnected);
-  //   });
-
-  //   connection.on("TvStatus", (UserID, ScreenID, status) => {
-  //     var b = document.getElementById("changetvstatus" + ScreenID);
-  //     b.setAttribute(
-  //       "class",
-  //       "rounded-full px-6 py-2 text-white text-center " +
-  //         (status == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
-  //     );
-  //     b.textContent = status == true ? "Live" : "offline";
-  //   });
-  // }, []);
 
   useEffect(() => {
     if (loadFist) {
@@ -329,6 +302,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         toast.remove();
         setLoadFist(true);
         toast.success("Screen deleted Successfully!");
+        const Params = {
+          id: socket.id,
+          connection: socket.connected,
+          macId:  allScreenMacids,
+        };
+        socket.emit("ScreenConnected", Params);
         if (connection.state == "Disconnected") {
           connection
             .start()
@@ -363,6 +342,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     if (!window.confirm("Are you sure?")) return;
     toast.loading("Deleting...");
     console.log("signal r");
+    const Params = {
+      id: socket.id,
+      connection: socket.connected,
+      macId:  MACID,
+    };
+    socket.emit("ScreenConnected", Params);
     if (connection.state == "Disconnected") {
       connection
         .start()
@@ -508,6 +493,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       response
         .then((response) => {
           toast.remove();
+          const Params = {
+            id: socket.id,
+            connection: socket.connected,
+            macId:  screenToUpdate?.macid.replace(/^\s+/g, ""),
+          };
+          socket.emit("ScreenConnected", Params);
           if (connection.state == "Disconnected") {
             connection
               .start()
@@ -586,6 +577,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           toast.remove();
           toast.success("Schedule assinged to screen.");
           setShowScheduleModal(false);
+          const Params = {
+            id: socket.id,
+            connection: socket.connected,
+            macId:  screenToUpdate?.macid.replace(/^\s+/g, ""),
+          };
+          socket.emit("ScreenConnected", Params);
           if (connection.state == "Disconnected") {
             connection
               .start()
@@ -766,7 +763,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     }
 
     dispatch(screenDeactivateActivate(payload));
-
+    const Params = {
+      id: socket.id,
+      connection: socket.connected,
+      macId:  allScreenMacids,
+    };
+    socket.emit("ScreenConnected", Params);
     if (connection.state == "Disconnected") {
       connection
         .start()
@@ -1309,7 +1311,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 {statusContentVisible && (
                                   <td className="text-center">
                                     <span
-                                      id={`changetvstatus${screen.screenID}`}
+                                      id={`changetvstatus${screen.macid}`}
                                       className={`rounded-full px-6 py-2 text-white text-center ${
                                         screen.screenStatus == 1
                                           ? "bg-[#3AB700]"

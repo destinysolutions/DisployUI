@@ -16,7 +16,9 @@ import { connection } from "./SignalR";
 import { useLocation } from "react-router-dom";
 import io from "socket.io-client";
 
-export const socket = io.connect("https://108.166.190.137:3002/");
+// export const socket = io.connect("http://108.166.190.137:3002");
+export const socket = io.connect("https://disploysocket.thedestinysolutions.com");
+
 // export const socket = io.connect("http://localhost:3002");
 
 const App = () => {
@@ -110,19 +112,44 @@ const App = () => {
       dispatch(handleGetUserDetails({ id: user?.userID, token }));
     }
   }, [user]);
-  
+
   useEffect(() => {
-   socket.on('connect', () => {
+    socket.on('connect', () => {
       console.log('Connected to server');
     });
 
     socket.on('ScreenConnected', (data) => {
       console.log('Received data from server:', data);
+      var b = document.getElementById("changetvstatus" + data?.macId);
+      b.setAttribute(
+        "class",
+        "rounded-full px-6 py-2 text-white text-center " +
+          (data.connection == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
+      );
+      b.textContent = data.connection == true ? "Live" : "offline";
+    });
+
+    socket.on('SendTvStatus', (data) => {
+      console.log('Received TV status from server:', data);
+      // Handle TV status data if needed
+      var b = document.getElementById("changetvstatus" + data?.macId);
+      b.setAttribute(
+        "class",
+        "rounded-full px-6 py-2 text-white text-center " +
+          (data?.connection == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
+      );
+      b.textContent = data?.connection == true ? "Live" : "offline";
+      // TvStatus = data?.connection == true ? "Live" : "Offline";
+
+      // If you want to disconnect after receiving TV status, uncomment the line below
+      // socket.disconnect();
     });
 
     return () => {
       socket.disconnect();
       console.log("Socket disconnected");
+      socket.emit("OnDisconnectedAsync", socket.id);
+      socket.emit("SendTvStatus",socket.id)
     };
   }, [socket]);
 
