@@ -1,5 +1,5 @@
 import ReactApexChart from "react-apexcharts";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { useEffect, useState } from "react";
@@ -169,12 +169,13 @@ const Business = () => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [states, setStates] = useState([]);
   const [selectedState, setSelectedState] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
   const [cities, setCities] = useState([]);
   const [showCityStores, setshowCityStores] = useState(false);
   const [selectedStateName, setSelectedStateName] = useState("");
   const [showStore, setShowStore] = useState(false);
   const [showCitydw, setShowCityDw] = useState(false);
-
+  
   useEffect(() => {
     dispatch(handleGetAllApps({ token }));
   }, []);
@@ -193,8 +194,8 @@ const Business = () => {
 
   // Fetch states based on the selected country
   useEffect(() => {
-    if (selectedCountry) {
-      fetch(`${GET_SELECT_BY_STATE}?CountryID=${selectedCountry}`)
+    if (selectedCountry !== "") {
+      fetch(`${GET_SELECT_BY_STATE}?CountryID=${selectedCountry?.countryID}`)
         .then((response) => response.json())
         .then((data) => {
           setStates(data.data);
@@ -207,7 +208,7 @@ const Business = () => {
 
   // Fetch cities based on the selected state
   useEffect(() => {
-    if (selectedState) {
+    if (selectedState !== "") {
       fetch(`${GET_SELECT_BY_CITY}?StateId=${selectedState}`)
         .then((response) => response.json())
         .then((data) => {
@@ -220,10 +221,22 @@ const Business = () => {
   }, [selectedState]);
 
   //for marker click event
-  const handleMarkerClick = (countryID) => {
-    setSelectedCountry(countryID);
+  const handleMarkerClick = (country) => {
+    setSelectedCountry(country);
     setShowStore(true);
   };
+
+  const handleStateMarker = (state) => {
+    setSelectedState(state.stateId);
+    setSelectedStateName(state.stateName);
+    setShowCityDw(true);
+    setShowStore(false);
+  }
+
+  const handleCityMarker = (city) =>{
+    setSelectedCity(city?.cityName)
+    setshowCityStores(true);
+  }
 
   const customIcon = new L.Icon({
     iconUrl: mapImg,
@@ -251,24 +264,63 @@ const Business = () => {
                   position={[country.latitude, country.longitude]}
                   icon={customIcon}
                   eventHandlers={{
-                    click: () => handleMarkerClick(country.countryID),
+                    click: () => handleMarkerClick && handleMarkerClick(country),
                   }}
-                ></Marker>
+                >
+                  <Popup>
+                    <h3 className="flex flex-row gap-1">
+                      <span>
+                        Country :
+                      </span>
+                      <span>
+                        {selectedCountry?.countryName}
+                      </span>
+                    </h3>
+                    <div className="flex flex-col">
+                      <h5 className="flex flex-row gap-2">
+                        <span>
+                          latitude :
+                        </span>
+                        <span>
+                          {selectedCountry?.latitude}
+                        </span>
+                      </h5>
+                      <h5 className="flex flex-row gap-2">
+                        <span>
+                          longitude :
+                        </span>
+                        <span>
+                          {selectedCountry?.longitude}
+                        </span>
+                      </h5>
+                    </div>
+                  </Popup>
+                </Marker>
               ))}
-              {selectedCountry &&
+
+              {selectedCountry !== "" &&
                 states.map((state) => (
                   <Marker
                     key={state.stateId}
                     position={[state.latitude, state.longitude]}
+                    icon={customIcon}
+                    eventHandlers={{
+                      click: () => handleStateMarker && handleStateMarker(state),
+                    }}
                   ></Marker>
                 ))}
-              {selectedState &&
+              {selectedState !== "" &&
                 cities.map((city) => (
                   <Marker
                     key={city.cityID}
+                    icon={customIcon}
                     position={[city.latitude, city.longitude]}
+                    eventHandlers={{
+                      click: () => handleCityMarker && handleCityMarker(city),
+                    }}
                   ></Marker>
                 ))}
+
             </MarkerClusterGroup>
           </MapContainer>
         </div>
@@ -279,9 +331,9 @@ const Business = () => {
         <>
           <div className="bg-white shadow-md rounded-lg mt-5 ">
             <div className="p-3 lg:flex md:flex sm:flex xs:block items-center">
-              <div className="flex items-center lg:mb-0 md:mb-0 sm:mb-0 xs:mb-2">
-                <img src={flagUmg} className="h-10 w-10 rounded-full" />
-                <div className="ml-2 mr-6 font-semibold">India</div>
+              <div className="flex flex-row items-center lg:mb-0 md:mb-0 sm:mb-0 xs:mb-2">
+                <img src={selectedCountry?.countryFlag} className="h-10 w-10 rounded-full" />
+                <div className="ml-2 mr-6 font-semibold">{selectedCountry?.countryName}</div>
               </div>
               <div>
                 <Select
@@ -329,10 +381,11 @@ const Business = () => {
                   value: city.cityID,
                   label: city.cityName,
                 }))}
-                onChange={() => {
+                onChange={(selectedOption) => {
+                  setSelectedCity(selectedOption?.label)
                   setshowCityStores(true);
                 }}
-                placeholder="Select City"
+                placeholder={selectedCity === "" ? "Select City" : selectedCity}
                 className="z-10"
               />
             </div>

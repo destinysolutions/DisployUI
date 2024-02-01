@@ -108,7 +108,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         Authorization: authToken,
       },
     };
-
+    
     axios
       .request(config)
       .then((response) => {

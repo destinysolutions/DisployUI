@@ -337,7 +337,7 @@ const ScreenGroupModal = ({
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="4" className="text-center">
+                        <td colSpan="8" className="text-center">
                           {store && store.data?.length === 0 ? (
                             "No data found"
                           ) : (

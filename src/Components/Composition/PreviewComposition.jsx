@@ -55,7 +55,7 @@ const PreviewComposition = ({ previewModalData, closeModal, loading, layotuDetai
                             >
                                 {modalVisible && (
                                     <Carousel
-                                        items={previewModalData[index][index + 1]}
+                                        items={previewModalData?.[index]?.[index + 1]}
                                         composition={obj}
                                     />
                                 )}

@@ -5,6 +5,7 @@ import ManageUserType from "../admin/ManageUserType";
 import User from "../admin/User";
 import Pending from "../admin/Pending";
 import Retailer from "../admin/Retailer/Retailer";
+import Advertisement from "../admin/Advertisement/Advertisement";
 
 const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
   return (
@@ -47,7 +48,16 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
                 setSidebarOpen={setSidebarOpen}
               />
             }
-          />
+          /> 
+             <Route
+            path="/advertisement"
+            element={
+              <Advertisement
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          /> 
           <Route
             path="/pending"
             element={
