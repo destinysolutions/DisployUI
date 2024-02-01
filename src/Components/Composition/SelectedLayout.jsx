@@ -591,9 +591,9 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
           <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
               ref={modalRef}
-              className={`fixed  border left-1/2 -translate-x-1/2 ${screenType === "portrait"
-                ? "min-h-[90vh] max-h-[90vh] min-w-[30vw] max-w-[30vw]"
-                : "min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]"
+              className={`fixed border left-1/2 top-1/4 -translate-x-1/2 ${screenType === "portrait"
+                ? "w-[960px] h-[540px]"
+                : "w-[960px] h-[540px]"
                 }  `}
             >
               <RxCrossCircled

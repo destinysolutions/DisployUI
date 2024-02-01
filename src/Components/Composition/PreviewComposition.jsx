@@ -6,7 +6,7 @@ const PreviewComposition = ({ previewModalData, closeModal, loading, layotuDetai
     return (
         <PreviewModal show={modalVisible} onClose={closeModal}>
             <div
-                className={`fixed left-1/2 -translate-x-1/2 min-h-[90vh] max-h-[90vh] min-w-[80vw] max-w-[80vw]`}
+                className={`fixed left-1/2 top-1/4 -translate-x-1/2 w-[960px] h-[540px]`}
                 ref={modalRef}
             >
                 <div style={{ padding: "15px", backgroundColor: "white" }}>

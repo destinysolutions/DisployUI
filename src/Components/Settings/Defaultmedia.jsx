@@ -340,7 +340,7 @@ const Defaultmedia = () => {
         </ul>
       </div>
       {mediaTabs === 1 && (
-        <div className="grid lg:grid-cols-2 w-full h-auto place-items-center items-center p-6">
+        <div className="grid lg:grid-cols-2 w-full h-auto place-items-center items-center p-6 ">
           <div className="lg:w-1/2 w-full">
             <div className="flex items-center justify-center mb-5 flex-wrap">
               <label className="mr-3 text-primary lg:text-lg md:text-lg sm:text-base xs:text-base font-medium py-2">
@@ -364,11 +364,8 @@ const Defaultmedia = () => {
               {showAssetModal && (
                 <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
                   <div
-                    ref={modalRef}
-                    onClick={() =>
-                      assetPreviewPopup && setAssetPreviewPopup(false)
-                    }
-                    className="relative w-[70vw] h-auto lg:p-6 md:p-6 sm:p-2 xs:p-1 flex items-start gap-2 bg-white rounded-2xl"
+                    // ref={modalRef}
+                    className={`relative w-[70vw] h-auto lg:p-6 md:p-6 sm:p-2 xs:p-1 flex items-start gap-2 bg-white rounded-2xl`}
                   >
                     <div className="flex absolute top-0 left-0 h-fit w-full z-10 items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black">
                       <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
@@ -384,7 +381,11 @@ const Defaultmedia = () => {
                         <AiOutlineCloseCircle className="text-2xl" />
                       </button>
                     </div>
-                    <div className="lg:flex mt-8 lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
+                    <div
+                      onClick={() =>
+                        assetPreviewPopup && setAssetPreviewPopup(false)
+                      }
+                      className="lg:flex mt-8 lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
                       {/* left side tabs */}
                       <div className="flex-initial">
                         <nav
@@ -395,17 +396,15 @@ const Defaultmedia = () => {
                         >
                           <button
                             type="button"
-                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                              popupActiveTab === 1 ? "active" : ""
-                            }`}
+                            className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 1 ? "active" : ""
+                              }`}
                             onClick={() => setPopupActiveTab(1)}
                           >
                             <span
-                              className={`p-1 rounded ${
-                                popupActiveTab === 1
+                              className={`p-1 rounded ${popupActiveTab === 1
                                   ? "bg-primary text-white"
                                   : "bg-lightgray"
-                              } `}
+                                } `}
                             >
                               <IoBarChartSharp size={15} />
                             </span>
@@ -523,12 +522,11 @@ const Defaultmedia = () => {
                                 filteredData.map((asset) => (
                                   <tbody key={asset.assetID}>
                                     <tr
-                                      className={`${
-                                        selectedAsset?.assetID ===
-                                        asset?.assetID
+                                      className={`${selectedAsset?.assetID ===
+                                          asset?.assetID
                                           ? "bg-[#f3c953]"
                                           : ""
-                                      } border-b border-[#eee] `}
+                                        } border-b border-[#eee] `}
                                       onClick={() => {
                                         handleAssetAdd(asset);
                                         setAssetPreviewPopup(true);
@@ -555,82 +553,7 @@ const Defaultmedia = () => {
                                 <div>No data Found</div>
                               )}
                             </table>
-                            {assetPreviewPopup && (
-                              <div className="fixed left-1/2 -translate-x-1/2 w-10/12 h-10/12 top-10 bg-black z-50 inset-0">
-                                {/* btn */}
-                                <div className="p-1 rounded-full text-white bg-primary absolute -top-3 -right-3">
-                                  <button
-                                    className="text-xl"
-                                    onClick={() => setAssetPreviewPopup(false)}
-                                  >
-                                    <AiOutlineCloseCircle className="text-2xl" />
-                                  </button>
-                                </div>
-                                <div className="fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 h-[90%] w-[90%]">
-                                  {assetPreview && (
-                                    <>
-                                      {assetPreview.assetType ===
-                                        "OnlineImage" && (
-                                        <div className="imagebox p-3">
-                                          <img
-                                            src={assetPreview.assetFolderPath}
-                                            alt={assetPreview.assetName}
-                                            className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                          />
-                                        </div>
-                                      )}
 
-                                      {assetPreview.assetType ===
-                                        "OnlineVideo" && (
-                                        <div className="relative videobox">
-                                          <video
-                                            controls
-                                            className="w-full rounded-2xl h-full"
-                                          >
-                                            <source
-                                              src={assetPreview.assetFolderPath}
-                                              type="video/mp4"
-                                            />
-                                            Your browser does not support the
-                                            video tag.
-                                          </video>
-                                        </div>
-                                      )}
-                                      {assetPreview.assetType === "Image" && (
-                                        <img
-                                          src={assetPreview.assetFolderPath}
-                                          alt={assetPreview.assetName}
-                                          className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                        />
-                                      )}
-                                      {assetPreview.assetType === "Video" && (
-                                        <video
-                                          controls
-                                          className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                        >
-                                          <source
-                                            src={assetPreview.assetFolderPath}
-                                            type="video/mp4"
-                                          />
-                                          Your browser does not support the
-                                          video tag.
-                                        </video>
-                                      )}
-                                      {assetPreview.assetType === "DOC" && (
-                                        <a
-                                          href={assetPreview.assetFolderPath}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                                        >
-                                          {assetPreview.assetName}
-                                        </a>
-                                      )}
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-                            )}
                           </div>
                         </div>
                         <div className={popupActiveTab !== 2 && "hidden"}>
@@ -673,67 +596,65 @@ const Defaultmedia = () => {
                               </thead>
                               {filteredData.length === 0
                                 ? compositionData.map((composition) => (
-                                    <tbody key={composition.compositionID}>
-                                      <tr
-                                        className={`${
-                                          selectedComposition === composition
-                                            ? "bg-[#f3c953]"
-                                            : ""
+                                  <tbody key={composition.compositionID}>
+                                    <tr
+                                      className={`${selectedComposition === composition
+                                          ? "bg-[#f3c953]"
+                                          : ""
                                         } border-b border-[#eee] `}
-                                        onClick={() => {
-                                          handleCompositionsAdd(composition);
-                                        }}
-                                      >
-                                        <td className="p-3 text-left">
-                                          {composition.compositionName}
-                                        </td>
-                                        <td className="p-3">
-                                          {moment(composition.dateAdded).format(
-                                            "YYYY-MM-DD hh:mm"
-                                          )}
-                                        </td>
-                                        <td className="p-3">
-                                          {composition.resolution}
-                                        </td>
-                                        <td className="p-3">
-                                          {moment
-                                            .utc(composition.duration * 1000)
-                                            .format("hh:mm:ss")}
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  ))
+                                      onClick={() => {
+                                        handleCompositionsAdd(composition);
+                                      }}
+                                    >
+                                      <td className="p-3 text-left">
+                                        {composition.compositionName}
+                                      </td>
+                                      <td className="p-3">
+                                        {moment(composition.dateAdded).format(
+                                          "YYYY-MM-DD hh:mm"
+                                        )}
+                                      </td>
+                                      <td className="p-3">
+                                        {composition.resolution}
+                                      </td>
+                                      <td className="p-3">
+                                        {moment
+                                          .utc(composition.duration * 1000)
+                                          .format("hh:mm:ss")}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                ))
                                 : filteredData.map((composition) => (
-                                    <tbody key={composition.compositionID}>
-                                      <tr
-                                        className={`${
-                                          selectedComposition === composition
-                                            ? "bg-[#f3c953]"
-                                            : ""
+                                  <tbody key={composition.compositionID}>
+                                    <tr
+                                      className={`${selectedComposition === composition
+                                          ? "bg-[#f3c953]"
+                                          : ""
                                         } border-b border-[#eee] `}
-                                        onClick={() => {
-                                          handleCompositionsAdd(composition);
-                                        }}
-                                      >
-                                        <td className="p-3 text-left">
-                                          {composition.compositionName}
-                                        </td>
-                                        <td className="p-3">
-                                          {moment(composition.dateAdded).format(
-                                            "YYYY-MM-DD hh:mm"
-                                          )}
-                                        </td>
-                                        <td className="p-3">
-                                          {composition.resolution}
-                                        </td>
-                                        <td className="p-3">
-                                          {moment
-                                            .utc(composition.duration * 1000)
-                                            .format("hh:mm:ss")}
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  ))}
+                                      onClick={() => {
+                                        handleCompositionsAdd(composition);
+                                      }}
+                                    >
+                                      <td className="p-3 text-left">
+                                        {composition.compositionName}
+                                      </td>
+                                      <td className="p-3">
+                                        {moment(composition.dateAdded).format(
+                                          "YYYY-MM-DD hh:mm"
+                                        )}
+                                      </td>
+                                      <td className="p-3">
+                                        {composition.resolution}
+                                      </td>
+                                      <td className="p-3">
+                                        {moment
+                                          .utc(composition.duration * 1000)
+                                          .format("hh:mm:ss")}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                ))}
                             </table>
                           </div>
                         </div>
@@ -765,13 +686,13 @@ const Defaultmedia = () => {
                     </button>
                   </div> */}
           </div>
-          <div className="w-full">
+          <div className=" w-[576px] h-[324px]">
             {filePath &&
               (Object.values(filePath).includes("Video") ||
                 Object.values(filePath).includes("OnlineVideo")) && (
                 <ReactPlayer
                   url={filePath?.assetFolderPath}
-                  className="relative z-20 min-h-80 default-media "
+                  className="relative w-[576px] h-[324px] z-20 min-h-80 default-media "
                   controls={true}
                   playing={true}
                 />
@@ -783,7 +704,7 @@ const Defaultmedia = () => {
                 <img
                   src={filePath?.assetFolderPath}
                   alt="Media"
-                  className="w-full h-60 mx-auto object-cover min-h-80"
+                  className="w-[576px] h-[324px] mx-auto object-cover min-h-80"
                 />
               )}
           </div>
@@ -846,7 +767,81 @@ const Defaultmedia = () => {
             </div>
           </>
         )} */}
+
+      {assetPreviewPopup && (
+        <div className="fixed left-1/2 top-1/4 -translate-x-1/2 w-[960px] h-[540px] bg-black z-50 inset-0">
+          {/* btn */}
+          <div className="fixed w-full h-full z-40">
+            <button
+              className="fixed cursor-pointer -top-3 -right-3 rounded-full bg-black text-white"
+              onClick={() => setAssetPreviewPopup(false)}
+            >
+              <AiOutlineCloseCircle size={30} />
+            </button>
+          </div>
+          <div className="fixed h-full w-full">
+            {assetPreview && (
+              <>
+                {assetPreview.assetType === "OnlineImage" && (
+                  <div className="imagebox p-3">
+                    <img
+                      src={assetPreview.assetFolderPath}
+                      alt={assetPreview.assetName}
+                      className="imagebox w-full h-full object-cover top-0 left-0 z-50 fixed"
+                    />
+                  </div>
+                )}
+
+                {assetPreview.assetType === "OnlineVideo" && (
+                  <div className="relative videobox">
+                    <video
+                      controls
+                      className="w-full rounded-2xl h-full"
+                    >
+                      <source
+                        src={assetPreview.assetFolderPath}
+                        type="video/mp4"
+                      />
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                )}
+                {assetPreview.assetType === "Image" && (
+                  <img
+                    src={assetPreview.assetFolderPath}
+                    alt={assetPreview.assetName}
+                    className="imagebox w-full h-full object-cover top-0 left-0 z-50 fixed"
+                  />
+                )}
+                {assetPreview.assetType === "Video" && (
+                  <video
+                    controls
+                    className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                  >
+                    <source
+                      src={assetPreview.assetFolderPath}
+                      type="video/mp4"
+                    />
+                    Your browser does not support the video tag.
+                  </video>
+                )}
+                {assetPreview.assetType === "DOC" && (
+                  <a
+                    href={assetPreview.assetFolderPath}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                  >
+                    {assetPreview.assetName}
+                  </a>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
+
   );
 };
 

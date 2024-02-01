@@ -30,7 +30,7 @@ const ShowAssetImageModal = ({
         }}
         className="inset-0 fixed bg-black/40 w-screen h-screen z-40"
       ></div>
-      <div className="fixed left-1/2 -translate-x-1/2 w-[60vw] h-[70vh] bg-lightgray top-28 z-50">
+      <div className="fixed left-1/2 top-1/4 -translate-x-1/2 w-[960px] h-[540px] bg-lightgray z-50">
         <div className="fixed w-full h-full">
           <div
             onClick={() => {

@@ -24,7 +24,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
 
   const { token } = useSelector((state) => state.root.auth);
   const { allApps } = useSelector((state) => state.root.apps);
-
+  
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -92,7 +92,7 @@ const Apps = ({ sidebarOpen, setSidebarOpen }) => {
               ) : (
                 allApps?.data.map(
                   (app) =>
-                    app.appType == "Apps" && (
+                    app.appType === "Apps" && app.appName !=="Weather" && (
                       <div
                         className="lg:col-span-2 md:col-span-5 sm:col-span-10 xs:col-span-10 "
                         key={app.app_Id}

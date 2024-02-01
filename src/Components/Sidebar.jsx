@@ -135,11 +135,11 @@ const Sidebar = ({ sidebarOpen }) => {
             <HiOutlineRectangleGroup className=" text-gray text-xl opacity-60 " />
           ),
         },
-        {
-          title: "Merge Screens",
-          path: "/mergescreen",
-          icon: <img src={merge_screen} alt="" />,
-        },
+        // {
+        //   title: "Merge Screens",
+        //   path: "/mergescreen",
+        //   icon: <img src={merge_screen} alt="" />,
+        // },
       ],
     },
     {
