@@ -344,6 +344,11 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
             macId: macids,
           };
           socket.emit("ScreenConnected", Params);
+          setTimeout(() => {
+            setSelectScreenModal(false);
+            setAddScreenModal(false);
+            FetchData();
+          }, 1000);
           if (connection.state == "Disconnected") {
             connection
               .start()
@@ -355,9 +360,9 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
                   .invoke("ScreenConnected", macids)
                   .then(() => {
                     console.log(" method invoked");
-                    setSelectScreenModal(false);
-                    setAddScreenModal(false);
-                    FetchData();
+                    // setSelectScreenModal(false);
+                    // setAddScreenModal(false);
+                    // FetchData();
                   })
                   .catch((error) => {
                     console.error("Error invoking SignalR method:", error);
@@ -368,9 +373,9 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
               .invoke("ScreenConnected", macids)
               .then(() => {
                 console.log(" method invoked");
-                setSelectScreenModal(false);
-                setAddScreenModal(false);
-                FetchData();
+                // setSelectScreenModal(false);
+                // setAddScreenModal(false);
+                // FetchData();
               })
               .catch((error) => {
                 console.error("Error invoking SignalR method:", error);

@@ -140,6 +140,9 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
           macId: compositoinDetails?.maciDs.replace(/^\s+/g, ""),
         };
         socket.emit("ScreenConnected", Params);
+        setTimeout(() => {
+          navigate("/composition");
+        }, 1000);
         if (connection.state == "Disconnected") {
           connection
             .start()
@@ -154,7 +157,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                 )
                 .then(() => {
                   console.log("invoked");
-                  navigate("/composition");
+                  // navigate("/composition");
                 })
                 .catch((error) => {
                   console.error("Error invoking SignalR method:", error);
@@ -168,7 +171,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
             )
             .then(() => {
               console.log("invoked");
-              navigate("/composition");
+              // navigate("/composition");
             })
             .catch((error) => {
               console.error("Error invoking SignalR method:", error);

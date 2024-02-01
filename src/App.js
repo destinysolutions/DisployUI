@@ -18,10 +18,12 @@ import io from "socket.io-client";
 
 // export const socket = io.connect("http://108.166.190.137:3002");
 export const socket = io.connect("https://disploysocket.thedestinysolutions.com");
+// export const socket = io.connect("http://192.168.1.117:3002");
 
 // export const socket = io.connect("http://localhost:3002");
 
 const App = () => {
+  console.log('socket', socket)
   const [timer, setTimer] = useState(0);
 
   const { user, token, loading } = useSelector((state) => state.root.auth);
@@ -120,25 +122,26 @@ const App = () => {
 
     socket.on('ScreenConnected', (data) => {
       console.log('Received data from server:', data);
-      var b = document.getElementById("changetvstatus" + data?.macId);
+      var b = document.getElementById(`changetvstatus${data.macId}`);
+      console.log('TV_Element', b)
       b.setAttribute(
         "class",
         "rounded-full px-6 py-2 text-white text-center " +
-          (data.connection == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
+          (data?.connection === true ? "bg-[#3AB700]" : "bg-[#FF0000]")
       );
-      b.textContent = data.connection == true ? "Live" : "offline";
+      b.textContent = data?.connection === true ? "Live" : "offline";
     });
 
     socket.on('SendTvStatus', (data) => {
       console.log('Received TV status from server:', data);
       // Handle TV status data if needed
-      var b = document.getElementById("changetvstatus" + data?.macId);
+      var b = document.getElementById(`changetvstatus${data?.macId}`);
       b.setAttribute(
         "class",
         "rounded-full px-6 py-2 text-white text-center " +
-          (data?.connection == true ? "bg-[#3AB700]" : "bg-[#FF0000]")
+          (data?.connection === true ? "bg-[#3AB700]" : "bg-[#FF0000]")
       );
-      b.textContent = data?.connection == true ? "Live" : "offline";
+      b.textContent = data?.connection === true ? "Live" : "offline";
       // TvStatus = data?.connection == true ? "Live" : "Offline";
 
       // If you want to disconnect after receiving TV status, uncomment the line below

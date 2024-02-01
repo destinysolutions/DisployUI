@@ -126,6 +126,9 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
           macId:  macids.replace(/^\s+/g, ""),
         };
         socket.emit("ScreenConnected", Params);
+        setTimeout(() => {
+          history("/youtube");
+        }, 1000);
         // Wrap the SignalR invocation in a Promise
         if (connection.state == "Disconnected") {
           connection
@@ -138,7 +141,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
                 .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
                 .then(() => {
                   console.log("SignalR method invoked after youtube update");
-                  history("/youtube");
+                  // history("/youtube");
                 })
                 .catch((error) => {
                   console.error("Error invoking SignalR method:", error);
@@ -149,7 +152,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
             .invoke("ScreenConnected", macids.replace(/^\s+/g, ""))
             .then(() => {
               console.log("SignalR method invoked after youtube update");
-              history("/youtube");
+              // history("/youtube");
             })
             .catch((error) => {
               console.error("Error invoking SignalR method:", error);

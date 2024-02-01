@@ -348,6 +348,23 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       macId:  MACID,
     };
     socket.emit("ScreenConnected", Params);
+    setTimeout(() => {
+      const response = dispatch(
+        handleDeleteScreenById({ screenID: screenId, token })
+      );
+      if (response) {
+        response
+          .then((res) => {
+            toast.remove();
+            toast.success("Deleted Successfully.");
+            console.log(MACID);
+          })
+          .catch((error) => {
+            toast.remove();
+            console.log(error);
+          });
+      }
+    }, 1000);
     if (connection.state == "Disconnected") {
       connection
         .start()
@@ -358,21 +375,21 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           connection
             .invoke("ScreenConnected", MACID)
             .then(() => {
-              const response = dispatch(
-                handleDeleteScreenById({ screenID: screenId, token })
-              );
-              if (response) {
-                response
-                  .then((res) => {
-                    toast.remove();
-                    toast.success("Deleted Successfully.");
-                    console.log(MACID);
-                  })
-                  .catch((error) => {
-                    toast.remove();
-                    console.log(error);
-                  });
-              }
+              // const response = dispatch(
+              //   handleDeleteScreenById({ screenID: screenId, token })
+              // );
+              // if (response) {
+              //   response
+              //     .then((res) => {
+              //       toast.remove();
+              //       toast.success("Deleted Successfully.");
+              //       console.log(MACID);
+              //     })
+              //     .catch((error) => {
+              //       toast.remove();
+              //       console.log(error);
+              //     });
+              // }
               console.log("SignalR method invoked after Asset update");
             })
             .catch((error) => {
@@ -383,21 +400,21 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       connection
         .invoke("ScreenConnected", MACID)
         .then(() => {
-          const response = dispatch(
-            handleDeleteScreenById({ screenID: screenId, token })
-          );
-          if (response) {
-            response
-              .then((res) => {
-                toast.remove();
-                toast.success("Deleted Successfully.");
-                console.log(MACID);
-              })
-              .catch((error) => {
-                toast.remove();
-                console.log(error);
-              });
-          }
+          // const response = dispatch(
+          //   handleDeleteScreenById({ screenID: screenId, token })
+          // );
+          // if (response) {
+          //   response
+          //     .then((res) => {
+          //       toast.remove();
+          //       toast.success("Deleted Successfully.");
+          //       console.log(MACID);
+          //     })
+          //     .catch((error) => {
+          //       toast.remove();
+          //       console.log(error);
+          //     });
+          // }
           console.log("SignalR method invoked after Asset update");
         })
         .catch((error) => {

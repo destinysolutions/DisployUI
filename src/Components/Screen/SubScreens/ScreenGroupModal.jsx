@@ -56,7 +56,7 @@ const ScreenGroupModal = ({
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-
+  
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };

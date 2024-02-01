@@ -27,7 +27,7 @@ import {
   handleGetYoutubeData,
 } from "../Redux/AppsSlice";
 import { useDispatch } from "react-redux";
-import socket from "../App";
+import { socket } from "../App";
 const ShowAssetModal = ({
   setShowAssetModal,
   handleAssetAdd,
@@ -374,9 +374,8 @@ const ShowAssetModal = ({
     <>
       <div className="border-0 rounded-lg shadow-lg fixed z-50 max-w-[70vw] min-w-[70vw] min-w-90vw h-auto lg:top-1/4 md:top-16 top-16 left-1/2 -translate-x-1/2 bg-white outline-none focus:outline-none ">
         <div
-          className={`${
-            showAppModal ? "hidden" : ""
-          } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
+          className={`${showAppModal ? "hidden" : ""
+            } flex items-start justify-between p-4 px-6 border-b border-slate-200 rounded-t text-black`}
         >
           <h3 className="lg:text-xl md:text-lg sm:text-base xs:text-sm font-medium">
             Set Content to Add Media
@@ -393,9 +392,8 @@ const ShowAssetModal = ({
         </div>
         <div
           onClick={() => assetPreviewPopup && setAssetPreviewPopup(false)}
-          className={`${
-            showAppModal ? "hidden" : ""
-          } relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
+          className={`${showAppModal ? "hidden" : ""
+            } relative lg:p-6 md:p-6 sm:p-2 xs:p-1 w-full flex items-start gap-2 bg-white rounded-2xl`}
         >
           <div className="lg:flex lg:flex-wrap lg:items-center  w-full md:flex md:flex-wrap md:items-center sm:block xs:block">
             <div className="flex-initial mb-5">
@@ -409,17 +407,15 @@ const ShowAssetModal = ({
                   >
                     <button
                       type="button"
-                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                        popupActiveTab === 1 ? "active" : ""
-                      }`}
+                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 1 ? "active" : ""
+                        }`}
                       onClick={() => setPopupActiveTab(1)}
                     >
                       <span
-                        className={`p-1 rounded ${
-                          popupActiveTab === 1
+                        className={`p-1 rounded ${popupActiveTab === 1
                             ? "bg-primary text-white"
                             : "bg-lightgray"
-                        } `}
+                          } `}
                       >
                         <IoBarChartSharp size={15} />
                       </span>
@@ -428,17 +424,15 @@ const ShowAssetModal = ({
 
                     <button
                       type="button"
-                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                        popupActiveTab === 2 ? "active" : ""
-                      }`}
+                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 2 ? "active" : ""
+                        }`}
                       onClick={() => setPopupActiveTab(2)}
                     >
                       <span
-                        className={`p-1 rounded ${
-                          popupActiveTab === 2
+                        className={`p-1 rounded ${popupActiveTab === 2
                             ? "bg-primary text-white"
                             : "bg-lightgray"
-                        } `}
+                          } `}
                       >
                         <RiPlayListFill size={15} />
                       </span>
@@ -466,17 +460,15 @@ const ShowAssetModal = ({
                       </button> */}
                     <button
                       type="button"
-                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${
-                        popupActiveTab === 3 ? "active" : ""
-                      }`}
+                      className={`inline-flex items-center gap-2 t text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 mediactivetab ${popupActiveTab === 3 ? "active" : ""
+                        }`}
                       onClick={() => setPopupActiveTab(3)}
                     >
                       <span
-                        className={`p-1 rounded ${
-                          popupActiveTab === 3
+                        className={`p-1 rounded ${popupActiveTab === 3
                             ? "bg-primary text-white"
                             : "bg-lightgray"
-                        } `}
+                          } `}
                       >
                         <AiOutlineAppstoreAdd size={15} />
                       </span>
@@ -558,12 +550,11 @@ const ShowAssetModal = ({
                           .map((asset) => (
                             <tr
                               key={asset.assetID}
-                              className={`${
-                                selectedAsset?.assetID === asset?.assetID ||
-                                selectedAsset === asset?.assetName
+                              className={`${selectedAsset?.assetID === asset?.assetID ||
+                                  selectedAsset === asset?.assetName
                                   ? "bg-[#f3c953]"
                                   : ""
-                              } border-b border-[#eee] cursor-pointer `}
+                                } border-b border-[#eee] cursor-pointer `}
                               onClick={() => {
                                 handleAssetAdd(asset);
                                 setAssetPreviewPopup(true);
@@ -644,8 +635,8 @@ const ShowAssetModal = ({
                       </tr>
                     )}
                     {!loading &&
-                    compostionAllData &&
-                    compostionAllData.length === 0 ? (
+                      compostionAllData &&
+                      compostionAllData.length === 0 ? (
                       <tr>
                         <td
                           className="font-semibold text-center bg-white text-lg"
@@ -659,11 +650,10 @@ const ShowAssetModal = ({
                       compostionAllData.map((composition) => (
                         <tbody key={composition.compositionID}>
                           <tr
-                            className={`${
-                              selectedComposition === composition
+                            className={`${selectedComposition === composition
                                 ? "bg-[#f3c953]"
                                 : ""
-                            } border-b border-[#eee] `}
+                              } border-b border-[#eee] `}
                             onClick={() => {
                               setSelectedComposition(composition);
                               handleAssetAdd("");
@@ -746,12 +736,11 @@ const ShowAssetModal = ({
                       appsData.map((instance, index) => (
                         <tbody key={index}>
                           <tr
-                            className={`${
-                              selectedTextScroll === instance ||
-                              selectedYoutube === instance
+                            className={`${selectedTextScroll === instance ||
+                                selectedYoutube === instance
                                 ? "bg-[#f3c953]"
                                 : ""
-                            } border-b border-[#eee] `}
+                              } border-b border-[#eee] `}
                             onClick={() => {
                               handleAppsAdd(instance);
                               handleAssetAdd("");
@@ -793,9 +782,8 @@ const ShowAssetModal = ({
         </div>
 
         <div
-          className={`${
-            showAppModal ? "hidden" : ""
-          } flex justify-between items-center pl-5 pr-5 pb-4`}
+          className={`${showAppModal ? "hidden" : ""
+            } flex justify-between items-center pl-5 pr-5 pb-4`}
         >
           <p className="text-black">Content will always be playing Confirm</p>
           <button

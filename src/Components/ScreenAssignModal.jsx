@@ -7,7 +7,7 @@ import { handleGetScreen } from "../Redux/Screenslice";
 import { connection } from "../SignalR";
 import toast from "react-hot-toast";
 import moment from "moment";
-import socket from "../App"
+import { socket } from "../App"
 const ScreenAssignModal = ({
   setAddScreenModal,
   setSelectScreenModal,
@@ -26,14 +26,13 @@ const ScreenAssignModal = ({
   const [screenData, setScreenData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [screenMacID, setScreenMacID] = useState("");
-
+  
   const selectScreenRef = useRef(null);
 
   const selectedScreenMacIdsString = Array.isArray(screenMacID)
     ? screenMacID.join(",")
     : "";
 
-  console.log(selectedScreenMacIdsString);
 
   const signalROnSave = () => {
     toast.loading("Saving...");
@@ -159,15 +158,20 @@ const ScreenAssignModal = ({
           const fetchedData = response.data.data;
           setScreenData(fetchedData);
           setLoading(false);
-          const initialCheckboxes = {};
+          let initialCheckboxes = {};
+          let selectmacId = []
           if (Array.isArray(fetchedData)) {
             fetchedData.forEach((screen) => {
-              initialCheckboxes[screen.screenID] = selectedScreens?.includes(
+              if (selectedScreens?.includes(
                 screen.screenID
-              )
-                ? true
-                : false;
+              )) {
+                initialCheckboxes[screen.screenID] = true
+                selectmacId?.push(screen?.macid)
+              } else {
+                initialCheckboxes[screen.screenID] = false
+              }
             });
+            setScreenMacID(selectmacId)
             setScreenCheckboxes(initialCheckboxes);
           }
         })
@@ -340,12 +344,11 @@ const ScreenAssignModal = ({
 
                         <td className="text-center">
                           <span
-                            id={`changetvstatus${screen.macid}`}
-                            className={`rounded-full px-6 py-2 text-white text-center ${
-                              screen.screenStatus == 1
+                            id={`changetvstatus${screen?.macid}`}
+                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
                                 ? "bg-[#3AB700]"
                                 : "bg-[#FF0000]"
-                            }`}
+                              }`}
                           >
                             {screen.screenStatus == 1 ? "Live" : "offline"}
                           </span>
@@ -364,24 +367,24 @@ const ScreenAssignModal = ({
                         <td className="text-center break-words">
                           {screen?.tags !== null
                             ? screen?.tags
-                                .split(",")
-                                .slice(
-                                  0,
-                                  screen?.tags.split(",").length > 2
-                                    ? 3
-                                    : screen?.tags.split(",").length
-                                )
-                                .map((text) => {
-                                  if (text.toString().length > 10) {
-                                    return text
-                                      .split("")
-                                      .slice(0, 10)
-                                      .concat("...")
-                                      .join("");
-                                  }
-                                  return text;
-                                })
-                                .join(",")
+                              .split(",")
+                              .slice(
+                                0,
+                                screen?.tags.split(",").length > 2
+                                  ? 3
+                                  : screen?.tags.split(",").length
+                              )
+                              .map((text) => {
+                                if (text.toString().length > 10) {
+                                  return text
+                                    .split("")
+                                    .slice(0, 10)
+                                    .concat("...")
+                                    .join("");
+                                }
+                                return text;
+                              })
+                              .join(",")
                             : ""}
                         </td>
                       </tr>
@@ -407,7 +410,7 @@ const ScreenAssignModal = ({
                 );
                 setSelectedScreens([]);
               }}
-              // disabled={selectedScreens?.length === 0}
+            // disabled={selectedScreens?.length === 0}
             >
               Save
             </button>

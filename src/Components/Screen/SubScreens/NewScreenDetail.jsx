@@ -245,6 +245,12 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       macId: otpData[0]?.MACID,
     };
     socket.emit("ScreenConnected", Params);
+    setTimeout(() => {
+      setShowAssetModal(false);
+      setSearchAsset("");
+      setSelectedAsset(assetPreview);
+      setShowAssestOptionsPopup(false);
+    }, 1000);
     // let config = {
     //   method: 'put',
     //   maxBodyLength: Infinity,
@@ -269,20 +275,20 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
             connection.invoke("ScreenConnected", otpData[0]?.MACID).then(() => {
               console.log("invoked");
               console.log("Message sent:", otpData[0]?.MACID);
-              setShowAssetModal(false);
-              setSearchAsset("");
-              setSelectedAsset(assetPreview);
-              setShowAssestOptionsPopup(false);
+              // setShowAssetModal(false);
+              // setSearchAsset("");
+              // setSelectedAsset(assetPreview);
+              // setShowAssestOptionsPopup(false);
             });
           });
       } else {
         connection.invoke("ScreenConnected", otpData[0]?.MACID).then(() => {
           console.log("invoked");
           console.log("Message sent:", otpData[0]?.MACID);
-          setShowAssetModal(false);
-          setSearchAsset("");
-          setSelectedAsset(assetPreview);
-          setShowAssestOptionsPopup(false);
+          // setShowAssetModal(false);
+          // setSearchAsset("");
+          // setSelectedAsset(assetPreview);
+          // setShowAssestOptionsPopup(false);
         });
       }
     } catch (error) {
@@ -678,6 +684,25 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
       macId: otpData[0]?.MACID,
     };
     socket.emit("ScreenConnected", Params);
+    setTimeout(() => {
+      const response = dispatch(
+        handleUpdateScreenAsset({
+          mediaName,
+          dataToUpdate: data,
+          token,
+        })
+      );
+      if (!response) return;
+      response
+        .then((response) => {
+          toast.remove();
+          toast.success("Media Updated.");
+        })
+        .catch((error) => {
+          toast.remove();
+          console.log(error);
+        });
+    }, 1000);
     if (connection.state == "Disconnected") {
       connection
         .start()
@@ -689,23 +714,23 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
             .invoke("ScreenConnected")
             .then(() => {
               console.log("SignalR method invoked after Asset update");
-              const response = dispatch(
-                handleUpdateScreenAsset({
-                  mediaName,
-                  dataToUpdate: data,
-                  token,
-                })
-              );
-              if (!response) return;
-              response
-                .then((response) => {
-                  toast.remove();
-                  toast.success("Media Updated.");
-                })
-                .catch((error) => {
-                  toast.remove();
-                  console.log(error);
-                });
+              // const response = dispatch(
+              //   handleUpdateScreenAsset({
+              //     mediaName,
+              //     dataToUpdate: data,
+              //     token,
+              //   })
+              // );
+              // if (!response) return;
+              // response
+              //   .then((response) => {
+              //     toast.remove();
+              //     toast.success("Media Updated.");
+              //   })
+              //   .catch((error) => {
+              //     toast.remove();
+              //     console.log(error);
+              //   });
             })
             .catch((error) => {
               toast.remove();
@@ -717,19 +742,19 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
         .invoke("ScreenConnected")
         .then(() => {
           console.log("SignalR method invoked after Asset update");
-          const response = dispatch(
-            handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
-          );
-          if (!response) return;
-          response
-            .then((response) => {
-              toast.remove();
-              toast.success("Media Updated.");
-            })
-            .catch((error) => {
-              toast.remove();
-              console.log(error);
-            });
+          // const response = dispatch(
+          //   handleUpdateScreenAsset({ mediaName, dataToUpdate: data, token })
+          // );
+          // if (!response) return;
+          // response
+          //   .then((response) => {
+          //     toast.remove();
+          //     toast.success("Media Updated.");
+          //   })
+          //   .catch((error) => {
+          //     toast.remove();
+          //     console.log(error);
+          //   });
         })
         .catch((error) => {
           toast.remove();

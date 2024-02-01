@@ -112,6 +112,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
             macId:  macids,
           };
           socket.emit("ScreenConnected", Params);
+          setTimeout(() => {
+            setSelectScreenModal(false);
+            setAddScreenModal(false);
+          }, 1000);
           if (connection.state == "Disconnected") {
             connection
               .start()
@@ -123,8 +127,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   .invoke("ScreenConnected", macids)
                   .then(() => {
                     console.log(" method invoked");
-                    setSelectScreenModal(false);
-                    setAddScreenModal(false);
+                    // setSelectScreenModal(false);
+                    // setAddScreenModal(false);
                   })
                   .catch((error) => {
                     console.error("Error invoking SignalR method:", error);
@@ -135,8 +139,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               .invoke("ScreenConnected", macids)
               .then(() => {
                 console.log(" method invoked");
-                setSelectScreenModal(false);
-                setAddScreenModal(false);
+                // setSelectScreenModal(false);
+                // setAddScreenModal(false);
               })
               .catch((error) => {
                 console.error("Error invoking SignalR method:", error);

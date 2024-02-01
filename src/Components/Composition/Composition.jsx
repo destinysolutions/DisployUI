@@ -206,10 +206,10 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       const Params = {
         id: socket.id,
         connection: socket.connected,
-        macId:  compositionData
-        ?.map((item) => item?.maciDs)
-        .join(",")
-        .replace(/^\s+/g, ""),
+        macId: compositionData
+          ?.map((item) => item?.maciDs)
+          .join(",")
+          .replace(/^\s+/g, ""),
       };
       socket.emit("ScreenConnected", Params);
       if (connection.state == "Disconnected") {
@@ -405,12 +405,27 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response.data.status == 200) {
           try {
-            const Params = {
-              id: socket.id,
-              connection: socket.connected,
-              macId: macids,
-            };
-            socket.emit("ScreenConnected", Params);
+            if (macids?.includes(",")) {
+              let allMacIDs = macids?.split(",");
+              allMacIDs?.map((item) => {
+                let Params = {
+                  id: socket.id,
+                  connection: socket.connected,
+                  macId: item,
+                };
+                socket.emit("ScreenConnected", Params);
+                loadComposition();
+
+              })
+            } else {
+              const Params = {
+                id: socket.id,
+                connection: socket.connected,
+                macId: macids,
+              };
+              socket.emit("ScreenConnected", Params);
+              loadComposition();
+            }
             // Invoke ScreenConnected method
             if (connection.state == "Disconnected") {
               connection
@@ -423,7 +438,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                     .invoke("ScreenConnected", macids)
                     .then(() => {
                       console.log("func. invoked");
-                      toast.remove();
                       loadComposition();
                     })
                     .catch((err) => {
@@ -437,7 +451,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                 .invoke("ScreenConnected", macids)
                 .then(() => {
                   console.log("func. invoked");
-                  toast.remove();
+                  // toast.remove();
                   loadComposition();
                 })
                 .catch((err) => {
@@ -451,9 +465,12 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
             toast.error("Something went wrong, try again");
             toast.remove();
           }
-          setSelectScreenModal(false);
-          setAddScreenModal(false);
-          loadComposition();
+          setTimeout(() => {
+            toast.remove();
+            setSelectScreenModal(false);
+            setAddScreenModal(false);
+            loadComposition();
+          }, 1000);
           toast.remove();
         }
       })
@@ -777,48 +794,48 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="flex items-center justify-center w-full flex-wrap gap-2 text-[#5E5E5E]">
                                   {(composition?.tags === "" ||
                                     composition?.tags === null) && (
-                                    <span>
-                                      <AiOutlinePlusCircle
-                                        size={30}
-                                        className="mx-auto cursor-pointer"
-                                        onClick={() => {
-                                          setShowTagModal(true);
-                                          composition?.tags === "" ||
-                                          composition?.tags === null
-                                            ? setTags([])
-                                            : setTags(
+                                      <span>
+                                        <AiOutlinePlusCircle
+                                          size={30}
+                                          className="mx-auto cursor-pointer"
+                                          onClick={() => {
+                                            setShowTagModal(true);
+                                            composition?.tags === "" ||
+                                              composition?.tags === null
+                                              ? setTags([])
+                                              : setTags(
                                                 composition?.tags?.split(",")
                                               );
-                                          handleFetchCompositionById(
-                                            composition?.compositionID,
-                                            "tags"
-                                          );
-                                        }}
-                                      />
-                                    </span>
-                                  )}
+                                            handleFetchCompositionById(
+                                              composition?.compositionID,
+                                              "tags"
+                                            );
+                                          }}
+                                        />
+                                      </span>
+                                    )}
                                   {composition?.tags !== null
                                     ? composition?.tags
-                                        .split(",")
-                                        .slice(
-                                          0,
-                                          composition?.tags.split(",").length >
-                                            2
-                                            ? 3
-                                            : composition?.tags.split(",")
-                                                .length
-                                        )
-                                        .map((text) => {
-                                          if (text.toString().length > 10) {
-                                            return text
-                                              .split("")
-                                              .slice(0, 10)
-                                              .concat("...")
-                                              .join("");
-                                          }
-                                          return text;
-                                        })
-                                        .join(",")
+                                      .split(",")
+                                      .slice(
+                                        0,
+                                        composition?.tags.split(",").length >
+                                          2
+                                          ? 3
+                                          : composition?.tags.split(",")
+                                            .length
+                                      )
+                                      .map((text) => {
+                                        if (text.toString().length > 10) {
+                                          return text
+                                            .split("")
+                                            .slice(0, 10)
+                                            .concat("...")
+                                            .join("");
+                                        }
+                                        return text;
+                                      })
+                                      .join(",")
                                     : ""}
                                   {composition?.tags !== "" &&
                                     composition?.tags !== null && (
@@ -826,11 +843,11 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                                         onClick={() => {
                                           setShowTagModal(true);
                                           composition?.tags === "" ||
-                                          composition?.tags === null
+                                            composition?.tags === null
                                             ? setTags([])
                                             : setTags(
-                                                composition?.tags?.split(",")
-                                              );
+                                              composition?.tags?.split(",")
+                                            );
                                           handleFetchCompositionById(
                                             composition?.compositionID,
                                             "tags"

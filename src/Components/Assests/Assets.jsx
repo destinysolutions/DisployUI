@@ -108,7 +108,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         Authorization: authToken,
       },
     };
-    
+
     axios
       .request(config)
       .then((response) => {
@@ -116,9 +116,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           const Params = {
             id: socket.id,
             connection: socket.connected,
-            macId:  macids,
+            macId: macids,
           };
           socket.emit("ScreenConnected", Params);
+          setTimeout(() => {
+            setSelectScreenModal(false);
+            setAddScreenModal(false);
+            setLoadFist(true)
+          }, 1000);
           if (connection.state == "Disconnected") {
             connection
               .start()
@@ -130,8 +135,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   .invoke("ScreenConnected", macids)
                   .then(() => {
                     console.log(" method invoked");
-                    setSelectScreenModal(false);
-                    setAddScreenModal(false);
+                    // setSelectScreenModal(false);
+                    // setAddScreenModal(false);
+                    // setLoadFist(true)
                   })
                   .catch((error) => {
                     console.error("Error invoking SignalR method:", error);
@@ -142,8 +148,9 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
               .invoke("ScreenConnected", macids)
               .then(() => {
                 console.log(" method invoked");
-                setSelectScreenModal(false);
-                setAddScreenModal(false);
+                // setSelectScreenModal(false);
+                // setAddScreenModal(false);
+                // setLoadFist(true)
               })
               .catch((error) => {
                 console.error("Error invoking SignalR method:", error);
@@ -781,21 +788,21 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               onClick={() => navigateToFolder(item.assetID)}
                             />
                             {editMode === item.assetID ? (
-                             <input
-                             type="text"
-                             value={folderName}
-                             className="w-full"
-                             onChange={(e) =>
-                               setFolderName(e.target.value)
-                             }
-                             onBlur={() => {
-                               setEditMode(null);
-                             }}
-                             onKeyDown={(e) =>
-                               handleKeyDown(e, item.assetID, index)
-                             }
-                             autoFocus
-                           />
+                              <input
+                                type="text"
+                                value={folderName}
+                                className="w-full"
+                                onChange={(e) =>
+                                  setFolderName(e.target.value)
+                                }
+                                onBlur={() => {
+                                  setEditMode(null);
+                                }}
+                                onKeyDown={(e) =>
+                                  handleKeyDown(e, item.assetID, index)
+                                }
+                                autoFocus
+                              />
                             ) : (
                               <>
                                 <span
@@ -1028,7 +1035,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                         <div className="move-to-dropdown">
                                           <ul className="space-y-3">
                                             {folderElements &&
-                                            folderElements?.length > 0 ? (
+                                              folderElements?.length > 0 ? (
                                               folderElements?.map((folder) => {
                                                 return (
                                                   <li
@@ -1098,8 +1105,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   <div className="text-center font-semibold text-2xl col-span-full">
                     {!loadFist && store?.data?.length === 0 && (
                       <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
-                      No Data Available
-                    </span>
+                        No Data Available
+                      </span>
                     )}
                     {loadFist && (
                       <>

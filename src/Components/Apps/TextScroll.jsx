@@ -93,6 +93,12 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
             macId: macids,
           };
           socket.emit("ScreenConnected", Params);
+          setTimeout(() => {
+            toast.remove();
+            setSelectScreenModal(false);
+            setAddScreenModal(false);
+            FetchData();
+          }, 1000);
           if (connection.state == "Disconnected") {
             connection
               .start()
@@ -104,9 +110,9 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                   .invoke("ScreenConnected", macids)
                   .then(() => {
                     console.log(" method invoked");
-                    setSelectScreenModal(false);
-                    setAddScreenModal(false);
-                    FetchData();
+                    // setSelectScreenModal(false);
+                    // setAddScreenModal(false);
+                    // FetchData();
                   })
                   .catch((error) => {
                     console.error("Error invoking SignalR method:", error);
@@ -117,9 +123,9 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
               .invoke("ScreenConnected", macids)
               .then(() => {
                 console.log(" method invoked");
-                setSelectScreenModal(false);
-                setAddScreenModal(false);
-                FetchData();
+                // setSelectScreenModal(false);
+                // setAddScreenModal(false);
+                // FetchData();
               })
               .catch((error) => {
                 console.error("Error invoking SignalR method:", error);
