@@ -135,9 +135,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
   );
   const paginatedData = mergeData
     ? mergeData?.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-      )
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    )
     : [];
 
   const handlePageChange = (pageNumber) => {
@@ -148,10 +148,10 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     const Params = {
       id: socket.id,
       connection: socket.connected,
-      macId:  store?.data
-      ?.map((item) => item?.maciDs)
-      .join(",")
-      .replace(/^\s+/g, ""),
+      macId: store?.data
+        ?.map((item) => item?.maciDs)
+        .join(",")
+        .replace(/^\s+/g, ""),
     };
     socket.emit("ScreenConnected", Params);
     if (connection.state === "Disconnected") {
@@ -239,7 +239,7 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  const handleAssetUpdate = () => {};
+  const handleAssetUpdate = () => { };
 
   const editMergeScreenName = (index) => {
     // mergeNameUpdate
@@ -719,18 +719,17 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                         {screen.screenName}
                                       </td>
                                       <td className="p-2 text-center">
-                                      <span
-                                      id={`changetvstatus${screen.MacID}`}
-                                      className={`rounded-full px-6 py-2 text-white text-center ${
-                                        screen.screenStatus == 1
-                                          ? "bg-[#3AB700]"
-                                          : "bg-[#FF0000]"
-                                      }`}
-                                    >
-                                      {screen.screenStatus == 1
-                                        ? "Live"
-                                        : "offline"}
-                                    </span>
+                                        <span
+                                          id={`changetvstatus${screen.MacID}`}
+                                          className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                              ? "bg-[#3AB700]"
+                                              : "bg-[#FF0000]"
+                                            }`}
+                                        >
+                                          {screen.screenStatus == 1
+                                            ? "Live"
+                                            : "offline"}
+                                        </span>
                                       </td>
                                       <td className="p-2 text-center">
                                         {moment(screen?.updatedDate).format(
@@ -739,7 +738,9 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                       </td>
                                       <td className="p-2 text-center">
                                         <button className="flex items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500">
-                                          {screen.assetName}
+                                          <p className="line-clamp-3">
+                                            {screen.assetName}
+                                          </p>
                                           <AiOutlineCloudUpload className="ml-2 text-3xl" />
                                         </button>
                                       </td>
@@ -752,47 +753,47 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                       >
                                         {(screen?.tags === "" ||
                                           screen?.tags === null) && (
-                                          <span>
-                                            <AiOutlinePlusCircle
-                                              size={30}
-                                              className="mx-auto cursor-pointer"
-                                              onClick={() => {
-                                                setShowTagModal(true);
-                                                screen.tags === "" ||
-                                                screen?.tags === null
-                                                  ? setTags([])
-                                                  : setTags(
+                                            <span>
+                                              <AiOutlinePlusCircle
+                                                size={30}
+                                                className="mx-auto cursor-pointer"
+                                                onClick={() => {
+                                                  setShowTagModal(true);
+                                                  screen.tags === "" ||
+                                                    screen?.tags === null
+                                                    ? setTags([])
+                                                    : setTags(
                                                       screen?.tags?.split(",")
                                                     );
-                                                setTagUpdateScreeen(screen);
-                                              }}
-                                            />
-                                          </span>
-                                        )}
+                                                  setTagUpdateScreeen(screen);
+                                                }}
+                                              />
+                                            </span>
+                                          )}
                                         {screen?.tags !== null
                                           ? screen.tags
-                                              ?.split(",")
-                                              .slice(
-                                                0,
-                                                screen.tags?.split(",").length >
-                                                  2
-                                                  ? 3
-                                                  : screen.tags?.split(",")
-                                                      .length
-                                              )
-                                              .map((text) => {
-                                                if (
-                                                  text.toString().length > 10
-                                                ) {
-                                                  return text
-                                                    .split("")
-                                                    .slice(0, 10)
-                                                    .concat("...")
-                                                    .join("");
-                                                }
-                                                return text;
-                                              })
-                                              .join(",")
+                                            ?.split(",")
+                                            .slice(
+                                              0,
+                                              screen.tags?.split(",").length >
+                                                2
+                                                ? 3
+                                                : screen.tags?.split(",")
+                                                  .length
+                                            )
+                                            .map((text) => {
+                                              if (
+                                                text.toString().length > 10
+                                              ) {
+                                                return text
+                                                  .split("")
+                                                  .slice(0, 10)
+                                                  .concat("...")
+                                                  .join("");
+                                              }
+                                              return text;
+                                            })
+                                            .join(",")
                                           : ""}
                                         {screen?.tags !== "" &&
                                           screen?.tags !== null && (
@@ -800,11 +801,11 @@ const MergeScreen = ({ sidebarOpen, setSidebarOpen }) => {
                                               onClick={() => {
                                                 setShowTagModal(true);
                                                 screen.tags === "" ||
-                                                screen?.tags === null
+                                                  screen?.tags === null
                                                   ? setTags([])
                                                   : setTags(
-                                                      screen?.tags?.split(",")
-                                                    );
+                                                    screen?.tags?.split(",")
+                                                  );
                                                 setTagUpdateScreeen(screen);
                                               }}
                                               className="mx-auto  w-5 h-5 cursor-pointer "

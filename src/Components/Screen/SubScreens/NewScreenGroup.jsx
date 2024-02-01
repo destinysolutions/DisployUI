@@ -141,9 +141,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   );
   const paginatedData = allGroupScreen
     ? allGroupScreen.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-      )
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+    )
     : [];
 
   const handlePageChange = (pageNumber) => {
@@ -156,12 +156,12 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       .join(",")
       .replace(/^\s+/g, "");
 
-      const Params = {
-        id: socket.id,
-        connection: socket.connected,
-        macId:  macIds,
-      };
-      socket.emit("ScreenConnected", Params);
+    const Params = {
+      id: socket.id,
+      connection: socket.connected,
+      macId: macIds,
+    };
+    socket.emit("ScreenConnected", Params);
 
     console.log("macIds:", macIds);
     if (connection.state === "Disconnected") {
@@ -251,7 +251,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
     setSelectedTextScroll(apps);
   };
 
-  const handleAssetUpdate = () => {};
+  const handleAssetUpdate = () => { };
 
   const editGroupName = (index) => {
     // GroupNameUpdate
@@ -869,20 +869,19 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                     <td className="flex items-center">
                                       {screen.screenName}
                                     </td>
-                                    
+
                                     <td className="p-2 text-center">
-                                    <span
-                                      id={`changetvstatus${screen.MacID}`}
-                                      className={`rounded-full px-6 py-2 text-white text-center ${
-                                        screen.screenStatus == 1
-                                          ? "bg-[#3AB700]"
-                                          : "bg-[#FF0000]"
-                                      }`}
-                                    >
-                                      {screen.screenStatus == 1
-                                        ? "Live"
-                                        : "offline"}
-                                    </span>
+                                      <span
+                                        id={`changetvstatus${screen.MacID}`}
+                                        className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                            ? "bg-[#3AB700]"
+                                            : "bg-[#FF0000]"
+                                          }`}
+                                      >
+                                        {screen.screenStatus == 1
+                                          ? "Live"
+                                          : "offline"}
+                                      </span>
                                     </td>
                                     <td className="p-2 text-center">
                                       {moment(screen?.updatedDate).format(
@@ -891,7 +890,9 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                     </td>
                                     <td className="p-2 text-center">
                                       <button className="flex items-center border-gray bg-lightgray border rounded-full lg:px-3 sm:px-1 xs:px-1 py-1 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto hover:bg-primary-500">
-                                        {screen.assetName}
+                                        <p className="line-clamp-3">
+                                          {screen.assetName}
+                                        </p>
                                         <AiOutlineCloudUpload className="ml-2 text-3xl" />
                                       </button>
                                     </td>
@@ -904,43 +905,43 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                     >
                                       {(screen?.tags === "" ||
                                         screen?.tags === null) && (
-                                        <span>
-                                          <AiOutlinePlusCircle
-                                            size={30}
-                                            className="mx-auto cursor-pointer"
-                                            onClick={() => {
-                                              setShowTagModal(true);
-                                              screen.tags === "" ||
-                                              screen?.tags === null
-                                                ? setTags([])
-                                                : setTags(
+                                          <span>
+                                            <AiOutlinePlusCircle
+                                              size={30}
+                                              className="mx-auto cursor-pointer"
+                                              onClick={() => {
+                                                setShowTagModal(true);
+                                                screen.tags === "" ||
+                                                  screen?.tags === null
+                                                  ? setTags([])
+                                                  : setTags(
                                                     screen?.tags?.split(",")
                                                   );
-                                              setTagUpdateScreeen(screen);
-                                            }}
-                                          />
-                                        </span>
-                                      )}
+                                                setTagUpdateScreeen(screen);
+                                              }}
+                                            />
+                                          </span>
+                                        )}
                                       {screen?.tags !== null
                                         ? screen.tags
-                                            .split(",")
-                                            .slice(
-                                              0,
-                                              screen.tags.split(",").length > 2
-                                                ? 3
-                                                : screen.tags.split(",").length
-                                            )
-                                            .map((text) => {
-                                              if (text.toString().length > 10) {
-                                                return text
-                                                  .split("")
-                                                  .slice(0, 10)
-                                                  .concat("...")
-                                                  .join("");
-                                              }
-                                              return text;
-                                            })
-                                            .join(",")
+                                          .split(",")
+                                          .slice(
+                                            0,
+                                            screen.tags.split(",").length > 2
+                                              ? 3
+                                              : screen.tags.split(",").length
+                                          )
+                                          .map((text) => {
+                                            if (text.toString().length > 10) {
+                                              return text
+                                                .split("")
+                                                .slice(0, 10)
+                                                .concat("...")
+                                                .join("");
+                                            }
+                                            return text;
+                                          })
+                                          .join(",")
                                         : ""}
                                       {screen?.tags !== "" &&
                                         screen?.tags !== null && (
@@ -948,11 +949,11 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                             onClick={() => {
                                               setShowTagModal(true);
                                               screen.tags === "" ||
-                                              screen?.tags === null
+                                                screen?.tags === null
                                                 ? setTags([])
                                                 : setTags(
-                                                    screen?.tags?.split(",")
-                                                  );
+                                                  screen?.tags?.split(",")
+                                                );
                                               setTagUpdateScreeen(screen);
                                             }}
                                             className="mx-auto  w-5 h-5 cursor-pointer "
