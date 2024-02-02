@@ -432,6 +432,12 @@ const FileUpload = ({ sidebarOpen, setSidebarOpen, onUpload }) => {
         mimeType,
       })
     );
+    if (window.history.length == 1) {
+      localStorage.setItem("isWindowClosed", "true");
+      window.close();
+    } else {
+      navigate(-1);
+    }
   };
 
   useEffect(() => {

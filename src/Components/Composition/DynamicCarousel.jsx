@@ -5,7 +5,7 @@ const Carousel = ({ items, compositonData, from }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    console.log("items",items);
+    console.log("items", items);
     const slideCount = items.length;
     let interval;
     if (from === "screen") {
@@ -26,6 +26,23 @@ const Carousel = ({ items, compositonData, from }) => {
     <>
       <div className="h-full w-full p-1 bg-white">
         {items?.map((item, index) => {
+          console.log('item', item)
+          let viewerSrc = '';
+
+          if (item?.fileExtention === '.pdf' || item?.fileExtention === '.txt') {
+            viewerSrc = item?.assetFolderPath ? item?.assetFolderPath : item?.fileType;
+          } else if (item?.fileExtention === '.csv') {
+            viewerSrc = `https://docs.google.com/gview?url=${item?.assetFolderPath ? item?.assetFolderPath : item?.fileType}&embedded=true`;
+          } else if (
+            item?.fileExtention === '.pptx' ||
+            item?.fileExtention === '.ppt' ||
+            item?.fileExtention === '.docx' ||
+            item?.fileExtention === '.doc' ||
+            item?.fileExtention === '.xlsx' ||
+            item?.fileExtention === '.xls'
+          ) {
+            viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${item?.assetFolderPath ? item?.assetFolderPath : item?.fileType}`;
+          }
           if (currentIndex === index) {
             return (
               <div
@@ -49,78 +66,72 @@ const Carousel = ({ items, compositonData, from }) => {
                   <img
                     src={item.assetFolderPath}
                     alt={item.assetName}
-                    className={`w-full h-full ${
-                      item.assetType !== "Image" && "hidden"
-                    } rounded-sm object-fill`}
+                    className={`w-full h-full ${item.assetType !== "Image" && "hidden"
+                      } rounded-sm object-fill`}
                   />
                 )}
                 {item.mediaType === "Image" && (
                   <img
                     src={item.fileType}
-                    className={`w-full h-full ${
-                      !item.fileType && "hidden"
-                    } rounded-sm object-fill`}
+                    className={`w-full h-full ${!item.fileType && "hidden"
+                      } rounded-sm object-fill`}
                   />
                 )}
                 {(item?.assetType === "Video" ||
                   item?.assetType === "Youtube" ||
                   item?.assetType === "OnlineVideo") && (
-                  <ReactPlayer
-                    url={item?.assetFolderPath}
-                    className="w-full relative z-20 videoinner object-fill"
-                    controls={true}
-                    playing={true}
-                    loop={true}
-                  />
-                )}
+                    <ReactPlayer
+                      url={item?.assetFolderPath}
+                      className="w-full relative z-20 videoinner object-fill"
+                      controls={true}
+                      playing={true}
+                      loop={true}
+                    />
+                  )}
                 {(item.mediaType === "Video" ||
                   item.mediaType === "Youtube") && (
-                  <ReactPlayer
-                    url={
-                      item?.assetFolderPath
-                        ? item?.assetFolderPath
-                        : item?.fileType
-                    }
-                    className="w-full relative z-20 videoinner"
-                    controls={true}
-                    loop={true}
-                    playing={true}
-                  />
-                )}
+                    <ReactPlayer
+                      url={
+                        item?.assetFolderPath
+                          ? item?.assetFolderPath
+                          : item?.fileType
+                      }
+                      className="w-full relative z-20 videoinner"
+                      controls={true}
+                      loop={true}
+                      playing={true}
+                    />
+                  )}
                 {item.assetType === "DOC" && (
-                  <a
-                    href={item.assetFolderPath}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {item.assetName}
-                  </a>
+                  <iframe
+                    // className='w-[768px] h-[432px]'
+                    title="Document Viewer"
+                    src={viewerSrc}
+                  ></iframe>
                 )}
                 {item.mediaType === "DOC" && (
-                  <a
-                    href={item.fileType}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {item.assetName}
-                  </a>
+                  <iframe
+                    // className='w-[768px] h-[432px]'
+                    title="Document Viewer"
+                    src={viewerSrc}
+                  ></iframe>
                 )}
                 {(item?.assetType === "Text" ||
                   item?.mediaType === "Text" ||
                   item?.text !== undefined) && (
-                  <marquee
-                    className="text-3xl w-full h-full flex items-center text-black"
-                    direction={
-                      item?.scrollType == 1 ||
-                      item?.direction == "Left to Right"
-                        ? "right"
-                        : "left"
-                    }
-                    scrollamount="10"
-                  >
-                    {item?.assetFolderPath || item?.fileType || item?.text}
-                  </marquee>
-                )}
+                    <marquee
+                      className="text-3xl w-full h-full flex items-center text-black"
+                      direction={
+                        item?.scrollType == 1 ||
+                          item?.direction == "Left to Right"
+                          ? "right"
+                          : "left"
+                      }
+                      scrollamount="10"
+                    >
+                      {item?.assetFolderPath || item?.fileType || item?.text}
+                    </marquee>
+                  )}
               </div>
             );
           }

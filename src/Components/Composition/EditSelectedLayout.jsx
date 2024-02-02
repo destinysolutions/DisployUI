@@ -549,7 +549,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const handleOnSaveCompositionName = () => {
     if (!compositionName.replace(/\s/g, "").length) {
       toast.remove();
-      return toast.error("please enter a character.");
+      return toast.error("Please enter some text.");
     }
     setEdited(false);
   };
@@ -993,6 +993,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       addAsset[currentSection - 1] !== undefined &&
                       addAsset[currentSection - 1][currentSection]?.map(
                         (item, index) => {
+                          console.log('item', item)
                           return (
                             <tr
                               onDrop={(event) =>
@@ -1061,15 +1062,12 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                   <div className="ml-3 w-1/2">
                                     <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
                                       {item?.assetName && item?.assetName}
-                                      {item?.text && item?.text}
                                       {item?.instanceName && item?.instanceName}
                                     </p>
                                   </div>
                                 </div>
                               </td>
-                              <td className="text-center min-w-[20%]">
-                                {item?.assetType ?? "-"}
-                              </td>
+                             
                               <td className={`text-center min-w-[20%] `}>
                                 {!item?.isEdited ? (
                                   <p className="border min-w-full whitespace-nowrap border-[#E4E6FF] rounded-full p-2">

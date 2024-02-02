@@ -106,7 +106,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
       compositionID: 0,
       compositionName: compositionName,
       resolution: "1920 x 1080",
-      tags: "tags",
+      tags: "",
       layoutID: id,
       userID: 0,
       duration: totalDurationSeconds,
@@ -456,7 +456,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
   const handleOnSaveCompositionName = () => {
     if (!compositionName.replace(/\s/g, "").length) {
       toast.remove();
-      return toast.error("please enter a character.");
+      return toast.error("Please enter some text.");
     }
     setEdited(false);
   };

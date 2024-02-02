@@ -798,7 +798,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                 handleDragStart(event, item.assetID, item)
                               }
                             >
-                              <td className="text-center flex justify-center">
+                              <td className="text-center flex justify-center gap-4">
+                              {selectAll && (
+                                <div className="flex items-center justify-center">
+                                <input type="checkbox" checked={true} onChange={()=> {
+                                  setSelectAll(!selectAll);
+                                }}/>
+                                </div>
+                              )}
                                 {item.assetType === "Folder" && (
                                   <div
                                     onDragOver={(event) =>

@@ -250,7 +250,7 @@ const Pexels = ({ closeModal, pexelsModalRef }) => {
       <div className="backdrop">
         <div
           ref={pexelsModalRef}
-          className="fixed unsplash-model h-[90vh] bg-black lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl "
+          className="fixed unsplash-model h-[70vh] bg-black lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl "
         >
           <button
             onClick={closeModal}

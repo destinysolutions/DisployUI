@@ -1568,10 +1568,13 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 )}
 
                                 {tagsContentVisible && (
+                                  
                                   <td
-                                    title={screen?.tags && screen?.tags}
+                                    // title={screen?.tags && screen?.tags}
+                                    title={screen?.tags && screen?.tags.trim().split(',').map(tag => tag.trim()).join(",")}
                                     className="text-center text-[#5E5E5E]"
                                   >
+                                  {console.log(screen?.tags,"screen?.tags")}
                                     <div className="p-2 text-center flex flex-wrap items-center justify-center gap-2 break-all text-[#5E5E5E]">
                                       {(screen?.tags === "" ||
                                         screen?.tags === null) && (

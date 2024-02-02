@@ -536,6 +536,23 @@ const EventEditor = ({
     };
   }, []);
 
+  let viewerSrc = '';
+
+  if (assetPreview?.fileExtention === '.pdf' || assetPreview?.fileExtention === '.txt') {
+      viewerSrc = assetPreview?.assetFolderPath;
+  } else if (assetPreview?.fileExtention === '.csv') {
+      viewerSrc = `https://docs.google.com/gview?url=${assetPreview?.assetFolderPath}&embedded=true`;
+  } else if (
+    assetPreview?.fileExtention === '.pptx' ||
+    assetPreview?.fileExtention === '.ppt' ||
+    assetPreview?.fileExtention === '.docx' ||
+    assetPreview?.fileExtention === '.doc' ||
+    assetPreview?.fileExtention === '.xlsx' ||
+    assetPreview?.fileExtention === '.xls'
+  ) {
+      viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
+  }
+
 
   return (
     <>
@@ -735,7 +752,7 @@ const EventEditor = ({
                         )}
                         <tr>
                           <td>
-                            {assetPreviewPopup && (
+                            {/*{assetPreviewPopup && (
                               <div className="bg-black bg-opacity-50 justify-center items-center flex fixed inset-0 z-50 outline-none focus:outline-none">
                                 <div
                                   ref={modalRef}
@@ -752,7 +769,7 @@ const EventEditor = ({
                                         <AiOutlineCloseCircle className="text-2xl" />
                                       </button>
                                     </div>
-                                    <div className="absolute inset-0 min-h-full min-w-full max-h-full max-w-full">
+                                    <div className="absolute inset-0 w-[768px] h-[432px]">
                                       {assetPreview && (
                                         <>
                                           {assetPreview?.assetType ===
@@ -834,17 +851,11 @@ const EventEditor = ({
                                           )}
                                           {assetPreview?.assetType ===
                                             "DOC" && (
-                                              <div className="h-full flex text-white items-center justify-evenly">
-                                                <a
-                                                  href={
-                                                    assetPreview.assetFolderPath
-                                                  }
-                                                  target="_blank"
-                                                  rel="noopener noreferrer"
-                                                >
-                                                  {assetPreview.assetName}
-                                                </a>
-                                              </div>
+                                              <iframe
+                                              className='w-[768px] h-[432px]'
+                                              title="Document Viewer"
+                                              src={viewerSrc}
+                                          ></iframe>
                                             )}
                                         </>
                                       )}
@@ -852,11 +863,83 @@ const EventEditor = ({
                                   </div>
                                 </div>
                               </div>
-                            )}
-                          </td>
+                                            )}*/}
+
+                                            </td>
                         </tr>
                       </tbody>
                     </table>
+                    {assetPreviewPopup && (
+                      <div className="fixed left-1/2 top-[17%] -translate-x-1/2 w-[960px] h-[540px] bg-black z-50 inset-0">
+                        {/* btn */}
+                        <div className="fixed z-40">
+                          <button
+                            className="fixed cursor-pointer -top-3 -right-3 rounded-full bg-black text-white"
+                            onClick={() => setAssetPreviewPopup(false)}
+                          >
+                            <AiOutlineCloseCircle size={30} />
+                          </button>
+                        </div>
+                        <div className="fixed">
+                          {assetPreview && (
+                            <>
+                              {assetPreview.assetType === "OnlineImage" && (
+                                <div className="imagebox p-3">
+                                  <img
+                                    src={assetPreview.assetFolderPath}
+                                    alt={assetPreview.assetName}
+                                    className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                                  />
+                                </div>
+                              )}
+              
+                              {assetPreview.assetType === "OnlineVideo" && (
+                                <div className="relative videobox">
+                                  <video
+                                    controls
+                                    className="w-full rounded-2xl h-full"
+                                  >
+                                    <source
+                                      src={assetPreview.assetFolderPath}
+                                      type="video/mp4"
+                                    />
+                                    Your browser does not support the video tag.
+                                  </video>
+                                </div>
+                              )}
+                              {assetPreview.assetType === "Image" && (
+                                <img
+                                  src={assetPreview.assetFolderPath}
+                                  alt={assetPreview.assetName}
+                                  className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                                />
+                              )}
+                              {assetPreview.assetType === "Video" && (
+                                <video
+                                  controls
+                                  className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                                >
+                                  <source
+                                    src={assetPreview.assetFolderPath}
+                                    type="video/mp4"
+                                  />
+                                  Your browser does not support the video tag.
+                                </video>
+                              )}
+                              {assetPreview.assetType === "DOC" && (
+                                <iframe
+                                className='w-[960px] h-[540px]'
+                                title="Document Viewer"
+                                src={viewerSrc}
+                            ></iframe>
+      
+                               
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

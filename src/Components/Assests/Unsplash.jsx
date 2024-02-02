@@ -172,7 +172,7 @@ const Unsplash = ({ closeModal, onSelectedImages, unsplashModalRef }) => {
       <div className="backdrop">
         <div
           ref={unsplashModalRef}
-          className="fixed h-[90vh] unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl"
+          className="fixed h-[70vh] unsplash-model bg-primary lg:px-5 md:px-5 sm:px-3 xs:px-2 py-7 rounded-2xl"
         >
           <button
             onClick={closeModal}

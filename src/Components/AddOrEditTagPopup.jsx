@@ -52,7 +52,7 @@ const AddOrEditTagPopup = ({
 
     if (!tagValue.replace(/\s/g, "").length) {
       toast.remove();
-      return toast.error("please enter a character.");
+      return toast.error("Please enter some text.");
     }
     toast.remove();
     setTags([...tags, tagValue]);

@@ -562,9 +562,9 @@ const ShowAssetModal = ({
                             </td>
                             <td className="p-3">{composition.resolution}</td>
                             <td className="p-3">
-                              {moment
-                                .utc(composition.duration * 1000)
-                                .format("hh:mm:ss")}
+                            {moment
+                              .utc(composition?.duration * 1000)
+                              .format("HH:mm:ss")}
                             </td>
                           </tr>
                         </tbody>
