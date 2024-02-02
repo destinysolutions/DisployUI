@@ -202,7 +202,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         setSelectedItems([]);
         dispatch(handleGetCompositions({ token }));
       }
-<<<<<<< HEAD
       const Params = {
         id: socket.id,
         connection: socket.connected,
@@ -212,9 +211,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
           .replace(/^\s+/g, ""),
       };
       socket.emit("ScreenConnected", Params);
-=======
-
->>>>>>> 5fd3504e379339038cbaf29e9b47e3934b4563d6
       if (connection.state == "Disconnected") {
         connection
           .start()
