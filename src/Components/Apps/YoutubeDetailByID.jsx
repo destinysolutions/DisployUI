@@ -117,6 +117,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
       data: data,
     };
     setSaveLoading(true);
+    toast.loading("Saving...");
     try {
       const response = await axios.request(config);
       if (response?.data?.status === 200) {
@@ -127,6 +128,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
         };
         socket.emit("ScreenConnected", Params);
         setTimeout(() => {
+          toast.remove()
           history("/youtube");
         }, 1000);
         // Wrap the SignalR invocation in a Promise
@@ -162,6 +164,7 @@ const YoutubeDetailByID = ({ sidebarOpen, setSidebarOpen }) => {
         setSaveLoading(false);
       }
     } catch (error) {
+      toast.remove()
       console.log(error);
       setSaveLoading(false);
       return error;

@@ -89,7 +89,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
         Authorization: authToken,
       },
     };
-
+    toast.loading("Saving...");
     axios
       .request(config)
       .then((response) => {
@@ -101,6 +101,7 @@ const NewFolderDialog = ({ sidebarOpen, setSidebarOpen }) => {
           };
           socket.emit("ScreenConnected", Params);
           setTimeout(() => {
+            toast.remove()
             setSelectScreenModal(false);
             setAddScreenModal(false);
           }, 1000);

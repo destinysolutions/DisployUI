@@ -118,6 +118,23 @@ const ShowAssetModal = ({
     fetchData();
   }, []);
 
+  let viewerSrc = '';
+
+  if (assetPreview?.fileExtention === '.pdf' || assetPreview?.fileExtention === '.txt') {
+      viewerSrc = assetPreview?.assetFolderPath;
+  } else if (assetPreview?.fileExtention === '.csv') {
+      viewerSrc = `https://docs.google.com/gview?url=${assetPreview?.assetFolderPath}&embedded=true`;
+  } else if (
+    assetPreview?.fileExtention === '.pptx' ||
+    assetPreview?.fileExtention === '.ppt' ||
+    assetPreview?.fileExtention === '.docx' ||
+    assetPreview?.fileExtention === '.doc' ||
+    assetPreview?.fileExtention === '.xlsx' ||
+    assetPreview?.fileExtention === '.xls'
+  ) {
+      viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
+  }
+
   useEffect(() => {
     const handleStorageChange = () => {
       const isClosed = localStorage.getItem("isWindowClosed");
@@ -581,7 +598,7 @@ const ShowAssetModal = ({
                       )}
                     </tbody>
                   </table>
-                </div>
+                </div>  
               </div>
               <div className={popupActiveTab !== 2 && "hidden"}>
                 <div className="flex flex-wrap items-start lg:justify-between  md:justify-center sm:justify-center xs:justify-center">
@@ -775,7 +792,78 @@ const ShowAssetModal = ({
                   </table>
                 </div>
               </div>
-            </div>
+              </div>
+              {assetPreviewPopup && (
+                <div className="fixed left-1/2 top-[17%] -translate-x-1/2 w-[768px] h-[432px] bg-black z-50 inset-0">
+                  {/* btn */}
+                  <div className="fixed z-40">
+                    <button
+                      className="fixed cursor-pointer -top-3 -right-3 rounded-full bg-black text-white"
+                      onClick={() => setAssetPreviewPopup(false)}
+                    >
+                      <AiOutlineCloseCircle size={30} />
+                    </button>
+                  </div>
+                  <div className="fixed">
+                    {assetPreview && (
+                      <>
+                        {assetPreview.assetType === "OnlineImage" && (
+                          <div className="imagebox p-3">
+                            <img
+                              src={assetPreview.assetFolderPath}
+                              alt={assetPreview.assetName}
+                              className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                            />
+                          </div>
+                        )}
+        
+                        {assetPreview.assetType === "OnlineVideo" && (
+                          <div className="relative videobox">
+                            <video
+                              controls
+                              className="w-full rounded-2xl h-full"
+                            >
+                              <source
+                                src={assetPreview.assetFolderPath}
+                                type="video/mp4"
+                              />
+                              Your browser does not support the video tag.
+                            </video>
+                          </div>
+                        )}
+                        {assetPreview.assetType === "Image" && (
+                          <img
+                            src={assetPreview.assetFolderPath}
+                            alt={assetPreview.assetName}
+                            className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                          />
+                        )}
+                        {assetPreview.assetType === "Video" && (
+                          <video
+                            controls
+                            className="imagebox w-full h-full top-0 left-0 z-50 fixed"
+                          >
+                            <source
+                              src={assetPreview.assetFolderPath}
+                              type="video/mp4"
+                            />
+                            Your browser does not support the video tag.
+                          </video>
+                        )}
+                        {assetPreview.assetType === "DOC" && (
+                          <iframe
+                          className='w-[768px] h-[432px]'
+                          title="Document Viewer"
+                          src={viewerSrc}
+                      ></iframe>
+
+                         
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
           </div>
         </div>
 
@@ -795,78 +883,7 @@ const ShowAssetModal = ({
           </button>
         </div>
       </div>
-      {assetPreviewPopup && (
-        <div className="fixed left-1/2 top-1/4 -translate-x-1/2 w-[960px] h-[540px] bg-black z-50 inset-0">
-          {/* btn */}
-          <div className="fixed w-full h-full z-40">
-            <button
-              className="fixed cursor-pointer -top-3 -right-3 rounded-full bg-black text-white"
-              onClick={() => setAssetPreviewPopup(false)}
-            >
-              <AiOutlineCloseCircle size={30} />
-            </button>
-          </div>
-          <div className="fixed h-full w-full">
-            {assetPreview && (
-              <>
-                {assetPreview.assetType === "OnlineImage" && (
-                  <div className="imagebox p-3">
-                    <img
-                      src={assetPreview.assetFolderPath}
-                      alt={assetPreview.assetName}
-                      className="imagebox w-full h-full object-cover top-0 left-0 z-50 fixed"
-                    />
-                  </div>
-                )}
-
-                {assetPreview.assetType === "OnlineVideo" && (
-                  <div className="relative videobox">
-                    <video
-                      controls
-                      className="w-full rounded-2xl h-full"
-                    >
-                      <source
-                        src={assetPreview.assetFolderPath}
-                        type="video/mp4"
-                      />
-                      Your browser does not support the video tag.
-                    </video>
-                  </div>
-                )}
-                {assetPreview.assetType === "Image" && (
-                  <img
-                    src={assetPreview.assetFolderPath}
-                    alt={assetPreview.assetName}
-                    className="imagebox w-full h-full object-cover top-0 left-0 z-50 fixed"
-                  />
-                )}
-                {assetPreview.assetType === "Video" && (
-                  <video
-                    controls
-                    className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                  >
-                    <source
-                      src={assetPreview.assetFolderPath}
-                      type="video/mp4"
-                    />
-                    Your browser does not support the video tag.
-                  </video>
-                )}
-                {assetPreview.assetType === "DOC" && (
-                  <a
-                    href={assetPreview.assetFolderPath}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                  >
-                    {assetPreview.assetName}
-                  </a>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      )}
+    
       {showAppModal && <ShowAppsModal setShowAppModal={setShowAppModal} />}
       <div
         onClick={() => handleClickOutside()}

@@ -362,8 +362,8 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
           if (response.data.status === 200) {
             signalROnConfirm();
             setTimeout(() => {
-              history("/screens");
               toast.remove();
+              history("/screens");
             }, 1000);
           }
         })

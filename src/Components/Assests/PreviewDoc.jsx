@@ -26,20 +26,22 @@ const PreviewDoc = ({ HandleClose, fileType, assetFolderPath }) => {
                 className="fixed h-full top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 max-h-full bg-black bg-opacity-50"
             >
                 <div className="relative p-4 w-full h-full">
-                    <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 h-full">
-                        <AiOutlineCloseCircle
-                            className="text-4xl text-primary cursor-pointer float-right"
-                            onClick={HandleClose}
-                        />
-                        {/* Modal content */}
-                        <div className="p-7 md:p-8 text-center h-full">
-                            <iframe
-                                className='h-full w-full'
-                                title="Document Viewer"
-                                src={viewerSrc}
-                            ></iframe>
-                        </div>
+                <div className='flex items-center justify-center h-full'>
+                <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 w-[768px] h-[432px]">
+                    <AiOutlineCloseCircle
+                        className="text-4xl text-primary cursor-pointer float-right"
+                        onClick={HandleClose}
+                    />
+                    {/* Modal content */}
+                    <div className="p-7 md:p-8 text-center w-[768px] h-[432px]">
+                        <iframe
+                            className='h-full w-full'
+                            title="Document Viewer"
+                            src={viewerSrc}
+                        ></iframe>
                     </div>
+                </div>
+            </div>
                 </div>
             </div>
         </>

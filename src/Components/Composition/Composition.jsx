@@ -471,7 +471,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
             toast.error("Something went wrong, try again");
             toast.remove();
           }
-          toast.remove();
+          // toast.remove();
         }
       })
       .catch((error) => {

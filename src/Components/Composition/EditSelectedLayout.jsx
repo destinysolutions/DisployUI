@@ -131,6 +131,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
       data,
     };
     setSavingLoader(true);
+    toast.loading("Saving...");
     try {
       const response = await axios.request(config);
       if (response?.data?.status === 200) {
@@ -141,6 +142,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
         };
         socket.emit("ScreenConnected", Params);
         setTimeout(() => {
+          toast.remove()
           navigate("/composition");
         }, 1000);
         if (connection.state == "Disconnected") {
@@ -181,6 +183,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
         setSavingLoader(false);
       }
     } catch (error) {
+      toast.remove()
       console.log(error);
       setSavingLoader(false);
     }

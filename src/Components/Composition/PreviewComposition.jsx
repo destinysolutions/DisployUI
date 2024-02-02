@@ -2,6 +2,7 @@ import React from 'react'
 import Carousel from './DynamicCarousel'
 import { RxCrossCircled } from 'react-icons/rx'
 import PreviewModal from "./PreviewModel"
+import { AiOutlineCloseCircle } from 'react-icons/ai'
 const PreviewComposition = ({ previewModalData, closeModal, loading, layotuDetails, modalVisible, modalRef }) => {
     return (
         <PreviewModal show={modalVisible} onClose={closeModal}>
@@ -10,10 +11,13 @@ const PreviewComposition = ({ previewModalData, closeModal, loading, layotuDetai
                 ref={modalRef}
             >
                 <div style={{ padding: "15px", backgroundColor: "white" }}>
-                    <RxCrossCircled
-                        className="fixed z-50 text-4xl p-1 m-2 rounded-full top-[-27px] right-[-23px] cursor-pointer bg-black text-white"
-                        onClick={closeModal}
-                    />
+                <button
+                className="fixed cursor-pointer -top-3 -right-3 rounded-full bg-black text-white z-50"
+                onClick={closeModal}
+              >
+                <AiOutlineCloseCircle size={30} />
+              </button>
+                   
                     {loading && (
                         <div className="flex text-center m-5 justify-center">
                             <svg

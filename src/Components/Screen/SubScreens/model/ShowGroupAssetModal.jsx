@@ -144,6 +144,22 @@ const ShowAssetModal = ({
     }
   };
 
+  let viewerSrc = '';
+
+  if (assetPreview?.fileExtention === '.pdf' || assetPreview?.fileExtention === '.txt') {
+      viewerSrc = assetPreview?.assetFolderPath;
+  } else if (assetPreview?.fileExtention === '.csv') {
+      viewerSrc = `https://docs.google.com/gview?url=${assetPreview?.assetFolderPath}&embedded=true`;
+  } else if (
+    assetPreview?.fileExtention === '.pptx' ||
+    assetPreview?.fileExtention === '.ppt' ||
+    assetPreview?.fileExtention === '.docx' ||
+    assetPreview?.fileExtention === '.doc' ||
+    assetPreview?.fileExtention === '.xlsx' ||
+    assetPreview?.fileExtention === '.xls'
+  ) {
+      viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
+  }
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event?.target)) {
@@ -414,17 +430,18 @@ const ShowAssetModal = ({
                         ))}
                   </table>
                   {assetPreviewPopup && (
-                    <div className="fixed left-1/2 -translate-x-1/2 w-10/12 h-10/12 bg-black z-50 inset-0">
+                    <div className="fixed left-1/2 top-[12%] -translate-x-1/2 w-[768px] h-[432px] bg-black z-50 inset-0">
                       {/* btn */}
-                      <div className="p-1 rounded-full text-white bg-primary absolute -top-3 -right-3">
-                        <button
-                          className="text-xl"
-                          onClick={() => setAssetPreviewPopup(false)}
-                        >
-                          <AiOutlineCloseCircle className="text-2xl" />
-                        </button>
-                      </div>
-                      <div className="fixed top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 h-[90%] w-[90%]">
+                    
+                      <div className="fixed z-40">
+                    <button
+                      className="fixed cursor-pointer -top-3 -right-3 rounded-full bg-black text-white"
+                      onClick={() => setAssetPreviewPopup(false)}
+                    >
+                      <AiOutlineCloseCircle size={30} />
+                    </button>
+                  </div>
+                      <div className="fixed">
                         {assetPreview && (
                           <>
                             {assetPreview.assetType === "OnlineImage" && (
@@ -471,14 +488,11 @@ const ShowAssetModal = ({
                               </video>
                             )}
                             {assetPreview.assetType === "DOC" && (
-                              <a
-                                href={assetPreview.assetFolderPath}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
-                              >
-                                {assetPreview.assetName}
-                              </a>
+                              <iframe
+                              className='w-[768px] h-[432px]'
+                              title="Document Viewer"
+                              src={viewerSrc}
+                          ></iframe>
                             )}
                           </>
                         )}

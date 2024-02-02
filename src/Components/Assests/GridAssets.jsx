@@ -101,7 +101,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
         Authorization: authToken,
       },
     };
-
+    toast.loading("Saving...");
     axios
       .request(config)
       .then((response) => {
@@ -113,6 +113,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           };
           socket.emit("ScreenConnected", Params);
           setTimeout(() => {
+            toast.remove()
             setSelectScreenModal(false);
             setAddScreenModal(false);
           }, 1000);

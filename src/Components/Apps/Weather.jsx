@@ -333,7 +333,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
         Authorization: authToken,
       },
     };
-
+    toast.loading("Saving...");
     axios
       .request(config)
       .then((response) => {
@@ -345,6 +345,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
           };
           socket.emit("ScreenConnected", Params);
           setTimeout(() => {
+            toast.remove();
             setSelectScreenModal(false);
             setAddScreenModal(false);
             FetchData();
@@ -384,6 +385,7 @@ const Weather = ({ sidebarOpen, setSidebarOpen }) => {
         }
       })
       .catch((error) => {
+        toast.remove();
         console.log(error);
       });
   };
