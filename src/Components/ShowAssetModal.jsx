@@ -664,17 +664,15 @@ const ShowAssetModal = ({
                               {composition.compositionName}
                             </td>
                             <td className="p-3 text-center">
-                              {moment(composition.dateAdded).format(
-                                "YYYY-MM-DD hh:mm"
-                              )}
+                            {moment(composition?.dateAdded).format("LLL")}
                             </td>
                             <td className="p-3 text-center">
                               {composition.resolution}
                             </td>
                             <td className="p-3 text-center">
-                              {moment
-                                .utc(composition.duration * 1000)
-                                .format("hh:mm:ss")}
+                            {moment
+                              .utc(composition?.duration * 1000)
+                              .format("HH:mm:ss")}
                             </td>
                           </tr>
                         </tbody>

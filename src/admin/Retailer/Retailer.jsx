@@ -9,8 +9,8 @@ import { useFormik } from "formik";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { addRetailerData, getRetailerData, resetStatus } from "../../Redux/admin/RetailerSlice";
-import { MdOutlineModeEdit} from "react-icons/md";
+import { addRetailerData, getRetailerData, resetStatus, updateRetailerData } from "../../Redux/admin/RetailerSlice";
+import { MdOutlineModeEdit } from "react-icons/md";
 
 
 const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
@@ -33,14 +33,15 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   const [sortedField, setSortedField] = useState(null);
   const [search, setSearch] = useState('');
   const [editId, setEditId] = useState(null);
+  const [orgUserID, setOrgUserID] = useState(null);
   const [editData, setEditData] = useState({
-      companyName : "",
-      Password: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      googleLocation: "",
-      phoneNumber: "",
+    companyName: "",
+    Password: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    googleLocation: "",
+    phoneNumber: "",
   });
 
 
@@ -96,14 +97,15 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
   const toggleModal = () => {
     setShowModal(!showModal);
     setEditId(null)
+    setOrgUserID(null)
     setEditData({})
   };
 
   //using for validation and register api calling
   const phoneRegExp =
     /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
-  
-    const validationSchema = Yup.object().shape({
+
+  const validationSchema = Yup.object().shape({
     companyName: Yup.string().required("Company Name is required"),
     password: Yup.string().when('editId', {
       is: false,
@@ -161,8 +163,8 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
 
   const formik = useFormik({
     initialValues: editData,
-    enableReinitialize : editData,
-    validationSchema: editId ?  editValidationSchema : validationSchema,
+    enableReinitialize: editData,
+    validationSchema: editId ? editValidationSchema : validationSchema,
     onSubmit: async (values) => {
       const formData = new FormData();
       formData.append("OrganizationName", values.companyName);
@@ -173,14 +175,16 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
       formData.append("GoogleLocation", values.googleLocation);
       formData.append("Phone", values.phoneNumber);
       formData.append("IsRetailer", true);
-      formData.append("Operation", "Insert");
 
       if (editId) {
-        formData.append("orgSingupID",editId)
-        // update not working
+        formData.append("OrgUserSpecificID", editId)
+        formData.append("orgUserID", orgUserID)
+        dispatch(updateRetailerData(formData))
+      } else {
+        formData.append("Operation", "Insert");
+        dispatch(addRetailerData(formData))
       }
 
-      dispatch(addRetailerData(formData))  
       formik.resetForm()
       setShowModal(false)
     },
@@ -192,18 +196,19 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
     setSearch(searchQuery);
   };
 
-  const handleEdit = (value) =>{
+  const handleEdit = (value) => {
     setHeading('Update')
     setEditId(value.orgSingupID)
+    setOrgUserID(value.orgUserID)
     setShowModal(true)
     const data = {
-      companyName : value.organizationName,
-      googleLocation : value.googleLocation,
-      firstName : value.firstName,
-      lastName : value.lastName,
+      companyName: value.organizationName,
+      googleLocation: value.googleLocation,
+      firstName: value.firstName,
+      lastName: value.lastName,
       phoneNumber: value.phone,
-      emailID : value.email,
-      password : null
+      emailID: value.email,
+      password: null
     }
     setEditData(data)
   }
@@ -316,15 +321,15 @@ const Retailer = ({ sidebarOpen, setSidebarOpen }) => {
                           </td>
                           <td className="px-6 py-4">
 
-                          <div className="cursor-pointer text-xl flex gap-4 ">
-                            <button
-                              type="button"
-                              className="rounded-full px-2 py-2 text-white text-center bg-[#414efa] mr-3"
-                              onClick={() => handleEdit(item)}
-                            >
-                              <MdOutlineModeEdit />
-                            </button>
-                          </div>
+                            <div className="cursor-pointer text-xl flex gap-4 ">
+                              <button
+                                type="button"
+                                className="rounded-full px-2 py-2 text-white text-center bg-[#414efa] mr-3"
+                                onClick={() => handleEdit(item)}
+                              >
+                                <MdOutlineModeEdit />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       )

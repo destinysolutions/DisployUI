@@ -37,7 +37,6 @@ import PreviewComposition from "./PreviewComposition";
 import { BiEdit } from "react-icons/bi";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import ReactTooltip from "react-tooltip";
-import { socket } from "../../App";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -203,6 +202,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         setSelectedItems([]);
         dispatch(handleGetCompositions({ token }));
       }
+<<<<<<< HEAD
       const Params = {
         id: socket.id,
         connection: socket.connected,
@@ -212,6 +212,9 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
           .replace(/^\s+/g, ""),
       };
       socket.emit("ScreenConnected", Params);
+=======
+
+>>>>>>> 5fd3504e379339038cbaf29e9b47e3934b4563d6
       if (connection.state == "Disconnected") {
         connection
           .start()

@@ -500,16 +500,16 @@ const Defaultmedia = () => {
                               Upload
                             </button>
                           </div>
-                          <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover w-full addmedia-table">
+                          <div className="md:overflow-x-auto sm:overflow-x-auto xs:overflow-x-auto min-h-[300px] max-h-[300px] object-cover w-full addmedia-table sc-scrollbar rounded-lg">
                             <table
                               style={{
-                                borderCollapse: "separate",
+                                borderCollapse: "collapse",
                                 borderSpacing: " 0 10px",
                               }}
                               className="w-full"
                             >
                               <thead className="sticky top-0">
-                                <tr className="bg-lightgray">
+                                <tr className="table-head-bg">
                                   <th className="p-3 w-80 text-left">
                                     Media Name
                                   </th>

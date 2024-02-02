@@ -999,9 +999,13 @@ const Users = ({ searchValue }) => {
                                         </td>
 
                                         <td className="text-center break-words">
-                                          {screen.scheduleName} Till
-                                          {moment(screen.endDate).format(
-                                            "YYYY-MM-DD hh:mm"
+                                        {screen.scheduleName == "" ? (
+                                          ""
+                                          ) : (
+                                            `${screen.scheduleName} Till
+                                    ${moment(screen.endDate).format(
+                                      "YYYY-MM-DD hh:mm"
+                                    )}`
                                           )}
                                         </td>
                                         <td className="text-center break-words">
@@ -2052,8 +2056,14 @@ const Users = ({ searchValue }) => {
                           {screen.googleLocation}
                         </td>
                         <td className="text-center break-words">
-                          {screen.scheduleName} Till
-                          {moment(screen.endDate).format("YYYY-MM-DD hh:mm")}
+                        {screen.scheduleName == "" ? (
+                          ""
+                          ) : (
+                            `${screen.scheduleName} Till
+                    ${moment(screen.endDate).format(
+                      "YYYY-MM-DD hh:mm"
+                    )}`
+                          )}
                         </td>
                         <td className="text-center break-words">
                           {screen?.tags !== null
@@ -2398,9 +2408,13 @@ const Users = ({ searchValue }) => {
                                       {screen.googleLocation}
                                     </td>
                                     <td className="text-center break-words">
-                                      {screen.scheduleName} Till
-                                      {moment(screen.endDate).format(
-                                        "YYYY-MM-DD hh:mm"
+                                    {screen.scheduleName == "" ? (
+                                      ""
+                                      ) : (
+                                        `${screen.scheduleName} Till
+                                ${moment(screen.endDate).format(
+                                  "YYYY-MM-DD hh:mm"
+                                )}`
                                       )}
                                     </td>
                                     <td className="text-center break-words">

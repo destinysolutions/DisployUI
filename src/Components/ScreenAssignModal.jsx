@@ -361,8 +361,14 @@ const ScreenAssignModal = ({
                         </td>
 
                         <td className="text-center break-words">
-                          {screen.scheduleName} Till
-                          {moment(screen.endDate).format("YYYY-MM-DD hh:mm")}
+                        {screen.scheduleName == "" ? (
+                        ""
+                        ) : (
+                          `${screen.scheduleName} Till
+                  ${moment(screen.endDate).format(
+                    "YYYY-MM-DD hh:mm"
+                  )}`
+                        )}
                         </td>
                         <td className="text-center break-words">
                           {screen?.tags !== null

@@ -16,6 +16,7 @@ import SidebarSlice from "./SidebarSlice";
 import ScreenMergeSlice from "./ScreenMergeSlice";
 import UserRoleSlice from "./UserRoleSlice";
 import RetailersSlice from "./admin/RetailerSlice";
+import OnBodingSlice from "./admin/OnBodingSlice";
 
 // const rootPersistConfig = {
 //   key: "root",
@@ -51,6 +52,7 @@ const rootReducer = combineReducers({
   sidebarData: SidebarSlice,
   userRole: UserRoleSlice,
   retailerData : RetailersSlice,
+  onBoding : OnBodingSlice,
 });
 
 const persisteRoot = rootReducer;
