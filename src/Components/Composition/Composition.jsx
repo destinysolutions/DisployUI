@@ -37,7 +37,6 @@ import PreviewComposition from "./PreviewComposition";
 import { BiEdit } from "react-icons/bi";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import ReactTooltip from "react-tooltip";
-import { socket } from "../../App";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);
@@ -203,15 +202,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
         setSelectedItems([]);
         dispatch(handleGetCompositions({ token }));
       }
-      const Params = {
-        id: socket.id,
-        connection: socket.connected,
-        macId:  compositionData
-        ?.map((item) => item?.maciDs)
-        .join(",")
-        .replace(/^\s+/g, ""),
-      };
-      socket.emit("ScreenConnected", Params);
+
       if (connection.state == "Disconnected") {
         connection
           .start()
@@ -405,12 +396,6 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
       .then((response) => {
         if (response.data.status == 200) {
           try {
-            const Params = {
-              id: socket.id,
-              connection: socket.connected,
-              macId: macids,
-            };
-            socket.emit("ScreenConnected", Params);
             // Invoke ScreenConnected method
             if (connection.state == "Disconnected") {
               connection

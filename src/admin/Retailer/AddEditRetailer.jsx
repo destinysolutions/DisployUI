@@ -108,7 +108,7 @@ const AddEditRetailer = ({
                   </div>
                   <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
                     <input
-                      type="tel"
+                      type="number"
                       name="phoneNumber"
                       id="phoneNumber"
                       placeholder="Enter Phone Number"
@@ -153,6 +153,7 @@ const AddEditRetailer = ({
                         value={formik.values.password}
                         hidden={editId}
                       />
+                      {!editId && (
                       <div className="icon">
                         {showPassword ? (
                           <BsFillEyeFill
@@ -164,6 +165,7 @@ const AddEditRetailer = ({
                           />
                         )}
                       </div>
+                      )}
                     </div>
                     {formik.errors.password && formik.touched.password && (
                       <div className="error">{formik.errors.password}</div>

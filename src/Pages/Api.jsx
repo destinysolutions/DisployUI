@@ -19,6 +19,7 @@ export const getUrl = axios.create({
 
 export const LOGIN_URL = `${baseUrl}Register/Login`;
 export const UPDATE_USER = `${baseUrl}UserMaster/AddOrgUserMaster`;
+export const UPDATE_USER_ORG = `${baseUrl}UserMaster/UpdateOrgUserMaster`;
 export const ADD_REGISTER_URL = `${baseUrl}UserMaster/AddOrganizationSignups`;
 export const All_REGISTER_URL = `${baseUrl}Register/GetAllRegister`;
 export const GET_ALL_CURRENCIES = `${baseUrl}Register/GetAllCurrency`;
