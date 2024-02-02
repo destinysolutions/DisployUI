@@ -12,7 +12,7 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path="/admin-dashboard" element={<Navigate to="/" />} />
+         {/* <Route path="/admin-dashboard" element={<Navigate to="/" />} />
           <Route
             path="/"
             element={
@@ -22,6 +22,17 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
               />
             }
           />
+          <Route
+            path="/manage-user-type"
+            element={
+              <ManageUserType
+                sidebarOpen={sidebarOpen}
+                setSidebarOpen={setSidebarOpen}
+              />
+            }
+          />*/}
+
+          <Route path="/" element={<Navigate to="/manage-user-type" />} />
           <Route
             path="/manage-user-type"
             element={

@@ -37,6 +37,7 @@ import PreviewComposition from "./PreviewComposition";
 import { BiEdit } from "react-icons/bi";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import ReactTooltip from "react-tooltip";
+import { socket } from "../../App";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const { token } = useSelector((state) => state.root.auth);

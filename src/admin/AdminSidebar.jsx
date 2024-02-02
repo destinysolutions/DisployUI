@@ -31,12 +31,12 @@ const AdminSidebar = ({ sidebarOpen }) => {
   }, []);
   //for menu list
   const Menus = [
-    {
-      title: "Dashboard",
-      cName: "nav-text link-items",
-      path: "/admin-dashboard",
-      icon: <ImStack className="text-2xl" />,
-    },
+    // {
+    //   title: "Dashboard",
+    //   cName: "nav-text link-items",
+    //   path: "/admin-dashboard",
+    //   icon: <ImStack className="text-2xl" />,
+    // },
     {
       title: "UserType",
       cName: "nav-text link-items",
@@ -53,6 +53,7 @@ const AdminSidebar = ({ sidebarOpen }) => {
       title: "Organization",
       cName: "nav-text link-items",
       //path: "/organization",
+      path: "/onborded",
       icon: <SlOrganization className="text-2xl" />,
       subMenus: [
         // {
@@ -65,11 +66,11 @@ const AdminSidebar = ({ sidebarOpen }) => {
           path: "/onborded",
           icon: <FaUserCheck className="  text-xl  " />,
         },
-        {
-          title: "Retailer",
-          path: "/retailer",
-          icon: <FaUserCheck className="  text-xl  " />,
-        },
+        // {
+        //   title: "Retailer",
+        //   path: "/retailer",
+        //   icon: <FaUserCheck className="  text-xl  " />,
+        // },
         // {
         //   title: "Advertisement",
         //   path: "/advertisement",
@@ -101,8 +102,11 @@ const AdminSidebar = ({ sidebarOpen }) => {
               <ul className="space-y-1 font-medium">
                 {Menus.map((item, index) => {
                   const submenuIsOpen = submenuStates[item.title] || false;
+                  const isActive = window.location.pathname === item.path;
+                  console.log('window.location.pathname', window.location.pathname)
+                  console.log('isActive', isActive,index)
                   return (
-                    <li key={index} className={item.cName}>
+                    <li key={index} className={`${item.cName} ${isActive ? "active" : ""}`}>
                       <div className="flex items-center">
                         <Link to={item.path}>
                           <div>{item.icon}</div>
