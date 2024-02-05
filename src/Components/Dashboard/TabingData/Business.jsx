@@ -161,7 +161,7 @@ var StoreOptions = {
 
 const Business = () => {
   const dispatch = useDispatch();
-  const { token } = useSelector((s) => s.root.auth);
+  const { user, token } = useSelector((s) => s.root.auth);
   const { allApps } = useSelector((state) => state.root.apps);
   //for map store icon
   const center = [20.5937, 78.9629];
@@ -175,7 +175,7 @@ const Business = () => {
   const [selectedStateName, setSelectedStateName] = useState("");
   const [showStore, setShowStore] = useState(false);
   const [showCitydw, setShowCityDw] = useState(false);
-  
+
   useEffect(() => {
     dispatch(handleGetAllApps({ token }));
   }, []);
@@ -233,7 +233,7 @@ const Business = () => {
     setShowStore(false);
   }
 
-  const handleCityMarker = (city) =>{
+  const handleCityMarker = (city) => {
     setSelectedCity(city?.cityName)
     setshowCityStores(true);
   }
@@ -394,7 +394,7 @@ const Business = () => {
             <>
               <div className="pb-4 ">
                 <div>
-                  <label className="p-5 text-lg font-semibold">Ahemdabad</label>
+                  <label className="p-5 text-lg font-semibold">{selectedCity}</label>
                 </div>
                 <div className="m-6">
                   <div className="grid grid-cols-12 gap-4">
@@ -470,48 +470,50 @@ const Business = () => {
           )}
         </div>
       )}
+      
       {/* city store popup end */}
-
-      <div className=" mt-5 ">
-        <div className="grid grid-cols-12 gap-4">
-          {/* Revenue chart start*/}
-          <div className="lg:col-span-6  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
-            <div className="mb-4 justify-between items-center gap-4 sm:flex mt-3">
-              <div>
-                <h4 className="text-xl font-semibold text-black dark:text-white ml-7 mt-4">
-                  Total Revenue
-                </h4>
+      {(user?.userRole === "1" || user?.userRole === 1) && (
+        <div className=" mt-5 ">
+          <div className="grid grid-cols-12 gap-4">
+            {/* Revenue chart start*/}
+            <div className="lg:col-span-6  md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-lg rounded-md">
+              <div className="mb-4 justify-between items-center gap-4 sm:flex mt-3">
+                <div>
+                  <h4 className="text-xl font-semibold text-black dark:text-white ml-7 mt-4">
+                    Total Revenue
+                  </h4>
+                </div>
+                <div>
+                  <div className="xs:ml-7">
+                    <select className=" border border-primary mr-5 mt-2 px-2 rounded-full">
+                      <option value="">2023</option>
+                      <option value="">2022</option>
+                      <option value="">2021</option>
+                    </select>
+                  </div>
+                </div>
               </div>
+
               <div>
-                <div className="xs:ml-7">
-                  <select className=" border border-primary mr-5 mt-2 px-2 rounded-full">
-                    <option value="">2023</option>
-                    <option value="">2022</option>
-                    <option value="">2021</option>
-                  </select>
+                <div id="chartTwo" className="ml-5 mb-5">
+                  <ReactApexChart
+                    options={SalesOptions}
+                    series={stateVlaue.series}
+                    type="bar"
+                    height="380px"
+                  />
                 </div>
               </div>
             </div>
-
-            <div>
-              <div id="chartTwo" className="ml-5 mb-5">
-                <ReactApexChart
-                  options={SalesOptions}
-                  series={stateVlaue.series}
-                  type="bar"
-                  height="380px"
-                />
-              </div>
+            {/* Revenue chart end*/}
+            {/* RevenueTable start*/}
+            <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white shadow-lg rounded-md ">
+              <RevenueTable />
             </div>
+            {/* RevenueTable end*/}
           </div>
-          {/* Revenue chart end*/}
-          {/* RevenueTable start*/}
-          <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white shadow-lg rounded-md ">
-            <RevenueTable />
-          </div>
-          {/* RevenueTable end*/}
         </div>
-      </div>
+      )}
       {/* app store start*/}
       <div className="mt-5 mb-5">
         <div className="grid grid-cols-12 gap-4">
@@ -551,7 +553,7 @@ const Business = () => {
           {!allApps?.loading && allApps?.data.length > 0 && (
             allApps?.data?.slice(0, 3)?.map(
               (app) =>
-                app.appType == "Apps" && (
+                app.appType == "Apps" && app.appName !== "Weather" && (
                   <div className="lg:col-span-3 md:col-span-6 sm:col-span-12 " key={app.app_Id}>
                     <Link to={`/${app.appName}`}>
                       <div className="shadow-md  bg-white rounded-lg text-center py-10">
@@ -570,7 +572,7 @@ const Business = () => {
                 ))
           )
           }
-          {!allApps?.loading && allApps?.data.length > 0 && (
+          {/* {!allApps?.loading && allApps?.data.length > 0 && (
             <div className="lg:col-span-3 md:col-span-6 sm:col-span-12">
               <div className="shadow-md  bg-white rounded-lg text-center py-10">
                 <img
@@ -581,7 +583,7 @@ const Business = () => {
                 <h4 className="text-size-md font-semibold py-5">And many more</h4>
               </div>
             </div>
-          )}
+         )}*/}
         </div>
       </div>
       {/* app store end*/}

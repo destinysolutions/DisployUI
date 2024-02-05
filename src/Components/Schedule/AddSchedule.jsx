@@ -210,7 +210,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       startDate: overallEventTimes.earliestStartTime.toLocaleString(),
       endDate: overallEventTimes.latestEndTime.toLocaleString(),
       operation: "Insert",
-      tags: "tags",
+      tags: "",
     });
     let config = {
       method: "post",

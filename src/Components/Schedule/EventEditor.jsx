@@ -653,7 +653,7 @@ const EventEditor = ({
                                           url={item?.assetFolderPath}
                                           className="rounded-2xl videoTab "
                                           controls={false}
-                                          playing={true}
+                                          playing={false}
                                         />
                                       </div>
                                     )}

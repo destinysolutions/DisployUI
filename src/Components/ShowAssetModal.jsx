@@ -821,7 +821,7 @@ const ShowAssetModal = ({
                           <div className="relative videobox">
                             <video
                               controls
-                              className="w-full rounded-2xl h-full"
+                              className="rounded-2xl w-[768px] h-[432px]"
                             >
                               <source
                                 src={assetPreview.assetFolderPath}
