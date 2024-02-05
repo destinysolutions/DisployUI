@@ -316,10 +316,6 @@ const Login = () => {
     setShowModal(false);
   };
 
-  const onclose = () => {
-    return false;
-  };
-
   return (
     <>
       {/* register success meg display start */}
@@ -355,7 +351,7 @@ const Login = () => {
 
       {/* Login form start*/}
       <div className="videobg login relative">
-        <video src={video} autoPlay muted loop onClick={() => onclose()} />
+        <video src={video} autoPlay muted loop playsInline />
         <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center loginbg  lg:px-6 md:px-6 sm:px-2 xs:px-2 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-2  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
             <div className="flex items-center pb-5">
