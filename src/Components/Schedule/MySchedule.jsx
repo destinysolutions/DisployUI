@@ -112,15 +112,15 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(schedules)
     ? schedules.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value &&
-          value
-            .toString()
-            .toLowerCase()
-            .includes(searchSchedule.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            value &&
+            value
+              .toString()
+              .toLowerCase()
+              .includes(searchSchedule.toLowerCase())
+        )
       )
-    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -558,12 +558,13 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   onChange={handleSearchSchedule}
                 />
               </div>
-              <Link to="/weatherschedule">
+              {/*<Link to="/weatherschedule">
                 <button className="ml-2 flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary   hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                   <TiWeatherSunny className="text-lg mr-1" />
                   Weather Schedule
                 </button>
               </Link>
+              */}
               {permissions.isSave &&
                 <Link to="/addschedule">
                   <button className="sm:ml-2 xs:ml-1  flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary   hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
@@ -782,43 +783,43 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="flex items-center justify-center gap-2 w-full flex-wrap">
                                   {(schedule?.tags === "" ||
                                     schedule?.tags === null) && (
-                                      <span>
-                                        <AiOutlinePlusCircle
-                                          size={30}
-                                          className="mx-auto cursor-pointer"
-                                          onClick={() => {
-                                            setShowTagModal(true);
-                                            schedule.tags === "" ||
-                                              schedule?.tags === null
-                                              ? setTags([])
-                                              : setTags(
+                                    <span>
+                                      <AiOutlinePlusCircle
+                                        size={30}
+                                        className="mx-auto cursor-pointer"
+                                        onClick={() => {
+                                          setShowTagModal(true);
+                                          schedule.tags === "" ||
+                                          schedule?.tags === null
+                                            ? setTags([])
+                                            : setTags(
                                                 schedule?.tags?.split(",")
                                               );
-                                            setUpdateTagSchedule(schedule);
-                                          }}
-                                        />
-                                      </span>
-                                    )}
+                                          setUpdateTagSchedule(schedule);
+                                        }}
+                                      />
+                                    </span>
+                                  )}
                                   {schedule.tags !== null
                                     ? schedule.tags
-                                      .split(",")
-                                      .slice(
-                                        0,
-                                        schedule.tags.split(",").length > 2
-                                          ? 3
-                                          : schedule.tags.split(",").length
-                                      )
-                                      .map((text) => {
-                                        if (text.toString().length > 10) {
-                                          return text
-                                            .split("")
-                                            .slice(0, 10)
-                                            .concat("...")
-                                            .join("");
-                                        }
-                                        return text;
-                                      })
-                                      .join(",")
+                                        .split(",")
+                                        .slice(
+                                          0,
+                                          schedule.tags.split(",").length > 2
+                                            ? 3
+                                            : schedule.tags.split(",").length
+                                        )
+                                        .map((text) => {
+                                          if (text.toString().length > 10) {
+                                            return text
+                                              .split("")
+                                              .slice(0, 10)
+                                              .concat("...")
+                                              .join("");
+                                          }
+                                          return text;
+                                        })
+                                        .join(",")
                                     : ""}
                                   {schedule?.tags !== "" &&
                                     schedule?.tags !== null && (
@@ -826,11 +827,11 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         onClick={() => {
                                           setShowTagModal(true);
                                           schedule.tags === "" ||
-                                            schedule?.tags === null
+                                          schedule?.tags === null
                                             ? setTags([])
                                             : setTags(
-                                              schedule?.tags?.split(",")
-                                            );
+                                                schedule?.tags?.split(",")
+                                              );
                                           setUpdateTagSchedule(schedule);
                                         }}
                                         className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"

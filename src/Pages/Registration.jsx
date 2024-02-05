@@ -341,13 +341,15 @@ const Registration = () => {
             top: "16px",
             right: "20px",
             zIndex: "999999",
-          }}>
+          }}
+        >
           <div className="flex text-SlateBlue  text-base font-normal items-center relative">
             <BsFillInfoCircleFill className="mr-1" />
             {errorMessge}
             <button
               className="absolute top-[-26px] right-[-26px] bg-white rounded-full p-1 "
-              onClick={() => setErrorMessgeVisible(false)}>
+              onClick={() => setErrorMessgeVisible(false)}
+            >
               <AiOutlineClose className="text-xl  text-SlateBlue " />
             </button>
           </div>
@@ -357,7 +359,7 @@ const Registration = () => {
 
       {/* registration form start*/}
       <div className="videobg login relative">
-        <video src={video} autoPlay muted loop />
+        <video src={video} autoPlay muted loop playsInline />
         <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center loginbg  lg:px-6 md:px-6 sm:px-2 xs:px-2 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-2  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
             <div className="flex items-center pb-5">
@@ -373,7 +375,8 @@ const Registration = () => {
                 </div>
                 <form
                   onSubmit={formik.handleSubmit}
-                  className="space-y-3 md:space-y-5">
+                  className="space-y-3 md:space-y-5"
+                >
                   <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 lg:gap-4 md:gap-4 sm:gap-2 xs:gap-2">
                     <div className="relative lg:w-64 md:w-64 sm:max-w-[376px]">
                       <input
@@ -546,7 +549,8 @@ const Registration = () => {
                   <button
                     type="submit"
                     className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
-                    disabled={loading}>
+                    disabled={loading}
+                  >
                     {loading ? "Signing up..." : "Create Your Account"}
                   </button>
                   <div className="flex lg:ml-3 text-sm flex-wrap">

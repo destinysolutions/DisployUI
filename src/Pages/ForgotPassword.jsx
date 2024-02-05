@@ -56,11 +56,11 @@ const ForgotPassword = () => {
         maxBodyLength: Infinity,
       };
       const userExists = await axios.request(config);
-      console.log('userExists', userExists)
-      if(userExists?.data?.status === false){
+      console.log("userExists", userExists);
+      if (userExists?.data?.status === false) {
         toast.dismiss();
-        toast.error(userExists?.data?.message)
-      }else{
+        toast.error(userExists?.data?.message);
+      } else {
         callback(userExists.data); // Invoke the callback with the data
       }
     } catch (error) {
@@ -84,7 +84,9 @@ const ForgotPassword = () => {
           if (data.Status !== false) {
             toast.dismiss();
             setTimeout(() => {
-              toast.success('Temporary password sent to your email. Please check your inbox.');
+              toast.success(
+                "Temporary password sent to your email. Please check your inbox."
+              );
             }, 1000);
             setEmail(values.email);
             setUserId(data.userID);
@@ -102,14 +104,17 @@ const ForgotPassword = () => {
     },
   });
 
-
   const formikChangePassword = useFormik({
-    initialValues: { newPassword: "", confirmPassword: "", currentPassword: '' },
+    initialValues: {
+      newPassword: "",
+      confirmPassword: "",
+      currentPassword: "",
+    },
     validationSchema: validationSchema2,
     onSubmit: async (values) => {
       try {
         // Find the user by UserId
-        toast.loading("Updating....")
+        toast.loading("Updating....");
         const payload = {
           UserID: userID,
           Email: getEmail,
@@ -124,16 +129,15 @@ const ForgotPassword = () => {
           maxBodyLength: Infinity,
         };
         const response = await axios.request(config);
-        console.log('response', response)
+        console.log("response", response);
         if (response.data.status === true) {
-          toast.dismiss()
+          toast.dismiss();
           toast.success(response.data.message);
-          navigate('/')
+          navigate("/");
         } else {
-          toast.dismiss()
+          toast.dismiss();
           toast.error(response.data.message);
         }
-
       } catch (error) {
         console.error("Error:", error.message);
         toast.error("Error changing password. Please try again.");
@@ -141,12 +145,11 @@ const ForgotPassword = () => {
     },
   });
 
-
   return (
     <>
       {/* forgotpassword form start*/}
       <div className="videobg login relative">
-        <video src={video} autoPlay muted loop />
+        <video src={video} autoPlay muted loop playsInline />
         <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center loginbg  lg:px-6 md:px-6 sm:px-2 xs:px-2 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-2  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
             <div className="w-full border-[#ffffff6e] border rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
@@ -176,8 +179,11 @@ const ForgotPassword = () => {
                       />
                     </div>
                     {formikVerifyEmail.touched.email &&
-                      formikVerifyEmail.errors.email ? (
-                      <div className="text-red-500 error mt-1" style={{ marginTop: "5px" }}>
+                    formikVerifyEmail.errors.email ? (
+                      <div
+                        className="text-red-500 error mt-1"
+                        style={{ marginTop: "5px" }}
+                      >
                         {formikVerifyEmail.errors.email}
                       </div>
                     ) : null}
@@ -248,8 +254,11 @@ const ForgotPassword = () => {
                       </div>
                     </div>
                     {formikChangePassword.touched.currentPassword &&
-                      formikChangePassword.errors.currentPassword ? (
-                      <div className="text-red-500 error mt-1" style={{ marginTop: "5px" }}>
+                    formikChangePassword.errors.currentPassword ? (
+                      <div
+                        className="text-red-500 error mt-1"
+                        style={{ marginTop: "5px" }}
+                      >
                         {formikChangePassword.errors.currentPassword}
                       </div>
                     ) : null}
@@ -278,7 +287,7 @@ const ForgotPassword = () => {
                       </div>
                     </div>
                     {formikChangePassword.touched.newPassword &&
-                      formikChangePassword.errors.newPassword ? (
+                    formikChangePassword.errors.newPassword ? (
                       <div className="error" style={{ marginTop: "5px" }}>
                         {formikChangePassword.errors.newPassword}
                       </div>
@@ -312,8 +321,11 @@ const ForgotPassword = () => {
                       </div>
                     </div>
                     {formikChangePassword.touched.confirmPassword &&
-                      formikChangePassword.errors.confirmPassword ? (
-                      <div className="text-red-500 error mt-1" style={{ marginTop: "5px" }}>
+                    formikChangePassword.errors.confirmPassword ? (
+                      <div
+                        className="text-red-500 error mt-1"
+                        style={{ marginTop: "5px" }}
+                      >
                         {formikChangePassword.errors.confirmPassword}
                       </div>
                     ) : null}

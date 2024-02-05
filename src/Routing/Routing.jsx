@@ -49,6 +49,7 @@ import ErrorFallback from "../Components/ErrorFallback";
 import GridAssets from "../Components/Assests/GridAssets";
 import FinalReport from "../Components/Reports/FinalReport";
 import UserDashboard from "../Components/Dashboard/UserDashboard";
+import AddWeatherSchedule from "../Components/Schedule/AddWeatherSchedule";
 
 const Routing = () => {
   const { user, token } = useSelector((state) => state.root.auth);
@@ -454,6 +455,15 @@ const Routing = () => {
               path="/addschedule"
               element={
                 <AddSchedule
+                  sidebarOpen={sidebarOpen}
+                  setSidebarOpen={setSidebarOpen}
+                />
+              }
+            />
+            <Route
+              path="/addweatherschedule"
+              element={
+                <AddWeatherSchedule
                   sidebarOpen={sidebarOpen}
                   setSidebarOpen={setSidebarOpen}
                 />
