@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import { MdOutlineAddToQueue } from "react-icons/md";
-import {HiUserGroup } from "react-icons/hi2";
+import { HiUserGroup } from "react-icons/hi2";
 import PropTypes from "prop-types";
 import ScreenOTPModal from "./ScreenOTPModal";
 import {
@@ -56,6 +56,7 @@ import { addTagsAndUpdate, resetStatus } from "../../Redux/ScreenGroupSlice";
 import { BiEdit } from "react-icons/bi";
 import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
+import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 
 const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   Screens.propTypes = {
@@ -143,6 +144,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   const [itemsPerPage] = useState(6); // Adjust items per page as needed
   const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
   const [sortedField, setSortedField] = useState(null);
+  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -190,12 +192,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(screens)
     ? screens?.filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            value &&
-            value.toString().toLowerCase().includes(searchScreen.toLowerCase())
-        )
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value.toString().toLowerCase().includes(searchScreen.toLowerCase())
       )
+    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -218,7 +220,24 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  
+
+
+  useEffect(() => {
+    dispatch(getMenuAll()).then((item) => {
+      const findData = item.payload.data.menu.find(e => e.pageName === "Screens");
+      if (findData) {
+        const ItemID = findData.moduleID;
+        const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
+        dispatch(getMenuPermission(payload)).then((permissionItem) => {
+          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+            setPermissions(permissionItem.payload.data[0]);
+          }
+        })
+      }
+    })
+  }, [])
+
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -305,7 +324,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
         const Params = {
           id: socket.id,
           connection: socket.connected,
-          macId:  allScreenMacids,
+          macId: allScreenMacids,
         };
         socket.emit("ScreenConnected", Params);
         if (connection.state == "Disconnected") {
@@ -345,7 +364,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     const Params = {
       id: socket.id,
       connection: socket.connected,
-      macId:  MACID,
+      macId: MACID,
     };
     socket.emit("ScreenConnected", Params);
     setTimeout(() => {
@@ -478,14 +497,14 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       ? 1
       : selectedTextScroll?.textScroll_Id !== null &&
         selectedTextScroll?.textScroll_Id !== undefined
-      ? 4
-      : selectedYoutube?.youtubeId !== null &&
-        selectedYoutube?.youtubeId !== undefined
-      ? 5
-      : selectedComposition?.compositionID !== null &&
-        selectedComposition?.compositionID !== undefined
-      ? 3
-      : 0;
+        ? 4
+        : selectedYoutube?.youtubeId !== null &&
+          selectedYoutube?.youtubeId !== undefined
+          ? 5
+          : selectedComposition?.compositionID !== null &&
+            selectedComposition?.compositionID !== undefined
+            ? 3
+            : 0;
 
     let mediaName =
       selectedAsset?.assetName ||
@@ -513,7 +532,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           const Params = {
             id: socket.id,
             connection: socket.connected,
-            macId:  screenToUpdate?.macid.replace(/^\s+/g, ""),
+            macId: screenToUpdate?.macid.replace(/^\s+/g, ""),
           };
           socket.emit("ScreenConnected", Params);
           if (connection.state == "Disconnected") {
@@ -597,7 +616,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
           const Params = {
             id: socket.id,
             connection: socket.connected,
-            macId:  screenToUpdate?.macid.replace(/^\s+/g, ""),
+            macId: screenToUpdate?.macid.replace(/^\s+/g, ""),
           };
           socket.emit("ScreenConnected", Params);
           if (connection.state == "Disconnected") {
@@ -719,7 +738,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
     axios
       .request(config)
-      .then((response) => {})
+      .then((response) => { })
       .catch((error) => {
         console.log(error);
       });
@@ -783,7 +802,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
     const Params = {
       id: socket.id,
       connection: socket.connected,
-      macId:  allScreenMacids,
+      macId: allScreenMacids,
     };
     socket.emit("ScreenConnected", Params);
     if (connection.state == "Disconnected") {
@@ -880,23 +899,25 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 </button>
               */}
 
-              <button
-                data-tip
-                data-for="New Screen"
-                type="button"
-                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
-                onClick={() => setShowOTPModal(true)}
-              >
-                <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
-                <ReactTooltip
-                  id="New Screen"
-                  place="bottom"
-                  type="warning"
-                  effect="float"
+              {permissions.isSave &&
+                <button
+                  data-tip
+                  data-for="New Screen"
+                  type="button"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary shadow-lg"
+                  onClick={() => setShowOTPModal(true)}
                 >
-                  <span>New Screen</span>
-                </ReactTooltip>
-              </button>
+                  <MdOutlineAddToQueue className="p-1 px-2 text-4xl text-white hover:text-white" />
+                  <ReactTooltip
+                    id="New Screen"
+                    place="bottom"
+                    type="warning"
+                    effect="float"
+                  >
+                    <span>New Screen</span>
+                  </ReactTooltip>
+                </button>
+              }
 
               {showOTPModal ? (
                 <>
@@ -951,7 +972,6 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                   <RiSignalTowerLine className="p-1 px-2 text-4xl text-white hover:text-white" />
                 </button>
                */}
-
               <button
                 data-tip
                 data-for="Delete"
@@ -1108,27 +1128,29 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 )}
               </div>
 
-              <button
-                data-tip
-                data-for="Select All"
-                type="button"
-                className="flex align-middle text-white items-center rounded-full p-2 text-base  "
-              >
-                <input
-                  type="checkbox"
-                  className="w-7 h-6"
-                  onChange={handleSelectAllCheckboxChange}
-                  checked={selectAllChecked}
-                />
-                <ReactTooltip
-                  id="Select All"
-                  place="bottom"
-                  type="warning"
-                  effect="float"
+              {permissions.isDelete &&
+                <button
+                  data-tip
+                  data-for="Select All"
+                  type="button"
+                  className="flex align-middle text-white items-center rounded-full p-2 text-base  "
                 >
-                  <span>Select All</span>
-                </ReactTooltip>
-              </button>
+                  <input
+                    type="checkbox"
+                    className="w-7 h-6"
+                    onChange={handleSelectAllCheckboxChange}
+                    checked={selectAllChecked}
+                  />
+                  <ReactTooltip
+                    id="Select All"
+                    place="bottom"
+                    type="warning"
+                    effect="float"
+                  >
+                    <span>Select All</span>
+                  </ReactTooltip>
+                </button>
+              }
             </div>
           </div>
 
@@ -1264,7 +1286,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         )}
                                       />
                                       {isEditingScreen &&
-                                      editingScreenID === screen.screenID ? (
+                                        editingScreenID === screen.screenID ? (
                                         <div className="flex items-center gap-2">
                                           <input
                                             type="text"
@@ -1296,24 +1318,26 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                           >
                                             {screen?.screenName?.length > 10
                                               ? screen?.screenName.slice(
-                                                  0,
-                                                  10
-                                                ) + "..."
+                                                0,
+                                                10
+                                              ) + "..."
                                               : screen.screenName}
                                           </Link>
-                                          <button
-                                            onClick={() => {
-                                              setIsEditingScreen(true);
-                                              setEditingScreenID(
-                                                screen.screenID
-                                              );
-                                              setEditedScreenName(
-                                                screen?.screenName
-                                              );
-                                            }}
-                                          >
-                                            <MdOutlineModeEdit className="w-6 h-5 hover:text-primary text-[#0000FF]" />
-                                          </button>
+                                          {permissions.isSave &&
+                                            <button
+                                              onClick={() => {
+                                                setIsEditingScreen(true);
+                                                setEditingScreenID(
+                                                  screen.screenID
+                                                );
+                                                setEditedScreenName(
+                                                  screen?.screenName
+                                                );
+                                              }}
+                                            >
+                                              <MdOutlineModeEdit className="w-6 h-5 hover:text-primary text-[#0000FF]" />
+                                            </button>
+                                          }
                                         </div>
                                       )}
                                     </div>
@@ -1329,11 +1353,10 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                   <td className="text-center">
                                     <span
                                       id={`changetvstatus${screen.macid}`}
-                                      className={`rounded-full px-6 py-2 text-white text-center ${
-                                        screen.screenStatus == 1
-                                          ? "bg-[#3AB700]"
-                                          : "bg-[#FF0000]"
-                                      }`}
+                                      className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
+                                        ? "bg-[#3AB700]"
+                                        : "bg-[#FF0000]"
+                                        }`}
                                     >
                                       {screen.screenStatus == 1
                                         ? "Live"
@@ -1388,10 +1411,8 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                         Set a schedule
                                       </button>
                                     ) : (
-                                      `${screen.scheduleName} Till
-                              ${moment(screen.endDate).format(
-                                "YYYY-MM-DD hh:mm"
-                              )}`
+                                      `${screen.scheduleName} Till ${moment(screen.endDate).format("YYYY-MM-DD hh:mm"
+                                      )}`
                                     )}
 
                                     {showScheduleModal && (
@@ -1482,17 +1503,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                             <input
                                                               type="checkbox"
                                                               className="mr-3"
-                                                              onChange={() =>
-                                                                handleScheduleAdd(
-                                                                  schedule
-                                                                )
-                                                              }
+                                                              onChange={() => handleScheduleAdd(schedule)}
                                                             />
                                                             <div>
                                                               <div>
-                                                                {
-                                                                  schedule.scheduleName
-                                                                }
+                                                                {schedule.scheduleName}
                                                               </div>
                                                             </div>
                                                           </td>
@@ -1539,6 +1554,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                                             >
                                                               <BiEdit />
                                                             </Link>
+
                                                           </td>
                                                         </tr>
                                                       )
@@ -1568,54 +1584,54 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                 )}
 
                                 {tagsContentVisible && (
-                                  
+
                                   <td
                                     // title={screen?.tags && screen?.tags}
                                     title={screen?.tags && screen?.tags.trim().split(',').map(tag => tag.trim()).join(",")}
                                     className="text-center text-[#5E5E5E]"
                                   >
-                                  {console.log(screen?.tags,"screen?.tags")}
+                                    {console.log(screen?.tags, "screen?.tags")}
                                     <div className="p-2 text-center flex flex-wrap items-center justify-center gap-2 break-all text-[#5E5E5E]">
                                       {(screen?.tags === "" ||
                                         screen?.tags === null) && (
-                                        <span>
-                                          <AiOutlinePlusCircle
-                                            size={30}
-                                            className="mx-auto cursor-pointer"
-                                            onClick={() => {
-                                              setShowTagModal(true);
-                                              screen.tags === "" ||
-                                              screen?.tags === null
-                                                ? setTags([])
-                                                : setTags(
+                                          <span>
+                                            <AiOutlinePlusCircle
+                                              size={30}
+                                              className="mx-auto cursor-pointer"
+                                              onClick={() => {
+                                                setShowTagModal(true);
+                                                screen.tags === "" ||
+                                                  screen?.tags === null
+                                                  ? setTags([])
+                                                  : setTags(
                                                     screen?.tags?.split(",")
                                                   );
-                                              setTagUpdateScreeen(screen);
-                                            }}
-                                          />
-                                        </span>
-                                      )}
+                                                setTagUpdateScreeen(screen);
+                                              }}
+                                            />
+                                          </span>
+                                        )}
 
                                       {screen?.tags !== null
                                         ? screen.tags
-                                            .split(",")
-                                            .slice(
-                                              0,
-                                              screen.tags.split(",").length > 2
-                                                ? 3
-                                                : screen.tags.split(",").length
-                                            )
-                                            .map((text) => {
-                                              if (text.toString().length > 10) {
-                                                return text
-                                                  .split("")
-                                                  .slice(0, 10)
-                                                  .concat("...")
-                                                  .join("");
-                                              }
-                                              return text;
-                                            })
-                                            .join(",")
+                                          .split(",")
+                                          .slice(
+                                            0,
+                                            screen.tags.split(",").length > 2
+                                              ? 3
+                                              : screen.tags.split(",").length
+                                          )
+                                          .map((text) => {
+                                            if (text.toString().length > 10) {
+                                              return text
+                                                .split("")
+                                                .slice(0, 10)
+                                                .concat("...")
+                                                .join("");
+                                            }
+                                            return text;
+                                          })
+                                          .join(",")
                                         : ""}
                                       {screen?.tags !== "" &&
                                         screen?.tags !== null && (
@@ -1623,11 +1639,11 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                             onClick={() => {
                                               setShowTagModal(true);
                                               screen.tags === "" ||
-                                              screen?.tags === null
+                                                screen?.tags === null
                                                 ? setTags([])
                                                 : setTags(
-                                                    screen?.tags?.split(",")
-                                                  );
+                                                  screen?.tags?.split(",")
+                                                );
                                               setTagUpdateScreeen(screen);
                                             }}
                                             className="w-5 h-5 cursor-pointer"
@@ -1697,26 +1713,28 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                     </div> */}
 
                                     <div className="cursor-pointer text-xl">
-                                      <Link
-                                        to={`/screensplayer?screenID=${screen.screenID}`}
-                                      >
-                                        <button
-                                          data-tip
-                                          data-for="Edit"
-                                          type="button"
-                                          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                      {permissions.isSave &&
+                                        <Link
+                                          to={`/screensplayer?screenID=${screen.screenID}`}
                                         >
-                                          <BiEdit />
-                                          <ReactTooltip
-                                            id="Edit"
-                                            place="bottom"
-                                            type="warning"
-                                            effect="float"
+                                          <button
+                                            data-tip
+                                            data-for="Edit"
+                                            type="button"
+                                            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                           >
-                                            <span>Edit</span>
-                                          </ReactTooltip>
-                                        </button>
-                                      </Link>
+                                            <BiEdit />
+                                            <ReactTooltip
+                                              id="Edit"
+                                              place="bottom"
+                                              type="warning"
+                                              effect="float"
+                                            >
+                                              <span>Edit</span>
+                                            </ReactTooltip>
+                                          </button>
+                                        </Link>
+                                      }
                                     </div>
                                     {/* <div className="cursor-pointer text-xl text-[#EE4B2B]">
                                     <MdDeleteForever

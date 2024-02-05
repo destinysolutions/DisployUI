@@ -39,22 +39,16 @@ const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
             <Route path="/myschedule" element={<Navigate to="/" />} />
             <Route path="/weatherschedule" element={<Navigate to="/" />} />
             <Route path="/addschedule" element={<Navigate to="/" />} />
-            <Route
-              path="/saveassignscreenmodal"
-              element={<Navigate to="/" />}
-            />
+            <Route path="/saveassignscreenmodal" element={<Navigate to="/" />}/>
             <Route path="/approval" element={<Navigate to="/" />} />
             <Route path="/settings" element={<Navigate to="/" />} />
             <Route path="/userrole" element={<Navigate to="/" />} />
             <Route path="/eventedit" element={<Navigate to="/" />} />
-            <Route
-              path="/NewFolderDialog/:folderId"
-              element={<Navigate to="/" />}
-            />
+            <Route path="/NewFolderDialog/:folderId" element={<Navigate to="/" />}/>
             <Route path="/trash" element={<Navigate to="/" />} />
-
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Registration />} />
+
             <Route
               path="/forgotpassword"
               element={
@@ -83,6 +77,7 @@ const LoginContainer = ({ sidebarOpen, setSidebarOpen }) => {
               }
             />
           </Route>
+
         </Routes>
       </BrowserRouter>
     </div>

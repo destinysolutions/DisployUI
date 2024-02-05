@@ -22,7 +22,7 @@ import toast from "react-hot-toast";
 import { IoBarChartSharp } from "react-icons/io5";
 import { RiPlayListFill } from "react-icons/ri";
 
-const Defaultmedia = () => {
+const Defaultmedia = (permissions) => {
   const [mediaTabs, setMediaTabs] = useState(1);
   function updateMediaTab(id) {
     setMediaTabs(id);
@@ -111,13 +111,13 @@ const Defaultmedia = () => {
     }
   };
 
-  
+
   let viewerSrc = '';
 
   if (assetPreview?.fileExtention === '.pdf' || assetPreview?.fileExtention === '.txt') {
-      viewerSrc = assetPreview?.assetFolderPath;
+    viewerSrc = assetPreview?.assetFolderPath;
   } else if (assetPreview?.fileExtention === '.csv') {
-      viewerSrc = `https://docs.google.com/gview?url=${assetPreview?.assetFolderPath}&embedded=true`;
+    viewerSrc = `https://docs.google.com/gview?url=${assetPreview?.assetFolderPath}&embedded=true`;
   } else if (
     assetPreview?.fileExtention === '.pptx' ||
     assetPreview?.fileExtention === '.ppt' ||
@@ -126,7 +126,7 @@ const Defaultmedia = () => {
     assetPreview?.fileExtention === '.xlsx' ||
     assetPreview?.fileExtention === '.xls'
   ) {
-      viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
+    viewerSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${assetPreview?.assetFolderPath}`;
   }
 
   const handleGetAsset = () => {
@@ -364,21 +364,33 @@ const Defaultmedia = () => {
               <label className="mr-3 text-primary lg:text-lg md:text-lg sm:text-base xs:text-base font-medium py-2">
                 Asset / Playing:
               </label>
-              <button
-                onClick={(e) => {
-                  AssetModelOpen();
-                  setSelectedAsset({
-                    ...selectedAsset,
-                    assetName: e.target.value,
-                  });
-                }}
-                className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm line-clamp-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-              >
-                <p className="line-clamp-3">
-                  {assetName === "" ? "No image" : assetName}
-                </p>
-                <AiOutlineCloudUpload className="ml-2 min-w-[1.5rem] min-h-[1.5rem]" />
-              </button>
+              {permissions.isSave ?
+                <button
+                  onClick={(e) => {
+                    AssetModelOpen();
+                    setSelectedAsset({
+                      ...selectedAsset,
+                      assetName: e.target.value,
+                    });
+                  }}
+                  className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm line-clamp-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                >
+                  <p className="line-clamp-3">
+                    {assetName === "" ? "No image" : assetName}
+                  </p>
+                  <AiOutlineCloudUpload className="ml-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                </button>
+                :
+                <button
+                  className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm line-clamp-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                >
+                  <p className="line-clamp-3">
+                    {assetName === "" ? "No image" : assetName}
+                  </p>
+                  <AiOutlineCloudUpload className="ml-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                </button>
+              }
+
               {showAssetModal && (
                 <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none myplaylist-popup">
                   <div
@@ -420,8 +432,8 @@ const Defaultmedia = () => {
                           >
                             <span
                               className={`p-1 rounded ${popupActiveTab === 1
-                                  ? "bg-primary text-white"
-                                  : "bg-lightgray"
+                                ? "bg-primary text-white"
+                                : "bg-lightgray"
                                 } `}
                             >
                               <IoBarChartSharp size={15} />
@@ -541,9 +553,9 @@ const Defaultmedia = () => {
                                   <tbody key={asset.assetID}>
                                     <tr
                                       className={`${selectedAsset?.assetID ===
-                                          asset?.assetID
-                                          ? "bg-[#f3c953]"
-                                          : ""
+                                        asset?.assetID
+                                        ? "bg-[#f3c953]"
+                                        : ""
                                         } border-b border-[#eee] `}
                                       onClick={() => {
                                         handleAssetAdd(asset);
@@ -617,8 +629,8 @@ const Defaultmedia = () => {
                                   <tbody key={composition.compositionID}>
                                     <tr
                                       className={`${selectedComposition === composition
-                                          ? "bg-[#f3c953]"
-                                          : ""
+                                        ? "bg-[#f3c953]"
+                                        : ""
                                         } border-b border-[#eee] `}
                                       onClick={() => {
                                         handleCompositionsAdd(composition);
@@ -647,8 +659,8 @@ const Defaultmedia = () => {
                                   <tbody key={composition.compositionID}>
                                     <tr
                                       className={`${selectedComposition === composition
-                                          ? "bg-[#f3c953]"
-                                          : ""
+                                        ? "bg-[#f3c953]"
+                                        : ""
                                         } border-b border-[#eee] `}
                                       onClick={() => {
                                         handleCompositionsAdd(composition);
@@ -785,55 +797,35 @@ const Defaultmedia = () => {
             </div>
           </>
         )} */}
-        {assetPreviewPopup && (
-          <div className="fixed left-1/2 top-1/3 -translate-x-1/2 w-[768px] h-[432px] bg-black z-50 inset-0">
-            {/* btn */}
-            <div className="fixed z-40">
-              <button
-                className="fixed cursor-pointer -top-3 -right-3 rounded-full bg-black text-white"
-                onClick={() => setAssetPreviewPopup(false)}
-              >
-                <AiOutlineCloseCircle size={30} />
-              </button>
-            </div>
-            <div className="fixed">
-              {assetPreview && (
-                <>
-                  {assetPreview.assetType === "OnlineImage" && (
-                    <div className="imagebox p-3">
-                      <img
-                        src={assetPreview.assetFolderPath}
-                        alt={assetPreview.assetName}
-                        className="imagebox w-full h-full object-cover top-0 left-0 z-50 fixed"
-                      />
-                    </div>
-                  )}
-  
-                  {assetPreview.assetType === "OnlineVideo" && (
-                    <div className="relative videobox">
-                      <video
-                        controls
-                        className="w-full rounded-2xl h-full"
-                      >
-                        <source
-                          src={assetPreview.assetFolderPath}
-                          type="video/mp4"
-                        />
-                        Your browser does not support the video tag.
-                      </video>
-                    </div>
-                  )}
-                  {assetPreview.assetType === "Image" && (
+      {assetPreviewPopup && (
+        <div className="fixed left-1/2 top-1/3 -translate-x-1/2 w-[768px] h-[432px] bg-black z-50 inset-0">
+          {/* btn */}
+          <div className="fixed z-40">
+            <button
+              className="fixed cursor-pointer -top-3 -right-3 rounded-full bg-black text-white"
+              onClick={() => setAssetPreviewPopup(false)}
+            >
+              <AiOutlineCloseCircle size={30} />
+            </button>
+          </div>
+          <div className="fixed">
+            {assetPreview && (
+              <>
+                {assetPreview.assetType === "OnlineImage" && (
+                  <div className="imagebox p-3">
                     <img
                       src={assetPreview.assetFolderPath}
                       alt={assetPreview.assetName}
                       className="imagebox w-full h-full object-cover top-0 left-0 z-50 fixed"
                     />
-                  )}
-                  {assetPreview.assetType === "Video" && (
+                  </div>
+                )}
+
+                {assetPreview.assetType === "OnlineVideo" && (
+                  <div className="relative videobox">
                     <video
                       controls
-                      className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                      className="w-full rounded-2xl h-full"
                     >
                       <source
                         src={assetPreview.assetFolderPath}
@@ -841,20 +833,40 @@ const Defaultmedia = () => {
                       />
                       Your browser does not support the video tag.
                     </video>
-                  )}
-                  {assetPreview.assetType === "DOC" && (
-                    <iframe
+                  </div>
+                )}
+                {assetPreview.assetType === "Image" && (
+                  <img
+                    src={assetPreview.assetFolderPath}
+                    alt={assetPreview.assetName}
+                    className="imagebox w-full h-full object-cover top-0 left-0 z-50 fixed"
+                  />
+                )}
+                {assetPreview.assetType === "Video" && (
+                  <video
+                    controls
+                    className="imagebox w-full h-full object-contain top-0 left-0 z-50 fixed"
+                  >
+                    <source
+                      src={assetPreview.assetFolderPath}
+                      type="video/mp4"
+                    />
+                    Your browser does not support the video tag.
+                  </video>
+                )}
+                {assetPreview.assetType === "DOC" && (
+                  <iframe
                     className='w-[768px] h-[432px]'
                     title="Document Viewer"
                     src={viewerSrc}
-                ></iframe>
-                  )}
-                </>
-              )}
-            </div>
+                  ></iframe>
+                )}
+              </>
+            )}
           </div>
-        )}
-      
+        </div>
+      )}
+
     </div>
 
   );

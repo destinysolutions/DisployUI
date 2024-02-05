@@ -27,7 +27,7 @@ import {
   MdOutlineModeEdit,
 } from "react-icons/md";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import youtube from "../../images/AppsImg/youtube.svg";
 import { useRef } from "react";
@@ -37,13 +37,16 @@ import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import { HiBackward } from "react-icons/hi2";
 import { connection } from "../../SignalR";
 import { socket } from "../../App";
+import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 
 const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   Youtube.propTypes = {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  const { token } = useSelector((state) => state.root.auth);
+
+  const dispatch = useDispatch();
+  const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [appDetailModal, setAppDetailModal] = useState(false);
@@ -74,6 +77,23 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
   const addScreenRef = useRef(null);
   const modalRef = useRef(null);
   const appDropdownRef = useRef(null);
+
+  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
+
+  useEffect(() => {
+    dispatch(getMenuAll()).then((item) => {
+      const findData = item.payload.data.menu.find(e => e.pageName === "Apps");
+      if (findData) {
+        const ItemID = findData.moduleID;
+        const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
+        dispatch(getMenuPermission(payload)).then((permissionItem) => {
+          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+            setPermissions(permissionItem.payload.data[0]);
+          }
+        })
+      }
+    })
+  }, [])
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
     let idS = "";
@@ -397,12 +417,14 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
               Apps
             </h1>
             <div className="lg:flex">
-              <Link to="/youtubedetail">
-                <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                  <TbAppsFilled className="text-2xl mr-2 text-white" />
-                  New Instance
-                </button>
-              </Link>
+              {permissions.isSave &&
+                <Link to="/youtubedetail">
+                  <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                    <TbAppsFilled className="text-2xl mr-2 text-white" />
+                    New Instance
+                  </button>
+                </Link>
+              }
               <Link to="/apps">
                 <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                   <MdArrowBackIosNew className="text-2xl mr-2 text-white rounded-full p-1" />
@@ -499,12 +521,14 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                   </button>
                   {Array.isArray(youtubeData) && youtubeData.length > 0 && (
                     <button className="sm:ml-2 xs:ml-1 mt-1">
-                      <input
-                        type="checkbox"
-                        className="h-7 w-7"
-                        checked={selectAll}
-                        onChange={handleSelectAll}
-                      />
+                      {permissions.isDelete &&
+                        <input
+                          type="checkbox"
+                          className="h-7 w-7"
+                          checked={selectAll}
+                          onChange={handleSelectAll}
+                        />
+                      }
                     </button>
                   )}
                 </div>
@@ -556,6 +580,7 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                               />
                             </button>
                             <div className="relative">
+                              {permissions.isSave ||  permissions.isDelete && 
                               <button className="float-right">
                                 <BiDotsHorizontalRounded
                                   className="text-2xl"
@@ -564,48 +589,52 @@ const Youtube = ({ sidebarOpen, setSidebarOpen }) => {
                                   }
                                 />
                               </button>
-                              {appDropDown === item.youtubeId && (
+                               }
+                              {appDropDown === item.youtubeId  &&  (
                                 <div ref={appDropdownRef} className="appdw">
                                   <ul className="space-y-2">
-                                    <li
-                                      onClick={() =>
-                                        navigate(
-                                          `/youtubedetail/${item?.youtubeId}`
-                                        )
-                                      }
-                                      className="flex text-sm items-center cursor-pointer"
-                                    >
-                                      <MdOutlineEdit className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
-                                      Edit
-                                    </li>
-                                    <li
-                                      className="flex text-sm items-center cursor-pointer"
-                                      onClick={() => {
-                                        setAddScreenModal(true);
-                                        // handleFetchYoutubeById(item?.youtubeId);
-                                        setSelectData(item);
-                                      }}
-                                    >
-                                      <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
-                                      Set to Screen
-                                    </li>
-                                    {/* <li className="flex text-sm items-center">
-                                      <MdPlaylistPlay className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
-                                      Add to Playlist
-                                    </li> */}
+                                    {permissions.isSave &&
+                                      <div>
+                                        <li
+                                          onClick={() =>
+                                            navigate(
+                                              `/youtubedetail/${item?.youtubeId}`
+                                            )
+                                          }
+                                          className="flex text-sm items-center cursor-pointer"
+                                        >
+                                          <MdOutlineEdit className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                                          Edit
+                                        </li>
+                                        <li
+                                          className="flex text-sm items-center cursor-pointer"
+                                          onClick={() => {
+                                            setAddScreenModal(true);
+                                            // handleFetchYoutubeById(item?.youtubeId);
+                                            setSelectData(item);
+                                          }}
+                                        >
+                                          <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                                          Set to Screen
+                                        </li>
+                                      </div>
+                                    }
 
-                                    <li
-                                      className="flex text-sm items-center cursor-pointer"
-                                      onClick={() =>
-                                        handelDeleteInstance(
-                                          item.youtubeId,
-                                          item?.maciDs
-                                        )
-                                      }
-                                    >
-                                      <RiDeleteBin5Line className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
-                                      Delete
-                                    </li>
+                                    {permissions.isDelete &&
+                                      <li
+                                        className="flex text-sm items-center cursor-pointer"
+                                        onClick={() =>
+                                          handelDeleteInstance(
+                                            item.youtubeId,
+                                            item?.maciDs
+                                          )
+                                        }
+                                      >
+                                        <RiDeleteBin5Line className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                                        Delete
+                                      </li>
+                                    }
+
                                   </ul>
                                 </div>
                               )}

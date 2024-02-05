@@ -155,7 +155,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
           <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
             <div className="lg:flex lg:justify-between sm:block items-center">
               <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ml-">
-                Users
+              Customers
               </h1>
               <div className="m-5 flex gap-4 items-center">
                 <div className="flex gap-3">
@@ -234,7 +234,7 @@ const OnBoding = ({ sidebarOpen, setSidebarOpen }) => {
                     {store?.data?.length > 0 && sortedAndPaginatedData.map((item) => {
                       return (
                         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                          <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                          <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white capitalize">
                             {item.firstName + ' ' + item.lastName}
                           </th>
                           <td className="px-6 py-4">

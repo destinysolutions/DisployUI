@@ -39,6 +39,7 @@ const Sidebar = ({ sidebarOpen }) => {
   const [submenuStates, setSubmenuStates] = useState({});
 
   const [menuData, setMenuData] = useState([]);
+  const [menuDataBottummenu,setMenuDataBottummenu] = useState([]);
 
   const store = useSelector((state) => state.root.sidebarData);
 
@@ -54,7 +55,7 @@ const Sidebar = ({ sidebarOpen }) => {
           cName: "nav-text link-items",
           path: item.path,
           icon: <img src={item.icon} alt={item.alt} className="w-6" />,
-          subMenus: item.submenu
+          subMenus: item.submenu  && item.submenu.length > 0
             ? item.submenu.map((submenu) => ({
                 title: submenu.pageName,
                 path: submenu.path,
@@ -96,8 +97,29 @@ const Sidebar = ({ sidebarOpen }) => {
           }
         });
       }
+
+
+      const bottummenuMenuData = store.data.bottummenu
+      .map((item) => ({
+        title: item.pageName,
+        cName: "nav-text link-items",
+        path: item.path,
+        icon: <img src={item.icon} alt={item.alt} className="w-6" />,
+        subMenus: item.submenu  && item.submenu.length > 0
+          ? item.submenu.map((submenu) => ({
+              title: submenu.pageName,
+              path: submenu.path,
+              icon: <img src={submenu.icon} alt={submenu.alt} className="w-6" />,
+            }))
+          : null,
+        sortBy: item.sortBy || 0, // Assuming sortBy is a numeric property
+        isActive: false, // You may want to set this property as well
+      }))
+      .sort((a, b) => a.sortBy - b.sortBy || a.title.localeCompare(b.title)); // Sort by sortBy, then by title
+
   
       setMenuData(formattedMenuData);
+      setMenuDataBottummenu(bottummenuMenuData);
     }
   }, [store.data]);
   
@@ -302,7 +324,7 @@ const Sidebar = ({ sidebarOpen }) => {
                 />
               </div>
               <ul className="space-y-1 font-medium">
-                {Menus.map((item, index) => {
+                {menuData.map((item, index) => {
                   const submenuIsOpen = submenuStates[item.title] || false;
                   const isActive = window.location.pathname === item.path; // Check if the item is active
                   return (
@@ -337,15 +359,12 @@ const Sidebar = ({ sidebarOpen }) => {
                             <li key={subIndex} className="p-2 relative submenu">
                               <Link to={submenu.path}>
                                 <div>{submenu.icon}</div>
-                                <span className="ml-5">{submenu.title}</span>
+                                {submenu.title === "New Screen" ? (
+                                  <span className="ml-5" onClick={() => setShowOTPModal(true)}>{submenu.title}</span>
+                                ): ( 
+                                  <span className="ml-5">{submenu.title}</span>
+                                )}
                               </Link>
-                              {/* {submenu.title === "New Screen" && (
-                                <div className="absolute right-0 top-0">
-                                  <button onClick={() => setShowOTPModal(true)}>
-                                    <MdOutlineAddToQueue className="text-gray text-lg opacity-60" />
-                                  </button>
-                                </div>
-                              )} */}
                             </li>
                           ))}
                         </ul>
@@ -358,7 +377,7 @@ const Sidebar = ({ sidebarOpen }) => {
                   <div className="dotline my-4"></div>
                 </li>
 
-                {MenuIcons.map((item, MIindex) => {
+                {menuDataBottummenu.map((item, MIindex) => {
                   const isActive = window.location.pathname === item.path; // Check if the item is active
                   return (
                     <li
@@ -415,7 +434,7 @@ const Sidebar = ({ sidebarOpen }) => {
               </div>
             </div>
             <ul className="space-y-1 font-medium">
-              {Menus.map((item, index) => {
+              {menuData.map((item, index) => {
                 return (
                   <li key={index} className={item.cName}>
                     <div className="flex items-center">
@@ -453,7 +472,7 @@ const Sidebar = ({ sidebarOpen }) => {
               <li>
                 <div className="dotline my-4"></div>
               </li>
-              {MenuIcons.map((item, MIindex) => {
+              {menuDataBottummenu.map((item, MIindex) => {
                 return (
                   <li key={MIindex} className={item.cName}>
                     <div

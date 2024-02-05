@@ -44,7 +44,7 @@ import moment from "moment";
 import "../../Styles/Settings.css";
 import ReactTooltip from "react-tooltip";
 
-const Users = ({ searchValue }) => {
+const Users = ({ searchValue, permissions }) => {
   const [loadFist, setLoadFist] = useState(true);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [showuserModal, setshowuserModal] = useState(false);
@@ -204,8 +204,8 @@ const Users = ({ searchValue }) => {
       newErrors.email = !email
         ? "Email is required"
         : !emailRegex.test(email)
-        ? "Please Enter Valid Email"
-        : "";
+          ? "Please Enter Valid Email"
+          : "";
 
       newErrors.password = !password ? "Password is required" : "";
     }
@@ -983,11 +983,10 @@ const Users = ({ searchValue }) => {
                                         <td className="text-center">
                                           <span
                                             id={`changetvstatus${screen.macid}`}
-                                            className={`rounded-full px-6 py-2 text-white text-center ${
-                                              screen.screenStatus == 1
+                                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
                                                 ? "bg-[#3AB700]"
                                                 : "bg-[#FF0000]"
-                                            }`}
+                                              }`}
                                           >
                                             {screen.screenStatus == 1
                                               ? "Live"
@@ -999,40 +998,40 @@ const Users = ({ searchValue }) => {
                                         </td>
 
                                         <td className="text-center break-words">
-                                        {screen.scheduleName == "" ? (
-                                          ""
+                                          {screen.scheduleName == "" ? (
+                                            ""
                                           ) : (
                                             `${screen.scheduleName} Till
                                     ${moment(screen.endDate).format(
-                                      "YYYY-MM-DD hh:mm"
-                                    )}`
+                                              "YYYY-MM-DD hh:mm"
+                                            )}`
                                           )}
                                         </td>
                                         <td className="text-center break-words">
                                           {screen?.tags !== null
                                             ? screen?.tags
-                                                .split(",")
-                                                .slice(
-                                                  0,
-                                                  screen?.tags.split(",")
-                                                    .length > 2
-                                                    ? 3
-                                                    : screen?.tags.split(",")
-                                                        .length
-                                                )
-                                                .map((text) => {
-                                                  if (
-                                                    text.toString().length > 10
-                                                  ) {
-                                                    return text
-                                                      .split("")
-                                                      .slice(0, 10)
-                                                      .concat("...")
-                                                      .join("");
-                                                  }
-                                                  return text;
-                                                })
-                                                .join(",")
+                                              .split(",")
+                                              .slice(
+                                                0,
+                                                screen?.tags.split(",")
+                                                  .length > 2
+                                                  ? 3
+                                                  : screen?.tags.split(",")
+                                                    .length
+                                              )
+                                              .map((text) => {
+                                                if (
+                                                  text.toString().length > 10
+                                                ) {
+                                                  return text
+                                                    .split("")
+                                                    .slice(0, 10)
+                                                    .concat("...")
+                                                    .join("");
+                                                }
+                                                return text;
+                                              })
+                                              .join(",")
                                             : ""}
                                         </td>
                                       </tr>
@@ -1373,7 +1372,7 @@ const Users = ({ searchValue }) => {
                             </div>
                           </div>
                           {formik.touched.currentPassword &&
-                          formik.errors.currentPassword ? (
+                            formik.errors.currentPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.currentPassword}
                             </div>
@@ -1409,7 +1408,7 @@ const Users = ({ searchValue }) => {
                             </div>
                           </div>
                           {formik.touched.newPassword &&
-                          formik.errors.newPassword ? (
+                            formik.errors.newPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.newPassword}
                             </div>
@@ -1445,7 +1444,7 @@ const Users = ({ searchValue }) => {
                             </div>
                           </div>
                           {formik.touched.confirmPassword &&
-                          formik.errors.confirmPassword ? (
+                            formik.errors.confirmPassword ? (
                             <div className="text-red-500 error">
                               {formik.errors.confirmPassword}
                             </div>
@@ -2043,11 +2042,10 @@ const Users = ({ searchValue }) => {
                         <td className="text-center">
                           <span
                             id={`changetvstatus${screen.macid}`}
-                            className={`rounded-full px-6 py-2 text-white text-center ${
-                              screen.screenStatus == 1
+                            className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
                                 ? "bg-[#3AB700]"
                                 : "bg-[#FF0000]"
-                            }`}
+                              }`}
                           >
                             {screen.screenStatus == 1 ? "Live" : "offline"}
                           </span>
@@ -2056,36 +2054,36 @@ const Users = ({ searchValue }) => {
                           {screen.googleLocation}
                         </td>
                         <td className="text-center break-words">
-                        {screen.scheduleName == "" ? (
-                          ""
+                          {screen.scheduleName == "" ? (
+                            ""
                           ) : (
                             `${screen.scheduleName} Till
                     ${moment(screen.endDate).format(
-                      "YYYY-MM-DD hh:mm"
-                    )}`
+                              "YYYY-MM-DD hh:mm"
+                            )}`
                           )}
                         </td>
                         <td className="text-center break-words">
                           {screen?.tags !== null
                             ? screen?.tags
-                                .split(",")
-                                .slice(
-                                  0,
-                                  screen?.tags.split(",").length > 2
-                                    ? 3
-                                    : screen?.tags.split(",").length
-                                )
-                                .map((text) => {
-                                  if (text.toString().length > 10) {
-                                    return text
-                                      .split("")
-                                      .slice(0, 10)
-                                      .concat("...")
-                                      .join("");
-                                  }
-                                  return text;
-                                })
-                                .join(",")
+                              .split(",")
+                              .slice(
+                                0,
+                                screen?.tags.split(",").length > 2
+                                  ? 3
+                                  : screen?.tags.split(",").length
+                              )
+                              .map((text) => {
+                                if (text.toString().length > 10) {
+                                  return text
+                                    .split("")
+                                    .slice(0, 10)
+                                    .concat("...")
+                                    .join("");
+                                }
+                                return text;
+                              })
+                              .join(",")
                             : ""}
                         </td>
                       </tr>
@@ -2106,6 +2104,7 @@ const Users = ({ searchValue }) => {
         <>
           <div className="lg:p-5 md:p-5 sm:p-2 xs:p-2">
             <div>
+            {permissions.isSave && 
               <button
                 className="flex align-middle items-center float-right bg-SlateBlue text-white rounded-full lg:px-6 sm:px-5 mb-5 py-2 text-base sm:text-sm  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                 onClick={() => {
@@ -2129,6 +2128,7 @@ const Users = ({ searchValue }) => {
                 <BiUserPlus className="text-2xl mr-1" />
                 Add New User
               </button>
+              }
             </div>
             <div className="clear-both">
               <div className="bg-white rounded-xl mt-8 shadow screen-section ">
@@ -2248,6 +2248,8 @@ const Users = ({ searchValue }) => {
                               </td>
                               <td className="text-center">
                                 <div className="flex justify-center gap-4">
+                                {permissions.isSave &&
+                                <>
                                   <div
                                     data-tip
                                     data-for="View"
@@ -2270,45 +2272,51 @@ const Users = ({ searchValue }) => {
                                       <span>View</span>
                                     </ReactTooltip>
                                   </div>
-                                  <div
-                                    data-tip
-                                    data-for="Edit"
-                                    className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                    onClick={() => {
-                                      setUserID(item.orgUserSpecificID);
-                                      selectUserById(item.orgUserSpecificID);
-                                      setUserMasterID(item.userMasterID);
-                                      setshowuserModal(true);
-                                    }}
-                                  >
-                                    <BiEdit />
-                                    <ReactTooltip
-                                      id="Edit"
-                                      place="bottom"
-                                      type="warning"
-                                      effect="float"
+
+                                    <div
+                                      data-tip
+                                      data-for="Edit"
+                                      className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                      onClick={() => {
+                                        setUserID(item.orgUserSpecificID);
+                                        selectUserById(item.orgUserSpecificID);
+                                        setUserMasterID(item.userMasterID);
+                                        setshowuserModal(true);
+                                      }}
                                     >
-                                      <span>Edit</span>
-                                    </ReactTooltip>
-                                  </div>
-                                  <div
-                                    data-tip
-                                    data-for="Delete"
-                                    className="cursor-pointer text-xl flex gap-3 rounded-full px-2 py-2 text-white text-center bg-[#FF0000]"
-                                    onClick={() =>
-                                      handleDeleteUser(item.orgUserSpecificID)
-                                    }
-                                  >
-                                    <MdDeleteForever />
-                                    <ReactTooltip
-                                      id="Delete"
-                                      place="bottom"
-                                      type="warning"
-                                      effect="float"
+                                      <BiEdit />
+                                      <ReactTooltip
+                                        id="Edit"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="float"
+                                      >
+                                        <span>Edit</span>
+                                      </ReactTooltip>
+                                    </div>
+                                    </>
+                                  }
+
+                                  {permissions.isDelete &&
+                                    <div
+                                      data-tip
+                                      data-for="Delete"
+                                      className="cursor-pointer text-xl flex gap-3 rounded-full px-2 py-2 text-white text-center bg-[#FF0000]"
+                                      onClick={() =>
+                                        handleDeleteUser(item.orgUserSpecificID)
+                                      }
                                     >
-                                      <span>Delete</span>
-                                    </ReactTooltip>
-                                  </div>
+                                      <MdDeleteForever />
+                                      <ReactTooltip
+                                        id="Delete"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="float"
+                                      >
+                                        <span>Delete</span>
+                                      </ReactTooltip>
+                                    </div>
+                                  }
                                 </div>
                               </td>
                             </tr>
@@ -2393,11 +2401,10 @@ const Users = ({ searchValue }) => {
                                     <td className="text-center">
                                       <span
                                         id={`changetvstatus${screen.macid}`}
-                                        className={`rounded-full px-6 py-2 text-white text-center ${
-                                          screen.screenStatus == 1
+                                        className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
                                             ? "bg-[#3AB700]"
                                             : "bg-[#FF0000]"
-                                        }`}
+                                          }`}
                                       >
                                         {screen.screenStatus == 1
                                           ? "Live"
@@ -2408,36 +2415,36 @@ const Users = ({ searchValue }) => {
                                       {screen.googleLocation}
                                     </td>
                                     <td className="text-center break-words">
-                                    {screen.scheduleName == "" ? (
-                                      ""
+                                      {screen.scheduleName == "" ? (
+                                        ""
                                       ) : (
                                         `${screen.scheduleName} Till
                                 ${moment(screen.endDate).format(
-                                  "YYYY-MM-DD hh:mm"
-                                )}`
+                                          "YYYY-MM-DD hh:mm"
+                                        )}`
                                       )}
                                     </td>
                                     <td className="text-center break-words">
                                       {screen?.tags !== null
                                         ? screen?.tags
-                                            .split(",")
-                                            .slice(
-                                              0,
-                                              screen?.tags.split(",").length > 2
-                                                ? 3
-                                                : screen?.tags.split(",").length
-                                            )
-                                            .map((text) => {
-                                              if (text.toString().length > 10) {
-                                                return text
-                                                  .split("")
-                                                  .slice(0, 10)
-                                                  .concat("...")
-                                                  .join("");
-                                              }
-                                              return text;
-                                            })
-                                            .join(",")
+                                          .split(",")
+                                          .slice(
+                                            0,
+                                            screen?.tags.split(",").length > 2
+                                              ? 3
+                                              : screen?.tags.split(",").length
+                                          )
+                                          .map((text) => {
+                                            if (text.toString().length > 10) {
+                                              return text
+                                                .split("")
+                                                .slice(0, 10)
+                                                .concat("...")
+                                                .join("");
+                                            }
+                                            return text;
+                                          })
+                                          .join(",")
                                         : ""}
                                     </td>
                                   </tr>

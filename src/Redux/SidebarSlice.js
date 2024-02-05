@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { GET_SIDEBAR_MENU } from "../Pages/Api";
+import { GET_SIDEBAR_MENU, MENU_ACCESS } from "../Pages/Api";
 
 const initialState = {
     data: [],
+    menuAccess : [],
     status: "idle",
     error: null,
     success: null,
@@ -26,10 +27,22 @@ const initialState = {
     }
   );
 
+  export const getMenuPermission = createAsyncThunk('data/getMenuPermission',async (payload, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().root.auth.token;
+      const queryParams = new URLSearchParams(payload).toString();
+      const response = await axios.get(`${MENU_ACCESS}?${queryParams}`,{headers: { Authorization: `Bearer ${token}` }});
+      return response.data;
+    } catch (error) {
+      console.error('error', error);
+      throw error;
+    }
+  }
+);
 
 
 const sidebarMenu = createSlice({
-    name: "screenGroup",
+    name: "sidebar",
     initialState,
     reducers: {
       resetStatus: (state) => {
@@ -52,6 +65,19 @@ const sidebarMenu = createSlice({
           state.status = "failed";
           state.error = action.error.message;
         })
+
+        .addCase(getMenuPermission.pending, (state) => {    // getMenu
+          state.status = null;
+        })
+        .addCase(getMenuPermission.fulfilled, (state, action) => {    // getMenu
+          state.status = null;
+          state.menuAccess = action.payload?.data;
+        })
+        .addCase(getMenuPermission.rejected, (state, action) => {    // getMenu
+          state.status = "failed";
+          state.error = action.error.message;
+        })
+
     },
   });
   

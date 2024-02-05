@@ -15,6 +15,8 @@ import Defaultmedia from "./Defaultmedia";
 import "../../Styles/Settings.css";
 import Footer from "../Footer";
 import Users from "./Users";
+import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
+import { useDispatch ,useSelector} from "react-redux";
 
 const Settings = ({ sidebarOpen, setSidebarOpen }) => {
   Settings.propTypes = {
@@ -127,15 +129,31 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
   const [STabs, setSTabs] = useState(initialTab);
   const [records, setRecords] = useState(data);
   const [searchValue, setSearchValue] = useState("");
+  const { token, user } = useSelector((state) => state.root.auth);
+  const dispatch = useDispatch();
+
+  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
+
+  useEffect(() => {
+    dispatch(getMenuAll()).then((item) => {
+      const findData = item.payload.data.bottummenu.find(e => e.pageName === "Settings");
+      if (findData) {
+        const ItemID = findData.moduleID;
+        const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
+        dispatch(getMenuPermission(payload)).then((permissionItem) => {
+          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+            setPermissions(permissionItem.payload.data[0]);
+          }
+        })
+      }
+    })
+  }, [])
 
   function updateTab(id) {
     setSTabs(id);
     localStorage.setItem("STabs", id.toString());
   }
 
-  // useEffect(() => {
-  //   console.log("STabs", STabs);
-  // }, [STabs]);
 
   return (
     <>
@@ -235,19 +253,19 @@ const Settings = ({ sidebarOpen, setSidebarOpen }) => {
             {/*Tab details*/}
             <div className="col-span-4 w-full bg-white  tabdetails rounded-md relative">
               <div className={STabs === 1 ? "" : "hidden"}>
-                <Users searchValue={searchValue} />
+                <Users searchValue={searchValue}  permissions={permissions} />
               </div>
               {/*End of userrole details*/}
               <div className={STabs === 2 ? "" : "hidden"}>
-                <Userrole searchValue={searchValue} />
+                <Userrole searchValue={searchValue} permissions={permissions} />
               </div>
               {/*End of users details*/}
               <div className={STabs === 3 ? "" : "hidden"}>
-                <Storagelimit />
+                <Storagelimit permissions={permissions} />
               </div>
               {/*Storage Limits*/}
               <div className={STabs === 4 ? "" : "hidden"}>
-                <Defaultmedia />
+                <Defaultmedia permissions={permissions} />
               </div>
 
               {/*Default Media*/}

@@ -41,6 +41,7 @@ import Swal from "sweetalert2";
 import { TiWeatherSunny } from "react-icons/ti";
 import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
+import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 
 const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -49,9 +50,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [addScreenModal, setAddScreenModal] = useState(false);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
-  const selectedScreenIdsString = Array.isArray(selectedScreens)
-    ? selectedScreens.join(",")
-    : "";
+  const selectedScreenIdsString = Array.isArray(selectedScreens) ? selectedScreens.join(",") : "";
   const [scheduleId, setScheduleId] = useState("");
   const [searchSchedule, setSearchSchedule] = useState("");
   const [selectAll, setSelectAll] = useState(false);
@@ -62,7 +61,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [screenSelected, setScreenSelected] = useState([]);
   const [selectdata, setSelectData] = useState({});
 
-  const { token } = useSelector((state) => state.root.auth);
+  const { token, user } = useSelector((state) => state.root.auth);
   const { loading, schedules, deleteLoading, successMessage, type } =
     useSelector((s) => s.root.schedule);
   const authToken = `Bearer ${token}`;
@@ -83,9 +82,24 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   // const currentItems = schedules?.slice(indexOfFirstItem, indexOfLastItem);
+  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
 
   const dispatch = useDispatch();
-  // Function to handle the "Select All" checkbox change
+
+  useEffect(() => {
+    dispatch(getMenuAll()).then((item) => {
+      const findData = item.payload.data.menu.find(e => e.pageName === "My Schedule");
+      if (findData) {
+        const ItemID = findData.moduleID;
+        const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
+        dispatch(getMenuPermission(payload)).then((permissionItem) => {
+          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+            setPermissions(permissionItem.payload.data[0]);
+          }
+        })
+      }
+    })
+  }, [])
 
   useEffect(() => {
     dispatch(handleGetAllSchedule({ token }));
@@ -300,6 +314,7 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
     let idS = "";
     for (const key in screenIds) {
       if (screenIds[key] === true) {
+        console.log("screenIds", screenIds[key]);
         idS += `${key},`;
       }
     }
@@ -543,18 +558,20 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   onChange={handleSearchSchedule}
                 />
               </div>
-              {/* <Link to="/weatherschedule">
+              <Link to="/weatherschedule">
                 <button className="ml-2 flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary   hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
                   <TiWeatherSunny className="text-lg mr-1" />
                   Weather Schedule
                 </button>
-              </Link>*/}
-              <Link to="/addschedule">
-                <button className="sm:ml-2 xs:ml-1  flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary   hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
-                  <BiAddToQueue className="text-lg mr-1" />
-                  New Schedule
-                </button>
               </Link>
+              {permissions.isSave &&
+                <Link to="/addschedule">
+                  <button className="sm:ml-2 xs:ml-1  flex align-middle  items-center rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-3 sm:py-2 text-sm   hover:text-white hover:bg-primary   hover:blorder-white  hover:shadow-lg hover:shadow-primary-500/50 bg-SlateBlue text-white">
+                    <BiAddToQueue className="text-lg mr-1" />
+                    New Schedule
+                  </button>
+                </Link>
+              }
               {/* <button className="sm:ml-2 xs:ml-1 flex align-middle bg-SlateBlue text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                 <FiUpload className="text-lg" />
               </button> */}
@@ -596,29 +613,28 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                 </button>
               )}
 
-              {/* <button className="sm:ml-2 xs:ml-1 flex align-middle  bg-SlateBlue text-white items-center  border-SlateBlue hover: rounded-full xs:px-2 xs:py-1 sm:py-1 sm:px-3 md:p-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                <HiMagnifyingGlass className="text-lg" />
-              </button> */}
-              <button
-                data-tip
-                data-for="Select All"
-                className="flex align-middle   text-white items-center  rounded-full p-2 text-base"
-              >
-                <input
-                  type="checkbox"
-                  className="w-7 h-6"
-                  checked={selectAllChecked}
-                  onChange={handleSelectAll}
-                />
-                <ReactTooltip
-                  id="Select All"
-                  place="bottom"
-                  type="warning"
-                  effect="float"
+              {permissions.isDelete &&
+                <button
+                  data-tip
+                  data-for="Select All"
+                  className="flex align-middle   text-white items-center  rounded-full p-2 text-base"
                 >
-                  <span>Select All</span>
-                </ReactTooltip>
-              </button>
+                  <input
+                    type="checkbox"
+                    className="w-7 h-6"
+                    checked={selectAllChecked}
+                    onChange={handleSelectAll}
+                  />
+                  <ReactTooltip
+                    id="Select All"
+                    place="bottom"
+                    type="warning"
+                    effect="float"
+                  >
+                    <span>Select All</span>
+                  </ReactTooltip>
+                </button>
+              }
             </div>
           </div>
           <div className="bg-white rounded-xl mt-8 shadow screen-section">
@@ -715,20 +731,24 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               <td className="text-[#5E5E5E] text-center">
                                 <div className="flex gap-1">
-                                  {selectAll ? (
-                                    <CheckmarkIcon className="w-5 h-5" />
-                                  ) : (
-                                    <input
-                                      type="checkbox"
-                                      checked={selectedItems.includes(
-                                        schedule.scheduleId
+                                  {permissions.isDelete && (
+                                    <div>
+                                      {selectAll ? (
+                                        <CheckmarkIcon className="w-5 h-5" />
+                                      ) : (
+                                        <input
+                                          type="checkbox"
+                                          checked={selectedItems.includes(
+                                            schedule.scheduleId
+                                          )}
+                                          onChange={() =>
+                                            handleCheckboxChange(
+                                              schedule.scheduleId
+                                            )
+                                          }
+                                        />
                                       )}
-                                      onChange={() =>
-                                        handleCheckboxChange(
-                                          schedule.scheduleId
-                                        )
-                                      }
-                                    />
+                                    </div>
                                   )}
                                   {schedule.scheduleName}
                                 </div>
@@ -834,57 +854,59 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                               </td>
 
                               <td className="text-center relative">
-                                <div className="flex justify-center gap-2 items-center">
-                                  <div className="relative">
-                                    <button
-                                      data-tip
-                                      data-for="Edit"
-                                      type="button"
-                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                      onClick={() =>
-                                        navigate(
-                                          `/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`
-                                        )
-                                      }
-                                    >
-                                      <BiEdit />
-                                      <ReactTooltip
-                                        id="Edit"
-                                        place="bottom"
-                                        type="warning"
-                                        effect="float"
+                                {permissions.isSave &&
+                                  <div className="flex justify-center gap-2 items-center">
+                                    <div className="relative">
+                                      <button
+                                        data-tip
+                                        data-for="Edit"
+                                        type="button"
+                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        onClick={() =>
+                                          navigate(
+                                            `/addschedule?scheduleId=${schedule.scheduleId}&scheduleName=${schedule.scheduleName}&timeZoneName=${schedule.timeZoneName}`
+                                          )
+                                        }
                                       >
-                                        <span>Edit</span>
-                                      </ReactTooltip>
-                                    </button>
-                                  </div>
-                                  <div className="relative mx-3">
-                                    <button
-                                      data-tip
-                                      data-for="Set to Screen"
-                                      type="button"
-                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                      onClick={() => {
-                                        setScheduleId(schedule.scheduleId);
-                                        setAddScreenModal(true);
-                                        setScreenSelected(
-                                          schedule?.screenAssigned?.split(",")
-                                        );
-                                        setSelectData(schedule);
-                                      }}
-                                    >
-                                      <MdOutlineResetTv />
-                                      <ReactTooltip
-                                        id="Set to Screen"
-                                        place="bottom"
-                                        type="warning"
-                                        effect="float"
+                                        <BiEdit />
+                                        <ReactTooltip
+                                          id="Edit"
+                                          place="bottom"
+                                          type="warning"
+                                          effect="float"
+                                        >
+                                          <span>Edit</span>
+                                        </ReactTooltip>
+                                      </button>
+                                    </div>
+                                    <div className="relative mx-3">
+                                      <button
+                                        data-tip
+                                        data-for="Set to Screen"
+                                        type="button"
+                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        onClick={() => {
+                                          setScheduleId(schedule.scheduleId);
+                                          setAddScreenModal(true);
+                                          setScreenSelected(
+                                            schedule?.screenAssigned?.split(",")
+                                          );
+                                          setSelectData(schedule);
+                                        }}
                                       >
-                                        <span>Set to Screen</span>
-                                      </ReactTooltip>
-                                    </button>
+                                        <MdOutlineResetTv />
+                                        <ReactTooltip
+                                          id="Set to Screen"
+                                          place="bottom"
+                                          type="warning"
+                                          effect="float"
+                                        >
+                                          <span>Set to Screen</span>
+                                        </ReactTooltip>
+                                      </button>
+                                    </div>
                                   </div>
-                                </div>
+                                }
 
                                 {/* <div className="relative">
                                 <button

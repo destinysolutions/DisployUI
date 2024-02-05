@@ -54,6 +54,7 @@ import PreviewComposition from "../../Composition/PreviewComposition";
 import axios from "axios";
 import moment from "moment";
 import { socket } from "../../../App";
+import { getMenuAll, getMenuPermission } from "../../../Redux/SidebarSlice";
 
 const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const { user, token } = useSelector((state) => state.root.auth);
@@ -106,6 +107,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const [previewData, setPreviewData] = useState();
   const [loading, setLoading] = useState(false);
   const [layotuDetails, setLayotuDetails] = useState(null);
+  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -145,6 +147,21 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
       currentPage * itemsPerPage
     )
     : [];
+
+  useEffect(() => {
+    dispatch(getMenuAll()).then((item) => {
+      const findData = item.payload.data.menu[0].submenu.find(e => e.pageName === "New Screen Group");
+      if (findData) {
+        const ItemID = findData.moduleID;
+        const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
+        dispatch(getMenuPermission(payload)).then((permissionItem) => {
+          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+            setPermissions(permissionItem.payload.data[0]);
+          }
+        })
+      }
+    })
+  }, [])
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -256,8 +273,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   const editGroupName = (index) => {
     // GroupNameUpdate
     setEditIndex(index);
-    setNewGroupName(store?.data[index].screenGroupName);
-    setEditGroupID(store?.data[index].screenGroupID);
+    setNewGroupName(store?.data[index]?.screenGroupName);
+    setEditGroupID(store?.data[index]?.screenGroupID);
   };
 
   const updateGroupName = async (index) => {
@@ -329,7 +346,7 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const deleteGroupInScreen = (screen, item) => {
-    console.log("screen",screen)
+    console.log("screen", screen)
     if (item?.screenGroupLists?.length > 1) {
       let payload = {
         ScreenGroupListID: screen.screenGroupListID,
@@ -554,24 +571,25 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                   <span>Refresh Screen</span>
                 </ReactTooltip>
               </button>
-
-              <button
-                data-tip
-                data-for="Add New Group"
-                type="button"
-                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                onClick={() => newAddGroup()}
-              >
-                <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
-                <ReactTooltip
-                  id="Add New Group"
-                  place="bottom"
-                  type="warning"
-                  effect="float"
+              {permissions.isSave &&
+                <button
+                  data-tip
+                  data-for="Add New Group"
+                  type="button"
+                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                  onClick={() => newAddGroup()}
                 >
-                  <span>Add New Group</span>
-                </ReactTooltip>
-              </button>
+                  <HiOutlineRectangleGroup className="p-1 px-2 text-4xl text-white hover:text-white" />
+                  <ReactTooltip
+                    id="Add New Group"
+                    place="bottom"
+                    type="warning"
+                    effect="float"
+                  >
+                    <span>Add New Group</span>
+                  </ReactTooltip>
+                </button>
+              }
 
               {isModalOpen && (
                 <ScreenGroupModal
@@ -586,20 +604,22 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
               {store?.data?.length > 0 && (
                 <div>
-                  <button
-                    data-tip
-                    data-for="Select All"
-                    type="button"
-                    className="flex align-middle border-white text-white items-center"
-                  >
-                    <input
-                      type="checkbox"
-                      className="w-6 h-5"
-                      checked={selectAll}
-                      onChange={handleSelectAll}
-                      readOnly
-                    />
-                  </button>
+                  {permissions.isDelete &&
+                    <button
+                      data-tip
+                      data-for="Select All"
+                      type="button"
+                      className="flex align-middle border-white text-white items-center"
+                    >
+                      <input
+                        type="checkbox"
+                        className="w-6 h-5"
+                        checked={selectAll}
+                        onChange={handleSelectAll}
+                        readOnly
+                      />
+                    </button>
+                  }
 
                   <ReactTooltip
                     id="Select All"
@@ -700,12 +720,14 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                         ) : (
                           <>
                             <h1 className="text-lg capitalize">
-                              {item.screenGroupName}
+                              {item?.screenGroupName}
                             </h1>
-                            <MdOutlineModeEdit
-                              className="cursor-pointer text-xl text-[#0000FF]"
-                              onClick={() => editGroupName(i)}
-                            />
+                            {permissions.isSave &&
+                              <MdOutlineModeEdit
+                                className="cursor-pointer text-xl text-[#0000FF]"
+                                onClick={() => editGroupName(i)}
+                              />
+                            }
                           </>
                         )}
                       </div>
@@ -714,22 +736,24 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                         <div className=" flex items-center">
                           {isAccordionOpen && (
                             <>
-                              <button
-                                data-tip
-                                data-for="Add Screen"
-                                className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
-                                onClick={() => newAddGroup(item)}
-                              >
-                                Add <b>+</b>
-                                <ReactTooltip
-                                  id="Add Screen"
-                                  place="bottom"
-                                  type="warning"
-                                  effect="float"
+                              {permissions.isSave &&
+                                <button
+                                  data-tip
+                                  data-for="Add Screen"
+                                  className="bg-SlateBlue py-2 px-2 text-sm rounded-md mr-2 hover:bg-primary text-white"
+                                  onClick={() => newAddGroup(item)}
                                 >
-                                  <span>Add Screen</span>
-                                </ReactTooltip>
-                              </button>
+                                  Add <b>+</b>
+                                  <ReactTooltip
+                                    id="Add Screen"
+                                    place="bottom"
+                                    type="warning"
+                                    effect="float"
+                                  >
+                                    <span>Add Screen</span>
+                                  </ReactTooltip>
+                                </button>
+                              }
 
                               {item.isPreview && (
                                 <button
@@ -750,85 +774,95 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                 </button>
                               )}
 
-                              <button
-                                data-tip
-                                data-for="Upload"
-                                className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
-                                onClick={() => {
-                                  setShowAssetModal(true);
-                                  setGetGroup(item);
-                                }}
-                              >
-                                <TbUpload className="text-3xl p-1 hover:text-white" />
-                                <ReactTooltip
-                                  id="Upload"
-                                  place="bottom"
-                                  type="warning"
-                                  effect="float"
-                                >
-                                  <span>Upload</span>
-                                </ReactTooltip>
-                              </button>
-
-                              {!selectedItems?.length && (
+                              {permissions.isSave &&
                                 <button
                                   data-tip
-                                  data-for="All Delete"
-                                  className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                                  data-for="Upload"
+                                  className="border rounded-full bg-SlateBlue text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                                  onClick={() => {
+                                    setShowAssetModal(true);
+                                    setGetGroup(item);
+                                  }}
                                 >
-                                  <RiDeleteBin5Line
-                                    className="text-3xl p-1 hover:text-white"
-                                    onClick={() => handleDeleteGroup(item)}
-                                  />
+                                  <TbUpload className="text-3xl p-1 hover:text-white" />
                                   <ReactTooltip
-                                    id="All Delete"
+                                    id="Upload"
                                     place="bottom"
                                     type="warning"
                                     effect="float"
                                   >
-                                    <span>Delete</span>
+                                    <span>Upload</span>
                                   </ReactTooltip>
                                 </button>
+                              }
+
+                              {!selectedItems?.length && (
+                                <div>
+                                  {permissions.isDelete &&
+                                    <button
+                                      data-tip
+                                      data-for="All Delete"
+                                      className="border rounded-full bg-red text-white mr-2 hover:shadow-xl hover:bg-primary border-white shadow-lg"
+                                    >
+                                      <RiDeleteBin5Line
+                                        className="text-3xl p-1 hover:text-white"
+                                        onClick={() => handleDeleteGroup(item)}
+                                      />
+                                      <ReactTooltip
+                                        id="All Delete"
+                                        place="bottom"
+                                        type="warning"
+                                        effect="float"
+                                      >
+                                        <span>Delete</span>
+                                      </ReactTooltip>
+                                    </button>
+                                  }
+                                </div>
                               )}
                             </>
                           )}
-                          {selectAll ? (
-                            <input
-                              type="checkbox"
-                              data-tip
-                              data-for="Select"
-                              className=" mx-1 w-6 h-5 mt-2"
-                              checked={selectedItems.includes(
-                                item?.screenGroupID
-                              )}
-                              onChange={() =>
-                                handleCheckboxChange(item?.screenGroupID)
-                              }
-                            />
-                          ) : (
+                          {permissions.isDelete &&
                             <div>
-                              <input
-                                type="checkbox"
-                                data-tip
-                                data-for="Select"
-                                className=" mx-1 w-6 h-5 mt-2"
-                                checked={selectedItems.includes(
-                                  item?.screenGroupID
-                                )}
-                                onChange={() =>
-                                  handleCheckboxChange(item?.screenGroupID)
-                                }
-                              />
-                              <ReactTooltip
-                                id="Select"
-                                place="bottom"
-                                type="warning"
-                                effect="float"
-                              >
-                                <span>Select</span>
-                              </ReactTooltip>
+                              {selectAll ? (
+                                <input
+                                  type="checkbox"
+                                  data-tip
+                                  data-for="Select"
+                                  className=" mx-1 w-6 h-5 mt-2"
+                                  checked={selectedItems.includes(
+                                    item?.screenGroupID
+                                  )}
+                                  onChange={() =>
+                                    handleCheckboxChange(item?.screenGroupID)
+                                  }
+                                />
+                              ) : (
+                                <div>
+                                  <input
+                                    type="checkbox"
+                                    data-tip
+                                    data-for="Select"
+                                    className=" mx-1 w-6 h-5 mt-2"
+                                    checked={selectedItems.includes(
+                                      item?.screenGroupID
+                                    )}
+                                    onChange={() =>
+                                      handleCheckboxChange(item?.screenGroupID)
+                                    }
+                                  />
+                                  <ReactTooltip
+                                    id="Select"
+                                    place="bottom"
+                                    type="warning"
+                                    effect="float"
+                                  >
+                                    <span>Select</span>
+                                  </ReactTooltip>
+                                </div>
+                              )}
                             </div>
-                          )}
+                          }
 
                           <button>
                             {isAccordionOpen ? (
@@ -908,8 +942,8 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                       <span
                                         id={`changetvstatus${screen.macID}`}
                                         className={`rounded-full px-6 py-2 text-white text-center ${screen.screenStatus == 1
-                                            ? "bg-[#3AB700]"
-                                            : "bg-[#FF0000]"
+                                          ? "bg-[#3AB700]"
+                                          : "bg-[#FF0000]"
                                           }`}
                                       >
                                         {screen.screenStatus == 1
@@ -1009,13 +1043,15 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
                                       )}
                                     </td>
                                     <td className="p-2 justify-center flex ">
-                                      <div className="cursor-pointer text-xl flex gap-3 text-right rounded-full px-2 py-2 text-white text-center bg-[#FF0000]">
-                                        <MdDeleteForever
-                                          onClick={() =>
-                                            deleteGroupInScreen(screen, item)
-                                          }
-                                        />
-                                      </div>
+                                      {permissions.isDelete &&
+                                        <div className="cursor-pointer text-xl flex gap-3 text-right rounded-full px-2 py-2 text-white text-center bg-[#FF0000]">
+                                          <MdDeleteForever
+                                            onClick={() =>
+                                              deleteGroupInScreen(screen, item)
+                                            }
+                                          />
+                                        </div>
+                                      }
                                     </td>
                                   </tr>
                                 );

@@ -141,6 +141,8 @@ export const SCREEN_DEACTIVATE_ACTIVATE = `${baseUrl}NewScreen/EnableScreen`;
 
 // sidebar
 export const GET_SIDEBAR_MENU = `${baseUrl}OrganizationUsersRole/SideBarMenu`;
+export const MENU_ACCESS = `${baseUrl}OrganizationUsersRole/GetAllLevelData`;
+
 
 // reports
 export const AUDITREPORT = `${baseUrl}Report/GetAuditLogsReport`;
