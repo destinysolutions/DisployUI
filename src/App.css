@@ -1063,3 +1063,66 @@ table.screen-table {
     max-width: 80vw;
   }
 }
+
+/* Add this CSS to your stylesheet */
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-model-TC {
+  background-color: #fff; /* Modal background color */
+  border-radius: 8px; /* Rounded corners */
+  overflow: hidden;
+  width: 100%;
+  max-width: 600px; /* Adjust the maximum width as needed */
+  height: 80vh; /* Fixed height, adjust as needed */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Add responsiveness */
+@media (max-width: 768px) {
+  .user-model-TC {
+    width: 90%;
+  }
+}
+
+/* Style the header */
+.user-model-TC .border-b {
+  border-bottom: 1px solid #ddd; /* Border color */
+}
+
+/* Style the close button */
+.user-model-TC button[data-modal-hide] {
+  border: none;
+  cursor: pointer;
+}
+
+/* Style the content area with scrolling */
+.user-model-TC .overflow-y-auto {
+  overflow-y: auto;
+}
+
+/* Style the footer buttons */
+.user-model-TC .border-t {
+  border-top: 1px solid #ddd; /* Border color */
+}
+
+/* Additional button styles */
+.user-model-TC button[type="button"] {
+  cursor: pointer;
+  outline: none;
+}
+
+.user-model-TC button[type="button"]:focus {
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Focus outline color */
+}
