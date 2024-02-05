@@ -66,7 +66,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedField, setSortedField] = useState(null);
   const [weatherScheduleData, setWeatherScheduleData] = useState([]);
-  console.log("weatherScheduleData", weatherScheduleData);
+
   const dispatch = useDispatch();
 
   useEffect(() => {

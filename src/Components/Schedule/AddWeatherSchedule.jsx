@@ -133,7 +133,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   const handleSave = () => {
     let data = JSON.stringify({
-      weatherSchedulingID: 0,
+      weatherSchedulingID: getWeatherScheduleId || 0,
       name: weatherScheduleName,
       mediaID: selectedAsset.assetID,
       mediaTypeID: 1,
@@ -192,10 +192,9 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         setTemprature(fetchData.temperature);
         setIsAbove(fetchData.isAbove);
         let assetId = fetchData.mediaID;
-        console.log("asset", assetData);
-        // const previousSelectedAsset = assetData.find(
-        //   (asset) => console.log("asset", asset)
-        //   //asset?.assetID === assetId
+        // console.log("asset", assetAllData);
+        // const previousSelectedAsset = assetAllData.find(
+        //   (asset) => asset?.assetID === assetId
         // );
         // console.log(previousSelectedAsset, "previousSelectedAsset");
         // setSelectedAsset(previousSelectedAsset);
@@ -204,7 +203,7 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         console.log(error);
       });
   };
-  console.log("asset==================", assetData);
+
   useEffect(() => {
     selectById();
   }, []);
