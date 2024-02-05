@@ -18,7 +18,6 @@ export const handleGetCompositions = createAsyncThunk(
       );
       if (data?.status === 200) return data;
       else {
-        toast.error(data?.message);
         return rejectWithValue(data?.message);
       }
     } catch (error) {
@@ -34,7 +33,6 @@ export const handleGetCompositionLayouts = createAsyncThunk(
       const { data } = await axios.request(config);
       if (data?.status === 200) return data;
       else {
-        toast.error(data?.message);
         return rejectWithValue(data?.message);
       }
     } catch (error) {

@@ -49,7 +49,6 @@ export const handleUpdateScreenName = createAsyncThunk(
       });
       if (data?.status == 200) return data;
       else {
-        toast.error(data?.message);
         return rejectWithValue(data?.message);
       }
     } catch (error) {
@@ -71,7 +70,6 @@ export const handleUpdateScreenAsset = createAsyncThunk(
       });
       if (data?.status == 200) return data;
       else {
-        toast.error(data?.message);
         return rejectWithValue(data?.message);
       }
     } catch (error) {
@@ -93,7 +91,6 @@ export const handleUpdateScreenSchedule = createAsyncThunk(
       });
       if (data?.status == 200) return data;
       else {
-        toast.error(data?.message);
         return rejectWithValue(data?.message);
       }
     } catch (error) {
@@ -118,7 +115,6 @@ export const handleDeleteScreenById = createAsyncThunk(
       });
       if (data?.status == 200) return data;
       else {
-        toast.error(data?.message);
         return rejectWithValue(data?.message);
       }
     } catch (error) {

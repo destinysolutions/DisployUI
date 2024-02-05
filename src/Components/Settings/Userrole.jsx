@@ -16,7 +16,7 @@ import {
 } from "../../Pages/Api";
 import ReactTooltip from "react-tooltip";
 
-const Userrole = ({ searchValue }) => {
+const Userrole = ({ searchValue, permissions }) => {
   const store = useSelector((state) => state.root.userRole);
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
@@ -472,8 +472,9 @@ const Userrole = ({ searchValue }) => {
           </h1>
         </div>
         <div className="lg:col-span-10 md:col-span-9 sm:col-span-9 xs:col-span-6">
+         {permissions.isSave && 
           <button
-            className="flex align-middle items-center float-right bg-SlateBlue  text-white rounded-full lg:px-6 sm:px-5  py-2 text-base sm:text-sm mb-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+          className="flex align-middle items-center float-right bg-SlateBlue  text-white rounded-full lg:px-6 sm:px-5  py-2 text-base sm:text-sm mb-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
             onClick={() => {
               setshowuserroleModal(true);
               setShowDynamicComponent(false);
@@ -481,9 +482,10 @@ const Userrole = ({ searchValue }) => {
               setRoleName("");
               setSelectedLevel({});
             }}
-          >
+            >
             Add New Role
           </button>
+          }
         </div>
       </div>
 
@@ -536,25 +538,27 @@ const Userrole = ({ searchValue }) => {
                         </td>
 
                         <td className="text-center text-[#5A5881] text-base">
-                          <button
-                            data-tip
-                            data-for="Edit"
-                            onClick={() => {
-                              handleSelectByID(item.orgUserRoleID);
-                              setshowuserroleModal(true);
-                            }}
-                            className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                          >
-                            <BiEdit />
-                            <ReactTooltip
-                              id="Edit"
-                              place="bottom"
-                              type="warning"
-                              effect="float"
+                          {permissions.isSave &&
+                            <button
+                              data-tip
+                              data-for="Edit"
+                              onClick={() => {
+                                handleSelectByID(item.orgUserRoleID);
+                                setshowuserroleModal(true);
+                              }}
+                              className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-xl p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                             >
-                              <span>Edit</span>
-                            </ReactTooltip>
-                          </button>
+                              <BiEdit />
+                              <ReactTooltip
+                                id="Edit"
+                                place="bottom"
+                                type="warning"
+                                effect="float"
+                              >
+                                <span>Edit</span>
+                              </ReactTooltip>
+                            </button>
+                          }
                         </td>
                       </tr>
                     );

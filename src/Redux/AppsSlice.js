@@ -18,7 +18,6 @@ export const handleGetYoutubeData = createAsyncThunk(
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
       rejectWithValue(error?.response?.data?.message);
     }
   }
@@ -40,7 +39,6 @@ export const handleGetTextScrollData = createAsyncThunk(
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
       rejectWithValue(error?.response?.data?.message);
     }
   }
@@ -62,7 +60,6 @@ export const handleGetAllApps = createAsyncThunk(
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
       rejectWithValue(error?.response?.data?.message);
     }
   }

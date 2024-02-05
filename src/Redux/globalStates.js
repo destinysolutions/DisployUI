@@ -15,7 +15,6 @@ export const handleGetAllScheduleTimezone = createAsyncThunk(
       if (data?.status == 200) return data;
       else {
         toast.remove();
-        toast.error(data?.message || "Something went wrong!!!");
         return rejectWithValue(data?.message);
       }
     } catch (error) {

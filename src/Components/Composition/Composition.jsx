@@ -38,9 +38,10 @@ import { BiEdit } from "react-icons/bi";
 import AddOrEditTagPopup from "../AddOrEditTagPopup";
 import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
+import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 
 const Composition = ({ sidebarOpen, setSidebarOpen }) => {
-  const { token } = useSelector((state) => state.root.auth);
+  const { token, user } = useSelector((state) => state.root.auth);
   const { successMessage, error, type } = useSelector(
     (state) => state.root.composition
   );
@@ -71,6 +72,7 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
   const [itemsPerPage] = useState(10);
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedField, setSortedField] = useState(null);
+  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
 
   const modalRef = useRef(null);
   const addScreenRef = useRef(null);
@@ -107,6 +109,21 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
     sortedField,
     sortOrder
   ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  useEffect(() => {
+    dispatch(getMenuAll()).then((item) => {
+      const findData = item.payload.data.menu.find(e => e.pageName === "My Composition");
+      if (findData) {
+        const ItemID = findData.moduleID;
+        const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
+        dispatch(getMenuPermission(payload)).then((permissionItem) => {
+          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+            setPermissions(permissionItem.payload.data[0]);
+          }
+        })
+      }
+    })
+  }, [])
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -597,12 +614,14 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                   onChange={handleSearchComposition}
                 />
               </div>
-              <button
-                onClick={() => navigation("/addcomposition")}
-                className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-              >
-                Add Composition
-              </button>
+              {permissions.isSave &&
+                <button
+                  onClick={() => navigation("/addcomposition")}
+                  className="sm:ml-2 xs:ml-1  flex align-middle bg-SlateBlue text-white items-center  rounded-full xs:px-3 xs:py-1 sm:px-3 md:px-6 sm:py-2 text-base  hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                >
+                  Add Composition
+                </button>
+              }
               {compositionData?.length > 0 && (
                 <>
                   <button
@@ -642,27 +661,28 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                       </ReactTooltip>
                     </button>
                   )}
-
-                  <button
-                    data-tip
-                    data-for="Select All"
-                    className="sm:ml-2 xs:ml-1  flex align-middle text-white items-center  rounded-full p-2 text-base "
-                  >
-                    <input
-                      type="checkbox"
-                      className="w-7 h-6"
-                      checked={selectAllChecked}
-                      onChange={() => handleSelectAll()}
-                    />
-                    <ReactTooltip
-                      id="Select All"
-                      place="bottom"
-                      type="warning"
-                      effect="float"
+                  {permissions.isDelete &&
+                    <button
+                      data-tip
+                      data-for="Select All"
+                      className="sm:ml-2 xs:ml-1  flex align-middle text-white items-center  rounded-full p-2 text-base "
                     >
-                      <span>Select All</span>
-                    </ReactTooltip>
-                  </button>
+                      <input
+                        type="checkbox"
+                        className="w-7 h-6"
+                        checked={selectAllChecked}
+                        onChange={() => handleSelectAll()}
+                      />
+                      <ReactTooltip
+                        id="Select All"
+                        place="bottom"
+                        type="warning"
+                        effect="float"
+                      >
+                        <span>Select All</span>
+                      </ReactTooltip>
+                    </button>
+                  }
                 </>
               )}
             </div>
@@ -759,17 +779,19 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               <td className="text-[#5E5E5E] text-center">
                                 <div className="flex gap-1">
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedItems.includes(
-                                      composition?.compositionID
-                                    )}
-                                    onChange={() =>
-                                      handleCheckboxChange(
+                                  {permissions.isDelete &&
+                                    <input
+                                      type="checkbox"
+                                      checked={selectedItems.includes(
                                         composition?.compositionID
-                                      )
-                                    }
-                                  />
+                                      )}
+                                      onChange={() =>
+                                        handleCheckboxChange(
+                                          composition?.compositionID
+                                        )
+                                      }
+                                    />
+                                  }
                                   {composition?.compositionName}
                                 </div>
                               </td>
@@ -877,80 +899,86 @@ const Composition = ({ sidebarOpen, setSidebarOpen }) => {
                               <td className="text-center">
                                 <div className="flex justify-center gap-2 items-center">
                                   <div className="relative">
-                                    <button
-                                      data-tip
-                                      data-for="Edit"
-                                      type="button"
-                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                      onClick={() =>
-                                        navigation(
-                                          `/editcomposition/${composition?.compositionID}/${composition?.layoutID}`
-                                        )
-                                      }
-                                    >
-                                      <BiEdit />
-                                      <ReactTooltip
-                                        id="Edit"
-                                        place="bottom"
-                                        type="warning"
-                                        effect="float"
+                                    {permissions.isSave &&
+                                      <button
+                                        data-tip
+                                        data-for="Edit"
+                                        type="button"
+                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        onClick={() =>
+                                          navigation(
+                                            `/editcomposition/${composition?.compositionID}/${composition?.layoutID}`
+                                          )
+                                        }
                                       >
-                                        <span>Edit</span>
-                                      </ReactTooltip>
-                                    </button>
+                                        <BiEdit />
+                                        <ReactTooltip
+                                          id="Edit"
+                                          place="bottom"
+                                          type="warning"
+                                          effect="float"
+                                        >
+                                          <span>Edit</span>
+                                        </ReactTooltip>
+                                      </button>
+                                    }
                                   </div>
                                   <div className="relative">
-                                    <button
-                                      data-tip
-                                      data-for="Preview"
-                                      onClick={() => {
-                                        handleFetchCompositionById(
-                                          composition?.compositionID
-                                        );
-                                        handleFetchLayoutById(
-                                          composition?.layoutID
-                                        );
-                                      }}
-                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-3"
-                                    >
-                                      <MdPreview />
-                                      <ReactTooltip
-                                        id="Preview"
-                                        place="bottom"
-                                        type="warning"
-                                        effect="float"
+                                    {permissions.isView &&
+                                      <button
+                                        data-tip
+                                        data-for="Preview"
+                                        onClick={() => {
+                                          handleFetchCompositionById(
+                                            composition?.compositionID
+                                          );
+                                          handleFetchLayoutById(
+                                            composition?.layoutID
+                                          );
+                                        }}
+                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mx-3"
                                       >
-                                        <span>Preview</span>
-                                      </ReactTooltip>
-                                    </button>
+                                        <MdPreview />
+                                        <ReactTooltip
+                                          id="Preview"
+                                          place="bottom"
+                                          type="warning"
+                                          effect="float"
+                                        >
+                                          <span>Preview</span>
+                                        </ReactTooltip>
+                                      </button>
+                                    }
                                   </div>
                                   <div className="relative">
-                                    <button
-                                      data-tip
-                                      data-for="Set to Screen"
-                                      type="button"
-                                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                      onClick={() => {
-                                        setAddScreenModal(true);
-                                        setSelectData(composition);
-                                        setScreenSelected(
-                                          composition?.screenNames?.split(",")
-                                        );
-                                        setCompositionId(
-                                          composition?.compositionID
-                                        );
-                                      }}
-                                    >
-                                      <MdOutlineResetTv />
-                                      <ReactTooltip
-                                        id="Set to Screen"
-                                        place="bottom"
-                                        type="warning"
-                                        effect="float"
+                                    {permissions.isSave &&
+                                      <button
+                                        data-tip
+                                        data-for="Set to Screen"
+                                        type="button"
+                                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        onClick={() => {
+                                          setAddScreenModal(true);
+                                          setSelectData(composition);
+                                          setScreenSelected(
+                                            composition?.screenNames?.split(",")
+                                          );
+                                          setCompositionId(
+                                            composition?.compositionID
+                                          );
+                                        }}
                                       >
-                                        <span>Set to Screen</span>
-                                      </ReactTooltip>
-                                    </button>
+                                        <MdOutlineResetTv />
+                                        <ReactTooltip
+                                          id="Set to Screen"
+                                          place="bottom"
+                                          type="warning"
+                                          effect="float"
+                                        >
+                                          <span>Set to Screen</span>
+                                        </ReactTooltip>
+                                      </button>
+                                    }
                                   </div>
                                 </div>
                               </td>

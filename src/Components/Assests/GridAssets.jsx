@@ -50,6 +50,7 @@ import { connection } from "../../SignalR";
 import { handleGetStorageDetails } from "../../Redux/SettingSlice";
 import PreviewDoc from "./PreviewDoc";
 import { socket } from "../../App";
+import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
 
 const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   Assets.propTypes = {
@@ -78,12 +79,28 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
   const [selectDoc, setSelectDoc] = useState(null);
   const actionBoxRef = useRef(null);
   const addScreenRef = useRef(null);
-  const { token } = useSelector((state) => state.root.auth);
+  const { token, user } = useSelector((state) => state.root.auth);
+  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
 
   const [screenAssetID, setScreenAssetID] = useState();
   const authToken = `Bearer ${token}`;
 
   const history = useNavigate();
+
+  useEffect(() => {
+    dispatch(getMenuAll()).then((item) => {
+      const findData = item.payload.data.menu.find(e => e.pageName === "Assets");
+      if (findData) {
+        const ItemID = findData.moduleID;
+        const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
+        dispatch(getMenuPermission(payload)).then((permissionItem) => {
+          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+            setPermissions(permissionItem.payload.data[0]);
+          }
+        })
+      }
+    })
+  }, [])
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
     let idS = "";
@@ -109,7 +126,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
           const Params = {
             id: socket.id,
             connection: socket.connected,
-            macId:  macids,
+            macId: macids,
           };
           socket.emit("ScreenConnected", Params);
           setTimeout(() => {
@@ -641,23 +658,25 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   onChange={debouncedOnChange}
                 />
               </div>
-              <button
-                className=" dashboard-btn lg:mt-0 md:mt-0 sm:mt-3 flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                onClick={createFolder}
-                disabled={FolderDisable}
-              >
-                <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
-                New Folder
-              </button>
-              {/* <Link> */}
-              <button
-                onClick={() => openFileUpload()}
-                className=" dashboard-btn lg:mt-0 md:mt-0 sm:mt-3 flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-              >
-                <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
-                Upload
-              </button>
-              {/* </Link> */}
+              {permissions.isSave &&
+                <div>
+                  <button
+                    className=" dashboard-btn lg:mt-0 md:mt-0 sm:mt-3 flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                    onClick={createFolder}
+                    disabled={FolderDisable}
+                  >
+                    <TiFolderOpen className="text-2xl rounded-full mr-1  text-white p-1" />
+                    New Folder
+                  </button>
+                  <button
+                    onClick={() => openFileUpload()}
+                    className=" dashboard-btn lg:mt-0 md:mt-0 sm:mt-3 flex align-middle items-center  rounded-full  text-base border border-white text-white bg-SlateBlue lg:px-9 sm:px-2   xs:px-1 xs:mr-1 mr-3  py-2 sm:text-sm hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  >
+                    <AiOutlineCloudUpload className="text-2xl rounded-full mr-1  text-white p-1" />
+                    Upload
+                  </button>
+                </div>
+              }
 
               <ul className="flex items-center  xs:mt-2 sm:mt-2 md:mt-0 lg:mt-0 xs:mr-1 mr-3 rounded-full border-2 border-SlateBlue">
                 <li className="flex items-center ">
@@ -690,12 +709,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                     <RiDeleteBin5Line className="text-lg" />
                   </button>
                   <button className="flex align-middle   text-white items-center  rounded-full p-2 text-base">
-                    <input
-                      type="checkbox"
-                      className="w-7 h-6"
-                      checked={selectAll}
-                      onChange={handleSelectAll}
-                    />
+                    {permissions.isDelete &&
+                      <input
+                        type="checkbox"
+                        className="w-7 h-6"
+                        checked={selectAll}
+                        onChange={handleSelectAll}
+                      />
+                    }
                   </button>
                 </>
               )}
@@ -799,13 +820,13 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               }
                             >
                               <td className="text-center flex justify-center gap-4">
-                              {selectAll && (
-                                <div className="flex items-center justify-center">
-                                <input type="checkbox" checked={true} onChange={()=> {
-                                  setSelectAll(!selectAll);
-                                }}/>
-                                </div>
-                              )}
+                                {selectAll && (
+                                  <div className="flex items-center justify-center">
+                                    <input type="checkbox" checked={true} onChange={() => {
+                                      setSelectAll(!selectAll);
+                                    }} />
+                                  </div>
+                                )}
                                 {item.assetType === "Folder" && (
                                   <div
                                     onDragOver={(event) =>
@@ -964,13 +985,14 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
                               <td className="text-center relative">
                                 <div className="relative">
-                                  <button
-                                    onClick={() => updateassetsdw2(item)}
-                                    className="ml-3 relative"
-                                  >
-                                    <HiDotsVertical />
-                                  </button>
-
+                                  {permissions.isSave || permissions.isDelete || permissions.isView &&
+                                    <button
+                                      onClick={() => updateassetsdw2(item)}
+                                      className="ml-3 relative"
+                                    >
+                                      <HiDotsVertical />
+                                    </button>
+                                  }
                                   {assetsdw2 === item && (
                                     <div
                                       ref={actionBoxRef}
@@ -978,47 +1000,55 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                     >
                                       <ul className="space-y-2">
                                         {item.assetType !== "Folder" && (
-                                          <li className="flex text-sm items-center">
-                                            <FiDownload className="mr-2 text-lg" />
-                                            <a
-                                              href={item.assetFolderPath}
-                                              target="_blank"
-                                              download
-                                            >
-                                              Download
-                                            </a>
-                                          </li>
+                                          <div>
+                                            {permissions.isView &&
+                                              <li className="flex text-sm items-center">
+                                                <FiDownload className="mr-2 text-lg" />
+                                                <a
+                                                  href={item.assetFolderPath}
+                                                  target="_blank"
+                                                  download
+                                                >
+                                                  Download
+                                                </a>
+                                              </li>
+                                            }
+                                          </div>
                                         )}
                                         {item.assetType !== "Folder" && (
                                           <li className="flex text-sm items-center">
-                                            <div className="move-to-button relative">
-                                              <button
-                                                className="flex relative w-full"
-                                                onClick={() => {
-                                                  setAddScreenModal(true);
-                                                }}
-                                              >
-                                                <FiUpload className="mr-2 text-lg" />
-                                                Set to Screen
-                                              </button>
-                                            </div>
+                                            {permissions.isSave &&
+                                              <div className="move-to-button relative">
+                                                <button
+                                                  className="flex relative w-full"
+                                                  onClick={() => {
+                                                    setAddScreenModal(true);
+                                                  }}
+                                                >
+                                                  <FiUpload className="mr-2 text-lg" />
+                                                  Set to Screen
+                                                </button>
+                                              </div>
+                                            }
                                           </li>
                                         )}
 
                                         <li className="flex text-sm items-center relative">
                                           <div className="move-to-button relative">
-                                            <button
-                                              onClick={() => moveTo(item)}
-                                              className="flex relative w-full"
-                                            >
-                                              <CgMoveRight className="mr-2 text-lg" />
-                                              Move to
-                                            </button>
+                                            {permissions.isSave &&
+                                              <button
+                                                onClick={() => moveTo(item)}
+                                                className="flex relative w-full"
+                                              >
+                                                <CgMoveRight className="mr-2 text-lg" />
+                                                Move to
+                                              </button>
+                                            }
                                             {isMoveToOpen && (
                                               <div className="move-to-dropdown">
                                                 <ul className="space-y-3">
                                                   {folderElements &&
-                                                  folderElements?.length > 0 ? (
+                                                    folderElements?.length > 0 ? (
                                                     folderElements?.map(
                                                       (folder) => {
                                                         return (
@@ -1057,27 +1087,31 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                                         </li>
                                         {item.assetType === "Folder" ? (
                                           <li>
-                                            <button
-                                              onClick={() => {
-                                                deleteFolder(item.assetID);
-                                              }}
-                                              className="flex text-sm items-center"
-                                            >
-                                              <RiDeleteBin5Line className="mr-2 text-lg" />
-                                              Move to Trash
-                                            </button>
+                                            {permissions.isDelete &&
+                                              <button
+                                                onClick={() => {
+                                                  deleteFolder(item.assetID);
+                                                }}
+                                                className="flex text-sm items-center"
+                                              >
+                                                <RiDeleteBin5Line className="mr-2 text-lg" />
+                                                Move to Trash
+                                              </button>
+                                            }
                                           </li>
                                         ) : (
                                           <li>
-                                            <button
-                                              onClick={() => {
-                                                handleWarning(item.assetID);
-                                              }}
-                                              className="flex text-sm items-center"
-                                            >
-                                              <RiDeleteBin5Line className="mr-2 text-lg" />
-                                              Move to Trash
-                                            </button>
+                                            {permissions.isDelete &&
+                                              <button
+                                                onClick={() => {
+                                                  handleWarning(item.assetID);
+                                                }}
+                                                className="flex text-sm items-center"
+                                              >
+                                                <RiDeleteBin5Line className="mr-2 text-lg" />
+                                                Move to Trash
+                                              </button>
+                                            }
                                           </li>
                                         )}
                                       </ul>
@@ -1094,8 +1128,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                             {/* <div className="text-center font-semibold text-2xl col-span-full p-5 "> */}
                             {store?.data?.length === 0 ? (
                               <div className="text-center"><span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
-                              No Data Available
-                            </span></div>
+                                No Data Available
+                              </span></div>
                             ) : (
                               <>
                                 <div>

@@ -12,7 +12,6 @@ export const handleRegisterUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (error?.response) {
-        toast.error(error?.response?.data);
         return rejectWithValue(error?.response?.data);
       }
     }
@@ -31,7 +30,6 @@ export const handleLoginUser = createAsyncThunk(
       }
     } catch (error) {
       if (error?.response) {
-        toast.error(error?.response?.data?.message);
         return rejectWithValue(error?.response?.data);
       }
     }
@@ -50,7 +48,6 @@ export const handleLoginWithGoogle = createAsyncThunk(
       }
     } catch (error) {
       if (error?.response) {
-        toast.error(error?.response?.data?.message);
         return rejectWithValue(error?.response?.data);
       }
     }
@@ -71,7 +68,6 @@ export const handleGetUserDetails = createAsyncThunk(
       }
     } catch (error) {
       if (error?.response) {
-        toast.error(error?.response?.data?.message);
         return rejectWithValue(error?.response?.data);
       }
     }
@@ -117,7 +113,6 @@ export const UpdateUserDetails = createAsyncThunk(
       }
     } catch (error) {
       if (error?.response) {
-        toast.error(error?.response?.data?.message);
         return rejectWithValue(error?.response?.data);
       }
     }

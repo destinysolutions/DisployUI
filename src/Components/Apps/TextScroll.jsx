@@ -23,7 +23,7 @@ import {
 } from "react-icons/md";
 import { FiUpload } from "react-icons/fi";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import ScreenAssignModal from "../ScreenAssignModal";
@@ -33,10 +33,13 @@ import textScrollLogo from "../../images/AppsImg/text-scroll-icon.svg";
 import { HiBackward } from "react-icons/hi2";
 import { connection } from "../../SignalR";
 import { socket } from "../../App";
+import { getMenuAll, getMenuPermission } from "../../Redux/SidebarSlice";
+
 
 const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
-  const { token } = useSelector((state) => state.root.auth);
+  const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
+  const dispatch = useDispatch();
 
   const [instanceData, setInstanceData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
@@ -64,6 +67,25 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
   const addScreenRef = useRef(null);
   const appDropdownRef = useRef(null);
+
+  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
+
+
+  useEffect(() => {
+    dispatch(getMenuAll()).then((item) => {
+      const findData = item.payload.data.menu.find(e => e.pageName === "Apps");
+      if (findData) {
+        const ItemID = findData.moduleID;
+        const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
+        dispatch(getMenuPermission(payload)).then((permissionItem) => {
+          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+            setPermissions(permissionItem.payload.data[0]);
+          }
+        })
+      }
+    })
+  }, [])
+
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
     let idS = "";
@@ -383,12 +405,14 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
               Apps
             </h1>
             <div className="lg:flex">
-              <Link to="/textscrolldetail">
-                <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
-                  <TbAppsFilled className="text-2xl mr-2 text-white" />
-                  New Instance
-                </button>
-              </Link>
+              {permissions.isSave &&
+                <Link to="/textscrolldetail">
+                  <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
+                    <TbAppsFilled className="text-2xl mr-2 text-white" />
+                    New Instance
+                  </button>
+                </Link>
+              }
               <Link to="/apps">
                 <button className="flex align-middle border-white bg-SlateBlue text-white  items-center border rounded-full lg:px-6 sm:px-5 py-2.5 sm:mt-2  text-base sm:text-sm mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50">
                   <MdArrowBackIosNew className="text-2xl mr-2 text-white rounded-full p-1" />
@@ -417,12 +441,14 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                   </button>
                   {instanceData.length > 0 && (
                     <button className="sm:ml-2 xs:ml-1 mt-2 ">
-                      <input
-                        type="checkbox"
-                        className="h-7 w-7"
-                        checked={selectAll}
-                        onChange={handleSelectAll}
-                      />
+                      {permissions.isDelete &&
+                        <input
+                          type="checkbox"
+                          className="h-7 w-7"
+                          checked={selectAll}
+                          onChange={handleSelectAll}
+                        />
+                      }
                     </button>
                   )}
                 </div>
@@ -471,59 +497,56 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                             />
                           </button>
                           <div className="relative">
-                            <button className="float-right">
-                              <BiDotsHorizontalRounded
-                                className="text-2xl"
-                                onClick={() =>
-                                  handleAppDropDownClick(instance.textScroll_Id)
-                                }
-                              />
-                            </button>
+                            {permissions.isSave || permissions.isDelete &&
+                              <button className="float-right">
+                                <BiDotsHorizontalRounded
+                                  className="text-2xl"
+                                  onClick={() =>
+                                    handleAppDropDownClick(instance.textScroll_Id)
+                                  }
+                                />
+                              </button>
+                            }
                             {appDropDown === instance.textScroll_Id && (
                               <div className="appdw" ref={appDropdownRef}>
                                 <ul className="space-y-2">
-                                  <li
-                                    onClick={() => {
-                                      navigate(
-                                        `/textscrolldetail/${instance?.textScroll_Id}`
-                                      );
-                                    }}
-                                    className="flex text-sm items-center cursor-pointer"
-                                  >
-                                    <MdOutlineEdit className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
-                                    Edit
-                                  </li>
-                                  <li
-                                    className="flex text-sm items-center cursor-pointer"
-                                    onClick={() => {
-                                      // handleFetchTextscrollById(
-                                      //   instance?.textScroll_Id,
-                                      //   false
-                                      // );
-                                      setAddScreenModal(true);
-                                      setSelectData(instance);
-                                    }}
-                                  >
-                                    <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
-                                    Set to Screen
-                                  </li>
-                                  {/* <li className="flex text-sm items-center">
-                                      <MdPlaylistPlay className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
-                                      Add to Playlist
-                                    </li> */}
-
-                                  <li
-                                    className="flex text-sm items-center cursor-pointer"
-                                    onClick={() =>
-                                      handelDeleteInstance(
-                                        instance.textScroll_Id,
-                                        instance?.maciDs
-                                      )
-                                    }
-                                  >
-                                    <RiDeleteBin5Line className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
-                                    Delete
-                                  </li>
+                                  {permissions.isSave && <div>
+                                    <li
+                                      onClick={() => {
+                                        navigate(
+                                          `/textscrolldetail/${instance?.textScroll_Id}`
+                                        );
+                                      }}
+                                      className="flex text-sm items-center cursor-pointer"
+                                    >
+                                      <MdOutlineEdit className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                                      Edit
+                                    </li>
+                                    <li
+                                      className="flex text-sm items-center cursor-pointer"
+                                      onClick={() => {
+                                        setAddScreenModal(true);
+                                        setSelectData(instance);
+                                      }}
+                                    >
+                                      <FiUpload className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                                      Set to Screen
+                                    </li>
+                                  </div>}
+                                  {permissions.isDelete &&
+                                    <li
+                                      className="flex text-sm items-center cursor-pointer"
+                                      onClick={() =>
+                                        handelDeleteInstance(
+                                          instance.textScroll_Id,
+                                          instance?.maciDs
+                                        )
+                                      }
+                                    >
+                                      <RiDeleteBin5Line className="mr-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                                      Delete
+                                    </li>
+                                  }
                                 </ul>
                               </div>
                             )}

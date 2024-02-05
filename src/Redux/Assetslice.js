@@ -18,10 +18,6 @@ export const handleGetAllAssets = createAsyncThunk(
         return rejectWithValue(data?.message);
       }
     } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-          "Network error. Please check your internet connection.!!!"
-      );
       rejectWithValue(error?.response?.data?.message);
     }
   }
@@ -35,10 +31,6 @@ export const handleGetAllAssetsTypeBase = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (error?.response) {
-        toast.error(
-          error?.response?.data?.message ||
-            "Network error. Please check your internet connection.!!!"
-        );
         return rejectWithValue(error?.response?.data);
       }
     }
@@ -53,10 +45,6 @@ export const handleCheckFolderImage = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (error?.response) {
-        toast.error(
-          error?.response?.data?.message ||
-            "Network error. Please check your internet connection.!!!"
-        );
         return rejectWithValue(error?.response?.data);
       }
     }
@@ -72,10 +60,6 @@ export const handleDeleteFolder = createAsyncThunk(
     } catch (error) {
       console.log("error handleDeleteFolder ", error);
       if (error?.response) {
-        toast.error(
-          error?.response?.data?.message ||
-            "Network error. Please check your internet connection.!!!"
-        );
         return rejectWithValue(error?.response?.data);
       }
     }
@@ -90,10 +74,6 @@ export const handleWarningDelete = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (error?.response) {
-        toast.error(
-          error?.response?.data?.message ||
-            "Network error. Please check your internet connection.!!!"
-        );
         return rejectWithValue(error?.response?.data);
       }
     }
@@ -108,10 +88,6 @@ export const handelDeletedataAssets = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (error?.response) {
-        toast.error(
-          error?.response?.data?.message ||
-            "Network error. Please check your internet connection.!!!"
-        );
         return rejectWithValue(error?.response?.data);
       }
     }
@@ -126,10 +102,6 @@ export const handelCreateFolder = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (error?.response) {
-        toast.error(
-          error?.response?.data?.message ||
-            "Network error. Please check your internet connection.!!!"
-        );
         return rejectWithValue(error?.response?.data);
       }
     }
@@ -143,10 +115,6 @@ export const handelAllDelete = createAsyncThunk(
       const response = await axios.request(config);
       return response.data;
     } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-          "Network error. Please check your internet connection.!!!"
-      );
       return rejectWithValue(error?.response?.data);
     }
   }
@@ -159,10 +127,6 @@ export const handelMoveDataToFolder = createAsyncThunk(
       const response = await axios.request(config);
       return response.data;
     } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-          "Network error. Please check your internet connection.!!!"
-      );
       return rejectWithValue(error?.response?.data);
     }
   }
@@ -192,10 +156,6 @@ export const handelPostImageFromDrive = createAsyncThunk(
       }
       return data;
     } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-          "Network error. Please check your internet connection.!!!"
-      );
       return rejectWithValue(error?.response?.data);
     }
   }

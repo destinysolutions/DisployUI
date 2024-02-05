@@ -25,6 +25,7 @@ import { MdDeleteForever, MdRestore } from "react-icons/md";
 import Swal from "sweetalert2";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import ReactTooltip from "react-tooltip";
+import { getMenuAll, getMenuPermission } from "../Redux/SidebarSlice";
 
 const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   Trash.propTypes = {
@@ -33,14 +34,13 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const dispatch = useDispatch();
-  const { token } = useSelector((state) => state.root.auth);
+  const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
   const [loadFist, setLoadFist] = useState(true);
-
   // Use Redux state instead of local state
   const store = useSelector((state) => state.root.trashData);
-
+  const [permissions, setPermissions] = useState({ isDelete: false, isSave: false, isView: false });
   const [selectAll, setSelectAll] = useState(false);
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [selectcheck, setSelectCheck] = useState(false);
@@ -132,15 +132,22 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
     }
   }, [loadFist, store]); // Make sure to include dispatch as a dependency if you're using it in the effect
 
-  // const handleSelectAllChange = () => {
-  //   setSelectAll(!selectAll);
-  //   if (selectedItems.length === sortedAndPaginatedData?.length) {
-  //     setSelectedItems([]);
-  //   } else {
-  //     const allIds = sortedAndPaginatedData?.map((item) => item.assetID);
-  //     setSelectedItems(allIds);
-  //   }
-  // };
+
+  useEffect(() => {
+    dispatch(getMenuAll()).then((item) => {
+      const findData = item.payload.data.bottummenu.find(e => e.pageName === "Trash");
+      if (findData) {
+        const ItemID = findData.moduleID;
+        const payload = { UserRoleID: user.userRole, ModuleID: ItemID };
+        dispatch(getMenuPermission(payload)).then((permissionItem) => {
+          if (Array.isArray(permissionItem.payload.data) && permissionItem.payload.data.length > 0) {
+            setPermissions(permissionItem.payload.data[0]);
+          }
+        })
+      }
+    })
+  }, [])
+
 
   const handleSelectAllChange = () => {
     setSelectAllChecked(!selectAllChecked);
@@ -182,7 +189,8 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
           timer: 2000, // Set the duration for the success message to be displayed (in milliseconds)
           showConfirmButton: false, // Hide the "OK" button
         });
-        setSelectAll(false);
+        setSelectAllChecked(false);
+        setSelectCheck(false);
       }
       setSelectedItems([]);
     });
@@ -315,14 +323,17 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                   </ReactTooltip>
                 </button>
               )}
-              <input
-                data-tip
-                data-for="Select All"
-                type="checkbox"
-                className="w-7 h-6"
-                checked={selectAllChecked}
-                onChange={handleSelectAllChange}
-              />
+
+              {permissions.isDelete &&
+                <input
+                  data-tip
+                  data-for="Select All"
+                  type="checkbox"
+                  className="w-7 h-6"
+                  checked={selectAllChecked}
+                  onChange={handleSelectAllChange}
+                />
+              }
               <ReactTooltip
                 id="Select All"
                 place="bottom"
@@ -378,9 +389,6 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                     <th className=" sticky top-0 th-bg-100 text-md font-semibold">
                       Item type
                     </th>
-                    {/* <th className=" sticky top-0 th-bg-100 text-md font-semibold">
-                    Date modified
-                  </th> */}
                     <th className=" sticky top-0 th-bg-100 text-md font-semibold">
                       Action
                     </th>
@@ -433,6 +441,8 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                       >
                         <td className=" border-b border-lightgray text-sm ">
                           <div className="flex gap-2 items-center justify-start">
+                          {permissions.isDelete &&
+                          <>
                             {selectAll ? (
                               <CheckmarkIcon />
                             ) : (
@@ -454,6 +464,7 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                                 />
                               </button>
                             )}
+                               </> }
                             {item.assetType === "Folder" && (
                               <span className="w-30 h-30  flex items-center justify-center">
                                 <HiFolder />
@@ -502,12 +513,9 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                         <td className=" border-b border-lightgray text-sm ">
                           {item.assetType}
                         </td>
-                        {/* <td className=" border-b border-lightgray text-sm ">
-                        {JSON.stringify(item)}
-                        {moment(item.deleteDate).format("DD/MM/YY, h:mm:ss a")}
-                      </td> */}
                         <td className="border-b border-lightgray text-sm">
                           <div className="cursor-pointer text-xl flex gap-4 ">
+                          {permissions.isDelete && 
                             <button
                               type="button"
                               className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-3"
@@ -520,16 +528,18 @@ const Trash = ({ sidebarOpen, setSidebarOpen }) => {
                             >
                               <MdDeleteForever />
                             </button>
-
-                            <button
-                              type="button"
-                              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                              onClick={() =>
-                                handleRestore(item.assetID, item.assetType)
-                              }
-                            >
-                              <MdRestore />
-                            </button>
+                            }
+                            {permissions.isSave &&
+                              <button
+                                type="button"
+                                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                onClick={() =>
+                                  handleRestore(item.assetID, item.assetType)
+                                }
+                              >
+                                <MdRestore />
+                              </button>
+                            }
                           </div>
                         </td>
                       </tr>
