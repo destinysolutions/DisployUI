@@ -688,7 +688,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                 />
               </div>
               {permissions.isSave &&
-                <div>
+                <div className="flex">
                   <button
                     className=" dashboard-btn lg:mt-0 md:mt-0 sm:mt-3 flex align-middle border-white text-white bg-SlateBlue items-center border rounded-full lg:px-6 sm:px-2 py-2 xs:px-1 text-base sm:text-sm xs:mr-1 mr-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                     onClick={createFolder}
