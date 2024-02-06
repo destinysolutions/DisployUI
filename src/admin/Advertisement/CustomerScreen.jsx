@@ -1,8 +1,7 @@
 import React from 'react'
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
-const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChange, loading, sortedAndPaginatedData, currentPage, totalPages, selectAllChecked, handleSelectAllCheckboxChange,selectedItems,handleScreenCheckboxChange}) => {
-    console.log('customerList', customerList)
+const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChange, loading, sortedAndPaginatedData, currentPage, totalPages, selectAllChecked, handleSelectAllCheckboxChange, selectedItems, handleScreenCheckboxChange }) => {
     return (
         <>
             <div
@@ -11,11 +10,11 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                 aria-hidden="true"
                 className="fixed h-full top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 max-h-full bg-black bg-opacity-50"
             >
-                <div className="relative p-4 w-full max-w-2xl max-h-full">
+                <div className="relative p-4 w-full max-w-6xl max-h-full">
                     {/* Modal content */}
                     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                         {/* Modal header */}
-                        <div className="flex items-center justify-between p-3 border-b rounded-t dark:border-gray-600">
+                        <div className="flex items-center justify-between px-6 py-3 border-b rounded-t dark:border-gray-600">
                             <div className='flex gap-4'>
                                 <input type='checkbox'
                                     onChange={handleSelectAllCheckboxChange}
@@ -44,49 +43,44 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                                             <tr className="items-center table-head-bg ">
                                                 <th className="text-[#5A5881] text-base text-center font-semibold w-200">
                                                     <div className="flex">
-                                                        Screen
+                                                        Name
                                                         <svg
                                                             className="w-3 h-3 ms-1.5 mt-2 cursor-pointer"
                                                             aria-hidden="true"
                                                             xmlns="http://www.w3.org/2000/svg"
                                                             fill="currentColor"
                                                             viewBox="0 0 24 24"
-                                                            onClick={() => handleSort("screenName")}
+                                                            onClick={() => handleSort("firstName")}
                                                         >
                                                             <path d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z" />
                                                         </svg>
                                                     </div>
                                                 </th>
                                                 <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
+                                                    Email
+                                                </th>
+                                                <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
                                                     Google Location
                                                 </th>
                                                 <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
-                                                    status
+                                                    Phone Number
                                                 </th>
                                                 <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
-                                                    Last Seen
+                                                    Organization Name
                                                 </th>
                                                 <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
-                                                    Now Playing
+                                                    Total Screen
                                                 </th>
                                                 <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
-                                                    Current Schedule
+                                                    Status
                                                 </th>
-                                                <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
-                                                    Tags
-                                                </th>
-                                                <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
-                                                    Group Apply
-                                                </th>
-                                                <th className="text-[#5A5881] text-base font-semibold  text-center w-200">
-                                                    Action
-                                                </th>
+
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {loading && (
                                                 <tr>
-                                                    <td colSpan={9}>
+                                                    <td colSpan={4}>
                                                         <div className="flex text-center m-5 justify-center">
                                                             <svg
                                                                 aria-hidden="true"
@@ -116,7 +110,7 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                                                 customerList?.allCustomer &&
                                                 sortedAndPaginatedData?.length === 0 && (
                                                     <tr>
-                                                        <td colSpan={9}>
+                                                        <td colSpan={4}>
                                                             <div className="flex text-center m-5 justify-center">
                                                                 <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2 text-black">
                                                                     No Data Available
@@ -133,73 +127,58 @@ const CustomerScreen = ({ handleClose, customerList, handleSort, handlePageChang
                                                             sortedAndPaginatedData?.length > 0 &&
                                                             sortedAndPaginatedData.map((screen, index) => {
                                                                 return (
-                                                                    <tr key={screen.screenID}>
+                                                                    <tr key={index}>
                                                                         <td className="text-[#5E5E5E]">
                                                                             <div className="flex">
                                                                                 <input
                                                                                     type="checkbox"
                                                                                     className="mr-3"
-                                                                                onChange={() =>
-                                                                                    handleScreenCheckboxChange(
+                                                                                    onChange={() =>
+                                                                                        handleScreenCheckboxChange(
+                                                                                            screen.organizationID
+                                                                                        )
+                                                                                    }
+                                                                                    checked={selectedItems.includes(
                                                                                         screen.organizationID
-                                                                                    )
-                                                                                }
-                                                                                checked={selectedItems.includes(
-                                                                                    screen.organizationID
-                                                                                )}
+                                                                                    )}
                                                                                 />
-                                                                                hello
+                                                                                {screen.firstName + ' ' + screen.lastName}
                                                                             </div>
                                                                         </td>
-                                                                        <td className="break-words text-center text-[#5E5E5E]">
-                                                                            location
-                                                                        </td>
-
-                                                                        <td className="text-center">
-                                                                            <span
-                                                                                // id={`changetvstatus${screen.macid}`}
-                                                                                className={`rounded-full px-6 py-2 text-white text-center ${screen?.screenStatus == 1
-                                                                                    ? "bg-[#3AB700]"
-                                                                                    : "bg-[#FF0000]"
-                                                                                    }`}
-                                                                            >
-                                                                                Live
-                                                                            </span>
-                                                                        </td>
-
                                                                         <td className="p-2 text-center break-words text-[#5E5E5E]">
-                                                                            Monday
+                                                                            {screen?.email}
                                                                         </td>
-
-                                                                        <td
-                                                                            className="text-center "
-                                                                            style={{ wordBreak: "break-all" }}
-                                                                        >
-                                                                            Images
+                                                                        <td className="p-2 text-center break-words text-[#5E5E5E]">
+                                                                            {screen?.googleLocation}
                                                                         </td>
-
-                                                                        <td className="break-words text-center text-[#5E5E5E]">
-                                                                            End date
-
+                                                                        <td className="p-2 text-center break-words text-[#5E5E5E]">
+                                                                            {screen?.phone}
                                                                         </td>
-
-                                                                        <td
-                                                                            className="text-center text-[#5E5E5E]"
-                                                                        >
-                                                                            <div className="p-2 text-center flex flex-wrap items-center justify-center gap-2 break-all text-[#5E5E5E]">
-                                                                                tags
-                                                                            </div>
+                                                                        <td className="p-2 text-center break-words text-[#5E5E5E]">
+                                                                            {screen?.organizationName}
                                                                         </td>
-                                                                        <td className="p-2 text-center  break-words">
-                                                                            Group
+                                                                        <td className="p-2 text-center break-words text-[#5E5E5E]">
+                                                                            {screen?.screen}
                                                                         </td>
+                                                                        <td className="px-6 py-4 capitalize">
+                                                                            <span>
+                                                                                {screen?.isActive ? (
+                                                                                    <span
+                                                                                        style={{ backgroundColor: "#cee9d6" }}
+                                                                                        className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4 text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                                                                    >
+                                                                                        Active
+                                                                                    </span>
+                                                                                ) : (
+                                                                                    <span
+                                                                                        style={{ backgroundColor: "#cee9d6" }}
+                                                                                        className="capitalize text-xs bg-gray-300 hover:bg-gray-400 text-[#33d117] font-semibold px-4  text-green-800 me-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                                                                    >
+                                                                                        Inactive
+                                                                                    </span>
+                                                                                )}
+                                                                            </span>
 
-                                                                        <td className="text-center">
-                                                                            <div className="flex justify-center gap-2 items-center">
-                                                                                <div className="cursor-pointer text-xl">
-                                                                                    Edit
-                                                                                </div>
-                                                                            </div>
                                                                         </td>
                                                                     </tr>
                                                                 );

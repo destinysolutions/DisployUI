@@ -303,7 +303,7 @@ const AssetModal = ({ setShowAssetModal }) => {
                                             video tag.
                                           </video>
                                         )}
-                                        {assetPreview.assetType === "DOC" && (
+                                        {/*{assetPreview.assetType === "DOC" && (
                                           <a
                                             href={assetPreview.assetFolderPath}
                                             target="_blank"
@@ -311,7 +311,7 @@ const AssetModal = ({ setShowAssetModal }) => {
                                           >
                                             {assetPreview.assetName}
                                           </a>
-                                        )}
+                                        )}*/}
                                       </>
                                     )}
                                   </div>

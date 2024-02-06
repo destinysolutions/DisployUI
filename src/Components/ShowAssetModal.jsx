@@ -56,6 +56,7 @@ const ShowAssetModal = ({
   const [searchAssest, setSearchAssest] = useState("");
   const [searchComposition, setSearchComposition] = useState("");
   const [assetData, setAssetData] = useState([]);
+  console.log('assetData', assetData)
   const [loading, setLoading] = useState(false);
   const [assetAllData, setAssetAllData] = useState([]);
   const [scheduleData, setScheduleData] = useState([]);
@@ -562,7 +563,7 @@ const ShowAssetModal = ({
                         assetData.length > 0 &&
                         assetData
                           .filter((asset) => {
-                            return asset.assetType !== "Folder";
+                            return (asset.assetType !== "Folder" && asset.assetType !== "DOC") ;
                           })
                           .map((asset) => (
                             <tr
@@ -850,15 +851,13 @@ const ShowAssetModal = ({
                             Your browser does not support the video tag.
                           </video>
                         )}
-                        {assetPreview.assetType === "DOC" && (
+{/*                        {assetPreview.assetType === "DOC" && (
                           <iframe
                           className='w-[768px] h-[432px]'
                           title="Document Viewer"
                           src={viewerSrc}
                       ></iframe>
-
-                         
-                        )}
+)}*/}
                       </>
                     )}
                   </div>

@@ -77,7 +77,7 @@ const ShowAppsModal = ({ setShowAppModal }) => {
           ) : (
             allApps?.data.map(
               (app) =>
-                app.appType == "Apps" && (
+                app.appType == "Apps" && app.appName !== "Weather" && (
                   <div className="w-full" key={app.app_Id}>
                     <div className="shadow-md bg-white rounded-lg p-3">
                       {/* <div className="relative">

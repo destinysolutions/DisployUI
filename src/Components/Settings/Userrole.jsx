@@ -18,6 +18,7 @@ import ReactTooltip from "react-tooltip";
 
 const Userrole = ({ searchValue, permissions }) => {
   const store = useSelector((state) => state.root.userRole);
+  console.log('store', store)
   const { token, user } = useSelector((state) => state.root.auth);
   const authToken = `Bearer ${token}`;
 
@@ -40,6 +41,8 @@ const Userrole = ({ searchValue, permissions }) => {
   const [firstLoad, setLoadFirst] = useState(true);
   const [showUsers, setShowUsers] = useState(false);
   const [userList, setUserList] = useState([]);
+  const [roleuserList, setRoleUserList] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const modalRef = useRef(null);
   const showUsersRef = useRef(null);
@@ -182,7 +185,11 @@ const Userrole = ({ searchValue, permissions }) => {
 
   useEffect(() => {
     if (firstLoad) {
-      dispatch(getUserRoleData());
+      dispatch(getUserRoleData()).then((res)=>{
+        setRoleUserList(res?.payload?.data)
+      }).catch((error)=>{
+        console.log('error', error)
+      });
       setLoadFirst(false);
     }
   }, [firstLoad, store]);
@@ -450,9 +457,9 @@ const Userrole = ({ searchValue, permissions }) => {
                 }
               >
                 <option value="" label="Select User Role"></option>
-                {store.data.map((userrole) => (
+                {roleuserList?.map((userrole) => (
                   <option key={userrole?.value} value={userrole?.value}>
-                    {userrole.text}
+                    {userrole?.text}
                   </option>
                 ))}
               </select>

@@ -3,235 +3,152 @@ import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 import { useState } from "react";
 import {
-  AiOutlineClose,
-  AiOutlineCloseCircle,
   AiOutlineSearch,
 } from "react-icons/ai";
-import axios from "axios";
-import DataTable from "react-data-table-component";
-import { CiMenuKebab } from "react-icons/ci";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { ADD_USER_TYPE_MASTER, GET_ALL_USER_TYPE_MASTER } from "./AdminAPI";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { getManageUserData, handleAddEdit, handleRemoveManageUser } from "../Redux/admin/ManageUserSlice";
+import toast from "react-hot-toast";
+import { MdDeleteForever, MdModeEditOutline } from "react-icons/md";
+import Swal from "sweetalert2";
+import AddEditManageUserType from "./AddEditManageUserType";
 
 const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
+  const store = useSelector((state) => state.root.ManageUser);
+  const dispatch = useDispatch();
+  const [loadFist, setLoadFist] = useState(true);
   const [addUsertypeModal, setAddUserTypeModal] = useState(false);
   const [userType, setUserType] = useState("");
   const [isActive, setIsActive] = useState(false);
-  const [userTypeData, setUserTypeData] = useState([]);
-  const [showActionBox, setShowActionBox] = useState(false);
-  const [deletePopup, setdeletePopup] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [editUserId, setEditUserId] = useState(null);
-  const [originalUserTypeData, setOriginalUserTypeData] = useState([]);
-  const handleActionClick = (rowId) => {
-    setShowActionBox(rowId);
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10); // Adjust items per page as needed
+  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
+  const [sortedField, setSortedField] = useState(null);
+  const [search, setSearch] = useState('');
+  const [heading, setHeading] = useState("Add");
+  const [selectData, setSelectData] = useState("")
+  useEffect(() => {
+    if (loadFist) {
+      dispatch(getManageUserData());
+      setLoadFist(false)
+    }
+  }, [loadFist, store]);
+
+  const filteredData = Array.isArray(store?.data)
+    ? store?.data?.filter((item) =>
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value
+            .toString()
+            .toLowerCase()
+            .includes(search.toLowerCase())
+      )
+    )
+    : [];
+
+  const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
+
+  // Function to sort the data based on a field and order
+  const sortData = (data, field, order) => {
+    const sortedData = [...data];
+    sortedData.sort((a, b) => {
+      if (order === "asc") {
+        return a[field] > b[field] ? 1 : -1;
+      } else {
+        return a[field] < b[field] ? 1 : -1;
+      }
+    });
+    return sortedData;
   };
 
-  const handleCheckboxChange = (event) => {
-    setIsActive(event.target.checked);
+  const sortedAndPaginatedData = sortData(
+    filteredData,
+    sortedField,
+    sortOrder
+  ).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
-  const handleInsertUserType = () => {
+  // Handle sorting when a table header is clicked
+  const handleSort = (field) => {
+    if (sortedField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortOrder("asc");
+      setSortedField(field);
+    }
+  };
+
+  const handleDelete = (userTypeID) => {
+    let payload = JSON.stringify({
+      userTypeID: userTypeID,
+      operation: "Delete",
+    });
+    try {
+      Swal.fire({
+        title: "Delete Permanently",
+        text: "Are you sure you want to delete this user",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          dispatch(handleRemoveManageUser(payload)).then((res) => {
+            if (res?.payload?.status === 200) {
+              toast.success("Delete data successFully")
+            }
+          }).catch((error) => {
+            console.log('error', error)
+          });
+          setLoadFist(true)
+        }
+      });
+    } catch (error) {
+      console.log("error handleDeletePermanently Singal --- ", error);
+    }
+  };
+
+  const handleChange = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setSearch(searchQuery);
+  };
+
+  const toggleModal = () => {
+    setAddUserTypeModal(!addUsertypeModal);
+  };
+
+  const HandleSubmit = () => {
     let data = JSON.stringify({
       isActive: isActive,
       userType: userType,
       operation: editMode ? "Update" : "Insert",
-      userTypeID: editMode ? editUserId : 0,
+      userTypeID: editMode ? selectData?.userTypeID : 0,
     });
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: ADD_USER_TYPE_MASTER,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-        fetchUserTypeData();
-        if (!editMode) {
-          setUserTypeData((prevData) => [
-            ...prevData,
-            {
-              userTypeID: response.data.userTypeID,
-              isActive,
-              userType,
-            },
-          ]);
+    dispatch(handleAddEdit(data)).then((res) => {
+      if (res?.payload?.status === 200) {
+        dispatch(getManageUserData());
+        if (editMode) {
+          toast.success("Update data successFully")
+        } else {
+          toast.success("Add data successFully")
         }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        setAddUserTypeModal(false);
+      }
+    }).catch((error) => {
+      console.log('error', error)
+      setAddUserTypeModal(false);
+    })
 
-    // Reset form fields
-    setUserType("");
-    setIsActive(false);
-    setEditMode(false);
-    setEditUserId(null);
-    setAddUserTypeModal(false);
-  };
-  const handleEditClick = (userType) => {
-    setUserType(userType.userType);
-    setIsActive(userType.isActive);
-    setEditMode(true);
-    setEditUserId(userType.userTypeID);
-    setAddUserTypeModal(true);
-  };
-
-  const fetchUserTypeData = () => {
-    let config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: GET_ALL_USER_TYPE_MASTER,
-      headers: {},
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(response.data);
-        setUserTypeData(response.data.data);
-        setOriginalUserTypeData(response.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  useEffect(() => {
-    fetchUserTypeData();
-  }, []);
-
-  const handleDelete = (userTypeID) => {
-    let data = JSON.stringify({
-      userTypeID: userTypeID,
-      operation: "Delete",
-    });
-
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: ADD_USER_TYPE_MASTER,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      data: data,
-    };
-
-    axios
-      .request(config)
-      .then((response) => {
-        console.log(JSON.stringify(response.data));
-        fetchUserTypeData();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-  const columns = [
-    {
-      name: "User Type",
-      selector: (row) => row.userType,
-      sortable: true,
-    },
-    {
-      name: "Active",
-      selector: (row) => row.isActive,
-      sortable: true,
-      cell: (row) => (
-        <div>
-          {row.isActive ? (
-            <span style={{ color: "green" }}>Active</span>
-          ) : (
-            <span style={{ color: "red" }}>Inactive</span>
-          )}
-        </div>
-      ),
-    },
-    {
-      name: "Action",
-      cell: (row) => (
-        <div className="relative">
-          <button onClick={() => handleActionClick(row.userTypeID)}>
-            <CiMenuKebab />
-          </button>
-          {showActionBox === row.userTypeID && (
-            <>
-              <div className="actionpopup z-10 ">
-                <button
-                  onClick={() => setShowActionBox(false)}
-                  className="bg-white absolute top-[-14px] left-[-8px] z-10  rounded-full drop-shadow-sm p-1"
-                >
-                  <AiOutlineClose />
-                </button>
-
-                <div className=" my-1">
-                  <button onClick={() => handleEditClick(row)}>Edit</button>
-                </div>
-
-                <div className="mb-1 border border-[#F2F0F9]"></div>
-
-                <div className=" mb-1 text-[#D30000]">
-                  <button onClick={() => setdeletePopup(true)}>Delete</button>
-                </div>
-              </div>
-              {deletePopup ? (
-                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                  <div className="relative w-full max-w-xl max-h-full">
-                    <div className="relative bg-white rounded-lg shadow">
-                      <div className="py-6 text-center">
-                        <RiDeleteBin6Line className="mx-auto mb-4 text-[#F21E1E] w-14 h-14" />
-                        <h3 className="mb-5 text-xl text-primary">
-                          Are you sure you want to delete this User?
-                        </h3>
-                        <div className="flex justify-center items-center space-x-4">
-                          <button
-                            className="border-primary border rounded text-primary px-5 py-2 font-bold text-lg"
-                            onClick={() => setdeletePopup(false)}
-                          >
-                            No, cancel
-                          </button>
-
-                          <button
-                            className="text-white bg-[#F21E1E] rounded text-lg font-bold px-5 py-2"
-                            onClick={() => {
-                              handleDelete(row.userTypeID);
-                              setdeletePopup(false);
-                              setAddUserTypeModal(false);
-                            }}
-                          >
-                            Yes, I'm sure
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-            </>
-          )}
-        </div>
-      ),
-    },
-  ];
-  function handleFilter(event) {
-    const searchValue = event.target.value.toLowerCase();
-
-    if (searchValue === "") {
-      setUserTypeData(originalUserTypeData);
-    } else {
-      const newData = userTypeData.filter((row) => {
-        return row.userType.toLowerCase().includes(searchValue);
-      });
-      setUserTypeData(newData);
-    }
   }
+
   return (
     <>
       <div className="flex border-b border-gray ">
@@ -247,85 +164,185 @@ const ManageUserType = ({ sidebarOpen, setSidebarOpen }) => {
             <h1 className="not-italic font-medium text-2xl sm:text-xl text-[#001737] sm:mb-4 ">
               Manage User Type
             </h1>
-
-            <div className="text-right mb-5 mr-5 relative sm:mr-0">
-              <AiOutlineSearch className="absolute top-[13px] right-[232px] z-10 text-gray searchicon" />
-              <input
-                type="text"
-                placeholder=" Search Users "
-                className="border border-gray rounded-full px-7 py-2 search-user"
-                onChange={handleFilter}
-              />
-            </div>
-            <div className="lg:flex md:flex sm:block">
-              <button
-                onClick={() => setAddUserTypeModal(true)}
-                className="border border-primary rounded-full px-3 py-2 not-italic font-medium"
-              >
-                Add User Type
-              </button>
-              {addUsertypeModal && (
-                <div className="bg-black bg-opacity-50 justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-                  <div className="w-auto my-6 mx-auto lg:max-w-4xl md:max-w-xl sm:max-w-sm xs:max-w-xs">
-                    <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-                      <div className="flex items-start justify-between p-4 px-6 border-b border-[#A7AFB7] border-slate-200 rounded-t text-black">
-                        <div className="flex items-center">
-                          <h3 className="lg:text-lg md:text-lg sm:text-base xs:text-sm font-medium">
-                            Add User Type
-                          </h3>
-                        </div>
-                        <button
-                          className="p-1 text-xl ml-8"
-                          onClick={() => setAddUserTypeModal(false)}
-                        >
-                          <AiOutlineCloseCircle className="text-2xl" />
-                        </button>
-                      </div>
-                      <div className="p-4">
-                        <div>
-                          <label>User Type :</label>
-                          <input
-                            className="border border-primary ml-4 rounded py-2"
-                            type="text"
-                            value={userType}
-                            onChange={(e) => setUserType(e.target.value)}
-                          />
-                        </div>
-                        <div className="mt-3 flex items-center">
-                          <label>isActive :</label>
-                          <input
-                            className="border border-primary ml-8 rounded h-6 w-6"
-                            type="checkbox"
-                            checked={isActive}
-                            onChange={handleCheckboxChange}
-                          />
-                        </div>
-                        <div className="flex justify-center items-center mt-5">
-                          <button
-                            onClick={handleInsertUserType}
-                            className="border border-primary rounded-full px-6 py-2 not-italic font-medium"
-                          >
-                            {editMode ? "Edit" : "Save"}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+            <div className="flex gap-4">
+              <div className="text-right mb-5 mr-5 relative sm:mr-0">
+                <AiOutlineSearch className="absolute top-[13px] right-[232px] z-10 text-gray searchicon" />
+                <input
+                  type="text"
+                  placeholder="Search UserType"
+                  className="border border-gray rounded-full px-7 py-2 search-user"
+                  value={search}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="lg:flex md:flex sm:block mb-5">
+                <button
+                  onClick={() => { setHeading("Add"); setAddUserTypeModal(true); setUserType(""); setIsActive(false); setEditMode(false); setSelectData("") }}
+                  className="border border-primary rounded-full px-3 py-2 not-italic font-medium"
+                >
+                  Add User Type
+                </button>
+              </div>
             </div>
           </div>
+
           <div className="mt-7">
-            <DataTable
-              columns={columns}
-              data={userTypeData}
-              fixedHeader
-              pagination
-              paginationPerPage={10}
-            ></DataTable>
+            <div className="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
+              <div className="overflow-x-scroll sc-scrollbar rounded-lg">
+                <table
+                  className="screeen-table w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+                  cellPadding={20}
+                >
+                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr className="items-center table-head-bg capitalize" >
+                      <th className=" sticky top-0th-bg-100 text-md font-semibold flex items-center justify-left">
+                        User Type
+                        <svg
+                          className="w-3 h-3 ms-1.5 cursor-pointer"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          onClick={() => handleSort("userType")}
+                        >
+                          <path
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            d="M8.574 11.024h6.852a2.075 2.075 0 0 0 1.847-1.086 1.9 1.9 0 0 0-.11-1.986L13.736 2.9a2.122 2.122 0 0 0-3.472 0L6.837 7.952a1.9 1.9 0 0 0-.11 1.986 2.074 2.074 0 0 0 1.847 1.086Zm6.852 1.952H8.574a2.072 2.072 0 0 0-1.847 1.087 1.9 1.9 0 0 0 .11 1.985l3.426 5.05a2.123 2.123 0 0 0 3.472 0l3.427-5.05a1.9 1.9 0 0 0 .11-1.985 2.074 2.074 0 0 0-1.846-1.087Z"
+                          />
+                        </svg>
+                      </th>
+
+                      <th scope="col" className="px-6 py-3">
+                        Active
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {store?.data?.length > 0 && sortedAndPaginatedData.map((item) => {
+                      return (
+                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                          <td scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white capitalize">
+                            {item.userType}
+                          </td>
+
+                          <td className="px-6 py-4 capitalize">
+                            <span>
+                              {item?.isActive === true ? (
+                                <span
+                                  className="capitalize bg-[#3AB700] rounded px-6 py-1 text-white hover:bg-primary text-sm"
+                                >
+                                  Active
+                                </span>
+                              ) : (
+                                <span
+                                  className="capitalize bg-[#FF0000] rounded px-6 py-1 text-white hover:bg-primary text-sm"
+                                >
+                                  Inactive
+                                </span>
+                              )}
+                            </span>
+
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex gap-2">
+
+                              <div className="cursor-pointer text-xl flex gap-4">
+                                <button
+                                  type="button"
+                                  className="cursor-pointer text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                  onClick={() => {
+                                    setAddUserTypeModal(true); setEditMode(true); setSelectData(item); setHeading("Update"); setIsActive(item?.isActive);
+                                    setUserType(item?.userType);
+                                  }}
+                                >
+                                  <MdModeEditOutline />
+                                </button>
+                              </div>
+                              <div className="cursor-pointer text-xl flex gap-4 ">
+                                <button
+                                  type="button"
+                                  className="rounded-full px-2 py-2 text-white text-center bg-[#FF0000] mr-2"
+                                  onClick={() => handleDelete(item?.userTypeID)}
+                                >
+                                  <MdDeleteForever />
+                                </button>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <nav
+                className="flex items-center flex-column flex-wrap md:flex-row justify-end p-5"
+                aria-label="Table navigation"
+              >
+                <ul className="-space-x-px rtl:space-x-reverse text-sm h-8 flex justify-end mt-2">
+                  <li className="">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="flex cursor-pointer hover:bg-white hover:text-primary items-center justify-center px-3 h-8 me-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                      <svg
+                        className="w-3.5 h-3.5 me-2 rtl:rotate-180"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 14 10"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 5H1m0 0 4 4M1 5l4-4"
+                        />
+                      </svg>
+                      Previous
+                    </button>
+                  </li>
+
+                  <li>
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="flex hover:bg-white hover:text-primary cursor-pointer items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    >
+                      Next
+                      <svg
+                        className="w-3.5 h-3.5 ms-2 rtl:rotate-180"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 14 10"
+                      >
+                        <path
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M1 5h12m0 0L9 1m4 4L9 9"
+                        />
+                      </svg>
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
           </div>
         </div>
       </div>
+
+      {addUsertypeModal && (
+        <AddEditManageUserType setUserType={setUserType} userType={userType} heading={heading} toggleModal={toggleModal} isActive={isActive} setIsActive={setIsActive} HandleSubmit={HandleSubmit} />
+      )}
     </>
   );
 };

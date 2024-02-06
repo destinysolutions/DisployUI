@@ -878,7 +878,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                             Your browser does not support the video tag.
                           </video>
                         )}
-                        {selectedAsset.assetType === "DOC" && (
+                       {/* {selectedAsset.assetType === "DOC" && (
                           <a
                             href={selectedAsset.assetFolderPath}
                             target="_blank"
@@ -886,7 +886,7 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                           >
                             {selectedAsset.assetName}
                           </a>
-                        )}
+                       )}*/}
                       </>
                     )}
                   </ul>

@@ -97,7 +97,7 @@ const AddEditAdvertisement = ({
                       type="text"
                       name="PhoneNumber"
                       id="PhoneNumber"
-                      placeholder="Enter Your Google Location"
+                      placeholder="Enter Phone Number"
                       className="formInput"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -220,8 +220,9 @@ const AddEditAdvertisement = ({
                   <button
                     type="submit"
                     className="w-40 text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-full py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
+                    disabled={loading}
                   >
-                    Save
+                    {loading ? "Saving" : "Save"}
                   </button>
                 </div>
               </form>

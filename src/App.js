@@ -156,6 +156,8 @@ const App = () => {
     };
   }, [socket]);
 
+
+
   useEffect(() => {
     if (connection.state == "Disconnected") {
       connection.start().then((res) => {

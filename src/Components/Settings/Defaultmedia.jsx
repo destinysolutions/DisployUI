@@ -22,7 +22,7 @@ import toast from "react-hot-toast";
 import { IoBarChartSharp } from "react-icons/io5";
 import { RiPlayListFill } from "react-icons/ri";
 
-const Defaultmedia = (permissions) => {
+const Defaultmedia = ({ permissions }) => {
   const [mediaTabs, setMediaTabs] = useState(1);
   function updateMediaTab(id) {
     setMediaTabs(id);
@@ -49,6 +49,7 @@ const Defaultmedia = (permissions) => {
     compositionName: "",
   });
   const [assetPreview, setAssetPreview] = useState("");
+  console.log('assetPreview', assetPreview)
 
   const modalRef = useRef(null);
 
@@ -549,7 +550,9 @@ const Defaultmedia = (permissions) => {
                                 </tr>
                               </thead>
                               {filteredData.length > 0 ? (
-                                filteredData.map((asset) => (
+                                filteredData.filter((asset) => {
+                                  return (asset.assetType !== "Folder" && asset.assetType !== "DOC");
+                                }).map((asset) => (
                                   <tbody key={asset.assetID}>
                                     <tr
                                       className={`${selectedAsset?.assetID ===
@@ -854,13 +857,13 @@ const Defaultmedia = (permissions) => {
                     Your browser does not support the video tag.
                   </video>
                 )}
-                {assetPreview.assetType === "DOC" && (
+                {/*{assetPreview.assetType === "DOC" && (
                   <iframe
                     className='w-[768px] h-[432px]'
                     title="Document Viewer"
                     src={viewerSrc}
                   ></iframe>
-                )}
+                )}*/}
               </>
             )}
           </div>

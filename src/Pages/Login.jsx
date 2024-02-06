@@ -141,7 +141,7 @@ const Login = () => {
                 toast.success("Login successfully.");
                 // console.log(response);
                 // navigate("/screens");
-                window.location.href = "/screens";
+                window.location.href = "/dashboard";
               } else {
                 // Handle other roles or unknown roles
                 console.log("Unexpected role value:", userRole);

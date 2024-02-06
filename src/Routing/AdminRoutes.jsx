@@ -6,15 +6,16 @@ import User from "../admin/User";
 import Pending from "../admin/Pending";
 import Retailer from "../admin/Retailer/Retailer";
 import Advertisement from "../admin/Advertisement/Advertisement";
+import UserList from "../admin/UserList/UserList";
 
 const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
   return (
     <div>
       <BrowserRouter>
         <Routes>
-         {/* <Route path="/admin-dashboard" element={<Navigate to="/" />} />
+          <Route path="/" element={<Navigate to="/admin-dashboard" />} />
           <Route
-            path="/"
+            path="/admin-dashboard"
             element={
               <Admindashborad
                 sidebarOpen={sidebarOpen}
@@ -22,17 +23,6 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
               />
             }
           />
-          <Route
-            path="/manage-user-type"
-            element={
-              <ManageUserType
-                sidebarOpen={sidebarOpen}
-                setSidebarOpen={setSidebarOpen}
-              />
-            }
-          />*/}
-
-          <Route path="/" element={<Navigate to="/manage-user-type" />} />
           <Route
             path="/manage-user-type"
             element={
@@ -59,8 +49,8 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
                 setSidebarOpen={setSidebarOpen}
               />
             }
-          /> 
-             <Route
+          />
+          <Route
             path="/advertisement"
             element={
               <Advertisement
@@ -68,7 +58,7 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
                 setSidebarOpen={setSidebarOpen}
               />
             }
-          /> 
+          />
           <Route
             path="/pending"
             element={
@@ -78,6 +68,16 @@ const AdminContainer = ({ sidebarOpen, setSidebarOpen }) => {
               />
             }
           />
+
+          <Route
+          path="/client"
+          element={
+            <UserList
+              sidebarOpen={sidebarOpen}
+              setSidebarOpen={setSidebarOpen}
+            />
+          }
+        />
 
           <Route
             path="/user"

@@ -368,7 +368,7 @@ const ShowAssetModal = ({
                     {filteredData.length === 0
                       ? assets
                         .filter((asset) => {
-                          return asset.assetType !== "Folder";
+                          return (asset.assetType !== "Folder" && asset.assetType !== "DOC");
                         })
                         .map((asset) => (
                           <tbody key={asset.assetID}>
@@ -487,13 +487,13 @@ const ShowAssetModal = ({
                                 Your browser does not support the video tag.
                               </video>
                             )}
-                            {assetPreview.assetType === "DOC" && (
+                          {/*  {assetPreview.assetType === "DOC" && (
                               <iframe
                               className='w-[768px] h-[432px]'
                               title="Document Viewer"
                               src={viewerSrc}
                           ></iframe>
-                            )}
+                          )}*/}
                           </>
                         )}
                       </div>

@@ -841,7 +841,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                       assetData
                         .filter((item) => {
                           if (activeTab === "asset") {
-                            if (item.hasOwnProperty("assetID")) {
+                            if (item.hasOwnProperty("assetID") && item?.assetType !== "DOC") {
                               return item;
                             }
                           } else {
@@ -901,11 +901,11 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                   />
                                 )}
 
-                              {data.assetType === "DOC" && (
+                              {/* {data.assetType === "DOC" && (
                                 <p href={data?.assetFolderPath}>
                                   {data.assetName}
                                 </p>
-                              )}
+                             )}*/}
                             </td>
                             <td className="p-2 w-full text-center hyphens-auto break-words">
                               {data.assetName || data?.instanceName}
@@ -1053,11 +1053,11 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         />
                                       )}
 
-                                    {item.assetType === "DOC" && (
+                                    {/*  {item.assetType === "DOC" && (
                                       <p href={item?.assetFolderPath}>
                                         {item.assetName}
                                       </p>
-                                    )}
+                                  )}*/}
                                   </div>
                                   <div className="ml-3 w-1/2">
                                     <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
@@ -1067,7 +1067,7 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                   </div>
                                 </div>
                               </td>
-                             
+
                               <td className={`text-center min-w-[20%] `}>
                                 {!item?.isEdited ? (
                                   <p className="border min-w-full whitespace-nowrap border-[#E4E6FF] rounded-full p-2">

@@ -102,20 +102,20 @@ const Carousel = ({ items, compositonData, from }) => {
                       playing={true}
                     />
                   )}
-                {item.assetType === "DOC" && (
+               {/* {item.assetType === "DOC" && (
                   <iframe
-                    // className='w-[768px] h-[432px]'
+                    className='w-full h-full'
                     title="Document Viewer"
                     src={viewerSrc}
                   ></iframe>
                 )}
                 {item.mediaType === "DOC" && (
                   <iframe
-                    // className='w-[768px] h-[432px]'
+                    className='w-full h-full'
                     title="Document Viewer"
                     src={viewerSrc}
                   ></iframe>
-                )}
+                )}*/}
                 {(item?.assetType === "Text" ||
                   item?.mediaType === "Text" ||
                   item?.text !== undefined) && (

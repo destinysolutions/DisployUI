@@ -303,11 +303,12 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
     if (screenName.trim() === "") {
       setScreenNameError("Screen name is required");
       return;
-    } else if (screenRatePerSec.trim() === "") {
-      setScreenRatePerSecondError('Screen Rate is required')
-    } else if (screenMargin.trim() === "") {
-      setScreenMargin('Screen margin is required')
-    }
+    } 
+    // else if (screenRatePerSec.trim() === "") {
+    //   setScreenRatePerSecondError('Screen Rate is required')
+    // } else if (screenMargin.trim() === "") {
+    //   setScreenMargin('Screen margin is required')
+    // }
     else {
       setScreenNameError("");
       setScreenRatePerSecondError("");
@@ -959,7 +960,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                         </div>
                       </td>
                     </tr>
-                    <tr>
+                 {/*   <tr>
                       <td>
                         <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">
                           Screen Rate Per Second:
@@ -1021,7 +1022,7 @@ const NewScreenDetail = ({ sidebarOpen, setSidebarOpen }) => {
                           <div className="text-red">{screenMarginError}</div>
                         )}
                       </td>
-                    </tr>
+                        </tr>*/}
                     <tr>
                       <td>
                         <label className=" text-[#001737]  lg:text-lg md:text-lg font-medium sm:font-base xs:font-base  mb-1 md:mb-0">

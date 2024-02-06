@@ -11,6 +11,7 @@ import { FaUserTimes } from "react-icons/fa";
 import { FaUserAlt, FaUserCheck, FaUsers } from "react-icons/fa";
 import { SlOrganization } from "react-icons/sl";
 import logo from "../images/DisployImg/White-Logo2.png";
+import { FaUserGroup } from "react-icons/fa6";
 
 const AdminSidebar = ({ sidebarOpen }) => {
   AdminSidebar.propTypes = {
@@ -31,12 +32,12 @@ const AdminSidebar = ({ sidebarOpen }) => {
   }, []);
   //for menu list
   const Menus = [
-    // {
-    //   title: "Dashboard",
-    //   cName: "nav-text link-items",
-    //   path: "/admin-dashboard",
-    //   icon: <ImStack className="text-2xl" />,
-    // },
+    {
+      title: "Dashboard",
+      cName: "nav-text link-items",
+      path: "/admin-dashboard",
+      icon: <ImStack className="text-2xl" />,
+    },
     {
       title: "UserType",
       cName: "nav-text link-items",
@@ -78,6 +79,12 @@ const AdminSidebar = ({ sidebarOpen }) => {
         // },
       ],
     },
+    {
+      title: "Clients",
+      cName: "nav-text link-items",
+      path: "/client",
+      icon: <FaUserGroup className="text-2xl" />,
+    },
   ];
 
   //using for mobile sidebar
@@ -103,8 +110,6 @@ const AdminSidebar = ({ sidebarOpen }) => {
                 {Menus.map((item, index) => {
                   const submenuIsOpen = submenuStates[item.title] || false;
                   const isActive = window.location.pathname === item.path;
-                  console.log('window.location.pathname', window.location.pathname)
-                  console.log('isActive', isActive,index)
                   return (
                     <li key={index} className={`${item.cName} ${isActive ? "active" : ""}`}>
                       <div className="flex items-center">

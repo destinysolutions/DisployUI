@@ -8,6 +8,7 @@ import {
   GET_ALL_COUNTRY,
   GET_SELECT_BY_CITY,
   GET_SELECT_BY_STATE,
+  USERDASHBOARD,
 } from "../../../Pages/Api";
 import RevenueTable from "../RevenueTable";
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -21,6 +22,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { handleGetAllApps } from "../../../Redux/AppsSlice";
+import axios from "axios";
 
 //for sales revenue chart options
 const SalesOptions = {
@@ -163,6 +165,7 @@ const Business = () => {
   const dispatch = useDispatch();
   const { user, token } = useSelector((s) => s.root.auth);
   const { allApps } = useSelector((state) => state.root.apps);
+  const authToken = `Bearer ${token}`;
   //for map store icon
   const center = [20.5937, 78.9629];
   const [countries, setCountries] = useState([]);
@@ -170,12 +173,128 @@ const Business = () => {
   const [states, setStates] = useState([]);
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
+  const [selectedScreen, setSelectedScreen] = useState("");
+
   const [cities, setCities] = useState([]);
   const [showCityStores, setshowCityStores] = useState(false);
   const [selectedStateName, setSelectedStateName] = useState("");
   const [showStore, setShowStore] = useState(false);
   const [showCitydw, setShowCityDw] = useState(false);
+  const [dashboardData, setDashboardData] = useState(null)
+  const [allApp, setAllApp] = useState({
+    AppLists: [],
+    AppPercentages: [],
+    AppOnlines: [],
+    AppOnlinePercentages: []
+  })
 
+  useEffect(() => {
+    let AppList = [];
+    let AppPercentage = [];
+    let AppOnline = [];
+    let AppOnlinePercentage = [];
+    dashboardData?.totalScreen?.map((item) => {
+      AppList?.push(item?.name);
+      AppPercentage?.push(Number(item?.percentage))
+    })
+    dashboardData?.totalStore?.map((item) => {
+      AppOnline?.push(item?.name);
+      AppOnlinePercentage?.push(Number(item?.percentage))
+    })
+    setAllApp({
+      ...allApp,
+      AppLists: AppList,
+      AppPercentages: AppPercentage,
+      AppOnlines: AppOnline,
+      AppOnlinePercentages: AppOnlinePercentage
+    })
+  }, [dashboardData])
+
+  const ScreenAppOption = {
+    chart: {
+      type: "donut",
+    },
+    series: allApp?.AppPercentages,
+    colors: ["#404f8b", "#59709a", "#8ca0b9", "#b2c7d0"],
+    labels: allApp?.AppLists,
+    legend: {
+      show: true,
+      position: "bottom",
+    },
+
+    plotOptions: {
+      pie: {
+        donut: {
+          size: "65%",
+          background: "transparent",
+        },
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    responsive: [
+      {
+        breakpoint: 2600,
+        options: {
+          chart: {
+            width: 380,
+          },
+        },
+      },
+      {
+        breakpoint: 640,
+        options: {
+          chart: {
+            width: 200,
+          },
+        },
+      },
+    ],
+  };
+
+  const ScreenAppOnlineOfflineOption = {
+    chart: {
+      type: "donut",
+    },
+    series: allApp?.AppOnlinePercentages,
+    colors: ["#FF0000","#3AB700"],
+    labels: allApp?.AppOnlines,
+    legend: {
+      show: true,
+      position: "bottom",
+    },
+
+    plotOptions: {
+      pie: {
+        donut: {
+          size: "65%",
+          background: "transparent",
+        },
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    responsive: [
+      {
+        breakpoint: 2600,
+        options: {
+          chart: {
+            width: 380,
+          },
+        },
+      },
+      {
+        breakpoint: 640,
+        options: {
+          chart: {
+            width: 200,
+          },
+        },
+      },
+    ],
+  };
   useEffect(() => {
     dispatch(handleGetAllApps({ token }));
   }, []);
@@ -238,93 +357,167 @@ const Business = () => {
     setshowCityStores(true);
   }
 
+  useEffect(() => {
+    let config = {
+      method: "get",
+      maxBodyLength: Infinity,
+      url: `${USERDASHBOARD}`,
+      headers: {
+        Authorization: authToken,
+      },
+    };
+    axios
+      .request(config)
+      .then((data) => {
+        setDashboardData(data?.data?.data)
+      })
+      .catch((error) => {
+        console.log("Error fetching states data:", error);
+      });
+  }, [])
+
   const customIcon = new L.Icon({
     iconUrl: mapImg,
     iconSize: [32, 32],
     iconAnchor: [16, 16],
     popupAnchor: [0, -16],
   });
+
+const handleScreenClick =(screen) =>{
+  setSelectedScreen(screen)
+}
+
+
   return (
     <>
       {/* google map start */}
-      <div className="bg-white shadow-md rounded-lg mt-9">
-        <div className="lg:p-9 md:p-6 sm:p-3 xs:p-2">
-          <MapContainer
-            center={center}
-            zoom={4}
-            maxZoom={18}
-            style={{ width: "100%", height: "560px", zIndex: 0 }}
-          >
-            <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
-
-            <MarkerClusterGroup>
-              {countries.map((country) => (
-                <Marker
-                  key={country.countryID}
-                  position={[country.latitude, country.longitude]}
-                  icon={customIcon}
-                  eventHandlers={{
-                    click: () => handleMarkerClick && handleMarkerClick(country),
-                  }}
-                >
-                  <Popup>
-                    <h3 className="flex flex-row gap-1">
-                      <span>
-                        Country :
-                      </span>
-                      <span>
-                        {selectedCountry?.countryName}
-                      </span>
-                    </h3>
-                    <div className="flex flex-col">
-                      <h5 className="flex flex-row gap-2">
-                        <span>
-                          latitude :
-                        </span>
-                        <span>
-                          {selectedCountry?.latitude}
-                        </span>
-                      </h5>
-                      <h5 className="flex flex-row gap-2">
-                        <span>
-                          longitude :
-                        </span>
-                        <span>
-                          {selectedCountry?.longitude}
-                        </span>
-                      </h5>
-                    </div>
-                  </Popup>
-                </Marker>
-              ))}
-
-              {selectedCountry !== "" &&
-                states.map((state) => (
+      {(user?.userRole === "1" || user?.userRole === 1) && (
+        <div className="bg-white shadow-md rounded-lg mt-9">
+          <div className="lg:p-9 md:p-6 sm:p-3 xs:p-2">
+            <MapContainer
+              center={center}
+              zoom={4}
+              maxZoom={18}
+              style={{ width: "100%", height: "560px", zIndex: 0 }}
+            >
+              <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
+  
+              <MarkerClusterGroup>
+                {countries.map((country) => (
                   <Marker
-                    key={state.stateId}
-                    position={[state.latitude, state.longitude]}
+                    key={country.countryID}
+                    position={[country.latitude, country.longitude]}
                     icon={customIcon}
                     eventHandlers={{
-                      click: () => handleStateMarker && handleStateMarker(state),
+                      click: () => handleMarkerClick && handleMarkerClick(country),
                     }}
-                  ></Marker>
+                  >
+                    <Popup>
+                      <h3 className="flex flex-row gap-1">
+                        <span>
+                          Country :
+                        </span>
+                        <span>
+                          {selectedCountry?.countryName}
+                        </span>
+                      </h3>
+                      <div className="flex flex-col">
+                        <h5 className="flex flex-row gap-2">
+                          <span>
+                            latitude :
+                          </span>
+                          <span>
+                            {selectedCountry?.latitude}
+                          </span>
+                        </h5>
+                        <h5 className="flex flex-row gap-2">
+                          <span>
+                            longitude :
+                          </span>
+                          <span>
+                            {selectedCountry?.longitude}
+                          </span>
+                        </h5>
+                      </div>
+                    </Popup>
+                  </Marker>
                 ))}
-              {selectedState !== "" &&
-                cities.map((city) => (
-                  <Marker
-                    key={city.cityID}
-                    icon={customIcon}
-                    position={[city.latitude, city.longitude]}
-                    eventHandlers={{
-                      click: () => handleCityMarker && handleCityMarker(city),
-                    }}
-                  ></Marker>
-                ))}
-
-            </MarkerClusterGroup>
-          </MapContainer>
+  
+                {selectedCountry !== "" &&
+                  states.map((state) => (
+                    <Marker
+                      key={state.stateId}
+                      position={[state.latitude, state.longitude]}
+                      icon={customIcon}
+                      eventHandlers={{
+                        click: () => handleStateMarker && handleStateMarker(state),
+                      }}
+                    ></Marker>
+                  ))}
+                {selectedState !== "" &&
+                  cities.map((city) => (
+                    <Marker
+                      key={city.cityID}
+                      icon={customIcon}
+                      position={[city.latitude, city.longitude]}
+                      eventHandlers={{
+                        click: () => handleCityMarker && handleCityMarker(city),
+                      }}
+                    ></Marker>
+                  ))}
+  
+              </MarkerClusterGroup>
+            </MapContainer>
+          </div>
         </div>
+      )}
+
+      <div className="bg-white shadow-md rounded-lg mt-9">
+      <div className="lg:p-9 md:p-6 sm:p-3 xs:p-2">
+        <MapContainer
+          center={center}
+          zoom={4}
+          maxZoom={18}
+          style={{ width: "100%", height: "560px", zIndex: 0 }}
+        >
+          <TileLayer url="https://api.maptiler.com/maps/ch-swisstopo-lbm-vivid/256/{z}/{x}/{y}.png?key=9Gu0Q6RdpEASBQwamrpM"></TileLayer>
+
+          <MarkerClusterGroup>
+            {dashboardData?.screen.map((screen,index) => (
+              <Marker
+                key={index}
+                position={[23.0225, 72.5714]}
+                icon={customIcon}
+                eventHandlers={{
+                  click: () => handleScreenClick && handleScreenClick(screen),
+                }}
+              >
+                <Popup>
+                  <h3 className="flex flex-row gap-1">
+                    <span>
+                      Location :
+                    </span>
+                    <span>
+                      {selectedScreen?.location}
+                    </span>
+                  </h3>
+                  <div className="flex flex-col">
+                    <h5 className="flex flex-row gap-2">
+                      <span>
+                        Total Screen :
+                      </span>
+                      <span>
+                        {selectedScreen?.screen}
+                      </span>
+                    </h5>
+                  </div>
+                </Popup>
+              </Marker>
+            ))}
+          </MarkerClusterGroup>
+        </MapContainer>
       </div>
+    </div>
       {/* google map end */}
       {/* country store popup start */}
       {showStore && (
@@ -396,7 +589,7 @@ const Business = () => {
                 <div>
                   <label className="p-5 text-lg font-semibold">{selectedCity}</label>
                 </div>
-                <div className="m-6">
+                <div className="mt-6">
                   <div className="grid grid-cols-12 gap-4">
                     <div className="lg:col-span-4 md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md p-4">
                       <h5 className="text-xl font-semibold text-black dark:text-white">
@@ -470,7 +663,7 @@ const Business = () => {
           )}
         </div>
       )}
-      
+
       {/* city store popup end */}
       {(user?.userRole === "1" || user?.userRole === 1) && (
         <div className=" mt-5 ">
@@ -511,6 +704,103 @@ const Business = () => {
               <RevenueTable />
             </div>
             {/* RevenueTable end*/}
+          </div>
+        </div>
+      )}
+      {allApp?.AppLists?.length > 0 && (
+        <div className="mt-6">
+          <div className="grid grid-cols-12 gap-4">
+            <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md p-4">
+              <h5 className="text-xl font-semibold text-black dark:text-white">
+                Total Stores
+              </h5>
+
+              <div className="flex items-center justify-center flex-wrap">
+              <div className="mb-2 mt-9">
+                <div className="mx-auto flex justify-center">
+                  <ReactApexChart
+                    options={ScreenAppOnlineOfflineOption}
+                    series={ScreenAppOnlineOfflineOption.series}
+                    type="donut"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <table cellPadding={10}>
+                  <tbody>
+                    <tr>
+                      <td className="flex items-center">
+                        <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#3AB700]"></span>
+                        {dashboardData?.totalStore?.[1]?.name}
+                      </td>
+                      <td>
+                        {dashboardData?.totalStore?.[1]?.percentage}%</td>
+                    </tr>
+                    <tr>
+                      <td className="flex items-center">
+                        <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#FF0000]"></span>
+                        {dashboardData?.totalStore?.[0]?.name}
+                      </td>
+                      <td>{dashboardData?.totalStore?.[0]?.percentage}%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            </div>
+
+            <div className="lg:col-span-6 md:col-span-6 sm:col-span-12 bg-white p-7.5 shadow-2xl rounded-md p-4 ">
+              <h5 className="text-xl font-semibold text-black dark:text-white">
+                Total Screens
+              </h5>
+              <div className="flex items-center justify-center flex-wrap">
+                <div className="mb-2 mt-9">
+                  <div className="mx-auto flex justify-center">
+                    <ReactApexChart
+                      options={ScreenAppOption}
+                      series={ScreenAppOption.series}
+                      type="donut"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <table cellPadding={10}>
+                    <tbody>
+                      <tr>
+                        <td className="flex items-center">
+                          <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#404f8b]"></span>
+                          {dashboardData?.totalScreen?.[0]?.name}
+                        </td>
+                        <td>{dashboardData?.totalScreen?.[0]?.percentage}%</td>
+                      </tr>
+                      <tr>
+                        <td className="flex items-center">
+                          <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#59709a]"></span>
+                          {dashboardData?.totalScreen?.[1]?.name}
+                        </td>
+                        <td>{dashboardData?.totalScreen?.[1]?.percentage}%</td>
+                      </tr>
+                      <tr>
+                        <td className="flex items-center">
+                          <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#8ca0b9]"></span>
+                          {dashboardData?.totalScreen?.[2]?.name}
+                        </td>
+                        <td>{dashboardData?.totalScreen?.[2]?.percentage}%</td>
+                      </tr>
+                      <tr>
+                        <td className="flex items-center">
+                          <span className="mr-2 block h-3 w-3 max-w-3 rounded-full bg-[#b2c7d0]"></span>
+                          {dashboardData?.totalScreen?.[3]?.name}
+                        </td>
+                        <td>{dashboardData?.totalScreen?.[3]?.percentage}%</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

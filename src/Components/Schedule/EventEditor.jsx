@@ -618,7 +618,7 @@ const EventEditor = ({
                       <tbody>
                         {allAssets.length > 0 ? (
                           allAssets
-                            .filter((item) => item?.assetType !== "Folder")
+                            .filter((item) => item?.assetType !== "Folder" && item?.assetType !== "DOC")
                             .map((item, index) => (
                               <tr
                                 key={index}
@@ -673,7 +673,7 @@ const EventEditor = ({
                                       </marquee>
                                     </div>
                                   )}
-                                  {item.assetType === "DOC" && (
+                                 {/* {item.assetType === "DOC" && (
                                     <a
                                       href={item.assetFolderPath}
                                       target="_blank"
@@ -681,7 +681,7 @@ const EventEditor = ({
                                     >
                                       {item.assetName}
                                     </a>
-                                  )}
+                                 )}*/}
                                 </td>
                                 <td className="">
                                   <h5
@@ -849,14 +849,14 @@ const EventEditor = ({
                                               </marquee>
                                             </div>
                                           )}
-                                          {assetPreview?.assetType ===
-                                            "DOC" && (
-                                              <iframe
-                                              className='w-[768px] h-[432px]'
-                                              title="Document Viewer"
-                                              src={viewerSrc}
-                                          ></iframe>
-                                            )}
+                                          // {{assetPreview?.assetType ===
+                                          //   "DOC" && (
+                                          //     <iframe
+                                          //     className='w-[768px] h-[432px]'
+                                          //     title="Document Viewer"
+                                          //     src={viewerSrc}
+                                          // ></iframe>
+                                          //   )}}
                                         </>
                                       )}
                                     </div>
@@ -926,15 +926,13 @@ const EventEditor = ({
                                   Your browser does not support the video tag.
                                 </video>
                               )}
-                              {assetPreview.assetType === "DOC" && (
+                              {/*{assetPreview.assetType === "DOC" && (
                                 <iframe
                                 className='w-[960px] h-[540px]'
                                 title="Document Viewer"
                                 src={viewerSrc}
                             ></iframe>
-      
-                               
-                              )}
+                              )}*/}
                             </>
                           )}
                         </div>

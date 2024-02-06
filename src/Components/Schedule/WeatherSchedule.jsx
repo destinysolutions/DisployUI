@@ -34,6 +34,7 @@ import { connection } from "../../SignalR";
 import Swal from "sweetalert2";
 import ReactTooltip from "react-tooltip";
 import { socket } from "../../App";
+import { deletedData, getData } from "../../Redux/WeatherSlice";
 
 const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [showTagModal, setShowTagModal] = useState(false);
   const [screenSelected, setScreenSelected] = useState([]);
   const [selectdata, setSelectData] = useState({});
+  const store = useSelector((state) => state.root.weather);
 
   const { token } = useSelector((state) => state.root.auth);
   const { loading, successMessage, type } = useSelector((s) => s.root.schedule);
@@ -66,7 +68,10 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedField, setSortedField] = useState(null);
   const [weatherScheduleData, setWeatherScheduleData] = useState([]);
-  console.log("weatherScheduleData", weatherScheduleData);
+  const [loadFist, setLoadFist] = useState(true);
+
+
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -78,17 +83,17 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   }, [successMessage]);
 
   // Filter data based on search term
-  const filteredData = Array.isArray(weatherScheduleData)
-    ? weatherScheduleData.filter((item) =>
-        Object.values(item).some(
-          (value) =>
-            value &&
-            value
-              .toString()
-              .toLowerCase()
-              .includes(searchSchedule.toLowerCase())
-        )
+  const filteredData = Array.isArray(store?.data?.model)
+    ? store.data.model.filter((item) =>
+      Object.values(item).some(
+        (value) =>
+          value &&
+          value
+            .toString()
+            .toLowerCase()
+            .includes(searchSchedule.toLowerCase())
       )
+    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -126,6 +131,16 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     }
   };
 
+
+  useEffect(() => {
+    if (loadFist) {
+      dispatch(getData())
+      setLoadFist(false)
+    }
+
+  }, [loadFist,store])
+
+
   const handleGetAll = () => {
     let config = {
       method: "get",
@@ -147,25 +162,31 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     handleGetAll();
-  }, []);
+
+    if (store && store.status === 'deleted') {
+      toast.success(store.message)
+      setLoadFist(true)
+    }
+
+  }, [store]);
 
   const handleSelectAll = () => {
     setSelectAllChecked(!selectAllChecked);
-    if (selectedItems.length === weatherScheduleData.length) {
+    if (selectedItems.length === store?.data?.model?.length) {
       setSelectedItems([]);
     } else {
-      const allIds = weatherScheduleData.map((schedule) => schedule.scheduleId);
+      const allIds = store?.data?.model.map((schedule) => schedule.weatherSchedulingID);
       setSelectedItems(allIds);
     }
   };
 
-  const handleCheckboxChange = (scheduleId) => {
+  const handleCheckboxChange = (weatherSchedulingID) => {
     setSelectAllChecked(false);
     setSelectCheck(true);
-    if (selectedItems.includes(scheduleId)) {
-      setSelectedItems(selectedItems.filter((id) => id !== scheduleId));
+    if (selectedItems.includes(weatherSchedulingID)) {
+      setSelectedItems(selectedItems.filter((id) => id !== weatherSchedulingID));
     } else {
-      setSelectedItems([...selectedItems, scheduleId]);
+      setSelectedItems([...selectedItems, weatherSchedulingID]);
     }
   };
 
@@ -178,13 +199,6 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   }, [selectcheck, selectedItems]);
 
   const handelDeleteAllSchedule = () => {
-    let config = {
-      method: "delete",
-      maxBodyLength: Infinity,
-      url: `${DELETE_SCHEDULE}?ScheduleIds=${selectedItems}`,
-      headers: { Authorization: authToken },
-    };
-
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -195,10 +209,9 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(handleDeleteScheduleAll({ config }));
+        dispatch(deletedData(selectedItems));
         setSelectAllChecked(false);
         setSelectedItems([]);
-        dispatch(handleGetAllSchedule({ token }));
       }
       const Params = {
         id: socket.id,
@@ -563,14 +576,14 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                       Tags
                     </th>
                     <th className="text-[#5A5881] text-base font-semibold w-fit text-center">
-                      Action{" "}
+                      Action
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={8}>
+                      <td colSpan={7}>
                         <div className="flex text-center m-5 justify-center">
                           <svg
                             aria-hidden="true"
@@ -598,7 +611,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                   ) : weatherScheduleData &&
                     sortedAndPaginatedData?.length === 0 ? (
                     <tr>
-                      <td colSpan={8}>
+                      <td colSpan={7}>
                         <div className="flex text-center m-5 justify-center">
                           <span className="text-2xl font-semibold py-2 px-4 rounded-full me-2">
                             No Data Available
@@ -623,14 +636,8 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                   ) : (
                                     <input
                                       type="checkbox"
-                                      checked={selectedItems.includes(
-                                        schedule.scheduleId
-                                      )}
-                                      onChange={() =>
-                                        handleCheckboxChange(
-                                          schedule.scheduleId
-                                        )
-                                      }
+                                      checked={selectedItems.includes(schedule.weatherSchedulingID)}
+                                      onChange={() => handleCheckboxChange(schedule.weatherSchedulingID)}
                                     />
                                   )}
                                   {schedule.name}
@@ -648,9 +655,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 )}
                               </td>
                               <td className="text-center text-[#5E5E5E]">
-                                {moment(schedule.endDate).format(
-                                  "YYYY-MM-DD hh:mm"
-                                )}
+                                {moment(schedule.endDate).format("YYYY-MM-DD hh:mm")}
                               </td>
                               <td className="text-center text-[#5E5E5E]">
                                 {schedule.screenAssigned}
@@ -663,43 +668,43 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="flex items-center justify-center gap-2 w-full flex-wrap">
                                   {(schedule?.tags === "" ||
                                     schedule?.tags === null) && (
-                                    <span>
-                                      <AiOutlinePlusCircle
-                                        size={30}
-                                        className="mx-auto cursor-pointer"
-                                        onClick={() => {
-                                          setShowTagModal(true);
-                                          schedule.tags === "" ||
-                                          schedule?.tags === null
-                                            ? setTags([])
-                                            : setTags(
+                                      <span>
+                                        <AiOutlinePlusCircle
+                                          size={30}
+                                          className="mx-auto cursor-pointer"
+                                          onClick={() => {
+                                            setShowTagModal(true);
+                                            schedule.tags === "" ||
+                                              schedule?.tags === null
+                                              ? setTags([])
+                                              : setTags(
                                                 schedule?.tags?.split(",")
                                               );
-                                          setUpdateTagSchedule(schedule);
-                                        }}
-                                      />
-                                    </span>
-                                  )}
+                                            setUpdateTagSchedule(schedule);
+                                          }}
+                                        />
+                                      </span>
+                                    )}
                                   {schedule.tags !== null
                                     ? schedule.tags
-                                        ?.split(",")
-                                        .slice(
-                                          0,
-                                          schedule.tags?.split(",").length > 2
-                                            ? 3
-                                            : schedule.tags?.split(",").length
-                                        )
-                                        .map((text) => {
-                                          if (text.toString().length > 10) {
-                                            return text
-                                              ?.split("")
-                                              .slice(0, 10)
-                                              .concat("...")
-                                              .join("");
-                                          }
-                                          return text;
-                                        })
-                                        .join(",")
+                                      ?.split(",")
+                                      .slice(
+                                        0,
+                                        schedule.tags?.split(",").length > 2
+                                          ? 3
+                                          : schedule.tags?.split(",").length
+                                      )
+                                      .map((text) => {
+                                        if (text.toString().length > 10) {
+                                          return text
+                                            ?.split("")
+                                            .slice(0, 10)
+                                            .concat("...")
+                                            .join("");
+                                        }
+                                        return text;
+                                      })
+                                      .join(",")
                                     : ""}
                                   {schedule?.tags !== "" &&
                                     schedule?.tags !== null && (
@@ -707,11 +712,11 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         onClick={() => {
                                           setShowTagModal(true);
                                           schedule.tags === "" ||
-                                          schedule?.tags === null
+                                            schedule?.tags === null
                                             ? setTags([])
                                             : setTags(
-                                                schedule?.tags?.split(",")
-                                              );
+                                              schedule?.tags?.split(",")
+                                            );
                                           setUpdateTagSchedule(schedule);
                                         }}
                                         className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"
@@ -742,11 +747,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                       data-for="Edit"
                                       type="button"
                                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                      onClick={() =>
-                                        navigate(
-                                          `/addweatherschedule?weatherScheduleId=${schedule.weatherSchedulingID}&weatherScheduleName=${schedule.name}`
-                                        )
-                                      }
+                                      onClick={() => navigate(`/addweatherschedule?weatherScheduleId=${schedule.weatherSchedulingID}`)}
                                     >
                                       <BiEdit />
                                       <ReactTooltip

@@ -104,10 +104,10 @@ const Routing = () => {
           }}
         >
           <Routes>
-            <Route path="/" element={<Navigate to="/screens" />} />
-            <Route path="/register" element={<Navigate to="/screens" />} />
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="/register" element={<Navigate to="/dashboard" />} />
             <Route
-              path="/userdashboard"
+              path="/dashboard"
               element={
                 <UserDashboard
                   sidebarOpen={sidebarOpen}

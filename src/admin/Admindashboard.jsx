@@ -4,6 +4,7 @@ import AdminSidebar from "./AdminSidebar";
 import AdminNavbar from "./AdminNavbar";
 import { BsLightningCharge } from "react-icons/bs";
 import { MdOutlineSlowMotionVideo } from "react-icons/md";
+import Dashboard from "./Dashboard";
 
 const AdminDashboard = ({ sidebarOpen, setSidebarOpen }) => {
   AdminDashboard.propTypes = {
@@ -36,7 +37,7 @@ const AdminDashboard = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
             </div>
           </div>
-          <Business />
+          <Dashboard />
         </div>
       </div>
     </>

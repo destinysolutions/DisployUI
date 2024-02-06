@@ -36,7 +36,7 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
     sidebarOpen: PropTypes.bool.isRequired,
     setSidebarOpen: PropTypes.func.isRequired,
   };
-  
+
   const [modalVisible, setModalVisible] = useState(false);
   const [compositonData, setcompositonData] = useState(null);
   const [currentSection, setcurrentSection] = useState(1);
@@ -592,8 +592,8 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
             <div
               ref={modalRef}
               className={`fixed border left-1/2 top-1/4 -translate-x-1/2 ${screenType === "portrait"
-                ? "w-[960px] h-[540px]"
-                : "w-[960px] h-[540px]"
+                ? "w-[768px] h-[432px]"
+                : "w-[768px] h-[432px]"
                 }  `}
             >
               <RxCrossCircled
@@ -743,8 +743,9 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                     {!loading &&
                       assetData
                         .filter((item) => {
+                          console.log('item', item)
                           if (activeTab === "asset") {
-                            if (item.hasOwnProperty("assetID")) {
+                            if (item.hasOwnProperty("assetID") && item?.assetType !== "DOC") {
                               return item;
                             }
                           } else {
@@ -804,11 +805,11 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                   />
                                 )}
 
-                              {data.assetType === "DOC" && (
+                              {/* {data.assetType === "DOC" && (
                                 <p href={data?.assetFolderPath}>
                                   {data.assetName}
                                 </p>
-                              )}
+                             )}*/}
                             </td>
                             <td className="p-2 w-full text-center hyphens-auto break-words">
                               {data.assetName || data?.instanceName}
@@ -955,11 +956,11 @@ const SelectLayout = ({ sidebarOpen, setSidebarOpen }) => {
                                         />
                                       )}
 
-                                    {item.assetType === "DOC" && (
+                                    {/* {item.assetType === "DOC" && (
                                       <p href={item?.assetFolderPath}>
                                         {item.assetName}
                                       </p>
-                                    )}
+                                   )}*/}
                                   </div>
                                   <div className="ml-3 w-1/2">
                                     <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
