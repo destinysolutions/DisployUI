@@ -10,6 +10,7 @@ const initialState = {
   message: null,
   type: null,
   getUserData: [],
+  dataRole : []
 };
 
 export const getUserRoleData = createAsyncThunk(
@@ -76,6 +77,7 @@ const userRoleSlice = createSlice({
       .addCase(getUserRoleData.fulfilled, (state, action) => {
         state.status = null;
         state.data = action.payload?.data;
+        state.dataRole = action.payload?.data;
       })
       .addCase(getUserRoleData.rejected, (state, action) => {
         state.status = "failed";

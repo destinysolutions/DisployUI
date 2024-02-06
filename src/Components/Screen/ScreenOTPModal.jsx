@@ -37,10 +37,7 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
   const completeOtp = otpValues.join("");
 
   const verifyOTP = () => {
-    let data = JSON.stringify({
-      otp: completeOtp,
-      //userID: UserData.user?.userID,
-    });
+    let data = JSON.stringify({otp: completeOtp,});
 
     let config = {
       method: "post",
@@ -75,6 +72,19 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
         toast.remove();
       });
   };
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === 'Enter') {
+        verifyOTP(event);
+      }
+    };
+    document.addEventListener('keydown', handleKeyPress);
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, []); // Empty dependency array means this effect runs once after the initial render
+  
 
   useEffect(() => {
     let config = {
@@ -153,12 +163,6 @@ const ScreenOTPModal = ({ setShowOTPModal, showOTPModal }) => {
                 <AiOutlineCloseCircle className="text-3xl text-primary" />
               </button>
             </div>
-            {/* {screen == 3 ? (
-              <h3 className="justify-center text-center text-red text-xl p-10 font-semibold break-words">
-                To add more screens, please activate your trial period
-              </h3>
-            ) : (
-              <> */}
             <div className="relative lg:p-5 md:p-5 sm:p-3 xs:p-2 flex-auto">
               <div className="flex items-center justify-center mb-4">
                 <img src={BlackLogo} className="w-52" />

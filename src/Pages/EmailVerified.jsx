@@ -34,7 +34,7 @@ const ForgotPassword = () => {
         callback(userExists.data); // Invoke the callback with the data
       }, 2000);
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
       console.error("Error checking email:", error.message);
       callback(false); // Invoke the callback with false in case of an error
     } finally {
@@ -52,7 +52,7 @@ const ForgotPassword = () => {
         toast.loading("Your email has been verified...");
         await checkEmail(payload, async (data) => {
           if (data.Status !== false) {
-            navigate('/')
+            navigate("/");
           } else {
             toast.error("Email does not exist");
           }
@@ -64,12 +64,11 @@ const ForgotPassword = () => {
     },
   });
 
-
   return (
     <>
       {/* forgotpassword form start*/}
       <div className="videobg login relative">
-        <video src={video} autoPlay muted loop />
+        <video src={video} autoPlay muted loop playsInline />
         <div className="bg-cover bg-no-repeat min-h-screen flex flex-col items-center justify-center">
           <div className="flex flex-col items-center justify-center loginbg  lg:px-6 md:px-6 sm:px-2 xs:px-2 lg:mx-auto md:mx-auto sm:mx-auto xs:mx-2  lg:py-2 md:py-3 sm:py-5 xs:py-5 z-10">
             <div className="w-full border-[#ffffff6e] border rounded-lg shadow-md md:mt-0 sm:max-w-md xl:p-0">
@@ -81,48 +80,51 @@ const ForgotPassword = () => {
                   Enter your email and we'll send you a link to reset your
                   password{" "}
                 </div>
-                  <form
-                    className="space-y-3 md:space-y-5"
-                    onSubmit={formikVerifyEmail.handleSubmit}
+                <form
+                  className="space-y-3 md:space-y-5"
+                  onSubmit={formikVerifyEmail.handleSubmit}
+                >
+                  <div className="relative">
+                    <input
+                      type="email"
+                      name="email"
+                      id="email"
+                      className="bg-gray-200 border input-bor-color text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder="Enter Email"
+                      onChange={formikVerifyEmail.handleChange}
+                      onBlur={formikVerifyEmail.handleBlur}
+                      value={formikVerifyEmail.values.email}
+                    />
+                  </div>
+                  {formikVerifyEmail.touched.email &&
+                  formikVerifyEmail.errors.email ? (
+                    <div
+                      className="text-red-500 error mt-1"
+                      style={{ marginTop: "5px" }}
+                    >
+                      {formikVerifyEmail.errors.email}
+                    </div>
+                  ) : null}
+                  <button
+                    type="submit"
+                    className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
+                    disabled={loading}
                   >
-                    <div className="relative">
-                      <input
-                        type="email"
-                        name="email"
-                        id="email"
-                        className="bg-gray-200 border input-bor-color text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Enter Email"
-                        onChange={formikVerifyEmail.handleChange}
-                        onBlur={formikVerifyEmail.handleBlur}
-                        value={formikVerifyEmail.values.email}
-                      />
-                      </div>
-                      {formikVerifyEmail.touched.email &&
-                      formikVerifyEmail.errors.email ? (
-                        <div className="text-red-500 error mt-1" style={{marginTop:"5px"}}>
-                          {formikVerifyEmail.errors.email}
-                        </div>
-                      ) : null}
+                    {loading ? "Verify in..." : "Email verify"}
+                  </button>
+                  <div className="flex lg:ml-3 lg:text-sm md:text-sm sm:text-sm xs:text-[14px] flex-wrap">
+                    <p className="not-italic text-white font-medium">
+                      Don’t have an account, yet?
+                    </p>
                     <button
-                      type="submit"
-                      className="w-full text-[#FFFFFF] bg-SlateBlue not-italic font-medium rounded-lg py-3.5 text-center text-base mt-4 hover:bg-primary border border-SlateBlue hover:border-white"
+                      className="ml-1 not-italic text-white font-medium hover:text-SlateBlue"
+                      onClick={() => navigate("/")}
                       disabled={loading}
                     >
-                      {loading ? "Verify in..." : "Email verify"}
+                      Sign up here
                     </button>
-                    <div className="flex lg:ml-3 lg:text-sm md:text-sm sm:text-sm xs:text-[14px] flex-wrap">
-                      <p className="not-italic text-white font-medium">
-                        Don’t have an account, yet?
-                      </p>
-                      <button
-                        className="ml-1 not-italic text-white font-medium hover:text-SlateBlue"
-                        onClick={() => navigate("/")}
-                        disabled={loading}
-                      >
-                        Sign up here
-                      </button>
-                    </div>
-                  </form>
+                  </div>
+                </form>
               </div>
             </div>
           </div>

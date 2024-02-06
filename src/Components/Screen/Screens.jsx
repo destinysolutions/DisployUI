@@ -1313,30 +1313,32 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                           className="flex items-center gap-1"
                                           style={{ width: "max-content" }}
                                         >
-                                          <Link
-                                            to={`/screensplayer?screenID=${screen.screenID}`}
-                                          >
-                                            {screen?.screenName?.length > 10
-                                              ? screen?.screenName.slice(
-                                                0,
-                                                10
-                                              ) + "..."
-                                              : screen.screenName}
-                                          </Link>
                                           {permissions.isSave &&
-                                            <button
-                                              onClick={() => {
-                                                setIsEditingScreen(true);
-                                                setEditingScreenID(
-                                                  screen.screenID
-                                                );
-                                                setEditedScreenName(
-                                                  screen?.screenName
-                                                );
-                                              }}
-                                            >
-                                              <MdOutlineModeEdit className="w-6 h-5 hover:text-primary text-[#0000FF]" />
-                                            </button>
+                                            <div>
+                                              <Link
+                                                to={`/screensplayer?screenID=${screen.screenID}`}
+                                              >
+                                                {screen?.screenName?.length > 10
+                                                  ? screen?.screenName.slice(
+                                                    0,
+                                                    10
+                                                  ) + "..."
+                                                  : screen.screenName}
+                                              </Link>
+                                              <button
+                                                onClick={() => {
+                                                  setIsEditingScreen(true);
+                                                  setEditingScreenID(
+                                                    screen.screenID
+                                                  );
+                                                  setEditedScreenName(
+                                                    screen?.screenName
+                                                  );
+                                                }}
+                                              >
+                                                <MdOutlineModeEdit className="w-6 h-5 hover:text-primary text-[#0000FF]" />
+                                              </button>
+                                            </div>
                                           }
                                         </div>
                                       )}
@@ -1367,7 +1369,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
                                 {lastSeenContentVisible && (
                                   <td className="p-2 text-center break-words text-[#5E5E5E]">
-                                    {moment(screen?.updatedDate).format("LLL")}
+                                   {screen?.lastSeen ? moment(screen?.lastSeen).format("LLL") : null} 
                                   </td>
                                 )}
 

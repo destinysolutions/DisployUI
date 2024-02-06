@@ -150,7 +150,18 @@ const NewScreenGroup = ({ sidebarOpen, setSidebarOpen }) => {
 
   useEffect(() => {
     dispatch(getMenuAll()).then((item) => {
-      const findData = item.payload.data.menu[0].submenu.find(e => e.pageName === "New Screen Group");
+      const findData = item.payload?.data?.menu.reduce((result, menuItem) => {
+        if (menuItem.submenu && Array.isArray(menuItem.submenu)) {
+          const submenuItem = menuItem.submenu.find((submenuItem) => submenuItem.pageName === "New Screen Group");
+          if (submenuItem) {
+            result = submenuItem;
+          }
+        }
+        return result;
+      }, null);
+      
+      
+
       if (findData) {
         const ItemID = findData.moduleID;
         const payload = { UserRoleID: user.userRole, ModuleID: ItemID };

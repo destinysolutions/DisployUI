@@ -17,7 +17,8 @@ import ScreenMergeSlice from "./ScreenMergeSlice";
 import UserRoleSlice from "./UserRoleSlice";
 import RetailersSlice from "./admin/RetailerSlice";
 import OnBodingSlice from "./admin/OnBodingSlice";
-
+import WeatherSlice from "./WeatherSlice";
+import ManageUserSlice from "./admin/ManageUserSlice";
 // const rootPersistConfig = {
 //   key: "root",
 //   storage,
@@ -53,6 +54,8 @@ const rootReducer = combineReducers({
   userRole: UserRoleSlice,
   retailerData : RetailersSlice,
   onBoding : OnBodingSlice,
+  weather : WeatherSlice,
+  ManageUser:ManageUserSlice,
 });
 
 const persisteRoot = rootReducer;

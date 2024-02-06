@@ -112,15 +112,15 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
   // Filter data based on search term
   const filteredData = Array.isArray(schedules)
     ? schedules.filter((item) =>
-      Object.values(item).some(
-        (value) =>
-          value &&
-          value
-            .toString()
-            .toLowerCase()
-            .includes(searchSchedule.toLowerCase())
+        Object.values(item).some(
+          (value) =>
+            value &&
+            value
+              .toString()
+              .toLowerCase()
+              .includes(searchSchedule.toLowerCase())
+        )
       )
-    )
     : [];
 
   const totalPages = Math.ceil(filteredData?.length / itemsPerPage);
@@ -782,43 +782,43 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                 <div className="flex items-center justify-center gap-2 w-full flex-wrap">
                                   {(schedule?.tags === "" ||
                                     schedule?.tags === null) && (
-                                      <span>
-                                        <AiOutlinePlusCircle
-                                          size={30}
-                                          className="mx-auto cursor-pointer"
-                                          onClick={() => {
-                                            setShowTagModal(true);
-                                            schedule.tags === "" ||
-                                              schedule?.tags === null
-                                              ? setTags([])
-                                              : setTags(
+                                    <span>
+                                      <AiOutlinePlusCircle
+                                        size={30}
+                                        className="mx-auto cursor-pointer"
+                                        onClick={() => {
+                                          setShowTagModal(true);
+                                          schedule.tags === "" ||
+                                          schedule?.tags === null
+                                            ? setTags([])
+                                            : setTags(
                                                 schedule?.tags?.split(",")
                                               );
-                                            setUpdateTagSchedule(schedule);
-                                          }}
-                                        />
-                                      </span>
-                                    )}
+                                          setUpdateTagSchedule(schedule);
+                                        }}
+                                      />
+                                    </span>
+                                  )}
                                   {schedule.tags !== null
                                     ? schedule.tags
-                                      .split(",")
-                                      .slice(
-                                        0,
-                                        schedule.tags.split(",").length > 2
-                                          ? 3
-                                          : schedule.tags.split(",").length
-                                      )
-                                      .map((text) => {
-                                        if (text.toString().length > 10) {
-                                          return text
-                                            .split("")
-                                            .slice(0, 10)
-                                            .concat("...")
-                                            .join("");
-                                        }
-                                        return text;
-                                      })
-                                      .join(",")
+                                        .split(",")
+                                        .slice(
+                                          0,
+                                          schedule.tags.split(",").length > 2
+                                            ? 3
+                                            : schedule.tags.split(",").length
+                                        )
+                                        .map((text) => {
+                                          if (text.toString().length > 10) {
+                                            return text
+                                              .split("")
+                                              .slice(0, 10)
+                                              .concat("...")
+                                              .join("");
+                                          }
+                                          return text;
+                                        })
+                                        .join(",")
                                     : ""}
                                   {schedule?.tags !== "" &&
                                     schedule?.tags !== null && (
@@ -826,11 +826,11 @@ const MySchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                         onClick={() => {
                                           setShowTagModal(true);
                                           schedule.tags === "" ||
-                                            schedule?.tags === null
+                                          schedule?.tags === null
                                             ? setTags([])
                                             : setTags(
-                                              schedule?.tags?.split(",")
-                                            );
+                                                schedule?.tags?.split(",")
+                                              );
                                           setUpdateTagSchedule(schedule);
                                         }}
                                         className="min-w-[1.5rem] min-h-[1.5rem] cursor-pointer"

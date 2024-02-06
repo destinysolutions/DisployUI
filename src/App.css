@@ -1064,10 +1064,6 @@ table.screen-table {
   }
 }
 
-
-
-/* Add this CSS to your stylesheet */
-
 .backdrop {
   position: fixed;
   top: 0;

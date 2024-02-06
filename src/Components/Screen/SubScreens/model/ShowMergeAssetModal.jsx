@@ -99,12 +99,24 @@ const ShowAssetModal = ({
   }, [loadFist, store]);
 
   useEffect(() => {
-    const filteredAssets = store.data?.filter(
-      (asset) =>
-        asset.assetType !== "Folder" &&
-        asset.assetName.toLowerCase().includes(searchAssest)
-    );
-    setFilteredAssets(filteredAssets);
+     if (type === 'Weather') {
+       const filteredAssets = store.data?.filter(
+         (asset) =>
+           asset.assetType !== "Folder" &&  asset.assetType !== "DOC" &&
+           asset.assetName.toLowerCase().includes(searchAssest)
+       );
+       console.log("asset",filteredAssets);
+     setFilteredAssets(filteredAssets);
+
+     }else{
+      const filteredAssets = store.data?.filter(
+        (asset) =>
+          asset.assetType !== "Folder" &&
+          asset.assetName.toLowerCase().includes(searchAssest)
+      );
+      setFilteredAssets(filteredAssets);
+     }
+
   }, [searchAssest, store]);
 
 
@@ -123,6 +135,7 @@ const ShowAssetModal = ({
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
+
 
   return (
     <>

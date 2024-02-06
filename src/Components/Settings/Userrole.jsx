@@ -450,9 +450,10 @@ const Userrole = ({ searchValue, permissions }) => {
                 }
               >
                 <option value="" label="Select User Role"></option>
-                {store.data.map((userrole) => (
+                {console.log("store?.data",store)}
+                {store?.data?.map((userrole) => (
                   <option key={userrole?.value} value={userrole?.value}>
-                    {userrole.text}
+                    {userrole?.text}
                   </option>
                 ))}
               </select>

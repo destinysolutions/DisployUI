@@ -54,6 +54,7 @@ const Sidebar = ({ sidebarOpen }) => {
           title: item.pageName,
           cName: "nav-text link-items",
           path: item.path,
+          isView : item.isView,
           icon: <img src={item.icon} alt={item.alt} className="w-6" />,
           subMenus: item.submenu  && item.submenu.length > 0
             ? item.submenu.map((submenu) => ({
@@ -105,6 +106,7 @@ const Sidebar = ({ sidebarOpen }) => {
         cName: "nav-text link-items",
         path: item.path,
         icon: <img src={item.icon} alt={item.alt} className="w-6" />,
+        isView : item.isView,
         subMenus: item.submenu  && item.submenu.length > 0
           ? item.submenu.map((submenu) => ({
               title: submenu.pageName,
@@ -116,7 +118,6 @@ const Sidebar = ({ sidebarOpen }) => {
         isActive: false, // You may want to set this property as well
       }))
       .sort((a, b) => a.sortBy - b.sortBy || a.title.localeCompare(b.title)); // Sort by sortBy, then by title
-
   
       setMenuData(formattedMenuData);
       setMenuDataBottummenu(bottummenuMenuData);
@@ -324,7 +325,7 @@ const Sidebar = ({ sidebarOpen }) => {
                 />
               </div>
               <ul className="space-y-1 font-medium">
-                {menuData.map((item, index) => {
+                {menuData .filter(item => item.isView).map((item, index) => {
                   const submenuIsOpen = submenuStates[item.title] || false;
                   const isActive = window.location.pathname === item.path; // Check if the item is active
                   return (
@@ -337,7 +338,7 @@ const Sidebar = ({ sidebarOpen }) => {
                           <div>{item.icon}</div>
                           <span className="ml-5">{item.title}</span>
                         </Link>
-
+                        
                         {item.subMenus && (
                           <div className="ml-5 absolute right-0">
                             <FiIcons.FiChevronDown

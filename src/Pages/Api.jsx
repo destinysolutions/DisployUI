@@ -156,6 +156,24 @@ export const BILLINGREPORT = `${baseUrl}Report/GetBillingReport`;
 //http://192.168.1.115
 
 // Retailar
-
 export const GETALLRETAILER = `${baseUrl}UserMaster/GetAllRetailer?IsRetailer=true`
+
+// weatherschedule
+
+export const ADD_OR_UPDATE_WEATHER = `${baseUrl}WeatherScheduling/AddorUpdateWeatherScheduling`;
+export const GET_BY_ID_WEATHER = `${baseUrl}WeatherScheduling/GetWeatherScheduling`;
+export const GET_WEATHER = `${baseUrl}WeatherScheduling/GetWeatherScheduling`;
+export const DELETE_WEATHER = `${baseUrl}WeatherScheduling/DeleteWeatherScheduling`;
+export const SET_TO_SCREEN_WEATHER = `${baseUrl}WeatherScheduling/AssignWeatherSchedulingToScreen`;
+
+// Dashboard
+export const USERDASHBOARD = `${baseUrl}NewScreen/GetDashboardData`
+export const ADMINDASHBOARD = `${baseUrl}NewScreen/GetALLUserDashboardData`
+export const ADMINUSERTOKEN = `${baseUrl}Register/GetUserToken`
+
+
+// Advertisement
+
+export const ADDEDITADVERTISEMENT = `${baseUrl}AdsCustomer/AddorUpdateAdsCustomer`
+export const GETALLADS = `${baseUrl}AdsCustomer/GetAllAdsData`
 
