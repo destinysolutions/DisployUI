@@ -15,6 +15,7 @@ import Footer from "../Footer";
 import {
   ADD_SCHEDULE,
   DELETE_SCHEDULE,
+  SET_TO_SCREEN_WEATHER,
   UPDATE_SCREEN_ASSIGN,
 } from "../../Pages/Api";
 import { useEffect } from "react";
@@ -42,7 +43,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   const [addScreenModal, setAddScreenModal] = useState(false);
   const [selectScreenModal, setSelectScreenModal] = useState(false);
   const [selectedScreens, setSelectedScreens] = useState([]);
-  const [scheduleId, setScheduleId] = useState("");
+  const [weatherScheduleId, setWeatherScheduleId] = useState("");
   const [searchSchedule, setSearchSchedule] = useState("");
   const [selectAll, setSelectAll] = useState(false);
   const [filteredScheduleData, setFilteredScheduleData] = useState([]);
@@ -264,68 +265,70 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleUpdateScreenAssign = (screenIds, macids) => {
+    console.log("weatherScheduleId",weatherScheduleId);
     let idS = "";
     for (const key in screenIds) {
       if (screenIds[key] === true) {
         idS += `${key},`;
       }
     }
-
     let config = {
-      method: "post",
+      method: "get",
       maxBodyLength: Infinity,
-      url: `${UPDATE_SCREEN_ASSIGN}?ScheduleID=${scheduleId}&ScreenID=${idS}`,
+      url: `${SET_TO_SCREEN_WEATHER}?WeatherSchedulingId=${weatherScheduleId}&ScreenID=${idS}`,
       headers: {
         Authorization: authToken,
         "Content-Type": "application/json",
       },
     };
     toast.loading("Saving...");
-    axios
-      .request(config)
+    axios.request(config)
       .then((response) => {
         if (response.data.status == 200) {
-          const Params = {
-            id: socket.id,
-            connection: socket.connected,
-            macId: macids,
-          };
-          socket.emit("ScreenConnected", Params);
-          setTimeout(() => {
+          try {
+            if (macids?.includes(",")) {
+              let allMacIDs = macids?.split(",");
+              allMacIDs?.map((item) => {
+                let Params = { id: socket.id, connection: socket.connected, macId: item, };
+                socket.emit("ScreenConnected", Params);
+              })
+            } else {
+              const Params = { id: socket.id, connection: socket.connected, macId: macids, };
+              socket.emit("ScreenConnected", Params);
+            }
+            setTimeout(() => {
+              toast.remove();
+              setSelectScreenModal(false);
+              setAddScreenModal(false);
+            }, 2000);
+            if (connection.state == "Disconnected") {
+              connection
+                .start().then((res) => {
+                  console.log("signal connected");
+                })
+                .then(() => {
+                  connection
+                    .invoke("ScreenConnected", macids).then(() => {
+                      console.log("func. invoked");
+                    })
+                    .catch((err) => {
+                      toast.remove();
+                      toast.error("Something went wrong, try again");
+                    });
+                });
+            } else {
+              connection
+                .invoke("ScreenConnected", macids).then(() => {
+                  console.log("func. invoked");
+                })
+                .catch((err) => {
+                  toast.remove();
+                  toast.error("Something went wrong, try again");
+                });
+            }
+          } catch (error) {
+            toast.error("Something went wrong, try again");
             toast.remove();
-            setSelectScreenModal(false);
-            setAddScreenModal(false);
-            dispatch(handleGetAllSchedule({ token }));
-          }, 1000);
-          if (connection.state == "Disconnected") {
-            connection
-              .start()
-              .then((res) => {
-                console.log("signal connected");
-              })
-              .then(() => {
-                connection
-                  .invoke("ScreenConnected", macids)
-                  .then(() => {
-                    console.log("func. invoked");
-                  })
-                  .catch((err) => {
-                    toast.remove();
-                    console.log("error from invoke", err);
-                    toast.error("Something went wrong, try again");
-                  });
-              });
-          } else {
-            connection
-              .invoke("ScreenConnected", macids)
-              .then(() => {
-                console.log("func. invoked");
-              })
-              .catch((err) => {
-                toast.remove();
-                console.log("error from invoke", err);
-                toast.error("Something went wrong, try again");
-              });
           }
         }
       })
@@ -333,7 +336,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
         toast.remove();
         console.log(error);
       });
-  };
+  }
 
   const handleSearchSchedule = (event) => {
     const searchQuery = event.target.value.toLowerCase();
@@ -767,7 +770,7 @@ const WeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
                                       type="button"
                                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-lg p-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                       onClick={() => {
-                                        setScheduleId(schedule.scheduleId);
+                                        setWeatherScheduleId(schedule.weatherSchedulingID);
                                         setAddScreenModal(true);
                                         setScreenSelected(
                                           schedule?.screenAssigned?.split(",")

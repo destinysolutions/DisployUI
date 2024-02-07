@@ -497,7 +497,7 @@ const TextScroll = ({ sidebarOpen, setSidebarOpen }) => {
                             />
                           </button>
                           <div className="relative">
-                            {permissions.isSave || permissions.isDelete &&
+                            {permissions.isSave && permissions.isDelete &&
                               <button className="float-right">
                                 <BiDotsHorizontalRounded
                                   className="text-2xl"

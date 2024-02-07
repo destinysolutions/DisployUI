@@ -60,6 +60,7 @@ const Sidebar = ({ sidebarOpen }) => {
             ? item.submenu.map((submenu) => ({
                 title: submenu.pageName,
                 path: submenu.path,
+                isView : submenu.isView,
                 icon: <img src={submenu.icon} alt={submenu.alt} className="w-6" />,
               }))
             : null,
@@ -111,6 +112,7 @@ const Sidebar = ({ sidebarOpen }) => {
           ? item.submenu.map((submenu) => ({
               title: submenu.pageName,
               path: submenu.path,
+              isView : submenu.isView,
               icon: <img src={submenu.icon} alt={submenu.alt} className="w-6" />,
             }))
           : null,
@@ -325,7 +327,7 @@ const Sidebar = ({ sidebarOpen }) => {
                 />
               </div>
               <ul className="space-y-1 font-medium">
-                {menuData .filter(item => item.isView).map((item, index) => {
+                {menuData.filter(item => item.isView).map((item, index) => {
                   const submenuIsOpen = submenuStates[item.title] || false;
                   const isActive = window.location.pathname === item.path; // Check if the item is active
                   return (
@@ -354,20 +356,22 @@ const Sidebar = ({ sidebarOpen }) => {
                         )}
                       </div>
 
-                      {submenuIsOpen && item.subMenus && (
+                      {submenuIsOpen && item.subMenus  && (
                         <ul className="ml-4 mt-3">
-                          {item.subMenus.map((submenu, subIndex) => (
-                            <li key={subIndex} className="p-2 relative submenu">
-                              <Link to={submenu.path}>
-                                <div>{submenu.icon}</div>
-                                {submenu.title === "New Screen" ? (
-                                  <span className="ml-5" onClick={() => setShowOTPModal(true)}>{submenu.title}</span>
-                                ): ( 
-                                  <span className="ml-5">{submenu.title}</span>
-                                )}
-                              </Link>
-                            </li>
-                          ))}
+                          {item.subMenus
+                            .filter(submenu => submenu.isView) // Filter out submenu items where isView is false
+                            .map((submenu, subIndex) => (
+                              <li key={subIndex} className="p-2 relative submenu">
+                                <Link to={submenu.path}>
+                                  <div>{submenu.icon}</div>
+                                  {submenu.title === "New Screen" ? (
+                                    <span className="ml-5" onClick={() => setShowOTPModal(true)}>{submenu.title}</span>
+                                  ) : (
+                                    <span className="ml-5">{submenu.title}</span>
+                                  )}
+                                </Link>
+                              </li>
+                            ))}
                         </ul>
                       )}
                     </li>
@@ -378,7 +382,7 @@ const Sidebar = ({ sidebarOpen }) => {
                   <div className="dotline my-4"></div>
                 </li>
 
-                {menuDataBottummenu.map((item, MIindex) => {
+                {menuDataBottummenu.filter(item => item.isView).map((item, MIindex) => {
                   const isActive = window.location.pathname === item.path; // Check if the item is active
                   return (
                     <li

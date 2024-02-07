@@ -143,7 +143,6 @@ const AddWeatherSchedule = ({ sidebarOpen, setSidebarOpen }) => {
     dispatch(addData(data))
   };
 
-
   const handleUpdateScreenAssign = (screenIds, macids) => {
     let idS = "";
     for (const key in screenIds) {
