@@ -961,10 +961,10 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                           <div className="vdetails">
                             <div className="flex justify-end"></div>
                             <div className="text-center clickdetail">
-                              <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs mb-1 break-words">
+                              <h3 className="lg:text-base md:text-sm sm:text-sm xs:text-xs mb-1 break-words line-clamp-1">
                                 {item.assetName}
                               </h3>
-                              <p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0">
+                              <p className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light m-0  line-clamp-2">
                                 Uploaded By {item.userName}
                               </p>
                               <h6 className="lg:text-base md:text-sm sm:text-sm xs:text-xs font-light">
@@ -1004,7 +1004,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                               textAlign: "right",
                             }}
                           >
-                            {permissions.isSave || permissions.isDelete || permissions.isView &&
+                            {permissions.isSave && permissions.isDelete  &&
                               <button
                                 onClick={() => updateassetsdw(item)}
                                 className="relative"

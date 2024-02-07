@@ -321,8 +321,8 @@ const AddSchedule = ({ sidebarOpen, setSidebarOpen }) => {
       toast.loading("Creating Events...");
     }
     const data = {
-      startDate: eventData.start,
-      endDate: eventData.end,
+      startDate: eventData.start.toISOString(),
+      endDate: eventData.end.toISOString(),
       asset: eventData.asset ? eventData.asset.assetID : null,
       title: eventData.title,
       color: eventData.color,

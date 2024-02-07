@@ -15,6 +15,7 @@ import {
   USER_ROLE_GET,
 } from "../../Pages/Api";
 import ReactTooltip from "react-tooltip";
+import { getMenuAll } from "../../Redux/SidebarSlice";
 
 const Userrole = ({ searchValue, permissions }) => {
   const store = useSelector((state) => state.root.userRole);
@@ -277,6 +278,7 @@ const Userrole = ({ searchValue, permissions }) => {
           setshowuserroleModal(false);
           handleFetchUserRoleData();
           setSelectedLevel({});
+          dispatch(getMenuAll());
         }
         toast.remove();
       })

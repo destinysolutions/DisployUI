@@ -1009,66 +1009,63 @@ const EditSelectedLayout = ({ sidebarOpen, setSidebarOpen }) => {
                               key={index}
                               className="w-full flex cursor-grab items-center md:gap-5 gap-3"
                             >
-                              <td className="min-w-[40%]">
-                                <div className="flex items-center w-full h-full">
-                                  <div
-                                    className={`w-1/2 break-words hyphens-auto h-28`}
-                                  >
-                                    {item.assetType === "OnlineImage" && (
-                                      <img
-                                        className="imagebox relative w-full h-28 object-cover"
-                                        src={item?.assetFolderPath}
-                                        alt={item?.assetName}
-                                      />
-                                    )}
-                                    {item.assetType === "Image" && (
-                                      <img
-                                        src={item?.assetFolderPath}
-                                        alt={item?.assetName}
-                                        className="imagebox relative w-full h-28 object-cover"
-                                      />
-                                    )}
-                                    {item.instanceName && item?.scrollType && (
-                                      <marquee
-                                        className="text-lg w-full h-full flex items-center text-black"
-                                        direction={
-                                          item?.scrollType == 1
-                                            ? "right"
-                                            : "left"
-                                        }
-                                        scrollamount="10"
-                                      >
-                                        {item?.text}
-                                      </marquee>
-                                    )}
-                                    {(item.assetType === "Video" ||
-                                      item.assetType === "OnlineVideo" ||
-                                      item.assetType === "Youtube") && (
-                                        <ReactPlayer
-                                          url={item?.assetFolderPath}
-                                          className="w-full relative z-20 videoinner max-h-10"
-                                          controls={false}
-                                          playing={false}
-                                          loop={true}
-                                        />
-                                      )}
+                              <td className="">
 
-                                    {/*  {item.assetType === "DOC" && (
+                                {item.assetType === "OnlineImage" && (
+                                  <img
+                                    className="imagebox img_w relative object-cover"
+                                    src={item?.assetFolderPath}
+                                    alt={item?.assetName}
+                                  />
+                                )}
+                                {item.assetType === "Image" && (
+                                  <img
+                                    src={item?.assetFolderPath}
+                                    alt={item?.assetName}
+                                    className="imagebox img_w relative object-cover"
+                                  />
+                                )}
+                                {item.instanceName && item?.scrollType && (
+                                  <marquee
+                                    className="text-lg w-full h-full flex items-center text-black"
+                                    direction={
+                                      item?.scrollType == 1
+                                        ? "right"
+                                        : "left"
+                                    }
+                                    scrollamount="10"
+                                  >
+                                    {item?.text}
+                                  </marquee>
+                                )}
+                                {(item.assetType === "Video" ||
+                                  item.assetType === "OnlineVideo" ||
+                                  item.assetType === "Youtube") && (
+                                    <ReactPlayer
+                                      url={item?.assetFolderPath}
+                                      className="relative z-20 videoinner img_w max-h-10"
+                                      controls={false}
+                                      playing={false}
+                                      loop={true}
+                                    />
+                                  )}
+
+                                {/*  {item.assetType === "DOC" && (
                                       <p href={item?.assetFolderPath}>
                                         {item.assetName}
                                       </p>
                                   )}*/}
-                                  </div>
-                                  <div className="ml-3 w-1/2">
-                                    <p className="text-gray-900 break-words hyphens-auto line-clamp-3">
-                                      {item?.assetName && item?.assetName}
-                                      {item?.instanceName && item?.instanceName}
-                                    </p>
-                                  </div>
+                              </td>
+                              <td>
+                                <div className="ml-3">
+                                  <p className="text-gray-900 break-all hyphens-auto line-clamp-3">
+                                    {item?.assetName && item?.assetName}
+                                    {item?.instanceName && item?.instanceName}
+                                  </p>
                                 </div>
                               </td>
 
-                              <td className={`text-center min-w-[20%] `}>
+                              <td className={`text-center`}>
                                 {!item?.isEdited ? (
                                   <p className="border min-w-full whitespace-nowrap border-[#E4E6FF] rounded-full p-2">
                                     {item.duration} Sec

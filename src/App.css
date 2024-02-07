@@ -1029,6 +1029,7 @@ button.daysbtn {
 
 .screen-table .screen-table-th th {
   min-width: 200px;
+  width: 150px;
 }
 
 .sc-scrollbar::-webkit-scrollbar {

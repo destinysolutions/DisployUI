@@ -100,14 +100,21 @@
 }
 .videoplayer,
 .videoinner {
-  width: 100% !important;
-  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
   /* min-height: 100% !important;
   max-height: 100% !important; */
 }
 .videoplayer {
   border: 5px solid #000;
   border-radius: 5px;
+}
+
+img.imagebox.img_w,
+.videoinner.img_w {
+  width: 162px !important;
+  height: 100px !important;
+  max-width: 162px !important;
 }
 /* CSS for full-screen video */
 /* CSS for the dialog-like container */

@@ -133,8 +133,17 @@ const Storagelimit = () => {
                       <div className="flex justify-center items-center">
                         <input
                           type="number"
+                          minLength={2}
                           className="border border-[#5E5E5E] w-12 h-8 rounded"
-                          onChange={(e) => setStorageValue(e.target.value)}
+                          onChange={(e) => {
+                            let value = e.target.value.trim();
+                            if (value.length > 2) {
+                              alert("Please enter only two characters.");
+                              e.target.value = value.slice(0, 2);
+                              return;
+                            }
+                            setStorageValue(value);
+                          }}
                         />
                         <div className="flex items-center ">
                           <label className="ml-2 text-xl"> GB</label>

@@ -870,12 +870,12 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <div className="lg:pt-24 md:pt-24 pt-10 px-5 page-contain">
         <div className={`${sidebarOpen ? "ml-60" : "ml-0"}`}>
-          <div className="justify-between flex items-center">
+          <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 lg:gap-4 md:gap-4 sm:gap-2 xs:gap-2">
             <h1 className="not-italic font-medium text-2xl text-[#001737] sm-mb-3">
               Screens
             </h1>
 
-            <div className="flex items-center sm:mt-3 flex-wrap">
+            <div className="flex items-center md:mt-0 lg:mt-0 md:justify-end sm:mt-3 flex-wrap">
               <div className="relative mr-5">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                   <AiOutlineSearch className="w-5 h-5 text-gray " />
@@ -883,7 +883,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                 <input
                   type="text"
                   placeholder="Search Screen" //location ,screen, tag
-                  className="border border-primary rounded-full px-7 pl-10 py-2 search-user"
+                  className="border border-primary rounded-full px-7 pl-10 py-2 search-user sm:w-52 xs:w-52"
                   value={searchScreen}
                   onChange={(e) => {
                     handleScreenSearch(e);
@@ -1369,7 +1369,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
 
                                 {lastSeenContentVisible && (
                                   <td className="p-2 text-center break-words text-[#5E5E5E]">
-                                   {screen?.lastSeen ? moment(screen?.lastSeen).format("LLL") : null} 
+                                    {screen?.lastSeen ? moment(screen?.lastSeen).format("LLL") : null}
                                   </td>
                                 )}
 
@@ -1393,7 +1393,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                       title={screen?.assetName}
                                       className="flex items-center justify-between gap-2 border-gray bg-lightgray border rounded-full py-2 px-3 lg:text-sm md:text-sm sm:text-xs xs:text-xs mx-auto   hover:bg-SlateBlue hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
                                     >
-                                      <p className="line-clamp-3">
+                                      <p className="line-clamp-1">
                                         {screen.assetName}
                                       </p>
                                       <AiOutlineCloudUpload className="min-h-[1rem] min-w-[1rem]" />
@@ -1592,7 +1592,7 @@ const Screens = ({ sidebarOpen, setSidebarOpen }) => {
                                     title={screen?.tags && screen?.tags.trim().split(',').map(tag => tag.trim()).join(",")}
                                     className="text-center text-[#5E5E5E]"
                                   >
-                                    {console.log(screen?.tags, "screen?.tags")}
+                                   
                                     <div className="p-2 text-center flex flex-wrap items-center justify-center gap-2 break-all text-[#5E5E5E]">
                                       {(screen?.tags === "" ||
                                         screen?.tags === null) && (

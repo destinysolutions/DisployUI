@@ -763,8 +763,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                   : "togglecontent"
               }
             >
-              <div className="page-content grid  gap-8 mb-5 assets-section ">
-                <div className="relative list-none assetsbox ">
+              {/*<div className="page-content grid  gap-8 mb-5 assets-section ">
+            <div className="relative list-none assetsbox ">*/}
                   <div className="relative shadow-md sm:rounded-lg p-4 overflow-x-scroll sc-scrollbar">
                     <table
                       cellPadding={20}
@@ -985,7 +985,7 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
 
                               <td className="text-center relative">
                                 <div className="relative">
-                                  {permissions.isSave || permissions.isDelete || permissions.isView &&
+                                  {permissions.isSave && permissions.isDelete &&
                                     <button
                                       onClick={() => updateassetsdw2(item)}
                                       className="ml-3 relative"
@@ -1162,8 +1162,8 @@ const Assets = ({ sidebarOpen, setSidebarOpen }) => {
                       )}
                     </table>
                   </div>
-                </div>
-              </div>
+               {/* </div>
+                            </div>*/}
 
               {/* Model */}
               {selectScreenModal && (

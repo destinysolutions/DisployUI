@@ -50,6 +50,9 @@
   .Schedule-table {
     overflow-x: auto;
   }
+  .rbc-btn-group {
+    margin: 6px 0px;
+  }
 }
 
 .rbc-toolbar button:active,

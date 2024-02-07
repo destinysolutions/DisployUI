@@ -360,36 +360,40 @@ const Defaultmedia = ({ permissions }) => {
       </div>
       {mediaTabs === 1 && (
         <div className="grid lg:grid-cols-2 w-full h-auto place-items-center items-center p-6 ">
-          <div className="lg:w-1/2 w-full">
-            <div className="flex items-center justify-center mb-5 flex-wrap">
-              <label className="mr-3 text-primary lg:text-lg md:text-lg sm:text-base xs:text-base font-medium py-2">
+          <div className="w-full">
+            <div className="text-center mb-5 flex-wrap">
+              <h6 className="mr-3 text-primary lg:text-lg md:text-lg sm:text-base xs:text-base font-medium py-2">
                 Asset / Playing:
-              </label>
+              </h6>
               {permissions.isSave ?
-                <button
-                  onClick={(e) => {
-                    AssetModelOpen();
-                    setSelectedAsset({
-                      ...selectedAsset,
-                      assetName: e.target.value,
-                    });
-                  }}
-                  className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm line-clamp-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                >
-                  <p className="line-clamp-3">
-                    {assetName === "" ? "No image" : assetName}
-                  </p>
-                  <AiOutlineCloudUpload className="ml-2 min-w-[1.5rem] min-h-[1.5rem]" />
-                </button>
+                <p className="pr-5">
+                  <button
+                    onClick={(e) => {
+                      AssetModelOpen();
+                      setSelectedAsset({
+                        ...selectedAsset,
+                        assetName: e.target.value,
+                      });
+                    }}
+                    className="flex mx-auto items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm line-clamp-1 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  >
+                    <p className="line-clamp-3">
+                      {assetName === "" ? "No image" : assetName}
+                    </p>
+                    <AiOutlineCloudUpload className="ml-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                  </button>
+                </p>
                 :
-                <button
-                  className="flex  items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm line-clamp-3 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
-                >
-                  <p className="line-clamp-3">
-                    {assetName === "" ? "No image" : assetName}
-                  </p>
-                  <AiOutlineCloudUpload className="ml-2 min-w-[1.5rem] min-h-[1.5rem]" />
-                </button>
+                <p className="pr-5">
+                  <button
+                    className="flex mx-auto items-center border-primary border rounded-full lg:pr-3 sm:px-5  py-2  text-sm line-clamp-1 hover:bg-primary hover:text-white hover:bg-primary-500 hover:shadow-lg hover:shadow-primary-500/50"
+                  >
+                    <p className="line-clamp-3">
+                      {assetName === "" ? "No image" : assetName}
+                    </p>
+                    <AiOutlineCloudUpload className="ml-2 min-w-[1.5rem] min-h-[1.5rem]" />
+                  </button>
+                </p>
               }
 
               {showAssetModal && (
@@ -719,13 +723,13 @@ const Defaultmedia = ({ permissions }) => {
                     </button>
                   </div> */}
           </div>
-          <div className=" w-[576px] h-[324px]">
+          <div className="w-full">
             {filePath &&
               (Object.values(filePath).includes("Video") ||
                 Object.values(filePath).includes("OnlineVideo")) && (
                 <ReactPlayer
                   url={filePath?.assetFolderPath}
-                  className="relative w-[576px] h-[324px] z-20 min-h-80 default-media "
+                  className="relative w-full h-full z-20 default-media "
                   controls={true}
                   playing={true}
                 />
